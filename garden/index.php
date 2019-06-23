@@ -30,17 +30,22 @@ $availabilityArr = $gsManager->getCharacterStateArr(209,true);
 <html>
 <head>
 	<title><?php echo $defaultTitle?> Gardening with Natives</title>
-    <link href="../js/jquery-ui-1.12.1/jquery-ui.min.css" type="text/css" rel="stylesheet" />
-    <link href="../css/base.css?<?php echo $CSS_VERSION; ?>" type="text/css" rel="stylesheet" />
-	<link href="../css/main.css?<?php echo $CSS_VERSION_LOCAL; ?>" type="text/css" rel="stylesheet" />
-    <script type="text/javascript">
-		<?php include_once($serverRoot.'/config/googleanalytics.php'); ?>
-	</script>
 </head>
 <body>
 <?php
-include($serverRoot."/header.php");
+// TODO: Something in bootstrap's CSS breaks the page
+// include($serverRoot."/header.php");
 ?>
+
+<link href="../css/base.css?<?php echo $CSS_VERSION; ?>" type="text/css" rel="stylesheet" />
+<link href="../css/main.css?<?php echo $CSS_VERSION_LOCAL; ?>" type="text/css" rel="stylesheet" />
+<link href="../js/jquery-ui-1.12.1/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="../js/jquery-ui-1.12.1/external/jquery/jquery.js"></script>
+<script type="text/javascript" src="../js/jquery-ui-1.12.1/jquery-ui.js"></script>
+<script type="text/javascript">
+  <?php include_once($serverRoot.'/config/googleanalytics.php'); ?>
+</script>
+
 <script type="text/javascript" src="../js/tooltipster.bundle.min.js"></script>
 <link rel="stylesheet" type="text/css" href="../css/tooltipster.bundle.min.css" />
 <link href="../css/tooltipster-sideTip-light.min.css" type="text/css" rel="stylesheet" />

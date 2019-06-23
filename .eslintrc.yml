@@ -1,0 +1,9 @@
+---
+
+env:
+  browser: true
+
+rules:
+  curly: error
+  quotes: ["warn", "double"]
+  semi: error
