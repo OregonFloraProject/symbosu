@@ -15,9 +15,9 @@ services:
     image: local/php-fpm
     container_name: of-php
     build:
-      context: .
-      dockerfile: php-fpm.dockerfile
-    volumes: 
+      context: ./docker
+      dockerfile: ./php-fpm.dockerfile
+    volumes:
       - .:/app
       - ./docker/config/symbini.php:/app/config/symbini.php:ro
       - ./docker/config/dbconnection.php:/app/config/dbconnection.php:ro
@@ -37,4 +37,3 @@ services:
 volumes:
   vol-oregonflora-db:
     name: vol-oregonflora-db
-
