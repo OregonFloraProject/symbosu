@@ -26,10 +26,10 @@
 <script src='<?php echo "$CLIENT_ROOT/js/header.js" ?>' type="text/javascript"></script>
 
 <!-- Header start -->
-<nav id="site-header" scroll-collapse="false" class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav id="site-header" class="navbar navbar-expand-lg navbar-dark bg-dark site-header">
 
   <!-- Logo -->
-  <a class="navbar-brand" href="#">
+  <a class="navbar-brand" href="/">
     <img id="site-header-logo" src="<?php echo "$CLIENT_ROOT/images/header/oregonflora-logo.png" ?>" alt="OregonFlora">
   </a>
 
