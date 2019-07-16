@@ -6,11 +6,11 @@ const plantWidthSliderId = "plant-width";
 const plantHeightDisplayId = "plant-height-display";
 const plantWidthDisplayId = "plant-width-display";
 
-$(document).ready(() => {
-  main();
+jQuery(() => {
+  gardenMain();
 });
 
-function main() {
+function gardenMain() {
   const fadeIn = { opacity: 100, transition: "opacity 0.5s" };
   const fadeOut = { opacity: 0, transition: "opacity 0.5s" };
 
@@ -56,6 +56,14 @@ function main() {
 function updateSliderDisplay(slider, display) {
   let [sliderValueLow, sliderValueHigh] = slider.val().trim("[]").split(",").map((str) => parseInt(str));
   let displayText;
+
+  if (sliderValueLow > sliderValueHigh) {
+    slider.val("[" + sliderValueHigh + "," + sliderValueLow + "]");
+    let tmp = sliderValueLow;
+    sliderValueLow = sliderValueHigh;
+    sliderValueHigh = tmp;
+  }
+
   if (sliderValueLow === 0 && sliderValueHigh === 50) {
     displayText = "(Any size)";
   } else if (sliderValueLow === sliderValueHigh) {

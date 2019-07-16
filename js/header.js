@@ -1,11 +1,11 @@
 const headerId = "site-header";
 const logoId = "site-header-logo";
 
-$(document).ready(() => {
-  main();
+jQuery(() => {
+  headerMain();
 });
 
-function main() {
+function headerMain() {
   const header = $("#" + headerId);
   const logo = $("#" + logoId);
 

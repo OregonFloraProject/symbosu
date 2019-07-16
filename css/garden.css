@@ -78,8 +78,16 @@ body {
 }
 
 #innertext #search-sidebar .slider-horizontal {
-  background-color: #DFEFD3 !important;
   width: 100% !important;
+}
+
+#innertext #search-sidebar .slider-handle, .tick-slider-selection, .in-selection {
+  background-image: none !important;
+  background-color: #5FB021 !important;
+}
+
+#innertext #search-sidebar .slider-handle {
+  border: 0.2em solid white;
 }
 
 #innertext #search-sidebar #plant-needs {

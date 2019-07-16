@@ -5,7 +5,7 @@
   rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
   integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
   crossorigin="anonymous">
-<link rel='stylesheet' href='<?php echo "$CLIENT_ROOT/css/header.css"?>' type='text/css'>
+<link rel='stylesheet' href='<?php echo "$clientRoot/css/header.css"?>' type='text/css'>
 
 <script
   src="https://code.jquery.com/jquery-3.4.1.min.js"
@@ -23,14 +23,14 @@
   crossorigin="anonymous">
 </script>
 
-<script src='<?php echo "$CLIENT_ROOT/js/header.js" ?>' type="text/javascript"></script>
+<script src='<?php echo "$clientRoot/js/header.js" ?>' type="text/javascript"></script>
 
 <!-- Header start -->
 <nav id="site-header" class="navbar navbar-expand-lg navbar-dark bg-dark site-header">
 
   <!-- Logo -->
   <a class="navbar-brand" href="/">
-    <img id="site-header-logo" src="<?php echo "$CLIENT_ROOT/images/header/oregonflora-logo.png" ?>" alt="OregonFlora">
+    <img id="site-header-logo" src="<?php echo "$clientRoot/images/header/oregonflora-logo.png" ?>" alt="OregonFlora">
   </a>
 
   <!-- Holds dropdowns on mobile -->
