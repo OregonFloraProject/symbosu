@@ -114,7 +114,7 @@
     action="<?php echo $clientRoot . '/taxa/index.php'?>">
     <div class="input-group">
       <div class="dropdown">
-        <input id="search-term" name="taxon" type="text" class="form-control dropdown-toggle" data-toggle="dropdown">
+        <input id="search-term" name="taxon" type="text" class="form-control dropdown-toggle" data-toggle="dropdown" placeholder="Search all plants">
         <div id="autocomplete-results" class="dropdown-menu" aria-labelledby="search-term">
           <a class="dropdown-item" onclick="document.getElementById('search-term').value = this.innerHTML;" href="#"></a>
           <a class="dropdown-item" onclick="document.getElementById('search-term').value = this.innerHTML;" href="#"></a>
@@ -123,13 +123,11 @@
           <a class="dropdown-item" onclick="document.getElementById('search-term').value = this.innerHTML;" href="#"></a>
         </div>
       </div>
-      <div class="input-group-append m-0">
-        <button id="search-btn" class="btn dropdown-toggle drk-grn m-0" data-toggle="dropdown" type="button">Search</button>
-        <div class="dropdown-menu" aria-labelledby="search-btn">
-          <a id="search-type-cn" class="dropdown-item" href="#">Common Name Search</a>
-          <a id="search-type-tx" class="dropdown-item" href="#">Taxon Search</a>
-        </div>
-      </div>
+      <input
+        id="search-btn"
+        src="<?php echo $clientRoot; ?>/images/header/search-white.png"
+        class="mt-auto mb-auto"
+        type="image">
     </div>
   </form>
   <!-- Search end -->

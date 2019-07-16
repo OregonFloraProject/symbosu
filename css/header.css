@@ -84,6 +84,13 @@ body {
   margin-bottom: auto;
 }
 
-#quick-search button {
-  background: #004a00;
+#search-btn {
+  width: 2em;
+  height: 2em;
+
+  margin-left: 0.5em;
+  padding: 0.2em;
+
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
 }

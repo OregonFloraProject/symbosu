@@ -3,10 +3,12 @@ body {
 }
 
 #innertext {
-  width: 100%;
+  max-width: 100% !important;
   margin: 2em;
+  padding: 0;
+
   display: grid;
-  grid-template-columns: 25% auto;
+  grid-template-columns: 25% 75%;
   grid-template-rows: auto auto;
   grid-gap: 2em;
 }
@@ -14,6 +16,10 @@ body {
 #choose-native-dropdown {
   position: relative;
   padding: 2em;
+}
+
+#innertext, #choose-native-dropdown div > * {
+  color: white !important;
 }
 
 #choose-native-dropdown-button {
@@ -39,27 +45,88 @@ body {
   padding: 2em;
 }
 
-#search-sidebar, #canned-searches, #search-results {
+#innertext > div {
   background: #DFEFD3;
   border-radius: 1em;
   padding: 2em;
+  min-width: 0;
+  max-width: 100%;
 }
 
-#search-sidebar {
+#innertext #search-sidebar {
   grid-row: 1 / -1;
+  grid-column: 1;
 }
 
-#canned-searches {
-  grid-row: 1 / 1;
-  grid-column: 2 / -1;
+#innertext #search-sidebar, #search-sidebar * {
+  color: black !important;
 }
 
-#search-results {
+#innertext #search-sidebar input::placeholder {
+  color: #9FD07A;
+}
+
+#innertext #search-sidebar #plant-needs, #plant-size {
+  border-radius: 1em;
+  padding: 1em;
+}
+
+#innertext #search-sidebar #plant-needs {
+  background: white;
+}
+
+#innertext #search-sidebar #plant-needs select {
+  max-width: 50%;
+}
+
+#innertext #search-sidebar #search-plants-btn {
+  width: 2em;
+  height: 2em;
+  background: rgba(255, 255, 255, 0.5) !important;
+  padding: 0.3em;
+  margin-left: 0.5em;
+  border-radius: 50%;
+}
+
+#innertext #search-sidebar #plant-needs .input-group {
+  padding-top: 1em;
+  margin-top: 1em;
+  border-top: 1px dashed black;
+}
+
+#innertext #search-sidebar #plant-needs .input-group label {
+  font-weight: bold;
+}
+
+#innertext #search-sidebar #plant-size label, input[type="range"] {
+  width: 100%;
+  text-align: center;
+}
+
+#innertext #search-sidebar #plant-size input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+#innertext #search-sidebar #plant-size input[type=range]::-moz-range-thumb {
+  appearance: none;
+  background-color: #9FD07A;
+  border-color: white;
+  cursor: pointer;
+}
+
+#innertext #search-sidebar #plant-size nput[type=range]::-moz-range-track {
+  appearance: none;
+  background-color: black;
+}
+
+#innertext #canned-searches {
+  grid-row: 1;
+  grid-column: 2;
+}
+
+#innertext #search-results {
   display: grid;
-  grid-row: 2 / -1;
-  grid-column: 2 / -1;
-}
-
-#choose-native-dropdown div > * {
-  color: white !important;
+  grid-row: 2;
+  grid-column: 2;
 }
