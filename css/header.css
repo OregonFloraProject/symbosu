@@ -40,9 +40,23 @@ body {
   display: none;
 }
 
-#site-header-dropdowns .dropdown-toggle:hover {
-  background: #004a00;
+#site-header-dropdowns .dropdown-toggle:hover, .dropdown-toggle:focus {
+  background: #DFEFD3;
+  color: black !important;
   border-radius: 0.5em;
+}
+
+#site-header-dropdowns .show .dropdown-toggle, .dropdown-item {
+  color: black !important;
+}
+
+#site-header-dropdowns .dropdown-menu {
+  background: #5FB021 !important;
+  color: black !important;
+}
+
+#site-header-dropdowns .dropdown-menu .dropdown-item:hover, .dropdown-item:focus {
+  background: #DFEFD3 !important;
 }
 
 #site-header-logo {

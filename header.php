@@ -52,7 +52,7 @@
     <ul class="navbar-nav">
       <!-- Explore site -->
       <li class="nav-item dropdown">
-        <a id="explore" class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <a id="explore" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Explore Our Site
         </a>
         <div class="dropdown-menu" aria-labelledby="explore">
@@ -67,8 +67,8 @@
       </li>
 
       <!-- Resources -->
-      <li class="nav-item dropdown hover-dropdown">
-        <a class="nav-link dropdown-toggle wht-txt" href="#" id="resources">
+      <li class="nav-item dropdown">
+        <a id="resources" class="nav-link dropdown-toggle wht-txt" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Resources
         </a>
         <div class="dropdown-menu" aria-labelledby="resources">
@@ -79,8 +79,8 @@
       </li>
 
       <!-- About -->
-      <li class="nav-item dropdown hover-dropdown">
-        <a class="nav-link dropdown-toggle wht-txt" href="#" id="about">
+      <li class="nav-item dropdown">
+        <a id="about" class="nav-link dropdown-toggle wht-txt" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           About
         </a>
         <div class="dropdown-menu" aria-labelledby="about">
@@ -91,8 +91,8 @@
       </li>
 
       <!-- Contribute -->
-      <li class="nav-item dropdown hover-dropdown">
-        <a class="nav-link dropdown-toggle wht-txt" href="#" id="contribute">
+      <li class="nav-item dropdown">
+        <a id="contribute" class="nav-link dropdown-toggle wht-txt" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Contribute
         </a>
         <div class="dropdown-menu" aria-labelledby="contribute">

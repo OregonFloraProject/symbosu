@@ -8,14 +8,12 @@ $(document).ready(() => {
 function main() {
   const header = $("#" + headerId);
   const logo = $("#" + logoId);
-  let inCollapsePosition = false;
-  let isCollapsed = false;
 
   $(window).scroll(() => {
-    if ($(window).scrollTop() >= 80) {
+    if ($(window).scrollTop() >= 80 && !header.hasClass("site-header-scroll")) {
       header.addClass("site-header-scroll");
       collapseSiteLogo(logo);
-    } else {
+    } else if ($(window).scrollTop() < 80 && header.hasClass("site-header-scroll")) {
       header.removeClass("site-header-scroll");
       expandSiteLogo(logo);
     }
