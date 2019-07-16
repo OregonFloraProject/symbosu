@@ -56,11 +56,17 @@ function main() {
 function updateSliderDisplay(slider, display) {
   let [sliderValueLow, sliderValueHigh] = slider.val().trim("[]").split(",").map((str) => parseInt(str));
   let displayText;
-  if (sliderValueLow == 0 && sliderValueHigh == 50) {
+  if (sliderValueLow === 0 && sliderValueHigh === 50) {
     displayText = "(Any size)";
-  } else if (sliderValueHigh == 50) {
+  } else if (sliderValueLow === sliderValueHigh) {
+    displayText = "(";
+    if (sliderValueLow === 50) {
+      displayText += "At least ";
+    }
+    displayText += sliderValueLow + " ft)";
+  } else if (sliderValueHigh === 50) {
     displayText = "(At least " + sliderValueLow + " ft)";
-  } else if (sliderValueLow == 0) {
+  } else if (sliderValueLow === 0) {
     displayText = "(At most " + sliderValueHigh + " ft)";
   } else {
     displayText = "(" + sliderValueLow + " ft - " + sliderValueHigh + " ft)";
