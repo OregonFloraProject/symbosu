@@ -1,6 +1,10 @@
 const chooseNativeDropdownId = "choose-native-dropdown";
 const chooseNativeDropdownButtonId = "choose-native-dropdown-button";
 const searchResultsId = "search-results";
+const plantHeightSliderId = "plant-height";
+const plantWidthSliderId = "plant-width";
+const plantHeightDisplayId = "plant-height-display";
+const plantWidthDisplayId = "plant-width-display";
 
 $(document).ready(() => {
   main();
@@ -14,6 +18,21 @@ function main() {
   const chooseNativeDropdownButton = $("#" + chooseNativeDropdownButtonId);
   const chooseNativeDropdownCollapsing = $("#choose-native-dropdown .will-hide-on-collapse");
 
+  const plantWidthSlider = $("#" + plantWidthSliderId);
+  const plantHeightSlider = $("#" + plantHeightSliderId);
+  const plantWidthDisplay = $("#" + plantWidthDisplayId);
+  const plantHeightDisplay = $("#" + plantHeightDisplayId);
+
+  // Sliders
+  plantWidthSlider.on("input change", () => {
+    updateSliderDisplay(plantWidthSlider, plantWidthDisplay);
+  });
+
+  plantHeightSlider.on("input change", () => {
+    updateSliderDisplay(plantHeightSlider, plantHeightDisplay);
+  });
+
+  // Infographic dropdown
   chooseNativeDropdownButton.unbind("click").click(() => {
     const origImgUrl = chooseNativeDropdownButton.attr("src");
     let newImgUrl;
@@ -31,8 +50,25 @@ function main() {
 
     chooseNativeDropdownButton.attr("src", newImgUrl);
   });
+
+}
+
+function updateSliderDisplay(slider, display) {
+  let [sliderValueLow, sliderValueHigh] = slider.val().trim("[]").split(",").map((str) => parseInt(str));
+  let displayText;
+  if (sliderValueLow == 0 && sliderValueHigh == 50) {
+    displayText = "(Any size)";
+  } else if (sliderValueHigh == 50) {
+    displayText = "(At least " + sliderValueLow + " ft)";
+  } else if (sliderValueLow == 0) {
+    displayText = "(At most " + sliderValueHigh + " ft)";
+  } else {
+    displayText = "(" + sliderValueLow + " ft - " + sliderValueHigh + " ft)";
+  }
+
+  display.text(displayText);
 }
 
 function addSearchResult(resultJson) {
-  
+
 }

@@ -14,7 +14,17 @@ header("Content-Type: text/html; charset=".$CHARSET);
 		<?php
 			include("$SERVER_ROOT/header.php");
 		?>
-		<!-- Header includes jquery, so add page script after header -->
+		<!-- Header includes jquery, so add jquery scripts after header -->
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.6.2/css/bootstrap-slider.min.css"
+			integrity="sha256-G3IAYJYIQvZgPksNQDbjvxd/Ca1SfCDFwu2s2lt0oGo="
+			crossorigin="anonymous" />
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.6.2/bootstrap-slider.min.js"
+			integrity="sha256-oj52qvIP5c7N6lZZoh9z3OYacAIOjsROAcZBHUaJMyw="
+			crossorigin="anonymous">
+		</script>
 		<script type="text/javascript" src="<?php echo "$clientRoot/js/garden.js"; ?>"></script>
 
 		<div
@@ -91,14 +101,36 @@ header("Content-Type: text/html; charset=".$CHARSET);
 
 				<div id="plant-size" class="mt-2">
 					<h4>Mature Size</h4>
-					<div class="input-group">
+					<div class="input-group mb-3">
 						<label for="plant-height">Height (ft)</label>
-						<input type="range" min="0" max="50" step="10" id="plant-height" name="plant-height">
+						<input
+							type="text"
+							class="bootstrap-slider"
+							id="plant-height"
+							name="plant-height"
+							data-provide="slider"
+							data-slider-value="[0, 50]"
+							data-slider-ticks="[0, 10, 20, 30, 40, 50]"
+							data-slider-ticks-labels='["0", "10", "20", "30", "40", "50+"]'
+							data-slider-lock-to-ticks="true"
+							value="">
+						<label id="plant-height-display" for="plant-height">(Any size)</label>
 					</div>
 
 					<div class="input-group">
 						<label for="plant-width">Width (ft)</label>
-						<input type="range" min="0" max="50" step="10" id="plant-width" name="plant-width">
+						<input
+							type="text"
+							class="bootstrap-slider"
+							id="plant-width"
+							name="plant-width"
+							data-provide="slider"
+							data-slider-value="[0, 50]"
+							data-slider-ticks="[0, 10, 20, 30, 40, 50]"
+							data-slider-ticks-labels='["0", "10", "20", "30", "40", "50+"]'
+							data-slider-lock-to-ticks="true"
+							value="">
+						<label id="plant-width-display" for="plant-width">(Any size)</label>
 					</div>
 				</div>
 
