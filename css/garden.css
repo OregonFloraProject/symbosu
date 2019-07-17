@@ -97,9 +97,15 @@ body {
   background: white;
 }
 
+#innertext #search-sidebar #plant-size #plant-size-sliders {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-columns: 50% 50%;
+  grid-gap: 2em;
+}
+
 #innertext #search-sidebar #plant-size label {
   display: block;
-  width: 100%;
   text-align: center;
 }
 
