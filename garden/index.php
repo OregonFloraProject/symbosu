@@ -105,39 +105,42 @@ header("Content-Type: text/html; charset=".$CHARSET);
 					</div>
 				</div>
 
-				<div id="plant-size" class="mt-2">
+				<div id="plant-size" class="mt-4">
 					<h4>Mature Size</h4>
-					<div class="input-group mb-3">
-						<label for="plant-height">Height (ft)</label>
-						<input
-							type="text"
-							class="bootstrap-slider search-param"
-							id="plant-height"
-							name="plant-height"
-							data-provide="slider"
-							data-slider-value="[0, 50]"
-							data-slider-ticks="[0, 10, 20, 30, 40, 50]"
-							data-slider-ticks-labels='["0", "10", "20", "30", "40", "50+"]'
-							data-slider-lock-to-ticks="true"
-							value="">
-						<label id="plant-height-display" for="plant-height">(Any size)</label>
+					<div id="plant-size-sliders">
+						<div style="overflow: hidden;">
+							<label for="plant-height">Height (ft)</label>
+							<input
+								type="text"
+								class="bootstrap-slider search-param"
+								id="plant-height"
+								name="plant-height"
+								data-provide="slider"
+								data-slider-value="[0, 50]"
+								data-slider-ticks="[0, 10, 20, 30, 40, 50]"
+								data-slider-ticks-labels='["0", "", "", "", "", "50+"]'
+								value="">
+							<label id="plant-height-display" for="plant-height">(Any size)</label>
+						</div>
+						<div style="overflow: hidden;">
+							<label for="plant-width">Width (ft)</label>
+							<input
+								type="text"
+								class="bootstrap-slider search-param"
+								id="plant-width"
+								name="plant-width"
+								data-provide="slider"
+								data-slider-value="[0, 50]"
+								data-slider-ticks="[0, 10, 20, 30, 40, 50]"
+								data-slider-ticks-labels='["0", "", "", "", "", "50+"]'
+								value="">
+							<label id="plant-width-display" for="plant-width">(Any size)</label>
+						</div>
 					</div>
+				</div>
 
-					<div class="input-group">
-						<label for="plant-width">Width (ft)</label>
-						<input
-							type="text"
-							class="bootstrap-slider search-param"
-							id="plant-width"
-							name="plant-width"
-							data-provide="slider"
-							data-slider-value="[0, 50]"
-							data-slider-ticks="[0, 10, 20, 30, 40, 50]"
-							data-slider-ticks-labels='["0", "10", "20", "30", "40", "50+"]'
-							data-slider-lock-to-ticks="true"
-							value="">
-						<label id="plant-width-display" for="plant-width">(Any size)</label>
-					</div>
+				<div id="plant-features">
+
 				</div>
 
 			</div>

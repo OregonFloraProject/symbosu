@@ -1,5 +1,7 @@
 body {
   font-family: 'Source Sans Pro', sans-serif !important;
+  margin: 0;
+  padding: 0;
 }
 
 #choose-native-dropdown {
@@ -30,7 +32,7 @@ body {
   display: grid;
   grid-template-columns: 75% 25%;
   grid-auto-flow: column;
-  grid-gap: 2em;
+  grid-gap: 1em;
   padding: 2em;
 }
 
@@ -40,8 +42,7 @@ body {
 
 #innertext {
   max-width: 100% !important;
-  margin: 2em;
-  padding: 0;
+  padding: 2em;
 
   display: grid;
   grid-template-columns: 25% 75%;
@@ -70,14 +71,20 @@ body {
   color: #9FD07A;
 }
 
-#innertext #search-sidebar #plant-needs, #plant-size {
+#innertext #search-sidebar #plant-needs {
   border-radius: 1em;
   padding: 1em;
 }
 
+#innertext #search-sidebar #plant-size #plant-size-sliders {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-columns: 50% 50%;
+  grid-gap: 2em;
+}
+
 #innertext #search-sidebar #plant-size label {
   display: block;
-  width: 100%;
   text-align: center;
 }
 
