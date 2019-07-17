@@ -13,6 +13,8 @@ body {
   background-size: 100% 100%;
 
   box-shadow: 0 0.5em 1em rgba(100, 100, 100, 0.5);
+
+  will-change: transform;
 }
 
 .site-header {
