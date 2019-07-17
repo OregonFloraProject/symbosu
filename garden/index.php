@@ -35,7 +35,7 @@ header("Content-Type: text/html; charset=".$CHARSET);
 
 			<div id="choose-native-dropdown-text">
 				<div>
-					<h1 style="font-weight: bold;">Choose native plants for a smart, beautiful and truly Oregon garden</h1>
+					<h1 id="page-title" style="font-weight: bold;">Choose native plants for a smart, beautiful and truly Oregon garden</h1>
 					<h3 class="will-hide-on-collapse" style="width: 75%;">
 						Native plants thrive in Oregon’s unique landscapes and growing
 						conditions, making them both beautiful and wise gardening choices.

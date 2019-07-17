@@ -7,6 +7,10 @@ body {
   padding: 2em;
 }
 
+#page-title {
+  width: 50%;
+}
+
 #choose-native-dropdown-button {
   position: absolute;
   bottom: 0;

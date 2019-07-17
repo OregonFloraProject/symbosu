@@ -14,6 +14,9 @@ function gardenMain() {
   const fadeIn = { opacity: 100, transition: "opacity 0.5s" };
   const fadeOut = { opacity: 0, transition: "opacity 0.5s" };
 
+  const paddingTransitionSmall = { padding: "0.5em", transition: "padding 1s" };
+  const paddingTransitionBig = { padding: "2em", transition: "padding 1s" };
+
   const chooseNativeDropdown = $("#" + chooseNativeDropdownId);
   const chooseNativeDropdownButton = $("#" + chooseNativeDropdownButtonId);
   const chooseNativeDropdownCollapsing = $("#choose-native-dropdown .will-hide-on-collapse");
@@ -40,11 +43,13 @@ function gardenMain() {
     // Collapse
     if (origImgUrl.includes("collapse-arrow.png")) {
       newImgUrl = origImgUrl.replace("collapse-arrow.png", "expand-arrow.png");
+      chooseNativeDropdown.css(paddingTransitionSmall);
       chooseNativeDropdownCollapsing.css(fadeOut).slideUp("2s");
 
     // Expand
     } else {
       newImgUrl = origImgUrl.replace("expand-arrow.png", "collapse-arrow.png");
+      chooseNativeDropdown.css(paddingTransitionBig);
       chooseNativeDropdownCollapsing.slideDown(() => { chooseNativeDropdownCollapsing.css(fadeIn); });
     }
 
