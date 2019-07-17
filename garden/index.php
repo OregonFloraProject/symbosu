@@ -67,34 +67,40 @@ header("Content-Type: text/html; charset=".$CHARSET);
 				<h3>Search for plants</h3>
 				<p>Start applying characteristics, and the matching plants will appear at right.</p>
 
-				<form name="sidebar-search" class="form-inline">
-					<div class="input-group w-100">
-						<input type="text" placeholder="Search plants by name" class="form-control">
-						<input
-							id="search-plants-btn"
-							type="image"
-							src="<?php echo $clientRoot; ?>/images/garden/search-green.png"
-							class="mt-auto mb-auto"
-							alt="search plants">
-					</div>
-				</form>
+				<div class="input-group w-100 mb-4 p-2">
+					<input
+						name="plant-name"
+						type="text"
+						placeholder="Search plants by name"
+						class="form-control search-param">
+					<input
+						id="search-plants-btn"
+						type="image"
+						src="<?php echo $clientRoot; ?>/images/garden/search-green.png"
+						class="mt-auto mb-auto"
+						alt="search plants">
+				</div>
 
 				<div id="plant-needs">
 					<h4>Plant needs</h4>
 					<div id="filter-container"></div>
 					<div class="input-group">
 						<label for="sunlight">Sunlight</label>
-						<select id="sunlight" name="sunlight" class="form-control ml-auto">
+						<select id="sunlight" name="sunlight" class="form-control ml-auto search-param">
 							<option value="" selected disabled hidden>Select...</option>
-							<!-- TODO: Javascript to populate with a PHP api endpoint -->
+							<option value="sun">Sun</option>
+							<option value="part-shade">Part-Shade</option>
+							<option value="full-shade">Full-Shade</option>
 						</select>
 					</div>
 
 					<div class="input-group">
 						<label for="moisture">Moisture</label>
-						<select id="moisture" name="moisture" class="form-control ml-auto">
+						<select id="moisture" name="moisture" class="form-control ml-auto search-param">
 							<option value="" selected disabled hidden>Select...</option>
-							<!-- TODO: Javascript to populate with a PHP api endpoint -->
+							<option value="dry">Dry</option>
+							<option value="moist">Moist</option>
+							<option value="wet">Wet</option>
 						</select>
 					</div>
 				</div>
@@ -105,7 +111,7 @@ header("Content-Type: text/html; charset=".$CHARSET);
 						<label for="plant-height">Height (ft)</label>
 						<input
 							type="text"
-							class="bootstrap-slider"
+							class="bootstrap-slider search-param"
 							id="plant-height"
 							name="plant-height"
 							data-provide="slider"
@@ -121,7 +127,7 @@ header("Content-Type: text/html; charset=".$CHARSET);
 						<label for="plant-width">Width (ft)</label>
 						<input
 							type="text"
-							class="bootstrap-slider"
+							class="bootstrap-slider search-param"
 							id="plant-width"
 							name="plant-width"
 							data-provide="slider"

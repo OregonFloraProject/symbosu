@@ -5,11 +5,16 @@ const plantHeightSliderId = "plant-height";
 const plantWidthSliderId = "plant-width";
 const plantHeightDisplayId = "plant-height-display";
 const plantWidthDisplayId = "plant-width-display";
+const searchParamClassId = "search-param";
+const searchButtonId = "search-plants-btn";
 
 jQuery(() => {
   gardenMain();
 });
 
+/**
+ * Main method for the garden page
+ */
 function gardenMain() {
   const fadeIn = { opacity: 100, transition: "opacity 0.5s" };
   const fadeOut = { opacity: 0, transition: "opacity 0.5s" };
@@ -25,6 +30,12 @@ function gardenMain() {
   const plantHeightSlider = $("#" + plantHeightSliderId);
   const plantWidthDisplay = $("#" + plantWidthDisplayId);
   const plantHeightDisplay = $("#" + plantHeightDisplayId);
+
+  const searchPlantsBtn = $("#" + searchButtonId);
+  const allSearchParams = $("." + searchParamClassId);
+
+  // Search
+  $(searchPlantsBtn).click(() => { pullSearchResults(allSearchParams); });
 
   // Sliders
   plantWidthSlider.on("input change", () => {
@@ -58,6 +69,25 @@ function gardenMain() {
 
 }
 
+/**
+ * Pull search results based on form data from the api endpoint
+ * @return {Object} JSON object with the search results
+ */
+function pullSearchResults(allSearchParams) {
+  const searchParamObj = new Object();
+  console.log(allSearchParams);
+  allSearchParams.each((index) => {
+    searchParamObj[allSearchParams[index].name] = allSearchParams[index].value;
+  });
+
+  console.log(searchParamObj);
+}
+
+/**
+ * Updates text label based on slider positions
+ * @param  {$(bootstrap-slider)}  slider  The slider jQuery element
+ * @param  {$(label)}             display The label to update
+ */
 function updateSliderDisplay(slider, display) {
   let [sliderValueLow, sliderValueHigh] = slider.val().trim("[]").split(",").map((str) => parseInt(str));
   let displayText;
@@ -86,8 +116,4 @@ function updateSliderDisplay(slider, display) {
   }
 
   display.text(displayText);
-}
-
-function addSearchResult(resultJson) {
-
 }
