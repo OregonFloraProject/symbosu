@@ -106,8 +106,8 @@ header("Content-Type: text/html; charset=".$CHARSET);
 				</div>
 
 				<div id="plant-size" class="mt-4">
-					<h4>Mature Size</h4>
-					<div id="plant-size-sliders">
+					<h4 class="d-inline mr-2">Mature Size</h4><span>(Just grab the slider dots)</span><br>
+					<div class="mt-2" id="plant-size-sliders">
 						<div id="plant-height-container">
 							<label for="plant-height">Height (ft)</label>
 							<input
