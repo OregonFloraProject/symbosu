@@ -108,7 +108,7 @@ header("Content-Type: text/html; charset=".$CHARSET);
 				<div id="plant-size" class="mt-4">
 					<h4>Mature Size</h4>
 					<div id="plant-size-sliders">
-						<div style="overflow: hidden;">
+						<div id="plant-height-container">
 							<label for="plant-height">Height (ft)</label>
 							<input
 								type="text"
@@ -119,10 +119,11 @@ header("Content-Type: text/html; charset=".$CHARSET);
 								data-slider-value="[0, 50]"
 								data-slider-ticks="[0, 10, 20, 30, 40, 50]"
 								data-slider-ticks-labels='["0", "", "", "", "", "50+"]'
+								data-slider-ticks-snap-bounds="1"
 								value="">
 							<label id="plant-height-display" for="plant-height">(Any size)</label>
 						</div>
-						<div style="overflow: hidden;">
+						<div id="plant-width-container">
 							<label for="plant-width">Width (ft)</label>
 							<input
 								type="text"
@@ -133,6 +134,7 @@ header("Content-Type: text/html; charset=".$CHARSET);
 								data-slider-value="[0, 50]"
 								data-slider-ticks="[0, 10, 20, 30, 40, 50]"
 								data-slider-ticks-labels='["0", "", "", "", "", "50+"]'
+								data-slider-ticks-snap-bounds="1"
 								value="">
 							<label id="plant-width-display" for="plant-width">(Any size)</label>
 						</div>
