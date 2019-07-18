@@ -100,7 +100,7 @@ body {
 #innertext #search-sidebar #plant-size #plant-size-sliders {
   display: grid;
   grid-auto-flow: column;
-  grid-template-columns: 50% 50%;
+  grid-template-columns: 1fr 1fr;
   grid-gap: 2em;
 }
 
