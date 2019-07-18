@@ -7,6 +7,7 @@ const plantHeightDisplayId = "plant-height-display";
 const plantWidthDisplayId = "plant-width-display";
 const searchParamClassId = "search-param";
 const searchButtonId = "search-plants-btn";
+const searchHelpId = "search-help";
 
 jQuery(() => {
   gardenMain();
@@ -26,6 +27,8 @@ function gardenMain() {
   const chooseNativeDropdownButton = $("#" + chooseNativeDropdownButtonId);
   const chooseNativeDropdownCollapsing = $("#choose-native-dropdown .will-hide-on-collapse");
 
+  const searchHelp = $("#" + searchHelpId);
+
   const plantWidthSlider = $("#" + plantWidthSliderId);
   const plantHeightSlider = $("#" + plantHeightSliderId);
   const plantWidthDisplay = $("#" + plantWidthDisplayId);
@@ -36,6 +39,19 @@ function gardenMain() {
 
   // Search
   $(searchPlantsBtn).click(() => { pullSearchResults(allSearchParams); });
+  searchHelp.popover({
+    title: "Search for plants",
+    html: true,
+    content: `
+      <ul>
+        <li>As you make selections, the filtered results are immediately displayed in “Your search results”.</li>
+        <li>Any number of search options may be selected, but too many filters may yield no results because no plant meets all the criteria you selected. If so, try removing filters.</li>
+        <li>To remove a search filter, simply click its close (X) button</li>
+        <li>Clicking on any image in the results will open that plants’ garden profile page; the page can be downloaded and printed.</li>
+      </ul>
+    `,
+    trigger: "focus"
+  });
 
   // Sliders
   plantWidthSlider.on("input change", () => {

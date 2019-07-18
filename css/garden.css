@@ -78,6 +78,15 @@ body {
   color: black !important;
 }
 
+#innertext #search-sidebar #search-help {
+  display: inline;
+  float: right;
+  margin-left: auto;
+  border-radius: 50%;
+  background: #5FB021;
+  width: 1.25em;
+}
+
 #innertext #search-sidebar input::placeholder {
   color: #9FD07A;
 }

@@ -64,7 +64,14 @@ header("Content-Type: text/html; charset=".$CHARSET);
 		<div id="innertext">
 
 			<div id="search-sidebar">
-				<h3>Search for plants</h3>
+				<div class="mb-1">
+					<h3 class="font-weight-bold d-inline">Search for plants</h3>
+					<input
+						id="search-help"
+						type="image"
+						src="<?php echo $clientRoot; ?>/images/garden/help.png"
+						data-toggle="popover">
+				</div>
 				<p>Start applying characteristics, and the matching plants will appear at right.</p>
 
 				<div class="input-group w-100 mb-4 p-2">
