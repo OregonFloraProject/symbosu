@@ -8,6 +8,8 @@ const plantWidthDisplayId = "plant-width-display";
 const searchParamClassId = "search-param";
 const searchButtonId = "search-plants-btn";
 const searchHelpId = "search-help";
+const allDropDownArrowsClassId = "arrow";
+const availabilityDropdownId = "availability";
 
 jQuery(() => {
   gardenMain();
@@ -35,7 +37,11 @@ function gardenMain() {
   const plantHeightDisplay = $("#" + plantHeightDisplayId);
 
   const searchPlantsBtn = $("#" + searchButtonId);
+
   const allSearchParams = $("." + searchParamClassId);
+  const allDropDownArrows = $("." + allDropDownArrowsClassId);
+
+  const availabilityDropdown = $("#" + availabilityDropdownId);
 
   // Search
   $(searchPlantsBtn).click(() => { pullSearchResults(allSearchParams); });
@@ -62,27 +68,43 @@ function gardenMain() {
     updateSliderDisplay(plantHeightSlider, plantHeightDisplay);
   });
 
+  // Free up all arrow buttons for custom events
+  allDropDownArrows.unbind("click");
+
   // Infographic dropdown
-  chooseNativeDropdownButton.unbind("click").click(() => {
+  chooseNativeDropdownButton.click(() => {
     const origImgUrl = chooseNativeDropdownButton.attr("src");
-    let newImgUrl;
 
     // Collapse
     if (origImgUrl.includes("collapse-arrow.png")) {
-      newImgUrl = origImgUrl.replace("collapse-arrow.png", "expand-arrow.png");
       chooseNativeDropdown.css(paddingTransitionSmall);
       chooseNativeDropdownCollapsing.css(fadeOut).slideUp("2s");
 
     // Expand
     } else {
-      newImgUrl = origImgUrl.replace("expand-arrow.png", "collapse-arrow.png");
       chooseNativeDropdown.css(paddingTransitionBig);
       chooseNativeDropdownCollapsing.slideDown(() => { chooseNativeDropdownCollapsing.css(fadeIn); });
     }
-
-    chooseNativeDropdownButton.attr("src", newImgUrl);
   });
 
+  // Dropdown arrows
+  allDropDownArrows.click((e) => {
+    const origImgUrl = $(e.target).attr("src");
+    let newImgUrl;
+
+    if (origImgUrl.includes("collapse-arrow.png")) {
+      newImgUrl = origImgUrl.replace("collapse-arrow.png", "expand-arrow.png");
+    } else {
+      newImgUrl = origImgUrl.replace("expand-arrow.png", "collapse-arrow.png");
+    }
+
+    $(e.target).attr("src", newImgUrl);
+  });
+
+  // Disable the "Availability" dropdown in the sidebar
+  availabilityDropdown.find("*")
+    .off("click.*")
+    .prop("disabled", true);
 }
 
 /**

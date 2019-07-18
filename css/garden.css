@@ -91,9 +91,27 @@ body {
   color: #9FD07A;
 }
 
-#innertext #search-sidebar #plant-needs {
+#innertext #search-sidebar #plant-needs, .sidebar-dropdown {
   border-radius: 1em;
+  background: white;
+}
+
+#innertext #search-sidebar #plant-needs {
   padding: 1.5em;
+}
+
+#innertext #search-sidebar #plant-needs select {
+  max-width: 50%;
+}
+
+#innertext #search-sidebar #plant-needs .input-group {
+  padding-top: 1em;
+  margin-top: 1em;
+  border-top: 1px dashed black;
+}
+
+#innertext #search-sidebar #plant-needs .input-group label {
+  font-weight: bold;
 }
 
 #innertext #search-sidebar #plant-size #plant-size-sliders {
@@ -110,7 +128,6 @@ body {
 #innertext #search-sidebar #plant-size #plant-size-sliders #plant-height-container {
   border-right: 1px dashed grey;
 }
-
 
 #innertext #search-sidebar #plant-size label {
   display: block;
@@ -138,14 +155,6 @@ body {
   border: 0.2em solid white;
 }
 
-#innertext #search-sidebar #plant-needs {
-  background: white;
-}
-
-#innertext #search-sidebar #plant-needs select {
-  max-width: 50%;
-}
-
 #innertext #search-sidebar #search-plants-btn {
   width: 2em;
   height: 2em;
@@ -155,12 +164,20 @@ body {
   border-radius: 50%;
 }
 
-#innertext #search-sidebar #plant-needs .input-group {
-  padding-top: 1em;
+#innertext #search-sidebar .sidebar-dropdown {
+  padding: 1em;
   margin-top: 1em;
-  border-top: 1px dashed black;
 }
 
-#innertext #search-sidebar #plant-needs .input-group label {
-  font-weight: bold;
+#innertext #search-sidebar .arrow {
+  display: inline-block;
+  float: right;
+
+  height: 2em;
+  background: black;
+  border-radius: 50%;
+}
+
+#innertext #search-sidebar #availability {
+  opacity: 0.3;
 }
