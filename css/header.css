@@ -8,12 +8,8 @@ body {
   position: -webkit-sticky; /* Safari */
   top: 0;
   z-index: 10000;
-
-  background-image: url(/images/header/OF-Header_May8.png);
   background-size: 100% 100%;
-
   box-shadow: 0 0.5em 1em rgba(100, 100, 100, 0.5);
-
   will-change: transform;
 }
 

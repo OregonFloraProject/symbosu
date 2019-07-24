@@ -26,7 +26,8 @@
 <script src='<?php echo "$clientRoot/js/header.js" ?>' type="text/javascript"></script>
 
 <!-- Header start -->
-<nav id="site-header" class="navbar navbar-expand-lg navbar-dark bg-dark site-header">
+
+<nav id="site-header" style="background-image: url(<?php echo $clientRoot ?>/images/header/OF-Header_May8.png);" class="navbar navbar-expand-lg navbar-dark bg-dark site-header">
 
   <!-- Logo -->
   <a class="navbar-brand" href="/">

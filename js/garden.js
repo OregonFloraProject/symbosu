@@ -15,6 +15,20 @@ jQuery(() => {
   gardenMain();
 });
 
+class SearchResult {
+  constructor(plantName, plantImage, plantLink) {
+    this._plantName = plantName;
+    this._plantImage = plantImage;
+    this._plantLink = plantLink;
+  }
+
+  getHTML() {
+    return `
+
+`;
+  }
+}
+
 /**
  * Main method for the garden page
  */
