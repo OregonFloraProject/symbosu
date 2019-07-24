@@ -30,7 +30,7 @@
 <nav id="site-header" style="background-image: url(<?php echo $clientRoot ?>/images/header/OF-Header_May8.png);" class="navbar navbar-expand-lg navbar-dark bg-dark site-header">
 
   <!-- Logo -->
-  <a class="navbar-brand" href="/">
+  <a class="navbar-brand" href="<?php echo $clientRoot ?>">
     <img id="site-header-logo" src="<?php echo "$clientRoot/images/header/oregonflora-logo.png" ?>" alt="OregonFlora">
   </a>
 
