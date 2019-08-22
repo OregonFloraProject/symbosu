@@ -204,11 +204,10 @@ header("Content-Type: text/html; charset=".$CHARSET);
 
 			</div>
 
-			<div id="search-results">
-
-			</div>
+			<div id="search-results" class="container"></div>
 
 		</div>
+    <!-- end inner-text -->
 
 		<?php
 			include("$SERVER_ROOT/footer.php");

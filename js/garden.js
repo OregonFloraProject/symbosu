@@ -10,6 +10,7 @@ const searchButtonId = "search-plants-btn";
 const searchHelpId = "search-help";
 const allDropDownArrowsClassId = "arrow";
 const availabilityDropdownId = "availability";
+const allSearchResultOverlayId = "search-result-overlay";
 
 jQuery(() => {
   gardenMain();
@@ -24,7 +25,14 @@ class SearchResult {
 
   getHTML() {
     return `
-
+      <div class="card search-result p-0">
+        <div class="card-body w-100 h-100 p-0">
+          <a href="${this._plantLink}">
+            <img class="w-100 h-100" src="${this._plantImage}">
+            <div class="search-result-overlay"><p>${this._plantName}</p></div>
+          </a>
+        </div>
+      </div>
 `;
   }
 }
@@ -58,7 +66,15 @@ function gardenMain() {
   const availabilityDropdown = $("#" + availabilityDropdownId);
 
   // Search
-  $(searchPlantsBtn).click(() => { pullSearchResults(allSearchParams); });
+  $(searchPlantsBtn).click(() => {
+    pullSearchResults()
+      .then((res) => {
+        populateSearchResults(res);
+      })
+      .catch((err) => {
+        console.error("Search returned '" + err + "'");
+      });
+  });
   searchHelp.popover({
     title: "Search for plants",
     html: true,
@@ -123,16 +139,39 @@ function gardenMain() {
 
 /**
  * Pull search results based on form data from the api endpoint
- * @return {Object} JSON object with the search results
+ * @return {Promise<Object>} Promise to return the results as a JSON object
  */
-function pullSearchResults(allSearchParams) {
-  const searchParamObj = new Object();
-  console.log(allSearchParams);
-  allSearchParams.each((index) => {
-    searchParamObj[allSearchParams[index].name] = allSearchParams[index].value;
-  });
+function pullSearchResults() {
+  return new Promise(((resolve, reject) => {
+    const req = new XMLHttpRequest();
+    req.onload = () => {
+      if (req.status === 200) {
+        try {
+          resolve(JSON.parse(req.responseText));
+        } catch (e) {
+          console.error("Error parsing JSON response: " + e);
+        }
+      } else {
+        reject(req.status + ": " + req.statusText);
+      }
+    };
 
-  console.log(searchParamObj);
+    // TODO: ClientRoot
+    req.open("GET", "/garden/rpc/api.php", true);
+    req.send();
+  }));
+}
+
+/**
+ * Populate the search results based upon the given JSON object
+ */
+function populateSearchResults(resultJsonArray) {
+  const searchResults = $('#' + searchResultsId);
+  searchResults.empty();
+  for (let i = 0; i < resultJsonArray.length; i++) {
+    let resultCard = new SearchResult(resultJsonArray[i].vernacularname, resultJsonArray[i].image, '#');
+    searchResults.append(resultCard.getHTML());
+  }
 }
 
 /**

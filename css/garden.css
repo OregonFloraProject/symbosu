@@ -70,9 +70,63 @@ body {
 }
 
 #innertext #search-results {
-  display: grid;
   grid-row-start: 2;
   grid-column-start: 2;
+
+  display: grid;
+  grid-gap: 0.2em;
+  grid-template-columns: repeat(auto-fit, 180px);
+  grid-template-rows: repeat(auto-fit, 120px);
+
+  justify-content: center;
+}
+
+#innertext #search-results .search-result {
+  width: 100%;
+  height: 100%;
+  transition: box-shadow 0.25s;
+}
+
+#innertext #search-results .search-result .card-body {
+  position: relative;
+}
+
+#innertext #search-results .search-result .search-result-overlay {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+  height: 100%;
+
+  text-align: center;
+  text-transform: capitalize;
+
+  color: white;
+  background: grey;
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+
+#innertext #search-results .search-result .search-result-overlay:hover {
+  opacity: 0.9;
+  transition: opacity 0.25s;
+}
+
+#innertext #search-results .search-result .search-result-overlay p {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#innertext #search-results .search-result img {
+  object-fit: cover;
+}
+
+#innertext #search-results .search-result:hover {
+  box-shadow: 0 5px 5px grey;
+  transition: box-shadow 0.25s;
 }
 
 #innertext #search-sidebar, #search-sidebar * {
