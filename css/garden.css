@@ -74,7 +74,7 @@ body {
   grid-column-start: 2;
 
   display: grid;
-  grid-gap: 0.2em;
+  grid-gap: 0.6em;
   grid-template-columns: repeat(auto-fit, 180px);
   grid-template-rows: repeat(auto-fit, 120px);
 
@@ -84,7 +84,7 @@ body {
 #innertext #search-results .search-result {
   width: 100%;
   height: 100%;
-  transition: box-shadow 0.25s;
+  box-shadow: 2px 3px 7px rgba(100, 100, 100, 1);
 }
 
 #innertext #search-results .search-result .card-body {
@@ -122,11 +122,6 @@ body {
 
 #innertext #search-results .search-result img {
   object-fit: cover;
-}
-
-#innertext #search-results .search-result:hover {
-  box-shadow: 0 5px 5px grey;
-  transition: box-shadow 0.25s;
 }
 
 #innertext #search-sidebar, #search-sidebar * {
