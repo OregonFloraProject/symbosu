@@ -107,13 +107,18 @@ function gardenMain() {
 
     // Collapse
     if (origImgUrl.includes("collapse-arrow.png")) {
+      $("#page-title").addClass("collapsed");
       chooseNativeDropdown.css(paddingTransitionSmall);
-      chooseNativeDropdownCollapsing.css(fadeOut).slideUp("2s");
+      chooseNativeDropdownCollapsing.css(fadeOut).slideUp("2s", () => {
+      });
 
     // Expand
     } else {
       chooseNativeDropdown.css(paddingTransitionBig);
-      chooseNativeDropdownCollapsing.slideDown(() => { chooseNativeDropdownCollapsing.css(fadeIn); });
+      chooseNativeDropdownCollapsing.slideDown(() => {
+        chooseNativeDropdownCollapsing.css(fadeIn);
+        $("#page-title").removeClass("collapsed");
+      });
     }
   });
 
