@@ -17,21 +17,23 @@ jQuery(() => {
 });
 
 class SearchResult {
-  constructor(plantTid, plantName, plantImage) {
-    this._plantName = plantName;
+  constructor(plantTid, plantNameCommon, plantNameSci, plantImage) {
+    this._plantNameCommon = plantNameCommon;
+    this._plantNameSci = plantNameSci;
     this._plantImage = plantImage;
     this._plantLink = `../taxa/garden.php?taxon=${plantTid}`;
   }
 
   getHTML() {
     return `
-      <div class="card search-result p-0">
-        <div class="card-body w-100 h-100 p-0">
-          <a href="${this._plantLink}">
-            <img class="w-100 h-100" src="${this._plantImage}">
-            <div class="search-result-overlay"><p>${this._plantName}</p></div>
-          </a>
-        </div>
+      <div class="card">
+        <a href="${this._plantLink}">
+          <img class="card-img-top search-result-img" src="${this._plantImage}" alt="${this._plantNameCommon}">
+          <div class="card-body">
+            <h5 class="card-title">${this._plantNameCommon !== null ? this._plantNameCommon : this._plantNameSci}</h5>
+            <p class="card-text">${this._plantNameSci}</p>
+          </div>
+        </a>
       </div>
 `;
   }
@@ -71,7 +73,6 @@ function gardenMain() {
     allSearchParams.each((idx, val) => {
       searchParamObj[$(val).attr("name")] = $(val).val();
     });
-    console.log(searchParamObj);
     pullSearchResults(searchParamObj)
       .then((res) => {
         populateSearchResults(res);
@@ -148,6 +149,29 @@ function gardenMain() {
 }
 
 /**
+ * Sets a cookie named name with value value that expires in exprDays days
+ */
+function setCookie(name, value, exprDays) {
+  const expDate = new Date();
+  expDate.setTime(expDate.getTime() + (exprDays * 24 * 60 * 60 * 1000));
+  document.cookie = `${name}=${value}; expires=${expDate.toUTCString()}; path=/`;
+}
+
+/**
+ * Returns the cookie with name name as a Javascript object
+ */
+function getCookie(name) {
+  let cookies = decodeURIComponent(document.cookie).split(";");
+  for (let i = 0; i < cookies.length; i++) {
+    let [key, val] = cookies[i].split("=");
+    if (key === name) {
+      return val;
+    }
+  }
+  return null;
+}
+
+/**
  * Pull search results based on form data from the api endpoint
  * @return {Promise<Object>} Promise to return the results as a JSON object
  */
@@ -157,7 +181,8 @@ function pullSearchResults(paramObj) {
     req.onload = () => {
       if (req.status === 200) {
         try {
-          resolve(JSON.parse(req.responseText));
+          const results = JSON.parse(req.responseText);
+          resolve(results);
         } catch (e) {
           console.error("Error parsing JSON response: " + e);
         }
@@ -172,7 +197,6 @@ function pullSearchResults(paramObj) {
     if (paramObj.search !== null) {
       url += `search=${paramObj.search}`;
     }
-    console.log(url);
 
     req.open("GET", url, true);
     req.send();
@@ -189,6 +213,7 @@ function populateSearchResults(resultJsonArray) {
     let resultCard = new SearchResult(
       resultJsonArray[i].tid,
       resultJsonArray[i].vernacularname,
+      resultJsonArray[i].sciname,
       resultJsonArray[i].image,
     );
     searchResults.append(resultCard.getHTML());
