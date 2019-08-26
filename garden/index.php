@@ -77,7 +77,8 @@ header("Content-Type: text/html; charset=".$CHARSET);
 
 				<div class="input-group w-100 mb-4 p-2">
 					<input
-						name="plant-name"
+						id="plant-search"
+            name="search"
 						type="text"
 						placeholder="Search plants by name"
 						class="form-control search-param">
@@ -117,12 +118,12 @@ header("Content-Type: text/html; charset=".$CHARSET);
 					<h4 class="d-inline mr-2">Mature Size</h4><span>(Just grab the slider dots)</span><br>
 					<div class="mt-2" id="plant-size-sliders">
 						<div id="plant-height-container">
-							<label for="plant-height">Height (ft)</label>
+							<label for="height">Height (ft)</label>
 							<input
 								type="text"
 								class="bootstrap-slider search-param"
 								id="plant-height"
-								name="plant-height"
+								name="height"
 								data-provide="slider"
 								data-slider-value="[0, 50]"
 								data-slider-ticks="[0, 10, 20, 30, 40, 50]"
@@ -132,12 +133,12 @@ header("Content-Type: text/html; charset=".$CHARSET);
 							<label id="plant-height-display" for="plant-height">(Any size)</label>
 						</div>
 						<div id="plant-width-container">
-							<label for="plant-width">Width (ft)</label>
+							<label for="width">Width (ft)</label>
 							<input
 								type="text"
 								class="bootstrap-slider search-param"
 								id="plant-width"
-								name="plant-width"
+								name="width"
 								data-provide="slider"
 								data-slider-value="[0, 50]"
 								data-slider-ticks="[0, 10, 20, 30, 40, 50]"

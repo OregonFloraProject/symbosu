@@ -35,9 +35,9 @@
       $result = $res[0]["thumbnailurl"];
 
       if (substr($result, 0, 4) !== "http") {
-        if ($GLOBALS["IMAGE_DOMAIN"] !== "") {
+        if (key_exists("IMAGE_DOMAIN", $GLOBALS) && $GLOBALS["IMAGE_DOMAIN"] !== "") {
           $result = $GLOBALS["IMAGE_DOMAIN"] . $result;
-        } else {
+        } else if (key_exists("IMAGE_ROOT_URL", $GLOBALS)) {
           $result = $GLOBALS["IMAGE_ROOT_URL"] . $result;
         }
       }
@@ -51,12 +51,27 @@
   /**
    * Returns all unique taxa with thumbnail urls
    */
-  function get_taxa() {
+  function get_taxa($params) {
+    # If all args are null, quit here
+    if ($params["search"] === null &&
+        $params["sunlight"] === null &&
+        $params["moisture"] === null &&
+        $params["width"] === null &&
+        $params["height"] === null) {
+      return [];
+    }
+
     # Select all species & below (t.rankid >= 200) that have some sort of name
     $sql = "SELECT t.tid, t.sciname, v.vernacularname FROM taxa as t ";
     $sql .= "LEFT JOIN taxavernaculars AS v ON t.tid = v.tid ";
     $sql .= "WHERE t.rankid >= 220 AND (t.sciname IS NOT NULL OR v.vernacularname IS NOT NULL) ";
-    $sql .= "GROUP BY t.tid ORDER BY t.sciname LIMIT 10;";
+
+    if ($params["search"] !== null) {
+      $search = $params["search"];
+      $sql .= "AND (t.sciname LIKE '%$search%' OR v.vernacularname LIKE '%$search%') ";
+    }
+
+    $sql .= "GROUP BY t.tid ORDER BY t.sciname;";
 
     $resultsTmp = run_query($sql);
     $results = [];
@@ -74,6 +89,6 @@
 
   // Begin View
   header("Content-Type: application/json; charset=utf-8");
-  echo json_encode(get_taxa(), JSON_NUMERIC_CHECK);
+  echo json_encode(get_taxa($_GET), JSON_NUMERIC_CHECK);
 ?>
 

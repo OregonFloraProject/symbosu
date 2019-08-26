@@ -1,6 +1,7 @@
 const chooseNativeDropdownId = "choose-native-dropdown";
 const chooseNativeDropdownButtonId = "choose-native-dropdown-button";
 const searchResultsId = "search-results";
+const plantSearchId = "plant-search";
 const plantHeightSliderId = "plant-height";
 const plantWidthSliderId = "plant-width";
 const plantHeightDisplayId = "plant-height-display";
@@ -10,17 +11,16 @@ const searchButtonId = "search-plants-btn";
 const searchHelpId = "search-help";
 const allDropDownArrowsClassId = "arrow";
 const availabilityDropdownId = "availability";
-const allSearchResultOverlayId = "search-result-overlay";
 
 jQuery(() => {
   gardenMain();
 });
 
 class SearchResult {
-  constructor(plantName, plantImage, plantLink) {
+  constructor(plantTid, plantName, plantImage) {
     this._plantName = plantName;
     this._plantImage = plantImage;
-    this._plantLink = plantLink;
+    this._plantLink = `../taxa/garden.php?taxon=${plantTid}`;
   }
 
   getHTML() {
@@ -67,7 +67,12 @@ function gardenMain() {
 
   // Search
   $(searchPlantsBtn).click(() => {
-    pullSearchResults()
+    const searchParamObj = {};
+    allSearchParams.each((idx, val) => {
+      searchParamObj[$(val).attr("name")] = $(val).val();
+    });
+    console.log(searchParamObj);
+    pullSearchResults(searchParamObj)
       .then((res) => {
         populateSearchResults(res);
       })
@@ -146,7 +151,7 @@ function gardenMain() {
  * Pull search results based on form data from the api endpoint
  * @return {Promise<Object>} Promise to return the results as a JSON object
  */
-function pullSearchResults() {
+function pullSearchResults(paramObj) {
   return new Promise(((resolve, reject) => {
     const req = new XMLHttpRequest();
     req.onload = () => {
@@ -162,7 +167,14 @@ function pullSearchResults() {
     };
 
     // TODO: ClientRoot
-    req.open("GET", "/garden/rpc/api.php", true);
+    let url = "./rpc/api.php?";
+
+    if (paramObj.search !== null) {
+      url += `search=${paramObj.search}`;
+    }
+    console.log(url);
+
+    req.open("GET", url, true);
     req.send();
   }));
 }
@@ -174,7 +186,11 @@ function populateSearchResults(resultJsonArray) {
   const searchResults = $('#' + searchResultsId);
   searchResults.empty();
   for (let i = 0; i < resultJsonArray.length; i++) {
-    let resultCard = new SearchResult(resultJsonArray[i].vernacularname, resultJsonArray[i].image, '#');
+    let resultCard = new SearchResult(
+      resultJsonArray[i].tid,
+      resultJsonArray[i].vernacularname,
+      resultJsonArray[i].image,
+    );
     searchResults.append(resultCard.getHTML());
   }
 }

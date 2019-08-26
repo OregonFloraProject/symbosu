@@ -107,7 +107,7 @@ body {
   text-transform: capitalize;
 
   color: white;
-  background: grey;
+  background: #288000;
   opacity: 0;
   transition: opacity 0.25s;
 }
