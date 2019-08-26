@@ -52,6 +52,12 @@
    * Returns all unique taxa with thumbnail urls
    */
   function get_taxa($params) {
+    if (!key_exists("search", $params)) { $params["search"] = null; }
+    if (!key_exists("sunlight", $params)) { $params["sunlight"] = null; }
+    if (!key_exists("moisture", $params)) { $params["moisture"] = null; }
+    if (!key_exists("width", $params)) { $params["width"] = null; }
+    if (!key_exists("height", $params)) { $params["height"] = null; }
+
     # If all args are null, quit here
     if ($params["search"] === null &&
         $params["sunlight"] === null &&
