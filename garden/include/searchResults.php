@@ -95,6 +95,8 @@
 
   // Begin View
   header("Content-Type: application/json; charset=utf-8");
-  echo json_encode(get_taxa($_GET), JSON_NUMERIC_CHECK);
+  echo '<script type="application/javascript">const searchResults = ' .
+    json_encode(get_taxa($_GET), JSON_NUMERIC_CHECK) ,
+  '</script>';
 ?>
 

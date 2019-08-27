@@ -26,7 +26,9 @@ header("Content-Type: text/html; charset=".$CHARSET);
 			integrity="sha256-oj52qvIP5c7N6lZZoh9z3OYacAIOjsROAcZBHUaJMyw="
 			crossorigin="anonymous">
 		</script>
-		<script type="text/javascript" src="<?php echo "$clientRoot/js/garden.js"; ?>"></script>
+
+    <?php include_once("./include/searchResults.php") ?>
+    <script type="text/javascript" src="<?php echo "$clientRoot/js/garden.js"; ?>"></script>
 
 		<div
 			id="choose-native-dropdown"

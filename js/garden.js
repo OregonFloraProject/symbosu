@@ -67,20 +67,10 @@ function gardenMain() {
 
   const availabilityDropdown = $("#" + availabilityDropdownId);
 
-  // Search
-  $(searchPlantsBtn).click(() => {
-    const searchParamObj = {};
-    allSearchParams.each((idx, val) => {
-      searchParamObj[$(val).attr("name")] = $(val).val();
-    });
-    pullSearchResults(searchParamObj)
-      .then((res) => {
-        populateSearchResults(res);
-      })
-      .catch((err) => {
-        console.error("Search returned '" + err + "'");
-      });
-  });
+  // Populate search
+  populateSearchResults();
+
+  // Search help
   searchHelp.popover({
     title: "Search for plants",
     html: true,
@@ -93,6 +83,20 @@ function gardenMain() {
       </ul>
     `,
     trigger: "focus"
+  });
+
+  // Search button click
+  $(searchPlantsBtn).click(() => {
+    const searchParamArr = [];
+    allSearchParams.each((idx, val) => {
+      let paramName = $(val).attr("name");
+      let paramVal = $(val).val();
+      if (paramVal !== null) {
+        searchParamArr.push(paramName + "=" + paramVal);
+      }
+    });
+
+    window.location = window.location.pathname + "?" + searchParamArr.join("&");
   });
 
   // Sliders
@@ -172,55 +176,6 @@ function getCookie(name) {
 }
 
 /**
- * Pull search results based on form data from the api endpoint
- * @return {Promise<Object>} Promise to return the results as a JSON object
- */
-function pullSearchResults(paramObj) {
-  return new Promise(((resolve, reject) => {
-    const req = new XMLHttpRequest();
-    req.onload = () => {
-      if (req.status === 200) {
-        try {
-          const results = JSON.parse(req.responseText);
-          resolve(results);
-        } catch (e) {
-          console.error("Error parsing JSON response: " + e);
-        }
-      } else {
-        reject(req.status + ": " + req.statusText);
-      }
-    };
-
-    // TODO: ClientRoot
-    let url = "./rpc/api.php?";
-
-    if (paramObj.search !== null) {
-      url += `search=${paramObj.search}`;
-    }
-
-    req.open("GET", url, true);
-    req.send();
-  }));
-}
-
-/**
- * Populate the search results based upon the given JSON object
- */
-function populateSearchResults(resultJsonArray) {
-  const searchResults = $('#' + searchResultsId);
-  searchResults.empty();
-  for (let i = 0; i < resultJsonArray.length; i++) {
-    let resultCard = new SearchResult(
-      resultJsonArray[i].tid,
-      resultJsonArray[i].vernacularname,
-      resultJsonArray[i].sciname,
-      resultJsonArray[i].image,
-    );
-    searchResults.append(resultCard.getHTML());
-  }
-}
-
-/**
  * Updates text label based on slider positions
  * @param  {$(bootstrap-slider)}  slider  The slider jQuery element
  * @param  {$(label)}             display The label to update
@@ -253,4 +208,21 @@ function updateSliderDisplay(slider, display) {
   }
 
   display.text(displayText);
+}
+
+/**
+ * Populate the search results based upon the given JSON object
+ */
+function populateSearchResults() {
+  const searchResultsContainer = $('#' + searchResultsId);
+  searchResultsContainer.empty();
+  for (let i = 0; i < searchResults.length; i++) {
+    let resultCard = new SearchResult(
+      searchResults[i].tid,
+      searchResults[i].vernacularname,
+      searchResults[i].sciname,
+      searchResults[i].image,
+    );
+    searchResultsContainer.append(resultCard.getHTML());
+  }
 }
