@@ -48,22 +48,38 @@
     return "";
   }
 
+  function get_size_for_tid($tid) {
+    $HEIGHT_KEY = 140;
+    $WIDTH_KEY = 738;
+
+    $height_sql = "SELECT cs as height FROM kmdescr WHERE tid = $tid AND cid = $HEIGHT_KEY ORDER BY seq LIMIT 1;";
+    $width_sql = "SELECT cs as width FROM kmdescr WHERE tid = $tid AND cid = $WIDTH_KEY ORDER BY seq LIMIT 1;";
+
+    $height_res = run_query($height_sql);
+    $width_res = run_query($width_sql);
+
+    $width = -1;
+    $height = -1;
+
+    if (count($height_res) > 0 && key_exists("height", $height_res[0])) {
+      $height = $height_res[0]["height"];
+    }
+
+    if (count($width_res) > 0 && key_exists("width", $width_res[0])) {
+      $width = $width_res[0]["width"];
+    }
+
+    return array([$width, $height]);
+  }
+
   /**
    * Returns all unique taxa with thumbnail urls
    */
   function get_taxa($params) {
-    if (!key_exists("search", $params)) { $params["search"] = null; }
-    if (!key_exists("sunlight", $params)) { $params["sunlight"] = null; }
-    if (!key_exists("moisture", $params)) { $params["moisture"] = null; }
-    if (!key_exists("width", $params)) { $params["width"] = null; }
-    if (!key_exists("height", $params)) { $params["height"] = null; }
+    if (!key_exists("search", $params) || $params["search"] === "") { $params["search"] = null; }
 
     # If all args are null, quit here
-    if ($params["search"] === null &&
-        $params["sunlight"] === null &&
-        $params["moisture"] === null &&
-        $params["width"] === null &&
-        $params["height"] === null) {
+    if ($params["search"] === null) {
       return [];
     }
 
@@ -72,10 +88,8 @@
     $sql .= "LEFT JOIN taxavernaculars AS v ON t.tid = v.tid ";
     $sql .= "WHERE t.rankid >= 220 AND (t.sciname IS NOT NULL OR v.vernacularname IS NOT NULL) ";
 
-    if ($params["search"] !== null) {
-      $search = $params["search"];
-      $sql .= "AND (t.sciname LIKE '%$search%' OR v.vernacularname LIKE '%$search%') ";
-    }
+    $search = $params["search"];
+    $sql .= "AND (t.sciname LIKE '%$search%' OR v.vernacularname LIKE '%$search%') ";
 
     $sql .= "GROUP BY t.tid ORDER BY t.sciname;";
 
@@ -85,6 +99,7 @@
     // Populate image urls
     foreach ($resultsTmp as $result) {
       $result["image"] = get_image_for_tid($result["tid"]);
+      $result["size"] = get_size_for_tid($result["tid"]);
       if ($result["image"] !== "") {
         array_push($results, $result);
       }

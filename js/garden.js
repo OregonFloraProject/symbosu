@@ -6,7 +6,6 @@ const plantHeightSliderId = "plant-height";
 const plantWidthSliderId = "plant-width";
 const plantHeightDisplayId = "plant-height-display";
 const plantWidthDisplayId = "plant-width-display";
-const searchParamClassId = "search-param";
 const searchButtonId = "search-plants-btn";
 const searchHelpId = "search-help";
 const allDropDownArrowsClassId = "arrow";
@@ -55,6 +54,7 @@ function gardenMain() {
 
   const searchHelp = $("#" + searchHelpId);
 
+  const plantSearchField = $("#" + plantSearchId);
   const plantWidthSlider = $("#" + plantWidthSliderId);
   const plantHeightSlider = $("#" + plantHeightSliderId);
   const plantWidthDisplay = $("#" + plantWidthDisplayId);
@@ -62,7 +62,6 @@ function gardenMain() {
 
   const searchPlantsBtn = $("#" + searchButtonId);
 
-  const allSearchParams = $("." + searchParamClassId);
   const allDropDownArrows = $("." + allDropDownArrowsClassId);
 
   const availabilityDropdown = $("#" + availabilityDropdownId);
@@ -87,16 +86,12 @@ function gardenMain() {
 
   // Search button click
   $(searchPlantsBtn).click(() => {
-    const searchParamArr = [];
-    allSearchParams.each((idx, val) => {
-      let paramName = $(val).attr("name");
-      let paramVal = $(val).val();
-      if (paramVal !== null) {
-        searchParamArr.push(paramName + "=" + paramVal);
-      }
-    });
-
-    window.location = window.location.pathname + "?" + searchParamArr.join("&");
+   if (plantSearchField.val() != null && plantSearchField.val() !== '') {
+     window.location = window.location.pathname + "?" + plantSearchField.attr("name") + "=" + plantSearchField.val();
+   } else {
+     // TODO: Bootstrap error
+     alert("Enter a plant name");
+   }
   });
 
   // Sliders
@@ -216,6 +211,7 @@ function updateSliderDisplay(slider, display) {
 function populateSearchResults() {
   const searchResultsContainer = $('#' + searchResultsId);
   searchResultsContainer.empty();
+  console.log(searchResults);
   for (let i = 0; i < searchResults.length; i++) {
     let resultCard = new SearchResult(
       searchResults[i].tid,
