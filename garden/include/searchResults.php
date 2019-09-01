@@ -1,5 +1,5 @@
 <?php
-  include_once($SERVER_ROOT . "/config/symbini.php");
+  include_once("../../config/symbini.php");
   include_once($SERVER_ROOT . "/config/dbconnection.php");
 
 /**
@@ -45,6 +45,8 @@
    * Returns the most prominent image for the given taxa ID
    */
   function get_image_for_tid($tid) {
+    global $IMAGE_DOMAIN;
+
     $sql = "SELECT i.thumbnailurl FROM images AS i WHERE tid = $tid ORDER BY i.sortsequence LIMIT 1;";
     $res = run_query($sql);
 
@@ -56,7 +58,6 @@
           $result = url_join([$IMAGE_ROOT_URL, $result]);
         }
         if (isset($IMAGE_DOMAIN)) {
-          var_dump($IMAGE_DOMAIN);
           $result = url_join([$IMAGE_DOMAIN, $result]);
         }
       }
@@ -77,8 +78,8 @@
     $height_res = run_query($height_sql);
     $width_res = run_query($width_sql);
 
-    $avg_width = -1;
-    $avg_height = -1;
+    $avg_width = 0;
+    $avg_height = 0;
 
     if (count($height_res) > 0 && key_exists("avg_height", $height_res[0]) && is_numeric($height_res[0]["avg_height"])) {
       $avg_height = floatval($height_res[0]["avg_height"]);
@@ -110,7 +111,7 @@
     $search = $params["search"];
     $sql .= "AND (t.sciname LIKE '%$search%' OR v.vernacularname LIKE '%$search%') ";
 
-    $sql .= "GROUP BY t.tid ORDER BY t.sciname;";
+    $sql .= "GROUP BY t.tid ORDER BY v.vernacularname;";
 
     $resultsTmp = run_query($sql);
     $results = [];
