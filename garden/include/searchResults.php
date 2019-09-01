@@ -1,6 +1,23 @@
 <?php
-  include_once("../../config/symbini.php");
+  include_once($SERVER_ROOT . "/config/symbini.php");
   include_once($SERVER_ROOT . "/config/dbconnection.php");
+
+/**
+ * // TODO: Make this better
+ * @param $parts array join the given parts using '/';
+ * @return string URL string
+ */
+  function url_join($parts) {
+    $url = "";
+    for ($i = 0; $i < count($parts); $i++) {
+      $url .= trim($parts[$i], "/");
+      if (!substr($url, -1) !== "/" && $i < count($parts) - 1) {
+        $url .= "/";
+      }
+    }
+
+    return $url;
+  }
 
   /**
    * Runs the given query & returns the results as an array of associative arrays
@@ -35,10 +52,12 @@
       $result = $res[0]["thumbnailurl"];
 
       if (substr($result, 0, 4) !== "http") {
-        if (key_exists("IMAGE_DOMAIN", $GLOBALS) && $GLOBALS["IMAGE_DOMAIN"] !== "") {
-          $result = $GLOBALS["IMAGE_DOMAIN"] . $result;
-        } else if (key_exists("IMAGE_ROOT_URL", $GLOBALS)) {
-          $result = $GLOBALS["IMAGE_ROOT_URL"] . $result;
+        if (isset($IMAGE_ROOT_URL)) {
+          $result = url_join([$IMAGE_ROOT_URL, $result]);
+        }
+        if (isset($IMAGE_DOMAIN)) {
+          var_dump($IMAGE_DOMAIN);
+          $result = url_join([$IMAGE_DOMAIN, $result]);
         }
       }
 
@@ -52,24 +71,24 @@
     $HEIGHT_KEY = 140;
     $WIDTH_KEY = 738;
 
-    $height_sql = "SELECT cs as height FROM kmdescr WHERE tid = $tid AND cid = $HEIGHT_KEY ORDER BY seq LIMIT 1;";
-    $width_sql = "SELECT cs as width FROM kmdescr WHERE tid = $tid AND cid = $WIDTH_KEY ORDER BY seq LIMIT 1;";
+    $height_sql = "SELECT avg(cs) as avg_height FROM kmdescr WHERE tid = $tid AND cid = $HEIGHT_KEY;";
+    $width_sql = "SELECT avg(cs) as avg_width FROM kmdescr WHERE tid = $tid AND cid = $WIDTH_KEY;";
 
     $height_res = run_query($height_sql);
     $width_res = run_query($width_sql);
 
-    $width = -1;
-    $height = -1;
+    $avg_width = -1;
+    $avg_height = -1;
 
-    if (count($height_res) > 0 && key_exists("height", $height_res[0])) {
-      $height = $height_res[0]["height"];
+    if (count($height_res) > 0 && key_exists("avg_height", $height_res[0]) && is_numeric($height_res[0]["avg_height"])) {
+      $avg_height = floatval($height_res[0]["avg_height"]);
     }
 
-    if (count($width_res) > 0 && key_exists("width", $width_res[0])) {
-      $width = $width_res[0]["width"];
+    if (count($width_res) > 0 && key_exists("avg_width", $width_res[0]) && is_numeric($width_res[0]["avg_width"])) {
+      $avg_width = floatval($width_res[0]["avg_width"]);
     }
 
-    return array([$width, $height]);
+    return [$avg_width, $avg_height];
   }
 
   /**
@@ -98,8 +117,11 @@
 
     // Populate image urls
     foreach ($resultsTmp as $result) {
+      $size = get_size_for_tid($result["tid"]);
+      $result["avg_width"] = $size[0];
+      $result["avg_height"] = $size[1];
+
       $result["image"] = get_image_for_tid($result["tid"]);
-      $result["size"] = get_size_for_tid($result["tid"]);
       if ($result["image"] !== "") {
         array_push($results, $result);
       }
@@ -109,7 +131,6 @@
   }
 
   // Begin View
-  header("Content-Type: application/json; charset=utf-8");
   echo '<script type="application/javascript">const searchResults = ' .
     json_encode(get_taxa($_GET), JSON_NUMERIC_CHECK) ,
   '</script>';

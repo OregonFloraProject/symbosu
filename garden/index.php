@@ -27,6 +27,7 @@ header("Content-Type: text/html; charset=".$CHARSET);
 			crossorigin="anonymous">
 		</script>
 
+    <!-- Include search results here -->
     <?php include_once("./include/searchResults.php") ?>
     <script type="text/javascript" src="<?php echo "$clientRoot/js/garden.js"; ?>"></script>
 
