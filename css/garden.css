@@ -252,6 +252,10 @@ body {
   border-radius: 50%;
 }
 
+#innertext #search-sidebar #search-plants-btn:hover {
+  background: rgba(0, 100, 50, 0.1) !important;
+}
+
 #innertext #search-sidebar .sidebar-dropdown {
   padding: 1em;
   margin-top: 1em;

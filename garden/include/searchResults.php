@@ -10,7 +10,7 @@
   function url_join($parts) {
     $url = "";
     for ($i = 0; $i < count($parts); $i++) {
-      $url .= trim($parts[$i], "/");
+      $url .= $parts[$i];
       if (!substr($url, -1) !== "/" && $i < count($parts) - 1) {
         $url .= "/";
       }
@@ -45,6 +45,7 @@
    * Returns the most prominent image for the given taxa ID
    */
   function get_image_for_tid($tid) {
+    global $IMAGE_ROOT_URL;
     global $IMAGE_DOMAIN;
 
     $sql = "SELECT i.thumbnailurl FROM images AS i WHERE tid = $tid ORDER BY i.sortsequence LIMIT 1;";

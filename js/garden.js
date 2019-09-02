@@ -66,8 +66,8 @@ function gardenMain() {
 
   const availabilityDropdown = $("#" + availabilityDropdownId);
 
-  // Populate search
-  populateSearchResults();
+  // First, populate search results
+  populateSearchResults(plantWidthSlider, plantHeightSlider);
 
   // Search help
   searchHelp.popover({
@@ -97,10 +97,12 @@ function gardenMain() {
   // Sliders
   plantWidthSlider.on("input change", () => {
     updateSliderDisplay(plantWidthSlider, plantWidthDisplay);
+    populateSearchResults(plantWidthSlider, plantHeightSlider);
   });
 
   plantHeightSlider.on("input change", () => {
     updateSliderDisplay(plantHeightSlider, plantHeightDisplay);
+    populateSearchResults(plantWidthSlider, plantHeightSlider);
   });
 
   // Free up all arrow buttons for custom events
@@ -208,17 +210,38 @@ function updateSliderDisplay(slider, display) {
 /**
  * Populate the search results based upon the given JSON object
  */
-function populateSearchResults() {
+function populateSearchResults(plantWidthSlider, plantHeightSlider) {
   const searchResultsContainer = $('#' + searchResultsId);
   searchResultsContainer.empty();
-  console.log(searchResults);
+
   for (let i = 0; i < searchResults.length; i++) {
-    let resultCard = new SearchResult(
-      searchResults[i].tid,
-      searchResults[i].vernacularname,
-      searchResults[i].sciname,
-      searchResults[i].image,
-    );
-    searchResultsContainer.append(resultCard.getHTML());
+    let widthOk = filterForWidth(plantWidthSlider, searchResults[i]);
+    let heightOk = filterForHeight(plantHeightSlider, searchResults[i]);
+
+    if (widthOk && heightOk) {
+      let resultCard = new SearchResult(
+        searchResults[i].tid,
+        searchResults[i].vernacularname,
+        searchResults[i].sciname,
+        searchResults[i].image,
+      );
+      searchResultsContainer.append(resultCard.getHTML());
+    }
   }
+}
+
+/**
+ * Returns whether the avg_width property of the given plantObj is within the slider values
+ */
+function filterForWidth(plantWidthSlider, plantObj) {
+  const [sliderValueLow, sliderValueHigh] = plantWidthSlider.val().trim("[]").split(",").map((str) => parseInt(str));
+  return plantObj.avg_width >= sliderValueLow && plantObj.avg_width <= sliderValueHigh;
+}
+
+/**
+ * Returns whether the avg_height property of the given plantObj is within the slider values
+ */
+function filterForHeight(plantHeightSlider, plantObj) {
+  const [sliderValueLow, sliderValueHigh] = plantHeightSlider.val().trim("[]").split(",").map((str) => parseInt(str));
+  return plantObj.avg_height >= sliderValueLow && plantObj.avg_height <= sliderValueHigh;
 }
