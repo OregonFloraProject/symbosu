@@ -1,0 +1,28 @@
+.centered {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.card {
+  padding: 0.5em;
+  height: 300px;
+  width: 400px;
+  font-size: small;
+}
+
+.card:hover {
+  box-shadow: 2px 4px 9px rgba(100, 100, 100, 0.3);
+  transition: box-shadow 0.1s;
+}
+
+.card a:hover {
+  text-decoration: none;
+}
+
+.card-img-top {
+  width: 300px;
+  height: 150px;
+  object-fit: cover;
+}
