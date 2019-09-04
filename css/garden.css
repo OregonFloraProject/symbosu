@@ -76,15 +76,15 @@ body {
 #innertext #search-results {
   grid-row-start: 2;
   grid-column-start: 2;
-
-  display: grid;
-  grid-gap: 0.6em;
-  grid-template-columns: repeat(auto-fit, 250px);
-
-  justify-content: center;
 }
 
 #innertext #search-results .card {
+  margin: 0.25em;
+  padding: 0.5em;
+
+  min-width: 100px;
+  max-width: 250px;
+
   box-shadow: 2px 2px 16px rgba(100, 100, 100, 0.5);
   transition: box-shadow 0.5s;
 }
@@ -96,6 +96,7 @@ body {
 
 #innertext #search-results .card .card-title, .card-body {
   text-transform: capitalize;
+  font-size: 0.9rem;
 }
 
 #innertext #search-results .card a:hover {
@@ -104,6 +105,7 @@ body {
 
 #innertext #search-results .card .card-img-top {
   max-height: 200px;
+  width: 100%;
   object-fit: cover;
 }
 

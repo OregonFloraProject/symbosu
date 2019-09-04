@@ -45,7 +45,7 @@ class SearchResult {
 
   getHTML() {
     return `
-      <div class="card">
+      <div class="card col-sm">
         <a href="${this.getTaxaLink()}">
           <img class="card-img-top search-result-img" src="${this._plantImage}" alt="${this._plantNameCommon}">
           <div class="card-body">
@@ -86,6 +86,8 @@ function gardenMain() {
 
   const availabilityDropdown = $("#" + availabilityDropdownId);
 
+  let currentResults = [];
+
   // Search help
   searchHelp.popover({
     title: "Search for plants",
@@ -107,11 +109,37 @@ function gardenMain() {
      searchPlantsBtn.attr("disabled", true);
      $(`#${searchButtonId} .spinner-border`).show();
      $(`#${searchButtonId} img`).hide();
-     populateSearchResults({ search: "abe" })
-       .then(() => {
+     pullSearchResults(plantSearchField.val())
+       .then((res) => {
          searchPlantsBtn.attr("disabled", false);
          $(`#${searchButtonId} img`).show();
          $(`#${searchButtonId} .spinner-border`).hide();
+
+         // Populate the 'currentResults' var w/ rows of 5
+         currentResults = [];
+         let currentRow = [];
+         for (let i = 0; i < res.length; i++) {
+           if (i !== 0 && i % 5 === 0) {
+             currentResults.push(currentRow);
+             currentRow = [];
+           }
+           currentRow.push(res[i]);
+         }
+
+         const searchResultsContainer = $('#' + searchResultsId);
+         searchResultsContainer.empty();
+
+         let rowHtml = "";
+         for (let row = 0; row < currentResults.length; row++) {
+           rowHtml = "<div class='row'>";
+           for (let col = 0; col < currentResults[row].length; col++) {
+              let item = currentResults[row][col];
+              let resItem = new SearchResult(item.tid, item.vernacularname, item.sciname, item.image);
+              rowHtml += resItem.getHTML();
+           }
+           rowHtml += "</div>";
+           searchResultsContainer.append(rowHtml);
+         }
        });
    } else {
      // TODO: Bootstrap error
@@ -122,10 +150,6 @@ function gardenMain() {
   // Sliders
   plantWidthSlider.on("input change", () => {
     updateSliderDisplay(plantWidthSlider, plantWidthDisplay);
-  });
-
-  $(`#${plantWidthSliderId}-container .slider-handle`).mouseup(() => {
-    console.log(`Plant Width: ${plantWidthSlider.val()}`);
   });
 
   plantHeightSlider.on("input change", () => {
@@ -255,26 +279,10 @@ function httpGet(url) {
 
 /**
  * Pull search results from ./rpc/api.php
- * @param props Object Dictionary of GET parameters
- *  - search: string Search term for plant name
- *  - width Array 2-element array in the form [min_width, max_width]
- *  - height Array 2-element array in the form [min_height, max_height]
+ * @param search string Search term for plant name
  */
-function pullSearchResults(props) {
-  let reqUrl = "./rpc/api.php";
-
-  const searchParams = [];
-  const propKeys = Object.keys(props);
-  for (let i = 0; i < propKeys.length; i++) {
-    let key = propKeys[i];
-    let val = props[key];
-    searchParams.push(`${key}=${val}`);
-  }
-
-  if (searchParams.length > 0) {
-    reqUrl += "?" + searchParams.join("&");
-  }
-
+function pullSearchResults(search) {
+  let reqUrl = `./rpc/api.php?search=${search}`;
   return new Promise((resolve) => {
     httpGet(reqUrl)
       .then((res) => { resolve(JSON.parse(res)); })
@@ -287,21 +295,24 @@ function pullSearchResults(props) {
 
 /**
  * Populate the search results based upon the given JSON object
+ * @param search string Search term for plant name
  */
-function populateSearchResults(props) {
+function populateSearchResults(search) {
   const searchResultsContainer = $('#' + searchResultsId);
   searchResultsContainer.empty();
 
-  return pullSearchResults(props)
+  return pullSearchResults(search)
     .then((res) => {
-      for (let i = 0; i < res.length; i++) {
-        let resultCard = new SearchResult(
-          res[i].tid,
-          res[i].vernacularname,
-          res[i].sciname,
-          res[i].image,
-        );
-        searchResultsContainer.append(resultCard.getHTML());
-      }
+      let currentRow;
+      const rows = [];
+      // for (let i = 0; i < res.length; i++) {
+      //   let resultCard = new SearchResult(
+      //     res[i].tid,
+      //     res[i].vernacularname,
+      //     res[i].sciname,
+      //     res[i].image,
+      //   );
+      //   searchResultsContainer.append(resultCard.getHTML());
+      // }
     });
 }

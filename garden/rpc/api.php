@@ -92,10 +92,8 @@
     $sql .= "LEFT JOIN taxavernaculars AS v ON t.tid = v.tid ";
     $sql .= "WHERE t.rankid >= 220 AND (t.sciname IS NOT NULL OR v.vernacularname IS NOT NULL) ";
 
-    if (key_exists("search", $params)) {
-      $search = $params["search"];
-      $sql .= "AND (t.sciname LIKE '%$search%' OR v.vernacularname LIKE '%$search%') ";
-    }
+    $search = $params["search"];
+    $sql .= "AND (t.sciname LIKE '$search%' OR v.vernacularname LIKE '$search%') ";
 
     $sql .= "GROUP BY t.tid ORDER BY v.vernacularname;";
 
