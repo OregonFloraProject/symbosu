@@ -165,7 +165,7 @@ function gardenMain() {
 
     // Collapse
     if (origImgUrl.includes("collapse-arrow.png")) {
-      $("#page-title").addClass("collapsed");
+      $("#page-title").addClass("faded-out");
       chooseNativeDropdown.css(paddingTransitionSmall);
       chooseNativeDropdownCollapsing.css(fadeOut).slideUp("2s", () => {
       });
@@ -175,7 +175,7 @@ function gardenMain() {
       chooseNativeDropdown.css(paddingTransitionBig);
       chooseNativeDropdownCollapsing.slideDown(() => {
         chooseNativeDropdownCollapsing.css(fadeIn);
-        $("#page-title").removeClass("collapsed");
+        $("#page-title").removeClass("faded-out");
       });
     }
   });

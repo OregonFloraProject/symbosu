@@ -9,7 +9,7 @@ header("Content-Type: text/html; charset=".$CHARSET);
     <meta charset="utf-8">
     <link href="<?php echo $CLIENT_ROOT; ?>/css/base.css?ver=<?php echo $CSS_VERSION; ?>" type="text/css" rel="stylesheet" />
     <link href="<?php echo $CLIENT_ROOT; ?>/css/main.css<?php echo (isset($CSS_VERSION_LOCAL)?'?ver='.$CSS_VERSION_LOCAL:''); ?>" type="text/css" rel="stylesheet" />
-    <link href="<?php echo $CLIENT_ROOT; ?>/css/garden.css<?php echo (isset($CSS_VERSION_LOCAL)?'?ver='.$CSS_VERSION_LOCAL:''); ?>" type="text/css" rel="stylesheet" />
+    <link href="<?php echo $CLIENT_ROOT; ?>/css/garden-react.css<?php echo (isset($CSS_VERSION_LOCAL)?'?ver='.$CSS_VERSION_LOCAL:''); ?>" type="text/css" rel="stylesheet" />
 
     <script type="text/javascript" src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
     <script type="text/javascript" src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
@@ -20,9 +20,21 @@ header("Content-Type: text/html; charset=".$CHARSET);
     include("$SERVER_ROOT/header.php");
     ?>
 
+    <!-- Header includes jquery, so add jquery scripts after header -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.6.2/css/bootstrap-slider.min.css"
+      integrity="sha256-G3IAYJYIQvZgPksNQDbjvxd/Ca1SfCDFwu2s2lt0oGo="
+      crossorigin="anonymous" />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.6.2/bootstrap-slider.min.js"
+      integrity="sha256-oj52qvIP5c7N6lZZoh9z3OYacAIOjsROAcZBHUaJMyw="
+      crossorigin="anonymous">
+    </script>
+
     <div id="page-content" style="min-height: 50em;">
-      <div id="react-app" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></div>
-      <script type="text/babel" src="<?php echo $CLIENT_ROOT ?>/js/garden-react.js"></script>
+      <div id="react-app"></div>
+      <script type="text/babel" src="<?php echo $CLIENT_ROOT ?>/js/garden-react.jsx"></script>
     </div>
 
     <?php

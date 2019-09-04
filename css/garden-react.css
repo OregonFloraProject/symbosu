@@ -1,0 +1,28 @@
+#infographic-dropdown {
+  position: relative;
+  background-image: url(/images/garden/DIG4082-green@2x.png);
+}
+
+#infographic-dropdown * {
+  color: white !important;
+}
+
+.will-v-flip {
+  transition: transform 0.5s;
+}
+
+.v-flipped {
+  transform: rotate(-180deg);
+  transition: transform 0.5s;
+}
+
+.will-collapse {
+  max-height: 1000px;
+  transition: opacity 0.5s 0.5s, max-height 1s;
+}
+
+.is-collapsed {
+  opacity: 0;
+  max-height: 0;
+  transition: opacity 0.5s, max-height 1s;
+}

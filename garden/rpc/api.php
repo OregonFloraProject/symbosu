@@ -116,7 +116,7 @@
   }
 
   // Begin View
-  header("Content-Type", "application/json");
+  header("Content-Type", "application/json; charset=utf-8");
   echo json_encode(get_taxa($_GET), JSON_NUMERIC_CHECK);
 ?>
 
