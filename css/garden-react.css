@@ -3,6 +3,12 @@
   background-image: url(/images/garden/DIG4082-green@2x.png);
 }
 
+@media only screen and (max-width: 600px) {
+  #infographic-dropdown {
+    display: none;
+  }
+}
+
 #infographic-dropdown * {
   color: white !important;
 }
@@ -11,7 +17,7 @@
   transition: transform 0.5s;
 }
 
-.v-flipped {
+.v-flip {
   transform: rotate(-180deg);
   transition: transform 0.5s;
 }
@@ -25,4 +31,8 @@
   opacity: 0;
   max-height: 0;
   transition: opacity 0.5s, max-height 1s;
+}
+
+.rounded-border {
+  border-radius: 1em;
 }
