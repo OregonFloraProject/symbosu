@@ -3,23 +3,6 @@
   include_once($SERVER_ROOT . "/config/dbconnection.php");
 
 /**
- * // TODO: Make this better
- * @param $parts array join the given parts using '/';
- * @return string URL string
- */
-  function url_join($parts) {
-    $url = "";
-    for ($i = 0; $i < count($parts); $i++) {
-      $url .= $parts[$i];
-      if (!substr($url, -1) !== "/" && $i < count($parts) - 1) {
-        $url .= "/";
-      }
-    }
-
-    return $url;
-  }
-
-  /**
    * Runs the given query & returns the results as an array of associative arrays
    */
   function run_query($sql) {
@@ -56,10 +39,10 @@
 
       if (substr($result, 0, 4) !== "http") {
         if (isset($IMAGE_ROOT_URL)) {
-          $result = url_join([$IMAGE_ROOT_URL, $result]);
+          $result = $IMAGE_ROOT_URL . $result;
         }
         if (isset($IMAGE_DOMAIN)) {
-          $result = url_join([$IMAGE_DOMAIN, $result]);
+          $result = $IMAGE_DOMAIN . $result;
         }
       }
 
@@ -97,20 +80,22 @@
    * Returns all unique taxa with thumbnail urls
    */
   function get_taxa($params) {
-    if (!key_exists("search", $params) || $params["search"] === "") { $params["search"] = null; }
-
-    # If all args are null, quit here
-    if ($params["search"] === null) {
+    // If search args is null, quit here
+    if (!key_exists("search", $params) || $params["search"] === "" || $params["search"] === null) {
       return [];
     }
+
+    // TODO: Clean params
 
     # Select all species & below (t.rankid >= 200) that have some sort of name
     $sql = "SELECT t.tid, t.sciname, v.vernacularname FROM taxa as t ";
     $sql .= "LEFT JOIN taxavernaculars AS v ON t.tid = v.tid ";
     $sql .= "WHERE t.rankid >= 220 AND (t.sciname IS NOT NULL OR v.vernacularname IS NOT NULL) ";
 
-    $search = $params["search"];
-    $sql .= "AND (t.sciname LIKE '%$search%' OR v.vernacularname LIKE '%$search%') ";
+    if (key_exists("search", $params)) {
+      $search = $params["search"];
+      $sql .= "AND (t.sciname LIKE '%$search%' OR v.vernacularname LIKE '%$search%') ";
+    }
 
     $sql .= "GROUP BY t.tid ORDER BY v.vernacularname;";
 
@@ -133,8 +118,7 @@
   }
 
   // Begin View
-  echo '<script type="application/javascript">const searchResults = ' .
-    json_encode(get_taxa($_GET), JSON_NUMERIC_CHECK) ,
-  '</script>';
+  header("Content-Type", "application/json");
+  echo json_encode(get_taxa($_GET), JSON_NUMERIC_CHECK);
 ?>
 

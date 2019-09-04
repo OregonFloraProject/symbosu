@@ -5,11 +5,11 @@ header("Content-Type: text/html; charset=".$CHARSET);
 
 <html>
 	<head>
-		<title><?php echo $defaultTitle?> Gardening with Natives</title>
+		<title><?php echo $DEFAULT_TITLE?> | Gardening with Natives</title>
     <meta charset="utf-8">
-    <link href="<?php echo $clientRoot; ?>/css/base.css?ver=<?php echo $CSS_VERSION; ?>" type="text/css" rel="stylesheet" />
-		<link href="<?php echo $clientRoot; ?>/css/main.css<?php echo (isset($CSS_VERSION_LOCAL)?'?ver='.$CSS_VERSION_LOCAL:''); ?>" type="text/css" rel="stylesheet" />
-		<link href="<?php echo $clientRoot; ?>/css/garden.css<?php echo (isset($CSS_VERSION_LOCAL)?'?ver='.$CSS_VERSION_LOCAL:''); ?>" type="text/css" rel="stylesheet" />
+    <link href="<?php echo $CLIENT_ROOT; ?>/css/base.css?ver=<?php echo $CSS_VERSION; ?>" type="text/css" rel="stylesheet" />
+		<link href="<?php echo $CLIENT_ROOT; ?>/css/main.css<?php echo (isset($CSS_VERSION_LOCAL)?'?ver='.$CSS_VERSION_LOCAL:''); ?>" type="text/css" rel="stylesheet" />
+		<link href="<?php echo $CLIENT_ROOT; ?>/css/garden.css<?php echo (isset($CSS_VERSION_LOCAL)?'?ver='.$CSS_VERSION_LOCAL:''); ?>" type="text/css" rel="stylesheet" />
   </head>
 	<body>
 		<?php
@@ -28,13 +28,12 @@ header("Content-Type: text/html; charset=".$CHARSET);
 		</script>
 
     <!-- Include search results here -->
-    <?php include_once("./include/searchResults.php") ?>
-    <script type="text/javascript" src="<?php echo "$clientRoot/js/garden.js"; ?>"></script>
+    <script type="text/javascript" src="<?php echo "$CLIENT_ROOT/js/garden.js"; ?>"></script>
 
 		<div
 			id="choose-native-dropdown"
 			class="container-fluid choose-native-dropdown-expanded"
-			style="background-image: url(<?php echo "$clientRoot/images/garden/DIG4082-green@2x.png" ?>);"
+			style="background-image: url(<?php echo "$CLIENT_ROOT/images/garden/DIG4082-green@2x.png" ?>);"
 			>
 
 			<div id="choose-native-dropdown-text">
@@ -60,7 +59,7 @@ header("Content-Type: text/html; charset=".$CHARSET);
 				id="choose-native-dropdown-button"
 				class="arrow"
 				type="image"
-				src="<?php echo "$clientRoot/images/garden/collapse-arrow.png" ?>"
+				src="<?php echo "$CLIENT_ROOT/images/garden/collapse-arrow.png" ?>"
 				value="Expand/Collapse Dropdown"
 			>
 		</div>
@@ -74,7 +73,7 @@ header("Content-Type: text/html; charset=".$CHARSET);
 					<input
 						id="search-help"
 						type="image"
-						src="<?php echo $clientRoot; ?>/images/garden/help.png"
+						src="<?php echo $CLIENT_ROOT; ?>/images/garden/help.png"
 						data-toggle="popover">
 				</div>
 				<p>Start applying characteristics, and the matching plants will appear at right.</p>
@@ -86,12 +85,15 @@ header("Content-Type: text/html; charset=".$CHARSET);
 						type="text"
 						placeholder="Search plants by name"
 						class="form-control search-param">
-					<input
-						id="search-plants-btn"
-						type="image"
-						src="<?php echo $clientRoot; ?>/images/garden/search-green.png"
-						class="mt-auto mb-auto"
-						alt="search plants">
+					<button id="search-plants-btn" class="mt-auto mb-auto">
+            <img src="<?php echo $CLIENT_ROOT; ?>/images/garden/search-green.png" alt="search plants">
+            <span
+              class="spinner-border spinner-border-sm text-success"
+              style="display: none;"
+              role="status"
+              aria-hidden="true">
+            </span>
+          </button>
 				</div>
 
 				<div id="plant-needs">
@@ -157,7 +159,7 @@ header("Content-Type: text/html; charset=".$CHARSET);
 				<div class="sidebar-dropdown" id="plant-features">
 					<h4 class="m-0 d-inline">Plant features</h4>
 					<a href="#plant-features-body" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="plant-features-body">
-						<img class="arrow" src="<?php echo $clientRoot?>/images/garden/expand-arrow.png" alt="collapse">
+						<img class="arrow" src="<?php echo $CLIENT_ROOT?>/images/garden/expand-arrow.png" alt="collapse">
 					</a>
 					<div id="plant-features-body" class="collapse">
 						<div class="card card-body mt-3">
@@ -169,7 +171,7 @@ header("Content-Type: text/html; charset=".$CHARSET);
 				<div class="sidebar-dropdown" id="growth-maintenance">
 					<h4 class="m-0 d-inline">Growth & maintenance</h4>
 					<a href="#growth-maintenance-body" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="growth-maintenance-body">
-						<img class="arrow" src="<?php echo $clientRoot?>/images/garden/expand-arrow.png" alt="collapse">
+						<img class="arrow" src="<?php echo $CLIENT_ROOT?>/images/garden/expand-arrow.png" alt="collapse">
 					</a>
 					<div id="growth-maintenance-body" class="collapse">
 						<div class="card card-body mt-3">
@@ -181,7 +183,7 @@ header("Content-Type: text/html; charset=".$CHARSET);
 				<div class="sidebar-dropdown" id="beyond-garden">
 					<h4 class="m-0 d-inline">Beyond the garden</h4>
 					<a href="#beyond-garden-body" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="beyond-garden-body">
-						<img class="arrow" src="<?php echo $clientRoot?>/images/garden/expand-arrow.png" alt="collapse">
+						<img class="arrow" src="<?php echo $CLIENT_ROOT?>/images/garden/expand-arrow.png" alt="collapse">
 					</a>
 					<div id="beyond-garden-body" class="collapse">
 						<div class="card card-body mt-3">
@@ -194,7 +196,7 @@ header("Content-Type: text/html; charset=".$CHARSET);
 					<h4 class="m-0 d-inline">Availability</h4>
 					<p class="d-inline ml-2">(Coming soon)</p>
 					<a href="#availability-body" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="availability-body">
-						<img class="arrow" src="<?php echo $clientRoot?>/images/garden/expand-arrow.png" alt="collapse">
+						<img class="arrow" src="<?php echo $CLIENT_ROOT?>/images/garden/expand-arrow.png" alt="collapse">
 					</a>
 					<div id="availability-body" class="collapse">
 						<div class="card card-body mt-3">

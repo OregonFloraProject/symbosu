@@ -17,16 +17,36 @@ jQuery(() => {
 
 class SearchResult {
   constructor(plantTid, plantNameCommon, plantNameSci, plantImage) {
+    this._plantTid = plantTid;
     this._plantNameCommon = plantNameCommon;
     this._plantNameSci = plantNameSci;
     this._plantImage = plantImage;
-    this._plantLink = `../taxa/garden.php?taxon=${plantTid}`;
+  }
+
+  getCommonName() {
+    return this._plantNameCommon;
+  }
+
+  getSciName() {
+    return this._plantNameSci;
+  }
+
+  getImageUrl() {
+    return this._plantImage;
+  }
+
+  getTaxaLink() {
+    return `../taxa/garden.php?taxon=${this._plantTid}`;
+  }
+
+  getTid() {
+    return this._plantTid;
   }
 
   getHTML() {
     return `
       <div class="card">
-        <a href="${this._plantLink}">
+        <a href="${this.getTaxaLink()}">
           <img class="card-img-top search-result-img" src="${this._plantImage}" alt="${this._plantNameCommon}">
           <div class="card-body">
             <h5 class="card-title">${this._plantNameCommon !== null ? this._plantNameCommon : this._plantNameSci}</h5>
@@ -66,9 +86,6 @@ function gardenMain() {
 
   const availabilityDropdown = $("#" + availabilityDropdownId);
 
-  // First, populate search results
-  populateSearchResults(plantWidthSlider, plantHeightSlider);
-
   // Search help
   searchHelp.popover({
     title: "Search for plants",
@@ -85,9 +102,17 @@ function gardenMain() {
   });
 
   // Search button click
-  $(searchPlantsBtn).click(() => {
+  searchPlantsBtn.click(() => {
    if (plantSearchField.val() != null && plantSearchField.val() !== '') {
-     window.location = window.location.pathname + "?" + plantSearchField.attr("name") + "=" + plantSearchField.val();
+     searchPlantsBtn.attr("disabled", true);
+     $(`#${searchButtonId} .spinner-border`).show();
+     $(`#${searchButtonId} img`).hide();
+     populateSearchResults({ search: "abe" })
+       .then(() => {
+         searchPlantsBtn.attr("disabled", false);
+         $(`#${searchButtonId} img`).show();
+         $(`#${searchButtonId} .spinner-border`).hide();
+       });
    } else {
      // TODO: Bootstrap error
      alert("Enter a plant name");
@@ -97,12 +122,14 @@ function gardenMain() {
   // Sliders
   plantWidthSlider.on("input change", () => {
     updateSliderDisplay(plantWidthSlider, plantWidthDisplay);
-    populateSearchResults(plantWidthSlider, plantHeightSlider);
+  });
+
+  $(`#${plantWidthSliderId}-container .slider-handle`).mouseup(() => {
+    console.log(`Plant Width: ${plantWidthSlider.val()}`);
   });
 
   plantHeightSlider.on("input change", () => {
     updateSliderDisplay(plantHeightSlider, plantHeightDisplay);
-    populateSearchResults(plantWidthSlider, plantHeightSlider);
   });
 
   // Free up all arrow buttons for custom events
@@ -165,7 +192,10 @@ function getCookie(name) {
   let cookies = decodeURIComponent(document.cookie).split(";");
   for (let i = 0; i < cookies.length; i++) {
     let [key, val] = cookies[i].split("=");
-    if (key === name) {
+    if (key.trim().toLowerCase() === name.toLowerCase()) {
+      if (typeof val === "string") {
+        return val.trim();
+      }
       return val;
     }
   }
@@ -207,41 +237,71 @@ function updateSliderDisplay(slider, display) {
   display.text(displayText);
 }
 
+function httpGet(url) {
+  return new Promise((resolve, reject) => {
+    const req = new XMLHttpRequest();
+    req.addEventListener("load", (e) => {
+      if (req.status === 200) {
+        resolve(req.responseText);
+      } else {
+        reject(req.code);
+      }
+    });
+
+    req.open("GET", url);
+    req.send();
+  });
+}
+
+/**
+ * Pull search results from ./rpc/api.php
+ * @param props Object Dictionary of GET parameters
+ *  - search: string Search term for plant name
+ *  - width Array 2-element array in the form [min_width, max_width]
+ *  - height Array 2-element array in the form [min_height, max_height]
+ */
+function pullSearchResults(props) {
+  let reqUrl = "./rpc/api.php";
+
+  const searchParams = [];
+  const propKeys = Object.keys(props);
+  for (let i = 0; i < propKeys.length; i++) {
+    let key = propKeys[i];
+    let val = props[key];
+    searchParams.push(`${key}=${val}`);
+  }
+
+  if (searchParams.length > 0) {
+    reqUrl += "?" + searchParams.join("&");
+  }
+
+  return new Promise((resolve) => {
+    httpGet(reqUrl)
+      .then((res) => { resolve(JSON.parse(res)); })
+      .catch((err) => {
+        console.error(reqUrl + " returned status " + err);
+        resolve(null);
+      });
+  });
+}
+
 /**
  * Populate the search results based upon the given JSON object
  */
-function populateSearchResults(plantWidthSlider, plantHeightSlider) {
+function populateSearchResults(props) {
   const searchResultsContainer = $('#' + searchResultsId);
   searchResultsContainer.empty();
 
-  for (let i = 0; i < searchResults.length; i++) {
-    let widthOk = filterForWidth(plantWidthSlider, searchResults[i]);
-    let heightOk = filterForHeight(plantHeightSlider, searchResults[i]);
-
-    if (widthOk && heightOk) {
-      let resultCard = new SearchResult(
-        searchResults[i].tid,
-        searchResults[i].vernacularname,
-        searchResults[i].sciname,
-        searchResults[i].image,
-      );
-      searchResultsContainer.append(resultCard.getHTML());
-    }
-  }
-}
-
-/**
- * Returns whether the avg_width property of the given plantObj is within the slider values
- */
-function filterForWidth(plantWidthSlider, plantObj) {
-  const [sliderValueLow, sliderValueHigh] = plantWidthSlider.val().trim("[]").split(",").map((str) => parseInt(str));
-  return plantObj.avg_width >= sliderValueLow && plantObj.avg_width <= sliderValueHigh;
-}
-
-/**
- * Returns whether the avg_height property of the given plantObj is within the slider values
- */
-function filterForHeight(plantHeightSlider, plantObj) {
-  const [sliderValueLow, sliderValueHigh] = plantHeightSlider.val().trim("[]").split(",").map((str) => parseInt(str));
-  return plantObj.avg_height >= sliderValueLow && plantObj.avg_height <= sliderValueHigh;
+  return pullSearchResults(props)
+    .then((res) => {
+      for (let i = 0; i < res.length; i++) {
+        let resultCard = new SearchResult(
+          res[i].tid,
+          res[i].vernacularname,
+          res[i].sciname,
+          res[i].image,
+        );
+        searchResultsContainer.append(resultCard.getHTML());
+      }
+    });
 }
