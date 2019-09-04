@@ -6,7 +6,5 @@ class GardenPageApp extends React.Component {
   }
 }
 
-window.onload = () => {
-  const domContainer = document.getElementById("react-app");
-  ReactDOM.render(<GardenPageApp />, domContainer);
-};
+const domContainer = document.getElementById("react-app");
+ReactDOM.render(<GardenPageApp />, domContainer);

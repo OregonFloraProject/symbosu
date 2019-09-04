@@ -21,8 +21,8 @@ header("Content-Type: text/html; charset=".$CHARSET);
     ?>
 
     <div id="page-content" style="min-height: 50em;">
-      <div id="react-app"></div>
-      <script type="text/babel" src="<?php echo $CLIENT_ROOT ?>/js/garden-react.js"
+      <div id="react-app" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></div>
+      <script type="text/babel" src="<?php echo $CLIENT_ROOT ?>/js/garden-react.js"></script>
     </div>
 
     <?php
