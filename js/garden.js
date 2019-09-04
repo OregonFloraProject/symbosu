@@ -94,13 +94,6 @@ function gardenMain() {
    }
   });
 
-  // Search if enter is pressed in the plant search field
-  $(plantSearchField).on("keyup", (e) => {
-    if (e.keyCode === 13) {
-      $(searchPlantsBtn).click();
-    }
-  });
-
   // Sliders
   plantWidthSlider.on("input change", () => {
     updateSliderDisplay(plantWidthSlider, plantWidthDisplay);
@@ -123,8 +116,9 @@ function gardenMain() {
     if (origImgUrl.includes("collapse-arrow.png")) {
       $("#page-title").addClass("collapsed");
       chooseNativeDropdown.css(paddingTransitionSmall);
-      chooseNativeDropdownCollapsing.css(fadeOut).slideUp("2s", () => {});
-      setCookie(chooseNativeDropdownId + "_collapsed", true, 1);
+      chooseNativeDropdownCollapsing.css(fadeOut).slideUp("2s", () => {
+      });
+
     // Expand
     } else {
       chooseNativeDropdown.css(paddingTransitionBig);
@@ -132,14 +126,8 @@ function gardenMain() {
         chooseNativeDropdownCollapsing.css(fadeIn);
         $("#page-title").removeClass("collapsed");
       });
-      setCookie(chooseNativeDropdownId + "_collapsed", false, 1);
     }
   });
-
-  // Restore infographic state based on cookies
-  if (getCookie(chooseNativeDropdownId + "_collapsed")) {
-    chooseNativeDropdownButton.click();
-  }
 
   // Dropdown arrows
   allDropDownArrows.click((e) => {
@@ -177,8 +165,8 @@ function getCookie(name) {
   let cookies = decodeURIComponent(document.cookie).split(";");
   for (let i = 0; i < cookies.length; i++) {
     let [key, val] = cookies[i].split("=");
-    if (key.trim() === name) {
-      return val.trim();
+    if (key === name) {
+      return val;
     }
   }
   return null;

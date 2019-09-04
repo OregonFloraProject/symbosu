@@ -101,9 +101,7 @@
 
     # If all args are null, quit here
     if ($params["search"] === null) {
-      // TODO: Return empty
-      $params["search"] = "abe";
-//      return [];
+      return [];
     }
 
     # Select all species & below (t.rankid >= 200) that have some sort of name
