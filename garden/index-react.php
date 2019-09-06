@@ -34,7 +34,9 @@ header("Content-Type: text/html; charset=".$CHARSET);
 
     <div id="page-content" style="min-height: 50em;">
       <div id="react-app"></div>
-      <script type="text/babel" src="<?php echo $CLIENT_ROOT ?>/js/garden-react.jsx"></script>
+      <script type="text/babel" src="<?php echo $CLIENT_ROOT ?>/js/garden/infographic-dropdown.jsx"></script>
+      <script type="text/babel" src="<?php echo $CLIENT_ROOT ?>/js/garden/sidebar.jsx"></script>
+      <script type="text/babel" src="<?php echo $CLIENT_ROOT ?>/js/garden/garden-react.jsx"></script>
     </div>
 
     <?php

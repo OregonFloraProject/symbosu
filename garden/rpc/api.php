@@ -79,7 +79,7 @@
   /**
    * Returns all unique taxa with thumbnail urls
    */
-  function get_taxa($params) {
+  function get_garden_taxa($params) {
     // If search args is null, quit here
     if (!key_exists("search", $params) || $params["search"] === "" || $params["search"] === null) {
       return [];
@@ -117,6 +117,6 @@
 
   // Begin View
   header("Content-Type", "application/json; charset=utf-8");
-  echo json_encode(get_taxa($_GET), JSON_NUMERIC_CHECK);
+  echo json_encode(get_garden_taxa($_GET), JSON_NUMERIC_CHECK);
 ?>
 

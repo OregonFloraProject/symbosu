@@ -1,3 +1,9 @@
+body {
+  font-family: 'Source Sans Pro', sans-serif !important;
+  margin: 0;
+  padding: 0;
+}
+
 #infographic-dropdown {
   position: relative;
   background-image: url(/images/garden/DIG4082-green@2x.png);
@@ -35,4 +41,16 @@
 
 .rounded-border {
   border-radius: 1em;
+}
+
+#sidebar {
+
+}
+
+#sidebar * {
+  color: black !important;
+}
+
+#sidebar input::placeholder {
+  color: #9FD07A;
 }
