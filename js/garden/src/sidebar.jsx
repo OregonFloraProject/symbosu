@@ -17,6 +17,10 @@ const searchButtonStyle = {
   background: "rgba(255, 255, 255, 0.5)"
 };
 
+/**
+ * @param valueArray {number[]} An array in the form [min, max]
+ * @returns {string} An English description of the [min, max] values
+ */
 function getSliderDescription(valueArray) {
   let valueDesc;
 
@@ -43,24 +47,44 @@ function getSliderDescription(valueArray) {
 /**
  * Sidebar header with title, subtitle, and help
  */
-function SideBarHeading(props) {
-  return (
-    <div style={{color: "black"}}>
-      <div className="mb-1" style={{color: "inherit"}}>
-        <h3 className="font-weight-bold d-inline">Search for plants</h3>
-        <button style={ helpButtonStyle }>
-          <img
-            style={{ width: "1.25em" }}
-            alt="help"
-            src="/images/garden/help.png"/>
-        </button>
+class SideBarHeading extends React.Component {
+  componentDidMount() {
+    const helpButtonId = "sidebar-help-button";
+    const helpButton = document.getElementById(helpButtonId);
+    $(helpButton).popover({
+      title: "Search for plants",
+      html: true,
+      trigger: "focus",
+      content: `
+        <ul>
+          <li>As you make selections, the filtered results are immediately displayed in “Your search results”.</li>
+          <li>Any number of search options may be selected, but too many filters may yield no results because no plant meets all the criteria you selected. If so, try removing filters.</li>
+          <li>To remove a search filter, simply click its close (X) button</li>
+          <li>Clicking on any image in the results will open that plants’ garden profile page; the page can be downloaded and printed.</li>
+        </ul>
+      `,
+    });
+  }
+
+  render() {
+    return (
+      <div style={{color: "black"}}>
+        <div className="mb-1" style={{color: "inherit"}}>
+          <h3 className="font-weight-bold d-inline">Search for plants</h3>
+          <button id="sidebar-help-button" style={helpButtonStyle}>
+            <img
+              style={{width: "1.25em"}}
+              alt="help"
+              src="/images/garden/help.png"/>
+          </button>
+        </div>
+        <p>
+          Start applying characteristics, and the matching plants will appear at
+          right.
+        </p>
       </div>
-      <p>
-        Start applying characteristics, and the matching plants will appear at
-        right.
-      </p>
-    </div>
-  );
+    );
+  }
 }
 
 /**
@@ -129,6 +153,9 @@ function PlantNeed(props) {
   );
 }
 
+/**
+ * Slider from 0, 50+ with minimum and maximum value handles
+ */
 class PlantSlider extends React.Component {
   constructor(props) {
     super(props);
@@ -177,6 +204,8 @@ class PlantSlider extends React.Component {
   }
 }
 
+
+
 /**
  * Full sidebar
  */
@@ -189,8 +218,6 @@ class SideBar extends React.Component {
       moisture: '',
       width: [0, 50],
       height: [0, 50],
-      widthDesc: "(Any size)",
-      heightDesc: "(Any size)",
       isLoading: false
     };
 
@@ -275,7 +302,6 @@ class SideBar extends React.Component {
               <PlantSlider
                 label="Height (ft)"
                 name="height"
-                description={ this.state.heightDesc }
                 onChange={ this.onHeightChanged } />
             </div>
             <div
@@ -285,7 +311,6 @@ class SideBar extends React.Component {
               <PlantSlider
                 label="Width (ft)"
                 name="width"
-                description={ this.state.widthDesc }
                 onChange={ this.onWidthChanged } />
             </div>
           </div>
