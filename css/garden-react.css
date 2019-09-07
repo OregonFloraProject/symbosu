@@ -72,3 +72,8 @@ body {
   background-image: -webkit-linear-gradient(top, #5FB021 0, #288000 100%) !important;
   background-image: -o-linear-gradient(top, #5FB021 0, #288000 100%) !important;
 }
+
+.dropdown-disabled {
+  opacity: 50% !important;
+  background-color: rgba(255, 255, 255, 0.5) !important;
+}
