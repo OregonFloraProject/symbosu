@@ -132,7 +132,7 @@ function PlantSlider(props) {
       />
       <br/>
       <label className="d-block text-center" htmlFor={ props.label.toLowerCase() }>
-        (Any size)
+        { props.description }
       </label>
     </div>
   );
@@ -178,17 +178,20 @@ class SideBar extends React.Component {
 
   onHeightChanged() {
     console.log("The current height value is '" + event.target.value + "'");
-    this.setState({ height: getSliderValues(event.target.value) })
+    this.setState({ height: getSliderValues(event.target.value) });
   }
 
   onWidthChanged() {
     console.log("The current width value is '" + event.target.value + "'");
-    this.setState({ width: getSliderValues(event.target.value) })
+    this.setState({ width: getSliderValues(event.target.value) });
   }
 
   render() {
     return (
-      <div id="sidebar" className="col-sm-3 m-2 p-5 rounded-border" style={{ background: "#DFEFD3", minHeight: "20em" }}>
+      <div
+        id="sidebar"
+        className="col-sm-3 m-2 p-5 rounded-border"
+        style={ this.props.style }>
         {/* Title & Subtitle */}
         <SideBarHeading />
 
@@ -216,21 +219,28 @@ class SideBar extends React.Component {
         <div className="my-5">
           <h4 className="mr-2 mb-2 d-inline">Mature Size</h4>
           <span>(Just grab the slider dots)</span><br />
-          <div className="mt-2 row">
-            <div className="col-sm-5">
-              <PlantSlider label="Height (ft)" onChange={ this.onHeightChanged.bind(this) } />
+          <div className="mt-2 row d-flex justify-content-center">
+            <div className="col-sm-5 mr-2">
+              <PlantSlider
+                label="Height (ft)"
+                description="(Any size)"
+                onChange={ this.onHeightChanged.bind(this) } />
             </div>
             <div
               style={{ width: "1px", borderRight: "1px dashed grey", marginLeft: "-0.5px" }}
             />
-            <div className="col-sm-5">
-              <PlantSlider label="Width (ft)" onChange={ this.onWidthChanged.bind(this) } />
+            <div className="col-sm-5 ml-2">
+              <PlantSlider
+                label="Width (ft)"
+                description="(Any size)"
+                onChange={ this.onWidthChanged.bind(this) } />
             </div>
           </div>
         </div>
-
 
       </div>
     );
   }
 }
+
+export default SideBar;

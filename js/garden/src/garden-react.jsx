@@ -1,5 +1,8 @@
 "use strict";
 
+import InfographicDropdown from "./infographic-dropdown.jsx";
+import SideBar from "./sidebar.jsx";
+
 class SearchResultContainer extends React.Component {
   constructor(props) {
     super(props);
@@ -34,7 +37,7 @@ class GardenPageApp extends React.Component {
       <div>
         <InfographicDropdown />
         <MainContentContainer>
-          <SideBar />
+          <SideBar style={{ minWidth: "25em", background: "#DFEFD3" }} />
           <SearchResultContainer />
         </MainContentContainer>
       </div>

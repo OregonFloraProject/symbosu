@@ -57,18 +57,18 @@ body {
 }
 
 .slider-tick {
-  width: 0.25em;
-  margin-left: 0;
-  margin-right: 0;
-  border-radius: 0.1em;
+  width: 0.25em !important;
+  border-radius: 0.1em !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+.slider-handle {
+  border: 0.2em solid white !important;
 }
 
 .slider-handle, .tick-slider-selection, .in-selection {
   background-image: linear-gradient(to bottom, #5FB021 0, #288000 100%) !important;
   background-image: -webkit-linear-gradient(top, #5FB021 0, #288000 100%) !important;
   background-image: -o-linear-gradient(top, #5FB021 0, #288000 100%) !important;
-}
-
-.slider-handle {
-  border: 0.2em solid white;
 }

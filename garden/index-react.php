@@ -15,7 +15,6 @@ header("Content-Type: text/html; charset=".$CHARSET);
 
     <script type="text/javascript" src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
     <script type="text/javascript" src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
-    <script type="text/javascript" src="https://unpkg.com/@babel/standalone/babel.min.js" crossorigin></script>
   </head>
   <body>
     <?php
@@ -24,9 +23,7 @@ header("Content-Type: text/html; charset=".$CHARSET);
 
     <div id="page-content" style="min-height: 50em;">
       <div id="react-app"></div>
-      <script type="text/babel" src="<?php echo $CLIENT_ROOT ?>/js/garden/infographic-dropdown.jsx"></script>
-      <script type="text/babel" src="<?php echo $CLIENT_ROOT ?>/js/garden/sidebar.jsx"></script>
-      <script type="text/babel" src="<?php echo $CLIENT_ROOT ?>/js/garden/garden-react.jsx"></script>
+      <script type="text/javascript" src="<?php echo $CLIENT_ROOT ?>/js/garden/dist/garden.js"></script>
     </div>
 
     <!-- Header includes jquery, so add jquery scripts after header -->

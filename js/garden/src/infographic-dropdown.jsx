@@ -75,3 +75,5 @@ class InfographicDropdown extends React.Component {
     );
   }
 }
+
+export default InfographicDropdown;
