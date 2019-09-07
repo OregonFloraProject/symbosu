@@ -21,11 +21,6 @@ header("Content-Type: text/html; charset=".$CHARSET);
     include("$SERVER_ROOT/header.php");
     ?>
 
-    <div id="page-content" style="min-height: 50em;">
-      <div id="react-app"></div>
-      <script type="text/javascript" src="<?php echo $CLIENT_ROOT ?>/js/garden/dist/garden.js"></script>
-    </div>
-
     <!-- Header includes jquery, so add jquery scripts after header -->
     <link
       rel="stylesheet"
@@ -37,6 +32,11 @@ header("Content-Type: text/html; charset=".$CHARSET);
       integrity="sha256-oj52qvIP5c7N6lZZoh9z3OYacAIOjsROAcZBHUaJMyw="
       crossorigin="anonymous">
     </script>
+
+    <div id="page-content" style="min-height: 50em;">
+      <div id="react-app"></div>
+      <script type="text/javascript" src="<?php echo $CLIENT_ROOT ?>/js/garden/dist/garden.js"></script>
+    </div>
 
     <?php
     include("$SERVER_ROOT/footer.php");

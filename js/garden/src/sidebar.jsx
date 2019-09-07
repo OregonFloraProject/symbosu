@@ -17,12 +17,27 @@ const searchButtonStyle = {
   background: "rgba(255, 255, 255, 0.5)"
 };
 
-/**
- * @param {Element} slider Bootstrap slider
- * @returns {number[]} Current [min, max] for the given slider
- */
-function getSliderValues(slider) {
-  return slider.val().trim("[]").split(",").map((str) => parseInt(str));
+function getSliderDescription(valueArray) {
+  let valueDesc;
+
+  // Fix if the handles have switched
+  if (valueArray[0] > valueArray[1]) {
+    let tmp = valueArray[0];
+    valueArray[0] = valueArray[1];
+    valueArray[1] = tmp;
+  }
+
+  if (valueArray[0] === 0 && valueArray[1] === 50) {
+    valueDesc = "(Any size)";
+  } else if (valueArray[0] === 0) {
+    valueDesc = `(At most ${valueArray[1]} ft)`;
+  } else if (valueArray[1] === 50) {
+    valueDesc = `(At least ${valueArray[0]} ft)`;
+  } else {
+    valueDesc = `(${valueArray[0]} ft - ${valueArray[1]} ft)`
+  }
+
+  return valueDesc;
 }
 
 /**
@@ -78,7 +93,8 @@ function SideBarSearch(props) {
         type="text"
         placeholder="Search plants by name"
         className="form-control"
-        onChange={ props.onChange } />
+        onChange={ props.onChange }
+        value={ props.value } />
       <SearchButton onClick={ props.onClick } showLoading={ props.isLoading } />
     </div>
   );
@@ -98,7 +114,7 @@ function PlantNeed(props) {
         name={ props.label.toLowerCase() }
         className="form-control ml-auto"
         style={{ maxWidth: "50%" }}
-        defaultValue=""
+        value={ props.value }
         onChange={ props.onChange }>
         <option value="" disabled hidden>Select...</option>
         {
@@ -113,29 +129,52 @@ function PlantNeed(props) {
   );
 }
 
-function PlantSlider(props) {
-  return (
-    <div>
-      <label className="d-block text-center" htmlFor={ props.label.toLowerCase() }>{ props.label }</label>
-      <input
-        type="text"
-        className="bootstrap-slider"
-        name={ props.label.toLowerCase() }
-        data-provide="slider"
-        data-slider-value="[0, 50]"
-        data-slider-ticks="[0, 10, 20, 30, 40, 50]"
-        data-slider-ticks-labels='["0", "", "", "", "", "50+"]'
-        data-slider-ticks-snap-bounds="1"
-        value=""
-        onInput={ props.onChange }
-        onChange={ props.onChange }
-      />
-      <br/>
-      <label className="d-block text-center" htmlFor={ props.label.toLowerCase() }>
-        { props.description }
-      </label>
-    </div>
-  );
+class PlantSlider extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { description: "(Any size)" }
+  }
+
+  componentDidMount() {
+    const sliderId = `slider-container-${this.props.name}`;
+    this.slider = new Slider(`#${sliderId}`);
+
+    if (this.props.onChange) {
+      const onChangeEvent = this.props.onChange;
+      this.slider.on("slide", (sliderArray) => {
+        this.setState({ description: getSliderDescription(sliderArray) });
+        const fakeEvent = { target: { value: sliderArray } };
+        onChangeEvent(fakeEvent);
+      });
+    }
+  }
+
+  componentWillUnmount() {
+    this.slider.destroy();
+  }
+
+  render() {
+    return (
+      <div>
+        <label className="d-block text-center" htmlFor={ this.props.name }>{ this.props.label }</label>
+        <input
+          id={ "slider-container-" + this.props.name }
+          type="text"
+          className="bootstrap-slider"
+          name={ this.props.name }
+          data-slider-value="[0, 50]"
+          data-slider-ticks="[0, 10, 20, 30, 40, 50]"
+          data-slider-ticks-labels='["0", "", "", "", "", "50+"]'
+          data-slider-ticks-snap-bounds="1"
+          onChange={ (e) => this.props.onChange(e) }
+        />
+        <br/>
+        <label className="d-block text-center" htmlFor={ this.props.name }>
+          { this.state.description }
+        </label>
+      </div>
+    );
+  }
 }
 
 /**
@@ -150,11 +189,20 @@ class SideBar extends React.Component {
       moisture: '',
       width: [0, 50],
       height: [0, 50],
+      widthDesc: "(Any size)",
+      heightDesc: "(Any size)",
       isLoading: false
-    }
+    };
+
+    this.onSearchTextChanged =  this.onSearchTextChanged.bind(this);
+    this.onSearch = this.onSearch.bind(this);
+    this.onSunlightChanged = this.onSunlightChanged.bind(this);
+    this.onMoistureChanged = this.onMoistureChanged.bind(this);
+    this.onHeightChanged =  this.onHeightChanged.bind(this);
+    this.onWidthChanged = this.onWidthChanged.bind(this);
   }
 
-  onSearchTextChanged() {
+  onSearchTextChanged(event) {
     this.setState({ searchText: event.target.value });
   }
 
@@ -166,24 +214,24 @@ class SideBar extends React.Component {
     setTimeout(() => { this.setState({ isLoading: false }) }, 3000);
   }
 
-  onSunlightChanged() {
+  onSunlightChanged(event) {
     console.log("The current sunlight value is '" + event.target.value + "'");
     this.setState({ sunlight: event.target.value });
   }
 
-  onMoistureChanged() {
+  onMoistureChanged(event) {
     console.log("The current moisture value is '" + event.target.value + "'");
     this.setState({ moisture: event.target.value });
   }
 
-  onHeightChanged() {
-    console.log("The current height value is '" + event.target.value + "'");
-    this.setState({ height: getSliderValues(event.target.value) });
+  onHeightChanged(event) {
+    this.setState({ height: event.target.value });
+    console.log("The current height value is " + this.state.height);
   }
 
-  onWidthChanged() {
-    console.log("The current width value is '" + event.target.value + "'");
-    this.setState({ width: getSliderValues(event.target.value) });
+  onWidthChanged(event) {
+    this.setState({ width: event.target.value });
+    console.log("The current width value is " + this.state.width);
   }
 
   render() {
@@ -197,9 +245,10 @@ class SideBar extends React.Component {
 
         {/* Search */}
         <SideBarSearch
-          onChange={ this.onSearchTextChanged.bind(this) }
-          onClick={ this.onSearch.bind(this) }
+          onChange={ this.onSearchTextChanged }
+          onClick={ this.onSearch }
           isLoading={ this.state.isLoading }
+          value={ this.state.search }
         />
 
         {/* Sunlight & Moisture */}
@@ -208,11 +257,13 @@ class SideBar extends React.Component {
           <PlantNeed
             label="Sunlight"
             choices={ ["Sun", "Part-Shade", "Full-Shade"] }
-            onChange={ this.onSunlightChanged.bind(this) } />
+            value={ this.state.sunlight }
+            onChange={ this.onSunlightChanged } />
           <PlantNeed
             label="Moisture"
             choices={ ["Dry", "Moderate", "Wet"] }
-            onChange={ this.onMoistureChanged.bind(this) } />
+            value={ this.state.moisture }
+            onChange={ this.onMoistureChanged } />
         </div>
 
         {/* Sliders */}
@@ -223,8 +274,9 @@ class SideBar extends React.Component {
             <div className="col-sm-5 mr-2">
               <PlantSlider
                 label="Height (ft)"
-                description="(Any size)"
-                onChange={ this.onHeightChanged.bind(this) } />
+                name="height"
+                description={ this.state.heightDesc }
+                onChange={ this.onHeightChanged } />
             </div>
             <div
               style={{ width: "1px", borderRight: "1px dashed grey", marginLeft: "-0.5px" }}
@@ -232,8 +284,9 @@ class SideBar extends React.Component {
             <div className="col-sm-5 ml-2">
               <PlantSlider
                 label="Width (ft)"
-                description="(Any size)"
-                onChange={ this.onWidthChanged.bind(this) } />
+                name="width"
+                description={ this.state.widthDesc }
+                onChange={ this.onWidthChanged } />
             </div>
           </div>
         </div>
