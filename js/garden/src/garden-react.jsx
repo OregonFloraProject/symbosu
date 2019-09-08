@@ -15,7 +15,7 @@ function getUrlQueryParams(url) {
       params[key] = val;
     }
   } catch (e) {
-    console.error(`error parsing query params: ${e}`);
+    // console.error(`error parsing query params: ${e}`);
   }
 
   return params;
