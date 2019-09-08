@@ -95,12 +95,12 @@ function SearchButton(props) {
   return (
     <button className="my-auto" style={ searchButtonStyle } onClick={ props.onClick }>
       <img
-        style={{ display: props.showLoading ? "none" : "block" }}
+        style={{ display: props.isLoading ? "none" : "block" }}
         src="/images/garden/search-green.png"
         alt="search plants"/>
       <div
         className="mx-auto text-success spinner-border spinner-border-sm"
-        style={{ display: props.showLoading ? "block" : "none" }}
+        style={{ display: props.isLoading ? "block" : "none" }}
         role="status"
         aria-hidden="true"/>
     </button>
@@ -110,19 +110,36 @@ function SearchButton(props) {
 /**
  * Sidebar 'plant search' text field & button
  */
-function SideBarSearch(props) {
-  return (
-    <div className="input-group w-100 mb-4 p-2">
-      <input
-        name="search"
-        type="text"
-        placeholder="Search plants by name"
-        className="form-control"
-        onChange={ props.onChange }
-        value={ props.value } />
-      <SearchButton onClick={ props.onClick } showLoading={ props.isLoading } />
-    </div>
-  );
+class SideBarSearch extends React.Component {
+  constructor(props) {
+    super(props);
+    this.onKeyUp = this.onKeyUp.bind(this);
+  }
+
+  onKeyUp(event) {
+    const enterKey = 13;
+    if ((event.which || event.keyCode) === enterKey) {
+      event.preventDefault();
+      const fakeEvent = { target: { value: this.props.value } };
+      this.props.onClick(fakeEvent);
+    }
+  }
+
+  render() {
+    return (
+      <div className="input-group w-100 mb-4 p-2">
+        <input
+          name="search"
+          type="text"
+          placeholder="Search plants by name"
+          className="form-control"
+          onKeyUp={ this.onKeyUp }
+          onChange={ this.props.onChange }
+          value={ this.props.value }/>
+        <SearchButton onClick={ this.props.onClick } isLoading={ this.props.isLoading }/>
+      </div>
+    );
+  }
 }
 
 /**
@@ -135,16 +152,18 @@ function PlantNeed(props) {
         { props.label }
       </label>
       <select
-        id="sunlight"
-        name={ props.label.toLowerCase() }
+        name={ props.label.toLowerCase().replace(/[^a-z]/g, '') }
         className="form-control ml-auto"
         style={{ maxWidth: "50%" }}
         value={ props.value }
         onChange={ props.onChange }>
-        <option value="" disabled hidden>Select...</option>
+        <option key="select" value="" disabled hidden>Select...</option>
         {
           props.choices.map((opt) =>
-            <option key={ opt.toLowerCase() } value={ opt.toLowerCase() }>
+            <option
+              key={ opt.toLowerCase().replace(/[^a-z]/g, '') }
+              value={ opt.toLowerCase().replace(/[^a-z]/g, '') }
+            >
               { opt }
             </option>
           )
@@ -224,7 +243,7 @@ class SideBarDropdown extends React.Component {
 
     return (
       <div
-        className={ "my-3 py-auto row" + (this.props.disabled === "true" ? " dropdown-disabled" : "") }
+        className={ "my-3 py-auto row" + (this.props.disabled === true ? " dropdown-disabled" : "") }
         style={ this.props.style } >
         <h4 className="mx-0 my-auto col" style={{ cursor: "default", fontSize: this.props.style.fontSize }}>
           {this.props.title}
@@ -269,51 +288,18 @@ class SideBar extends React.Component {
     super(props);
     this.state = {
       search: '',
-      sunlight: '',
-      moisture: '',
-      width: [0, 50],
-      height: [0, 50],
-      isLoading: false
     };
 
-    this.onSearchTextChanged =  this.onSearchTextChanged.bind(this);
+    this.onSearchTextChanged = this.onSearchTextChanged.bind(this);
     this.onSearch = this.onSearch.bind(this);
-    this.onSunlightChanged = this.onSunlightChanged.bind(this);
-    this.onMoistureChanged = this.onMoistureChanged.bind(this);
-    this.onHeightChanged =  this.onHeightChanged.bind(this);
-    this.onWidthChanged = this.onWidthChanged.bind(this);
   }
 
   onSearchTextChanged(event) {
-    this.setState({ searchText: event.target.value });
+    this.setState({ search: event.target.value });
   }
 
   onSearch() {
-    this.setState({ isLoading: true });
-
-    // TODO: Search!
-    console.log("The current search value is '" + this.state.search + "'");
-    setTimeout(() => { this.setState({ isLoading: false }) }, 3000);
-  }
-
-  onSunlightChanged(event) {
-    console.log("The current sunlight value is '" + event.target.value + "'");
-    this.setState({ sunlight: event.target.value });
-  }
-
-  onMoistureChanged(event) {
-    console.log("The current moisture value is '" + event.target.value + "'");
-    this.setState({ moisture: event.target.value });
-  }
-
-  onHeightChanged(event) {
-    this.setState({ height: event.target.value });
-    console.log("The current height value is " + this.state.height);
-  }
-
-  onWidthChanged(event) {
-    this.setState({ width: event.target.value });
-    console.log("The current width value is " + this.state.width);
+    this.props.onSearch(this.state.search);
   }
 
   render() {
@@ -322,6 +308,7 @@ class SideBar extends React.Component {
         id="sidebar"
         className="col-sm-3 m-2 p-5 rounded-border"
         style={ this.props.style }>
+
         {/* Title & Subtitle */}
         <SideBarHeading />
 
@@ -329,8 +316,8 @@ class SideBar extends React.Component {
         <SideBarSearch
           onChange={ this.onSearchTextChanged }
           onClick={ this.onSearch }
-          isLoading={ this.state.isLoading }
           value={ this.state.search }
+          isLoading={ this.props.isLoading }
         />
 
         {/* Sunlight & Moisture */}
@@ -339,13 +326,13 @@ class SideBar extends React.Component {
           <PlantNeed
             label="Sunlight"
             choices={ ["Sun", "Part-Shade", "Full-Shade"] }
-            value={ this.state.sunlight }
-            onChange={ this.onSunlightChanged } />
+            value={ this.props.sunlight }
+            onChange={ this.props.onSunlightChanged } />
           <PlantNeed
             label="Moisture"
             choices={ ["Dry", "Moderate", "Wet"] }
-            value={ this.state.moisture }
-            onChange={ this.onMoistureChanged } />
+            value={ this.props.moisture }
+            onChange={ this.props.onMoistureChanged } />
         </div>
 
         {/* Sliders */}
@@ -357,7 +344,7 @@ class SideBar extends React.Component {
               <PlantSlider
                 label="Height (ft)"
                 name="height"
-                onChange={ this.onHeightChanged } />
+                onChange={ this.props.onHeightChanged } />
             </div>
             <div
               style={{ width: "1px", borderRight: "1px dashed grey", marginLeft: "-0.5px" }}
@@ -366,7 +353,7 @@ class SideBar extends React.Component {
               <PlantSlider
                 label="Width (ft)"
                 name="width"
-                onChange={ this.onWidthChanged } />
+                onChange={ this.props.onWidthChanged } />
             </div>
           </div>
         </div>
@@ -376,11 +363,18 @@ class SideBar extends React.Component {
           <SideBarDropdown title="Plant features" />
           <SideBarDropdown title="Growth & maintenance" />
           <SideBarDropdown title="Beyond the garden" />
-          <SideBarDropdown title="Availability (Coming soon)" disabled="true" />
+          <SideBarDropdown title="Availability (Coming soon)" disabled={ true } />
         </div>
       </div>
     );
   }
 }
+
+SideBar.defaultProps = {
+  sunlight: '',
+  moisture: '',
+  width: [0, 50],
+  height: [0, 50],
+};
 
 export default SideBar;

@@ -93,3 +93,11 @@ button {
 .dropdown-disabled button {
   cursor: not-allowed;
 }
+
+.card a {
+  color: black !important;
+}
+
+.card a:hover {
+  text-decoration: none;
+}

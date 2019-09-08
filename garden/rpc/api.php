@@ -1,6 +1,6 @@
 <?php
   include_once("../../config/symbini.php");
-  include_once($SERVER_ROOT . "/config/dbconnection.php");
+  include_once($GLOBALS["SERVER_ROOT"] . "/config/dbconnection.php");
 
 /**
    * Runs the given query & returns the results as an array of associative arrays
@@ -28,9 +28,6 @@
    * Returns the most prominent image for the given taxa ID
    */
   function get_image_for_tid($tid) {
-    global $IMAGE_ROOT_URL;
-    global $IMAGE_DOMAIN;
-
     $sql = "SELECT i.thumbnailurl FROM images AS i WHERE tid = $tid ORDER BY i.sortsequence LIMIT 1;";
     $res = run_query($sql);
 
@@ -38,11 +35,11 @@
       $result = $res[0]["thumbnailurl"];
 
       if (substr($result, 0, 4) !== "http") {
-        if (isset($IMAGE_ROOT_URL)) {
-          $result = $IMAGE_ROOT_URL . $result;
+        if (key_exists("IMAGE_ROOT_URL", $GLOBALS)) {
+          $result = $GLOBALS["IMAGE_ROOT_URL"] . $result;
         }
-        if (isset($IMAGE_DOMAIN)) {
-          $result = $IMAGE_DOMAIN . $result;
+        if (key_exists("IMAGE_DOMAIN", $GLOBALS)) {
+          $result = $GLOBALS["IMAGE_DOMAIN"] . $result;
         }
       }
 
