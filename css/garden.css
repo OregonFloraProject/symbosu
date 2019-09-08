@@ -4,125 +4,63 @@ body {
   padding: 0;
 }
 
-#choose-native-dropdown {
+button {
+  background: none;
+  outline: none !important;
+}
+
+#infographic-dropdown {
   position: relative;
-  padding: 2em;
+  background-image: url(/images/garden/DIG4082-green@2x.png);
 }
 
-#page-title {
-  width: 50%;
+@media only screen and (max-width: 600px) {
+  #infographic-dropdown {
+    display: none;
+  }
 }
 
-#page-title.faded-out {
-  width: 100%;
-}
-
-#choose-native-dropdown-button {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-
-  margin-right: 2em;
-  margin-top: 1em;
-  margin-bottom: 1em;
-
-  width: 4em;
-  height: 4em;
-
-  opacity: 0.5;
-}
-
-#choose-native-dropdown-text {
-  display: grid;
-  grid-template-columns: 75% 25%;
-  grid-auto-flow: column;
-  grid-gap: 1em;
-  padding: 2em;
-}
-
-#innertext, #choose-native-dropdown div > * {
+#infographic-dropdown * {
   color: white !important;
 }
 
-#innertext {
-  max-width: 100%;
-  padding: 1.5em;
-
-  display: grid;
-  grid-template-columns: 1fr 3fr;
-  grid-template-rows: 10em auto;
-  grid-gap: 2em;
+.will-v-flip {
+  transition: transform 0.5s;
 }
 
-#innertext > div {
-  background: #DFEFD3;
+.v-flip {
+  transform: rotate(-180deg);
+  transition: transform 0.5s;
+}
+
+.will-collapse {
+  max-height: 1000px;
+  transition: opacity 0.5s 0.5s, max-height 1s;
+}
+
+.is-collapsed {
+  opacity: 0;
+  max-height: 0;
+  transition: opacity 0.5s, max-height 1s;
+}
+
+.rounded-border {
   border-radius: 1em;
-  padding: 2em;
-  min-width: 0;
-  max-width: 100%;
 }
 
-#innertext #search-sidebar {
-  grid-row: 1 / -1;
-  grid-column-start: 1;
-  min-width: 323px;
+#sidebar {
+  min-width: 25em;
+  min-height: fit-content;
+
+  max-width: 25em;
+  max-height: fit-content;
 }
 
-#innertext #canned-searches {
-  grid-row-start: 1;
-  grid-column-start: 2;
-}
-
-#innertext #search-results {
-  grid-row-start: 2;
-  grid-column-start: 2;
-}
-
-#innertext #search-results .card {
-  margin: 0.25em;
-  padding: 0.5em;
-
-  min-width: 100px;
-  max-width: 250px;
-
-  box-shadow: 2px 2px 16px rgba(100, 100, 100, 0.5);
-  transition: box-shadow 0.5s;
-}
-
-#innertext #search-results .card:hover {
-  box-shadow: 2px 4px 18px rgba(100, 100, 100, 1);
-  transition: box-shadow 0.1s;
-}
-
-#innertext #search-results .card .card-title, .card-body {
-  text-transform: capitalize;
-  font-size: 0.9rem;
-}
-
-#innertext #search-results .card a:hover {
-  text-decoration: none;
-}
-
-#innertext #search-results .card .card-img-top {
-  max-height: 200px;
-  width: 100%;
-  object-fit: cover;
-}
-
-#innertext #search-sidebar, #search-sidebar *, #search-results .card-body {
+#sidebar * {
   color: black !important;
 }
 
-#innertext #search-sidebar #search-help {
-  display: inline;
-  float: right;
-  margin-left: auto;
-  border-radius: 50%;
-  background: #5FB021;
-  width: 1.25em;
-}
-
-#innertext #search-sidebar input::placeholder {
+#sidebar input::placeholder {
   color: #9FD07A;
 }
 
@@ -219,63 +157,47 @@ body {
   border-right: 1px dashed grey;
 }
 
-#innertext #search-sidebar #plant-size label {
-  display: block;
-  text-align: center;
+.slider-tick {
+  width: 0.25em !important;
+  border-radius: 0.1em !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
 }
 
-#innertext #search-sidebar .slider-horizontal {
-  width: 100% !important;
+.slider-handle {
+  border: 0.2em solid white !important;
 }
 
-#innertext #search-sidebar .slider-tick {
-  width: 0.25em;
-  margin-left: 0;
-  margin-right: 0;
-  border-radius: 0.1em;
-}
-
-#innertext #search-sidebar .slider-handle, .tick-slider-selection, .in-selection {
+.slider-handle, .tick-slider-selection, .in-selection {
   background-image: linear-gradient(to bottom, #5FB021 0, #288000 100%) !important;
   background-image: -webkit-linear-gradient(top, #5FB021 0, #288000 100%) !important;
   background-image: -o-linear-gradient(top, #5FB021 0, #288000 100%) !important;
 }
 
-#innertext #search-sidebar .slider-handle {
-  border: 0.2em solid white;
+.dropdown-disabled, .dropdown-disabled * {
+  opacity: 0.7 !important;
 }
 
-#innertext #search-sidebar #search-plants-btn {
-  width: 2em;
-  height: 2em;
-  background: rgba(255, 255, 255, 0.5) !important;
-  padding: 0.3em;
-  margin-left: 0.5em;
-  border-radius: 50%;
+.dropdown-disabled button {
+  cursor: not-allowed;
 }
 
-#innertext #search-sidebar #search-plants-btn:hover {
-  background: rgba(0, 100, 50, 0.1) !important;
+.card {
+  box-shadow: 0 0.1em 0.5em 0.1em rgba(100, 100, 100, 0.3);
 }
 
-#innertext #search-sidebar #search-plants-btn:disabled, #innertext #search-sidebar #search-plants-btn:disabled:hover {
-  background: rgba(255, 255, 255, 0.5) !important;
+.card:hover {
+  background: #DFEFD3 !important;
 }
 
-#innertext #search-sidebar .sidebar-dropdown {
-  padding: 1em;
-  margin-top: 1em;
+.card a:hover {
+  text-decoration: none;
 }
 
-#innertext #search-sidebar .arrow {
-  display: inline-block;
-  float: right;
-
-  height: 2em;
-  background: black;
-  border-radius: 50%;
-}
-
-#innertext #search-sidebar #availability {
-  opacity: 0.3;
+.card-text {
+  text-transform: capitalize;
+  font-weight: bold;
+  text-align: center;
+  font-size: 0.8vw;
+  color: #1E352F !important;
 }

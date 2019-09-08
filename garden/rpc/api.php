@@ -77,20 +77,25 @@
    * Returns all unique taxa with thumbnail urls
    */
   function get_garden_taxa($params) {
-    // If search args is null, quit here
-    if (!key_exists("search", $params) || $params["search"] === "" || $params["search"] === null) {
-      return [];
+    $clidGardenAll = 54;
+
+    $search = null;
+    if (key_exists("search", $params) && $params["search"] !== "" && $params["search"] !== null) {
+      $search = $params["search"];
     }
 
     // TODO: Clean params
 
-    # Select all species & below (t.rankid >= 200) that have some sort of name
+    # Select all garden taxa that have some sort of name
     $sql = "SELECT t.tid, t.sciname, v.vernacularname FROM taxa as t ";
     $sql .= "LEFT JOIN taxavernaculars AS v ON t.tid = v.tid ";
-    $sql .= "WHERE t.rankid >= 220 AND (t.sciname IS NOT NULL OR v.vernacularname IS NOT NULL) ";
+    $sql .= "RIGHT JOIN fmchklsttaxalink AS chk ON t.tid = chk.tid ";
+    $sql .= "WHERE chk.clid = $clidGardenAll ";
+    $sql .= "AND (t.sciname IS NOT NULL OR v.vernacularname IS NOT NULL) ";
 
-    $search = $params["search"];
-    $sql .= "AND (t.sciname LIKE '$search%' OR v.vernacularname LIKE '$search%') ";
+    if ($search !== null) {
+      $sql .= "AND (t.sciname LIKE '$search%' OR v.vernacularname LIKE '$search%') ";
+    }
 
     $sql .= "GROUP BY t.tid ORDER BY v.vernacularname;";
 

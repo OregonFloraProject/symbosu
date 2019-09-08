@@ -29,13 +29,13 @@ class SearchResultGrid extends React.Component {
   render() {
     return (
       <div
-        className="col m-2 p-5 rounded-border w-100"
+        className="row mt-2 w-100"
         style={{
-          background: "#DFEFD3",
           display: "grid",
           gridTemplateRows: "repeat(4, 15em)",
           gridTemplateColumns: "repeat(5, 1fr)",
-          gridGap: "0.5em"
+          gridGap: "0.5em",
+          justifyContent: "center"
         }}
       >
         { this.props.children }

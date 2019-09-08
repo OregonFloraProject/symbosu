@@ -3,6 +3,23 @@
 import InfographicDropdown from "./infographic-dropdown.jsx";
 import SideBar from "./sidebar.jsx";
 import { SearchResultGrid, SearchResult } from "./search-results.jsx";
+import CannedSearchContainer from "./canned-searches.jsx";
+
+function getUrlQueryParams(url) {
+  let params = {};
+  try {
+    let queryParams = url.split("?")[1].split("&");
+    for (let i = 0; i < queryParams.length; i++) {
+      console.log(queryParams[i]);
+      let [key, val] = queryParams[i].split("=");
+      params[key] = val;
+    }
+  } catch (e) {
+    console.error(`error parsing query params: ${e}`);
+  }
+
+  return params;
+}
 
 /**
  * @param url URL to GET
@@ -30,7 +47,7 @@ function getTaxaPage(tid) {
 
 function MainContentContainer(props) {
   return (
-    <div className="container-fluid">
+    <div className="container-fluid p-4">
       <div className="row">
         {props.children}
       </div>
@@ -56,6 +73,16 @@ class GardenPageApp extends React.Component {
     this.onMoistureChanged =  this.onMoistureChanged.bind(this);
     this.onHeightChanged =  this.onHeightChanged.bind(this);
     this.onWidthChanged =  this.onWidthChanged.bind(this);
+  }
+
+  componentDidMount() {
+    // Load initial results
+    let queryParams = getUrlQueryParams(window.location.search);
+    let search = '';
+    if ("search" in queryParams) {
+      search = queryParams["search"];
+    }
+    this.onSearch(search);
   }
 
   // On search start
@@ -120,20 +147,26 @@ class GardenPageApp extends React.Component {
             onHeightChanged={ this.onHeightChanged }
             onWidthChanged={ this.onWidthChanged }
           />
-          <SearchResultGrid>
-            {
-              this.state.searchResults.map((result, idx) =>
-                <SearchResult
-                  style={{ display: (idx < 19 ? "initial" : "none") }}
-                  key={ result.tid }
-                  href={ getTaxaPage(result.tid) }
-                  src={ result.image }
-                  commonName={ result.vernacularname ? result.vernacularname : '' }
-                  sciName={ result.sciname }
-                />
-              )
-            }
-          </SearchResultGrid>
+          <div className="col mx-2">
+            <CannedSearchContainer>
+
+            </CannedSearchContainer>
+            <SearchResultGrid>
+              {
+                this.state.searchResults.map((result, idx) =>
+                  <SearchResult
+                    style={{ display: (idx <= 19 ? "initial" : "none") }}
+                    key={ result.tid }
+                    href={ getTaxaPage(result.tid) }
+                    src={ result.image }
+                    commonName={ result.vernacularname ? result.vernacularname : '' }
+                    sciName={ result.sciname }
+                  />
+                )
+              }
+            </SearchResultGrid>
+          </div>
+
         </MainContentContainer>
       </div>
     );
