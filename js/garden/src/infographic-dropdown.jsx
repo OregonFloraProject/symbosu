@@ -55,7 +55,6 @@ class InfographicDropdown extends React.Component {
             position: "absolute",
             bottom: 0,
             right: 0,
-            background: "none",
             marginRight: "1em",
             marginBottom: "0.5em"
           }}

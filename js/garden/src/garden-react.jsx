@@ -37,7 +37,7 @@ class GardenPageApp extends React.Component {
       <div>
         <InfographicDropdown />
         <MainContentContainer>
-          <SideBar style={{ minWidth: "25em", background: "#DFEFD3" }} />
+          <SideBar style={{ background: "#DFEFD3" }} />
           <SearchResultContainer />
         </MainContentContainer>
       </div>
