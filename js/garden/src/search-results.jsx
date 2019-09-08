@@ -1,25 +1,20 @@
 function SearchResult(props) {
-  let resStyle = Object.assign({ position: "relative", width: "100%", height: "100%" }, props.style);
+  let resStyle = Object.assign(
+    { width: "100%", height: "100%", padding: "0.5em" },
+    props.style
+  );
   return (
     <div className="card" style={ resStyle }>
       <a href={ props.href }>
         <img
           className="card-img-top d-block"
-          style={{ maxHeight: "50%", width: "100%", objectFit: "cover" }}
+          style={{ height: "60%", width: "100%", objectFit: "cover", borderRadius: "0.25em" }}
           alt={ props.title }
           src={ props.src }
         />
-        <div className="card-body" style={{ maxHeight: "50%", overflow: "hidden" }}>
-          <h5
-            style={{
-              textTransform: "capitalize",
-              color: "black",
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-            }}>
-            { props.title }
-          </h5>
-          <p className="card-text" style={{ textTransform: "capitalize" }}>{ props.text }</p>
+        <div className="card-body" style={{ height: "40%", overflow: "hidden" }}>
+          <div className="card-text">{ props.commonName }</div>
+          <div className="card-text">{ props.sciName }</div>
         </div>
       </a>
     </div>

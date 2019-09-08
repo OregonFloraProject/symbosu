@@ -128,8 +128,8 @@ class GardenPageApp extends React.Component {
                   key={ result.tid }
                   href={ getTaxaPage(result.tid) }
                   src={ result.image }
-                  title={ result.sciname }
-                  text={ result.vernacularname ? result.vernacularname : result.sciname }
+                  commonName={ result.vernacularname ? result.vernacularname : '' }
+                  sciName={ result.sciname }
                 />
               )
             }

@@ -94,10 +94,22 @@ button {
   cursor: not-allowed;
 }
 
-.card a {
-  color: black !important;
+.card {
+  box-shadow: 0 0.1em 0.5em 0.1em rgba(100, 100, 100, 0.3);
+}
+
+.card:hover {
+  background: #DFEFD3 !important;
 }
 
 .card a:hover {
   text-decoration: none;
+}
+
+.card-text {
+  text-transform: capitalize;
+  font-weight: bold;
+  text-align: center;
+  font-size: 0.8vw;
+  color: #1E352F !important;
 }
