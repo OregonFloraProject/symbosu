@@ -2,6 +2,8 @@
   include_once("../../config/symbini.php");
   include_once($GLOBALS["SERVER_ROOT"] . "/config/dbconnection.php");
 
+  $clidGardenAll = 54;
+
 /**
    * Runs the given query & returns the results as an array of associative arrays
    */
@@ -74,11 +76,34 @@
   }
 
   /**
+   * @return {[]} Canned searches for the garden page
+   */
+  function get_canned_searches() {
+    $sql = "select clid, name, iconurl from fmchecklists where parentclid = " . $GLOBALS["clidGardenAll"] . ";";
+    $resultsTmp = run_query($sql);
+    $results = [];
+
+    foreach ($resultsTmp as $result) {
+//      if (substr($result["iconurl"], 0, 4) !== "http") {
+//        if (key_exists("IMAGE_ROOT_URL", $GLOBALS)) {
+//          $result["iconurl"] = $GLOBALS["IMAGE_ROOT_URL"] . $result;
+//        }
+//        if (key_exists("IMAGE_DOMAIN", $GLOBALS)) {
+//          $result["iconurl"] = $GLOBALS["IMAGE_DOMAIN"] . $result;
+//        }
+//      }
+      // Temp for testing
+      $result["iconurl"] = explode("portal", $result["iconurl"])[1];
+      array_push($results, $result);
+    }
+
+    return $results;
+  }
+
+  /**
    * Returns all unique taxa with thumbnail urls
    */
   function get_garden_taxa($params) {
-    $clidGardenAll = 54;
-
     $search = null;
     if (key_exists("search", $params) && $params["search"] !== "" && $params["search"] !== null) {
       $search = $params["search"];
@@ -90,7 +115,7 @@
     $sql = "SELECT t.tid, t.sciname, v.vernacularname FROM taxa as t ";
     $sql .= "LEFT JOIN taxavernaculars AS v ON t.tid = v.tid ";
     $sql .= "RIGHT JOIN fmchklsttaxalink AS chk ON t.tid = chk.tid ";
-    $sql .= "WHERE chk.clid = $clidGardenAll ";
+    $sql .= "WHERE chk.clid = " . $GLOBALS["clidGardenAll"] . " ";
     $sql .= "AND (t.sciname IS NOT NULL OR v.vernacularname IS NOT NULL) ";
 
     if ($search !== null) {
@@ -119,6 +144,14 @@
 
   // Begin View
   header("Content-Type", "application/json; charset=utf-8");
-  echo json_encode(get_garden_taxa($_GET), JSON_NUMERIC_CHECK);
+
+  $searchResults = [];
+  if (key_exists("canned", $_GET) && $_GET["canned"] === "true") {
+    $searchResults = get_canned_searches();
+  } else {
+    $searchResults = get_garden_taxa($_GET);
+  }
+
+  echo json_encode($searchResults, JSON_NUMERIC_CHECK);
 ?>
 

@@ -1,12 +1,6 @@
 "use strict";
 
-const helpButtonStyle = {
-  float: "right",
-  padding: 0,
-  marginLeft: "auto",
-  borderRadius: "50%",
-  background: "#5FB021",
-};
+import HelpButton from "./help-button.jsx";
 
 const searchButtonStyle = {
   width: "2em",
@@ -48,36 +42,24 @@ function getSliderDescription(valueArray) {
  * Sidebar header with title, subtitle, and help
  */
 class SideBarHeading extends React.Component {
-  componentDidMount() {
-    const helpButtonId = "sidebar-help-button";
-    const helpButton = document.getElementById(helpButtonId);
-    $(helpButton).popover({
-      title: "Search for plants",
-      html: true,
-      trigger: "focus",
-      placement: "bottom",
-      content: `
-        <ul>
-          <li>As you make selections, the filtered results are immediately displayed in “Your search results”.</li>
-          <li>Any number of search options may be selected, but too many filters may yield no results because no plant meets all the criteria you selected. If so, try removing filters.</li>
-          <li>To remove a search filter, simply click its close (X) button</li>
-          <li>Clicking on any image in the results will open that plants’ garden profile page; the page can be downloaded and printed.</li>
-        </ul>
-      `,
-    });
-  }
-
   render() {
     return (
       <div style={{color: "black"}}>
         <div className="mb-1" style={{color: "inherit"}}>
           <h3 className="font-weight-bold d-inline">Search for plants</h3>
-          <button id="sidebar-help-button" style={helpButtonStyle}>
-            <img
-              style={{width: "1.25em"}}
-              alt="help"
-              src="/images/garden/help.png"/>
-          </button>
+          <HelpButton
+            title="Search for plants"
+            html={
+                    `
+              <ul>
+                <li>As you make selections, the filtered results are immediately displayed in “Your search results”.</li>
+                <li>Any number of search options may be selected, but too many filters may yield no results because no plant meets all the criteria you selected. If so, try removing filters.</li>
+                <li>To remove a search filter, simply click its close (X) button</li>
+                <li>Clicking on any image in the results will open that plants’ garden profile page; the page can be downloaded and printed.</li>
+              </ul>
+            `
+            }
+          />
         </div>
         <p>
           Start applying characteristics, and the matching plants will appear at
@@ -306,7 +288,7 @@ class SideBar extends React.Component {
     return (
       <div
         id="sidebar"
-        className="col-sm-3 m-2 p-5 rounded-border"
+        className="m-2 rounded-border"
         style={ this.props.style }>
 
         {/* Title & Subtitle */}

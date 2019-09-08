@@ -1,8 +1,16 @@
+
 body {
   font-family: 'Source Sans Pro', sans-serif !important;
   margin: 0;
   padding: 0;
 }
+
+@media only screen and (max-width: 600px) {
+  #infographic-dropdown {
+    display: none;
+  }
+}
+
 
 button {
   background: none;
@@ -12,12 +20,6 @@ button {
 #infographic-dropdown {
   position: relative;
   background-image: url(/images/garden/DIG4082-green@2x.png);
-}
-
-@media only screen and (max-width: 600px) {
-  #infographic-dropdown {
-    display: none;
-  }
 }
 
 #infographic-dropdown * {
@@ -49,6 +51,8 @@ button {
 }
 
 #sidebar {
+  padding: 2em;
+
   min-width: 25em;
   min-height: fit-content;
 
@@ -194,10 +198,14 @@ button {
   text-decoration: none;
 }
 
-.card-text {
+.card-text, .canned-title {
   text-transform: capitalize;
   font-weight: bold;
   text-align: center;
-  font-size: 0.8vw;
+  font-size: 0.7em;
   color: #1E352F !important;
+}
+
+.canned-title {
+  font-size: 0.8em;
 }
