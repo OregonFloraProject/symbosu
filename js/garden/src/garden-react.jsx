@@ -4,6 +4,7 @@ import InfographicDropdown from "./infographic-dropdown.jsx";
 import SideBar from "./sidebar.jsx";
 import { SearchResultGrid, SearchResult } from "./search-results.jsx";
 import { CannedSearchContainer, CannedSearchResult } from "./canned-searches.jsx";
+import httpGet from "./http-get.js";
 
 function getUrlQueryParams(url) {
   let params = {};
@@ -19,26 +20,6 @@ function getUrlQueryParams(url) {
   }
 
   return params;
-}
-
-/**
- * @param url URL to GET
- * @returns {Promise<string>} Either the response text or error code/text
- */
-function httpGet(url) {
-  return new Promise((resolve, reject) => {
-    const req = new XMLHttpRequest();
-    req.onload = () => {
-      if (req.status === 200) {
-        resolve(req.responseText);
-      } else {
-        reject(`${req.status.toString()} ${req.statusText}`);
-      }
-    };
-
-    req.open("GET", url);
-    req.send();
-  });
 }
 
 function getChecklistPage(clid) {
@@ -182,7 +163,7 @@ class GardenPageApp extends React.Component {
                 {
                   this.state.searchResults.map((result, idx) =>
                     <SearchResult
-                      // style={{ display: (idx < 20 ? "initial" : "none") }}
+                      style={{ display: (idx < 20 ? "initial" : "none") }}
                       key={ result.tid }
                       href={ getTaxaPage(result.tid) }
                       src={ result.image }
