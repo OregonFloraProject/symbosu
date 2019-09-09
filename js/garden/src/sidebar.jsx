@@ -225,28 +225,30 @@ class SideBarDropdown extends React.Component {
 
     return (
       <div
-        className={ "my-3 py-auto row" + (this.props.disabled === true ? " dropdown-disabled" : "") }
+        className={ "my-3 py-auto" + (this.props.disabled === true ? " dropdown-disabled" : "") }
         style={ this.props.style } >
-        <h4 className="mx-0 my-auto col" style={{ cursor: "default", fontSize: this.props.style.fontSize }}>
-          {this.props.title}
-        </h4>
-        <button
-          className="d-block col-sm-auto"
-          data-toggle="collapse"
-          data-target={ "#" + dropDownId }
-          type="button"
-          aria-expanded={ this.state.isExpanded.toString() }
-          aria-controls={ dropDownId }
-          onClick={ this.onButtonClicked }
-          disabled={ this.props.disabled }
-        >
-          <img
-            className={ "ml-auto will-v-flip" + (this.state.isExpanded ? " v-flip" : "") }
-            style={{ background: "black", borderRadius: "50%", height: "2em", width: "2em" }}
-            src="/images/garden/expand-arrow.png"
-            alt="collapse"
-          />
-        </button>
+        <div className="row">
+          <h4 className="mx-0 my-auto col" style={{ cursor: "default", fontSize: this.props.style.fontSize }}>
+            {this.props.title}
+          </h4>
+          <button
+            className="d-block col-sm-auto"
+            data-toggle="collapse"
+            data-target={ "#" + dropDownId }
+            type="button"
+            aria-expanded={ this.state.isExpanded.toString() }
+            aria-controls={ dropDownId }
+            onClick={ this.onButtonClicked }
+            disabled={ this.props.disabled }
+          >
+            <img
+              className={ "ml-auto will-v-flip" + (this.state.isExpanded ? " v-flip" : "") }
+              style={{ background: "black", borderRadius: "50%", height: "2em", width: "2em" }}
+              src="/images/garden/expand-arrow.png"
+              alt="collapse"
+            />
+          </button>
+        </div>
         <div id={dropDownId} className="collapse">
           <div className="card card-body mt-2">
             Blah blah blah blah

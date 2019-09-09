@@ -1,4 +1,3 @@
-
 body {
   font-family: 'Source Sans Pro', sans-serif !important;
   margin: 0;
@@ -11,19 +10,9 @@ body {
   }
 }
 
-
 button {
   background: none;
   outline: none !important;
-}
-
-#infographic-dropdown {
-  position: relative;
-  background-image: url(/images/garden/DIG4082-green@2x.png);
-}
-
-#infographic-dropdown * {
-  color: white !important;
 }
 
 .will-v-flip {
@@ -50,115 +39,8 @@ button {
   border-radius: 1em;
 }
 
-#sidebar {
-  padding: 2em;
-
-  min-width: 25em;
-  min-height: fit-content;
-
-  max-width: 25em;
-  max-height: fit-content;
-}
-
-#sidebar * {
-  color: black !important;
-}
-
-#sidebar input::placeholder {
-  color: #9FD07A;
-}
-
-#innertext #search-sidebar #plant-needs, .sidebar-dropdown {
-  border-radius: 1em;
-  background: white;
-}
-
-#innertext #search-sidebar #plant-needs select {
-  max-width: 50%;
-}
-
-#innertext #search-sidebar #plant-needs .input-group {
-  padding-top: 1em;
-  margin-top: 1em;
-  border-top: 1px dashed black;
-}
-
-#innertext #search-sidebar #plant-needs .input-group label {
-  font-weight: bold;
-}
-
-#innertext #search-sidebar #plant-size #plant-size-sliders {
-  display: grid;
-  grid-auto-flow: column;
-  grid-template-columns: 1fr 1fr;
-}
-
-#innertext #search-sidebar #plant-size #plant-size-sliders #plant-width-container, #plant-height-container {
-  padding: 1em;
-  overflow: hidden;
-}
-
-#innertext #search-sidebar #plant-size #plant-size-sliders #plant-height-container {
-  border-right: 1px dashed grey;
-}
-
-#innertext #search-sidebar #plant-size label {
-  display: block;
-  text-align: center;
-}
-
-#innertext #search-sidebar .slider-horizontal {
+.slider {
   width: 100% !important;
-}
-
-#innertext #search-sidebar .slider-tick {
-  width: 0.25em;
-  margin-left: 0;
-  margin-right: 0;
-  border-radius: 0.1em;
-}
-
-#innertext #search-sidebar .slider-handle, .tick-slider-selection, .in-selection {
-  background-image: linear-gradient(to bottom, #5FB021 0, #288000 100%) !important;
-  background-image: -webkit-linear-gradient(top, #5FB021 0, #288000 100%) !important;
-  background-image: -o-linear-gradient(top, #5FB021 0, #288000 100%) !important;
-}
-
-#innertext #search-sidebar .slider-handle {
-  border: 0.2em solid white;
-}
-
-#innertext #search-sidebar #plant-needs {
-  padding: 1.5em;
-}
-
-#innertext #search-sidebar #plant-needs select {
-  max-width: 50%;
-}
-
-#innertext #search-sidebar #plant-needs .input-group {
-  padding-top: 1em;
-  margin-top: 1em;
-  border-top: 1px dashed black;
-}
-
-#innertext #search-sidebar #plant-needs .input-group label {
-  font-weight: bold;
-}
-
-#innertext #search-sidebar #plant-size #plant-size-sliders {
-  display: grid;
-  grid-auto-flow: column;
-  grid-template-columns: 1fr 1fr;
-}
-
-#innertext #search-sidebar #plant-size #plant-size-sliders #plant-width-container, #plant-height-container {
-  padding: 1em;
-  overflow: hidden;
-}
-
-#innertext #search-sidebar #plant-size #plant-size-sliders #plant-height-container {
-  border-right: 1px dashed grey;
 }
 
 .slider-tick {
@@ -186,26 +68,48 @@ button {
   cursor: not-allowed;
 }
 
-.card {
+.canned-title {
+  font-size: 0.8em;
+}
+
+#infographic-dropdown {
+  position: relative;
+  background-image: url(/images/garden/DIG4082-green@2x.png);
+}
+
+#infographic-dropdown * {
+  color: white !important;
+}
+
+#sidebar {
+  padding: 2em;
+  width: 25em;
+}
+
+#sidebar * {
+  color: black !important;
+}
+
+#sidebar input::placeholder {
+  color: #9FD07A;
+}
+
+#canned-searches .card, #search-results .card {
   box-shadow: 0 0.1em 0.5em 0.1em rgba(100, 100, 100, 0.3);
 }
 
-.card:hover {
+#canned-searches .card:hover, #search-results .card:hover {
   background: #DFEFD3 !important;
 }
 
-.card a:hover {
+#canned-searches .card a:hover, #search-results .card a:hover {
   text-decoration: none;
 }
 
-.card-text, .canned-title {
+#canned-searches .card-text, #search-results .card-text, .canned-title {
   text-transform: capitalize;
   font-weight: bold;
   text-align: center;
   font-size: 0.7em;
   color: #1E352F !important;
-}
-
-.canned-title {
-  font-size: 0.8em;
 }

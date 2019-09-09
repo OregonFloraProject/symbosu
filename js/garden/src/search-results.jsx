@@ -29,6 +29,7 @@ class SearchResultGrid extends React.Component {
   render() {
     return (
       <div
+        id="search-results"
         className="mt-4 w-100"
         style={{
           display: "grid",

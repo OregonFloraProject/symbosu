@@ -25,7 +25,7 @@ class CannedSearchContainer extends React.Component {
 
   render() {
     return (
-      <div className="w-100 mt-1">
+      <div id="canned-searches" className="w-100 mt-1">
         <h1 style={{color: "black", fontWeight: "bold", fontSize: "1.75em"}}>
           Kickstart your search with one of our native plant collections:
         </h1>
