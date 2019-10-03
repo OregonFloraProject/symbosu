@@ -241,11 +241,16 @@ class GardenPageApp extends React.Component {
                 {
                   this.state.cannedSearches.map((result, idx) =>
                     <CannedSearchResult
-                      style={{ display: (idx < 4 ? "initial" : "none") }}
                       key={ result.clid }
                       title={ result.name }
                       src={ result.iconurl }
                       href={ getChecklistPage(result.clid) }
+                      onLearnMore={ () => {
+                        console.log(`Learn more about ${result.name}!`)
+                      }}
+                      onFilter={ () => {
+                        console.log(`Filter for ${result.name}!`)
+                      }}
                     />
                   )
                 }

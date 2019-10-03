@@ -2,7 +2,7 @@ const CLIENT_ROOT = "..";
 
 function CannedSearchResult(props) {
   return (
-    <div className="mx-2" style={ props.style }>
+    <div className="mx-2 p-3 col rounded-border" style={ Object.assign({ background: "#EFFFE3", color: "#3B631D", textAlign: "center" }, props.style) }>
       <h5 className="canned-title">{ props.title }</h5>
       <div className="card" style={{ padding: "0.5em" }} >
         <a href={ props.href }>
@@ -16,6 +16,14 @@ function CannedSearchResult(props) {
           </div>
         </a>
       </div>
+      <div className="mt-2 px-2">
+        <button className="w-100 px-3 my-1 btn-filter" onClick={ props.onFilter }>
+          Filter for these
+        </button>
+        <button className="w-100 px-3 my-1 btn-learn" onClick={ props.onLearnMore }>
+          Learn more
+        </button>
+      </div>
     </div>
   );
 }
@@ -23,38 +31,58 @@ function CannedSearchResult(props) {
 class CannedSearchContainer extends React.Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      offset: this.props.children.length,
+    };
+
+    this.scrollLeft = this.scrollLeft.bind(this);
+    this.scrollRight = this.scrollRight.bind(this);
+  }
+
+  scrollLeft() {
+    let newOffset = this.state.offset === 0 ? this.props.children.length - 1 : this.state.offset - 1;
+    this.setState({ offset: newOffset });
+  }
+
+  scrollRight() {
+    this.setState({ offset: (this.state.offset + 1) % this.props.children.length });
   }
 
   render() {
     return (
-      <div id="canned-searches" className="w-100 mt-1">
-        <h1 style={{color: "black", fontWeight: "bold", fontSize: "1.75em"}}>
-          Kickstart your search with one of our native plant collections:
-        </h1>
-        <div className="w-100 rounded-border p-3" style={{background: "#DFEFD3"}}>
-          <div className="p-0 m-0" style={{ position: "relative" }}>
-            <button>
-              <img
-                style={{transform: "rotate(-90deg)", width: "2em", height: "2em" }}
-                src={ `${CLIENT_ROOT}/images/garden/collapse-arrow.png` }
-                alt="scroll left"/>
-            </button>
+      <div id="canned-searches" className="w-100 mt-1 p-3 rounded-border" style={{ background: "#DFEFD3" }}>
+          <h1 style={{color: "black", fontWeight: "bold", fontSize: "1.75em"}}>
+            Or start with these plant combinations:
+          </h1>
+
+        <div className="w-100 row mt-3">
+          <div className="d-flex align-items-center p-0 m-0 col-auto">
+              <button onClick={ this.scrollLeft }>
+                <img
+                  className="mx-auto"
+                  style={{transform: "rotate(-90deg)", width: "2em", height: "2em" }}
+                  src={ `${CLIENT_ROOT}/images/garden/collapse-arrow.png` }
+                  alt="scroll left"/>
+              </button>
           </div>
 
-          <div className="p-0 m-1">
+          <div className="px-2 m-1 col">
             <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(4, 1fr)",
-              }}
+              className="row"
             >
-              { this.props.children }
+              {
+                [0, 1, 2, 3].map((i) => {
+                  return this.props.children[(i + this.state.offset) % this.props.children.length]
+                })
+              }
             </div>
           </div>
 
-          <div className="p-0 m-0">
-            <button>
+          <div className="d-flex align-items-center p-0 m-0 col-auto">
+            <button onClick={ this.scrollRight }>
               <img
+                className="mx-auto"
                 style={{ transform: "rotate(90deg)", width: "2em", height: "2em" }}
                 src={ `${CLIENT_ROOT}/images/garden/collapse-arrow.png` }
                 alt="scroll right"/>
