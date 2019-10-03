@@ -1,8 +1,15 @@
 const CLIENT_ROOT = "..";
 
+function getChecklistPage(clid) {
+  const gardenPid = 3;
+  return `${CLIENT_ROOT}/checklists/checklist.php?cl=${clid}&pid=${gardenPid}`;
+}
+
 function CannedSearchResult(props) {
   return (
-    <div className="mx-1 p-2 col" style={ Object.assign({ background: "#EFFFE3", color: "#3B631D", textAlign: "center", borderRadius: "2%" }, props.style) }>
+    <div
+        className={ "mx-1 py-2 col canned-search-result" + (props.isSlidingLeft ? " slideLeft" : "") + (props.isSlidingRight ? " slideRight" : "") }
+        style={ Object.assign({ background: "#EFFFE3", color: "#3B631D", textAlign: "center", borderRadius: "2%" }, props.style) }>
       <h4 className="canned-title">{ props.title }</h4>
       <div className="card" style={{ padding: "0.5em" }} >
         <a href={ props.href }>
@@ -33,7 +40,9 @@ class CannedSearchContainer extends React.Component {
     super(props);
 
     this.state = {
-      offset: this.props.children.length,
+      offset: 0,
+      isSlidingLeft: false,
+      isSlidingRight: false
     };
 
     this.scrollLeft = this.scrollLeft.bind(this);
@@ -41,12 +50,21 @@ class CannedSearchContainer extends React.Component {
   }
 
   scrollLeft() {
-    let newOffset = this.state.offset === 0 ? this.props.children.length - 1 : this.state.offset - 1;
-    this.setState({ offset: newOffset });
+    this.setState({ isSlidingLeft: true }, () => {
+      let newOffset = this.state.offset === 0 ? this.props.searches.length - 1 : this.state.offset - 1;
+      this.setState({ offset: newOffset }, () => {
+        window.setTimeout(() => this.setState({ isSlidingLeft: false }), 200);
+      });
+    });
   }
 
   scrollRight() {
-    this.setState({ offset: (this.state.offset + 1) % this.props.children.length });
+    this.setState({ isSlidingRight: true }, () => {
+      let newOffset = (this.state.offset + 1) % this.props.searches.length ;
+      this.setState({ offset: newOffset }, () => {
+        window.setTimeout(() => this.setState({ isSlidingRight: false }), 200);
+      });
+    });
   }
 
   render() {
@@ -56,34 +74,51 @@ class CannedSearchContainer extends React.Component {
             Or start with these plant combinations:
           </h1>
 
-        <div className="w-100 row mt-3">
+        <div className="w-100 row mt-3 mx-auto p-0">
           <div className="d-flex align-items-center p-0 m-0 col-auto">
-              <button onClick={ this.scrollLeft }>
+              <button className="mr-1 ml-0 p-0 scroll-btn" onClick={ this.scrollLeft }>
                 <img
-                  className="mx-auto"
-                  style={{transform: "rotate(-90deg)", width: "2em", height: "2em" }}
+                  style={{transform: "rotate(-90deg)", width: "3em", height: "3em" }}
                   src={ `${CLIENT_ROOT}/images/garden/collapse-arrow.png` }
                   alt="scroll left"/>
               </button>
           </div>
 
-          <div className="px-2 m-1 col">
+          <div className="px-2 m-0 col">
             <div
               className="row"
+              style={{ overflow: "hidden" }}
             >
               {
                 [0, 1, 2, 3].map((i) => {
-                  return this.props.children[(i + this.state.offset) % this.props.children.length]
+                  if (this.props.searches.length > 0) {
+                    let searchResult = this.props.searches[(i + this.state.offset) % this.props.searches.length];
+                    return (
+                        <CannedSearchResult
+                          key={searchResult.clid}
+                          title={searchResult.name}
+                          src={searchResult.iconurl}
+                          href={getChecklistPage(searchResult.clid)}
+                          isSlidingLeft={ this.state.isSlidingLeft }
+                          isSlidingRight={ this.state.isSlidingRight }
+                          onLearnMore={() => {
+                            console.log(`Learn more about ${searchResult.name}!`)
+                          }}
+                          onFilter={() => {
+                            console.log(`Filter for ${searchResult.name}!`)
+                          }}
+                        />
+                    );
+                  }
                 })
               }
             </div>
           </div>
 
           <div className="d-flex align-items-center p-0 m-0 col-auto">
-            <button onClick={ this.scrollRight }>
+            <button className="mr-0 ml-1 p-0 scroll-btn" onClick={ this.scrollRight }>
               <img
-                className="mx-auto"
-                style={{ transform: "rotate(90deg)", width: "2em", height: "2em" }}
+                style={{ transform: "rotate(90deg)", width: "3em", height: "3em" }}
                 src={ `${CLIENT_ROOT}/images/garden/collapse-arrow.png` }
                 alt="scroll right"/>
             </button>

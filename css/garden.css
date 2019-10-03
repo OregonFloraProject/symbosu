@@ -122,3 +122,27 @@ button {
   font-weight: bold;
   border-radius: 0.5em;
 }
+
+#canned-searches .scroll-btn {
+  border-radius: 50%;
+}
+
+#canned-searches .scroll-btn:active {
+  background: rgba(0, 100, 0, 0.1) !important;
+}
+
+.canned-search-result {
+  transition: opacity 0.1s;
+}
+
+.canned-search-result.slideRight {
+  transform: translateX(-100%);
+  opacity: 50%;
+  transition: opacity 0.1s, transform 0.2s ease-in-out 0s;
+}
+
+.canned-search-result.slideLeft {
+  transform: translateX(100%);
+  opacity: 50%;
+  transition: opacity 0.1s, transform 0.2s ease-in-out 0s;
+}
