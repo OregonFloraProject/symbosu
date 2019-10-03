@@ -1,5 +1,8 @@
 "use strict";
 
+import React from "react";
+import ReactDOM from "react-dom";
+
 import InfographicDropdown from "./infographicDropdown.jsx";
 import SideBar from "./sidebar.jsx";
 import { SearchResultGrid, SearchResult } from "./searchResults.jsx";

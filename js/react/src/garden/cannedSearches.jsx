@@ -1,9 +1,28 @@
+import React from "react";
+
 const CLIENT_ROOT = "..";
 
 function getChecklistPage(clid) {
   const gardenPid = 3;
   return `${CLIENT_ROOT}/checklists/checklist.php?cl=${clid}&pid=${gardenPid}`;
 }
+
+function CannedSearchButton(props) {
+  return (
+    <div className="p-0 m-0">
+      <button className="p-0 scroll-btn" onClick={ props.onClick }>
+        <img
+          style={{transform: `rotate(${props.rotate}deg)`, width: "3em", height: "3em" }}
+          src={ `${CLIENT_ROOT}/images/garden/collapse-arrow.png` }
+          alt="scroll"/>
+      </button>
+    </div>
+  );
+}
+
+CannedSearchButton.defaultProps = {
+  rotate: 0
+};
 
 function CannedSearchResult(props) {
   return (
@@ -75,13 +94,9 @@ class CannedSearchContainer extends React.Component {
           </h1>
 
         <div className="w-100 row mt-3 mx-auto p-0">
-          <div className="d-flex align-items-center p-0 m-0 col-auto">
-              <button className="mr-1 ml-0 p-0 scroll-btn" onClick={ this.scrollLeft }>
-                <img
-                  style={{transform: "rotate(-90deg)", width: "3em", height: "3em" }}
-                  src={ `${CLIENT_ROOT}/images/garden/collapse-arrow.png` }
-                  alt="scroll left"/>
-              </button>
+
+          <div className="col-auto d-flex align-items-center h-100">
+            <CannedSearchButton rotate={ -90 } onClick={ this.scrollLeft } />
           </div>
 
           <div className="px-2 m-0 col">
@@ -115,14 +130,10 @@ class CannedSearchContainer extends React.Component {
             </div>
           </div>
 
-          <div className="d-flex align-items-center p-0 m-0 col-auto">
-            <button className="mr-0 ml-1 p-0 scroll-btn" onClick={ this.scrollRight }>
-              <img
-                style={{ transform: "rotate(90deg)", width: "3em", height: "3em" }}
-                src={ `${CLIENT_ROOT}/images/garden/collapse-arrow.png` }
-                alt="scroll right"/>
-            </button>
+          <div className="col-auto d-flex align-items-center h-100">
+            <CannedSearchButton rotate={ 90 } onClick={ this.scrollRight } />
           </div>
+
         </div>
       </div>
     );
