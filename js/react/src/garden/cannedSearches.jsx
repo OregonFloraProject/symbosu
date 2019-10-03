@@ -93,9 +93,9 @@ class CannedSearchContainer extends React.Component {
             Or start with these plant combinations:
           </h1>
 
-        <div className="w-100 row mt-3 mx-auto p-0">
+        <div className="row mt-3 mx-auto p-0">
 
-          <div className="col-auto d-flex align-items-center h-100">
+          <div className="col-auto my-auto">
             <CannedSearchButton rotate={ -90 } onClick={ this.scrollLeft } />
           </div>
 
@@ -130,7 +130,7 @@ class CannedSearchContainer extends React.Component {
             </div>
           </div>
 
-          <div className="col-auto d-flex align-items-center h-100">
+          <div className="col-auto my-auto">
             <CannedSearchButton rotate={ 90 } onClick={ this.scrollRight } />
           </div>
 
