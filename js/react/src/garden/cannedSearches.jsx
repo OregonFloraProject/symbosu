@@ -2,8 +2,8 @@ const CLIENT_ROOT = "..";
 
 function CannedSearchResult(props) {
   return (
-    <div className="mx-2 p-3 col rounded-border" style={ Object.assign({ background: "#EFFFE3", color: "#3B631D", textAlign: "center" }, props.style) }>
-      <h5 className="canned-title">{ props.title }</h5>
+    <div className="mx-1 p-2 col" style={ Object.assign({ background: "#EFFFE3", color: "#3B631D", textAlign: "center", borderRadius: "2%" }, props.style) }>
+      <h4 className="canned-title">{ props.title }</h4>
       <div className="card" style={{ padding: "0.5em" }} >
         <a href={ props.href }>
           <div className="card-body" style={{ padding: "0" }}>
