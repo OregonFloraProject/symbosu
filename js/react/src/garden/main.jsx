@@ -6,7 +6,7 @@ import ReactDOM from "react-dom";
 import InfographicDropdown from "./infographicDropdown.jsx";
 import SideBar from "./sidebar.jsx";
 import { SearchResultGrid, SearchResult } from "./searchResults.jsx";
-import { CannedSearchContainer, CannedSearchResult } from "./cannedSearches.jsx";
+import CannedSearchContainer from "./cannedSearches.jsx";
 import httpGet from "./httpGet.js";
 
 const CLIENT_ROOT = "..";
@@ -233,11 +233,11 @@ class GardenPageApp extends React.Component {
               onWidthChanged={ this.onWidthChanged }
             />
           </div>
-          <div className="col mx-2">
-            <div className="row">
+          <div className="col mx-0">
+            <div className="row mx-0 px-0">
               <CannedSearchContainer searches={ this.state.cannedSearches }/>
             </div>
-            <div className="row">
+            <div className="row mx-0 px-0">
               <SearchResultGrid>
                 {
                   this.state.searchResults.filter((item) => { return filterByHeight(item, this.state.height) }).map((result) => {

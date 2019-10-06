@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "react": "^16.10.2",
-    "react-dom": "^16.10.2"
+    "react-dom": "^16.10.2",
+    "react-slick": "^0.25.2"
   }
 }
