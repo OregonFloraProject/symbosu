@@ -132,17 +132,5 @@ button {
 }
 
 .canned-search-result {
-  transition: opacity 0.1s;
-}
-
-.canned-search-result.slideRight {
-  transform: translateX(-100%);
-  opacity: 50%;
-  transition: opacity 0.1s, transform 0.2s ease-in-out 0s;
-}
-
-.canned-search-result.slideLeft {
-  transform: translateX(100%);
-  opacity: 50%;
-  transition: opacity 0.1s, transform 0.2s ease-in-out 0s;
+  max-width: 15em;
 }

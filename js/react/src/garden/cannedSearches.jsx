@@ -8,23 +8,6 @@ function getChecklistPage(clid) {
   return `${CLIENT_ROOT}/checklists/checklist.php?cl=${clid}&pid=${gardenPid}`;
 }
 
-function CannedSearchButton(props) {
-  return (
-    <div className="p-0 m-0">
-      <button className="p-0 scroll-btn" onClick={ props.onClick }>
-        <img
-          style={{transform: `rotate(${props.rotate}deg)`, width: "3em", height: "3em" }}
-          src={ `${CLIENT_ROOT}/images/garden/collapse-arrow.png` }
-          alt="scroll"/>
-      </button>
-    </div>
-  );
-}
-
-CannedSearchButton.defaultProps = {
-  rotate: 0
-};
-
 function CannedSearchResult(props) {
   return (
     <div
@@ -69,33 +52,39 @@ class CannedSearchContainer extends React.Component {
     };
 
     return (
-      <div id="canned-searches" className="w-100 mt-1 p-3 mx-0 rounded-border" style={{ background: "#DFEFD3" }}>
-        <h1 style={{color: "black", fontWeight: "bold", fontSize: "1.75em"}}>
-          Or start with these plant combinations:
-        </h1>
+      <div id="canned-searches" className="row mt-1 p-3 mx-0 rounded-border" style={{ background: "#DFEFD3" }}>
+        <div className="col">
+          <div className="row">
+            <h1 className="col" style={{color: "black", fontWeight: "bold", fontSize: "1.75em"}}>
+              Or start with these plant combinations:
+            </h1>
+          </div>
 
-        <div className="mt-3 mx-0 px-0">
-          <Carousel { ...slickSettings }>
-            {
-              this.props.searches.map((searchResult) => {
-                return (
-                  <div key={searchResult.clid}>
-                    <CannedSearchResult
-                      title={searchResult.name}
-                      src={searchResult.iconurl}
-                      href={getChecklistPage(searchResult.clid)}
-                      onLearnMore={() => {
-                        console.log(`Learn more about ${searchResult.name}!`)
-                      }}
-                      onFilter={() => {
-                        console.log(`Filter for ${searchResult.name}!`)
-                      }}
-                    />
-                  </div>
-                );
-              })
-            }
-          </Carousel>
+          <div className="row">
+            <div className="col">
+              <Carousel { ...slickSettings } style={{ maxWidth: "85%" }} className="mx-auto">
+                {
+                  this.props.searches.map((searchResult) => {
+                    return (
+                      <div key={searchResult.clid}>
+                        <CannedSearchResult
+                          title={searchResult.name}
+                          src={searchResult.iconurl}
+                          href={getChecklistPage(searchResult.clid)}
+                          onLearnMore={() => {
+                            console.log(`Learn more about ${searchResult.name}!`)
+                          }}
+                          onFilter={() => {
+                            console.log(`Filter for ${searchResult.name}!`)
+                          }}
+                        />
+                      </div>
+                    );
+                  })
+                }
+              </Carousel>
+            </div>
+          </div>
         </div>
       </div>
     );
