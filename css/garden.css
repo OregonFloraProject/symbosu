@@ -1,10 +1,10 @@
 * {
+  font-family: 'Source Sans Pro', sans-serif !important;
   min-height: 0 !important;
   min-width: 0 !important;
 }
 
 body {
-  font-family: 'Source Sans Pro', sans-serif !important;
   margin: 0;
   padding: 0;
 }
@@ -94,6 +94,10 @@ button {
   box-shadow: 0 0.1em 0.5em 0.1em rgba(100, 100, 100, 0.3);
 }
 
+#search-results .card-text {
+  font-size: 0.9em !important;
+}
+
 #canned-searches .card:hover, #search-results .card:hover {
   background: #DFEFD3 !important;
 }
@@ -140,6 +144,17 @@ button {
   max-width: 15em;
 }
 
-#canned-searches h1, #sidebar * {
+#sidebar *, h1, h2, h3, h4, h5 {
   color: #1E352F;
+}
+
+#view-opts {
+  border-bottom: 1px dotted darkgreen;
+  font-size: 0.9em;
+}
+
+#view-opts .fake-button {
+  cursor: pointer;
+  border-radius: 10%;
+  padding: 0.5em;
 }

@@ -67,7 +67,7 @@ class CannedSearchContainer extends React.Component {
                   {
                     this.props.searches.map((searchResult) => {
                       return (
-                        <div key={searchResult.clid} className="mx-1">
+                        <div key={searchResult.clid} className="p-1">
                           <CannedSearchResult
                             title={searchResult.name}
                             src={searchResult.iconurl}

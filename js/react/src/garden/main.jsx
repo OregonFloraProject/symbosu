@@ -95,6 +95,74 @@ function MainContentContainer(props) {
   );
 }
 
+function ViewOpts(props) {
+  const selectedStyle = {
+    background: "#DFEFD3",
+    color: "#3B631D"
+  };
+
+  const unselectedStyle = {
+    color: "#9FD07A"
+  };
+
+  return (
+    <div id="view-opts" className="row mx-2 mt-3 py-2" style={{  }}>
+      <h2 className="col font-weight-bold">Your search results:</h2>
+      <div className="col-auto">
+        <div className="row my-3">
+          <div className="col text-right p-0">
+            View as:
+          </div>
+          <div className="col">
+            <span
+              className="fake-button"
+              style={ props.viewType === "grid" ? selectedStyle : unselectedStyle }
+              onClick={ () => { props.onViewTypeClicked("grid") } }
+            >
+              Grid
+            </span>
+            <span
+              className="fake-button"
+              style={ props.viewType === "list" ? selectedStyle : unselectedStyle }
+              onClick={ () => { props.onViewTypeClicked("list") } }
+            >
+              List
+            </span>
+          </div>
+        </div>
+        <div className="row my-3">
+          <div className="col text-right p-0">
+            Sort by name:
+          </div>
+          <div className="col">
+            <span
+              className="fake-button"
+              style={ props.sortBy === "vernacularname" ? selectedStyle : unselectedStyle }
+              onClick={ () => { props.onSortByClicked("vernacularname") } }
+            >
+              Common
+            </span>
+            <span
+              className="fake-button"
+              style={ props.sortBy === "sciname" ? selectedStyle : unselectedStyle }
+              onClick={ () => { props.onSortByClicked("sciname") } }
+            >
+              Scientific
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+ViewOpts.defaultProps = {
+  sortBy: "vernacularname",
+  viewType: "grid",
+  onSortByClicked: () => {},
+  onViewTypeClicked: () => {}
+};
+
 class GardenPageApp extends React.Component {
   constructor(props) {
     super(props);
@@ -108,7 +176,9 @@ class GardenPageApp extends React.Component {
       width: ("width" in queryParams ? queryParams["width"].split(",").map((i) => parseInt(i)) : [0, 50]),
       searchText: ("search" in queryParams ? queryParams["search"] : ""),
       searchResults: [],
-      cannedSearches: []
+      cannedSearches: [],
+      sortBy: "vernacularname",
+      viewType: "grid"
     };
 
     this.onSearchTextChanged = this.onSearchTextChanged.bind(this);
@@ -118,6 +188,8 @@ class GardenPageApp extends React.Component {
     this.onMoistureChanged =  this.onMoistureChanged.bind(this);
     this.onHeightChanged =  this.onHeightChanged.bind(this);
     this.onWidthChanged =  this.onWidthChanged.bind(this);
+    this.sortBy = this.sortBy.bind(this);
+    this.viewType = this.viewType.bind(this);
   }
 
   componentDidMount() {
@@ -209,6 +281,17 @@ class GardenPageApp extends React.Component {
     );
   }
 
+  sortBy(type) {
+    this.setState({
+      sortBy: type,
+      searchResults: this.state.searchResults.sort((a, b) => { return a[type] > b[type] ? 1 : -1 })
+    });
+  }
+
+  viewType(type) {
+    this.setState({ viewType: type });
+  }
+
   render() {
     return (
       <div>
@@ -240,6 +323,12 @@ class GardenPageApp extends React.Component {
               </div>
               <div className="row">
                 <div className="col">
+                  <ViewOpts
+                    viewType={ this.state.viewType }
+                    sortBy={ this.state.sortBy }
+                    onSortByClicked={ this.sortBy }
+                    onViewTypeClicked={ this.viewType }
+                  />
                   <SearchResultGrid>
                     {
                       this.state.searchResults.filter((item) => { return filterByHeight(item, this.state.height) }).map((result) => {
