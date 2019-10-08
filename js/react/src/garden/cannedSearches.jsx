@@ -10,9 +10,7 @@ function getChecklistPage(clid) {
 
 function CannedSearchResult(props) {
   return (
-    <div
-        className={ "py-2 canned-search-result" }
-        style={ Object.assign({ background: "#EFFFE3", color: "#3B631D", textAlign: "center", borderRadius: "2%" }, props.style) }>
+    <div className={ "py-2 canned-search-result" }>
       <h4 className="canned-title">{ props.title }</h4>
       <div className="card" style={{ padding: "0.5em" }} >
         <a href={ props.href }>
@@ -45,6 +43,8 @@ class CannedSearchContainer extends React.Component {
 
   render() {
     const slickSettings = {
+      autoplay: true,
+      autoplaySpeed: 5000,
       dots: false,
       infinite: true,
       slidesToShow: 4,
@@ -62,27 +62,29 @@ class CannedSearchContainer extends React.Component {
 
           <div className="row">
             <div className="col">
-              <Carousel { ...slickSettings } style={{ maxWidth: "85%" }} className="mx-auto">
-                {
-                  this.props.searches.map((searchResult) => {
-                    return (
-                      <div key={searchResult.clid}>
-                        <CannedSearchResult
-                          title={searchResult.name}
-                          src={searchResult.iconurl}
-                          href={getChecklistPage(searchResult.clid)}
-                          onLearnMore={() => {
-                            console.log(`Learn more about ${searchResult.name}!`)
-                          }}
-                          onFilter={() => {
-                            console.log(`Filter for ${searchResult.name}!`)
-                          }}
-                        />
-                      </div>
-                    );
-                  })
-                }
-              </Carousel>
+              <div>
+                <Carousel { ...slickSettings } className="mx-auto"  style={{ maxWidth: "90%" }}>
+                  {
+                    this.props.searches.map((searchResult) => {
+                      return (
+                        <div key={searchResult.clid}>
+                          <CannedSearchResult
+                            title={searchResult.name}
+                            src={searchResult.iconurl}
+                            href={getChecklistPage(searchResult.clid)}
+                            onLearnMore={() => {
+                              console.log(`Learn more about ${searchResult.name}!`)
+                            }}
+                            onFilter={() => {
+                              console.log(`Filter for ${searchResult.name}!`)
+                            }}
+                          />
+                        </div>
+                      );
+                    })
+                  }
+                </Carousel>
+              </div>
             </div>
           </div>
         </div>

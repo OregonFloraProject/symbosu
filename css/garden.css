@@ -1,3 +1,8 @@
+* {
+  min-height: 0 !important;
+  min-width: 0 !important;
+}
+
 body {
   font-family: 'Source Sans Pro', sans-serif !important;
   margin: 0;
@@ -132,5 +137,9 @@ button {
 }
 
 .canned-search-result {
+  background: #EFFFE3;
+  color: #3B631D;
+  text-align: center;
+  border-radius: 2%;
   max-width: 15em;
 }

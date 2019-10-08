@@ -46,4 +46,4 @@
   type="text/javascript">
 </script>
 
-<div id="site-content" class="mt-5">
+<div id="site-content">
