@@ -55,7 +55,7 @@ class CannedSearchContainer extends React.Component {
       <div id="canned-searches" className="row mt-1 p-3 mx-0 rounded-border" style={{ background: "#DFEFD3" }}>
         <div className="col">
           <div className="row">
-            <h1 className="col" style={{color: "black", fontWeight: "bold", fontSize: "1.75em"}}>
+            <h1 className="col" style={{ fontWeight: "bold", fontSize: "1.75em"}}>
               Or start with these plant combinations:
             </h1>
           </div>
@@ -67,7 +67,7 @@ class CannedSearchContainer extends React.Component {
                   {
                     this.props.searches.map((searchResult) => {
                       return (
-                        <div key={searchResult.clid}>
+                        <div key={searchResult.clid} className="mx-1">
                           <CannedSearchResult
                             title={searchResult.name}
                             src={searchResult.iconurl}

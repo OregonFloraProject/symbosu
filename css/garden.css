@@ -86,10 +86,6 @@ button {
   width: 25em;
 }
 
-#sidebar * {
-  color: black !important;
-}
-
 #sidebar input::placeholder {
   color: #9FD07A;
 }
@@ -136,10 +132,14 @@ button {
   background: rgba(0, 100, 0, 0.1) !important;
 }
 
-.canned-search-result {
+#canned-searches .canned-search-result {
+  color: #3B631D !important;
   background: #EFFFE3;
-  color: #3B631D;
   text-align: center;
   border-radius: 2%;
   max-width: 15em;
+}
+
+#canned-searches h1, #sidebar * {
+  color: #1E352F;
 }
