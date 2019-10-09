@@ -45,19 +45,23 @@ body {
   font-size: 0.9em;
 }
 
+#site-header-dropdowns .dropdown-toggle {
+  border-radius: 0.5em !important;
+}
+
 #site-header-dropdowns .dropdown-toggle:hover, #site-header-dropdowns .dropdown-toggle:focus, .header-button:hover {
   background: #DFEFD3 !important;
-  color: black !important;
-  border-radius: 0.5em;
+  color: #1E352F !important;
+  border: 0.15em solid #5FB021 !important;
 }
 
 #site-header-dropdowns .show .dropdown-toggle, .dropdown-item {
-  color: black !important;
+  color: #1E352F !important;
 }
 
 #site-header-dropdowns .dropdown-menu {
   background: #5FB021 !important;
-  color: black !important;
+  color: #1E352F !important;
 }
 
 #site-header-dropdowns .dropdown-menu .dropdown-item:hover, .dropdown-item:focus {
