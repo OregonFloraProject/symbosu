@@ -97,15 +97,6 @@ function MainContentContainer(props) {
 }
 
 function ViewOpts(props) {
-  const selectedStyle = {
-    background: "#DFEFD3",
-    color: "#3B631D"
-  };
-
-  const unselectedStyle = {
-    color: "#9FD07A"
-  };
-
   return (
     <div id="view-opts" className="row mx-2 mt-3 px-0 py-2">
       <div className="col">
