@@ -6,7 +6,7 @@ import ReactDOM from "react-dom";
 import IconButton from "../common/iconButton.jsx";
 import InfographicDropdown from "./infographicDropdown.jsx";
 import SideBar from "./sidebar.jsx";
-import { SearchResultGrid, SearchResult } from "./searchResults.jsx";
+import { SearchResultContainer, SearchResult } from "./searchResults.jsx";
 import CannedSearchContainer from "./cannedSearches.jsx";
 import httpGet from "./httpGet.js";
 
@@ -108,7 +108,10 @@ function ViewOpts(props) {
 
   return (
     <div id="view-opts" className="row mx-2 mt-3 px-0 py-2">
-      <h3 className="col font-weight-bold">Your search results:</h3>
+      <div className="col">
+        <h3 className="font-weight-bold">Your search results:</h3>
+        <div>{/* TODO: Tag container */}</div>
+      </div>
       <div className="col text-right p-0 m-0">
         <p>View as:</p>
         <p>Sort by name:</p>
@@ -318,7 +321,7 @@ class GardenPageApp extends React.Component {
                     onSortByClicked={ this.sortBy }
                     onViewTypeClicked={ this.viewType }
                   />
-                  <SearchResultGrid>
+                  <SearchResultContainer viewType={ this.state.viewType }>
                     {
                       this.state.searchResults.filter((item) => { return filterByHeight(item, this.state.height) }).map((result) => {
                         let filterWidth = filterByWidth(result, this.state.width);
@@ -328,6 +331,7 @@ class GardenPageApp extends React.Component {
                         let display = filterWidth && filterHeight && filterSunlight && filterMoisture;
                         return (
                           <SearchResult
+                            viewType={ this.state.viewType }
                             style={{display: display ? "initial" : "none" }}
                             key={result.tid}
                             href={getTaxaPage(result.tid)}
@@ -338,7 +342,7 @@ class GardenPageApp extends React.Component {
                         )
                       })
                     }
-                  </SearchResultGrid>
+                  </SearchResultContainer>
                 </div>
               </div>
             </div>
