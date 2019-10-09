@@ -1,12 +1,18 @@
 import React from "react";
 import Carousel from "react-slick";
 
+import HelpButton from "./helpButton.jsx";
+
 const CLIENT_ROOT = "..";
 
 function getChecklistPage(clid) {
   const gardenPid = 3;
   return `${CLIENT_ROOT}/checklists/checklist.php?cl=${clid}&pid=${gardenPid}`;
 }
+
+const helpHtml = `
+
+`;
 
 function CannedSearchResult(props) {
   return (
@@ -85,6 +91,10 @@ class CannedSearchContainer extends React.Component {
             <h1 className="col" style={{ fontWeight: "bold", fontSize: "1.75em"}}>
               Or start with these plant combinations:
             </h1>
+            {/* TODO: Re-enable once we have help verbiage */}
+            <div className="col-auto d-none">
+              <HelpButton title="Garden collections" html={ helpHtml } />
+            </div>
           </div>
 
           <div className="row">
