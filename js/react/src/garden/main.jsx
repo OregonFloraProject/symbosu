@@ -3,6 +3,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
+import IconButton from "../common/iconButton.jsx";
 import InfographicDropdown from "./infographicDropdown.jsx";
 import SideBar from "./sidebar.jsx";
 import { SearchResultGrid, SearchResult } from "./searchResults.jsx";
@@ -106,51 +107,39 @@ function ViewOpts(props) {
   };
 
   return (
-    <div id="view-opts" className="row mx-2 mt-3 py-2" style={{  }}>
-      <h2 className="col font-weight-bold">Your search results:</h2>
+    <div id="view-opts" className="row mx-2 mt-3 px-0 py-2">
+      <h3 className="col font-weight-bold">Your search results:</h3>
+      <div className="col text-right p-0 m-0">
+        <p>View as:</p>
+        <p>Sort by name:</p>
+      </div>
       <div className="col-auto">
-        <div className="row my-3">
-          <div className="col text-right p-0">
-            View as:
-          </div>
-          <div className="col">
-            <span
-              className="fake-button"
-              style={ props.viewType === "grid" ? selectedStyle : unselectedStyle }
-              onClick={ () => { props.onViewTypeClicked("grid") } }
-            >
-              Grid
-            </span>
-            <span
-              className="fake-button"
-              style={ props.viewType === "list" ? selectedStyle : unselectedStyle }
-              onClick={ () => { props.onViewTypeClicked("list") } }
-            >
-              List
-            </span>
-          </div>
-        </div>
-        <div className="row my-3">
-          <div className="col text-right p-0">
-            Sort by name:
-          </div>
-          <div className="col">
-            <span
-              className="fake-button"
-              style={ props.sortBy === "vernacularname" ? selectedStyle : unselectedStyle }
-              onClick={ () => { props.onSortByClicked("vernacularname") } }
-            >
-              Common
-            </span>
-            <span
-              className="fake-button"
-              style={ props.sortBy === "sciname" ? selectedStyle : unselectedStyle }
-              onClick={ () => { props.onSortByClicked("sciname") } }
-            >
-              Scientific
-            </span>
-          </div>
-        </div>
+        <p>
+          <IconButton
+            title="Grid"
+            icon={ `${CLIENT_ROOT}/images/garden/gridViewIcon.png` }
+            onClick={ () => { props.onViewTypeClicked("grid") } }
+            isSelected={ props.viewType === "grid" }
+          />
+          <IconButton
+            title="List"
+            icon={ `${CLIENT_ROOT}/images/garden/listViewIcon.png` }
+            onClick={ () => { props.onViewTypeClicked("list") } }
+            isSelected={ props.viewType === "list" }
+          />
+        </p>
+        <p>
+          <IconButton
+            title="Common Name"
+            onClick={ () => { props.onSortByClicked("vernacularname") } }
+            isSelected={ props.sortBy === "vernacularname" }
+          />
+          <IconButton
+            title="Scientific Name"
+            onClick={ () => { props.onSortByClicked("sciname") } }
+            isSelected={ props.sortBy === "sciname" }
+          />
+        </p>
       </div>
     </div>
   );
