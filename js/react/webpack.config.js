@@ -3,29 +3,30 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const TerserJSPlugin = require('terser-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
-const OUT_DIR = path.resolve(__dirname, "dist");
+const SRC_DIR = path.resolve(__dirname, "src");
+const REACT_OUT_DIR = path.resolve(__dirname, "dist");
+const CSS_OUT_DIR = path.resolve(__dirname, "..", "..", "css", "compiled");
 
-module.exports = {
+const commonConfig = {
   context: path.resolve(__dirname, "src"),
   mode: process.env.NODE_ENV === "development" ? "development" : "production",
-  entry: {
-    header: path.resolve(__dirname, "src", "header", "main.jsx"),
-    garden: path.resolve(__dirname, "src", "garden", "main.jsx"),
-    gardenTaxa: path.resolve(__dirname, "src", "gardenTaxa", "main.jsx"),
-    main: path.resolve(__dirname, "src", "less", "main.less")
-  },
-  output: {
-    path: OUT_DIR
-  },
   watch: process.env.NODE_ENV === "development",
   watchOptions: {
     ignored: /node_modules/
+  }
+};
+
+const reactConfig = {
+  entry: {
+    header: path.join(SRC_DIR, "header", "main.jsx"),
+    garden: path.join(SRC_DIR, "garden", "main.jsx"),
+    gardenTaxa: path.join(SRC_DIR, "gardenTaxa", "main.jsx")
   },
-  plugins: [
-    new MiniCssExtractPlugin()
-  ],
+  output: {
+    path: REACT_OUT_DIR
+  },
   optimization: {
-    minimizer: [new TerserJSPlugin(), new OptimizeCSSAssetsPlugin()]
+    minimizer: [new TerserJSPlugin()]
   },
   module: {
     rules: [
@@ -35,7 +36,26 @@ module.exports = {
         use: {
           loader: "babel-loader"
         }
-      },
+      }
+    ]
+  }
+};
+
+const lessConfig = {
+  entry: {
+    main: path.join(SRC_DIR, "less", "main.less")
+  },
+  output: {
+    path: CSS_OUT_DIR
+  },
+  plugins: [
+    new MiniCssExtractPlugin()
+  ],
+  optimization: {
+    minimizer: [new OptimizeCSSAssetsPlugin()]
+  },
+  module: {
+    rules: [
       {
         test: /\.(less|css)$/,
         exclude: /node_modules/,
@@ -43,7 +63,7 @@ module.exports = {
           {
             loader: MiniCssExtractPlugin.loader,
             options: {
-              publicPath: path.join(OUT_DIR, "css"),
+              publicPath: path.join(REACT_OUT_DIR, "css"),
               hmr: process.env.NODE_ENV === "development"
             }
           },
@@ -54,3 +74,8 @@ module.exports = {
     ]
   }
 };
+
+module.exports = [
+  Object.assign({}, commonConfig, reactConfig),
+  Object.assign({}, commonConfig, lessConfig)
+];
