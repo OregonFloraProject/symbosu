@@ -43,7 +43,8 @@ const reactConfig = {
 
 const lessConfig = {
   entry: {
-    main: path.join(SRC_DIR, "less", "main.less")
+    header: path.join(SRC_DIR, "less", "header.less"),
+    garden: path.join(SRC_DIR, "less", "garden.less")
   },
   output: {
     path: CSS_OUT_DIR
