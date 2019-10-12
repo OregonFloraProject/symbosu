@@ -21,7 +21,7 @@ class ViewOpts extends React.Component {
       <div id="view-opts" className="row mx-2 mt-3 px-0 py-2">
         <div className="col">
           <h3 className="font-weight-bold">Your search results:</h3>
-          <div>
+          <div className="d-flex flex-row flex-wrap">
             {
               this.props.filters.map((filter) => {
                 let showItem = true;
@@ -73,6 +73,7 @@ class ViewOpts extends React.Component {
                       title={ itemText }
                       icon={ `${CLIENT_ROOT}/images/garden/x-out.png` }
                       isSelected={ true }
+                      style={{ margin: "0.1em" }}
                       onClick={ () => { this.props.onFilterClicked(filter.key); } }
                     />
                   );
@@ -81,11 +82,11 @@ class ViewOpts extends React.Component {
             }
           </div>
         </div>
-        <div className="col text-right p-0 m-0">
+        <div className="col text-right p-0 mx-1 mt-auto">
           <p>View as:</p>
           <p>Sort by name:</p>
         </div>
-        <div className="col-auto">
+        <div className="col-auto p-0 mx-1 mt-auto">
           <p>
             <IconButton
               title="Grid"

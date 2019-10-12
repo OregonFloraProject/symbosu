@@ -108,12 +108,13 @@ class GardenPageApp extends React.Component {
         moisture: ("moisture" in queryParams ? queryParams["moisture"] : ViewOpts.DEFAULT_MOISTURE),
         height: ("height" in queryParams ? queryParams["height"].split(",").map((i) => parseInt(i)) : ViewOpts.DEFAULT_HEIGHT),
         width: ("width" in queryParams ? queryParams["width"].split(",").map((i) => parseInt(i)) : ViewOpts.DEFAULT_WIDTH),
-        searchText: ("search" in queryParams ? queryParams["search"] : ViewOpts.DEFAULT_SEARCH_TEXT),
+        searchText: ''
       },
+      searchText: ("search" in queryParams ? queryParams["search"] : ViewOpts.DEFAULT_SEARCH_TEXT),
       searchResults: [],
       cannedSearches: [],
       sortBy: ("sortBy" in queryParams ? queryParams["sortBy"] : "vernacularName"),
-      viewType: ("viewType" in queryParams ? queryParams["viewType"] : "grid")
+      viewType: ("viewType" in queryParams ? queryParams["viewType"] : "grid"),
     };
 
     // To Refresh sliders
@@ -160,7 +161,7 @@ class GardenPageApp extends React.Component {
         this.sideBarRef.current.resetHeight();
         break;
       case "searchText":
-        this.onSearchTextChanged({ target: { value: ViewOpts.DEFAULT_SEARCH_TEXT } });
+        this.setState({ searchText: ViewOpts.DEFAULT_SEARCH_TEXT }, () => this.onSearch());
         break;
       default:
         break;
@@ -168,20 +169,20 @@ class GardenPageApp extends React.Component {
   }
 
   onSearchTextChanged(event) {
-    this.setState({ filters: Object.assign({}, this.state.filters, { searchText: event.target.value }) });
+    this.setState({ searchText: event.target.value });
   }
 
   // On search start
   onSearch() {
-    const newQueryStr = addUrlQueryParam("search", this.state.filters.searchText);
+    const newQueryStr = addUrlQueryParam("search", this.state.searchText);
     window.history.replaceState(
       { query: newQueryStr },
       '',
       window.location.pathname + newQueryStr
     );
 
-    this.setState({ isLoading: true });
-    httpGet(`${CLIENT_ROOT}/garden/rpc/api.php?search=${this.state.filters.searchText}`)
+    this.setState({ isLoading: true, filters: Object.assign({}, this.state.filters, { searchText: this.state.searchText }) });
+    httpGet(`${CLIENT_ROOT}/garden/rpc/api.php?search=${this.state.searchText}`)
       .then((res) => {
         this.onSearchResults(JSON.parse(res));
       })
@@ -290,7 +291,7 @@ class GardenPageApp extends React.Component {
                 moisture={ this.state.filters.moisture }
                 height={ this.state.filters.height }
                 width={ this.state.filters.width }
-                searchText={ this.state.filters.searchText }
+                searchText={ this.state.searchText }
                 onSearch={ this.onSearch }
                 onSearchTextChanged={ this.onSearchTextChanged }
                 onSunlightChanged={ this.onSunlightChanged }
