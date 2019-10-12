@@ -3,11 +3,11 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-import IconButton from "../common/iconButton.jsx";
 import InfographicDropdown from "./infographicDropdown.jsx";
 import SideBar from "./sidebar.jsx";
 import { SearchResultContainer, SearchResult } from "./searchResults.jsx";
 import CannedSearchContainer from "./cannedSearches.jsx";
+import ViewOpts from "./viewOpts.jsx";
 import httpGet from "../common/httpGet.js";
 
 const CLIENT_ROOT = "..";
@@ -96,56 +96,6 @@ function MainContentContainer(props) {
   );
 }
 
-function ViewOpts(props) {
-  return (
-    <div id="view-opts" className="row mx-2 mt-3 px-0 py-2">
-      <div className="col">
-        <h3 className="font-weight-bold">Your search results:</h3>
-        <div>{/* TODO: Tag container */}</div>
-      </div>
-      <div className="col text-right p-0 m-0">
-        <p>View as:</p>
-        <p>Sort by name:</p>
-      </div>
-      <div className="col-auto">
-        <p>
-          <IconButton
-            title="Grid"
-            icon={ `${CLIENT_ROOT}/images/garden/gridViewIcon.png` }
-            onClick={ () => { props.onViewTypeClicked("grid") } }
-            isSelected={ props.viewType === "grid" }
-          />
-          <IconButton
-            title="List"
-            icon={ `${CLIENT_ROOT}/images/garden/listViewIcon.png` }
-            onClick={ () => { props.onViewTypeClicked("list") } }
-            isSelected={ props.viewType === "list" }
-          />
-        </p>
-        <p>
-          <IconButton
-            title="Common Name"
-            onClick={ () => { props.onSortByClicked("vernacularName") } }
-            isSelected={ props.sortBy === "vernacularName" }
-          />
-          <IconButton
-            title="Scientific Name"
-            onClick={ () => { props.onSortByClicked("sciName") } }
-            isSelected={ props.sortBy === "sciName" }
-          />
-        </p>
-      </div>
-    </div>
-  );
-}
-
-ViewOpts.defaultProps = {
-  sortBy: "vernacularname",
-  viewType: "grid",
-  onSortByClicked: () => {},
-  onViewTypeClicked: () => {}
-};
-
 class GardenPageApp extends React.Component {
   constructor(props) {
     super(props);
@@ -153,16 +103,21 @@ class GardenPageApp extends React.Component {
 
     this.state = {
       isLoading: false,
-      sunlight: ("sunlight" in queryParams ? queryParams["sunlight"] : ""),
-      moisture: ("moisture" in queryParams ? queryParams["moisture"] : ""),
-      height: ("height" in queryParams ? queryParams["height"].split(",").map((i) => parseInt(i)) : [0, 50]),
-      width: ("width" in queryParams ? queryParams["width"].split(",").map((i) => parseInt(i)) : [0, 50]),
-      searchText: ("search" in queryParams ? queryParams["search"] : ""),
+      filters: {
+        sunlight: ("sunlight" in queryParams ? queryParams["sunlight"] : ViewOpts.DEFAULT_SUNLIGHT),
+        moisture: ("moisture" in queryParams ? queryParams["moisture"] : ViewOpts.DEFAULT_MOISTURE),
+        height: ("height" in queryParams ? queryParams["height"].split(",").map((i) => parseInt(i)) : ViewOpts.DEFAULT_HEIGHT),
+        width: ("width" in queryParams ? queryParams["width"].split(",").map((i) => parseInt(i)) : ViewOpts.DEFAULT_WIDTH),
+        searchText: ("search" in queryParams ? queryParams["search"] : ViewOpts.DEFAULT_SEARCH_TEXT),
+      },
       searchResults: [],
       cannedSearches: [],
-      sortBy: "vernacularName",
-      viewType: "grid"
+      sortBy: ("sortBy" in queryParams ? queryParams["sortBy"] : "vernacularName"),
+      viewType: ("viewType" in queryParams ? queryParams["viewType"] : "grid")
     };
+
+    // To Refresh sliders
+    this.sideBarRef = React.createRef();
 
     this.onSearchTextChanged = this.onSearchTextChanged.bind(this);
     this.onSearch = this.onSearch.bind(this);
@@ -171,8 +126,9 @@ class GardenPageApp extends React.Component {
     this.onMoistureChanged =  this.onMoistureChanged.bind(this);
     this.onHeightChanged =  this.onHeightChanged.bind(this);
     this.onWidthChanged =  this.onWidthChanged.bind(this);
-    this.sortBy = this.sortBy.bind(this);
-    this.viewType = this.viewType.bind(this);
+    this.onSortByChanged = this.onSortByChanged.bind(this);
+    this.onViewTypeChanged = this.onViewTypeChanged.bind(this);
+    this.onFilterRemoved = this.onFilterRemoved.bind(this);
   }
 
   componentDidMount() {
@@ -186,14 +142,38 @@ class GardenPageApp extends React.Component {
     this.onSearch();
   }
 
+  onFilterRemoved(key) {
+    // TODO: This is clunky
+    switch (key) {
+      case "sunlight":
+        this.onSunlightChanged({ target: { value: ViewOpts.DEFAULT_SUNLIGHT } });
+        break;
+      case "moisture":
+        this.onMoistureChanged({ target: { value: ViewOpts.DEFAULT_MOISTURE } });
+        break;
+      case "width":
+        this.onWidthChanged({ target: { value: ViewOpts.DEFAULT_WIDTH } });
+        this.sideBarRef.current.resetWidth();
+        break;
+      case "height":
+        this.onHeightChanged({ target: { value: ViewOpts.DEFAULT_HEIGHT } });
+        this.sideBarRef.current.resetHeight();
+        break;
+      case "searchText":
+        this.onSearchTextChanged({ target: { value: ViewOpts.DEFAULT_SEARCH_TEXT } });
+        break;
+      default:
+        break;
+    }
+  }
 
   onSearchTextChanged(event) {
-    this.setState({ searchText: event.target.value });
+    this.setState({ filters: Object.assign({}, this.state.filters, { searchText: event.target.value }) });
   }
 
   // On search start
   onSearch() {
-    const newQueryStr = addUrlQueryParam("search", this.state.searchText);
+    const newQueryStr = addUrlQueryParam("search", this.state.filters.searchText);
     window.history.replaceState(
       { query: newQueryStr },
       '',
@@ -201,7 +181,7 @@ class GardenPageApp extends React.Component {
     );
 
     this.setState({ isLoading: true });
-    httpGet(`${CLIENT_ROOT}/garden/rpc/api.php?search=${this.state.searchText}`)
+    httpGet(`${CLIENT_ROOT}/garden/rpc/api.php?search=${this.state.filters.searchText}`)
       .then((res) => {
         this.onSearchResults(JSON.parse(res));
       })
@@ -215,23 +195,25 @@ class GardenPageApp extends React.Component {
 
   // On search end
   onSearchResults(results) {
-    this.setState({ searchResults: results });
+    this.setState({
+      searchResults: results.sort((a, b) => { return a[this.state.sortBy] > b[this.state.sortBy] ? 1 : -1 })
+    });
   }
 
   onSunlightChanged(event) {
-    this.setState({ sunlight: event.target.value });
+    this.setState({ filters: Object.assign({}, this.state.filters, { sunlight: event.target.value }) });
     let newQueryStr = addUrlQueryParam("sunlight", event.target.value);
     window.history.replaceState({ query: newQueryStr }, '', window.location.pathname + newQueryStr);
   }
 
   onMoistureChanged(event) {
-    this.setState({ moisture: event.target.value });
+    this.setState({ filters: Object.assign({}, this.state.filters, { moisture: event.target.value }) });
     let newQueryStr = addUrlQueryParam("moisture", event.target.value);
     window.history.replaceState({ query: newQueryStr }, '', window.location.pathname + newQueryStr);
   }
 
   onHeightChanged(event) {
-    this.setState({ height: event.target.value });
+    this.setState({ filters: Object.assign({}, this.state.filters, { height: event.target.value }) });
     let newQueryStr = '';
 
     if (event.target.value[0] === 0 && event.target.value[1] === 50) {
@@ -248,7 +230,7 @@ class GardenPageApp extends React.Component {
   }
 
   onWidthChanged(event) {
-    this.setState({ width: event.target.value });
+    this.setState({ filters: Object.assign({}, this.state.filters, { width: event.target.value }) });
     let newQueryStr = '';
 
     if (event.target.value[0] === 0 && event.target.value[1] === 50) {
@@ -264,15 +246,19 @@ class GardenPageApp extends React.Component {
     );
   }
 
-  sortBy(type) {
+  onSortByChanged(type) {
     this.setState({
       sortBy: type,
       searchResults: this.state.searchResults.sort((a, b) => { return a[type] > b[type] ? 1 : -1 })
     });
+    let newQueryStr = addUrlQueryParam("sortBy", type);
+    window.history.replaceState({ query: newQueryStr }, '', window.location.pathname + newQueryStr);
   }
 
-  viewType(type) {
+  onViewTypeChanged(type) {
     this.setState({ viewType: type });
+    let newQueryStr = addUrlQueryParam("viewType", type);
+    window.history.replaceState({ query: newQueryStr }, '', window.location.pathname + newQueryStr);
   }
 
   render() {
@@ -283,13 +269,14 @@ class GardenPageApp extends React.Component {
           <div className="row">
             <div className="col-auto">
               <SideBar
+                ref={ this.sideBarRef }
                 style={{ background: "#DFEFD3" }}
                 isLoading={ this.state.isLoading }
-                sunlight={ this.state.sunlight }
-                moisture={ this.state.moisture }
-                height={ this.state.height }
-                width={ this.state.width }
-                searchText={ this.state.searchText }
+                sunlight={ this.state.filters.sunlight }
+                moisture={ this.state.filters.moisture }
+                height={ this.state.filters.height }
+                width={ this.state.filters.width }
+                searchText={ this.state.filters.searchText }
                 onSearch={ this.onSearch }
                 onSearchTextChanged={ this.onSearchTextChanged }
                 onSunlightChanged={ this.onSunlightChanged }
@@ -309,16 +296,22 @@ class GardenPageApp extends React.Component {
                   <ViewOpts
                     viewType={ this.state.viewType }
                     sortBy={ this.state.sortBy }
-                    onSortByClicked={ this.sortBy }
-                    onViewTypeClicked={ this.viewType }
+                    onSortByClicked={ this.onSortByChanged }
+                    onViewTypeClicked={ this.onViewTypeChanged }
+                    onFilterClicked={ this.onFilterRemoved }
+                    filters={
+                      Object.keys(this.state.filters).map((filterKey) => {
+                        return { key: filterKey, val: this.state.filters[filterKey] }
+                      })
+                    }
                   />
                   <SearchResultContainer viewType={ this.state.viewType }>
                     {
                       this.state.searchResults.map((result) =>  {
-                        let filterWidth = filterByWidth(result, this.state.width);
-                        let filterHeight = filterByHeight(result, this.state.height);
-                        let filterSunlight = filterBySunlight(result, this.state.sunlight);
-                        let filterMoisture = filterByMoisture(result, this.state.moisture);
+                        let filterWidth = filterByWidth(result, this.state.filters.width);
+                        let filterHeight = filterByHeight(result, this.state.filters.height);
+                        let filterSunlight = filterBySunlight(result, this.state.filters.sunlight);
+                        let filterMoisture = filterByMoisture(result, this.state.filters.moisture);
                         let showResult = filterWidth && filterHeight && filterSunlight && filterMoisture;
                         return (
                           <SearchResult
