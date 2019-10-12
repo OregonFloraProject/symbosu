@@ -126,7 +126,8 @@
         [
           $TABLE_FIELDS['CHECKLISTS']['CLID'],
           $TABLE_FIELDS['CHECKLISTS']['NAME'],
-          $TABLE_FIELDS['CHECKLISTS']['ICON_URL']
+          $TABLE_FIELDS['CHECKLISTS']['ICON_URL'],
+          $TABLE_FIELDS['CHECKLISTS']['TITLE'] . ' as description',
         ]
     );
     $sql .= 'WHERE ' . $TABLE_FIELDS['CHECKLISTS']['PARENT_CLID'] . ' = ' . $CLID_GARDEN_ALL;
