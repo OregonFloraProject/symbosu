@@ -2,7 +2,7 @@
   ob_start();
   include_once("../../config/symbini.php");
 
-  global $SERVER_ROOT;
+  global $SERVER_ROOT, $CHARSET;
   include_once($SERVER_ROOT . "/classes/Functional.php");
 
   $TABLE_FIELDS =  json_decode(file_get_contents($SERVER_ROOT . "/meta/tableFields.json"), true);
@@ -136,13 +136,14 @@
 
   /**
    * Returns all unique taxa with thumbnail urls
+   * @params $_GET
    */
   function get_garden_taxa($params) {
     global $TABLE_FIELDS, $CLID_GARDEN_ALL;
 
     $search = null;
     if (key_exists("search", $params) && $params["search"] !== "" && $params["search"] !== null) {
-      $search = mysqli_escape_string($params["search"]);
+      $search = strtolower(preg_replace("/[;()-]/", '', $params["search"]));
     }
 
     # Select all garden taxa that have some sort of name
@@ -160,12 +161,14 @@
     $sql .= 'LEFT JOIN taxavernaculars v ON t.tid = v.tid ';
     $sql .= 'RIGHT JOIN fmchklsttaxalink chk ON t.tid = chk.tid ';
     $sql .= "WHERE chk.clid = $CLID_GARDEN_ALL ";
-    $sql .= 'AND (t.' . $TABLE_FIELDS['TAXA']['SCINAME']. ' IS NOT NULL ';
-    $sql .= 'OR v.' . $TABLE_FIELDS['TAXA_VERNACULARS']['VERNACULAR_NAME'] . ' IS NOT NULL) ';
 
-    if ($search !== null) {
-      $sql .= 'AND (t.' . $TABLE_FIELDS['TAXA']['SCINAME'] . " LIKE '$search%'";
-      $sql .= 'OR v. ' . $TABLE_FIELDS['TAXA_VERNACULARS']['VERNACULAR_NAME'] . " LIKE '$search%') ";
+    if ($search === null) {
+      $sql .= 'AND (t.' . $TABLE_FIELDS['TAXA']['SCINAME']. ' IS NOT NULL ';
+      $sql .= 'OR v.' . $TABLE_FIELDS['TAXA_VERNACULARS']['VERNACULAR_NAME'] . ' IS NOT NULL) ';
+    }
+    else {
+      $sql .= 'AND (lower(t.' . $TABLE_FIELDS['TAXA']['SCINAME'] . ") LIKE \"$search%\" ";
+      $sql .= 'OR lower(v. ' . $TABLE_FIELDS['TAXA_VERNACULARS']['VERNACULAR_NAME'] . ") LIKE \"$search%\") ";
     }
 
     $sql .= 'GROUP BY t.' . $TABLE_FIELDS['TAXA']['TID'] . ' ';
