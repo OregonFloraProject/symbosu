@@ -1,7 +1,7 @@
 import React from "react";
 import Carousel from "react-slick";
 
-import HelpButton from "./helpButton.jsx";
+import HelpButton from "../common/helpButton.jsx";
 
 const CLIENT_ROOT = "..";
 

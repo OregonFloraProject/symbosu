@@ -48,7 +48,7 @@ function getTaxaPage(tid) {
 
 function filterByWidth(item, minMax) {
   const withinMin = item.width[0] >= minMax[0];
-  if (minMax[0] === 50) {
+  if (minMax[1] === 50) {
     return withinMin;
   }
   return withinMin && item.width[1] <= minMax[1];
@@ -314,17 +314,17 @@ class GardenPageApp extends React.Component {
                   />
                   <SearchResultContainer viewType={ this.state.viewType }>
                     {
-                      this.state.searchResults.filter((item) => { return filterByHeight(item, this.state.height) }).map((result) => {
+                      this.state.searchResults.map((result) =>  {
                         let filterWidth = filterByWidth(result, this.state.width);
-                        let filterHeight = filterByWidth(result, this.state.height);
+                        let filterHeight = filterByHeight(result, this.state.height);
                         let filterSunlight = filterBySunlight(result, this.state.sunlight);
                         let filterMoisture = filterByMoisture(result, this.state.moisture);
-                        let display = filterWidth && filterHeight && filterSunlight && filterMoisture;
+                        let showResult = filterWidth && filterHeight && filterSunlight && filterMoisture;
                         return (
                           <SearchResult
-                            viewType={ this.state.viewType }
-                            style={{ display: display ? "initial" : "none" }}
                             key={ result.tid }
+                            viewType={ this.state.viewType }
+                            display={ showResult }
                             href={ getTaxaPage(result.tid) }
                             src={ result.image }
                             commonName={ result.vernacularName ? result.vernacularName : '' }

@@ -1,6 +1,6 @@
 import React from "react";
 
-import HelpButton from "./helpButton.jsx";
+import HelpButton from "../common/helpButton.jsx";
 import {SearchWidget} from "../common/search.jsx";
 
 const CLIENT_ROOT = "..";
