@@ -251,13 +251,27 @@ class GardenPageApp extends React.Component {
       sortBy: type,
       searchResults: this.state.searchResults.sort((a, b) => { return a[type] > b[type] ? 1 : -1 })
     });
-    let newQueryStr = addUrlQueryParam("sortBy", type);
-    window.history.replaceState({ query: newQueryStr }, '', window.location.pathname + newQueryStr);
+
+    let newType;
+    if (type === "sciName") {
+      newType = type;
+    } else {
+      newType = '';
+    }
+    let newQueryStr = addUrlQueryParam("sortBy", newType);
+    window.history.replaceState({query: newQueryStr}, '', window.location.pathname + newQueryStr);
   }
 
   onViewTypeChanged(type) {
     this.setState({ viewType: type });
-    let newQueryStr = addUrlQueryParam("viewType", type);
+
+    let newType;
+    if (type === "list") {
+      newType = type;
+    } else {
+      newType = '';
+    }
+    let newQueryStr = addUrlQueryParam("viewType", newType);
     window.history.replaceState({ query: newQueryStr }, '', window.location.pathname + newQueryStr);
   }
 

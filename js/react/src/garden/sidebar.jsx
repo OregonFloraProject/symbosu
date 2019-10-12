@@ -103,6 +103,7 @@ class PlantSlider extends React.Component {
     super(props);
     this.state = { description: "(Any size)" };
     this.slider = null;
+    this.registerSliderEvent = this.registerSliderEvent.bind(this);
     this.reset = this.reset.bind(this);
   }
 
@@ -115,8 +116,18 @@ class PlantSlider extends React.Component {
       ticks_snap_bounds: 1
     });
 
+    this.registerSliderEvent();
+  }
+
+  componentWillUnmount() {
+    this.slider.destroy();
+    this.slider = null;
+  }
+
+  registerSliderEvent() {
     if (this.props.onChange) {
       const onChangeEvent = this.props.onChange;
+      this.slider.off("slide");
       this.slider.on("slide", (sliderArray) => {
         this.setState({ description: getSliderDescription(sliderArray) });
         const fakeEvent = { target: { value: sliderArray } };
@@ -125,15 +136,11 @@ class PlantSlider extends React.Component {
     }
   }
 
-  componentWillUnmount() {
-    this.slider.destroy();
-    this.slider = null;
-  }
-
   reset() {
     if (this.slider !== null) {
       this.slider.refresh();
       this.setState({ description: getSliderDescription(PlantSlider.defaultProps.value) });
+      this.registerSliderEvent();
     }
   }
 
