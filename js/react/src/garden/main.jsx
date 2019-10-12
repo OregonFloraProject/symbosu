@@ -8,7 +8,7 @@ import InfographicDropdown from "./infographicDropdown.jsx";
 import SideBar from "./sidebar.jsx";
 import { SearchResultContainer, SearchResult } from "./searchResults.jsx";
 import CannedSearchContainer from "./cannedSearches.jsx";
-import httpGet from "./httpGet.js";
+import httpGet from "../common/httpGet.js";
 
 const CLIENT_ROOT = "..";
 
@@ -125,13 +125,13 @@ function ViewOpts(props) {
         <p>
           <IconButton
             title="Common Name"
-            onClick={ () => { props.onSortByClicked("vernacularname") } }
-            isSelected={ props.sortBy === "vernacularname" }
+            onClick={ () => { props.onSortByClicked("vernacularName") } }
+            isSelected={ props.sortBy === "vernacularName" }
           />
           <IconButton
             title="Scientific Name"
-            onClick={ () => { props.onSortByClicked("sciname") } }
-            isSelected={ props.sortBy === "sciname" }
+            onClick={ () => { props.onSortByClicked("sciName") } }
+            isSelected={ props.sortBy === "sciName" }
           />
         </p>
       </div>
@@ -160,7 +160,7 @@ class GardenPageApp extends React.Component {
       searchText: ("search" in queryParams ? queryParams["search"] : ""),
       searchResults: [],
       cannedSearches: [],
-      sortBy: "vernacularname",
+      sortBy: "vernacularName",
       viewType: "grid"
     };
 
@@ -323,12 +323,12 @@ class GardenPageApp extends React.Component {
                         return (
                           <SearchResult
                             viewType={ this.state.viewType }
-                            style={{display: display ? "initial" : "none" }}
-                            key={result.tid}
-                            href={getTaxaPage(result.tid)}
-                            src={result.image}
-                            commonName={result.vernacularname ? result.vernacularname : ''}
-                            sciName={result.sciname}
+                            style={{ display: display ? "initial" : "none" }}
+                            key={ result.tid }
+                            href={ getTaxaPage(result.tid) }
+                            src={ result.image }
+                            commonName={ result.vernacularName ? result.vernacularName : '' }
+                            sciName={ result.sciName ? result.sciName : '' }
                           />
                         )
                       })
