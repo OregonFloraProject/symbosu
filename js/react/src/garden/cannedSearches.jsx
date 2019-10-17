@@ -121,7 +121,7 @@ class CannedSearchContainer extends React.Component {
                           <CannedSearchResult
                             title={searchResult.name}
                             description={ searchResult.description }
-                            src={ `${CLIENT_ROOT}/${searchResult.iconUrl}` }
+                            src={ `${searchResult.iconUrl}` }
                             href={getChecklistPage(searchResult.clid)}
                             onLearnMore={() => {
                               console.log(`Learn more about ${searchResult.name}!`)
