@@ -53,7 +53,7 @@ function SearchResult(props) {
               <div className={"card-text" + (useGrid ? "" : " d-inline")}>
                 {props.commonName}
                 {useGrid ? <br/> : " - "}
-                {props.sciName}
+                <span className="font-italic">{props.sciName}</span>
               </div>
             </div>
           </div>

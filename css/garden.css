@@ -107,7 +107,6 @@ button {
 }
 
 #canned-searches .card-text, #search-results .card-text, .canned-title {
-  text-transform: capitalize;
   font-weight: bold;
   color: #1E352F !important;
   font-size: initial;
