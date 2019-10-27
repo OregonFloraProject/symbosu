@@ -46,14 +46,27 @@ function getTaxaPage(tid) {
   return `${CLIENT_ROOT}/taxa/garden.php?taxon=${tid}`;
 }
 
-function getCommonNameStr(item) {
+function getCommonNameStr(item, searchText) {
   const basename = item.vernacular.basename;
   const names = item.vernacular.names;
-  if (names[0].includes(basename) && basename !== names[0]) {
-    return `${basename}, ${names[0].replace(basename, '')}`
+
+  let cname = '';
+  for (let i in names) {
+    let currentName = names[i];
+    if (searchText.toLowerCase().includes(currentName) || currentName.toLowerCase().includes(searchText)) {
+      cname = currentName;
+      break;
+    }
+  }
+  if (cname === '') {
+    cname = names[0];
   }
 
-  return names[0];
+  if (cname.includes(basename) && basename !== cname) {
+    return `${basename}, ${cname.replace(basename, '')}`
+  }
+
+  return cname;
 }
 
 function filterByWidth(item, minMax) {
@@ -211,7 +224,10 @@ class GardenPageApp extends React.Component {
       newResults = results.sort((a, b) => { return a["sciName"] > b["sciName"] ? 1 : -1 });
     } else {
       newResults = results.sort((a, b) => {
-        return getCommonNameStr(a).toLowerCase() > getCommonNameStr(b).toLowerCase() ? 1 : -1
+        return (
+          getCommonNameStr(a, this.state.searchText).toLowerCase() >
+          getCommonNameStr(b, this.state.searchText).toLowerCase() ? 1 : -1
+        );
       });
     }
 
@@ -265,9 +281,21 @@ class GardenPageApp extends React.Component {
   }
 
   onSortByChanged(type) {
+    let newResults;
+    if (type === "sciName") {
+      newResults = this.state.searchResults.sort((a, b) => { return a["sciName"] > b["sciName"] ? 1 : -1 });
+    } else {
+      newResults = this.state.searchResults.sort((a, b) => {
+        return (
+          getCommonNameStr(a, this.state.searchText).toLowerCase() >
+          getCommonNameStr(b, this.state.searchText).toLowerCase() ? 1 : -1
+        );
+      });
+    }
+
     this.setState({
       sortBy: type,
-      searchResults: this.state.searchResults.sort((a, b) => { return a[type] > b[type] ? 1 : -1 })
+      searchResults: newResults
     });
 
     let newType;
@@ -352,7 +380,7 @@ class GardenPageApp extends React.Component {
                             display={ showResult }
                             href={ getTaxaPage(result.tid) }
                             src={ result.image }
-                            commonName={ getCommonNameStr(result) }
+                            commonName={ getCommonNameStr(result, this.state.searchText) }
                             sciName={ result.sciName ? result.sciName : '' }
                           />
                         )
