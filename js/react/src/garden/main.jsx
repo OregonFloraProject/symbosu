@@ -111,6 +111,10 @@ function filterByMoisture(item, moisture) {
   }
 }
 
+function filterByChecklist(item, clid) {
+  return clid === -1 || item.checklists.includes(clid);
+}
+
 function MainContentContainer(props) {
   return (
     <div className="container mx-auto p-4" style={{ maxWidth: "1400px" }}>
@@ -131,7 +135,8 @@ class GardenPageApp extends React.Component {
         moisture: ("moisture" in queryParams ? queryParams["moisture"] : ViewOpts.DEFAULT_MOISTURE),
         height: ("height" in queryParams ? queryParams["height"].split(",").map((i) => parseInt(i)) : ViewOpts.DEFAULT_HEIGHT),
         width: ("width" in queryParams ? queryParams["width"].split(",").map((i) => parseInt(i)) : ViewOpts.DEFAULT_WIDTH),
-        searchText: ''
+        checklistId: ("clid" in queryParams ? queryParams["clid"] : ViewOpts.DEFAULT_CLID),
+        searchText: '',
       },
       searchText: ("search" in queryParams ? queryParams["search"] : ViewOpts.DEFAULT_SEARCH_TEXT),
       searchResults: [],
@@ -153,6 +158,7 @@ class GardenPageApp extends React.Component {
     this.onSortByChanged = this.onSortByChanged.bind(this);
     this.onViewTypeChanged = this.onViewTypeChanged.bind(this);
     this.onFilterRemoved = this.onFilterRemoved.bind(this);
+    this.onCannedFilter = this.onCannedFilter.bind(this);
   }
 
   componentDidMount() {
@@ -185,6 +191,9 @@ class GardenPageApp extends React.Component {
         break;
       case "searchText":
         this.setState({ searchText: ViewOpts.DEFAULT_SEARCH_TEXT }, () => this.onSearch());
+        break;
+      case "checklistId":
+        this.onCannedFilter(ViewOpts.DEFAULT_CLID);
         break;
       default:
         break;
@@ -321,7 +330,22 @@ class GardenPageApp extends React.Component {
     window.history.replaceState({ query: newQueryStr }, '', window.location.pathname + newQueryStr);
   }
 
+  onCannedFilter(clid) {
+    this.setState({ filters: Object.assign({}, this.state.filters, { checklistId: clid }) });
+    if (clid === -1) {
+      clid = '';
+    }
+    let newQueryStr = addUrlQueryParam("clid", clid);
+    window.history.replaceState({ query: newQueryStr }, '', window.location.pathname + newQueryStr);
+  }
+
   render() {
+    const checkListMap = {};
+    for (let i in this.state.cannedSearches) {
+      let search = this.state.cannedSearches[i];
+      checkListMap[search.clid] = search.name;
+    }
+
     return (
       <div>
         <InfographicDropdown />
@@ -348,7 +372,10 @@ class GardenPageApp extends React.Component {
             <div className="col">
               <div className="row">
                 <div className="col">
-                  <CannedSearchContainer searches={ this.state.cannedSearches }/>
+                  <CannedSearchContainer
+                    searches={ this.state.cannedSearches }
+                    onFilter={ this.onCannedFilter }
+                  />
                 </div>
               </div>
               <div className="row">
@@ -359,6 +386,7 @@ class GardenPageApp extends React.Component {
                     onSortByClicked={ this.onSortByChanged }
                     onViewTypeClicked={ this.onViewTypeChanged }
                     onFilterClicked={ this.onFilterRemoved }
+                    checklistNames={ checkListMap }
                     filters={
                       Object.keys(this.state.filters).map((filterKey) => {
                         return { key: filterKey, val: this.state.filters[filterKey] }
@@ -368,11 +396,12 @@ class GardenPageApp extends React.Component {
                   <SearchResultContainer viewType={ this.state.viewType }>
                     {
                       this.state.searchResults.map((result) =>  {
+                        let filterChecklist = filterByChecklist(result, this.state.filters.checklistId);
                         let filterWidth = filterByWidth(result, this.state.filters.width);
                         let filterHeight = filterByHeight(result, this.state.filters.height);
                         let filterSunlight = filterBySunlight(result, this.state.filters.sunlight);
                         let filterMoisture = filterByMoisture(result, this.state.filters.moisture);
-                        let showResult = filterWidth && filterHeight && filterSunlight && filterMoisture;
+                        let showResult = filterChecklist && filterWidth && filterHeight && filterSunlight && filterMoisture;
                         return (
                           <SearchResult
                             key={ result.tid }
