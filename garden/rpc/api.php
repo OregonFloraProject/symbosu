@@ -60,6 +60,28 @@
     return "";
   }
 
+  function get_checklists_for_tid($tid) {
+    global $TABLE_FIELDS;
+    global $CLID_GARDEN_ALL;
+
+    $cl_sql = get_select_statement(
+        "fmchklsttaxalink tl",
+        [
+            'tl.' . $TABLE_FIELDS["CHECKLISTS"]["CLID"]
+        ]
+    );
+
+    $cl_sql .= 'INNER JOIN taxa t ON ';
+    $cl_sql .= 'tl.' . $TABLE_FIELDS["TAXA"]["TID"] . ' = t.' . $TABLE_FIELDS["TAXA"]["TID"] . ' ';
+    $cl_sql .= 'INNER JOIN fmchecklists cl ON ';
+    $cl_sql .= 'tl.' . $TABLE_FIELDS["CHECKLISTS"]["CLID"] . ' = cl.' . $TABLE_FIELDS["CHECKLISTS"]["CLID"] . ' ';
+    $cl_sql .= 'WHERE t.' . $TABLE_FIELDS["TAXA"]["TID"] . " = $tid AND ";
+    $cl_sql .= 'cl.' . $TABLE_FIELDS["CHECKLISTS"]["PARENT_CLID"] . " = $CLID_GARDEN_ALL ";
+    $cl_sql .= 'GROUP BY ' . $TABLE_FIELDS["CHECKLISTS"]["CLID"];
+
+    return run_query($cl_sql);
+  }
+
   function get_attribs_for_tid($tid) {
     global $TABLE_FIELDS;
     $all_attr_sql = get_select_statement(
@@ -181,6 +203,13 @@
     foreach ($resultsTmp as $result) {
       $result = array_merge($result, get_attribs_for_tid($result["tid"]));
       $result["image"] = get_thumbnail_for_tid($result["tid"]);
+
+      $result["checklists"] = [];
+      $clidsTemp = get_checklists_for_tid($result["tid"]);
+      foreach ($clidsTemp as $clid) {
+        array_push($result["checklists"], $clid[$TABLE_FIELDS['CHECKLISTS']['CLID']]);
+      }
+
       array_push($results, $result);
     }
 
