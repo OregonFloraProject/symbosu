@@ -46,6 +46,16 @@ function getTaxaPage(tid) {
   return `${CLIENT_ROOT}/taxa/garden.php?taxon=${tid}`;
 }
 
+function getCommonNameStr(item) {
+  const basename = item.vernacular.basename;
+  const names = item.vernacular.names;
+  if (names[0].includes(basename) && basename !== names[0]) {
+    return `${basename}, ${names[0].replace(basename, '')}`
+  }
+
+  return names[0];
+}
+
 function filterByWidth(item, minMax) {
   const withinMin = item.width[0] >= minMax[0];
   if (minMax[1] === 50) {
@@ -196,9 +206,16 @@ class GardenPageApp extends React.Component {
 
   // On search end
   onSearchResults(results) {
-    this.setState({
-      searchResults: results.sort((a, b) => { return a[this.state.sortBy] > b[this.state.sortBy] ? 1 : -1 })
-    });
+    let newResults;
+    if (this.state.sortBy === "sciName") {
+      newResults = results.sort((a, b) => { return a["sciName"] > b["sciName"] ? 1 : -1 });
+    } else {
+      newResults = results.sort((a, b) => {
+        return getCommonNameStr(a).toLowerCase() > getCommonNameStr(b).toLowerCase() ? 1 : -1
+      });
+    }
+
+    this.setState({ searchResults: newResults });
   }
 
   onSunlightChanged(event) {
@@ -335,7 +352,7 @@ class GardenPageApp extends React.Component {
                             display={ showResult }
                             href={ getTaxaPage(result.tid) }
                             src={ result.image }
-                            commonName={ result.vernacularName ? result.vernacularName : '' }
+                            commonName={ getCommonNameStr(result) }
                             sciName={ result.sciName ? result.sciName : '' }
                           />
                         )

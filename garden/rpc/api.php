@@ -44,7 +44,7 @@
    * @param tid int The tid for the image
    * @return string The first thumbnail for $tid, else "" if one does not exist
    */
-  function get_thumbnail_for_tid($tid) {
+  function get_thumbnail($tid) {
     global $TABLE_FIELDS;
 
     $sql = get_select_statement("images", [ $TABLE_FIELDS["IMAGES"]["THUMBNAIL_URL"] ]);
@@ -60,7 +60,31 @@
     return "";
   }
 
-  function get_checklists_for_tid($tid) {
+  /**
+   * @param $tid TID to query
+   * @return array Array of vernacular names for the TID
+   */
+  function get_vernacular_names($tid) {
+    global $TABLE_FIELDS;
+
+    $vn_sql = get_select_statement(
+        "taxavernaculars",
+        [
+            $TABLE_FIELDS['TAXA_VERNACULARS']['VERNACULAR_NAME'],
+            $TABLE_FIELDS['TAXA_VERNACULARS']['LANGUAGE'],
+        ]
+    );
+    $vn_sql .= ' WHERE ' . $TABLE_FIELDS['TAXA']['TID'] . " = $tid ";
+    $vn_sql .= ' ORDER BY ' . $TABLE_FIELDS['TAXA_VERNACULARS']['SORT_SEQ'] . ';';
+
+    return run_query($vn_sql);
+  }
+
+  /**
+   * @param $tid TID to query
+   * @return array Array of garden checklists that the TID is a member of
+   */
+  function get_checklists($tid) {
     global $TABLE_FIELDS;
     global $CLID_GARDEN_ALL;
 
@@ -82,7 +106,7 @@
     return run_query($cl_sql);
   }
 
-  function get_attribs_for_tid($tid) {
+  function get_attribs($tid) {
     global $TABLE_FIELDS;
     $all_attr_sql = get_select_statement(
         "kmdescr",
@@ -173,8 +197,7 @@
         "taxa",
         [
             't.' . $TABLE_FIELDS['TAXA']['TID'],
-            't.' . $TABLE_FIELDS['TAXA']['SCINAME'],
-            'v.' . $TABLE_FIELDS['TAXA_VERNACULARS']['VERNACULAR_NAME']
+            't.' . $TABLE_FIELDS['TAXA']['SCINAME']
         ]
     );
     // Abbreviation for 'taxa' table name
@@ -201,14 +224,28 @@
 
     // Populate image urls
     foreach ($resultsTmp as $result) {
-      $result = array_merge($result, get_attribs_for_tid($result["tid"]));
-      $result["image"] = get_thumbnail_for_tid($result["tid"]);
+      $result = array_merge($result, get_attribs($result["tid"]));
+      $result["image"] = get_thumbnail($result["tid"]);
 
       $result["checklists"] = [];
-      $clidsTemp = get_checklists_for_tid($result["tid"]);
+      $clidsTemp = get_checklists($result["tid"]);
       foreach ($clidsTemp as $clid) {
         array_push($result["checklists"], $clid[$TABLE_FIELDS['CHECKLISTS']['CLID']]);
       }
+
+      $result["vernacular"] = [];
+      $result["vernacular"]["names"] = [];
+      $vernacularsTmp = get_vernacular_names($result["tid"]);
+      foreach ($vernacularsTmp as $vn) {
+        $basename_is_set = array_key_exists("basename", $result["vernacular"]);
+
+        if (!$basename_is_set && strtolower($vn[$TABLE_FIELDS['TAXA_VERNACULARS']['LANGUAGE']]) === 'basename') {
+          $result["vernacular"]["basename"] = $vn[$TABLE_FIELDS['TAXA_VERNACULARS']['VERNACULAR_NAME']];
+        } else {
+          array_push($result["vernacular"]["names"], $vn[$TABLE_FIELDS['TAXA_VERNACULARS']['VERNACULAR_NAME']]);
+        }
+      }
+      $result['vernacular']['names'] = array_unique($result["vernacular"]["names"]);
 
       array_push($results, $result);
     }
