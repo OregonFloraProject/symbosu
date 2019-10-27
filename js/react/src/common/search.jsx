@@ -1,7 +1,5 @@
 import React from "react";
 
-const CLIENT_ROOT = "..";
-
 const searchButtonStyle = {
   width: "2em",
   height: "2em",
@@ -21,7 +19,7 @@ function SearchButton(props) {
       onClick={ props.isLoading ? () => {} : props.onClick}>
       <img
         style={{display: props.isLoading ? "none" : "block"}}
-        src={`${CLIENT_ROOT}/images/garden/search-green.png`}
+        src={`${props.clientRoot}/images/garden/search-green.png`}
         alt="search plants"/>
       <div
         className="mx-auto text-success spinner-border spinner-border-sm"
@@ -75,6 +73,7 @@ export class SearchWidget extends React.Component {
           onClick={this.props.onClick}
           isLoading={this.props.isLoading}
           style={ this.props.buttonStyle }
+          clientRoot={ this.props.clientRoot }
         />
       </div>
     );
@@ -85,7 +84,8 @@ SearchWidget.defaultProps = {
   name: '',
   autoComplete: false,
   autoCompleteUrl: '',
-  buttonStyle: {}
+  buttonStyle: {},
+  clientRoot: ''
 };
 
 export default SearchWidget;

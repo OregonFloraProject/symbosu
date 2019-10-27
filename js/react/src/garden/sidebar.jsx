@@ -265,6 +265,7 @@ class SideBar extends React.Component {
           onClick={ this.props.onSearch }
           value={ this.props.searchText }
           isLoading={ this.props.isLoading }
+          clientRoot={ CLIENT_ROOT }
         />
 
         {/* Sunlight & Moisture */}
