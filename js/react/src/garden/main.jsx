@@ -135,7 +135,7 @@ class GardenPageApp extends React.Component {
         moisture: ("moisture" in queryParams ? queryParams["moisture"] : ViewOpts.DEFAULT_MOISTURE),
         height: ("height" in queryParams ? queryParams["height"].split(",").map((i) => parseInt(i)) : ViewOpts.DEFAULT_HEIGHT),
         width: ("width" in queryParams ? queryParams["width"].split(",").map((i) => parseInt(i)) : ViewOpts.DEFAULT_WIDTH),
-        checklistId: ("clid" in queryParams ? queryParams["clid"] : ViewOpts.DEFAULT_CLID),
+        checklistId: ("clid" in queryParams ? parseInt(queryParams["clid"]) : ViewOpts.DEFAULT_CLID),
         searchText: '',
       },
       searchText: ("search" in queryParams ? queryParams["search"] : ViewOpts.DEFAULT_SEARCH_TEXT),
