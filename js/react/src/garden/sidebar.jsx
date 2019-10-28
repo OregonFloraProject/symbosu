@@ -267,7 +267,7 @@ class SideBar extends React.Component {
           isLoading={ this.props.isLoading }
           clientRoot={ CLIENT_ROOT }
           autoComplete={ true }
-          autoCompleteUrl={ `${CLIENT_ROOT}/webservices/autofillsearch.php` }
+          autoCompleteUrl={ `${CLIENT_ROOT}/garden/rpc/autofillsearch.php` }
         />
 
         {/* Sunlight & Moisture */}

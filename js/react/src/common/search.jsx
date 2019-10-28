@@ -40,9 +40,17 @@ export class SearchWidget extends React.Component {
   }
 
   componentDidMount() {
-    $(`#autocomplete-${this.props.name}`).autoComplete().on("autocomplete.select", (item) => {
-      this.props.onChange(item);
+    const autoComplete = $(`#autocomplete-${this.props.name}`).autoComplete({
+      minLength: 2,
+      formatResult: (item) => {
+        return item.text;
+      }
     });
+
+    autoComplete.on("autocomplete.select", (item) => {
+      this.props.onChange(item);
+      this.props.onClick();
+    })
   }
 
   onKeyUp(event) {
@@ -56,7 +64,7 @@ export class SearchWidget extends React.Component {
 
   render() {
     return (
-      <div className="input-group w-100 mb-4 p-2" style={ this.props.style }>
+      <div className="search-widget input-group w-100 mb-4 p-2" style={ this.props.style }>
         <input
           id={ `autocomplete-${ this.props.name }` }
           name="search"
