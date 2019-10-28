@@ -21,7 +21,8 @@ const reactConfig = {
   entry: {
     header: path.join(SRC_DIR, "header", "main.jsx"),
     garden: path.join(SRC_DIR, "garden", "main.jsx"),
-    gardenTaxa: path.join(SRC_DIR, "gardenTaxa", "main.jsx")
+    gardenTaxa: path.join(SRC_DIR, "gardenTaxa", "main.jsx"),
+    taxa: path.join(SRC_DIR, "taxa", "main.jsx")
   },
   output: {
     path: REACT_OUT_DIR
@@ -45,7 +46,8 @@ const reactConfig = {
 const lessConfig = {
   entry: {
     header: path.join(SRC_DIR, "less", "header.less"),
-    garden: path.join(SRC_DIR, "less", "garden.less")
+    garden: path.join(SRC_DIR, "less", "garden.less"),
+    taxa: path.join(SRC_DIR, "less", "taxa.less")
   },
   output: {
     path: CSS_OUT_DIR
