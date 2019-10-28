@@ -266,6 +266,8 @@ class SideBar extends React.Component {
           value={ this.props.searchText }
           isLoading={ this.props.isLoading }
           clientRoot={ CLIENT_ROOT }
+          autoComplete={ true }
+          autoCompleteUrl={ `${CLIENT_ROOT}/webservices/autofillsearch.php` }
         />
 
         {/* Sunlight & Moisture */}

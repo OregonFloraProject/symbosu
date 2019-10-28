@@ -2,6 +2,7 @@ const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const TerserJSPlugin = require('terser-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const exec = require('child_process').exec;
 
 const SRC_DIR = path.resolve(__dirname, "src");
 const REACT_OUT_DIR = path.resolve(__dirname, "dist");
@@ -50,7 +51,18 @@ const lessConfig = {
     path: CSS_OUT_DIR
   },
   plugins: [
-    new MiniCssExtractPlugin()
+    new MiniCssExtractPlugin(),
+    // Remove the stupid JS files that are generated when LESS is compiled
+    {
+      apply: (compiler) => {
+        compiler.hooks.afterEmit.tap("CleanCssPlugin", () => {
+          exec(`rm -f ${CSS_OUT_DIR}/*.js`, (err, stdout, stderr) => {
+            if (err) { console.error(stderr); }
+            console.log(stdout);
+          })
+        })
+      }
+    }
   ],
   optimization: {
     minimizer: [new OptimizeCSSAssetsPlugin()]
