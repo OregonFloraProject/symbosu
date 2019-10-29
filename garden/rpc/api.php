@@ -33,9 +33,27 @@
   $CID_HABITAT = 163;
   $CID_ECOREGION = 19;
 
+  /**
+   * @param $cid int Attribute ID in db
+   * @return string[] Array of all distinct values for the cid
+   */
+  function get_all_attrib_vals($cid) {
+    global $TABLE_FIELDS;
+    $sql = 'SELECT DISTINCT ' . $TABLE_FIELDS['KMCS']['CHAR_STATE_NAME'] . ' FROM kmcs ';
+    $sql .= 'WHERE ' . $TABLE_FIELDS['KMCS']['CID'] . " = $cid";
+
+    $results = [];
+    $res_tmp = run_query($sql);
+    foreach ($res_tmp as $r) {
+      array_push($results, $r[$TABLE_FIELDS['KMCS']['CHAR_STATE_NAME']]);
+    }
+
+    return $results;
+  }
+
 /**
- * @param $dbPath {string} Path to the image in the Symbiota database
- * @return {string} The path based on $IMAGE_ROOT_URL and $IMAGE_DOMAIN
+ * @param $dbPath string Path to the image in the Symbiota database
+ * @return string The path based on $IMAGE_ROOT_URL and $IMAGE_DOMAIN
  */
   function resolve_img_path($dbPath) {
     $result = $dbPath;
@@ -337,6 +355,8 @@
   $searchResults = [];
   if (key_exists("canned", $_GET) && $_GET["canned"] === "true") {
     $searchResults = get_canned_searches();
+  } else if (key_exists("attr", $_GET) && is_numeric($_GET['attr'])) {
+    $searchResults = get_all_attrib_vals(intval($_GET['attr']));
   } else {
     $searchResults = get_garden_taxa($_GET);
   }
