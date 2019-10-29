@@ -48,6 +48,7 @@
       array_push($results, $r[$TABLE_FIELDS['KMCS']['CHAR_STATE_NAME']]);
     }
 
+    sort($results);
     return $results;
   }
 
