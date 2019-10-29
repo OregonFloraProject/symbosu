@@ -2,8 +2,19 @@ import React from "react";
 
 import HelpButton from "../common/helpButton.jsx";
 import {SearchWidget} from "../common/search.jsx";
+import FeatureSelector from "./featureSelector.jsx";
+import httpGet from "../common/httpGet";
 
 const CLIENT_ROOT = "..";
+
+const plant_feature_attribs = {
+  "flower_color": 612,
+  "bloom_months": 165,
+  "wildlife_support": 685,
+  "lifespan": 136,
+  "foliage_type": 100,
+  "plant_type": 137
+};
 
 /**
  * @param valueArray {number[]} An array in the form [min, max]
@@ -213,7 +224,7 @@ class SideBarDropdown extends React.Component {
         </div>
         <div id={dropDownId} className="collapse">
           <div className="card card-body mt-2">
-            Blah blah blah blah
+            { this.props.children }
           </div>
         </div>
       </div>
@@ -223,7 +234,7 @@ class SideBarDropdown extends React.Component {
 
 SideBarDropdown.defaultProps = {
   title: '',
-  style: { padding: "1em", backgroundColor: "white", borderRadius: "0.5em", fontSize: "initial" }
+  style: { padding: "1em", backgroundColor: "white", borderRadius: "0.5em", fontSize: "initial" },
 };
 
 /**
@@ -234,6 +245,9 @@ class SideBar extends React.Component {
     super(props);
     this.sliderRefWidth = React.createRef();
     this.sliderRefHeight = React.createRef();
+    this.state = {
+      plantFeatureAttribs: []
+    };
 
     this.resetWidth = this.resetWidth.bind(this);
     this.resetHeight = this.resetHeight.bind(this);
@@ -245,6 +259,23 @@ class SideBar extends React.Component {
 
   resetHeight() {
     this.sliderRefHeight.current.reset();
+  }
+
+  componentDidMount() {
+    const attribKeys = Object.keys(plant_feature_attribs);
+
+    for (let i in attribKeys) {
+      let attrib_key = attribKeys[i];
+      httpGet(`./rpc/api.php?attr=${plant_feature_attribs[attrib_key]}`)
+        .then((res) => {
+          let attribVals = {
+            "cid": plant_feature_attribs[attrib_key],
+            "title": attrib_key,
+            "values": JSON.parse(res)
+          };
+          this.setState({ plantFeatureAttribs: this.state.plantFeatureAttribs.concat(attribVals) });
+        })
+    }
   }
 
   render() {
@@ -314,7 +345,20 @@ class SideBar extends React.Component {
 
         {/* Dropdowns */}
         <div>
-          <SideBarDropdown title="Plant features" />
+          <SideBarDropdown title="Plant features">
+            {
+              this.state.plantFeatureAttribs.map((attr) => {
+                return (
+                  <FeatureSelector
+                    key={ attr.title }
+                    title={ attr.title.replace('_', ' ') }
+                    values={attr.values}
+                    onChange={ (e) => { console.log(`${attr.title}: ${e.target.name}, ${e.target.value}`) } }
+                  />
+                )
+              })
+            }
+          </SideBarDropdown>
           <SideBarDropdown title="Growth & maintenance" />
           <SideBarDropdown title="Beyond the garden" />
           <SideBarDropdown title="Availability (Coming soon)" disabled={ true } />
