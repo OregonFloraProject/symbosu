@@ -5,7 +5,7 @@
   global $SERVER_ROOT, $CHARSET;
   include_once($SERVER_ROOT . "/classes/Functional.php");
 
-  $TABLE_FIELDS =  json_decode(file_get_contents($SERVER_ROOT . "/meta/tableFields.json"), true);
+  $TABLE_FIELDS = json_decode(file_get_contents($SERVER_ROOT . "/meta/tableFields.json"), true);
 
   $CLID_GARDEN_ALL = 54;
 
@@ -13,6 +13,25 @@
   $CID_MOISTURE = 683;
   $CID_WIDTH = 738;
   $CID_HEIGHT = 140;
+
+  # Plant features
+  $CID_FLOWER_COLOR = 612;
+  $CID_BLOOM_MONTHS = 165;
+  $CID_WILDLIFE_SUPPORT = 685;
+  $CID_LIFESPAN = 136;
+  $CID_FOLIAGE_TYPE = 100;
+  $CID_PLANT_TYPE = 137;
+
+  # Growth & maintenance
+  $CID_LANDSCAPE_USES = 679;
+  $CID_CULTIVATION_PREFS = 767;
+  $CID_BEHAVIOR = 688;
+  $CID_PROPAGATION = 670;
+  $CID_EASE_GROWTH = 684;
+
+  # Beyond the garden
+  $CID_HABITAT = 163;
+  $CID_ECOREGION = 19;
 
 /**
  * @param $dbPath {string} Path to the image in the Symbiota database
@@ -108,6 +127,12 @@
 
   function get_attribs($tid) {
     global $TABLE_FIELDS;
+    global $CID_WIDTH, $CID_HEIGHT;
+    global $CID_MOISTURE, $CID_SUNLIGHT;
+    global $CID_FLOWER_COLOR, $CID_BLOOM_MONTHS, $CID_WILDLIFE_SUPPORT, $CID_LIFESPAN, $CID_FOLIAGE_TYPE, $CID_PLANT_TYPE;
+    global $CID_LANDSCAPE_USES, $CID_CULTIVATION_PREFS, $CID_BEHAVIOR, $CID_PROPAGATION, $CID_EASE_GROWTH;
+    global $CID_ECOREGION, $CID_HABITAT;
+
     $all_attr_sql = get_select_statement(
         "kmdescr",
         [
@@ -122,15 +147,32 @@
 
     $attr_res = run_query($all_attr_sql);
     $attr_array = [
-        "height" => [],
-        "width" => [],
-        "sunlight" => [],
-        "moisture" => []
+      "height" => [],
+      "width" => [],
+      "sunlight" => [],
+      "moisture" => [],
+      "features" => [
+        "flower_color" => [],
+        "bloom_months" => [],
+        "wildlife_support" => [],
+        "lifespan" => [],
+        "foliage_type" => [],
+        "plant_type" => []
+      ],
+      "growth_maintenance" => [
+        "landscape_uses" => [],
+        "cultivation_prefs" => [],
+        "behavior" => [],
+        "propagation" => [],
+        "ease_growth" => [],
+      ],
+      "beyond_garden" => [
+        "eco_region" => [],
+        "habitat" => []
+      ]
     ];
 
     foreach ($attr_res as $attr) {
-      global $CID_WIDTH, $CID_HEIGHT, $CID_MOISTURE, $CID_SUNLIGHT;
-
       $attr_key = intval($attr["attr_key"]);
       $attr_val = $attr["attr_val"];
       switch ($attr_key) {
@@ -145,6 +187,45 @@
           break;
         case $CID_MOISTURE:
           array_push($attr_array["moisture"], $attr_val);
+          break;
+        case $CID_FLOWER_COLOR:
+          array_push($attr_array["features"]["flower_color"], $attr_val);
+          break;
+        case $CID_BLOOM_MONTHS:
+          array_push($attr_array["features"]["bloom_months"], $attr_val);
+          break;
+        case $CID_WILDLIFE_SUPPORT:
+          array_push($attr_array["features"]["wildlife_support"], $attr_val);
+          break;
+        case $CID_LIFESPAN:
+          array_push($attr_array["features"]["lifespan"], $attr_val);
+          break;
+        case $CID_FOLIAGE_TYPE:
+          array_push($attr_array["features"]["foliage_type"], $attr_val);
+          break;
+        case $CID_PLANT_TYPE:
+          array_push($attr_array["features"]["plant_type"], $attr_val);
+          break;
+        case $CID_LANDSCAPE_USES:
+          array_push($attr_array["growth_maintenance"]["landscape_uses"], $attr_val);
+          break;
+        case $CID_CULTIVATION_PREFS:
+          array_push($attr_array["growth_maintenance"]["cultivation_prefs"], $attr_val);
+          break;
+        case $CID_BEHAVIOR:
+          array_push($attr_array["growth_maintenance"]["behavior"], $attr_val);
+          break;
+        case $CID_PROPAGATION:
+          array_push($attr_array["growth_maintenance"]["propagation"], $attr_val);
+          break;
+        case $CID_EASE_GROWTH:
+          array_push($attr_array["growth_maintenance"]["ease_growth"], $attr_val);
+          break;
+        case $CID_ECOREGION:
+          array_push($attr_array["beyond_garden"]["eco_region"], $attr_val);
+          break;
+        case $CID_HABITAT:
+          array_push($attr_array["beyond_garden"]["habitat"], $attr_val);
           break;
         default:
           break;
