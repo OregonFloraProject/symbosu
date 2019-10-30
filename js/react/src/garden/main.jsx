@@ -170,6 +170,27 @@ function filterByChecklist(item, clid) {
   return clid === -1 || item.checklists.includes(clid);
 }
 
+function filterByPlantAttribs(item, itemFilterName, filterMap) {
+  let plantFeatureKeys = Object.keys(filterMap);
+  let success = true;
+  let iterSuccess = true;
+  // For each filter type
+  for (let i in plantFeatureKeys) {
+    let featureKey = plantFeatureKeys[i];
+    iterSuccess = true;
+    // For each filter value
+    for (let j in filterMap[featureKey]) {
+      let featureVal = filterMap[featureKey][j].toLowerCase();
+      if (!item[itemFilterName][featureKey].map(i => i.toLowerCase()).includes(featureVal)) {
+        iterSuccess = false;
+        break;
+      }
+    }
+    success = success && iterSuccess;
+  }
+  return success;
+}
+
 function MainContentContainer(props) {
   return (
     <div className="container mx-auto p-4" style={{ maxWidth: "1400px" }}>
@@ -201,6 +222,9 @@ class GardenPageApp extends React.Component {
       cannedSearches: [],
       sortBy: ("sortBy" in queryParams ? queryParams["sortBy"] : "vernacularName"),
       viewType: ("viewType" in queryParams ? queryParams["viewType"] : "grid"),
+      plantFeatureState: {},
+      growthMaintenanceState: {},
+      beyondGardenState: {}
     };
 
     // To Refresh sliders
@@ -221,6 +245,7 @@ class GardenPageApp extends React.Component {
     this.onPlantFeaturesChanged = this.onPlantFeaturesChanged.bind(this);
     this.onGrowthMaintenanceChanged = this.onGrowthMaintenanceChanged.bind(this);
     this.onBeyondGardenChanged = this.onBeyondGardenChanged.bind(this);
+    this.updateFeatureCollectionFilters = this.updateFeatureCollectionFilters.bind(this);
   }
 
   componentDidMount() {
@@ -239,11 +264,35 @@ class GardenPageApp extends React.Component {
       getAttributeArr(ATTRIBS_GROWTH_MAINTENANCE),
       getAttributeArr(ATTRIBS_BEYOND_GARDEN)
     ]).then((res) => {
+        const allPlantFeatures = res[0];
+        const allGrowthMaintainence = res[1];
+        const allBeyondGarden = res[2];
         const newFilters = Object.assign({}, this.state.filters);
-        newFilters.plantFeatures = getAttribMatrixFromArr(res[0]);
-        newFilters.growthMaintenance = getAttribMatrixFromArr(res[1]);
-        newFilters.beyondGarden = getAttribMatrixFromArr(res[2]);
-        this.setState({ filters: newFilters });
+
+        for (let i in allPlantFeatures) {
+          let featureKey = allPlantFeatures[i];
+          newFilters.plantFeatures[featureKey.title] = [];
+        }
+
+        for (let i in allGrowthMaintainence) {
+          let featureKey = allGrowthMaintainence[i];
+          newFilters.growthMaintenance[featureKey.title] = [];
+        }
+
+        for (let i in allBeyondGarden) {
+          let featureKey = allBeyondGarden[i];
+          newFilters.beyondGarden[featureKey.title] = [];
+        }
+
+        const newFeatures = Object.assign({}, this.state.plantFeatureState, getAttribMatrixFromArr(allPlantFeatures));
+        const newGrowth = Object.assign({}, this.state.growthMaintenanceState, getAttribMatrixFromArr(allGrowthMaintainence));
+        const newBeyond = Object.assign({}, this.state.beyondGardenState, getAttribMatrixFromArr(allBeyondGarden));
+        this.setState({
+          plantFeatureState: newFeatures,
+          growthMaintenanceState: newGrowth,
+          beyondGardenState: newBeyond,
+          filters: newFilters
+        });
       }
     )
     .catch((err) => {
@@ -251,12 +300,37 @@ class GardenPageApp extends React.Component {
     });
   }
 
-  toggleFeatureCollectionVal(featureCollection, featureKey, featureVal) {
+  toggleFeatureCollectionVal(featureCollection, featureCollectionFilterName, featureKey, featureVal) {
     const changeObj = {};
-    const newFilters = Object.assign({}, this.state.filters);
-    changeObj[featureVal] = !this.state.filters[featureCollection][featureKey][featureVal];
-    newFilters[featureCollection][featureKey] = Object.assign({}, newFilters[featureCollection][featureKey], changeObj);
-    this.setState({ filters: newFilters }, () => { console.log(this.state.filters[featureCollection]) });
+    const newCollection = Object.assign({}, this.state[featureCollection]);
+    changeObj[featureVal] = !this.state[featureCollection][featureKey][featureVal];
+    newCollection[featureKey] = Object.assign({}, newCollection[featureKey], changeObj);
+    const stateObj = {};
+    stateObj[featureCollection] = newCollection;
+    this.setState(stateObj, () => {
+      this.updateFeatureCollectionFilters(featureCollectionFilterName, featureCollection, featureKey, featureVal);
+    });
+  }
+
+  updateFeatureCollectionFilters(featureCollectionFilter, featureCollectionStateName, featureKey, featureVal) {
+    const isInFilters = this.state.filters[featureCollectionFilter][featureKey].includes(featureVal);
+    const stateVal = this.state[featureCollectionStateName][featureKey][featureVal];
+    let changed = false;
+    let newFilters;
+    if (stateVal && !isInFilters) {
+      newFilters = Object.assign({}, this.state.filters);
+      newFilters[featureCollectionFilter][featureKey].push(featureVal);
+      changed = true;
+    } else if (isInFilters) {
+      newFilters = Object.assign({}, this.state.filters);
+      newFilters[featureCollectionFilter][featureKey] = newFilters[featureCollectionFilter][featureKey].filter(
+        (item) => item !== featureVal
+      );
+      changed = true;
+    }
+    if (changed) {
+      this.setState({ filters: newFilters });
+    }
   }
 
   onFilterRemoved(key) {
@@ -377,15 +451,15 @@ class GardenPageApp extends React.Component {
   }
 
   onPlantFeaturesChanged(featureKey, featureVal) {
-    this.toggleFeatureCollectionVal("plantFeatures", featureKey, featureVal);
+    this.toggleFeatureCollectionVal("plantFeatureState", "plantFeatures", featureKey, featureVal);
   }
 
   onGrowthMaintenanceChanged(featureKey, featureVal) {
-    this.toggleFeatureCollectionVal("growthMaintenance", featureKey, featureVal);
+    this.toggleFeatureCollectionVal("growthMaintenanceState", "growthMaintenance", featureKey, featureVal);
   }
 
   onBeyondGardenChanged(featureKey, featureVal) {
-    this.toggleFeatureCollectionVal("beyondGarden", featureKey, featureVal);
+    this.toggleFeatureCollectionVal("beyondGardenState", "beyondGarden", featureKey, featureVal);
   }
 
   onSortByChanged(type) {
@@ -459,9 +533,9 @@ class GardenPageApp extends React.Component {
                 moisture={ this.state.filters.moisture }
                 height={ this.state.filters.height }
                 width={ this.state.filters.width }
-                plantFeatures={ this.state.filters.plantFeatures }
-                growthMaintenance={ this.state.filters.growthMaintenance }
-                beyondGarden={ this.state.filters.beyondGarden }
+                plantFeatures={ this.state.plantFeatureState }
+                growthMaintenance={ this.state.growthMaintenanceState }
+                beyondGarden={ this.state.beyondGardenState }
                 searchText={ this.state.searchText }
                 onSearch={ this.onSearch }
                 onSearchTextChanged={ this.onSearchTextChanged }
@@ -506,7 +580,19 @@ class GardenPageApp extends React.Component {
                         let filterHeight = filterByHeight(result, this.state.filters.height);
                         let filterSunlight = filterBySunlight(result, this.state.filters.sunlight);
                         let filterMoisture = filterByMoisture(result, this.state.filters.moisture);
-                        let showResult = filterChecklist && filterWidth && filterHeight && filterSunlight && filterMoisture;
+                        let filterFeatures = filterByPlantAttribs(result, "features", this.state.filters.plantFeatures);
+                        let filterGrowthMaint = filterByPlantAttribs(result, "growth_maintenance", this.state.filters.growthMaintenance);
+                        let filterBeyondGarden = filterByPlantAttribs(result, "beyond_garden", this.state.filters.beyondGarden);
+                        let showResult = (
+                          filterChecklist &&
+                          filterWidth &&
+                          filterHeight &&
+                          filterSunlight &&
+                          filterMoisture &&
+                          filterFeatures &&
+                          filterBeyondGarden &&
+                          filterGrowthMaint
+                        );
                         return (
                           <SearchResult
                             key={ result.tid }
