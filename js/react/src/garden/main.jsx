@@ -26,7 +26,7 @@ const ATTRIBS_GROWTH_MAINTENANCE = {
   "cultivation_prefs": 767,
   "behavior": 688,
   "propagation": 670,
-  "ease_of_growth": 684
+  "ease_growth": 684
 };
 
 const ATTRIBS_BEYOND_GARDEN = {
@@ -173,19 +173,21 @@ function filterByChecklist(item, clid) {
 function filterByPlantAttribs(item, itemFilterName, filterMap) {
   let plantFeatureKeys = Object.keys(filterMap);
   let success = true;
-  let iterSuccess = true;
+  let iterSuccess;
+  let itemFeatures = item[itemFilterName];
   // For each filter type
   for (let i in plantFeatureKeys) {
+    iterSuccess = false;
+
+    // flower_color, eco_region, etc.
     let featureKey = plantFeatureKeys[i];
-    iterSuccess = true;
-    // For each filter value
-    for (let j in filterMap[featureKey]) {
-      let featureVal = filterMap[featureKey][j].toLowerCase();
-      if (!item[itemFilterName][featureKey].map(i => i.toLowerCase()).includes(featureVal)) {
-        iterSuccess = false;
-        break;
-      }
-    }
+
+    // blue, green, Cascades, etc.
+    let featureVals = filterMap[featureKey].map(item => item.toLowerCase());
+    let itemVals = itemFeatures[featureKey].map(item => item.toLowerCase());
+
+    // Is the intersection length greater than zero?
+    iterSuccess = featureVals.length === 0 || featureVals.filter(item => itemVals.includes(item)).length > 0;
     success = success && iterSuccess;
   }
   return success;
@@ -355,6 +357,12 @@ class GardenPageApp extends React.Component {
         break;
       case "checklistId":
         this.onCannedFilter(ViewOpts.DEFAULT_CLID);
+        break;
+      case "plantFeatures":
+        break;
+      case "growthMaintenance":
+        break;
+      case "beyondGarden":
         break;
       default:
         break;

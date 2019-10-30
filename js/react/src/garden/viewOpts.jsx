@@ -15,6 +15,19 @@ function arrayCompare(a1, a2) {
   return true;
 }
 
+function getPlantAttrText(filter) {
+  const attrKeys = Object.keys(filter.val);
+  let itemText = '';
+  for (let i in attrKeys) {
+    let attrKey = attrKeys[i];
+    if (filter.val[attrKey].length > 0) {
+      itemText += `${attrKey.replace(/_/g, ' ')}: ${filter.val[attrKey].join(', ')}`;
+    }
+  }
+
+  return itemText;
+}
+
 class ViewOpts extends React.Component {
   render() {
     return (
@@ -73,6 +86,30 @@ class ViewOpts extends React.Component {
                       );
                     }
                     break;
+                  case "plantFeatures": {
+                    // itemText = getPlantAttrText(filter);
+                    // if (itemText === '') {
+                    //   showItem = false;
+                    // }
+                    showItem = false;
+                    break;
+                  }
+                  case "growthMaintenance": {
+                    // itemText = getPlantAttrText(filter);
+                    // if (itemText === '') {
+                    //   showItem = false;
+                    // }
+                    showItem = false;
+                    break;
+                  }
+                  case "beyondGarden": {
+                    // itemText = getPlantAttrText(filter);
+                    // if (itemText === '') {
+                    //   showItem = false;
+                    // }
+                    showItem = false;
+                    break;
+                  }
                   default:
                     break;
                 }
