@@ -3,72 +3,8 @@ import React from "react";
 import HelpButton from "../common/helpButton.jsx";
 import {SearchWidget} from "../common/search.jsx";
 import FeatureSelector from "./featureSelector.jsx";
-import httpGet from "../common/httpGet";
 
 const CLIENT_ROOT = "..";
-
-const plant_feature_attribs = {
-  "flower_color": 612,
-  "bloom_months": 165,
-  "wildlife_support": 685,
-  "lifespan": 136,
-  "foliage_type": 100,
-  "plant_type": 137
-};
-
-const growth_maintenance_attribs = {
-  "landscape_uses": 679,
-  "cultivation_prefs": 767,
-  "behavior": 688,
-  "propagation": 670,
-  "ease_of_growth": 684
-};
-
-const beyond_garden_attribs = {
-  "eco_region": 19,
-  "habitat": 163
-};
-
-function getAttributeArr(keymap) {
-  return new Promise((resolve, reject) => {
-    let pArr = [];
-    let keys = Object.keys(keymap);
-    for (let i in keys) {
-      let attrib_key = keys[i];
-      pArr.push(
-        httpGet(`./rpc/api.php?attr=${keymap[attrib_key]}`)
-          .then((res) => {
-            return {
-              "title": attrib_key,
-              "values": JSON.parse(res)
-            };
-          })
-      )
-    }
-
-    Promise.all(pArr).then((vals) => { resolve(vals); }).catch((err) => { reject(err); });
-  });
-}
-
-function getAttribMatrixFromArr(attribArray) {
-  const attribMatrix = {};
-  for (let i in attribArray) {
-    let attrObj = attribArray[i];
-    attribMatrix[attrObj.title] = {};
-    for (let j in attrObj.values) {
-      let attrVal = attrObj.values[j];
-      attribMatrix[attrObj.title][attrVal] = false;
-    }
-  }
-  return attribMatrix;
-}
-
-function toggleAttrMatrixVal(attrMatrix, attrKey, attrVal) {
-  let oldVal = attrMatrix[attrKey][attrVal];
-  let newMatrix = Object.assign({}, attrMatrix);
-  newMatrix[attrKey][attrVal] = !oldVal;
-  return newMatrix;
-}
 
 /**
  * @param valueArray {number[]} An array in the form [min, max]
@@ -299,15 +235,9 @@ class SideBar extends React.Component {
     super(props);
     this.sliderRefWidth = React.createRef();
     this.sliderRefHeight = React.createRef();
-    this.state = {
-      plantFeatureAttribs: {},
-      growthMaintenanceAttribs: {},
-      beyondGardenAttribs: {}
-    };
 
     this.resetWidth = this.resetWidth.bind(this);
     this.resetHeight = this.resetHeight.bind(this);
-    this.getAttribMatrixView = this.getAttribMatrixView.bind(this);
   }
 
   resetWidth() {
@@ -316,52 +246,6 @@ class SideBar extends React.Component {
 
   resetHeight() {
     this.sliderRefHeight.current.reset();
-  }
-
-  componentDidMount() {
-    getAttributeArr(plant_feature_attribs)
-      .then((res) => {
-        this.setState({ plantFeatureAttribs: getAttribMatrixFromArr(res) })
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-
-    getAttributeArr(growth_maintenance_attribs)
-      .then((res) => {
-        this.setState({ growthMaintenanceAttribs: getAttribMatrixFromArr(res) })
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-
-    getAttributeArr(beyond_garden_attribs)
-      .then((res) => {
-        this.setState({ beyondGardenAttribs: getAttribMatrixFromArr(res) })
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }
-
-  getAttribMatrixView(attrMatrix, attrMatrixName) {
-    return (
-      Object.keys(attrMatrix).map((attrKey) => {
-        let attr = attrMatrix[attrKey];
-        return (
-          <FeatureSelector
-            key={ attrKey }
-            title={ attrKey }
-            items={ attr }
-            onChange={ (attrVal) => {
-              let newState = {};
-              newState[attrMatrixName] = toggleAttrMatrixVal(attrMatrix, attrKey, attrVal);
-              this.setState(newState);
-            }}
-          />
-        )
-      })
-    )
   }
 
   render() {
@@ -431,17 +315,55 @@ class SideBar extends React.Component {
 
         {/* Dropdowns */}
         <div>
-
           <SideBarDropdown title="Plant features">
-            { this.getAttribMatrixView(this.state.plantFeatureAttribs, "plantFeatureAttribs") }
+            {
+              Object.keys(this.props.plantFeatures).map((plantFeature) => {
+                return (
+                  <FeatureSelector
+                    key={ plantFeature }
+                    title={ plantFeature }
+                    items={ this.props.plantFeatures[plantFeature] }
+                    onChange={ (featureKey) => {
+                      this.props.onPlantFeaturesChanged(plantFeature, featureKey)
+                    }}
+                  />
+                )
+              })
+            }
           </SideBarDropdown>
 
           <SideBarDropdown title="Growth & maintenance">
-            { this.getAttribMatrixView(this.state.growthMaintenanceAttribs, "growthMaintenanceAttribs") }
+            {
+              Object.keys(this.props.growthMaintenance).map((plantFeature) => {
+                return (
+                  <FeatureSelector
+                    key={ plantFeature }
+                    title={ plantFeature }
+                    items={ this.props.growthMaintenance[plantFeature] }
+                    onChange={ (featureKey) => {
+                      this.props.onGrowthMaintenanceChanged(plantFeature, featureKey)
+                    }}
+                  />
+                )
+              })
+            }
           </SideBarDropdown>
 
           <SideBarDropdown title="Beyond the garden">
-            { this.getAttribMatrixView(this.state.beyondGardenAttribs, "beyondGardenAttribs") }
+            {
+              Object.keys(this.props.beyondGarden).map((plantFeature) => {
+                return (
+                  <FeatureSelector
+                    key={ plantFeature }
+                    title={ plantFeature }
+                    items={ this.props.beyondGarden[plantFeature] }
+                    onChange={ (featureKey) => {
+                      this.props.onBeyondGardenChanged(plantFeature, featureKey)
+                    }}
+                  />
+                )
+              })
+            }
           </SideBarDropdown>
 
           <SideBarDropdown title="Availability (Coming soon)" disabled={ true } />
@@ -456,6 +378,12 @@ SideBar.defaultProps = {
   moisture: '',
   width: [0, 50],
   height: [0, 50],
+  plantFeatures: {},
+  growthMaintenance: {},
+  beyondGarden: {},
+  onPlantFeaturesChanged: () => {},
+  onGrowthMaintenanceChanged: () => {},
+  onBeyondGardenChanged: () => {}
 };
 
 export default SideBar;

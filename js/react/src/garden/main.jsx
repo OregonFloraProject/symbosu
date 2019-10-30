@@ -12,6 +12,28 @@ import httpGet from "../common/httpGet.js";
 
 const CLIENT_ROOT = "..";
 
+const ATTRIBS_PLANT_FEATURE = {
+  "flower_color": 612,
+  "bloom_months": 165,
+  "wildlife_support": 685,
+  "lifespan": 136,
+  "foliage_type": 100,
+  "plant_type": 137
+};
+
+const ATTRIBS_GROWTH_MAINTENANCE = {
+  "landscape_uses": 679,
+  "cultivation_prefs": 767,
+  "behavior": 688,
+  "propagation": 670,
+  "ease_of_growth": 684
+};
+
+const ATTRIBS_BEYOND_GARDEN = {
+  "eco_region": 19,
+  "habitat": 163
+};
+
 function getUrlQueryParams(url) {
   let params = {};
   if (url.includes("?")) {
@@ -67,6 +89,39 @@ function getCommonNameStr(item, searchText) {
   }
 
   return cname;
+}
+
+function getAttributeArr(keymap) {
+  return new Promise((resolve, reject) => {
+    let pArr = [];
+    let keys = Object.keys(keymap);
+    for (let i in keys) {
+      let attrib_key = keys[i];
+      pArr.push(
+        httpGet(`./rpc/api.php?attr=${keymap[attrib_key]}`)
+          .then((res) => {
+            return {
+              "title": attrib_key,
+              "values": JSON.parse(res)
+            };
+          })
+      )
+    }
+    Promise.all(pArr).then((vals) => { resolve(vals); }).catch((err) => { reject(err); });
+  });
+}
+
+function getAttribMatrixFromArr(attribArray) {
+  const attribMatrix = {};
+  for (let i in attribArray) {
+    let attrObj = attribArray[i];
+    attribMatrix[attrObj.title] = {};
+    for (let j in attrObj.values) {
+      let attrVal = attrObj.values[j];
+      attribMatrix[attrObj.title][attrVal] = false;
+    }
+  }
+  return attribMatrix;
 }
 
 function filterByWidth(item, minMax) {
@@ -137,6 +192,9 @@ class GardenPageApp extends React.Component {
         width: ("width" in queryParams ? queryParams["width"].split(",").map((i) => parseInt(i)) : ViewOpts.DEFAULT_WIDTH),
         checklistId: ("clid" in queryParams ? parseInt(queryParams["clid"]) : ViewOpts.DEFAULT_CLID),
         searchText: '',
+        plantFeatures: {},
+        growthMaintenance: {},
+        beyondGarden: {}
       },
       searchText: ("search" in queryParams ? queryParams["search"] : ViewOpts.DEFAULT_SEARCH_TEXT),
       searchResults: [],
@@ -159,6 +217,10 @@ class GardenPageApp extends React.Component {
     this.onViewTypeChanged = this.onViewTypeChanged.bind(this);
     this.onFilterRemoved = this.onFilterRemoved.bind(this);
     this.onCannedFilter = this.onCannedFilter.bind(this);
+    this.toggleFeatureCollectionVal = this.toggleFeatureCollectionVal.bind(this);
+    this.onPlantFeaturesChanged = this.onPlantFeaturesChanged.bind(this);
+    this.onGrowthMaintenanceChanged = this.onGrowthMaintenanceChanged.bind(this);
+    this.onBeyondGardenChanged = this.onBeyondGardenChanged.bind(this);
   }
 
   componentDidMount() {
@@ -170,6 +232,31 @@ class GardenPageApp extends React.Component {
 
     // Load search results
     this.onSearch();
+
+    // Load sidebar options
+    Promise.all([
+      getAttributeArr(ATTRIBS_PLANT_FEATURE),
+      getAttributeArr(ATTRIBS_GROWTH_MAINTENANCE),
+      getAttributeArr(ATTRIBS_BEYOND_GARDEN)
+    ]).then((res) => {
+        const newFilters = Object.assign({}, this.state.filters);
+        newFilters.plantFeatures = getAttribMatrixFromArr(res[0]);
+        newFilters.growthMaintenance = getAttribMatrixFromArr(res[1]);
+        newFilters.beyondGarden = getAttribMatrixFromArr(res[2]);
+        this.setState({ filters: newFilters });
+      }
+    )
+    .catch((err) => {
+      console.error(err);
+    });
+  }
+
+  toggleFeatureCollectionVal(featureCollection, featureKey, featureVal) {
+    const changeObj = {};
+    const newFilters = Object.assign({}, this.state.filters);
+    changeObj[featureVal] = !this.state.filters[featureCollection][featureKey][featureVal];
+    newFilters[featureCollection][featureKey] = Object.assign({}, newFilters[featureCollection][featureKey], changeObj);
+    this.setState({ filters: newFilters }, () => { console.log(this.state.filters[featureCollection]) });
   }
 
   onFilterRemoved(key) {
@@ -289,6 +376,18 @@ class GardenPageApp extends React.Component {
     );
   }
 
+  onPlantFeaturesChanged(featureKey, featureVal) {
+    this.toggleFeatureCollectionVal("plantFeatures", featureKey, featureVal);
+  }
+
+  onGrowthMaintenanceChanged(featureKey, featureVal) {
+    this.toggleFeatureCollectionVal("growthMaintenance", featureKey, featureVal);
+  }
+
+  onBeyondGardenChanged(featureKey, featureVal) {
+    this.toggleFeatureCollectionVal("beyondGarden", featureKey, featureVal);
+  }
+
   onSortByChanged(type) {
     let newResults;
     if (type === "sciName") {
@@ -360,6 +459,9 @@ class GardenPageApp extends React.Component {
                 moisture={ this.state.filters.moisture }
                 height={ this.state.filters.height }
                 width={ this.state.filters.width }
+                plantFeatures={ this.state.filters.plantFeatures }
+                growthMaintenance={ this.state.filters.growthMaintenance }
+                beyondGarden={ this.state.filters.beyondGarden }
                 searchText={ this.state.searchText }
                 onSearch={ this.onSearch }
                 onSearchTextChanged={ this.onSearchTextChanged }
@@ -367,6 +469,9 @@ class GardenPageApp extends React.Component {
                 onMoistureChanged={ this.onMoistureChanged }
                 onHeightChanged={ this.onHeightChanged }
                 onWidthChanged={ this.onWidthChanged }
+                onPlantFeaturesChanged={ this.onPlantFeaturesChanged }
+                onGrowthMaintenanceChanged={ this.onGrowthMaintenanceChanged }
+                onBeyondGardenChanged={ this.onBeyondGardenChanged }
               />
             </div>
             <div className="col">
