@@ -19,12 +19,12 @@ class FooterApp extends React.Component {
         <div id="footer-content" className="container-fluid">
           <div className="row">
             <div className="col">
-              <div>
-                <p className="mt-3 mx-auto px-5">
+              <div className="px-5">
+                <p className="mt-3 mx-auto">
                   OregonFlora is based at the OSU Herbarium at Oregon State University.
                   Our program is wholly funded through grants and contributions. We welcome your support!
                 </p>
-                <div className="mx-auto text-center">
+                <div className="mx-auto">
                   <a href={ `${this.props.clientRoot}/pages/donate.php` } className="btn btn-primary" role="button">
                     Donate!
                   </a>
