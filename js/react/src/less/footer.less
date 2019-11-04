@@ -1,5 +1,11 @@
 @import "./theme.less";
 
+@media screen and (max-width: 900px) {
+  #footer-app {
+    display: none;
+  }
+}
+
 #footer-app {
   .navbar {
     background: @med-green;
@@ -15,5 +21,10 @@
   }
 
   #footer-content {
+    color: @type-primary;
+
+    p {
+      max-width: 25em;
+    }
   }
 }
