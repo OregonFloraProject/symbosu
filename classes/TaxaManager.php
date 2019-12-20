@@ -174,7 +174,7 @@ class TaxaManager {
         "behavior" => [],
         "propagation" => [],
         "ease_growth" => [],
-        "spreads_vigorously" => false,
+        "spreads_vigorously" => null,
         "other_cult_prefs" => []
       ],
       "beyond_garden" => [

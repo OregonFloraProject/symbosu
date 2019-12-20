@@ -12,6 +12,11 @@ const commonConfig = {
   context: path.resolve(__dirname, "src"),
   mode: process.env.NODE_ENV === "development" ? "development" : "production",
   watch: process.env.NODE_ENV === "development",
+  stats: {
+    colors: true,
+    assets: true,
+    all: false
+  },
   watchOptions: {
     ignored: /node_modules/
   }
