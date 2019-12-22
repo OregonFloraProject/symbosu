@@ -3,10 +3,14 @@ import React from "react";
 import httpGet from "../common/httpGet.js";
 import { getUrlQueryParams } from "../common/queryParams.js";
 
+function showItem(item, isArray) {
+  return (!isArray && item !== '') || item.length > 0;
+}
+
 function BorderedItem(props) {
   let value = props.value;
-  const isArray = Array.isArray(props.value);
-  const showResult = (!isArray && value !== '') || props.value.length > 0;
+  const isArray = Array.isArray(value);
+  const show = showItem(props.value, isArray);
 
   if (isArray) {
     value = (
@@ -17,19 +21,23 @@ function BorderedItem(props) {
   }
 
   return (
-    <div className={ "row dashed-border py-2 " + (showResult ? "" : "d-none") }>
+    <div className={ "row dashed-border py-2 " + (show ? "" : "d-none") }>
       <div className="col font-weight-bold">{ props.keyName }</div>
       <div className="col text-capitalize">{ value }</div>
     </div>
-  )
+  );
 }
 
 function SideBarSection(props) {
-  const itemKeys = Object.keys(props.items);
-  const showResult = itemKeys.length > 0;
+  let itemKeys = Object.keys(props.items);
+  itemKeys = itemKeys.filter((k) => {
+    const v = props.items[k];
+    const isArray = Array.isArray(v);
+    showItem(v, isArray)
+  });
 
   return (
-      <div className={ "mb-5 " + (showResult ? "" : "") }>
+      <div className={ "mb-5 " + (itemKeys.length > 0 ? "" : "d-none") }>
         <h3 className="text-light-green font-weight-bold mb-3">{ props.title }</h3>
         {
           itemKeys.map((key) => {
@@ -73,7 +81,10 @@ class TaxaApp extends React.Component {
           res = JSON.parse(res);
 
           const foliageType = res.characteristics.features.foliage_type;
-          const plantType = `${foliageType} ${res.characteristics.features.plant_type[0]}`.trim();
+          let plantType = foliageType !== null ? `${foliageType} ` : "";
+          if (res.characteristics.features.plant_type.length > 0) {
+            plantType += `${res.characteristics.features.plant_type[0]}`.trim();
+          }
 
           const width = res.characteristics.width;
           const height = res.characteristics.height;
@@ -92,6 +103,8 @@ class TaxaApp extends React.Component {
 
           let ease_growth = res.characteristics.growth_maintenance.ease_growth;
           ease_growth = ease_growth.length > 0 ? ease_growth[0] : "";
+
+          const spreads_vigorously = res.characteristics.growth_maintenance.spreads_vigorously;
 
           this.setState({
             sciName: res.sciname,
@@ -118,7 +131,7 @@ class TaxaApp extends React.Component {
             },
             growthMaintenance: {
               "Ease of cultivation": res.characteristics.growth_maintenance.cultivation_prefs,
-              "Spreads vigorously": res.characteristics.growth_maintenance.spreads_vigorously ? "yes" : "no",
+              "Spreads vigorously": spreads_vigorously === null ? "" : spreads_vigorously,
               "Other cultivation factors": res.characteristics.growth_maintenance.other_cult_prefs,
               "Plant behavior": res.characteristics.growth_maintenance.behavior,
               "Propagation": res.characteristics.growth_maintenance.propagation
