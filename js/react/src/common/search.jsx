@@ -26,57 +26,47 @@ function SearchButton(props) {
  * Sidebar 'plant search' text field & button
  */
 export class SearchWidget extends React.Component {
+  static enterKey = 13;
+
   constructor(props) {
     super(props);
     this.state = {
-      currentValue: "",
-      suggestions: [],
+      suggestions: {}
     };
+
     this.onKeyUp = this.onKeyUp.bind(this);
     this.onSuggestionsRequested = this.onSuggestionsRequested.bind(this);
-    this.onSuggestionsClear = this.onSuggestionsClear.bind(this);
     this.onSuggestionSelected = this.onSuggestionSelected.bind(this);
-    this.onSearchTextChanged = this.onSearchTextChanged.bind(this);
+  }
+
+  onTextValueChanged(e) {
+    this.setState({ textValue: e.target.value });
   }
 
   onKeyUp(event) {
-    const enterKey = 13;
-    if (this.state.currentValue === '') {
-      this.onSuggestionsClear();
-    } else if ((event.which || event.keyCode) === enterKey && !this.props.isLoading) {
-      event.preventDefault();
-      const fakeEvent = { target: { value: this.state.currentValue }};
-      this.props.onClick(fakeEvent);
+    if (this.props.textValue === '') {
+      this.setState({ suggestions: {} });
+    } else if ((event.which || event.keyCode) === SearchWidget.enterKey && !this.props.isLoading) {
+      this.props.onSearch(this.props.textValue);
     } else {
       this.onSuggestionsRequested();
     }
   }
 
   onSuggestionsRequested() {
-    httpGet(`${this.props.clientRoot}/webservices/autofillsearch.php?q=${this.state.currentValue}`).then((res) => {
-      return JSON.parse(res);
-    }).catch((err) => {
-      console.error(err);
-    }).then((suggestionList) => {
-      this.setState({ suggestions: suggestionList });
-    });
+    if (this.props.suggestionUrl !== '') {
+      httpGet(`${this.props.suggestionUrl}?q=${this.props.textValue}`).then((res) => {
+        return JSON.parse(res);
+      }).catch((err) => {
+        console.error(err);
+      }).then((suggestionObj) => {
+        this.setState({suggestions: suggestionObj});
+      });
+    }
   }
 
   onSuggestionSelected(suggestion) {
-    this.onSearchTextChanged({ target: { value: suggestion } }, this.onSuggestionsClear);
-  }
-
-  onSuggestionsClear() {
-    this.setState({ suggestions: [] });
-  }
-
-  onSearchTextChanged(event) {
-    this.setState({ currentValue: event.target.value }, () => {
-      if (this.state.currentValue === '') {
-        this.onSuggestionsClear();
-      }
-    });
-    this.props.onChange(event.target.value);
+    this.props.onSearch(this.state.suggestions[suggestion]);
   }
 
   render() {
@@ -86,29 +76,31 @@ export class SearchWidget extends React.Component {
           name="search"
           type="text"
           className="form-control"
-          autoComplete="off"
           data-toggle="dropdown"
-          placeholder={ this.props.placeholder }
+          autoComplete="off"
           onKeyUp={ this.onKeyUp }
-          onChange={ this.onSearchTextChanged }
-          value={ this.state.currentValue }/>
-        <div className="dropdown-menu" style={{ display: (this.state.suggestions.length > 0 ? "" : "none") }}>
+          placeholder={ this.props.placeholder }
+          onChange={ this.props.onTextValueChanged }
+          value={ this.props.textValue }
+        />
+        <div className="dropdown-menu" style={{ display: (Object.keys(this.state.suggestions).length === 0 ? " none" : "") }}>
           {
-            this.state.suggestions.map((s) => {
+            Object.keys(this.state.suggestions).map((s) => {
               return (
-                <button
+                <a
                   key={ s }
                   onClick={ () => { this.onSuggestionSelected(s); } }
                   className="dropdown-item"
+                  href="#"
                 >
                   { s }
-                </button>
+                </a>
               )
             })
           }
         </div>
         <SearchButton
-          onClick={this.props.onClick}
+          onClick={ () => this.props.onSearch(this.props.textValue) }
           isLoading={this.props.isLoading}
           style={ this.props.buttonStyle }
           clientRoot={ this.props.clientRoot }
@@ -119,9 +111,10 @@ export class SearchWidget extends React.Component {
 }
 
 SearchWidget.defaultProps = {
-  onChange: () => {},
+  onSearch: () => {},
   buttonStyle: {},
-  clientRoot: ''
+  clientRoot: '',
+  suggestionUrl: ''
 };
 
 export default SearchWidget;

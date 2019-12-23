@@ -3,14 +3,14 @@ import React from "react";
 import httpGet from "../common/httpGet.js";
 import { getUrlQueryParams } from "../common/queryParams.js";
 
-function showItem(item, isArray) {
+function showItem(item) {
+  const isArray = Array.isArray(item);
   return (!isArray && item !== '') || item.length > 0;
 }
 
 function BorderedItem(props) {
   let value = props.value;
   const isArray = Array.isArray(value);
-  const show = showItem(props.value, isArray);
 
   if (isArray) {
     value = (
@@ -21,7 +21,7 @@ function BorderedItem(props) {
   }
 
   return (
-    <div className={ "row dashed-border py-2 " + (show ? "" : "d-none") }>
+    <div className={ "row dashed-border py-2" }>
       <div className="col font-weight-bold">{ props.keyName }</div>
       <div className="col text-capitalize">{ value }</div>
     </div>
@@ -32,8 +32,7 @@ function SideBarSection(props) {
   let itemKeys = Object.keys(props.items);
   itemKeys = itemKeys.filter((k) => {
     const v = props.items[k];
-    const isArray = Array.isArray(v);
-    showItem(v, isArray)
+    return showItem(v);
   });
 
   return (
@@ -80,7 +79,9 @@ class TaxaApp extends React.Component {
         .then((res) => {
           res = JSON.parse(res);
 
-          const foliageType = res.characteristics.features.foliage_type;
+          let foliageType = res.characteristics.features.foliage_type;
+          foliageType = foliageType.length > 0 ? foliageType[0] : null;
+
           let plantType = foliageType !== null ? `${foliageType} ` : "";
           if (res.characteristics.features.plant_type.length > 0) {
             plantType += `${res.characteristics.features.plant_type[0]}`.trim();
@@ -196,7 +197,8 @@ if (queryParams.search) {
   httpGet(`./rpc/api.php?search=${queryParams.search}`).then((res) => {
     res = JSON.parse(res);
     if (res.length > 1) {
-      console.log(JSON.parse(res));
+      console.log(res);
+
     } else if (res.length > 0) {
       ReactDOM.render(
         <TaxaApp tid={res[0].tid }/>,
