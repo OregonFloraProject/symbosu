@@ -106,11 +106,11 @@ class HeaderApp extends React.Component {
 
   onSearch(value) {
     this.setState({ isLoading: true });
-    let targetUrl = `${this.props.clientRoot}/taxa/index.php?`;
+    let targetUrl = `${this.props.clientRoot}/taxa/`;
     if (Number.isInteger(value)) {
-      targetUrl += `taxon=${value}`;
+      targetUrl += `index.php?taxon=${value}`;
     } else {
-      targetUrl += `search=${ encodeURIComponent(value) }`;
+      targetUrl += `search.php?search=${ encodeURIComponent(value) }`;
     }
     window.location = targetUrl;
   }
