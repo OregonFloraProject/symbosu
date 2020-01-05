@@ -142,6 +142,7 @@ class TaxaApp extends React.Component {
           pageTitle.innerHTML = `${pageTitle.innerHTML} ${res.sciname}`;
         })
         .catch((err) => {
+          // TODO: Something's wrong
           console.error(err);
         });
     }

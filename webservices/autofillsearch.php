@@ -25,6 +25,7 @@ if (array_key_exists("q", $_REQUEST)) {
     ->where("v.vernacularname LIKE :search")
     ->groupBy("v.vernacularname")
     ->setParameter("search", $_REQUEST["q"] . '%')
+    ->orderBy("v.sortsequence")
     ->setMaxResults(3)
     ->getQuery()
     ->getArrayResult();

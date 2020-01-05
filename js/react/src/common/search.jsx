@@ -31,12 +31,11 @@ export class SearchWidget extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      suggestions: {}
+      suggestions: []
     };
 
     this.onKeyUp = this.onKeyUp.bind(this);
     this.onSuggestionsRequested = this.onSuggestionsRequested.bind(this);
-    this.onSuggestionSelected = this.onSuggestionSelected.bind(this);
   }
 
   onTextValueChanged(e) {
@@ -45,7 +44,7 @@ export class SearchWidget extends React.Component {
 
   onKeyUp(event) {
     if (this.props.textValue === '') {
-      this.setState({ suggestions: {} });
+      this.setState({ suggestions: [] });
     } else if ((event.which || event.keyCode) === SearchWidget.enterKey && !this.props.isLoading) {
       this.props.onSearch(this.props.textValue);
     } else {
@@ -59,14 +58,10 @@ export class SearchWidget extends React.Component {
         return JSON.parse(res);
       }).catch((err) => {
         console.error(err);
-      }).then((suggestionObj) => {
-        this.setState({suggestions: suggestionObj});
+      }).then((suggestions) => {
+        this.setState({suggestions: suggestions});
       });
     }
-  }
-
-  onSuggestionSelected(suggestion) {
-    this.props.onSearch(this.state.suggestions[suggestion]);
   }
 
   render() {
@@ -85,15 +80,15 @@ export class SearchWidget extends React.Component {
         />
         <div className="dropdown-menu" style={{ display: (Object.keys(this.state.suggestions).length === 0 ? " none" : "") }}>
           {
-            Object.keys(this.state.suggestions).map((s) => {
+            this.state.suggestions.map((s) => {
               return (
                 <a
-                  key={ s }
-                  onClick={ () => { this.onSuggestionSelected(s); } }
+                  key={ s.text }
+                  onClick={ (e) => { e.preventDefault(); e.stopPropagation(); this.props.onSearch(s.value); } }
                   className="dropdown-item"
                   href="#"
                 >
-                  { s }
+                  { s.text }
                 </a>
               )
             })
