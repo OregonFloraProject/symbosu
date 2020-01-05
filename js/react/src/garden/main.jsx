@@ -185,7 +185,6 @@ class GardenPageApp extends React.Component {
         height: ("height" in queryParams ? queryParams["height"].split(",").map((i) => parseInt(i)) : ViewOpts.DEFAULT_HEIGHT),
         width: ("width" in queryParams ? queryParams["width"].split(",").map((i) => parseInt(i)) : ViewOpts.DEFAULT_WIDTH),
         checklistId: ("clid" in queryParams ? parseInt(queryParams["clid"]) : ViewOpts.DEFAULT_CLID),
-        searchText: '',
         plantFeatures: {},
         growthMaintenance: {},
         beyondGarden: {}
@@ -340,8 +339,8 @@ class GardenPageApp extends React.Component {
     }
   }
 
-  onSearchTextChanged(text) {
-    this.setState({ searchText: text });
+  onSearchTextChanged(e) {
+    this.setState({ searchText: e.target.value });
   }
 
   // On search start
@@ -516,7 +515,8 @@ class GardenPageApp extends React.Component {
                 growthMaintenance={ this.state.growthMaintenanceState }
                 beyondGarden={ this.state.beyondGardenState }
                 searchText={ this.state.searchText }
-                onSearch={ this.onSearch }
+                searchSuggestionUrl="./rpc/autofillsearch.php"
+                onSearch={ (text) => this.onSearch() }
                 onSearchTextChanged={ this.onSearchTextChanged }
                 onSunlightChanged={ this.onSunlightChanged }
                 onMoistureChanged={ this.onMoistureChanged }
