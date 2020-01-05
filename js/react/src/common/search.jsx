@@ -59,7 +59,7 @@ export class SearchWidget extends React.Component {
       }).catch((err) => {
         console.error(err);
       }).then((suggestions) => {
-        this.setState({suggestions: suggestions});
+        this.setState({ suggestions: suggestions });
       });
     }
   }
