@@ -195,20 +195,7 @@ TaxaApp.defaultProps = {
 const domContainer = document.getElementById("react-taxa-app");
 const queryParams = getUrlQueryParams(window.location.search);
 if (queryParams.search) {
-  httpGet(`./rpc/api.php?search=${queryParams.search}`).then((res) => {
-    res = JSON.parse(res);
-    if (res.length > 1) {
-      console.log(res);
-
-    } else if (res.length > 0) {
-      ReactDOM.render(
-        <TaxaApp tid={res[0].tid }/>,
-        domContainer
-      );
-    }
-  }).catch((err) => {
-    console.error(err);
-  })
+  window.location = `./search.php?search=${encodeURIComponent(queryParams.search)}`;
 } else if (queryParams.taxon) {
   ReactDOM.render(
     <TaxaApp tid={queryParams.taxon }/>,
