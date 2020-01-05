@@ -124,7 +124,6 @@ class TaxaManager {
       ->where("tb.tid = :tid")
       ->orderBy("ts.sortsequence")
       ->setParameter("tid", $this->getTid())
-      ->setCacheable(true)
       ->getQuery()
       ->execute();
 
@@ -147,7 +146,6 @@ class TaxaManager {
       ->innerJoin("Fmchecklists", "cl", "WITH", "tl.clid = cl.clid")
       ->where("tl.tid = :tid")
       ->andWhere("cl.parentclid = " . Fmchecklists::$CLID_GARDEN_ALL)
-      ->setCacheable(true)
       ->setParameter("tid", $tid);
 
     return array_map(
@@ -196,7 +194,6 @@ class TaxaManager {
       ->where("d.tid = :tid");
     $attributeQuery = $attributeQuery
       ->andWhere($attributeQuery->expr()->in("d.cid", TaxaManager::getAllCids()))
-      ->setCacheable(true)
       ->setParameter("tid", $tid);
 
     $attribs = $attributeQuery->getQuery()->execute();
@@ -284,7 +281,6 @@ class TaxaManager {
       ->from("Images", "i")
       ->where("i.tid = :tid")
       ->setParameter("tid", $tid)
-      ->setCacheable(true)
       ->orderBy("i.sortsequence")
       ->getQuery()
       ->execute();
