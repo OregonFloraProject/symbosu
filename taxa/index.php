@@ -16,14 +16,13 @@ include_once("../config/symbini.php");
     <link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/css/compiled/taxa.css">
 
     <!-- This is inner text! -->
-    <div  id="innertext">
+    <div id="innertext">
       <div id="react-taxa-app"></div>
-      <script src="<?php echo $CLIENT_ROOT?>/js/react/dist/taxa.js"
+      <script src="<?php echo $CLIENT_ROOT?>/js/react/dist/taxa.js"></script>
     </div>
 
     <?php
       include("$SERVER_ROOT/footer.php");
     ?>
   </body>
-
 </html>
