@@ -39,19 +39,12 @@ function getTaxaPage(tid) {
   return `${CLIENT_ROOT}/taxa/index.php?taxon=${tid}`;
 }
 
-function getCommonNameStr(item, searchText) {
+function getCommonNameStr(item) {
   const basename = item.vernacular.basename;
   const names = item.vernacular.names;
 
   let cname = basename;
-  for (let i in names) {
-    let currentName = names[i];
-    if (searchText.toLowerCase().includes(currentName) || currentName.toLowerCase().includes(searchText)) {
-      cname = currentName;
-      break;
-    }
-  }
-  if (cname === '' && names.length > 0) {
+  if (names.length > 0) {
     cname = names[0];
   }
 
@@ -373,8 +366,8 @@ class GardenPageApp extends React.Component {
     } else {
       newResults = results.sort((a, b) => {
         return (
-          getCommonNameStr(a, this.state.searchText).toLowerCase() >
-          getCommonNameStr(b, this.state.searchText).toLowerCase() ? 1 : -1
+          getCommonNameStr(a).toLowerCase() >
+          getCommonNameStr(b).toLowerCase() ? 1 : -1
         );
       });
     }
@@ -447,8 +440,8 @@ class GardenPageApp extends React.Component {
     } else {
       newResults = this.state.searchResults.sort((a, b) => {
         return (
-          getCommonNameStr(a, this.state.searchText).toLowerCase() >
-          getCommonNameStr(b, this.state.searchText).toLowerCase() ? 1 : -1
+          getCommonNameStr(a).toLowerCase() >
+          getCommonNameStr(b).toLowerCase() ? 1 : -1
         );
       });
     }
@@ -579,7 +572,7 @@ class GardenPageApp extends React.Component {
                             display={ showResult }
                             href={ getTaxaPage(result.tid) }
                             src={ result.image }
-                            commonName={ getCommonNameStr(result, this.state.searchText) }
+                            commonName={ getCommonNameStr(result) }
                             sciName={ result.sciName ? result.sciName : '' }
                           />
                         )
