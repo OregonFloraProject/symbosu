@@ -1,51 +1,15 @@
 import React from "react";
 
-const gridImageStyle = {
-  height: "7em",
-  width: "100%",
-  objectFit: "cover",
-  borderRadius: "0.25em"
-};
-
-const listImageStyle = {
-  height: "2em",
-  width: "2em",
-  objectFit: "cover",
-  borderRadius: "0.25em"
-};
-
-const containerGridStyle = {
-  display: "grid",
-  gridTemplateColumns: "repeat(5, 1fr)",
-  gridAutoRows: "15em",
-  gridGap: "0.5em",
-  justifyContent: "center"
-};
-
-const gridResultStyle = {
-  width: "100%",
-  height: "100%",
-  padding: "0.5em"
-};
-
-const listResultStyle = {
-  width: "100%",
-  marginTop: "0.1em",
-  marginBottom: "0.1em"
-};
-
 function SearchResult(props) {
   const useGrid = props.viewType === "grid";
-  let style = useGrid ? gridResultStyle : listResultStyle;
 
   if (props.display) {
     return (
-      <div className="card" style={style}>
+      <div className={ "card search-result " + (useGrid ? "grid-result" : "list-result") }>
         <a href={props.href}>
           <div className={useGrid ? "" : "card-body"}>
             <img
-              className={useGrid ? "card-img-top" : "d-inline-block mr-1"}
-              style={useGrid ? gridImageStyle : listImageStyle}
+              className={useGrid ? "card-img-top grid-image" : "d-inline-block mr-1 list-image"}
               alt={props.title}
               src={props.src}
             />
@@ -74,8 +38,7 @@ class SearchResultContainer extends React.Component {
     return (
       <div
         id="search-results"
-        className="mt-4 w-100"
-        style={ this.props.viewType === "grid" ? containerGridStyle : {} }
+        className={ "mt-4 w-100" + (this.props.viewType === "grid" ? " search-result-grid" : "") }
       >
         { this.props.children }
       </div>

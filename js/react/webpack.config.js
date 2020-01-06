@@ -80,7 +80,7 @@ const lessConfig = {
   module: {
     rules: [
       {
-        test: /\.(less|css)$/,
+        test: /\.(le|c)ss$/,
         exclude: /node_modules/,
         use: [
           {
