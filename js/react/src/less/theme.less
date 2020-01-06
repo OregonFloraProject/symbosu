@@ -1,4 +1,5 @@
 @import "./mixins.less";
+@import "./search-results.less";
 
 * {
   font-family: @font;
@@ -139,40 +140,4 @@ img {
   margin-left: auto;
   border-radius: 50%;
   background: #5FB021 !important;
-}
-
-.search-result {
-  &.grid-result {
-    width: 100%;
-    height: 100%;
-    padding: 0.5em;
-  }
-
-  &.list-result {
-    width: 100%;
-    margin-top: 0.1em;
-    margin-bottom: 0.1em;
-  }
-
-  .grid-image {
-    height: 7em;
-    width: 100%;
-    object-fit: cover;
-    border-radius: 0.25em;
-  }
-
-  .list-image {
-    height: 2em;
-    width: 2em;
-    object-fit: cover;
-    border-radius: 0.25em;
-  }
-}
-
-.search-result-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  grid-auto-rows: 15em;
-  grid-gap: 0.5em;
-  justify-content: center;
 }

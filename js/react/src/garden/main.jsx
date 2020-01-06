@@ -5,11 +5,12 @@ import ReactDOM from "react-dom";
 
 import InfographicDropdown from "./infographicDropdown.jsx";
 import SideBar from "./sidebar.jsx";
-import {SearchResult, SearchResultContainer} from "./searchResults.jsx";
+import {SearchResult, SearchResultContainer} from "../common/searchResults.jsx";
 import CannedSearchContainer from "./cannedSearches.jsx";
 import ViewOpts from "./viewOpts.jsx";
 import httpGet from "../common/httpGet.js";
 import {addUrlQueryParam, getUrlQueryParams} from "../common/queryParams.js";
+import {getCommonNameStr, getTaxaPage} from "../common/taxaUtils";
 
 const CLIENT_ROOT = "..";
 
@@ -34,26 +35,6 @@ const CIDS_BEYOND_GARDEN = {
   "eco_region": 19,
   "habitat": 163
 };
-
-function getTaxaPage(tid) {
-  return `${CLIENT_ROOT}/taxa/index.php?taxon=${tid}`;
-}
-
-function getCommonNameStr(item) {
-  const basename = item.vernacular.basename;
-  const names = item.vernacular.names;
-
-  let cname = basename;
-  if (names.length > 0) {
-    cname = names[0];
-  }
-
-  if (cname.includes(basename) && basename !== cname) {
-    return `${basename}, ${cname.replace(basename, '')}`
-  }
-
-  return cname;
-}
 
 function getAttributeArr(keymap) {
   return new Promise((resolve, reject) => {
@@ -570,7 +551,7 @@ class GardenPageApp extends React.Component {
                             key={ result.tid }
                             viewType={ this.state.viewType }
                             display={ showResult }
-                            href={ getTaxaPage(result.tid) }
+                            href={ getTaxaPage(CLIENT_ROOT, result.tid) }
                             src={ result.image }
                             commonName={ getCommonNameStr(result) }
                             sciName={ result.sciName ? result.sciName : '' }
