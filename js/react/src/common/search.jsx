@@ -84,7 +84,7 @@ export class SearchWidget extends React.Component {
               return (
                 <a
                   key={ s.text }
-                  onClick={ (e) => { e.preventDefault(); e.stopPropagation(); this.props.onSearch(s.value); } }
+                  onClick={ (e) => { e.preventDefault(); e.stopPropagation(); this.props.onSearch(s); } }
                   className="dropdown-item"
                   href="#"
                 >

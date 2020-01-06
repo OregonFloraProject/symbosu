@@ -3,7 +3,7 @@ import React from "react";
 import { SearchResult, SearchResultContainer } from "../common/searchResults.jsx";
 import httpGet from "../common/httpGet.js";
 import { getUrlQueryParams } from "../common/queryParams.js";
-import {getTaxaPage, getCommonNameStr} from "../common/taxaUtils";
+import { getTaxaPage, getCommonNameStr } from "../common/taxaUtils";
 
 const CLIENT_ROOT = "..";
 

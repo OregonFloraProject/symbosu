@@ -151,6 +151,7 @@ class GardenPageApp extends React.Component {
     super(props);
     const queryParams = getUrlQueryParams(window.location.search);
 
+    // TODO: searchText is both a core state value and a state.filters value; How can we make the filtering system more efficient?
     this.state = {
       isLoading: false,
       filters: {
@@ -158,6 +159,7 @@ class GardenPageApp extends React.Component {
         moisture: ("moisture" in queryParams ? queryParams["moisture"] : ViewOpts.DEFAULT_MOISTURE),
         height: ("height" in queryParams ? queryParams["height"].split(",").map((i) => parseInt(i)) : ViewOpts.DEFAULT_HEIGHT),
         width: ("width" in queryParams ? queryParams["width"].split(",").map((i) => parseInt(i)) : ViewOpts.DEFAULT_WIDTH),
+        searchText: ("search" in queryParams ? queryParams["search"] : ViewOpts.DEFAULT_SEARCH_TEXT),
         checklistId: ("clid" in queryParams ? parseInt(queryParams["clid"]) : ViewOpts.DEFAULT_CLID),
         plantFeatures: {},
         growthMaintenance: {},
@@ -202,7 +204,7 @@ class GardenPageApp extends React.Component {
       });
 
     // Load search results
-    this.onSearch();
+    this.onSearch({ text: this.state.searchText, value: -1 });
 
     // Load sidebar options
     Promise.all([
@@ -297,7 +299,10 @@ class GardenPageApp extends React.Component {
         this.sideBarRef.current.resetHeight();
         break;
       case "searchText":
-        this.setState({ searchText: ViewOpts.DEFAULT_SEARCH_TEXT }, () => this.onSearch());
+        this.setState({
+          searchText: ViewOpts.DEFAULT_SEARCH_TEXT },
+          () => this.onSearch({ text: ViewOpts.DEFAULT_SEARCH_TEXT, value: -1 })
+        );
         break;
       case "checklistId":
         this.onCannedFilter(ViewOpts.DEFAULT_CLID);
@@ -318,16 +323,20 @@ class GardenPageApp extends React.Component {
   }
 
   // On search start
-  onSearch() {
-    const newQueryStr = addUrlQueryParam("search", this.state.searchText);
+  onSearch(searchObj) {
+    const newQueryStr = addUrlQueryParam("search", searchObj.text);
     window.history.replaceState(
       { query: newQueryStr },
       '',
       window.location.pathname + newQueryStr
     );
 
-    this.setState({ isLoading: true, filters: Object.assign({}, this.state.filters, { searchText: this.state.searchText }) });
-    httpGet(`${CLIENT_ROOT}/garden/rpc/api.php?search=${this.state.searchText}`)
+    this.setState({
+      isLoading: true,
+      searchText: searchObj.text,
+      filters: Object.assign({}, this.state.filters, { searchText: searchObj.text })
+    });
+    httpGet(`${CLIENT_ROOT}/garden/rpc/api.php?search=${searchObj.text}`)
       .then((res) => {
         this.onSearchResults(JSON.parse(res));
       })
@@ -490,7 +499,7 @@ class GardenPageApp extends React.Component {
                 beyondGarden={ this.state.beyondGardenState }
                 searchText={ this.state.searchText }
                 searchSuggestionUrl="./rpc/autofillsearch.php"
-                onSearch={ (text) => this.onSearch() }
+                onSearch={ this.onSearch }
                 onSearchTextChanged={ this.onSearchTextChanged }
                 onSunlightChanged={ this.onSunlightChanged }
                 onMoistureChanged={ this.onMoistureChanged }

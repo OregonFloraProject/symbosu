@@ -150,7 +150,7 @@ class TaxaApp extends React.Component {
 
   render() {
     return (
-      <div className="container mt-5" style={{ minHeight: "45em" }}>
+      <div className="container my-5 py-2" style={{ minHeight: "45em" }}>
         <div className="row">
           <div className="col">
             <h1 className="text-capitalize">{ this.state.vernacularNames[0] }</h1>
