@@ -46,7 +46,7 @@ export class SearchWidget extends React.Component {
     if (this.props.textValue === '') {
       this.setState({ suggestions: [] });
     } else if ((event.which || event.keyCode) === SearchWidget.enterKey && !this.props.isLoading) {
-      this.props.onSearch(this.props.textValue);
+      this.props.onSearch({ text: this.props.textValue, value: -1 });
     } else {
       this.onSuggestionsRequested();
     }
@@ -95,7 +95,7 @@ export class SearchWidget extends React.Component {
           }
         </div>
         <SearchButton
-          onClick={ () => this.props.onSearch(this.props.textValue) }
+          onClick={ () => this.props.onSearch({ text: this.props.textValue, value: -1 }) }
           isLoading={this.props.isLoading}
           style={ this.props.buttonStyle }
           clientRoot={ this.props.clientRoot }
