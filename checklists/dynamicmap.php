@@ -31,8 +31,10 @@ elseif($coordRange > 40){
 ?>
 <html>
 <head>
+    <style>#mapForm div * {margin: 0.1em 0;}</style> <!-- Better spacing of form fields -->
 	<title><?php echo $DEFAULT_TITLE; ?> - Dynamic Checklist Generator</title>
 	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+	<link href="../css/main.css?ver=20180430" type="text/css" rel="stylesheet">
 </head>
 <body style="background-color:#ffffff;" onload="initialize()">
 	<?php
@@ -151,7 +153,7 @@ elseif($coordRange > 40){
                 </ul>
             </div>
 			<div style="margin-top:5px;">
-				<form name="mapForm" action="dynamicchecklist.php" method="post" onsubmit="return checkForm();">
+				<form id="mapForm" name="mapForm" action="dynamicchecklist.php" method="post" onsubmit="return checkForm();">
 					<div style="float:left;width:300px;">
 						<div>
 							<input type="submit" name="buildchecklistbutton" value="Build Checklist" disabled />
@@ -180,7 +182,7 @@ elseif($coordRange > 40){
 					</div>
 				</form>
 			</div>
-			<div id='map_canvas' style='width:95%; height:650px; clear:both;'></div>
+			<div id='map_canvas' style='width:95%; height:650px; top:10px; margin-bottom:20px; clear:both;'></div>
 		</div>
 	<?php
  	include_once($SERVER_ROOT.'/footer.php');
