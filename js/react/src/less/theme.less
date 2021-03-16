@@ -328,8 +328,9 @@ img {
   //width: 100% !important;
   //margin-top: 1rem;
   width: 90%;
-  margin: 1rem 5% 0;
-  
+  margin-left: 5%;
+  margin-right: 5%;
+  margin-bottom: 0;
   .bp3-slider {
   	margin-top: 1rem;
   	height: 26px;
@@ -1669,6 +1670,9 @@ img {
 		h3.filter-title {
 			margin-left: 15px;
 		}
+		.instructions {
+			margin: 0 15px 1rem;
+		}
     .currently-displayed {
       border-radius: 8px 8px 0 0;
       border: 5px solid @light-green;
@@ -1785,13 +1789,13 @@ img {
 		h3 {
 			margin-bottom: 0;
 			display: inline-block;
-			flex-basis: 35%;
+			flex-basis: 55%;
 		}	
 		.filter-count {
 			margin-left: 10px;
 			text-transform: uppercase;
 			color: @med-green;
-			flex-basis: 65%;
+			flex-basis: 45%;
 			vertical-align: middle;
 			.filter-value {
 				color: @type-primary;
@@ -1808,10 +1812,13 @@ img {
 				vertical-align: middle;
 				margin: auto 10px auto 6px;
 				&.front {
-					color: white;
+					color: white !important;
 				}
 				&.back {
-					color: @med-green;
+					color: @med-green !important;
+				}
+				path {
+					color: inherit;
 				}
 			}
 		}
@@ -1842,6 +1849,11 @@ img {
 				color: @med-green;
 				font-weight: bold;
 				font-size: 1.3em;
+				cursor: "default";
+			}
+			span.subheading {
+				margin-left: 4px;
+				line-height: 1.3rem;
 			}
 			.second-level {
 				background-color: white;
@@ -1868,8 +1880,15 @@ img {
 						transform: rotate(-180deg);
 							background-color: black;
 					}
+					a.feature-selector-header {
+						display: block;
+						clear: both;
+					}
 					.feature-input {
 						margin-top: .8rem;
+						&.slider {
+							margin-top: 2rem;
+						}
 						&.short {
 							height: 0;
 							overflow: hidden;
@@ -1900,6 +1919,54 @@ img {
 					}
 				}
 			}
+			&#plantneeds-accordion {
+				background-color: white;
+				padding: 1rem 1rem .4rem 1rem;
+				.second-level {
+					border-top: 1px dashed #000;
+					border-radius: 0 !important;
+					margin-bottom: .5em;
+					.feature-selectors{
+						display: flex;
+						padding: .4em 0;
+						flex-flow: row nowrap;
+						.feature-selector-header {
+							flex-basis: 40%;
+							margin-top: .5em;
+							cursor: default;
+							img.will-v-flip {
+								display: none;
+							}
+						}
+						.feature-input,
+						.feature-input.short {
+							flex-basis: 60%;
+							height: auto !important;
+							overflow: visible;
+							margin-top: 0;
+						}
+					}
+				}
+			}
+			
+			&#maturesize-accordion {
+				.second-level {
+					.feature-selectors{
+						.feature-selector-header {
+							cursor: default;
+							img.will-v-flip {
+								display: none;
+							}
+						}
+						.feature-input.slider,
+						.feature-input.slider.short {
+							height: auto !important;
+							margin-top: 2rem;
+							overflow: visible;
+						}
+					}
+				}
+			}
 		}
 		.sliders {
 			font-size: .9em;
@@ -1915,11 +1982,43 @@ img {
 	#view-opts, .view-opts {
 		//border-bottom: 1px dotted darkgreen;
 		//font-size: 0.8em;
-		margin-top: 1em;
+		
+
+		margin: 0;
+		flex-basis: 100%;
+		display: flex;
+		flex-flow: row nowrap;
+		justify-content: space-between;
+		border-bottom: none !important;
+		margin-top: 0px;
+		.filter-status {
+			text-transform: uppercase;
+			display: inline-block;
+			font-size: .9rem;
+			line-height: 1.6em;
+			color: @dark-grn-type;
+			vertical-align: middle;
+			margin-right: 6px;
+		}
+		.button-wrapper {
+			flex-basis: 100%;
+			margin: 0;
+		}
+		.col-7.button-section {
+			padding-left: 0;
+		}
+		.toggle-labels {
+			font-size: .8rem;
+		}
+		.settings-section {
+			padding-left: 5px !important;
+			padding-right: 5px !important;
+		}
 		.no-results {
 			color: @gray-type;
 		}
 		h3 {
+			margin-top: .3em;
 			font-size: 22px;
 		}
 		.fake-button {
@@ -2058,7 +2157,8 @@ img {
 		}
 	}
 }
-#react-identify-app {
+#react-identify-app,
+#react-garden {
 	.modal-backdrop.filter-modal {
 		position: fixed;
 		height: 0;

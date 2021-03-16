@@ -42,6 +42,63 @@ class CheckboxList extends React.Component {
 		);
 	}
 }
+
+class SelectDropdown extends React.Component {
+
+  constructor(props) {
+    super(props);
+    //this.getDropdownId = this.getDropdownId.bind(this);
+    this.onAttrClicked = this.props.onAttrClicked.bind(this);
+  }
+  
+  selectChange = (e) => {
+  	Object.keys(e.target.options).map((idx) => {
+  		if (e.target.options[idx].value != '') {
+				if (idx == e.target.selectedIndex) {
+					this.onAttrClicked(e.target.options[idx].value,e.target.options[idx].text,'on');
+				}else{
+					this.onAttrClicked(e.target.options[idx].value,e.target.options[idx].text,'off');
+				}
+			}
+  	});
+  }
+  
+	render() {
+		let selected = '';
+		let cidPrefix = this.props.cid + '-';
+		Object.entries(this.props.attrs).map((attr) => {//figure out if an attr is selected, since we have to set the value attribute on the <select> tag - React eyeroll
+			if (attr[0].substring(0,cidPrefix.length) == cidPrefix) {
+				selected = attr[0].toString();
+			}
+		});
+		return (
+
+			<select
+				className="form-control"
+				onChange={ this.selectChange }
+				value={ selected } 
+			>
+				<option key="select" value="">Select</option>
+				{
+					Object.keys(this.props.states).map((itemKey) => {
+						let itemVal = this.props.states[itemKey];
+						let attr = itemVal.cid + '-' + itemVal.cs;
+						return (
+							<option 
+								key={ attr }
+								value={ attr } 
+							>
+							{ this.props.states[itemKey].charstatename}
+							</option>
+						)
+					})
+
+				}
+			</select>
+		);
+	}
+}
+
 /**
  * Slider from 0, 50+ with minimum and maximum value handles
  */
@@ -222,6 +279,41 @@ class FeatureSelector extends React.Component {
   getDropdownId() {
     return `feature-selector-${this.props.cid}`;
   }
+  showFeature(featureType) {
+  	switch(featureType) {
+  		case 'slider':
+  			return (
+ 			 		<PlantSlider
+						states={ this.props.states }
+						attrs={ this.props.attrs }
+						sliders={ this.props.sliders }
+						label={ this.props.title }
+						cid={ this.props.cid }
+						units={ this.props.units }
+						onSliderChanged={ this.props.onSliderChanged }
+					/>
+  			)
+  		case 'select':
+  			return (
+  				<SelectDropdown 
+						states={ this.props.states }
+						attrs={ this.props.attrs }
+						cid={ this.props.cid }
+						onAttrClicked={ this.onAttrClicked }
+					/>
+			 	)
+  	
+  		default:
+  			return (
+  				<CheckboxList 
+						states={ this.props.states }
+						attrs={ this.props.attrs }
+						onAttrClicked={ this.onAttrClicked }
+					/>
+			 	)
+
+  	}
+  }
 
   render() {
 		let classes =  "feature-input" + (this.state.showFeature == true ? '' :" short") + (this.props.display == 'slider' ? ' slider' :"");
@@ -231,9 +323,10 @@ class FeatureSelector extends React.Component {
 		//}
 
     return (
-      <div className="second-level rounded-border">
+      <div className="second-level">
         <div className="feature-selectors">
           <a
+          	className="feature-selector-header"
             onClick={this.toggleFeature}
           >
             <span>{ this.props.title.replace(/_/g, ' ') }</span>
@@ -245,25 +338,7 @@ class FeatureSelector extends React.Component {
             />
           </a>
           <div id={ this.getDropdownId() } className={ classes }>
-						{this.props.display == 'slider'?
-							<PlantSlider
-								states={ this.props.states }
-								attrs={ this.props.attrs }
-								sliders={ this.props.sliders }
-								label={ this.props.title }
-								cid={ this.props.cid }
-								units={ this.props.units }
-								onSliderChanged={ this.props.onSliderChanged }
-							/>
-							
-							:
-					
-							<CheckboxList 
-								states={ this.props.states }
-								attrs={ this.props.attrs }
-								onAttrClicked={ this.onAttrClicked }
-							/>
-						}
+						{this.showFeature(this.props.display)}
           </div>
         </div>
       </div>

@@ -25,6 +25,8 @@ class IdentManager extends Manager {
   protected $searchTerm;
   protected $searchName = 'sciname';
   protected $searchSynonyms = false;
+  protected $IDsOnly = false;
+  protected $showThumbnails = false;
   /*
   protected $basename;
   protected $images;
@@ -89,42 +91,60 @@ class IdentManager extends Manager {
   	$this->searchTerm = $term;
   }
   public function setSearchName($name = '') {
-  	if (in_array($name,array('sciname','commonname'))) {
+  	#if (in_array($name,array('sciname','commonname'))) {
   		$this->searchName = $name;
-  	}
+  	#}
+  }
+  
+  public function setThumbnails($bool = false) {
+  	$this->showThumbnails = ($bool == true? true: false);
+  }
+  public function getThumbnails() {
+  	return $this->showThumbnails;
+  }
+  public function setIDsOnly($bool = false) {
+  	$this->IDsOnly = ($bool == true? true: false);
+  }
+  public function getIDsOnly() {
+  	return $this->IDsOnly;
   }
   public function setTaxa() {
   	$leftJoins = array();
   	$innerJoins = array();
   	$wheres = array(); 
   	$params = array();
+  	$orderBy = array();
   	$results = null;
   	
   	if ($this->clid || $this->dynClid) {
 			$em = SymbosuEntityManager::getEntityManager();
-			$taxa = $em->createQueryBuilder()
-				->select(["t.tid, ts.family, t.sciname, ts.parenttid, v.vernacularname, v.language, t.author"])
-				->from("Taxa","t")
-			;
+			$qb = $em->createQueryBuilder();
+			$selects = ["t.tid"];
+			if ($this->IDsOnly == false) {
+				$selects = array_merge($selects,["ts.family","t.sciname","ts.parenttid","v.vernacularname","v.language","t.author"]);
+			}
 			$leftJoins[] = array("Taxavernaculars","v","WITH","t.tid = v.tid");
 			#$wheres[] = "v.sortsequence = 1";
 			$innerJoins[] = array("Taxstatus","ts","WITH","t.tid = ts.tid");
-			$wheres[] = $taxa->expr()->orX(
-											$taxa->expr()->eq('v.language',"'English'"),
-											$taxa->expr()->eq('v.language',"'Basename'")
+			$wheres[] = $qb->expr()->orX(
+											$qb->expr()->eq('v.language',"'English'"),
+											$qb->expr()->eq('v.language',"'Basename'")
 										);
 			
 			$wheres[] = "ts.taxauthid = 1";
-			$wheres[] = "t.rankid = 220";	
+			$wheres[] = "t.rankid = 220";
+			$orderBy[] = "ts.family";
+			$orderBy[] = "t.sciname";
+			$orderBy[] = "v.sortsequence";
 			
 			if ($this->searchTerm != '' && $this->searchName != '') {
 				switch($this->searchName) {
 					case 'commonname':
-						$innerJoins[] = array("Taxavernaculars", "v", "WITH", "t.tid = v.tid");
+						$innerJoins[] = array("Taxavernaculars", "tv", "WITH", "t.tid = tv.tid");
 						$params[] = array(":search",'%' . $this->searchTerm . '%');
 						if ($this->searchSynonyms) {
 							$wheres[] = $qb->expr()->orX(
-									$qb->expr()->like('v.vernacularname',':search'),
+									$qb->expr()->like('tv.vernacularname',':search'),
 									$qb->expr()->in(
 																"ts.tidaccepted",#array(1,2,3))
 																$em->createQueryBuilder()
@@ -159,8 +179,21 @@ class IdentManager extends Manager {
 						}
 						break;
 				}
+			}elseif($this->searchTerm != '') {#sciname or commonname is unspecified - used on Natives
+				
+				$innerJoins[] = array("Taxavernaculars", "tv", "WITH", "t.tid = tv.tid");
+				$wheres[] = $qb->expr()->orX(
+											$qb->expr()->like('t.sciname',':search'),
+											$qb->expr()->like('tv.vernacularname',':search')
+										);
+				$params[] = array(":search",'%' . $this->searchTerm . '%');
 			}
-	
+			
+			if ($this->getThumbnails()) {
+				$selects = array_merge($selects,["i.imgid"]);
+				$innerJoins[] = array("Images","i","WITH","t.tid = i.tid");
+				$orderBy[] = "i.sortsequence";
+			}
 			if ($this->dynClid) {
 				$innerJoins[] = array("Fmdyncltaxalink","clk","WITH","t.tid = clk.tid");
 				$wheres[] = "clk.dynclid = :dynclid";
@@ -177,9 +210,9 @@ class IdentManager extends Manager {
 				}
 			}
 			if (!empty($this->taxonFilter) && $this->taxonFilter != "All Species") {
-				$wheres[] = $taxa->expr()->orX(
-											$taxa->expr()->eq('ts.family',':taxon'),
-											$taxa->expr()->eq('t.unitname1',':taxon')
+				$wheres[] = $qb->expr()->orX(
+											$qb->expr()->eq('ts.family',':taxon'),
+											$qb->expr()->eq('t.unitname1',':taxon')
 										);
 				$params[] = array("taxon",$this->taxonFilter);
 			}
@@ -197,6 +230,10 @@ class IdentManager extends Manager {
 			}
 			
 			#set EM
+			$taxa = $em->createQueryBuilder()
+				->select($selects)
+				->from("Taxa","t")
+			;
 			foreach ($leftJoins as $leftJoin) {
 				$taxa->leftJoin(...$leftJoin);
 			}
@@ -212,17 +249,20 @@ class IdentManager extends Manager {
 				$taxa->setParameter(...$param);
 			}
 			$taxa->distinct();
-			$taxa->orderBy("ts.family, t.sciname, v.sortsequence");
+			$taxa->orderBy(join(",",$orderBy));
 			$tquery = $taxa->getQuery();
+			#var_dump($tquery->getSQL());
 			$this->currQuery = $tquery;
 			$results = $tquery->getResult();
 
 			$newResults = array();
 			$currSciName = '';
 			$currIdx = null;
+			#var_dump($results);exit;
+
 			foreach ($results as $idx => $result) {
 
-				if ($result['sciname'] == $currSciName) {
+				if (isset($result['sciname']) && $result['sciname'] == $currSciName) {
 					if (strtolower($result['language']) == 'basename') {
 						$newResults[$currIdx]['vernacular']['basename'] = $result['vernacularname'];
 					}elseif(strtolower($result['language']) == 'english') {
@@ -230,21 +270,24 @@ class IdentManager extends Manager {
 					}
 				}else{
 					$newResults[$idx] = $result;
-					$newResults[$idx]['author'] = $result['author'];
-					$newResults[$idx]['vernacular']['basename'] = '';
-					$newResults[$idx]['vernacular']['names'] = [];
-					if (strtolower($result['language']) == 'basename') {
-						$newResults[$idx]['vernacular']['basename'] = $result['vernacularname'];
-					}elseif(strtolower($result['language']) == 'english') {
-						$newResults[$idx]['vernacular']['names'][] = $result['vernacularname'];
+					if ($this->IDsOnly == false) {
+						$newResults[$idx]['author'] = $result['author'];
+						$newResults[$idx]['vernacular']['basename'] = '';
+						$newResults[$idx]['vernacular']['names'] = [];
+						if (strtolower($result['language']) == 'basename') {
+							$newResults[$idx]['vernacular']['basename'] = $result['vernacularname'];
+						}elseif(strtolower($result['language']) == 'english') {
+							$newResults[$idx]['vernacular']['names'][] = $result['vernacularname'];
+						}
+						unset($newResults[$idx]['vernacularname']);
+						unset($newResults[$idx]['language']);
+						$currSciName = $result['sciname'];
+						$currIdx = $idx;
 					}
-					unset($newResults[$idx]['vernacularname']);
-					unset($newResults[$idx]['language']);
-					$currSciName = $result['sciname'];
-					$currIdx = $idx;
 				}
-			}		
+			}	
 		}
+		
 		$this->taxa = array_values($newResults);
   }
   

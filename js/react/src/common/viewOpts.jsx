@@ -48,6 +48,7 @@ class ViewOpts extends React.Component {
 
   render() {
   	const buttons = [];
+  	//console.log(this.props.filters);
 		Object.keys(this.props.filters).map((filterKey) => {
 			let filter = this.props.filters[filterKey];
 			let showItem = true;
@@ -69,6 +70,13 @@ class ViewOpts extends React.Component {
 							buttons.push({"key":feature[0],"text":feature[1].toString()});
 						}
 					})
+					break;
+				}
+				case "checklist": {
+					let checklist = filter.val;
+					if (checklist.clid > -1) {
+						buttons.push({"key":checklist.clid,"text":checklist.name});
+					}
 					break;
 				}
 				case "sliders": {
@@ -129,7 +137,7 @@ class ViewOpts extends React.Component {
 				</div>
 			);
 		}	
-	  return <span style={{ display: "none" }}/>;
+	  return <p className="no-results">{ this.props.defaultMessage }</p>;
   }
 }
 

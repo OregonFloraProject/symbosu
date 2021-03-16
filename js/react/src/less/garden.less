@@ -24,7 +24,7 @@
   opacity: 0;
   max-height: 0;
 }
-
+/*
 .slider {
   width: 100% !important;
 }
@@ -45,7 +45,7 @@
   background-image: -webkit-linear-gradient(top, #5FB021 0, #288000 100%) !important;
   background-image: -o-linear-gradient(top, #5FB021 0, #288000 100%) !important;
 }
-
+*/
 .dropdown-disabled, .dropdown-disabled * {
   opacity: 0.7 !important;
 }
@@ -84,6 +84,12 @@
 
 #canned-searches {
 	height: 330px;
+	background: @light-green;
+	margin: .3rem 0 1rem 0;
+	padding: 1rem;
+	@media (max-width: @small) {
+		height: auto;
+	}
 	h3 {
 		font-size: 22px;
 		font-weight: bold;

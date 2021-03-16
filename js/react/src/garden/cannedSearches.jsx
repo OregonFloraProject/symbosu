@@ -8,7 +8,7 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
 library.add( faChevronDown)
 
-function getChecklistPage(clientRoot,clid) {
+function getChecklistUrl(clientRoot,clid) {
   const gardenPid = 3;
   return `${clientRoot}/checklists/checklist.php?cl=${clid}&pid=${gardenPid}`;
 }
@@ -146,7 +146,7 @@ class CannedSearchContainer extends React.Component {
 		}
 
     return (
-      <div id="canned-searches" className="row mt-1 p-3 mx-0 rounded-border" style={{ background: "#DFEFD3" }}>
+      <div id="canned-searches" className="row">
         <div className="col">
           <div className="row">
             <h3 className="col">
@@ -180,8 +180,8 @@ class CannedSearchContainer extends React.Component {
                             title={searchResult.name}
                             description={ searchResult.description }
                             src={ `${searchResult.iconUrl}` }
-                            href={getChecklistPage(this.props.clientRoot,searchResult.clid)}
-                            onFilter={() => { this.props.onFilter(searchResult.clid); }}
+                            href={getChecklistUrl(this.props.clientRoot,searchResult.clid)}
+                            onFilter={() => { this.props.onFilter(searchResult); }}
 														onTogglePreviewClick={this.togglePreviewModal}
 														pauseCarousel={ this.pauseCarousel }
                           />

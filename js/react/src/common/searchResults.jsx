@@ -7,7 +7,7 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { faSquare } from '@fortawesome/free-solid-svg-icons'
 library.add( faSquare );
 
-function SearchResult(props) {
+function GardenSearchResult(props) {
   const useGrid = props.viewType === "grid";
   let nameFirst = '';
   let nameSecond = '';
@@ -44,7 +44,7 @@ function SearchResult(props) {
   return <span style={{ display: "none" }}/>;
 }
 
-class SearchResultContainer extends React.Component {
+class GardenSearchContainer extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -59,7 +59,26 @@ class SearchResultContainer extends React.Component {
 					clientRoot={ this.props.clientRoot }
 					isSearching={ this.props.isSearching }
 				/>
-        { this.props.children }
+			{	this.props.searchResults.taxonSort.map((result) =>  {
+						let display = (this.props.currentTids.indexOf(result.tid) > -1);
+						return (
+							<GardenSearchResult
+								display={ display }
+								key={ result.tid }
+								viewType={ this.props.viewType }
+								showTaxaDetail={ this.props.showTaxaDetail }
+								href={ getTaxaPage(this.props.clientRoot, result.tid) }
+								src={ result.image }
+								commonName={ getCommonNameStr(result) }
+								sciName={ result.sciname ? result.sciname : '' }
+								author={ result.author ? result.author : '' }
+								vouchers={  result.vouchers ? result.vouchers : '' }
+								clientRoot={ this.props.clientRoot }
+								sortBy={ this.props.sortBy }
+							/>
+						)
+					})
+				}
       </div>
     );
   }
@@ -278,6 +297,6 @@ IdentifySearchContainer.defaultProps = {
   searchResults: [],
 };
 
-export { SearchResultContainer, SearchResult, ExploreSearchResult, ExploreSearchContainer, IdentifySearchResult, IdentifySearchContainer };
+export { GardenSearchContainer, GardenSearchResult, ExploreSearchResult, ExploreSearchContainer, IdentifySearchResult, IdentifySearchContainer };
 
 

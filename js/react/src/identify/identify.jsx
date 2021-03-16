@@ -5,7 +5,7 @@ import ReactDOM from "react-dom";
 
 import SideBar from "./sidebar.jsx";
 import {IdentifySearchContainer, SearchResultContainer} from "../common/searchResults.jsx";
-import ViewOpts from "./viewOpts.jsx";
+import ViewOpts from "../common/viewOpts.jsx";
 import httpGet from "../common/httpGet.js";
 import {addUrlQueryParam, getUrlQueryParams} from "../common/queryParams.js";
 import {getCommonNameStr, getTaxaPage, getIdentifyPage, getChecklistPage} from "../common/taxaUtils";
@@ -662,6 +662,7 @@ class IdentifyApp extends React.Component {
 												})
 											}
 											getStatesByCid={ this.getStatesByCid } 
+											defaultMessage={ '' }
 										/>
 										}	
 										

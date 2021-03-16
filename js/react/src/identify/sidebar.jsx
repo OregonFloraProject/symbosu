@@ -2,7 +2,7 @@ import React from "react";
 
 import HelpButton from "../common/helpButton.jsx";
 import {SearchWidget} from "../common/search.jsx";
-import FeatureSelector from "./featureSelector.jsx";
+import FeatureSelector from "../common/featureSelector.jsx";
 //import ViewOpts from "./viewOpts.jsx";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -48,7 +48,7 @@ class SideBarHeading extends React.Component {
 }
 
 
-class SideBarDropdown extends React.Component {
+class SidebarAccordion extends React.Component {
   constructor(props) {
     super(props);
     this.state = { isExpanded: false };
@@ -84,7 +84,7 @@ class SideBarDropdown extends React.Component {
   }
 }
 
-SideBarDropdown.defaultProps = {
+SidebarAccordion.defaultProps = {
   title: '',
   style: { padding: "1em", backgroundColor: "white", borderRadius: "0.5em", fontSize: "initial" },
 };
@@ -292,7 +292,7 @@ class SideBar extends React.Component {
 										Object.keys(this.props.characteristics).map((idx) => {
 										let firstLevel = this.props.characteristics[idx];
 											return (					
-												<SideBarDropdown key={ firstLevel.hid } title={ firstLevel.headingname }>
+												<SidebarAccordion key={ firstLevel.hid } title={ firstLevel.headingname }>
 												{
 													Object.keys(firstLevel.characters).map((idx2) => {
 														let secondLevel = firstLevel.characters[idx2];
@@ -320,7 +320,7 @@ class SideBar extends React.Component {
 													})
 												}
 
-												</SideBarDropdown>
+												</SidebarAccordion>
 											)
 										})
 									}
@@ -333,7 +333,6 @@ class SideBar extends React.Component {
 
 SideBar.defaultProps = {
   searchText: '',
-  searchSugestionUrl: '',
   characteristics: {"hid":'',"headingname":'',"characters":{}},
 };
 

@@ -17,7 +17,7 @@ header("Content-Type: text/html; charset=".$CHARSET);
       include_once("$SERVER_ROOT/header.php");
     ?>
 
-    <!-- Header includes jquery, so add jquery scripts after header -->
+    <!-- Header includes jquery, so add jquery scripts after header
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.6.2/css/bootstrap-slider.min.css"
@@ -27,11 +27,15 @@ header("Content-Type: text/html; charset=".$CHARSET);
       src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.6.2/bootstrap-slider.min.js"
       integrity="sha256-oj52qvIP5c7N6lZZoh9z3OYacAIOjsROAcZBHUaJMyw="
       crossorigin="anonymous">
-    </script>
+    </script> -->
 
     <!-- Canned search carsousel -->
     <link rel="stylesheet" type="text/css" charset="UTF-8" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css" />
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css" />
+    
+    <!-- Sliders -->
+    <link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/js/react/node_modules/@blueprintjs/core/lib/css/blueprint.css">
+    <link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/js/react/node_modules/@blueprintjs/icons/lib/css/blueprint-icons.css">
 
     <div id="page-content" style="min-height: 50em;">
       <div id="react-garden"></div>
