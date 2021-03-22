@@ -204,7 +204,7 @@ class GardenPageApp extends React.Component {
       //searchText: searchObj.text,
       filters: Object.assign({}, this.state.filters, { searchText: searchObj.text })
     },function() {
-			this.doQuery();
+			this.catchQuery();
     });
   }
   catchQuery() {
