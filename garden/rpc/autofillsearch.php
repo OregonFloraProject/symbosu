@@ -19,7 +19,7 @@ if (array_key_exists("q", $_REQUEST)) {
     ->andWhere("t.sciname LIKE :search")
     ->andWhere("t.rankid > $RANK_GENUS")
     ->groupBy("t.tid")
-    ->setParameter("search", $_REQUEST["q"] . '%')
+    ->setParameter("search",  "%" . $_REQUEST["q"] . '%')
     ->setMaxResults(3)
     ->getQuery()
     ->getArrayResult();
@@ -33,7 +33,7 @@ if (array_key_exists("q", $_REQUEST)) {
     ->andWhere("v.vernacularname LIKE :search")
     ->andWhere("t.rankid > $RANK_GENUS")
     ->groupBy("v.vernacularname")
-    ->setParameter("search", $_REQUEST["q"] . '%')
+    ->setParameter("search",  "%" . $_REQUEST["q"] . '%')
     ->orderBy("v.sortsequence")
     ->setMaxResults(3)
     ->getQuery()
