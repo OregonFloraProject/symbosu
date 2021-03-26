@@ -82,7 +82,9 @@ if (array_key_exists("clid", $_GET) && is_numeric($_GET["clid"])&& array_key_exi
   $repo = $em->getRepository("Fmchecklists");
   $model = $repo->find($_GET["clid"]);
   $checklist = ExploreManager::fromModel($model);
-  $checklist->setPid($_GET["pid"]);
+  if ($_GET["pid"] > -1) {
+	  $checklist->setPid($_GET["pid"]);
+	}
   
 	if ( 	 ( array_key_exists("search", $_GET) && !empty($_GET["search"]) )
 			&& ( array_key_exists("name", $_GET) && in_array($_GET['name'],array('sciname','commonname')) )

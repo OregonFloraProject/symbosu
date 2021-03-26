@@ -97,8 +97,9 @@ class ExploreApp extends React.Component {
   componentDidMount() {
     // Load search results
     //this.onSearch({ text: this.state.searchText });
-    
-    httpGet(`./rpc/api.php?clid=${this.props.clid}&pid=${this.props.pid}`)
+    let url = `./rpc/api.php?clid=${this.props.clid}&pid=${this.props.pid}`;
+    console.log(url);
+    httpGet(url)
 			.then((res) => {
 				// /checklists/rpc/api.php?clid=3
 				res = JSON.parse(res);

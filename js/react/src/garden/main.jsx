@@ -55,6 +55,8 @@ class GardenPageApp extends React.Component {
     
     this.getPid = this.getPid.bind(this);
     this.getClid = this.getClid.bind(this);
+    /*this.getCannedSearches = this.getCannedSearches.bind(this);
+    this.getCharacteristics = this.getCharacteristics.bind(this);*/
 
     this.onSearchTextChanged = this.onSearchTextChanged.bind(this);
     this.onSearch = this.onSearch.bind(this);
@@ -90,16 +92,9 @@ class GardenPageApp extends React.Component {
     return parseInt(this.props.pid);
   }
   componentDidMount() {
-    // Load canned searches
-    httpGet(`${this.props.clientRoot}/garden/rpc/api.php?canned=true`)
-      .then((res) => {
-        this.setState({ cannedSearches: JSON.parse(res) });
-      });
+
       
-    httpGet(`${this.props.clientRoot}/garden/rpc/api.php?chars=true`)
-      .then((res) => {
-        this.setState({ characteristics: JSON.parse(res) });
-      });
+
       
     let apiUrl = `${this.props.clientRoot}/garden/rpc/api.php`;
     let url = apiUrl;
@@ -114,45 +109,69 @@ class GardenPageApp extends React.Component {
 
   	url = url + '?' + gardenParams.toString();
 		//console.log(url);
-		
-    httpGet(url)
-			.then((res) => {
-				res = JSON.parse(res);
-				
-				let taxa = '';
-				let tids = [];
-				if (res && res.taxa) {
-					taxa = this.sortResults(res.taxa);
-					tids = res.tids;//unordered
-				}
-	
-				let isMobile = false;
-				if (window.innerWidth < MOBILE_BREAKPOINT) {
-					isMobile = true;
-				}
-				this.setState({
-					clid: this.getClid(),
-					pid: this.getPid(),
-					projName: res.projName,
-					searchResults: taxa,//always the full garden checklist
-					isMobile: isMobile,
-					apiUrl: apiUrl,
-					currentTids: tids
-				});
-				const pageTitle = document.getElementsByTagName("title")[0];
-				pageTitle.innerHTML = `${pageTitle.innerHTML} ${res.title}`;
-			})
-			.catch((err) => {
-				//window.location = "/";
-				console.error(err);
-			})
-      .finally(() => {
-				this.updateViewport();
-        this.setState({ isLoading: false });
-      });
-    window.addEventListener('resize', this.updateViewport);
-  }
 
+		const cannedSearches = new Promise((resolve, reject) => {
+			httpGet(`${this.props.clientRoot}/garden/rpc/api.php?canned=true`)
+				.then((res) => {
+					resolve(JSON.parse(res));
+				});
+    });
+		
+		const characteristics = new Promise((resolve, reject) => {
+			httpGet(`${this.props.clientRoot}/garden/rpc/api.php?chars=true`)
+				.then((res) => {
+					resolve(JSON.parse(res));
+				})
+   	});
+   	const garden = new Promise((resolve, reject) => {
+			httpGet(url)
+				.then((res) => {
+					resolve(JSON.parse(res));
+				})
+   	});
+
+		Promise.all([
+			cannedSearches,
+      characteristics,
+      garden
+    ]).then((cres) => {
+
+			let res = cres[2];
+			let taxa = '';
+			let tids = [];
+			if (res && res.taxa) {
+				taxa = this.sortResults(res.taxa);
+				tids = res.tids;//unordered
+			}
+			let isMobile = false;
+			if (window.innerWidth < MOBILE_BREAKPOINT) {
+				isMobile = true;
+			}
+			this.setState({
+				clid: this.getClid(),
+				pid: this.getPid(),
+				projName: res.projName,
+				searchResults: taxa,//always the full garden checklist
+				isMobile: isMobile,
+				apiUrl: apiUrl,
+				currentTids: tids,
+				cannedSearches: cres[0],
+				characteristics: cres[1]
+			});
+			const pageTitle = document.getElementsByTagName("title")[0];
+			pageTitle.innerHTML = `${pageTitle.innerHTML} ${res.title}`;
+		})
+		.catch((err) => {
+			//window.location = "/";
+			console.error(err);
+		})
+		.finally(() => {
+			this.updateViewport();
+			this.setState({ isLoading: false });
+		});
+		window.addEventListener('resize', this.updateViewport);
+	
+  }
 
 	updateViewport() {
 		let newSlideshowCount = 4;
