@@ -111,21 +111,26 @@ class GardenPageApp extends React.Component {
 		//console.log(url);
 
 		const cannedSearches = new Promise((resolve, reject) => {
-			httpGet(`${this.props.clientRoot}/garden/rpc/api.php?canned=true`)
+			let cannedURL = `${this.props.clientRoot}/garden/rpc/api.php?canned=true`;
+			httpGet(cannedURL)
 				.then((res) => {
+					console.log(cannedURL);
 					resolve(JSON.parse(res));
 				});
     });
 		
 		const characteristics = new Promise((resolve, reject) => {
-			httpGet(`${this.props.clientRoot}/garden/rpc/api.php?chars=true`)
+			let charURL = `${this.props.clientRoot}/garden/rpc/api.php?chars=true`;
+			httpGet(charURL)
 				.then((res) => {
+					console.log(charURL);
 					resolve(JSON.parse(res));
 				})
    	});
    	const garden = new Promise((resolve, reject) => {
 			httpGet(url)
 				.then((res) => {
+				console.log(url);
 					resolve(JSON.parse(res));
 				})
    	});
@@ -135,7 +140,7 @@ class GardenPageApp extends React.Component {
       characteristics,
       garden
     ]).then((cres) => {
-
+			console.log(cres);
 			let res = cres[2];
 			let taxa = '';
 			let tids = [];
