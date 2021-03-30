@@ -108,13 +108,13 @@ class GardenPageApp extends React.Component {
 	  }
 
   	url = url + '?' + gardenParams.toString();
+  	///garden/rpc/api.php?clid=54&pid=3
 		//console.log(url);
 
 		const cannedSearches = new Promise((resolve, reject) => {
 			let cannedURL = `${this.props.clientRoot}/garden/rpc/api.php?canned=true`;
 			httpGet(cannedURL)
 				.then((res) => {
-					console.log(cannedURL);
 					resolve(JSON.parse(res));
 				});
     });
@@ -123,14 +123,12 @@ class GardenPageApp extends React.Component {
 			let charURL = `${this.props.clientRoot}/garden/rpc/api.php?chars=true`;
 			httpGet(charURL)
 				.then((res) => {
-					console.log(charURL);
 					resolve(JSON.parse(res));
 				})
    	});
    	const garden = new Promise((resolve, reject) => {
 			httpGet(url)
 				.then((res) => {
-				console.log(url);
 					resolve(JSON.parse(res));
 				})
    	});
@@ -140,7 +138,6 @@ class GardenPageApp extends React.Component {
       characteristics,
       garden
     ]).then((cres) => {
-			console.log(cres);
 			let res = cres[2];
 			let taxa = '';
 			let tids = [];
