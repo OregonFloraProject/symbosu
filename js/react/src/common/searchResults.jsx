@@ -1,5 +1,5 @@
 import React from "react";
-import {getCommonNameStr, getTaxaPage} from "../common/taxaUtils";
+import {getCommonNameStr, getTaxaPage, getGardenTaxaPage} from "../common/taxaUtils";
 import Searching from "../common/searching.jsx";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -67,7 +67,7 @@ class GardenSearchContainer extends React.Component {
 								key={ result.tid }
 								viewType={ this.props.viewType }
 								showTaxaDetail={ this.props.showTaxaDetail }
-								href={ getTaxaPage(this.props.clientRoot, result.tid) }
+								href={ getGardenTaxaPage(this.props.clientRoot, result.tid) }
 								src={ result.image }
 								commonName={ getCommonNameStr(result) }
 								sciName={ result.sciname ? result.sciname : '' }

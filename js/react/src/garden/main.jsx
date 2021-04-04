@@ -73,6 +73,7 @@ class GardenPageApp extends React.Component {
     this.onAttrChanged = this.onAttrChanged.bind(this);
     this.resetSlider = this.resetSlider.bind(this);
     this.resetCanned = this.resetCanned.bind(this);
+    this.getCannedByClid = this.getCannedByClid.bind(this);
     this.onSliderChanged = this.onSliderChanged.bind(this);
     this.sortResults = this.sortResults.bind(this);
     this.clearTextSearch = this.clearTextSearch.bind(this);
@@ -454,8 +455,15 @@ class GardenPageApp extends React.Component {
     /*window.history.replaceState({ query: newQueryStr }, '', window.location.pathname + newQueryStr);*/
   }
 
-  onCannedFilter(checklist) {	
-  	if (checklist.clid > -1) {
+  onCannedFilter(checklistItem) {/*accepts either object or clid*/
+  	let checklist = null;
+  	if (typeof checklistItem === 'object') {
+  		checklist = checklistItem;
+  	}else{
+  		checklist = this.getCannedByClid(checklistItem);
+  	}
+
+  	if (checklist !== null) {
 			this.setState({
 				filters: Object.assign({}, this.state.filters, {checklist : checklist})
 			},function() {
@@ -469,6 +477,15 @@ class GardenPageApp extends React.Component {
 		},function() {
 			this.catchQuery();
 		});
+  }
+  getCannedByClid(clid) {
+  	let ret = null;
+  	this.state.cannedSearches.map((canned) => {
+  		if (canned.clid == clid) {
+  			ret = canned;
+  		}
+  	});
+  	return ret;
   }
   
   resetSlider(cid) {
