@@ -130,7 +130,7 @@ class IdentManager extends Manager {
 											$qb->expr()->eq('v.language',"'Basename'")
 										);
 			
-			$wheres[] = "v.sortsequence = 1";
+			#$wheres[] = "v.sortsequence = 1";#causes basename to disappear
 			$wheres[] = "ts.taxauthid = 1";
 			$wheres[] = "t.rankid = 220";
 			$groupBy = [
