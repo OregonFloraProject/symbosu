@@ -391,7 +391,6 @@ function get_garden_taxa($params) {
 					}
 				}
 			}
-			
 		}#end attr
 		if (isset($params['range'])) {
 			$ranges = array();
@@ -447,11 +446,13 @@ function get_garden_taxa($params) {
 		than getting both imgid and thumbnailurl in IdentManager;
 		likewise, this is faster than using TaxaManager to get both. 
 		*/
+		$em->flush();
 		$imageRepo = $em->getRepository("Images");
 		foreach ($taxa as $key => $taxon) {
 			$model = $imageRepo->find($taxon['imgid']);
 			$taxa[$key]['image'] = resolve_img_path($model->getThumbnailurl());
 		}
+		$em->flush();
 		$results['taxa'] = $taxa;
 		$tids = [];
 		foreach ($results['taxa'] as $taxon) {
