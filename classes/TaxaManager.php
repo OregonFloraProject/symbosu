@@ -408,7 +408,6 @@ class TaxaManager {
     } 
     if (sizeof($return) > 1) {
 		  $taxaRepo = SymbosuEntityManager::getEntityManager()->getRepository("Taxa");
-		  $vernacular = [];
     	foreach ($return as $tid => $arr) {
 				$taxaModel = $taxaRepo->find($tid);
 				$taxa = self::fromModel($taxaModel);

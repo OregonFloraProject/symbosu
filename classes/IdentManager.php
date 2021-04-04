@@ -124,15 +124,18 @@ class IdentManager extends Manager {
 				$selects = array_merge($selects,["ts.family","t.sciname","ts.parenttid","v.vernacularname","v.language","t.author"]);
 			}
 			$leftJoins[] = array("Taxavernaculars","v","WITH","t.tid = v.tid");
-			#$wheres[] = "v.sortsequence = 1";
 			$innerJoins[] = array("Taxstatus","ts","WITH","t.tid = ts.tid");
 			$wheres[] = $qb->expr()->orX(
 											$qb->expr()->eq('v.language',"'English'"),
 											$qb->expr()->eq('v.language',"'Basename'")
 										);
 			
+			$wheres[] = "v.sortsequence = 1";
 			$wheres[] = "ts.taxauthid = 1";
 			$wheres[] = "t.rankid = 220";
+			$groupBy = [
+				"v.vernacularname",
+			];
 			$orderBy[] = "ts.family";
 			$orderBy[] = "t.sciname";
 			$orderBy[] = "v.sortsequence";
@@ -249,6 +252,7 @@ class IdentManager extends Manager {
 				$taxa->setParameter(...$param);
 			}
 			$taxa->distinct();
+			#$taxa->groupBy(join(", ",$groupBy));
 			$taxa->orderBy(join(",",$orderBy));
 			$tquery = $taxa->getQuery();
 			#var_dump($tquery->getSQL());
@@ -265,7 +269,7 @@ class IdentManager extends Manager {
 				if (isset($result['sciname']) && $result['sciname'] == $currSciName) {
 					if (strtolower($result['language']) == 'basename') {
 						$newResults[$currIdx]['vernacular']['basename'] = $result['vernacularname'];
-					}elseif(strtolower($result['language']) == 'english') {
+					}elseif(strtolower($result['language']) == 'english' && !in_array($result['vernacularname'],$newResults[$currIdx]['vernacular']['names'])) {
 						$newResults[$currIdx]['vernacular']['names'][] = $result['vernacularname'];
 					}
 				}else{
@@ -276,7 +280,7 @@ class IdentManager extends Manager {
 						$newResults[$idx]['vernacular']['names'] = [];
 						if (strtolower($result['language']) == 'basename') {
 							$newResults[$idx]['vernacular']['basename'] = $result['vernacularname'];
-						}elseif(strtolower($result['language']) == 'english') {
+						}elseif(strtolower($result['language']) == 'english' && !in_array($result['vernacularname'],$newResults[$idx]['vernacular']['names'])) {
 							$newResults[$idx]['vernacular']['names'][] = $result['vernacularname'];
 						}
 						unset($newResults[$idx]['vernacularname']);
