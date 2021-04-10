@@ -200,8 +200,8 @@ class IdentManager extends Manager {
 					much faster, but if the images aren't the correct ones,
 					then revisit
 				*/
-				$wheres[] = "i.sortsequence = 1";
-				#$orderBy[] = "i.sortsequence";
+				#$wheres[] = "i.sortsequence = 1";
+				$orderBy[] = "i.sortsequence";
 			}
 			if ($this->dynClid) {
 				$innerJoins[] = array("Fmdyncltaxalink","clk","WITH","t.tid = clk.tid");
