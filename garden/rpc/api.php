@@ -445,6 +445,8 @@ function get_garden_taxa($params) {
 		/*getting the imgid in IdentManager and then getting the thumbnailURL from the model here seems to be faster
 		than getting both imgid and thumbnailurl in IdentManager;
 		likewise, this is faster than using TaxaManager to get both. 
+		added flush() in attempt to speed up Doctrine 
+		- ap
 		*/
 		$em->flush();
 		$imageRepo = $em->getRepository("Images");

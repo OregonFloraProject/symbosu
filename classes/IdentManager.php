@@ -195,7 +195,13 @@ class IdentManager extends Manager {
 			if ($this->getThumbnails()) {
 				$selects = array_merge($selects,["i.imgid"]);
 				$innerJoins[] = array("Images","i","WITH","t.tid = i.tid");
-				$orderBy[] = "i.sortsequence";
+				/*
+					using where instead of orderby here; 
+					much faster, but if the images aren't the correct ones,
+					then revisit
+				*/
+				$wheres[] = "i.sortsequence = 1";
+				#$orderBy[] = "i.sortsequence";
 			}
 			if ($this->dynClid) {
 				$innerJoins[] = array("Fmdyncltaxalink","clk","WITH","t.tid = clk.tid");
