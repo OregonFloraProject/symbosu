@@ -195,13 +195,29 @@ class IdentManager extends Manager {
 			if ($this->getThumbnails()) {
 				$selects = array_merge($selects,["i.imgid"]);
 				$innerJoins[] = array("Images","i","WITH","t.tid = i.tid");
-				/*
-					using where instead of orderby here; 
-					much faster, but if the images aren't the correct ones,
-					then revisit
-				*/
-				#$wheres[] = "i.sortsequence = 1";
 				$orderBy[] = "i.sortsequence";
+				/*
+				
+				
+				$imageSubquery = $em->createQueryBuilder()
+												->select("imgid",'MIN(sortsequence) sortsequence',"tid")
+												->from("images","i2")
+												->where('i2.tid = :tid')
+												#->orderBy("i2.sortsequence")
+												#->setFirstResult(0)
+												#->setMaxResults(1)
+												->getDQL()
+				;
+				#23739310
+				#8122 23746666
+				#var_dump($imageSubquery);exit;
+				$selects = array_merge($selects,["i.imgid"]);
+				$innerJoins[] = array(sprintf('(%s)', $imageSubquery),"i","WITH","i.tid = t.tid");#sprintf('(%s)', $imageSubquery)
+				#$wheres[] = $qb->expr()->in(
+				#	"i.imgid",
+				#	$imageSubquery->getDQL()
+				#);
+				*/
 			}
 			if ($this->dynClid) {
 				$innerJoins[] = array("Fmdyncltaxalink","clk","WITH","t.tid = clk.tid");
@@ -297,8 +313,8 @@ class IdentManager extends Manager {
 				}
 			}	
 		}
-		
 		$this->taxa = array_values($newResults);
+		$em->flush();
   }
   
 	public function getCharacteristics() {

@@ -355,6 +355,10 @@ function get_garden_taxa($params) {
 
 function get_garden_taxa($params) {
 
+	$memory_limit = ini_get("memory_limit");
+	ini_set("memory_limit", "1G");
+	set_time_limit(0);
+	
 	$search = null;
 	$results = getEmpty();
 	
@@ -445,6 +449,8 @@ function get_garden_taxa($params) {
 		/*getting the imgid in IdentManager and then getting the thumbnailURL from the model here seems to be faster
 		than getting both imgid and thumbnailurl in IdentManager;
 		likewise, this is faster than using TaxaManager to get both. 
+		However, this frequently causes out-of-memory errors on the live server, 
+		so abandoned for now.
 		added flush() in attempt to speed up Doctrine 
 		- ap
 		*/
@@ -455,6 +461,8 @@ function get_garden_taxa($params) {
 			$taxa[$key]['image'] = resolve_img_path($model->getThumbnailurl());
 		}
 		$em->flush();
+		
+		
 		$results['taxa'] = $taxa;
 		$tids = [];
 		foreach ($results['taxa'] as $taxon) {
@@ -470,6 +478,8 @@ function get_garden_taxa($params) {
 		$results["title"] = $checklist->getTitle();
 
 	}
+	ini_set("memory_limit", $memory_limit);
+	set_time_limit(30);
 	return $results;
 }
 		
