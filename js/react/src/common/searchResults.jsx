@@ -7,6 +7,61 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { faSquare } from '@fortawesome/free-solid-svg-icons'
 library.add( faSquare );
 
+
+function SearchResult(props) {
+  const useGrid = props.viewType === "grid";
+  let nameFirst = '';
+  let nameSecond = '';
+	if (props.sortBy == 'vernacularName') {
+		nameFirst = props.commonName;
+		nameSecond = props.sciName;
+	}else {
+		nameFirst = props.sciName;
+		nameSecond = props.commonName;
+	}
+  if (props.display) {
+    return (
+      <a href={props.href} className="text-decoration-none" style={{ maxWidth: "185px" }} target="_blank">
+        <div className={ "card search-result " + (useGrid ? "grid-result" : "list-result") }>
+            <div className={useGrid ? "" : "card-body"}>
+              <img
+                className={useGrid ? "card-img-top grid-image" : "d-inline-block mr-1 list-image"}
+                alt={props.title}
+                src={props.src}
+              />
+              <div className={(useGrid ? "card-body" : "d-inline py-1") + " px-0"} style={{overflow: "hidden"}}>
+                <div className={"card-text" + (useGrid ? "" : " d-inline")}>
+                  <span className="">{nameFirst}</span>
+                  {useGrid ? <br/> : " - "}
+                  <span className="font-italic">{nameSecond}</span>
+                </div>
+              </div>
+            </div>
+        </div>
+      </a>
+    );
+  }
+
+  return <span style={{ display: "none" }}/>;
+}
+
+class SearchResultContainer extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    return (
+      <div
+        id="search-results"
+        className={ "mt-4 w-100" + (this.props.viewType === "grid" ? " search-result-grid" : "") }
+      >
+        { this.props.children }
+      </div>
+    );
+  }
+}
+
 function GardenSearchResult(props) {
   const useGrid = props.viewType === "grid";
   let nameFirst = '';
@@ -297,6 +352,6 @@ IdentifySearchContainer.defaultProps = {
   searchResults: [],
 };
 
-export { GardenSearchContainer, GardenSearchResult, ExploreSearchResult, ExploreSearchContainer, IdentifySearchResult, IdentifySearchContainer };
+export { SearchResultContainer, SearchResult, GardenSearchContainer, GardenSearchResult, ExploreSearchResult, ExploreSearchContainer, IdentifySearchResult, IdentifySearchContainer };
 
 
