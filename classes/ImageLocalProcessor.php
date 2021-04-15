@@ -48,6 +48,16 @@ class ImageLocalProcessor {
 	private $mdOutputFH;
 	private $logPath;
 	private $errorMessage;
+
+	private $numProcessed = 0; // total files processed
+	private $processSuccess = 0; // successful image imports
+  	private $skipImage = 0; // files that were skipped
+	private $newRecord = 0; // new skeletal records created
+	private $matchRecord = 0; // image matched to existing records
+  	private $replaceImage = 0; // image records that were replaced
+  	private $importError = 0; // errors encountered
+  	private $importWarning = 0; // warnings encountered
+  	private $importNotice = 0; // notices encountered
 	
 	private $sourceGdImg;
 	private $sourceImagickImg;
@@ -105,7 +115,8 @@ class ImageLocalProcessor {
 				$this->logOrEcho("\nDateTime: ".date('Y-m-d h:i:s A'));
 			}
 			else{
-				echo 'ERROR creating Log file; path not found: '.$this->logPath."\n";
+				echo 'ERROR: cannot create Log file; path not found: '.$this->logPath."\n";
+				$this->importError ++;
 			}
 		}
 		if($this->dbMetadata){
@@ -117,7 +128,7 @@ class ImageLocalProcessor {
 				$this->conn = ImageBatchConnectionFactory::getCon('write');
 			}
 			if(!$this->conn){
-				$this->logOrEcho("Image upload aborted: Unable to establish connection to ".$collName." database");
+				$this->logOrEcho("ABORT: Image upload aborted: Unable to establish connection to ".$collName." database");
 				exit("ABORT: Image upload aborted: Unable to establish connection to ".$collName." database");
 			}
 		}
@@ -205,7 +216,7 @@ class ImageLocalProcessor {
 				}
 				else{
 					//If unable to create output file, abort upload procedure
-					$this->logOrEcho("Image upload aborted: Unable to establish connection to output file to where image metadata is to be written");
+					$this->logOrEcho("ABORT: Image upload aborted: Unable to establish connection to output file to where image metadata is to be written");
 					exit("ABORT: Image upload aborted: Unable to establish connection to output file to where image metadata is to be written");
 				}
 			}
@@ -228,7 +239,7 @@ class ImageLocalProcessor {
 			}
 			if(!file_exists($this->targetPathBase.$this->targetPathFrag)){
 				if(!mkdir($this->targetPathBase.$this->targetPathFrag,0777,true)){
-					$this->logOrEcho("ERROR: unable to create new folder (".$this->targetPathBase.$this->targetPathFrag.") ");
+					$this->logOrEcho("ABORT: unable to create new folder (".$this->targetPathBase.$this->targetPathFrag.") ");
 					exit("ABORT: unable to create new folder (".$this->targetPathBase.$this->targetPathFrag.")");
 				}
 			}
@@ -240,12 +251,14 @@ class ImageLocalProcessor {
 				if(!file_exists($this->targetPathBase.$this->targetPathFrag.'orig/')){
 					if(!mkdir($this->targetPathBase.$this->targetPathFrag.'orig/')){
 						$this->logOrEcho("NOTICE: unable to create base folder to store original files (".$this->targetPathBase.$this->targetPathFrag.") ");
+						$this->importNotice ++;
 					}
 				}
 				if(file_exists($this->targetPathBase.$this->targetPathFrag.'orig/')){
 					if(!file_exists($this->targetPathBase.$this->targetPathFrag.$this->origPathFrag)){
 						if(!mkdir($this->targetPathBase.$this->targetPathFrag.$this->origPathFrag)){
 							$this->logOrEcho("NOTICE: unable to create folder to store original files (".$this->targetPathBase.$this->targetPathFrag.$this->origPathFrag.") ");
+							$this->importNotice ++;
 						}
 					}
 				}
@@ -274,7 +287,18 @@ class ImageLocalProcessor {
 			//Update Statistics
 			$this->updateCollectionStats();
 		}
-		
+		// Add import statistics
+		$this->logOrEcho("Total files processed: ".$this->numProcessed."\n", 1);
+		$this->logOrEcho("Images imported successfully: ".$this->processSuccess."\n", 1);
+		$this->logOrEcho("Files skipped: ".$this->skipImage."\n", 1);
+		$this->logOrEcho("New skeletal records created: ".$this->newRecord."\n", 1);
+		$this->logOrEcho("Images matched to existing records: ".$this->matchRecord."\n", 1);
+		$this->logOrEcho("Images replaced: ".$this->replaceImage."\n", 1);
+		$this->logOrEcho("Import errors (search for ERROR): ".$this->importError."\n", 1);
+		$this->logOrEcho("Import warnings (search for WARNING): ".$this->importWarning."\n", 1);
+		$this->logOrEcho("Import notices (search for NOTICE): ".$this->importNotice."\n", 1);
+
+		// Finish processing
 		$this->logOrEcho("Image upload process finished! (".date('Y-m-d h:i:s A').") \n");
 		if($this->logMode == 1){
 			echo '</ul>';
@@ -292,6 +316,7 @@ class ImageLocalProcessor {
 						if(is_file($this->sourcePathBase.$pathFrag.$fileName)){
 							if(!stripos($fileName,$this->tnSourceSuffix.'.jpg') && !stripos($fileName,$this->lgSourceSuffix.'.jpg')){
 								$this->logOrEcho("Processing File (".date('Y-m-d h:i:s A')."): ".$fileName);
+								$this->numProcessed ++;
 								$fileExt = strtolower(substr($fileName,strrpos($fileName,'.')));
 								if($fileExt == ".jpg"){
 									if($this->processImageFile($fileName,$pathFrag)){
@@ -303,6 +328,8 @@ class ImageLocalProcessor {
 								}
 								elseif($fileExt == ".tif"){
 									$this->logOrEcho("ERROR: File skipped, TIFFs image files are not a supported: ".$fileName,1);
+									$this->importError ++;
+									$this->skipImage ++;
 									//Do something, like convert to jpg???
 									//but for now do nothing
 								}
@@ -330,6 +357,8 @@ class ImageLocalProcessor {
 								}
 								else{
 									$this->logOrEcho("ERROR: File skipped, not a supported image file: ".$fileName,1);
+									$this->importError ++;
+									$this->skipImage ++;
 								}
 							}
 						}
@@ -343,10 +372,12 @@ class ImageLocalProcessor {
 			}
 			else{
 				$this->logOrEcho("ERROR: unable to access source directory: ".$this->sourcePathBase.$pathFrag,1);
+				$this->importError ++;
 			}
 		}
 		else{
-			$this->logOrEcho("Source path does not exist: ".$this->sourcePathBase.$pathFrag,1);
+			$this->logOrEcho("ERROR: Source path does not exist: ".$this->sourcePathBase.$pathFrag,1);
+			$this->importError ++;
 			//exit("ABORT: Source path does not exist: ".$this->sourcePathBase.$pathFrag);
 		}
 	}
@@ -381,6 +412,8 @@ class ImageLocalProcessor {
 							}
 							elseif($fileExt == "tif"){
 								$this->logOrEcho("ERROR: File skipped, TIFFs image files are not a supported: ".$fileName,1);
+								$this->importError ++;
+								$this->skipImage ++;
 								//Do something, like convert to jpg???
 								//but for now do nothing
 							}
@@ -397,6 +430,8 @@ class ImageLocalProcessor {
 							}
 							else{
 								$this->logOrEcho("ERROR: File skipped, not a supported image file: ".$fileName,1);
+								$this->importError ++;
+								$this->skipImage ++;
 							}
 						}
 					}
@@ -409,7 +444,8 @@ class ImageLocalProcessor {
 			}
 		}
 		else{
-			$this->logOrEcho("Source directory skipped (code ".$codeArr[0].") : ".$this->sourcePathBase.$pathFrag,1);
+			$this->logOrEcho("ERROR: Source directory skipped (code ".$codeArr[0].") : ".$this->sourcePathBase.$pathFrag,1);
+			$this->importError ++;
 			//exit("ABORT: Source path does not exist: ".$this->sourcePathBase.$pathFrag);
 		}
 	}
@@ -439,6 +475,7 @@ class ImageLocalProcessor {
 					}
 					else {
 						$this->logOrEcho("ERROR: Can't find $lapischema",1);
+						$this->importError ++;
 					}
 					// $this->logOrEcho($fileName." valid lapi xml:" . $xml->isValid() . " [" . $isLapi .  "]");
 					if ($xml->isValid() && $isLapi) {
@@ -450,11 +487,13 @@ class ImageLocalProcessor {
 							$foundSchema = $result->couldparse;
 							if (!$foundSchema || $result->failurecount>0) {
 								$this->logOrEcho("ERROR: Errors processing $fileName: $result->errors.",1);
+								$this->importError ++;
 							}
 						}
 						else {
 							// fail gracefully if this instalation isn't configured with this parser.
 							$this->logOrEcho("ERROR: SpecProcessorGPI.php not available.",1);
+							$this->importError ++;
 						}
 					}
 				}
@@ -476,11 +515,13 @@ class ImageLocalProcessor {
 							$foundSchema = $result->couldparse;
 							if (!$foundSchema || $result->failurecount>0) {
 								$this->logOrEcho("ERROR: Errors processing $fileName: $result->errors.",1);
+								$this->importError ++;
 							}
 						}
 						else {
 							// fail gracefully if this instalation isn't configured with this parser.
 							$this->logOrEcho("ERROR: SpecProcessorNEVP.php not available.",1);
+							$this->importError ++;
 						}
 					}
 				}
@@ -489,6 +530,7 @@ class ImageLocalProcessor {
 					$this->logOrEcho("Proccessed $pathFrag$fileName, records: $result->recordcount, success: $result->successcount, failures: $result->failurecount, inserts: $result->insertcount, updates: $result->updatecount.");
 					if ($result->imagefailurecount>0) {
 						$this->logOrEcho("ERROR: not moving (".$fileName."), image failure count " . $result->imagefailurecount . " greater than zero.",1);
+						$this->importError ++;
 					}
 					else {
 						$oldFile = $this->sourcePathBase.$pathFrag.$fileName;
@@ -499,21 +541,25 @@ class ImageLocalProcessor {
 							}
 							if(!rename($oldFile,$this->targetPathBase.$this->targetPathFrag.'orig_xml/'.$newFileName)){
 								$this->logOrEcho("ERROR: unable to move (".$oldFile." =>".$newFileName.") ",1);
+								$this->importError ++;
 							}
 						}
 						else {
 							if(!unlink($oldFile)){
 								$this->logOrEcho("ERROR: unable to delete file (".$oldFile.") ",1);
+								$this->importError ++;
 							}
 						}
 					}
 				}
 				else {
 					$this->logOrEcho("ERROR: Unable to match ".$pathFrag.$fileName." to a known schema.",1);
+					$this->importError ++;
 				}
 			}
 			else {
 				$this->logOrEcho("ERROR: XMLReader couldn't read ".$pathFrag.$fileName,1);
+				$this->importError ++;
 			}
 		}
 	}
@@ -563,8 +609,30 @@ class ImageLocalProcessor {
 				if(!file_exists($targetPath)){
 					if(!mkdir($targetPath)){
 						$this->logOrEcho("ERROR: unable to create new folder (".$targetPath.") ");
+						$this->importError ++;
 					}
 				}
+
+				// Check to see if image already exists somewhere with the target filename
+				$recExists = 0; 
+				$sql = 'SELECT url '.
+					'FROM images WHERE (occid = '.$occId.') ';
+				$rs = $this->conn->query($sql);
+				while($r = $rs->fetch_object()){
+					if(stripos($r->url,$fileName) || stripos($r->url,str_replace('%20', '_', $fileName)) || stripos($r->url,str_replace('%20', ' ', $fileName))){
+						$recExists = $r->url;
+					}
+				}
+				$rs->free();
+
+				if($this->imgExists == 0 && $recExists) {
+					// We should skip the image with the same filename, as configured
+					$this->logOrEcho("NOTICE: image import skipped because image record already exists ",1);
+					$this->importNotice ++;
+					$this->skipImage ++;
+					return false;
+				}
+
 				if($this->webImg == 1 || $this->webImg == 2){
 					//Check to see if image already exists at target, if so, delete or rename target
 					if(file_exists($targetPath.$targetFileName)){
@@ -600,25 +668,26 @@ class ImageLocalProcessor {
 						}
 					}
 				}
-				elseif($this->webImg == 3 || $this->webImg == 4){
-					if(!$this->imgExists){
+				//elseif($this->webImg == 3 || $this->webImg == 4){
+					//if(!$this->imgExists){
 						//Check to see if database record already exists, and if so skip import
-						$recExists = 0; 
-						$sql = 'SELECT url '.
-							'FROM images WHERE (occid = '.$occId.') ';
-						$rs = $this->conn->query($sql);
-						while($r = $rs->fetch_object()){
-							if(stripos($r->url,$fileName) || stripos($r->url,str_replace('%20', '_', $fileName)) || stripos($r->url,str_replace('%20', ' ', $fileName))){
-								$recExists = 1;
-							}
-						}
-						$rs->free();
-						if($recExists){
-							$this->logOrEcho("NOTICE: image import skipped because specimen record already exists ",1);
-							return false;
-						}
-					}
-				}
+						//$recExists = 0; 
+						//$sql = 'SELECT url '.
+						//	'FROM images WHERE (occid = '.$occId.') ';
+						//$rs = $this->conn->query($sql);
+						//while($r = $rs->fetch_object()){
+						//	if(stripos($r->url,$fileName) || stripos($r->url,str_replace('%20', '_', $fileName)) || stripos($r->url,str_replace('%20', ' ', $fileName))){
+						//		$recExists = 1;
+						//	}
+						//}
+						//$rs->free();
+						//if($recExists){
+						//	$this->logOrEcho("NOTICE: image import skipped because specimen record already exists ",1);
+						//	return false;
+						//}
+					//}
+				//}
+
 				//Start the processing procedure
 				list($width, $height) = getimagesize($sourcePath.$fileName);
 				if($width && $height){
@@ -682,7 +751,8 @@ class ImageLocalProcessor {
 						}
 					}
 					if(!$webUrlFrag){
-						$this->logOrEcho("Failed to create web image ",1);
+						$this->logOrEcho("ERROR: Failed to create web image ",1);
+						$this->importError ++;
 					}
 					//Create Large Image
 					$lgUrlFrag = "";
@@ -725,6 +795,7 @@ class ImageLocalProcessor {
 									}
 									else{
 										$this->logOrEcho("WARNING: unable to import large derivative (".$sourcePath.$lgSourceFileName.") ",1);
+										$this->importWarning ++;
 									}
 								}
 							}
@@ -746,6 +817,7 @@ class ImageLocalProcessor {
 							}
 							else{
 								$this->logOrEcho("WARNING: unable to import large derivative (".$sourcePath.$lgSourceFileName.") ",1);
+								$this->importWarning ++;
 							}
 						}
 						elseif($this->lgImg == 4){
@@ -757,6 +829,7 @@ class ImageLocalProcessor {
 							}
 							else{
 								$this->logOrEcho("WARNING: unable to map to large derivative (".$sourcePath.$lgSourceFileName.") ",1);
+								$this->importWarning ++;
 							}
 						}
 					}
@@ -821,13 +894,17 @@ class ImageLocalProcessor {
 					$this->logOrEcho("Image processed successfully (".date('Y-m-d h:i:s A').")!",1);
 				}
 				else{
-					$this->logOrEcho("File skipped (".$sourcePath.$fileName."), unable to obtain dimensions of original image",1);
+					$this->logOrEcho("ERROR: File skipped (".$sourcePath.$fileName."), unable to obtain dimensions of original image",1);
+					$this->importError ++;
+					$this->skipImage ++;
 					return false;
 				}
 			}
 		}
 		else{
-			$this->logOrEcho("File skipped (".$sourcePathFrag.$fileName."), unable to extract specimen identifier",1);
+			$this->logOrEcho("WARNING: File skipped (".$sourcePathFrag.$fileName."), unable to extract specimen identifier",1);
+			$this->importError ++;
+			$this->skipImage ++;
 			return false;
 		}
 		//ob_flush();
@@ -880,6 +957,7 @@ class ImageLocalProcessor {
 		}
 		if(!$newWidth || !$newHeight){
 			$this->logOrEcho("ERROR: Unable to create image because new width or height is not set (w:".$newWidth.' h:'.$newHeight.')');
+			$this->importError ++;
 			return $status;
 		}
 		$tmpImg = imagecreatetruecolor($newWidth,$newHeight);
@@ -895,6 +973,7 @@ class ImageLocalProcessor {
 		
 		if(!$status){
 			$this->logOrEcho("ERROR: Unable to resize and write file: ".$targetPath,1);
+			$this->importError ++;
 		}
 		
 		imagedestroy($tmpImg);
@@ -954,6 +1033,10 @@ class ImageLocalProcessor {
 				$occId = $row->occid;
 			}
 			$rs->free();
+			$this->logOrEcho("Matched Catalog Number to existing record (occid = ".$occId.") ",1);
+			//$this->logOrEcho("Matched Catalog Number to existing record (occid = <a href=\"/collections/editor/occurrenceeditor.php?occid=".$occId."&collid=".$this->activeCollid."\" target=\"_blank\" >".$occId."</a>) ",1);
+
+			$this->matchRecord ++;
 		}
 		if($this->matchOtherCatalogNumbers){
 			$sql = 'SELECT occid FROM omoccurrences '.
@@ -964,21 +1047,30 @@ class ImageLocalProcessor {
 				$occId = $row->occid;
 			}
 			$rs->free();
+
+			$this->logOrEcho("Matched Other Catalog Number to existing record (occid = ".$occId.") ",1);
+			$this->matchRecord ++;
 		}
 		if(!$occId && $this->createNewRec){
 			//Records does not exist, create a new one to which image will be linked
-			$sql2 = 'INSERT INTO omoccurrences(collid,'.($this->matchCatalogNumber?'catalognumber':'othercatalognumbers').',processingstatus,dateentered) '.
-				'VALUES('.$this->activeCollid.',"'.$specPk.'","unprocessed","'.date('Y-m-d H:i:s').'")';
+			$sql2 = 'INSERT INTO omoccurrences(collid,'.($this->matchCatalogNumber?'catalognumber':'othercatalognumbers').',processingstatus,establishmentMeans,dateentered) '.
+				'VALUES('.$this->activeCollid.',"'.$specPk.'","unprocessed","wild collection","'.date('Y-m-d H:i:s').'")';
 			if($this->conn->query($sql2)){
 				$occId = $this->conn->insert_id;
-				$this->logOrEcho("Specimen record does not exist; new empty specimen record created and assigned an 'unprocessed' status (occid = ".$occId.") ",1);
+				$this->logOrEcho("Specimen record does not exist; new empty specimen record created and assigned an 'unprocessed' status & 'wild collection' establishment means (occid = ".$occId.") ",1);
+
+				// Keep track of the number of new records
+				$this->newRecord ++;
 			}
 			else{
 				$this->logOrEcho("ERROR creating new occurrence record: ".$this->conn->error,1);
+				$this->importError ++;
 			}
 		}
 		if(!$occId){
 			$this->logOrEcho("ERROR: File skipped, unable to locate specimen record ".$specPk." (".date('Y-m-d h:i:s A').") ",1);
+			$this->skipImage ++;
+			$this->importError ++;
 		}
 		return $occId;
 	}
@@ -1003,26 +1095,39 @@ class ImageLocalProcessor {
 			$sql = 'SELECT imgid, url, thumbnailurl, originalurl '.
 				'FROM images WHERE (occid = '.$occId.') ';
 			$rs = $this->conn->query($sql);
+			//echo "looking for images<br>";
 			while($r = $rs->fetch_object()){
+
+				//echo $r->url." | ".basename($r->url)." | ".basename($webUrl)."<br>";
+				//echo "test1: ".strcasecmp($r->url,$webUrl)." | test2: ".strcasecmp(basename($r->url),basename($webUrl))."<br>";
+				//echo "exists: ".$this->imgExists."<br>";
+
 				if(strcasecmp($r->url,$webUrl) == 0){
 					//exact match, thus reset record data with current image urls (thumbnail or original image might be in different locality) 
 					if(!$this->conn->query('DELETE FROM specprocessorrawlabels WHERE imgid = '.$r->imgid)){
 						$this->logOrEcho('ERROR deleting OCR for image record #'.$r->imgid.' (equal URLs): '.$this->conn->error,1);
+						$this->importError ++;
 					}
 					if(!$this->conn->query('DELETE FROM images WHERE imgid = '.$r->imgid)){
 						$this->logOrEcho('ERROR deleting image record #'.$r->imgid.' (equal URLs): '.$this->conn->error,1);
+						$this->importError ++;
 					}
 				}
 				elseif($this->imgExists == 2 && strcasecmp(basename($r->url),basename($webUrl)) == 0){
+					//echo "got to replace<br>";
+					$imgID ++;
 					//Copy-over-image is set to true and basenames equal, thus delete image PLUS delete old images 
 					if(!$this->conn->query('DELETE FROM specprocessorrawlabels WHERE imgid = '.$r->imgid)){
 						$this->logOrEcho('ERROR deleting OCR for image record #'.$r->imgid.' (equal basename): '.$this->conn->error,1);
+						$this->importError ++;
 					}
 					if($this->conn->query('DELETE FROM images WHERE imgid = '.$r->imgid)){
 						//Remove images
 						$urlPath = current(parse_url($r->url, PHP_URL_PATH));
+						//echo "url path: ".$urlPath." | urlbase: ".$this->imgUrlBase." | targetbase: ".$this->targetPathBase."<br>";
 						if($urlPath && strpos($urlPath, $this->imgUrlBase) === 0){
 							$wFile = str_replace($this->imgUrlBase,$this->targetPathBase,$urlPath);
+							//echo "wFile: ".$wFile."<br>";
 							if(file_exists($wFile) && is_writable($wFile)) unlink($wFile);
 						}
 						$urlTnPath = current(parse_url($r->thumbnailurl, PHP_URL_PATH));
@@ -1038,6 +1143,7 @@ class ImageLocalProcessor {
 					}
 					else{
 						$this->logOrEcho('ERROR: Unable to delete image record #'.$r->imgid.' (equal basename): '.$this->conn->error,1);
+						$this->importError ++;
 					}
 				}
 			}
@@ -1063,18 +1169,23 @@ class ImageLocalProcessor {
 				else{
 					$status = false;
 					$this->logOrEcho("ERROR: Unable to load image record into database: ".$this->conn->error."; SQL: ".$sql,1);
+					$this->importError ++;
 				}
 				if($imgId){
 					$this->logOrEcho("WARNING: Existing image record replaced; occid: $occId ",1);
+					$this->importWarning ++;
+					$this->replaceImage ++;
 				}
 				else{
 					$this->logOrEcho("SUCCESS: Image record loaded into database",1);
+					$this->processSuccess ++;
 				}
 			}
 		}
 		else{
 			$status = false;
 			$this->logOrEcho("ERROR: Missing occid (omoccurrences PK), unable to load record ");
+			$this->importError ++;
 		}
 		//ob_flush();
 		flush();
@@ -1125,11 +1236,13 @@ class ImageLocalProcessor {
 				}
 				else{
 					$this->logOrEcho("ERROR: Unable to identify delimiter for metadata file ",1);
+					$this->importError ++;
 					return false;
 				}
 			}
 			else{
 				$this->logOrEcho("ERROR: Skeletal file skipped: unable to determine file type ",1);
+				$this->importError ++;
 				return false;
 			}
 			if($hArr){
@@ -1387,6 +1500,7 @@ class ImageLocalProcessor {
 											else{
 												$this->logOrEcho("ERROR: Unable to update existing record with new skeletal record ");
 												$this->logOrEcho("SQL : $sqlUpdate ",1);
+												$this->importError ++;
 											}
 										}
 									}
@@ -1444,6 +1558,7 @@ class ImageLocalProcessor {
 									}
 									else{
 										$this->logOrEcho('ERROR trying to load new skeletal record: '.$this->conn->error);
+										$this->importError ++;
 										//$this->logOrEcho("SQL : $sqlIns ",1);
 									}
 								}
@@ -1453,6 +1568,7 @@ class ImageLocalProcessor {
 								$sqlExs ='INSERT INTO omexsiccatiocclink(omenid,occid) VALUES('.$recMap['omenid'].','.$occid.')';
 								if(!$this->conn->query($sqlExs)){
 									$this->logOrEcho('ERROR linking record to exsiccati ('.$recMap['omenid'].'-'.$occid.'): '.$this->conn->error);
+									$this->importError ++;
 									//$this->logOrEcho('SQL : '.$sqlExs,1);
 								}
 							}
@@ -1462,6 +1578,7 @@ class ImageLocalProcessor {
 				}
 				else{
 					$this->logOrEcho("ERROR: Failed to locate catalognumber MD within file (".$filePath."),  ",1);
+					$this->importError ++;
 					return false;
 				}
 			}
@@ -1476,16 +1593,19 @@ class ImageLocalProcessor {
 				}
 				if(!rename($filePath,$this->targetPathBase.$this->targetPathFrag.'orig_skeletal'.$fileName)){
 					$this->logOrEcho("ERROR: unable to move (".$filePath.") ",1);
+					$this->importError ++;
 				}
 			} 
 			else{
 				if(!unlink($filePath)){
 					$this->logOrEcho("ERROR: unable to delete file (".$filePath.") ",1);
+					$this->importError ++;
 				}
 			}
 		}
 		else{
 			$this->logOrEcho("ERROR: Can't open skeletal file ".$filePath." ");
+			$this->importError ++;
 		}
 	}
 
@@ -1617,7 +1737,7 @@ class ImageLocalProcessor {
 			}
 		}
 		else{
-			$this->logOrEcho("Error: collection array does not exist");
+			$this->logOrEcho("ABORT: collection array does not exist");
 			exit("ABORT: collection array does not exist");
 		}
 	}
