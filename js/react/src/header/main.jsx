@@ -12,40 +12,57 @@ library.add(faBars)
 const RANK_FAMILY = 140;
 const RANK_GENUS = 180;
 
-const dropDowns = [
+/*
+const DROPDOWNS = [
   { title: "Tools" },
   { title: "Resources" },
   { title: "About" },
   { title: "Contribute" },
   { title: "Profile" },
 ];
-
-const dropDownChildren = {
-  "Tools": [
-    { title: "Mapping", href: "/spatial/index.php" },
-    { title: "Identify Plants", href: "/checklists/dynamicmap.php?interface=key" },
-    { title: "Inventories", href: "/projects/index.php" },
-    { title: "OSU Herbarium", href: "/collections/harvestparams.php?db[]=5,8,10,7,238,239,240,241" },
-    { title: "Grow Natives", href: "/garden/index.php" },
-    //{ title: "Image Search", href: "/imagelib/search.php" },
-    { title: "Taxonomic Tree", href: "/taxa/admin/taxonomydisplay.php" },
-  ],
-  "Resources": [
-    { title: "Tutorials and Tips", href: "/pages/tutorials.php" },
-    { title: "News and Events", href: "/pages/news-events.php" },
-    { title: "Archived Newsletters", href: "/newsletters/index.php" },
-    { title: "Links", href: "/pages/links.php" }
-  ],
-  "About": [
-    { title: "Mission and History", href: "/pages/mission.php" },
-    { title: "Contact Info", href: "/pages/contact.php" },
-    { title: "Partners", href: "/pages/project-participants.php" },
-  ],
-  "Contribute": [
-    { title: "Donate", href: "/pages/donate.php" },
-    { title: "Volunteer", href: "/pages/volunteer.php" },
-    { title: "OregonFlora Store", href: "/pages/store.php" },
-  ]
+*/
+const DROPDOWNS = {
+	"tools" : {
+		title: "Tools",
+		children: [
+			{ title: "Mapping", href: "/spatial/index.php" },
+			{ title: "Identify Plants", href: "/checklists/dynamicmap.php?interface=key" },
+			{ title: "Inventories", href: "/projects/index.php" },
+			{ title: "OSU Herbarium", href: "/collections/harvestparams.php?db[]=5,8,10,7,238,239,240,241" },
+			{ title: "Grow Natives", href: "/garden/index.php" },
+			//{ title: "Image Search", href: "/imagelib/search.php" },
+			{ title: "Taxonomic Tree", href: "/taxa/admin/taxonomydisplay.php" },
+		]
+	},
+	"resources" : {
+  	title: "Resources",
+  	children: [
+			{ title: "Tutorials and Tips", href: "/pages/tutorials.php" },
+			{ title: "News and Events", href: "/pages/news-events.php" },
+			{ title: "Archived Newsletters", href: "/newsletters/index.php" },
+			{ title: "Links", href: "/pages/links.php" }
+		],
+	},
+	"about" : {
+		title: "About",
+		children: [
+			{ title: "Mission and History", href: "/pages/mission.php" },
+			{ title: "Contact Info", href: "/pages/contact.php" },
+			{ title: "Partners", href: "/pages/project-participants.php" },
+		],
+	},
+	"contribute" : {
+  	title: "Contribute",
+  	children: [
+  		{ title: "Donate", href: "/pages/donate.php" },
+    	{ title: "Volunteer", href: "/pages/volunteer.php" },
+    	{ title: "OregonFlora Store", href: "/pages/store.php" },
+  	],
+  },
+  "profile" : {
+  	title: "Profile",
+  	children: []
+  }
 };
 
 function HeaderButton(props) {
@@ -106,6 +123,8 @@ class HeaderApp extends React.Component {
       scrollLock: false,
       isLoading: false,
       searchText: '',
+      dropdowns: [],
+      dropdownChildren: [],
     };
 
     this.onSearchTextChanged = this.onSearchTextChanged.bind(this);
@@ -136,7 +155,7 @@ class HeaderApp extends React.Component {
 				httpGet(api)
 				.then((res) => {
 					res = JSON.parse(res); 
-					console.log(res);
+					//console.log(res);
 					if (res.count == 1) {			
 						targetUrl = `${this.props.clientRoot}/taxa/index.php?taxon=${searchObj.tidaccepted}&synonym=${searchObj.taxonId}`;
 					}else{
@@ -157,6 +176,19 @@ class HeaderApp extends React.Component {
   }
 
   componentDidMount() {
+  	console.log(this.props.currentPage);
+  	let dropdowns = DROPDOWNS;
+  	Object.entries(dropdowns).map(([key]) => {
+  		dropdowns[key]['currentAncestor'] = false;
+  		Object.entries(dropdowns[key].children).map(([ckey]) => {
+  			dropdowns[key].children[ckey]['currentPage'] = false;
+  			if (dropdowns[key].children[ckey].href.indexOf(this.props.currentPage) > -1) {
+  				dropdowns[key].children[ckey]['currentPage'] = true;
+  				dropdowns[key]['currentAncestor'] = true;
+  			}
+  		});
+  	});
+  
     const siteHeader = document.getElementById("site-header");
     siteHeader.addEventListener("transitionstart", () => {
       this.setState({ scrollLock: true });
@@ -202,17 +234,18 @@ class HeaderApp extends React.Component {
   render() {
   	let lgLogo = `${this.props.clientRoot}/images/header/oregonflora-logo.png`;
   	let smLogo = `${this.props.clientRoot}/images/header/oregonflora-logo-sm.png`;
+    /*
     if (this.props.userName !== "") {
-    	dropDownChildren['Profile']= [
+    	DROPDOWNS['profile']= [
 				{ title: "My Profile", href: `/profile/viewprofile.php` },
 				{ title: "Logout", href: `/profile/index.php?submit=logout` },
 			];
     }else{
-			dropDownChildren['Profile']= [
+			DROPDOWNS['profile']= [
 				{ title: "Login", href: `/profile/index.php?refurl=${ location.pathname }` },
 			];
     }
-  	
+  	*/
     return (
     <div className="header-wrapper" style={{ backgroundImage: `url(${this.props.clientRoot}/images/header/OF-Header_May8.png)` }}>
       <nav
@@ -240,13 +273,15 @@ class HeaderApp extends React.Component {
 						/></span>
 					</button>
         
-          <ul id="site-header-dropdowns" className="collapse navbar-collapse navbar-nav">
+          {/*<ul id="site-header-dropdowns" className="collapse navbar-collapse navbar-nav">
             {
-              dropDowns.map((dropdownData) => {
+              DROPDOWNS.map((dropdownData) => {
+              	
+              	
                 return (
                   <HeaderDropdown key={ dropdownData.title } title={ dropdownData.title }>
                     {
-                      dropDownChildren[dropdownData.title].map((dropDownChildData) => {
+                      DROPDOWNS[dropdownData.title].map((dropDownChildData) => {
                         return (
                           <HeaderDropdownItem
                             key={ dropDownChildData.title }
@@ -260,7 +295,7 @@ class HeaderApp extends React.Component {
                 )
               })
             }
-          </ul>
+          </ul>*/}
         </div>
 
         <a className="navbar-brand" href={ `${this.props.clientRoot}/` }>
@@ -320,7 +355,7 @@ class HeaderApp extends React.Component {
 
 const domContainer = document.getElementById("react-header");
 const dataProps = JSON.parse(domContainer.getAttribute("data-props"));
-ReactDOM.render(<HeaderApp clientRoot={ dataProps["clientRoot"] } userName={ dataProps["userName"] } />, domContainer);
+ReactDOM.render(<HeaderApp clientRoot={ dataProps["clientRoot"] } userName={ dataProps["userName"] } currentPage={ dataProps["currentPage"] }  />, domContainer);
 
       {/*
       <!-- Holds dropdowns on mobile -->

@@ -47,7 +47,7 @@
 <!-- Render header -->
 <div
   id="react-header"
-  data-props='{ "googleMapKey": "<?php echo $GOOGLE_MAP_KEY; ?>", "clientRoot": "<?php echo "$CLIENT_ROOT" ?>", "userName": "<?php echo ($USER_DISPLAY_NAME ? $USER_DISPLAY_NAME : '') ?>" }'>
+  data-props='{ "currentPage": "<?php echo $_SERVER['SCRIPT_NAME']; ?>", "googleMapKey": "<?php echo $GOOGLE_MAP_KEY; ?>", "clientRoot": "<?php echo "$CLIENT_ROOT" ?>", "userName": "<?php echo ($USER_DISPLAY_NAME ? $USER_DISPLAY_NAME : '') ?>" }'>
 </div>
 
 <script
