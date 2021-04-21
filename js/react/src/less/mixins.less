@@ -2,6 +2,7 @@
 
 
 @light-green: #DFEFD3;
+@light-green-alpha: #DFEFD3CC;
 @med-green: #5FB021;
 @dark-green: #3C641E;
 @dark-grn-type: #1E352F;
@@ -62,6 +63,13 @@
   border-color: @med-green !important;
   .text-drk-grn();
   text-shadow: none !important;
+}
+.dropdown-current() {
+	.dropdown-hover();
+	background-color: @light-green-alpha !important;
+	&:hover{
+  	background: @light-green !important;
+	}
 }
 .collapsed-header() {
   height: 3.8em !important;

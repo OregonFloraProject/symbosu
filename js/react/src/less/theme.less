@@ -186,6 +186,9 @@ img {
 }
 
 .dropdown-item {
+  &.current-page {
+	  .dropdown-current();
+  }
   .text-drk-grn();
   .text-uppercase();
 }
@@ -214,7 +217,9 @@ img {
 
 .nav-link {
   color: white !important;
-
+  &.current-page {
+	  .dropdown-current();
+  }
   &:hover {
     .text-drk-grn();
   }

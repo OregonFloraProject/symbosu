@@ -89,7 +89,7 @@ function getScrollPos() {
 
 function HeaderDropdownItem(props) {
   return (
-    <a className="dropdown-item" href={ props.href }>{ props.title }</a>
+    <a className={"dropdown-item" + props.classes} href={ props.href }>{ props.title }</a>
   );
 }
 
@@ -100,7 +100,7 @@ function HeaderDropdown(props) {
     <li className="nav-item dropdown">
       <a
         id={ id }
-        className="nav-link dropdown-toggle"
+        className={ "nav-link dropdown-toggle" + props.classes }
         href="#"
         role="button"
         data-toggle="dropdown"
@@ -124,7 +124,7 @@ class HeaderApp extends React.Component {
       isLoading: false,
       searchText: '',
       dropdowns: [],
-      dropdownChildren: [],
+      //dropdownChildren: [],
     };
 
     this.onSearchTextChanged = this.onSearchTextChanged.bind(this);
@@ -176,7 +176,6 @@ class HeaderApp extends React.Component {
   }
 
   componentDidMount() {
-  	console.log(this.props.currentPage);
   	let dropdowns = DROPDOWNS;
   	Object.entries(dropdowns).map(([key]) => {
   		dropdowns[key]['currentAncestor'] = false;
@@ -188,6 +187,24 @@ class HeaderApp extends React.Component {
   			}
   		});
   	});
+    
+    if (this.props.userName !== "") {
+    	dropdowns['profile']= {
+    		title: "Profile",
+    		children: [
+					{ title: "My Profile", href: `/profile/viewprofile.php` },
+					{ title: "Logout", href: `/profile/index.php?submit=logout` },
+				]
+			};
+    }else{
+			dropdowns['profile']= {
+    		title: "Profile",
+    		children: [
+					{ title: "Login", href: `/profile/index.php?refurl=${ location.pathname }` },
+				]
+			};
+    }
+    this.setState({ dropdowns: dropdowns });
   
     const siteHeader = document.getElementById("site-header");
     siteHeader.addEventListener("transitionstart", () => {
@@ -234,18 +251,7 @@ class HeaderApp extends React.Component {
   render() {
   	let lgLogo = `${this.props.clientRoot}/images/header/oregonflora-logo.png`;
   	let smLogo = `${this.props.clientRoot}/images/header/oregonflora-logo-sm.png`;
-    /*
-    if (this.props.userName !== "") {
-    	DROPDOWNS['profile']= [
-				{ title: "My Profile", href: `/profile/viewprofile.php` },
-				{ title: "Logout", href: `/profile/index.php?submit=logout` },
-			];
-    }else{
-			DROPDOWNS['profile']= [
-				{ title: "Login", href: `/profile/index.php?refurl=${ location.pathname }` },
-			];
-    }
-  	*/
+
     return (
     <div className="header-wrapper" style={{ backgroundImage: `url(${this.props.clientRoot}/images/header/OF-Header_May8.png)` }}>
       <nav
@@ -273,20 +279,22 @@ class HeaderApp extends React.Component {
 						/></span>
 					</button>
         
-          {/*<ul id="site-header-dropdowns" className="collapse navbar-collapse navbar-nav">
+          {<ul id="site-header-dropdowns" className="collapse navbar-collapse navbar-nav">
             {
-              DROPDOWNS.map((dropdownData) => {
-              	
-              	
+              Object.keys(this.state.dropdowns).map((key) => {
+              	let currentParent = (this.state.dropdowns[key].currentAncestor? " current-page current-ancestor" :'');
                 return (
-                  <HeaderDropdown key={ dropdownData.title } title={ dropdownData.title }>
+                  <HeaderDropdown key={ key } title={ this.state.dropdowns[key].title } classes={ currentParent } >
                     {
-                      DROPDOWNS[dropdownData.title].map((dropDownChildData) => {
+                      this.state.dropdowns[key].children.map((dropDownChildData) => {
+              					let currentChild = (dropDownChildData.currentPage? " current-page" :'');
+                      	
                         return (
                           <HeaderDropdownItem
                             key={ dropDownChildData.title }
                             title={ dropDownChildData.title }
                             href={ `${ this.props.clientRoot }${ dropDownChildData.href }` }
+                            classes={ currentChild }
                           />
                         )
                       })
@@ -295,7 +303,7 @@ class HeaderApp extends React.Component {
                 )
               })
             }
-          </ul>*/}
+          </ul>}
         </div>
 
         <a className="navbar-brand" href={ `${this.props.clientRoot}/` }>
