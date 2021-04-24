@@ -60,8 +60,12 @@ const DROPDOWNS = {
   	],
   },
   "profile" : {
-  	title: "Profile",
-  	children: []
+		title: "Profile",
+		children: [
+			{ title: "Contact", href: `/pages/contact.php` },
+			{ title: "Donate", href: `/pages/donate.php` },
+			{ title: "Login", href: `/profile/index.php?refurl=${ location.pathname }` },
+		]
   }
 };
 
@@ -123,7 +127,7 @@ class HeaderApp extends React.Component {
       scrollLock: false,
       isLoading: false,
       searchText: '',
-      dropdowns: [],
+      dropdowns: DROPDOWNS,
       //dropdownChildren: [],
     };
 
@@ -181,7 +185,8 @@ class HeaderApp extends React.Component {
   		dropdowns[key]['currentAncestor'] = false;
   		Object.entries(dropdowns[key].children).map(([ckey]) => {
   			dropdowns[key].children[ckey]['currentPage'] = false;
-  			if (dropdowns[key].children[ckey].href.indexOf(this.props.currentPage) > -1) {
+  			let currURL = new URL(window.location.protocol + "//" + window.location.host + dropdowns[key].children[ckey].href);
+  			if (currURL.pathname.indexOf(this.props.currentPage) == 0) {
   				dropdowns[key].children[ckey]['currentPage'] = true;
   				dropdowns[key]['currentAncestor'] = true;
   			}
@@ -192,15 +197,8 @@ class HeaderApp extends React.Component {
     	dropdowns['profile']= {
     		title: "Profile",
     		children: [
-					{ title: "My Profile", href: `/profile/viewprofile.php` },
-					{ title: "Logout", href: `/profile/index.php?submit=logout` },
-				]
-			};
-    }else{
-			dropdowns['profile']= {
-    		title: "Profile",
-    		children: [
-					{ title: "Login", href: `/profile/index.php?refurl=${ location.pathname }` },
+					{ title: "My Profile", href: `${this.props.clientRoot}/profile/viewprofile.php` },
+					{ title: "Logout", href: `${this.props.clientRoot}/profile/index.php?submit=logout` },
 				]
 			};
     }
@@ -224,7 +222,7 @@ class HeaderApp extends React.Component {
   }
 
   getLoginButtons() {
-    if (this.props.userName !== "") {
+    /*if (this.props.userName !== "") {
       return (
         <HeaderButtonBar style={{ display: this.state.isCollapsed ? 'none' : 'flex' }}>
         	
@@ -237,13 +235,20 @@ class HeaderApp extends React.Component {
           <HeaderButton title="Logout" href={ `${this.props.clientRoot}/profile/index.php?submit=logout` } />
         </HeaderButtonBar>
       );
-    }
-
+    }*/
+console.log(this.state.dropdowns['profile']['children']);
     return (
       <HeaderButtonBar style={{ display: this.state.isCollapsed ? 'none' : 'flex' }}>
-        <HeaderButton title="Contact" href={ `${this.props.clientRoot}/pages/contact.php` } />
-        <HeaderButton title="Donate" href={ `${this.props.clientRoot}/pages/donate.php` } />
-        <HeaderButton title="Login" href={ `${this.props.clientRoot}/profile/index.php?refurl=${ location.pathname }` } />
+      	{
+      		/*this.state.dropdowns['profile']['children'].map((child) => {
+      			return (
+	        		<HeaderButton 
+	        			title={ child.title } 
+	        			href={ child.href } 
+	        		/>
+	        	)
+    	  	});*/
+    	  }
       </HeaderButtonBar>
     );
   }
@@ -257,11 +262,8 @@ class HeaderApp extends React.Component {
       <nav
         id="site-header"
         className={ `container navbar navbar-expand-lg navbar-dark site-header ${this.state.isCollapsed ? "site-header-scroll" : ''}` }>
-
-
-
-        <div id="site-header-dropdowns-wrapper" className="">
         
+        <div id="site-header-dropdowns-wrapper" className="">  
 					<button
 						id="site-header-navbar-toggler"
 						className="navbar-toggler ml-auto"
