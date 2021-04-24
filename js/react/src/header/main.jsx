@@ -72,7 +72,7 @@ const DROPDOWNS = {
 function HeaderButton(props) {
   return (
     <a href={ props.href }>
-      <button className={ "col header-button" }>
+      <button className={ "col header-button" + props.classes}>
         { props.title }
       </button>
     </a>
@@ -181,10 +181,20 @@ class HeaderApp extends React.Component {
 
   componentDidMount() {
   	let dropdowns = DROPDOWNS;
+    if (this.props.userName !== "") {
+    	dropdowns['profile']= {
+    		title: "Profile",
+    		children: [
+					{ title: "My Profile", href: `/profile/viewprofile.php` },
+					{ title: "Logout", href: `/profile/index.php?submit=logout` },
+				]
+			};
+    }
   	Object.entries(dropdowns).map(([key]) => {
   		dropdowns[key]['currentAncestor'] = false;
   		Object.entries(dropdowns[key].children).map(([ckey]) => {
   			dropdowns[key].children[ckey]['currentPage'] = false;
+  			dropdowns[key].children[ckey].href = this.props.clientRoot + dropdowns[key].children[ckey].href;
   			let currURL = new URL(window.location.protocol + "//" + window.location.host + dropdowns[key].children[ckey].href);
   			if (currURL.pathname.indexOf(this.props.currentPage) == 0) {
   				dropdowns[key].children[ckey]['currentPage'] = true;
@@ -193,15 +203,6 @@ class HeaderApp extends React.Component {
   		});
   	});
     
-    if (this.props.userName !== "") {
-    	dropdowns['profile']= {
-    		title: "Profile",
-    		children: [
-					{ title: "My Profile", href: `${this.props.clientRoot}/profile/viewprofile.php` },
-					{ title: "Logout", href: `${this.props.clientRoot}/profile/index.php?submit=logout` },
-				]
-			};
-    }
     this.setState({ dropdowns: dropdowns });
   
     const siteHeader = document.getElementById("site-header");
@@ -222,32 +223,28 @@ class HeaderApp extends React.Component {
   }
 
   getLoginButtons() {
-    /*if (this.props.userName !== "") {
-      return (
-        <HeaderButtonBar style={{ display: this.state.isCollapsed ? 'none' : 'flex' }}>
-        	
-    			<a href="" className={ "disabled" }>
-						<button className={ "col header-button" }>
-							{ "Hello, " +  this.props.userName  + "!"}
-						</button>
-					</a>
-          <HeaderButton title="My Profile" href={ `${this.props.clientRoot}/profile/viewprofile.php` } />
-          <HeaderButton title="Logout" href={ `${this.props.clientRoot}/profile/index.php?submit=logout` } />
-        </HeaderButtonBar>
-      );
-    }*/
-console.log(this.state.dropdowns['profile']['children']);
     return (
       <HeaderButtonBar style={{ display: this.state.isCollapsed ? 'none' : 'flex' }}>
       	{
-      		/*this.state.dropdowns['profile']['children'].map((child) => {
-      			return (
-	        		<HeaderButton 
-	        			title={ child.title } 
-	        			href={ child.href } 
-	        		/>
-	        	)
-    	  	});*/
+      		this.props.userName !== '' &&
+						<a href="" className={ "disabled" }>
+							<button className={ "col header-button" }>
+								{ "Hello, " +  this.props.userName  + "!"}
+							</button>
+						</a>
+      	}
+      	{
+      		this.state.dropdowns['profile'].children.map((dropDownChildData) => {
+            let currentChild = (dropDownChildData.currentPage? " current-page" :'');
+						return (
+							<HeaderButton
+								key={ dropDownChildData.title }
+								title={ dropDownChildData.title }
+								href={ `${ dropDownChildData.href }` }
+                classes={ currentChild }
+							/>
+						)
+					})
     	  }
       </HeaderButtonBar>
     );
@@ -295,7 +292,7 @@ console.log(this.state.dropdowns['profile']['children']);
                           <HeaderDropdownItem
                             key={ dropDownChildData.title }
                             title={ dropDownChildData.title }
-                            href={ `${ this.props.clientRoot }${ dropDownChildData.href }` }
+                            href={ `${ dropDownChildData.href }` }
                             classes={ currentChild }
                           />
                         )

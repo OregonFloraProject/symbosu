@@ -119,7 +119,7 @@ class TaxaApp extends React.Component {
         .then((res) => {
        		// /taxa/rpc/api.php?taxon=2454
           res = JSON.parse(res);
-          console.log(res.characteristics.features);
+          //console.log(res.characteristics.features);
           let plantType = '';
           let foliageType = res.characteristics.features.foliage_type;
           plantType += foliageType.length > 0 ? `${foliageType[0]} `: '';
