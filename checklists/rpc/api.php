@@ -29,11 +29,12 @@ function buildResult($checklistObj) {
   $result = getEmpty();
 
   if ($checklistObj !== null) {
-		$projRepo = SymbosuEntityManager::getEntityManager()->getRepository("Fmprojects");					
-  	$model = $projRepo->find($checklistObj->getPid());
-  	$project = InventoryManager::fromModel($model);
-  	$result["projName"] = $project->getProjname();
-  
+  	if ($checklistObj->getPid() > -1) {
+			$projRepo = SymbosuEntityManager::getEntityManager()->getRepository("Fmprojects");					
+  		$model = $projRepo->find($checklistObj->getPid());
+  		$project = InventoryManager::fromModel($model);
+  		$result["projName"] = $project->getProjname();
+  	}
     $result["clid"] = $checklistObj->getClid();
     $result["title"] = $checklistObj->getTitle();
     $result["intro"] = ($checklistObj->getIntro()? $checklistObj->getIntro() :'') ;
@@ -95,7 +96,8 @@ if (array_key_exists("clid", $_GET) && is_numeric($_GET["clid"])&& array_key_exi
 		$synonyms = (isset($_GET['synonyms']) && $_GET['synonyms'] == 'on') ? true : false;
 		$checklist->setSearchSynonyms($synonyms);
 	}
-	
+	#$test = $checklist->getPid();
+	#var_dump($test);
 	$result = buildResult($checklist);
 
 }else{

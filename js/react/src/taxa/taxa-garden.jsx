@@ -114,11 +114,12 @@ class TaxaApp extends React.Component {
     if (this.getTid() === -1) {
       window.location = "/";
     } else {
-      httpGet(`./rpc/api.php?taxon=${this.props.tid}`)
+    	let url = `./rpc/api.php?taxon=${this.props.tid}`;
+      httpGet(url)
         .then((res) => {
        		// /taxa/rpc/api.php?taxon=2454
           res = JSON.parse(res);
-          
+          console.log(res.characteristics.features);
           let plantType = '';
           let foliageType = res.characteristics.features.foliage_type;
           plantType += foliageType.length > 0 ? `${foliageType[0]} `: '';
@@ -127,7 +128,7 @@ class TaxaApp extends React.Component {
             plantType += `${res.characteristics.features.lifespan[0]}`.trim() + " ";
           }
           if (res.characteristics.features.plant_type.length > 0) {
-            plantType += `${res.characteristics.features.plant_type[0]}`.trim() + " ";
+            plantType += res.characteristics.features.plant_type.join(" or ") + " ";
           }
 
           const width = res.characteristics.width;

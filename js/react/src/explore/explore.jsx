@@ -46,7 +46,7 @@ class ExploreApp extends React.Component {
       searchSynonyms: ("searchSynonyms" in queryParams ? queryParams["searchSynonyms"] : 'on'),
       sortBy: ("sortBy" in queryParams ? queryParams["sortBy"] : "family"),
       viewType: ("viewType" in queryParams ? queryParams["viewType"] : "list"),
-      showTaxaDetail: ("showTaxaDetail" in queryParams ? queryParams["showTaxaDetail"] : 'off'),
+      showTaxaDetail: (this.props.showVouchers && this.props.showVouchers == 1 ? 'on' : 'off'),
       totals: {
       	families: 0,
       	genera: 0,
@@ -97,8 +97,9 @@ class ExploreApp extends React.Component {
   componentDidMount() {
     // Load search results
     //this.onSearch({ text: this.state.searchText });
-    let url = `./rpc/api.php?clid=${this.props.clid}&pid=${this.props.pid}`;
+    let url = `${this.props.clientRoot}/checklists/rpc/api.php?clid=${this.props.clid}&pid=${this.props.pid}`;
     console.log(url);
+    console.log(this.state.showTaxaDetail);
     httpGet(url)
 			.then((res) => {
 				// /checklists/rpc/api.php?clid=3
@@ -545,6 +546,7 @@ class ExploreApp extends React.Component {
 ExploreApp.defaultProps = {
   clid: -1,
   pid: -1,
+  showVouchers: 0,
 };
 
 const headerContainer = document.getElementById("react-header");
@@ -553,7 +555,7 @@ const domContainer = document.getElementById("react-explore-app");
 const queryParams = getUrlQueryParams(window.location.search);
 if (queryParams.cl) {
   ReactDOM.render(
-    <ExploreApp clid={queryParams.cl } pid={queryParams.pid } clientRoot={ dataProps["clientRoot"] } googleMapKey={ dataProps["googleMapKey"] }/>,
+    <ExploreApp clid={queryParams.cl } pid={queryParams.pid } showVouchers={ queryParams.showvouchers } clientRoot={ dataProps["clientRoot"] } googleMapKey={ dataProps["googleMapKey"] }/>,
     domContainer
   );
 } else {

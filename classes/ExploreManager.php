@@ -109,7 +109,6 @@ class ExploreManager {
   	$params = array();
   	$orderBy = 't.sciname';
   	
-  	$leftJoins[] = array("Fmchklstprojlink", "cpl", "WITH", "ctl.clid = cpl.clid");
   	
   	$innerJoins[] = array("Fmchklsttaxalink", "ctl", "WITH", "t.tid = ctl.tid");
   	#$innerJoins[] = array("Fmchecklists", "cl", "WITH", "ctl.clid = cl.clid");
@@ -117,12 +116,14 @@ class ExploreManager {
   	
   	$wheres[] = "ctl.clid = :clid";
   	#$wheres[] = "cl.parentclid = 1";
-  	$wheres[] = "cpl.pid = :pid";
   	$wheres[] = "ts.taxauthid = 1";
   	
   	$params[] = array(":clid",$clid);
-  	$params[] = array(":pid",$this->pid);
-  	
+  	if ($this->pid > -1) {
+  		$leftJoins[] = array("Fmchklstprojlink", "cpl", "WITH", "ctl.clid = cpl.clid");
+  		$wheres[] = "cpl.pid = :pid";
+  		$params[] = array(":pid",$this->pid);
+  	}
   	if ($this->searchTerm != '' && $this->searchName != '') {
   		switch($this->searchName) {
   			case 'commonname':
