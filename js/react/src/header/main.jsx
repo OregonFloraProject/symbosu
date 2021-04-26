@@ -123,16 +123,17 @@ class HeaderApp extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isCollapsed: getScrollPos() > 0,
+      //isCollapsed: getScrollPos() > 0,
       scrollLock: false,
       isLoading: false,
       searchText: '',
       dropdowns: DROPDOWNS,
-      //dropdownChildren: [],
+      headerHeight: 100,
     };
 
     this.onSearchTextChanged = this.onSearchTextChanged.bind(this);
     this.onSearch = this.onSearch.bind(this);
+    this.handleScroll = this.handleScroll.bind(this);
   }
 
   onSearchTextChanged(e) {
@@ -206,7 +207,7 @@ class HeaderApp extends React.Component {
     this.setState({ dropdowns: dropdowns });
   
     const siteHeader = document.getElementById("site-header");
-    siteHeader.addEventListener("transitionstart", () => {
+    /*siteHeader.addEventListener("transitionstart", () => {
       this.setState({ scrollLock: true });
     });
     siteHeader.addEventListener("transitionend", () => {
@@ -215,16 +216,26 @@ class HeaderApp extends React.Component {
     siteHeader.addEventListener("transitioncancel", () => {
       this.setState({ scrollLock: false });
     });
+    */
     window.addEventListener("scroll", () => {
-      if (!this.state.scrollLock) {
+      /*if (!this.state.scrollLock) {
         this.setState({isCollapsed: getScrollPos() > (siteHeader.offsetHeight)});
-      }
+      }*/
+      this.handleScroll();
+      
     });
   }
-
+  handleScroll() {
+  	console.log("scrollpos: " + getScrollPos());
+  	let scrollPos = getScrollPos();
+  	let headerHeight = (scrollPos <= 40? 100 - scrollPos : 60);
+  	console.log("hh: " + headerHeight);
+    this.setState({headerHeight: headerHeight});
+  }
   getLoginButtons() {
     return (
-      <HeaderButtonBar style={{ display: this.state.isCollapsed ? 'none' : 'flex' }}>
+      <HeaderButtonBar>
+      {/* style={{ display: this.state.isCollapsed ? 'none' : 'flex' }}*/ }
       	{
       		this.props.userName !== '' &&
 						<a href="" className={ "disabled" }>
@@ -258,8 +269,11 @@ class HeaderApp extends React.Component {
     <div className="header-wrapper" style={{ backgroundImage: `url(${this.props.clientRoot}/images/header/OF-Header_May8.png)` }}>
       <nav
         id="site-header"
-        className={ `container navbar navbar-expand-lg navbar-dark site-header ${this.state.isCollapsed ? "site-header-scroll" : ''}` }>
+        className={ `container navbar navbar-expand-lg navbar-dark site-header ` }
+        style={{ height: this.state.headerHeight }}
+      >
         
+        { /* ${this.state.isCollapsed ? "site-header-scroll" : ''} */}
         <div id="site-header-dropdowns-wrapper" className="">  
 					<button
 						id="site-header-navbar-toggler"
@@ -306,14 +320,7 @@ class HeaderApp extends React.Component {
         </div>
 
         <a className="navbar-brand" href={ `${this.props.clientRoot}/` }>
-        	{ this.state.isCollapsed ? (
-        	<picture>
-          	<img id="site-header-logo"
-               src={smLogo}
-               alt="OregonFlora"
-          	/>
-          </picture>
-					) : (
+
 						<picture>
 	        		<source media="(max-width: 992px)" srcSet={ smLogo } />
   	      		<source media="(min-width: 992px)" srcSet={ lgLogo } />
@@ -322,8 +329,8 @@ class HeaderApp extends React.Component {
 								 alt="OregonFlora"
 							/>
 						</picture>
-						)
-					}        
+						
+					    
         </a>
 
       
