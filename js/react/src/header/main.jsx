@@ -226,10 +226,10 @@ class HeaderApp extends React.Component {
     });
   }
   handleScroll() {
-  	console.log("scrollpos: " + getScrollPos());
+  	//console.log("scrollpos: " + getScrollPos());
   	let scrollPos = getScrollPos();
   	let headerHeight = (scrollPos <= 40? 100 - scrollPos : 60);
-  	console.log("hh: " + headerHeight);
+  	//console.log("hh: " + headerHeight);
     this.setState({headerHeight: headerHeight});
   }
   getLoginButtons() {
@@ -264,9 +264,27 @@ class HeaderApp extends React.Component {
   render() {
   	let lgLogo = `${this.props.clientRoot}/images/header/oregonflora-logo.png`;
   	let smLogo = `${this.props.clientRoot}/images/header/oregonflora-logo-sm.png`;
+  	let mainOpacity = (this.state.headerHeight-60)/40;
 
     return (
     <div className="header-wrapper" style={{ backgroundImage: `url(${this.props.clientRoot}/images/header/OF-Header_May8.png)` }}>
+    	<div className="fixed-logo-wrapper">
+        <a id="fixed-logo" className="navbar-brand" href={ `${this.props.clientRoot}/` }>
+					
+						<img 
+							style={{ opacity: mainOpacity }}
+							id="site-header-logo"
+							src={lgLogo}
+							alt="OregonFlora"
+						/>
+						<img 
+							style={{ opacity: 1-mainOpacity }}
+							id="site-header-logo-sm"
+							src={smLogo}
+							alt="OregonFlora"
+						/>
+        </a>
+      </div>
       <nav
         id="site-header"
         className={ `container navbar navbar-expand-lg navbar-dark site-header ` }
@@ -292,7 +310,7 @@ class HeaderApp extends React.Component {
 						/></span>
 					</button>
         
-          {<ul id="site-header-dropdowns" className="collapse navbar-collapse navbar-nav">
+          {<ul id="site-header-dropdowns" className="navbar-nav">
             {
               Object.keys(this.state.dropdowns).map((key) => {
               	let currentParent = (this.state.dropdowns[key].currentAncestor? " current-page current-ancestor" :'');
@@ -318,21 +336,18 @@ class HeaderApp extends React.Component {
             }
           </ul>}
         </div>
-
+{
         <a className="navbar-brand" href={ `${this.props.clientRoot}/` }>
-
-						<picture>
-	        		<source media="(max-width: 992px)" srcSet={ smLogo } />
-  	      		<source media="(min-width: 992px)" srcSet={ lgLogo } />
-							<img id="site-header-logo"
-								 src={lgLogo}
-								 alt="OregonFlora"
-							/>
-						</picture>
-						
-					    
+					<picture>
+						<source media="(max-width: 992px)" srcSet={ smLogo } />
+						<source media="(min-width: 992px)" srcSet={ lgLogo } />
+						<img id="site-header-logo"
+							 src={lgLogo}
+							 alt="OregonFlora"
+						/>
+					</picture>  
         </a>
-
+}
       
         <div className={ "search-wrapper ml-auto"}>
           { this.getLoginButtons() }

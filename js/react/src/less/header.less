@@ -10,30 +10,63 @@
 		height: 3.8em !important;
 	}
 	.header-wrapper {
-    background-size: cover;
+    background-size: auto;
   	box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.16);
-	}
-  #site-header {
-		max-width: 1100px;
-    height: 100%;
-    padding: 0;
-    transition: height 0.5s, padding-top 0.5s;
-
-		@media screen and (max-width: @xlarge) {
-			max-width: 920px;
-		}
-		.navbar-brand {
-			order: 1;
-			padding: 0;
-			margin: 34px 0 0 -6px;
-			#site-header-logo {
-				//margin-left: 4em;
-				//margin-left: -22px;
-				/*border: 0.5em solid rgba(255, 255, 255, 0.2);*/
-				width: 87px;
-				height: auto;
+  	top: 0;
+  	margin: 0;
+  	
+	  #site-header,
+		.fixed-logo-wrapper {
+			max-width: 1100px;
+			margin-right: auto;
+			margin-left: auto;
+			@media screen and (max-width: @xlarge) {
+				max-width: 920px;
+			}
+			@media screen and (max-width: @large) {
+				max-height: 61px;
 			}
 		}
+		.fixed-logo-wrapper {
+			#fixed-logo {
+				width: 87px;
+				height: 100px;
+				margin-left: -6px;
+				position: fixed;
+				top: 6px;
+				img {
+					position: absolute;
+					top: 0;
+					left: 0;
+					width: 87px;
+					height: 122px;
+					&#site-header-logo-sm {
+						height: 50px;
+					}
+				}
+			}
+		}
+		@media screen and (max-width: @large) {
+			.fixed-logo-wrapper {
+				display: none;
+			}
+		}
+	}
+  #site-header {
+    height: 100%;
+    padding: 0;
+    /*transition: height 0.5s, padding-top 0.5s;*/
+		align-items: flex-end;
+		.navbar-brand {
+			display: none;
+			order: 1;
+			margin: 0 0 -32px -6px;
+			position: relative;
+			#site-header-logo {
+				width: 87px;
+			}
+		}
+		/*
 		&.site-header-scroll {
 			.navbar-brand {
 				margin-top: 0px;
@@ -48,7 +81,7 @@
 		}
 		.navbar-expand-lg .navbar-collapse {
 			//flex-basis: 
-		}
+		}*/
     #site-header-dropdowns-wrapper,
     .header-button {
       .text-uppercase();
@@ -64,7 +97,7 @@
 
       ul {
         .text-center();
-        padding-left: 1.5em;
+        padding-left: calc(1.5em + 87px);
 				li {
 					margin-left: .7em;
 					margin-right: .7em;
@@ -72,11 +105,10 @@
       }
     }
     #site-header-dropdowns-wrapper {
-    	margin-top: 3rem;
 			order: 2;
+			margin-bottom: .5rem;
 			@media screen and (max-width: @xlarge) {
 				ul {
-					padding-left: .5em;
 					li {
 						margin-left: .1em;
 						margin-right: .1em;
@@ -109,6 +141,7 @@
 		order: 3;
   	flex-basis: 500px;
   	margin-right: -41px;
+		margin-bottom: .55rem;
 		padding: 0px 20px 0 20px;
 		text-align: right;
 		@media screen and (max-width: @xlarge) {
@@ -293,8 +326,8 @@
 				}
 			}
 			.navbar-brand {
+				display: block;
 				order: 0;
-				margin-top: 6px !important;
 				left: calc(50% - 44px);
 				position: absolute;
 				text-align: center;
