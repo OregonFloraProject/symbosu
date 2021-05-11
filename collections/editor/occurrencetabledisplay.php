@@ -212,7 +212,9 @@ else{
 				}
 				$headerMap = array_intersect_key($headerMapBase, $headerArr);
 			}
-			if($isEditor == 1 || $isGenObs){
+				# JGM: Allowing editors to use the batch update tool, at least for now
+				//if($isEditor == 1 || $isGenObs){
+				if($isEditor || $isGenObs){
 				$buFieldName = (array_key_exists('bufieldname',$_REQUEST)?$_REQUEST['bufieldname']:'');
 				?>
 				<div id="batchupdatediv" style="width:600px;clear:both;display:<?php echo ($buFieldName?'block':'none'); ?>;">
