@@ -220,7 +220,9 @@
 			border-left: @gray-type 1px solid;
 			border-right: @gray-type 1px solid;
 			border-bottom: @gray-type 1px solid;
-
+			h2 {/*used for print only*/
+				display: none;
+			}
 			.reference{
 				font-style: italic;
 				font-weight: bold;
@@ -288,13 +290,6 @@
 			}
 		}
 	}
-
-	.up-down-toggle {
-		color: @med-green;
-		text-align: center;
-		font-size: 1.5em;
-		padding: .3em 0;
-	}
 	ul.single-border-item {
 		width: 100%;
 		li {
@@ -334,10 +329,32 @@
 	.fa-edit {
 		color: @med-green;
 	}
-	.synonym-item {
+	
+	.synonym-items {
+		.show-short {
+			.short-list:after {
+				content: '...';
+			}
+			.full-list {
+				display: none;
+			}
+		}
+		.show-full {
+			.full-list {
+				display: block;
+			}
+		}	
 		.synonym-sciname {
 			font-style: italic;
 		}
+	}
+
+	.up-down-toggle {
+		color: @med-green;
+		text-align: center;
+		font-size: 1.5em;
+		padding: .3em 0;
+		cursor: pointer;
 	}
 	.reference {
 		text-align: right;

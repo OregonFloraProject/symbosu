@@ -233,8 +233,8 @@ class TaxaApp extends React.Component {
             {/*<button className="d-block my-2 btn-secondary" disabled={ true }>Add to basket</button>*/}
           </div>
         </div>
-        <div className="row mt-2">
-          <div className="col-md-8">
+        <div className="row mt-2 main-wrapper">
+          <div className="col-md-8 main-section">
             
             { this.state.images.length > 0 && 
 							<figure>

@@ -40,7 +40,7 @@ class FooterApp extends React.Component {
               <div>
                 <div>
                   <a href={ `${this.props.clientRoot}/pages/donate.php` }
-                     className="btn btn-primary"
+                     className="btn btn-primary donate-button"
                      role="button">
                     Donate!
                   </a>

@@ -1,8 +1,6 @@
 @import "./mixins.less";
 @import "./search-results.less";
 @import '../../node_modules/react-modal-video/css/modal-video.min.css';
-//@import "../../node_modules/@blueprintjs/core/lib/css/blueprint.css";
-//@import "../../node_modules/@blueprintjs/icons/lib/css/blueprint-icons.css";
 
 
 * {
@@ -2208,8 +2206,157 @@ img {
 		}
 	}
 }
+@media only print {
+	#react-header {
+		position: relative;
+		.header-wrapper {
+			.fixed-logo-wrapper {
+				#fixed-logo {
+					position: relative;
+					/*center it:
+					margin: 0 auto;
+					display: block;	*/
+				}
+			}
+		}
+	}
+	#footer-app {
+		clear: both;
+		.navbar {
+			display: block;
+			padding: 0;
+			.container {
+				padding: 0;
+				.nav-item {
+					margin-left: 0;
+				}
+				.navbar-nav {
+					display: none;
+				}
+			}
+		}
+		#footer-content {
+			&.container {
+				padding: 0;
+			}
+			.row {
+				flex-flow: row nowrap;
+				display: block;
+				.col-md {
+					width: 100%;
+					/*
+					flex-basis: 100%;
+					flex-grow: 0;
+					display: flex;
+					flex-flow: row nowrap;
+					*/
+					display: block;
+					break-inside: avoid;
+					a {
+						min-width: 33%;
+					}
+					p {
+						max-width: 100%;
+					}
+					.donate-button {
+						display: none;
+					}
+					&:last-child {
+						p {
+							margin-top: 1em;
+						}
+					}
+				}
+			}
+		}
+	}
 
-
-
+	#react-taxa-garden-app,
+	#react-taxa-app {
+		.row.main-wrapper{
+			display: block;
+			.main-section,
+			.sidebar-section.col-md-4 {
+				max-width: 100%;
+				display: block;
+				
+			}
+			.main-section {
+				.description-tabs {
+					.react-tabs__tab-list {
+						display: none;
+					}
+					.react-tabs__tab-panel {
+						display: block;
+						background-color: white;
+					 	padding: 0;
+					 	border: 1px solid #CFCAC2;
+					 	margin-bottom: 2rem;
+					 	padding: 2em;
+						h2 {
+							display: inline-block;
+							width: 50%;
+						}
+						.reference {
+							display: inline-block;
+							width: 50%;
+						}
+						.description {
+							height: auto;
+							overflow-y: visible;
+							border: none;
+							padding: 0;
+						}
+					}
+				}
+				
+				figure figcaption {
+					text-align: left;
+				}
+			}
+			.sidebar-section {
+				&.mb-4,
+				&.mb-5 {
+					break-inside: avoid;
+					margin-top: 2em;
+					margin-bottom: 2em;
+				}
+				&.distribution {
+					.dashed-border {//grr
+						border-top: none;
+					}
+				}
+			}
+			.synonym-items {
+				.show-short {
+					.short-list:after {
+						content: '';
+					}
+					.full-list {
+						display: inline;
+					}
+				}
+				.up-down-toggle {
+					display: none;
+				}
+			}
+		}
+		.canned-results {
+			justify-content: flex-start;
+		}
+		.taxa-slideshows,
+		.taxa-link,
+		#subspecies,
+		.weblinks,
+		#photos,
+		#herbarium,
+		.map-label,
+		.more-info,
+		.related-nav
+		 {
+			display: none;
+		}
+	}
+}
 
 

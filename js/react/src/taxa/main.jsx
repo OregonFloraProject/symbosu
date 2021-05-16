@@ -58,6 +58,8 @@ class SynonymItem extends React.Component {
   	this.setState({ showSynonyms: !this.state.showSynonyms });
   }
 	getRenderedItems() {
+	
+		//console.log(isPrinting);
 		if (this.state.showSynonyms || this.props.value.length <= this.state.maxSynonyms) {
 			return this.props.value;
 		}
@@ -65,23 +67,47 @@ class SynonymItem extends React.Component {
 	}
 
   render() {
+  	let visibleItems = this.props.value.slice(0,this.state.maxSynonyms);
+  	let hiddenItems = this.props.value.slice(this.state.maxSynonyms);
+  
+  
 		return (
-			<div className={ "synonym-item row dashed-border py-1" }>
+			<div className={ "synonym-items row dashed-border py-1" }>
 				<div className="col font-weight-bold">Synonyms</div>
-				<div className="col">{ 
-					Object.entries(this.getRenderedItems())
-					.map(([key, obj]) => {
-						return (
-							<span key={ key} className={ "synonym-item" } >
-								<span className={ "synonym-sciname" }>{obj.sciname}</span>
-								<span className={ "synonym-author" }> { obj.author }</span>
-							</span>
-						)
-					})
-					.reduce((prev, curr) => [prev, ', ', curr])
-				 }
+				<div className={	(this.state.showSynonyms? 'show-full': 'show-short' ) + " col" }>
+				
+				<span className="short-list">
+					{ 
+						Object.entries(visibleItems)
+						.map(([key, obj]) => {
+							return (
+								<span key={ key} className={ "synonym-item" } >
+									<span className={ "synonym-sciname" }>{obj.sciname}</span>
+									<span className={ "synonym-author" }> { obj.author }</span>
+								</span>
+							)
+						})
+						.reduce((prev, curr) => [prev, ', ', curr])
+					}
+					</span>
+					
+					<span className="full-list">
+					{
+						Object.entries(hiddenItems)
+						.map(([key, obj]) => {
+							return (
+								<span key={ key} className={ "synonym-item" } >
+									<span className={ "synonym-sciname" }>{obj.sciname}</span>
+									<span className={ "synonym-author" }> { obj.author }</span>
+								</span>
+							)
+						})
+						.reduce((prev, curr) => [prev, ', ', curr])
+					}
+					</span>
+
 				{this.props.value.length > this.state.maxSynonyms && 	
-					<span>...
+					<span>
 					<div className="up-down-toggle">
 						<FontAwesomeIcon icon={this.state.showSynonyms? "chevron-up" : "chevron-down"}
 							onClick={this.toggleSynonyms}		
@@ -203,7 +229,7 @@ function MapItem(props) {
 	let mapLink = `${props.clientRoot}/map/googlemap.php?maptype=taxa&clid=0&taxon=${props.tid}`;
 	
   return (
-  	<div className={ "sidebar-section mb-5" }>
+  	<div className={ "sidebar-section mb-5 distribution" }>
     	<h3 className="text-light-green font-weight-bold mb-3">Distribution</h3>
     	<div className={ "dashed-border pt-0" }>
     		<a 
@@ -336,7 +362,8 @@ class TaxaTabs extends React.Component {
 						})
 						var display = source + ' ' + description;
 						return (
-							<TabPanel key={key}>
+							<TabPanel key={key} forceRender={ true }>
+								<h2 className="tabTitle" dangerouslySetInnerHTML={{__html: value.caption}} />
 								<div className="reference" dangerouslySetInnerHTML={{__html: source}} />	
 								<div className="description" dangerouslySetInnerHTML={{__html: description}} />
 							</TabPanel>
@@ -491,8 +518,8 @@ class TaxaDetail extends React.Component {
 						{/*<button className="d-block my-2 btn-secondary" disabled={ true }>Add to basket</button>*/}
 					</div>
 				</div>
-				<div className="row mt-2 row-cols-sm-2">
-					<div className="col-md-8 pr-4">
+				<div className="row mt-2 row-cols-sm-2 main-wrapper">
+					<div className="col-md-8 pr-4 main-section">
 
 							{ allImages.length > 0 && 
 							<figure>
@@ -606,7 +633,7 @@ class TaxaDetail extends React.Component {
 					
 					
 					</div>
-					<div className="col-md-4 sidebar">
+					<div className="col-md-4 sidebar sidebar-section">
 						<SideBarSection title="Context" items={ res.highlights } classes="highlights" rankId={ res.rankId } clientRoot={ this.props.clientRoot }/>
 						<MapItem title={ res.sciName } tid={ res.tid } clientRoot={ this.props.clientRoot } />
 						<SideBarSection title="Web links" items={ res.taxalinks} classes="weblinks"  rankId={ res.rankId } clientRoot={ this.props.clientRoot }/>
