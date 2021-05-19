@@ -57,14 +57,6 @@ class SynonymItem extends React.Component {
   toggleSynonyms = () => {
   	this.setState({ showSynonyms: !this.state.showSynonyms });
   }
-	getRenderedItems() {
-	
-		//console.log(isPrinting);
-		if (this.state.showSynonyms || this.props.value.length <= this.state.maxSynonyms) {
-			return this.props.value;
-		}
-		return this.props.value.slice(0,this.state.maxSynonyms);
-	}
 
   render() {
   	let visibleItems = this.props.value.slice(0,this.state.maxSynonyms);
@@ -77,7 +69,7 @@ class SynonymItem extends React.Component {
 				<div className={	(this.state.showSynonyms? 'show-full': 'show-short' ) + " col" }>
 				
 				<span className="short-list">
-					{ 
+					{ visibleItems.length > 0 &&
 						Object.entries(visibleItems)
 						.map(([key, obj]) => {
 							return (
@@ -92,7 +84,7 @@ class SynonymItem extends React.Component {
 					</span>
 					
 					<span className="full-list">
-					{
+					{ hiddenItems.length > 0 &&
 						Object.entries(hiddenItems)
 						.map(([key, obj]) => {
 							return (
