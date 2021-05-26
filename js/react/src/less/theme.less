@@ -2207,6 +2207,9 @@ img {
 	}
 }
 @media only print {
+	.print-trigger {
+		display: none !important;
+	}
 	#react-header {
 		position: relative;
 		.header-wrapper {
@@ -2243,20 +2246,18 @@ img {
 				flex-flow: row nowrap;
 				display: block;
 				.col-md {
+					&.donate,
+					&.symbiota {
+						display: none;
+					}
 					width: 100%;
-					/*
-					flex-basis: 100%;
-					flex-grow: 0;
 					display: flex;
 					flex-flow: row nowrap;
-					*/
-					display: block;
 					break-inside: avoid;
-					a {
-						min-width: 33%;
-					}
+					justify-content: flex-start;
 					p {
 						max-width: 100%;
+						margin-left: 3%;
 					}
 					.donate-button {
 						display: none;
@@ -2313,6 +2314,9 @@ img {
 				figure figcaption {
 					text-align: left;
 				}
+				#subspecies.dashed-border {
+					border-top: none;
+				}
 			}
 			.sidebar-section {
 				&.mb-4,
@@ -2346,7 +2350,7 @@ img {
 		}
 		.taxa-slideshows,
 		.taxa-link,
-		#subspecies,
+		//#subspecies,
 		.weblinks,
 		#photos,
 		#herbarium,

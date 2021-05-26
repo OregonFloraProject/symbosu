@@ -36,7 +36,7 @@ class FooterApp extends React.Component {
         </div>
         <div id="footer-content" className="container-fluid container">
           <div className="row py-4">
-            <div className="col-md">
+            <div className="col-md donate">
               <div>
                 <div>
                   <a href={ `${this.props.clientRoot}/pages/donate.php` }
@@ -51,7 +51,7 @@ class FooterApp extends React.Component {
                 </p>
               </div>
             </div>
-            <div className="col-md">
+            <div className="col-md osu">
               <a href={ "https://oregonstate.edu/" } target="_blank"><img src={ `${this.props.clientRoot}/images/footer/osu_horizontal_2c_o_over_b.png` } alt="OSU Logo"/></a>
               <p className="my-2">
                 <strong>OregonFlora</strong><br/>
@@ -60,7 +60,7 @@ class FooterApp extends React.Component {
                 <a href="mailto:info@oregonflora.org" target="_blank">info@oregonflora.org</a>
               </p>
             </div>
-            <div className="col-md">
+            <div className="col-md symbiota">
               <a href={ "http://symbiota.org/docs/" } target="_blank"><img
                 className="d-block mb-2"
                 style={{ width: "10em" }}

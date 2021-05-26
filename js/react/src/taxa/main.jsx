@@ -380,7 +380,7 @@ class TaxaChooser extends React.Component {
 		const res = this.props.res;
     const pageTitle = document.getElementsByTagName("title")[0];
     let titleVal = (res.sciName? res.sciName : res.family);
-    pageTitle.innerHTML = `${pageTitle.innerHTML} ${titleVal}`;
+    pageTitle.innerHTML = `${this.props.defaultTitle} ${titleVal}`;
   	return (
 			<div className="container mx-auto py-5 taxa-detail" style={{ minHeight: "45em" }}>
 				<Loading 
@@ -464,7 +464,7 @@ class TaxaDetail extends React.Component {
 	
 		const res = this.props.res;
     const pageTitle = document.getElementsByTagName("title")[0];
-    pageTitle.innerHTML = `${pageTitle.innerHTML} ${res.sciName} ${res.author}`;
+    pageTitle.innerHTML = `${this.props.defaultTitle} ${res.sciName}`;
 		const allImages = res.images.HumanObservation.concat(res.images.PreservedSpecimen);
 		const showDescriptions = res.descriptions? true: false;
 		let h2 = res.vernacularNames[0];
@@ -506,7 +506,7 @@ class TaxaDetail extends React.Component {
 						</h2>
 					</div>
 					<div className="col-auto">
-						{/*<button className="d-block my-2 btn-primary">Printable page</button>*/}
+						<button className="d-block my-2 btn-primary print-trigger" onClick={() => window.print()}>Printable page</button>
 						{/*<button className="d-block my-2 btn-secondary" disabled={ true }>Add to basket</button>*/}
 					</div>
 				</div>
@@ -792,9 +792,9 @@ class TaxaApp extends React.Component {
 	render() {
 		//choose page
 		if (this.state.rankId <= RANK_GENUS) {
-			return <TaxaChooser res = { this.state } clientRoot={ this.props.clientRoot } />;//Genus or Family
+			return <TaxaChooser res = { this.state } clientRoot={ this.props.clientRoot } defaultTitle={ this.props.defaultTitle } />;//Genus or Family
 		}else{
-			return <TaxaDetail res = { this.state } clientRoot={ this.props.clientRoot } />;//Species
+			return <TaxaDetail res = { this.state } clientRoot={ this.props.clientRoot } defaultTitle={ this.props.defaultTitle } />;//Species
 		}
   }
 }
@@ -812,7 +812,7 @@ if (queryParams.search) {
   window.location = `./search.php?search=${encodeURIComponent(queryParams.search)}`;
 } else if (queryParams.taxon) {
   ReactDOM.render(
-    <TaxaApp tid={queryParams.taxon } clientRoot={ dataProps["clientRoot"] } synonym={ queryParams.synonym - 0 } />,
+    <TaxaApp tid={queryParams.taxon } defaultTitle={ dataProps["defaultTitle"] } clientRoot={ dataProps["clientRoot"] } synonym={ queryParams.synonym - 0 } />,
     domContainer
   );
 } else {
