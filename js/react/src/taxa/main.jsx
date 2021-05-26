@@ -506,7 +506,7 @@ class TaxaDetail extends React.Component {
 						</h2>
 					</div>
 					<div className="col-auto">
-						<button className="d-block my-2 btn-primary print-trigger" onClick={() => window.print()}>Printable page</button>
+						<button className="d-block my-2 btn-primary print-trigger" onClick={() => window.print()}>Print page</button>
 						{/*<button className="d-block my-2 btn-secondary" disabled={ true }>Add to basket</button>*/}
 					</div>
 				</div>
