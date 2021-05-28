@@ -311,7 +311,7 @@ class TaxaApp extends React.Component {
           <div className="col-md-4 sidebar-section">
             <SideBarSection title="Highlights" items={ this.state.highlights } />
             { this.state.nativeGroups.length > 0 &&
-            <div className={ "mb-4 " }>
+            <div className={ "mb-4 sidebar-canned" }>
 								<h3 className="text-light-green font-weight-bold mb-1">Native plant groups</h3>
 								<p>Containing <strong>{ this.state.vernacularNames[0] }:</strong></p>
 									<div className="canned-results dashed-border">
