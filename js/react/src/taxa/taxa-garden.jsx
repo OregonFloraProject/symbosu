@@ -27,8 +27,8 @@ function BorderedItem(props) {
 
   return (
     <div className={ "row dashed-border" }>
-      <div className="col px-0 font-weight-bold">{ props.keyName }</div>
-      <div className="col px-0">{ value }</div>
+      <div className="col px-0 font-weight-bold char-label">{ props.keyName }</div>
+      <div className="col px-0 char-value">{ value }</div>
     </div>
   );
 }
@@ -186,8 +186,6 @@ class TaxaApp extends React.Component {
               "Landscape uses": res.characteristics.growth_maintenance.landscape_uses
             }
           });
-          const pageTitle = document.getElementsByTagName("title")[0];
-          pageTitle.innerHTML = `${pageTitle.innerHTML} ${res.sciname}`;
           
           const nativeGroups = [];
 					httpGet(`${this.props.clientRoot}/garden/rpc/api.php?canned=true`)
@@ -216,6 +214,9 @@ class TaxaApp extends React.Component {
   }//componentDidMount
 
   render() {
+		const titleElement = document.getElementsByTagName("title")[0];
+		const pageTitle = `${this.props.defaultTitle} ${this.state.sciName}`
+		titleElement.innerHTML = pageTitle;
     return (
     
       <div className="container mx-auto pl-4 pr-4 pt-5" style={{ minHeight: "45em" }}>
@@ -223,7 +224,11 @@ class TaxaApp extends React.Component {
 					clientRoot={ this.props.clientRoot }
 					isLoading={ this.state.isLoading }
 				/>      
-        <div className="row">
+				<div className="print-header">
+				{ pageTitle }<br />
+				{ window.location.href }
+				</div>
+				<div className="row print-start">
           <div className="col">
             <h1 className="">{ this.state.vernacularNames[0] }</h1>
             <h2 className="font-italic">{ this.state.sciName }</h2>
@@ -393,7 +398,7 @@ if (queryParams.search) {
   window.location = `./search.php?search=${encodeURIComponent(queryParams.search)}`;
 } else if (queryParams.taxon) {
   ReactDOM.render(
-    <TaxaApp tid={queryParams.taxon } clientRoot={ dataProps["clientRoot"] } />,
+    <TaxaApp tid={queryParams.taxon } defaultTitle={ dataProps["defaultTitle"] } clientRoot={ dataProps["clientRoot"] } />,
     domContainer
   );
 } else {

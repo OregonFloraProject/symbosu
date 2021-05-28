@@ -40,8 +40,8 @@ function BorderedItem(props) {
 
   return (
     <div className={ "row dashed-border py-2" }>
-      <div className="col font-weight-bold">{ props.keyName }</div>
-      <div className="col">{ value }</div>
+      <div className="col font-weight-bold char-label">{ props.keyName }</div>
+      <div className="col char-value">{ value }</div>
     </div>
   );
 }
@@ -65,7 +65,7 @@ class SynonymItem extends React.Component {
   
 		return (
 			<div className={ "synonym-items row dashed-border py-1" }>
-				<div className="col font-weight-bold">Synonyms</div>
+				<div className="col font-weight-bold char-label">Synonyms</div>
 				<div className={	(this.state.showSynonyms? 'show-full': 'show-short' ) + " col" }>
 				
 				<span className="short-list">
@@ -378,22 +378,31 @@ class TaxaChooser extends React.Component {
   
   render() {
 		const res = this.props.res;
-    const pageTitle = document.getElementsByTagName("title")[0];
-    let titleVal = (res.sciName? res.sciName : res.family);
-    pageTitle.innerHTML = `${this.props.defaultTitle} ${titleVal}`;
+    const titleElement = document.getElementsByTagName("title")[0];
+    const pageTitle = this.props.defaultTitle + " " + (res.sciName? res.sciName : res.family);
+    titleElement.innerHTML = pageTitle;
   	return (
 			<div className="container mx-auto py-5 taxa-detail" style={{ minHeight: "45em" }}>
 				<Loading 
 					clientRoot={ this.props.clientRoot }
 					isLoading={ res.isLoading }
 				/>
-				<div className="row">
+				<div className="print-header">
+				{ pageTitle }<br />
+				{ window.location.href }
+				</div>
+				<div className="row print-start">
 					<div className="col">
 
 						<h1>{ res.sciName } { res.author }</h1>
 					</div>
-					<div className="col-auto">
+					{/* <div className="col-auto">
 						<FontAwesomeIcon icon="edit" />
+					</div>
+					*/}
+					<div className="col-auto">
+						<button className="d-block my-2 btn-primary print-trigger" onClick={() => window.print()}>Print page</button>
+						{/*<button className="d-block my-2 btn-secondary" disabled={ true }>Add to basket</button>*/}
 					</div>
 				</div>
 				<div className="row mt-2 row-cols-sm-2">
@@ -463,8 +472,9 @@ class TaxaDetail extends React.Component {
 	render() {
 	
 		const res = this.props.res;
-    const pageTitle = document.getElementsByTagName("title")[0];
-    pageTitle.innerHTML = `${this.props.defaultTitle} ${res.sciName}`;
+    const pageTitle = this.props.defaultTitle + " " + res.sciName;
+    const titleElement = document.getElementsByTagName("title")[0];
+    titleElement.innerHTML = pageTitle;
 		const allImages = res.images.HumanObservation.concat(res.images.PreservedSpecimen);
 		const showDescriptions = res.descriptions? true: false;
 		let h2 = res.vernacularNames[0];
@@ -495,7 +505,11 @@ class TaxaDetail extends React.Component {
 					clientRoot={ this.props.clientRoot }
 					isLoading={ res.isLoading }
 				/>
-				<div className="row">
+				<div className="print-header">
+				{ pageTitle }<br />
+				{ window.location.href }
+				</div>
+				<div className="row print-start">
 					<div className="col">
 						<h1><span className="font-italic">{ res.sciName }</span> { res.author }</h1>
 

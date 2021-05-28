@@ -2206,16 +2206,36 @@ img {
 		}
 	}
 }
+@media only screen {
+	.print-header {
+		display: none;
+	}
+}
 @media only print {
 	.print-trigger {
 		display: none !important;
 	}
+	.print-header {
+		text-align: left;
+		margin-left: 120px;
+	}
+	#innertext {
+		margin-top: -110px;
+		.print-start {
+			margin-top: 50px;
+		}
+	}	
 	#react-header {
 		position: relative;
 		.header-wrapper {
+			background-image: none !important;
+			
 			.fixed-logo-wrapper {
 				#fixed-logo {
 					position: relative;
+					#site-header-logo {
+						margin-left: 60px;
+					}
 					/*center it:
 					margin: 0 auto;
 					display: block;	*/
@@ -2225,6 +2245,7 @@ img {
 	}
 	#footer-app {
 		clear: both;
+		padding-left: 56px;
 		.navbar {
 			display: block;
 			padding: 0;
@@ -2329,6 +2350,9 @@ img {
 					.dashed-border {//grr
 						border-top: none;
 					}
+				}
+				.char-label {
+					max-width: 25%;
 				}
 			}
 			.synonym-items {
