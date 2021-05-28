@@ -405,8 +405,8 @@ class TaxaChooser extends React.Component {
 						{/*<button className="d-block my-2 btn-secondary" disabled={ true }>Add to basket</button>*/}
 					</div>
 				</div>
-				<div className="row mt-2 row-cols-sm-2">
-					<div className="col-md-8 pr-4">
+				<div className="row mt-2 row-cols-sm-2 main-wrapper">
+					<div className="col-md-8 pr-4 main-section">
 						<p className="mt-4">
 							{/*
 								Description includes HTML tags & URL-encoded characters in the db.
@@ -437,7 +437,7 @@ class TaxaChooser extends React.Component {
 						}
 										
 					</div>
-					<div className="col-md-4 pl-4 sidebar">
+					<div className="col-md-4 pl-4 sidebar sidebar-section">
 						<SideBarSection title="Context" items={ res.highlights } classes="highlights" rankId={ res.rankId } clientRoot={ this.props.clientRoot }/>
 						<SideBarSection title="Web links" items={ res.taxalinks} classes="weblinks" rankId={ res.rankId } clientRoot={ this.props.clientRoot }/>
 					</div>
