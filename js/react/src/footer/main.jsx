@@ -55,8 +55,8 @@ class FooterApp extends React.Component {
               <a href={ "https://oregonstate.edu/" } target="_blank"><img src={ `${this.props.clientRoot}/images/footer/osu_horizontal_2c_o_over_b.png` } alt="OSU Logo"/></a>
               <p className="my-2">
                 <strong>OregonFlora</strong><br/>
-                <a href={ "https://bpp.oregonstate.edu/" } target="_blank">Dept. Botany & Plant Pathology</a><br/>
-                Oregon State University Corvallis, OR 97331-2902<br/>
+                <a href={ "https://bpp.oregonstate.edu/" } target="_blank">Dept. Botany & Plant Pathology</a>, OSU<br/>
+                4575 SW Research Way Corvallis, OR 97333<br/>
                 <a href="mailto:info@oregonflora.org" target="_blank">info@oregonflora.org</a>
               </p>
             </div>
