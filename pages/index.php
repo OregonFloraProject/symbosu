@@ -7,8 +7,8 @@ header( "Content-Type: text/html; charset=" . $charset );
 <head>
     <title><?php echo $defaultTitle ?> Home</title>
     <meta charset="UTF-8">
-    <link href="../css/base.css?<?php echo $CSS_VERSION; ?>" type="text/css" rel="stylesheet"/>
-    <link href="../css/main.css?<?php echo $CSS_VERSION_LOCAL; ?>" type="text/css" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/css/base.css?<?php echo filemtime($SERVER_ROOT . '/css/base.css'); ?>"> 
+    <link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/css/main.css?<?php echo filemtime($SERVER_ROOT . '/css/main.css'); ?>"> 
     <meta name='keywords' content=''/>
     <script type="text/javascript">
 		<?php include_once( $serverRoot . '/config/googleanalytics.php' ); ?>
