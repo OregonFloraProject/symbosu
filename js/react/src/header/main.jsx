@@ -129,11 +129,13 @@ class HeaderApp extends React.Component {
       searchText: '',
       dropdowns: DROPDOWNS,
       headerHeight: 100,
+      isMobile: false
     };
 
     this.onSearchTextChanged = this.onSearchTextChanged.bind(this);
     this.onSearch = this.onSearch.bind(this);
     this.handleScroll = this.handleScroll.bind(this);
+    this.updateViewport = this.updateViewport.bind(this);
   }
 
   onSearchTextChanged(e) {
@@ -179,7 +181,13 @@ class HeaderApp extends React.Component {
 
     //window.open( targetUrl );
   }
-
+	updateViewport() {
+		let isMobile = false;
+		if (window.innerWidth < 992) {
+			isMobile = true;
+		}
+		this.setState({ isMobile: isMobile });
+	}
   componentDidMount() {
   	let dropdowns = DROPDOWNS;
     if (this.props.userName !== "") {
@@ -207,23 +215,12 @@ class HeaderApp extends React.Component {
     this.setState({ dropdowns: dropdowns });
   
     const siteHeader = document.getElementById("site-header");
-    /*siteHeader.addEventListener("transitionstart", () => {
-      this.setState({ scrollLock: true });
-    });
-    siteHeader.addEventListener("transitionend", () => {
-      this.setState({ scrollLock: false });
-    });
-    siteHeader.addEventListener("transitioncancel", () => {
-      this.setState({ scrollLock: false });
-    });
-    */
+
     window.addEventListener("scroll", () => {
-      /*if (!this.state.scrollLock) {
-        this.setState({isCollapsed: getScrollPos() > (siteHeader.offsetHeight)});
-      }*/
       this.handleScroll();
-      
     });
+		this.updateViewport();
+    window.addEventListener('resize', this.updateViewport);
   }
   handleScroll() {
   	//console.log("scrollpos: " + getScrollPos());
@@ -295,7 +292,7 @@ class HeaderApp extends React.Component {
         <div id="site-header-dropdowns-wrapper" className="">  
 					<button
 						id="site-header-navbar-toggler"
-						className="navbar-toggler ml-auto"
+						className={ "navbar-toggler ml-auto" + (this.state.isMobile? ' collapsed':'')}
 						type="button"
 						data-toggle="collapse"
 						data-target="#site-header-dropdowns"
@@ -310,7 +307,7 @@ class HeaderApp extends React.Component {
 						/></span>
 					</button>
         
-          {<ul id="site-header-dropdowns" className="navbar-nav">
+          {<ul id="site-header-dropdowns" className={ "navbar-nav" + (this.state.isMobile? ' collapse':'') }>
             {
               Object.keys(this.state.dropdowns).map((key) => {
               	let currentParent = (this.state.dropdowns[key].currentAncestor? " current-page current-ancestor" :'');
