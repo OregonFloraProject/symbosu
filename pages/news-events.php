@@ -18,12 +18,15 @@ header( "Content-Type: text/html; charset=" . $charset );
       include("$SERVER_ROOT/header.php");
     ?>
     <!-- Include page style here to override anything in header -->
-    <link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/css/base.css?<?php echo $CSS_VERSION; ?>">
-    <link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/css/main.css?<?php echo $CSS_VERSION_LOCAL; ?>">
+		<link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/css/base.css?<?php echo filemtime($SERVER_ROOT . '/css/base.css'); ?>">    
+		<link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/css/main.css?<?php echo filemtime($SERVER_ROOT . '/css/main.css'); ?>">    
 
 
 		<div id="react-whatsnew-app"></div>
-		<script src="<?php echo $CLIENT_ROOT?>/js/react/dist/whatsnew.js"></script>
+				<script 
+					src="<?php echo $CLIENT_ROOT?>/js/react/dist/whatsnew.js?<?php echo filemtime($SERVER_ROOT . '/js/react/dist/whatsnew.js'); ?>"
+					type="text/javascript">
+				</script>
 
 		<?php
 		include( $serverRoot . "/footer.php" );

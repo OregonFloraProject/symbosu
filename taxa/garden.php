@@ -12,8 +12,9 @@ include_once("../config/symbini.php");
       include("$SERVER_ROOT/header.php");
     ?>
     <!-- Include page style here to override anything in header -->
-    <link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/css/compiled/theme.css">
-    <link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/css/compiled/taxa.css">
+    <link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/css/compiled/theme.css?<?php echo filemtime($SERVER_ROOT . '/css/compiled/theme.css'); ?>">    
+ 		<link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/css/compiled/taxa.css?<?php echo filemtime($SERVER_ROOT . '/css/compiled/taxa.css'); ?>">    
+ 
     
     
     <!-- image carousel -->
@@ -23,7 +24,10 @@ include_once("../config/symbini.php");
     <!-- This is inner text! -->
     <div id="innertext">
       <div id="react-taxa-garden-app"></div>
-      <script src="<?php echo $CLIENT_ROOT?>/js/react/dist/taxa-garden.js"></script>
+				<script 
+					src="<?php echo $CLIENT_ROOT?>/js/react/dist/taxa-garden.js?<?php echo filemtime($SERVER_ROOT . '/js/react/dist/taxa-garden.js'); ?>"
+					type="text/javascript">
+				</script>
     </div>
 
     <?php

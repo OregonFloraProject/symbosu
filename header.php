@@ -44,9 +44,10 @@
 </div>
 
 <script
-  src='<?php echo "$CLIENT_ROOT/js/react/dist/header.js" ?>'
-  type="text/javascript">
+	src="<?php echo $CLIENT_ROOT?>/js/react/dist/header.js?<?php echo filemtime($SERVER_ROOT . '/js/react/dist/header.js'); ?>"
+	type="text/javascript">
 </script>
+
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-179416436-1"></script>
 <script>

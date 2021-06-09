@@ -7,9 +7,9 @@ header("Content-Type: text/html; charset=".$CHARSET);
   <head>
     <title><?php echo $DEFAULT_TITLE?> Gardening with Natives</title>
     <meta charset="utf-8">
-
-    <link href="<?php echo $CLIENT_ROOT; ?>/css/compiled/theme.css<?php echo (isset($CSS_VERSION_LOCAL)?'?ver='.$CSS_VERSION_LOCAL:''); ?>" type="text/css" rel="stylesheet" />
-    <link href="<?php echo $CLIENT_ROOT; ?>/css/compiled/garden.css<?php echo (isset($CSS_VERSION_LOCAL)?'?ver='.$CSS_VERSION_LOCAL:''); ?>" type="text/css" rel="stylesheet" />
+    
+		<link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/css/compiled/theme.css?<?php echo filemtime($SERVER_ROOT . '/css/compiled/theme.css'); ?>">    
+		<link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/css/compiled/garden.css?<?php echo filemtime($SERVER_ROOT . '/css/compiled/garden.css'); ?>">    
 
   </head>
   <body>
@@ -39,7 +39,10 @@ header("Content-Type: text/html; charset=".$CHARSET);
 
     <div id="page-content" style="min-height: 50em;">
       <div id="react-garden"></div>
-      <script type="text/javascript" src="<?php echo $CLIENT_ROOT ?>/js/react/dist/garden.js"></script>
+				<script 
+					src="<?php echo $CLIENT_ROOT?>/js/react/dist/garden.js?<?php echo filemtime($SERVER_ROOT . '/js/react/dist/garden.js'); ?>"
+					type="text/javascript">
+				</script>
     </div>
 
     <?php

@@ -17,7 +17,7 @@ header( "Content-Type: text/html; charset=" . $charset );
 </head>
 <body>
 <?php
-include( $serverRoot . "/header.php" );
+      include("$SERVER_ROOT/header.php");
 ?>
 
 <!-- if you need a full width colum, just put it outside of .inner-content -->

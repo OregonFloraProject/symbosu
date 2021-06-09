@@ -23,7 +23,10 @@ include_once("../config/symbini.php");
     <!-- This is inner text! -->
     <div id="innertext">
       <div id="react-taxa-app"></div>
-      <script src="<?php echo $CLIENT_ROOT?>/js/react/dist/taxa.js"></script>
+				<script 
+					src="<?php echo $CLIENT_ROOT?>/js/react/dist/taxa.js?<?php echo filemtime($SERVER_ROOT . '/js/react/dist/taxa.js'); ?>"
+					type="text/javascript">
+				</script>
     </div>
 
     <?php

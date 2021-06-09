@@ -15,8 +15,8 @@ function obfuscate($email) {
 <head>
     <title><?php echo $defaultTitle ?> Volunteer</title>
     <meta charset="UTF-8">
-    <link href="../css/base.css?<?php echo $CSS_VERSION; ?>" type="text/css" rel="stylesheet"/>
-    <link href="../css/main.css?<?php echo $CSS_VERSION_LOCAL; ?>" type="text/css" rel="stylesheet"/>
+		<link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/css/base.css?<?php echo filemtime($SERVER_ROOT . '/css/base.css'); ?>">    
+		<link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/css/main.css?<?php echo filemtime($SERVER_ROOT . '/css/main.css'); ?>">
     <meta name='keywords' content=''/>
     <script type="text/javascript">
 		<?php include_once( $serverRoot . '/config/googleanalytics.php' ); ?>
@@ -60,7 +60,7 @@ function obfuscate($email) {
 </head>
 <body>
 <?php
-include( $serverRoot . "/header.php" );
+      include("$SERVER_ROOT/header.php");
 ?>
 <div class="info-page">
     <section id="titlebackground" class="title-redberry">
