@@ -135,8 +135,16 @@ $dbArr = Array();
             });
         });
     </script>
+    
+		<link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/css/compiled/theme.css?<?php echo filemtime($SERVER_ROOT . '/css/compiled/theme.css'); ?>">    
+		<link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/css/compiled/garden.css?<?php echo filemtime($SERVER_ROOT . '/css/compiled/garden.css'); ?>">    
+
 </head>
 <body class="mapbody">
+
+<?php
+	include_once("$SERVER_ROOT/header.php");
+?>
 <!--<a class="back-button" rel="external" href="../">Back</a>-->
 <?php
 #include( $serverRoot . "/header.php" );
