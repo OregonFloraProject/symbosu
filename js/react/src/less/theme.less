@@ -184,6 +184,7 @@ img {
 }
 
 .dropdown-item {
+	text-shadow: none !important;
   &.current-page {
 	  .dropdown-current();
   }
@@ -2391,5 +2392,134 @@ img {
 		}
 	}
 }
+body.spatial {
+	#react-header {
+		height: 60px;
+		.header-wrapper {
+			.fixed-logo-wrapper {
+				#fixed-logo {
+					height: 60px;
+					img {
+						&#site-header-logo {
+							opacity: 0 !important;
+						}	
+						&#site-header-logo-sm {
+							opacity: 1 !important;
+						}
+					}
+				}
+			}
+		}
+		#site-header {
+			height: 60px !important;
+		}
+	}
+	#site-content {
+		margin-top: 60px;
+		overflow: hidden;
+		//z-index: 2000;
+		.ui-widget-content {
+			border: none;
+		}
+		.ui-corner-all, .ui-corner-top {
+			border-radius: 0 !important;
+		}
+		#defaultpanel {
+			max-height: calc(100% - 60px);
+			overflow: hidden;
+			
+			#spatialpanel {
+				//max-height: calc(100% - 60px);
+				overflow: hidden;
+				text-shadow: none !important;
+				.ui-accordion-content {
+					font-size: .9rem;
+				}
+				#criteriatab {
+					height: 81% !important;
+					#searchcriteria {
+						button {
+							background-color: @med-green !important;
+						}
+					}
+				}
+			}
+		}	
+	}
+	#mapinfo {
+		background-color: @dark-green;
+		#mapcoords {
+			font-size: .8rem;
+			text-shadow: none !important;
+		}
+		.ol-scale-line {
+			background-color: transparent;
+			text-shadow: none !important;
+		}
+	}
+	#maptoolcontainer {
+		top: 100px;	
+		text-shadow: none !important;
+		#maptoolbox {
+			width: 460px;
+			padding: 10px;
+			display: flex;
+			flex-flow: row wrap;
+			align-items: center;
+			background-color: @dark-green;
+			.maptext {
+				text-shadow: none !important;
+				font-size: .9rem;
+				a {
+					color: white !important;
+					b {
+						font-weight: 600;
+					}
+				}
+			}
+			select, option {
+				font-size: .9rem;
+			}
+			h3 {
+				text-shadow: none;
+				flex-basis: 100%;
+			}
+			#drawcontrol,
+			#basecontrol,
+			#selectcontrol {
+				float: none;
+			}
+			#drawcontrol {
+				flex-basis: 135px;
+			}
+			#basecontrol {
+				flex-basis: 300px;
+			}
+			#selectcontrol {
+				flex-basis: 100%;
+				margin: .5rem 0;
+				select {
+					width: 70%;
+				}
+			}
+			.link-buttons {
+				flex-basis: 22%;
+				text-align: center;
+			}
+			#deleteSelections {
+				text-align: center;
+				button {
+					background-color: @med-green !important;
+					&:hover {
+						
+					}
+				}
+			}
+		}
+	}
+
+}
+
+
 
 

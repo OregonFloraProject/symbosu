@@ -71,7 +71,7 @@ const DROPDOWNS = {
 
 function HeaderButton(props) {
   return (
-    <a href={ props.href }>
+    <a href={ props.href } rel="external">
       <button className={ "col header-button" + props.classes}>
         { props.title }
       </button>
@@ -93,7 +93,7 @@ function getScrollPos() {
 
 function HeaderDropdownItem(props) {
   return (
-    <a className={"dropdown-item" + props.classes} href={ props.href }>{ props.title }</a>
+    <a className={"dropdown-item" + props.classes} rel="external" href={ props.href }>{ props.title }</a>
   );
 }
 
@@ -106,6 +106,7 @@ function HeaderDropdown(props) {
         id={ id }
         className={ "nav-link dropdown-toggle" + props.classes }
         href="#"
+        rel="external" 
         role="button"
         data-toggle="dropdown"
         aria-haspopup="true"
@@ -216,11 +217,13 @@ class HeaderApp extends React.Component {
   
     const siteHeader = document.getElementById("site-header");
 
-    window.addEventListener("scroll", () => {
-      this.handleScroll();
-    });
+    window.addEventListener("scroll", this.handleScroll);
 		this.updateViewport();
     window.addEventListener('resize', this.updateViewport);
+  }
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this.handleScroll, false);
+    window.removeEventListener('resize', this.updateViewport, false);
   }
   handleScroll() {
   	//console.log("scrollpos: " + getScrollPos());
@@ -235,7 +238,7 @@ class HeaderApp extends React.Component {
       {/* style={{ display: this.state.isCollapsed ? 'none' : 'flex' }}*/ }
       	{
       		this.props.userName !== '' &&
-						<a href="" className={ "disabled" }>
+						<a href="" rel="external" className={ "disabled" }>
 							<button className={ "col header-button" }>
 								{ "Hello, " +  this.props.userName  + "!"}
 							</button>
@@ -250,6 +253,7 @@ class HeaderApp extends React.Component {
 								title={ dropDownChildData.title }
 								href={ `${ dropDownChildData.href }` }
                 classes={ currentChild }
+                rel="external" 
 							/>
 						)
 					})
@@ -266,7 +270,7 @@ class HeaderApp extends React.Component {
     return (
     <div className="header-wrapper" style={{ backgroundImage: `url(${this.props.clientRoot}/images/header/OF-Header_May8.png)` }}>
     	<div className="fixed-logo-wrapper">
-        <a id="fixed-logo" className="navbar-brand" href={ `${this.props.clientRoot}/` }>
+        <a id="fixed-logo" className="navbar-brand" rel="external" href={ `${this.props.clientRoot}/` }>
 					
 						<img 
 							style={{ opacity: mainOpacity }}
@@ -323,6 +327,7 @@ class HeaderApp extends React.Component {
                             title={ dropDownChildData.title }
                             href={ `${ dropDownChildData.href }` }
                             classes={ currentChild }
+                            rel="external" 
                           />
                         )
                       })
@@ -334,7 +339,7 @@ class HeaderApp extends React.Component {
           </ul>}
         </div>
 {
-        <a className="navbar-brand" href={ `${this.props.clientRoot}/` }>
+        <a className="navbar-brand" rel="external" href={ `${this.props.clientRoot}/` }>
 					<picture>
 						<source media="(max-width: 992px)" srcSet={ smLogo } />
 						<source media="(min-width: 992px)" srcSet={ lgLogo } />

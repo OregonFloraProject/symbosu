@@ -29,7 +29,7 @@ $(document).ready(function() {
 		});
     $( "#taxa" )
 				// don't navigate away from the field on tab when selecting an item
-        .bind( "keydown", function( event ) {
+        .on( "keydown", function( event ) {
             if ( event.keyCode === $.ui.keyCode.TAB &&
             		$( this ).data( "autocomplete" ) !== undefined &&
             		$( this ).data( "autocomplete" ).menu !== undefined &&
