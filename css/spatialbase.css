@@ -89,21 +89,21 @@
 	opacity: 0.85;
 }
 /*
-#drawcontrol {
+.oldmap #drawcontrol {
 	float: left;
 	width: 115px;
 	height:30px;
 	z-index: 3;
 }
 
-#selectcontrol {
+.oldmap #selectcontrol {
 	float: left;
 	width: 380px;
 	height:30px;
 	z-index: 3;
 }
 
-#basecontrol {
+.oldmap #basecontrol {
 	float: left;
 	width: 270px;
 	height:30px;
@@ -111,21 +111,20 @@
 	z-index: 3;
 }
 
-#loadlayers {
+.oldmap #loadlayers {
 	float: right;
 	width: 80px;
 	height:30px;
 	z-index: 3;
 }
 
-#clustercontrol {
+.oldmap #clustercontrol {
 	float: ;
 	width: 180px;
 	height:30px;
 	z-index: 3;
 }
-
-#selectlayerselect {
+.oldmap #selectlayerselect {
 	width: 240px;
 }
 */

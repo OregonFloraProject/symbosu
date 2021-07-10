@@ -40,20 +40,6 @@ $dbArr = Array();
     <link href="<?php echo $CLIENT_ROOT; ?>/css/jquery-ui.css" type="text/css" rel="stylesheet" />
     <link href="<?php echo $CLIENT_ROOT; ?>/css/ol.css" type="text/css" rel="stylesheet" />
     <link href="<?php echo $CLIENT_ROOT; ?>/css/spatialbase.css?ver=15" type="text/css" rel="stylesheet" />
-    	
-		<link
-			href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700"
-			rel="stylesheet"
-			type="text/css">
-		<link
-			rel="stylesheet"
-			href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-			integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-			crossorigin="anonymous">
-
-		<link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/css/compiled/theme.css?<?php echo filemtime($SERVER_ROOT . '/css/compiled/theme.css'); ?>"> 
-		<link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/css/compiled/header.css?<?php echo filemtime($SERVER_ROOT . '/css/compiled/header.css'); ?>"> 
-   
     <script src="<?php echo $CLIENT_ROOT; ?>/js/jquery.js" type="text/javascript"></script>
     <script src="<?php echo $CLIENT_ROOT; ?>/js/jquery-ui.js" type="text/javascript"></script>
     <script src="<?php echo $CLIENT_ROOT; ?>/js/jquery-1.10.2.min.js" type="text/javascript"></script>
@@ -72,17 +58,6 @@ $dbArr = Array();
     <script src="<?php echo $CLIENT_ROOT; ?>/js/html2canvas.min.js" type="text/javascript"></script>
     <script src="<?php echo $CLIENT_ROOT; ?>/js/symb/spatial.module.js?ver=259" type="text/javascript"></script>
     <script src="https://kit.fontawesome.com/a01aa82192.js" crossorigin="anonymous"></script>
-    <script
-			type="text/javascript"
-			src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-			integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-			crossorigin="anonymous">
-		</script>
-		<script
-			type="text/javascript"
-			src="https://cdn.jsdelivr.net/gh/xcash/bootstrap-autocomplete@v2.2.2/dist/latest/bootstrap-autocomplete.min.js">
-		</script>
-
     <script type="text/javascript">
         $(function() {
             var winHeight = $(window).height();
@@ -160,36 +135,13 @@ $dbArr = Array();
             });
         });
     </script>
-    
-		<link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/css/compiled/theme.css?<?php echo filemtime($SERVER_ROOT . '/css/compiled/theme.css'); ?>">      
-
 </head>
-<body class="mapbody spatial">
-
-<div
-  id="react-header"
-  data-props='{ "defaultTitle": "<?php echo $DEFAULT_TITLE; ?>", "currentPage": "<?php echo $_SERVER['SCRIPT_NAME']; ?>", "googleMapKey": "<?php echo $GOOGLE_MAP_KEY; ?>", "clientRoot": "<?php echo "$CLIENT_ROOT" ?>", "userName": "<?php echo ($USER_DISPLAY_NAME ? $USER_DISPLAY_NAME : '') ?>" }'>
-</div>
-
-<script
-	src="<?php echo $CLIENT_ROOT?>/js/react/dist/header.js?<?php echo filemtime($SERVER_ROOT . '/js/react/dist/header.js'); ?>"
-	type="text/javascript">
-</script>
-
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-179416436-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-179416436-1');
-</script>
-
-<?php /*<div id="site-content"> */
+<body class="mapbody">
+<!--<a class="back-button" rel="external" href="../">Back</a>-->
+<?php
+#include( $serverRoot . "/header.php" );
 ?>
-
-<div data-role="page" id="site-content">
+<div data-role="page" id="page1">
     <div role="main" class="ui-content">
         <a href="#defaultpanel" id="panelopenbutton" data-role="button" data-inline="true" data-icon="bars">Open</a>
     </div>
@@ -608,24 +560,27 @@ $dbArr = Array();
                 <option value="esristreet">ESRI StreetMap</option>
             </select>
         </div>
+        <div style="clear:both;"></div>
         <div id="selectcontrol">
             <span class="maptext">Active Layer</span>
             <select id="selectlayerselect" onchange="setActiveLayer();">
                 <option id="lsel-none" value="none">None</option>
             </select>
         </div>
-        <div id="settingsLink" class="link-buttons">
+        <div style="clear:both;"></div>
+        <div id="settingsLink" style="margin-left:22px;float:left;">
             <span class="maptext"><a class="mapsettings_open" href="#mapsettings"><b>Settings</b></a></span>
         </div>
-        <div id="toolsLink" class="link-buttons">
+        <div id="toolsLink" style="margin-left:22px;float:left;">
             <span class="maptext"><a class="maptools_open" href="#maptools"><b>Tools</b></a></span>
         </div>
-        <div id="layerControllerLink" class="link-buttons">
+        <div id="layerControllerLink" style="margin-left:22px;float:left;">
             <span class="maptext"><a class="addLayers_open" href="#addLayers"><b>Layers</b></a></span>
         </div>
-        <div id="deleteSelections">
+        <div id="deleteSelections" style="margin-left:60px;float:left;">
             <button data-role="none" type="button" onclick='deleteSelections();' >Delete Shapes</button>
         </div>
+        <div style="clear:both;"></div>
         <div id="dateslidercontrol" style="margin-top:5px;display:none;">
             <div style="margin:5 0 5 0;color:white;"><hr /></div>
             <div id="setdatediv" style="">
