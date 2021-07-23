@@ -2089,6 +2089,17 @@ input[type="submit"] {
 	background: #74B147;
 	border: none;
 }
+
+.googlemapphp .green-btn,
+.googlemapphp .resetButtonDiv button,
+.googlemapphp button,
+html .googlemapphp input[type="button"],
+.googlemapphp input[type="reset"],
+.googlemapphp input[type="submit"] {
+	color: #3C641E !important;
+}
+
+
 .purple {
 	background: #4e1e97;
 }

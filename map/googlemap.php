@@ -335,7 +335,7 @@ $coordArr = $sharedMapManager->getGeoCoords($mapWhere);
 		
 	</script>
 </head>
-<body style="background-color:#ffffff;width:100%" onload="initialize();">
+<body class="googlemapphp" style="background-color:#ffffff;width:100%" onload="initialize();">
 	<?php
 	//echo json_encode($coordArr);
 	if(!$coordExist){ //no results
