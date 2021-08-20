@@ -1,54 +1,25 @@
 <?php
 include_once('../../../config/symbini.php');
-include_once($serverRoot.'/classes/SpecLoans.php');
-require_once $serverRoot.'/classes/PhpWord/Autoloader.php';
-
-$loanManager = new SpecLoans();
-use PhpOffice\PhpWord\Autoloader;
-use PhpOffice\PhpWord\Settings;
-Autoloader::register();
-Settings::loadConfig();
+include_once($SERVER_ROOT.'/classes/OccurrenceLoans.php');
+require_once $SERVER_ROOT.'/vendor/phpoffice/phpword/bootstrap.php';
 
 $collId = $_REQUEST['collid'];
-$printMode = $_POST['print'];
-$languageDef = $_POST['languagedef'];
-$loanId = array_key_exists('loanid',$_REQUEST)?$_REQUEST['loanid']:0;
-$exchangeId = array_key_exists('exchangeid',$_REQUEST)?$_REQUEST['exchangeid']:0;
+$identifier = array_key_exists('identifier',$_REQUEST)?$_REQUEST['identifier']:0;
 $loanType = array_key_exists('loantype',$_REQUEST)?$_REQUEST['loantype']:0;
-$international = array_key_exists('international',$_POST)?$_POST['international']:0;
-$searchTerm = array_key_exists('searchterm',$_POST)?$_POST['searchterm']:'';
-$displayAll = array_key_exists('displayall',$_POST)?$_POST['displayall']:0;
-$formSubmit = array_key_exists('formsubmit',$_POST)?$_POST['formsubmit']:'';
+$outputMode = $_POST['outputmode'];
+$languageDef = $_POST['languagedef'];
 
-$export = false;
-$exportEngine = '';
-$exportExtension = '';
-if($printMode == 'doc'){
-	$export = true;
-	$exportEngine = 'Word2007';
-	$exportExtension = 'docx';
-}
-
+$loanManager = new OccurrenceLoans();
 if($collId) $loanManager->setCollId($collId);
 
 $english = ($languageDef == 0 || $languageDef == 1);
 $engspan = ($languageDef == 1);
 $spanish = ($languageDef == 1 || $languageDef == 2);
 
-$identifier = 0;
-if($loanId){
-	$identifier = $loanId;
-}
-elseif($exchangeId){
-	$identifier = $exchangeId;
-}
-
-$specList = $loanManager->getSpecList($loanId);
 $invoiceArr = $loanManager->getInvoiceInfo($identifier,$loanType);
 $addressArr = $loanManager->getFromAddress($collId);
-$specTotal = $loanManager->getSpecTotal($loanId);
-$exchangeValue = $loanManager->getExchangeValue($exchangeId);
-$exchangeTotal = $loanManager->getExchangeTotal($exchangeId);
+$isInternational = true;
+if($invoiceArr['country'] == $addressArr['country']) $isInternational = false;
 
 if($loanType == 'exchange'){
 	$transType = 0;
@@ -64,11 +35,12 @@ if($loanType == 'exchange'){
 }
 
 $numSpecimens = 0;
-if($loanType == 'exchange'){$numSpecimens = $exchangeTotal;}
+if($loanType == 'exchange') $numSpecimens = $loanManager->getExchangeTotal($identifier);
 else{
+	$specList = $loanManager->getSpecList($identifier);
 	if($specList){
-		if(count($specList) == 1){$numSpecimens = 1;}
-		else{$numSpecimens = count($specList);}
+		if(count($specList) == 1) $numSpecimens = 1;
+		else $numSpecimens = count($specList);
 	}
 	else{
 		if($invoiceArr['numspecimens'] == 1){$numSpecimens = 1;}
@@ -89,7 +61,7 @@ else{
 	}
 }
 
-if($export){
+if($outputMode == 'doc'){
 	$phpWord = new \PhpOffice\PhpWord\PhpWord();
 	$phpWord->addParagraphStyle('header', array('align'=>'center','lineHeight'=>1.0,'spaceAfter'=>450));
 	$phpWord->addFontStyle('headerFont', array('size'=>12,'bold'=>true,'name'=>'Arial'));
@@ -107,9 +79,9 @@ if($export){
 	$colRowStyle = array('cantSplit'=>true);
 	$phpWord->addTableStyle('headTable',$tableStyle,$colRowStyle);
 	$cellStyle = array('valign'=>'top');
-	
+
 	$section = $phpWord->addSection(array('pageSizeW'=>12240,'pageSizeH'=>15840,'marginLeft'=>1080,'marginRight'=>1080,'marginTop'=>1080,'marginBottom'=>0,'headerHeight'=>0,'footerHeight'=>600));
-	
+
 	$textrun = $section->addTextRun('header');
 	$textrun->addText(htmlspecialchars($addressArr['institutionname'].' ('.$addressArr['institutioncode'].')'),'headerFont');
 	$textrun->addTextBreak(1);
@@ -125,7 +97,7 @@ if($export){
 		$textrun->addText(htmlspecialchars($addressArr['address2']),'headerFont');
 		$textrun->addTextBreak(1);
 	}
-	$textrun->addText(htmlspecialchars($addressArr['city'].', '.$addressArr['stateprovince'].' '.$addressArr['postalcode'].($international?' '.$addressArr['country']:'')),'headerFont');
+	$textrun->addText(htmlspecialchars($addressArr['city'].', '.$addressArr['stateprovince'].' '.$addressArr['postalcode'].($isInternational?' '.$addressArr['country']:'')),'headerFont');
 	$textrun->addTextBreak(1);
 	$textrun->addText(htmlspecialchars($addressArr['phone']),'headerFont');
 	$textrun->addTextBreak(2);
@@ -152,7 +124,7 @@ if($export){
 		$textrun->addTextBreak(1);
 	}
 	$textrun->addText(htmlspecialchars($invoiceArr['city'].', '.$invoiceArr['stateprovince'].' '.$invoiceArr['postalcode']),'toAddressFont');
-	if($international){
+	if($isInternational){
 		$textrun->addTextBreak(1);
 		$textrun->addText(htmlspecialchars($invoiceArr['country']),'toAddressFont');
 	}
@@ -247,6 +219,7 @@ if($export){
 	}
 	elseif($loanType == 'exchange'){
 		if($transType == 'ex' || $transType == 'both'){
+			$exchangeValue = $loanManager->getExchangeValue($identifier);
 			$section->addTextBreak(1);
 			$textrun = $section->addTextRun('returnamtdue');
 			if($english){
@@ -381,9 +354,9 @@ if($export){
 	$textrun->addText(htmlspecialchars(($english?'The above specimens were received in good condition':'').($engspan?' / ':'').($spanish?'Recibido en buenas condiciones':'').'.'),'otherFont');
 	$textrun->addTextBreak(2);
 	$textrun->addText(htmlspecialchars(($english?'Signed':'').($engspan?'/':'').($spanish?'Firma':'').':______________________________________  '.($english?'Date':'').($engspan?'/':'').($spanish?'Fecha':'').':______________'),'otherFont');
-	
-	$targetFile = $serverRoot.'/temp/report/'.$identifier.'_invoice.'.$exportExtension;
-	$phpWord->save($targetFile, $exportEngine);
+
+	$targetFile = $SERVER_ROOT.'/temp/report/'.$identifier.'_invoice.docx';
+	$phpWord->save($targetFile, 'Word2007');
 
 	header('Content-Description: File Transfer');
 	header('Content-type: application/force-download');
@@ -398,10 +371,18 @@ else{
 	<html>
 		<head>
 			<title><?php echo $identifier; ?> Invoice</title>
+			<?php
+			$activateJQuery = false;
+			if(file_exists($SERVER_ROOT.'/includes/head.php')){
+				include_once($SERVER_ROOT.'/includes/head.php');
+			}
+			else{
+				echo '<link href="'.$CLIENT_ROOT.'/css/jquery-ui.css" type="text/css" rel="stylesheet" />';
+				echo '<link href="'.$CLIENT_ROOT.'/css/base.css?ver=1" type="text/css" rel="stylesheet" />';
+				echo '<link href="'.$CLIENT_ROOT.'/css/main.css?ver=1" type="text/css" rel="stylesheet" />';
+			}
+			?>
 			<style type="text/css">
-				<?php 
-					include_once($serverRoot.'/css/main.css');
-				?>
 				body {font-family:arial,sans-serif;}
 				p.printbreak {page-break-after:always;}
 				.header {width:100%;text-align:center;font:bold 12pt arial,sans-serif;margin-bottom:30px;}
@@ -445,7 +426,7 @@ else{
 									</tr>
 								<?php } ?>
 								<tr>
-									<td><?php echo $addressArr['city'].', '.$addressArr['stateprovince'].' '.$addressArr['postalcode']; ?> <?php if($international){echo $addressArr['country'];} ?></td>
+									<td><?php echo $addressArr['city'].', '.$addressArr['stateprovince'].' '.$addressArr['postalcode']; ?> <?php if($isInternational){echo $addressArr['country'];} ?></td>
 								</tr>
 								<tr>
 									<td><?php echo $addressArr['phone']; ?></td>
@@ -454,7 +435,7 @@ else{
 									<td></td>
 								</tr>
 								<tr>
-									<?php 
+									<?php
 									echo '<td>'.($english?'SHIPPING INVOICE':'').($engspan?' / ':'').($spanish?'FACTURA DE REMESA':'').'</td>' ;
 									?>
 								</tr>
@@ -465,28 +446,20 @@ else{
 								<tr>
 									<td>
 										<div class="toaddress">
-											<?php 
+											<?php
 											echo $invoiceArr['contact'].'<br />';
 											echo $invoiceArr['institutionname'].' ('.$invoiceArr['institutioncode'].')<br />';
-											if($invoiceArr['institutionname2']){
-												echo $invoiceArr['institutionname2'].'<br />';
-											}
-											if($invoiceArr['address1']){
-												echo $invoiceArr['address1'].'<br />';
-											}
-											if($invoiceArr['address2']){
-												echo $invoiceArr['address2'].'<br />';
-											}
+											if($invoiceArr['institutionname2']) echo $invoiceArr['institutionname2'].'<br />';
+											if($invoiceArr['address1']) echo $invoiceArr['address1'].'<br />';
+											if($invoiceArr['address2']) echo $invoiceArr['address2'].'<br />';
 											echo $invoiceArr['city'].', '.$invoiceArr['stateprovince'].' '.$invoiceArr['postalcode'];
-											if($international){
-												echo '<br />'.$invoiceArr['country'];
-											}
+											if($isInternational) echo '<br />'.$invoiceArr['country'];
 											?>
 										</div>
 									</td>
 									<td class="identifier">
 										<div class="identifier">
-											<?php 
+											<?php
 											echo date('l').', '.date('F').' '.date('j').', '.date('Y').'<br />';
 											if($loanType == 'out'){
 												echo $addressArr['institutioncode'].' Loan ID: '.$invoiceArr['loanidentifierown'];
@@ -504,7 +477,7 @@ else{
 							</table>
 							<br />
 							<div class="sending">
-								<?php 
+								<?php
 								if($english){
 									echo '<div>We are sending you '.($numBoxes == 1?'1 box ':$numBoxes.' boxes ');
 									echo 'containing '.($numSpecimens == 1?'1 specimen. ':$numSpecimens.' specimens. ');
@@ -525,7 +498,7 @@ else{
 								}
 								?>
 							</div>
-							<?php 
+							<?php
 							if($loanType == 'out'){ ?>
 								<?php if($english){ ?>
 									<div class="forwhom">This shipment is a LOAN for study by <?php echo $invoiceArr['forwhom']; ?>.</div><br />
@@ -540,19 +513,19 @@ else{
 									<div class="duedate">Los pr&eacute;stamos se extienden por un periodo de 2 a&ntilde;os. Este pr&eacute;stamo tiene una fecha l&iacute;mite de <?php echo $invoiceArr['datedue']; ?>.</div><br />
 								<?php }
 								if($english){ ?>
-									<div class="loanoutinfo">When circumstances warrant, the loan period may be extended. Specimens should be returned by 
-										insured parcel post or by prepaid express. All material of this loan should be returned at the same time. Notes or 
+									<div class="loanoutinfo">When circumstances warrant, the loan period may be extended. Specimens should be returned by
+										insured parcel post or by prepaid express. All material of this loan should be returned at the same time. Notes or
 										changes should be written on annotation labels. Reprints dealing with taxonomic groups will be appreciated.
 									</div><br />
 								<?php }
 								if($spanish){ ?>
-									<div class="loanoutinfo">Siempre y cuando las circunstancias se permiten, se puede pedir un pr&oacute;rroga de la fecha l&iacute;mite de este  
-										pr&eacute;stamo. Todo material del pr&eacute;stamo debe devolverse en el mismo env&iacute;o. Notas y cambios de identificaci&oacute;n se  
-										deben indicar con notas de anotaci&oacute;n. Adem&aacute;s, le pedimos mandar separatas de cualquier publicaci&oacute;n 
+									<div class="loanoutinfo">Siempre y cuando las circunstancias se permiten, se puede pedir un pr&oacute;rroga de la fecha l&iacute;mite de este
+										pr&eacute;stamo. Todo material del pr&eacute;stamo debe devolverse en el mismo env&iacute;o. Notas y cambios de identificaci&oacute;n se
+										deben indicar con notas de anotaci&oacute;n. Adem&aacute;s, le pedimos mandar separatas de cualquier publicaci&oacute;n
 										proveniente del uso de este material.
 									</div><br />
 								<?php }
-							}	
+							}
 							elseif($loanType == 'in'){ ?>
 								<?php if($english){ ?>
 									<div class="loanreturn">This shipment is a return of <?php echo $invoiceArr['institutioncode']; ?>
@@ -565,6 +538,7 @@ else{
 							<?php }
 							elseif($loanType == 'exchange'){
 								if($transType == 'ex' || $transType == 'both'){
+									$exchangeValue = $loanManager->getExchangeValue($identifier);
 									if($english){ ?>
 										<div class="exchangeamts">This shipment is an EXCHANGE, consisting of <?php echo ($invoiceArr['totalexunmounted']?$invoiceArr['totalexunmounted'].' unmounted ':''); ?>
 											<?php echo (($invoiceArr['totalexunmounted'] && $invoiceArr['totalexmounted'])?'and ':''); ?><?php echo ($invoiceArr['totalexmounted']?$invoiceArr['totalexmounted'].' mounted ':''); ?>
@@ -573,7 +547,7 @@ else{
 									<?php }
 									if($spanish){ ?>
 										<div class="exchangeamts">Este env&iacute;o es un INTERCAMBIO, consistiendo en <?php echo ($invoiceArr['totalexunmounted']?$invoiceArr['totalexunmounted'].' ejemplares no montados ':''); ?>
-											<?php echo (($invoiceArr['totalexunmounted'] && $invoiceArr['totalexmounted'])?'y ':''); ?><?php echo ($invoiceArr['totalexmounted']?$invoiceArr['totalexmounted'].' ejemplares montados ':''); ?>, 
+											<?php echo (($invoiceArr['totalexunmounted'] && $invoiceArr['totalexmounted'])?'y ':''); ?><?php echo ($invoiceArr['totalexmounted']?$invoiceArr['totalexmounted'].' ejemplares montados ':''); ?>,
 											con un valor de intercambio de <?php echo $exchangeValue; ?>. Favor de notarse que las ejemplares montados son de valor 2.
 										</div><br />
 									<?php }
@@ -619,13 +593,13 @@ else{
 										<?php }
 									}
 									if($english){ ?>
-										<div class="exchangebal">Our records show a balance of <?php echo abs($invoiceArr['invoicebalance']); ?> specimens  
-											in <?php echo ($invoiceArr['invoicebalance']>0?'our':'your'); ?> favor. Please contact us if your records differ significantly. 
+										<div class="exchangebal">Our records show a balance of <?php echo abs($invoiceArr['invoicebalance']); ?> specimens
+											in <?php echo ($invoiceArr['invoicebalance']>0?'our':'your'); ?> favor. Please contact us if your records differ significantly.
 										</div><br />
 									<?php }
 									if($spanish){ ?>
-										<div class="exchangebal">Nuestros registros muestran un balance de <?php echo abs($invoiceArr['invoicebalance']); ?> ejemplares  
-											a <?php echo ($invoiceArr['invoicebalance']>0?'nuestro':'su'); ?> favor. Favor de contactarnos si sus 
+										<div class="exchangebal">Nuestros registros muestran un balance de <?php echo abs($invoiceArr['invoicebalance']); ?> ejemplares
+											a <?php echo ($invoiceArr['invoicebalance']>0?'nuestro':'su'); ?> favor. Favor de contactarnos si sus
 											registros se d&iacute;fieren de una manera apreciable.
 										</div><br />
 									<?php }
@@ -671,10 +645,10 @@ else{
 									echo '<b>'.($english?'DESCRIPTION OF THE SPECIMENS':'').($engspan?' / ':'').($spanish?'DESCRIPCI&Oacute;N DE LOS EJEMPLARES':'').':</b><br /><br />' ;
 									echo ($invoiceArr['description']?$invoiceArr['description']:'');
 								?>
-								
+
 							</div>
 							<br />
-							<?php 
+							<?php
 							if(array_key_exists('invoicemessage',$invoiceArr) || array_key_exists('invoicemessageown',$invoiceArr) || array_key_exists('invoicemessageborr',$invoiceArr)){
 								echo '<div class="message">';
 								if($loanType == 'exchange'){
@@ -704,7 +678,7 @@ else{
 							<div class="return">
 								<hr />
 								<br />
-								<?php 
+								<?php
 								if($english){
 									echo 'PLEASE SIGN AND RETURN ONE COPY UPON RECEIPT OF THIS SHIPMENT<br />' ;
 								}

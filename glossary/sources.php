@@ -9,31 +9,44 @@ $language = array_key_exists('language',$_REQUEST)?$_REQUEST['language']:'';
 $taxa = array_key_exists('taxa',$_REQUEST)?$_REQUEST['taxa']:'';
 $editMode = array_key_exists('emode',$_REQUEST)?1:0;
 
+//Sanitation
+if(!is_numeric($tid)) $tid = 0;
+$searchTerm = filter_var($searchTerm,FILTER_SANITIZE_STRING);
+$language = filter_var($language,FILTER_SANITIZE_STRING);
+$taxa = filter_var($taxa,FILTER_SANITIZE_STRING);
+if(!is_numeric($editMode)) $editMode = 0;
+
 $isEditor = false;
-if($IS_ADMIN || array_key_exists("Taxonomy",$USER_RIGHTS)){
-	$isEditor = true;
-}
+if($IS_ADMIN || array_key_exists('GlossaryEditor',$USER_RIGHTS)) $isEditor = true;
 
 $glosManager = new GlossaryManager();
 $sourceArr = $glosManager->getTaxonSources($tid);
 ?>
 <html>
 <head>
-    <title><?php echo $DEFAULT_TITLE; ?> Glossary Sources Management</title>
-    <link href="../css/base.css?ver=<?php echo $CSS_VERSION; ?>" rel="stylesheet" type="text/css" />
-    <link href="../css/main.css<?php echo (isset($CSS_VERSION_LOCAL)?'?ver='.$CSS_VERSION_LOCAL:''); ?>" rel="stylesheet" type="text/css" />
-	<link href="../css/jquery-ui.css" rel="stylesheet" type="text/css" />
-	<script type="text/javascript" src="../js/jquery.js"></script>
+  <title><?php echo $DEFAULT_TITLE; ?> Glossary Sources Management</title>
+  <?php
+      $activateJQuery = true;
+      if(file_exists($SERVER_ROOT.'/includes/head.php')){
+        include_once($SERVER_ROOT.'/includes/head.php');
+      }
+      else{
+        echo '<link href="'.$CLIENT_ROOT.'/css/jquery-ui.css" type="text/css" rel="stylesheet" />';
+        echo '<link href="'.$CLIENT_ROOT.'/css/base.css?ver=1" type="text/css" rel="stylesheet" />';
+        echo '<link href="'.$CLIENT_ROOT.'/css/main.css?ver=1" type="text/css" rel="stylesheet" />';
+      }
+  ?>
+  <script type="text/javascript" src="../js/jquery.js"></script>
 	<script type="text/javascript" src="../js/jquery-ui.js"></script>
 	<script type="text/javascript" src="../js/symb/glossary.index.js"></script>
 </head>
 <body>
 	<?php
 	$displayLeftMenu = false;
-	include($SERVER_ROOT."/header.php");
+	include($SERVER_ROOT.'/includes/header.php');
 	?>
 	<div class='navpath'>
-		<a href='../index.php'>Home</a> &gt;&gt; 
+		<a href='../index.php'>Home</a> &gt;&gt;
 		<a href='index.php'> <b>Main Glossary</b></a> &gt;&gt;
 		<b>Glossary Contributors</b>
 	</div>
@@ -84,7 +97,7 @@ $sourceArr = $glosManager->getTaxonSources($tid);
 								<input name="searchlanguage" type="hidden" value="<?php echo $language; ?>" />
 								<input name="searchtaxa" type="hidden" value="<?php echo $taxa; ?>" />
 							</div>
-							<?php 
+							<?php
 							if($sourceArr){
 								?>
 								<div style="margin:20px;">
@@ -93,7 +106,7 @@ $sourceArr = $glosManager->getTaxonSources($tid);
 								<div style="margin:20px;">
 									<button name="formsubmit" type="submit" value="Delete Source" onclick="return confirm('Are you sure you want to delete this source?')">Delete Source</button>
 								</div>
-								<?php 
+								<?php
 							}
 							else{
 								echo '<div style="margin:20px;"><button name="formsubmit" type="submit" value="Add Source">Add Source</button></div>';
@@ -102,7 +115,7 @@ $sourceArr = $glosManager->getTaxonSources($tid);
 						</form>
 					</div>
 				</div>
-				<?php 
+				<?php
 			}
 			else{
 				echo '<h2>You need to login or perhaps do not have the necessary permissions to edit glossary data, please contact your portal manager</h2>';
@@ -151,7 +164,7 @@ $sourceArr = $glosManager->getTaxonSources($tid);
 		?>
 	</div>
 	<?php
-	include($SERVER_ROOT."/footer.php");
+	include($SERVER_ROOT.'/includes/footer.php');
 	?>
 </body>
 </html>

@@ -1,151 +1,60 @@
 <?php
 include_once('../config/symbini.php');
-include_once($SERVER_ROOT.'/config/includes/searchVarDefault.php');
+include_once($SERVER_ROOT.'/content/lang/collections/harvestparams.'.$LANG_TAG.'.php');
 include_once($SERVER_ROOT.'/classes/OccurrenceManager.php');
-header("Content-Type: text/html; charset=".$charset);
-header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
-header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
-
-if(file_exists($SERVER_ROOT.'/config/includes/searchVarCustom.php')){
-    include($SERVER_ROOT.'/config/includes/searchVarCustom.php');
-}
+include_once($SERVER_ROOT.'/classes/OccurrenceAttributeSearch.php');
+header("Content-Type: text/html; charset=".$CHARSET);
 
 $collManager = new OccurrenceManager();
-$collArr = Array();
-$stArr = Array();
-$stArrCollJson = '';
-$stArrSearchJson = '';
-
-if(isset($_REQUEST['taxa']) || isset($_REQUEST['country']) || isset($_REQUEST['state']) || isset($_REQUEST['county']) || isset($_REQUEST['local']) || isset($_REQUEST['elevlow']) || isset($_REQUEST['elevhigh']) || isset($_REQUEST['upperlat']) || isset($_REQUEST['pointlat']) || isset($_REQUEST['collector']) || isset($_REQUEST['collnum']) || isset($_REQUEST['eventdate1']) || isset($_REQUEST['eventdate2']) || isset($_REQUEST['catnum']) || isset($_REQUEST['typestatus']) || isset($_REQUEST['hasimages'])){
-    $stArr = $collManager->getSearchTerms();
-    $stArrSearchJson = json_encode($stArr);
-}
-
-if(isset($_REQUEST['db'])){
-    if(is_array($_REQUEST['db']) || $_REQUEST['db'] == 'all'){
-        $collArr['db'] = $collManager->getSearchTerm('db');
-        $stArrCollJson = json_encode($collArr);
-    }
-}
+$searchVar = $collManager->getQueryTermStr();
+$attribSearch = new OccurrenceAttributeSearch();
 ?>
-
 <html>
 <head>
-    <title><?php echo $defaultTitle.' '.$SEARCHTEXT['PAGE_TITLE']; ?></title>
-	<link href="../css/base.css?ver=<?php echo $CSS_VERSION; ?>" type="text/css" rel="stylesheet" />
-	<link href="../css/main.css<?php echo (isset($CSS_VERSION_LOCAL)?'?ver='.$CSS_VERSION_LOCAL:''); ?>" type="text/css" rel="stylesheet" />
+	<title><?php echo $DEFAULT_TITLE.' '.$LANG['PAGE_TITLE']; ?></title>
+	<?php
+	$activateJQuery = true;
+	if(file_exists($SERVER_ROOT.'/includes/head.php')){
+		include_once($SERVER_ROOT.'/includes/head.php');
+	}
+	else{
+		echo '<link href="'.$CLIENT_ROOT.'/css/jquery-ui.css" type="text/css" rel="stylesheet" />';
+		echo '<link href="'.$CLIENT_ROOT.'/css/base.css?ver=1" type="text/css" rel="stylesheet" />';
+		echo '<link href="'.$CLIENT_ROOT.'/css/main.css?ver=1" type="text/css" rel="stylesheet" />';
+	}
+    include_once($SERVER_ROOT.'/includes/googleanalytics.php');
+    ?>
+	<script src="../js/jquery-3.2.1.min.js?ver=3" type="text/javascript"></script>
+	<script src="../js/jquery-ui-1.12.1/jquery-ui.min.js?ver=3" type="text/javascript"></script>
+	<script src="../js/symb/collections.harvestparams.js?ver=180721" type="text/javascript"></script>
+	<script src="../js/symb/collections.traitsearch.js?ver=8" type="text/javascript"></script> <!-- Contains serach-by-trait modifications -->
+	<script type="text/javascript">
+		$(document).ready(function() {
+			<?php
+			if($searchVar){
+				?>
+				sessionStorage.querystr = "<?php echo $searchVar; ?>";
+				<?php
+			}
+			?>
+			setHarvestParamsForm();
+		});
+	</script>
+	<script src="../js/symb/api.taxonomy.taxasuggest.js?ver=3" type="text/javascript"></script>
+	<style type="text/css">
+		hr{ clear:both; margin: 10px 0px }
+		.catHeaderDiv { font-weight:bold; font-size: 18px }
+		.coordBoxDiv { float:left; border:2px solid brown; padding:10px; margin:5px; white-space: nowrap; }
+		.coordBoxDiv .labelDiv { font-weight:bold;float:left }
+		.coordBoxDiv .iconDiv { float:right;margin-left:5px; }
+		.coordBoxDiv .iconDiv img { width:18px; }
+		.coordBoxDiv .elemDiv { clear:both; }
+	</style>
 </head>
 <body>
-
 <?php
 	$displayLeftMenu = (isset($collections_harvestparamsMenu)?$collections_harvestparamsMenu:false);
-	include($serverRoot.'/header.php');
-?>
-
-  <link href="../css/jquery-ui.css" type="text/css" rel="Stylesheet" />
-  <script type="text/javascript" src="../js/jquery.js"></script>
-  <script type="text/javascript" src="../js/jquery-ui.js"></script>
-  <script type="text/javascript" src="../js/symb/collections.harvestparams.js?ver=9"></script>
-  <script type="text/javascript">
-      var starrJson = '';
-
-      $(document).ready(function() {
-          <?php
-          if($stArrCollJson){
-              echo "sessionStorage.jsoncollstarr = '".$stArrCollJson."';\n";
-          }
-
-          if($stArrSearchJson){
-              ?>
-              starrJson = '<?php echo $stArrSearchJson; ?>';
-              sessionStorage.jsonstarr = starrJson;
-              setHarvestParamsForm();
-              <?php
-          }
-          else{
-              ?>
-              if(sessionStorage.jsonstarr){
-                  starrJson = sessionStorage.jsonstarr;
-                  setHarvestParamsForm();
-              }
-              <?php
-          }
-          ?>
-      });
-
-      function checkHarvestparamsForm(frm){
-          <?php
-          if(!$SOLR_MODE){
-              ?>
-              //make sure they have filled out at least one field.
-              if ((frm.taxa.value == '') && (frm.country.value == '') && (frm.state.value == '') && (frm.county.value == '') &&
-                  (frm.locality.value == '') && (frm.upperlat.value == '') && (frm.pointlat.value == '') && (frm.catnum.value == '') &&
-                  (frm.elevhigh.value == '') && (frm.eventdate2.value == '') && (frm.typestatus.checked == false) && (frm.hasimages.checked == false) && (frm.hasgenetic.checked == false) &&
-                  (frm.collector.value == '') && (frm.collnum.value == '') && (frm.eventdate1.value == '') && (frm.elevlow.value == '')) {
-                  if(sessionStorage.jsoncollstarr){
-                      var jsonArr = JSON.parse(sessionStorage.jsoncollstarr);
-                      for(i in jsonArr){
-                          if(jsonArr[i] == 'all'){
-                              alert("Please fill in at least one search parameter!");
-                              return false;
-                          }
-                      }
-                  }
-                  else{
-                      alert("Please fill in at least one search parameter!");
-                      return false;
-                  }
-              }
-              <?php
-          }
-          ?>
-
-          if(frm.upperlat.value != '' || frm.bottomlat.value != '' || frm.leftlong.value != '' || frm.rightlong.value != ''){
-              // if Lat/Long field is filled in, they all should have a value!
-              if(frm.upperlat.value == '' || frm.bottomlat.value == '' || frm.leftlong.value == '' || frm.rightlong.value == ''){
-                  alert("Error: Please make all Lat/Long bounding box values contain a value or all are empty");
-                  return false;
-              }
-
-              // Check to make sure lat/longs are valid.
-              if(Math.abs(frm.upperlat.value) > 90 || Math.abs(frm.bottomlat.value) > 90 || Math.abs(frm.pointlat.value) > 90){
-                  alert("Latitude values can not be greater than 90 or less than -90.");
-                  return false;
-              }
-              if(Math.abs(frm.leftlong.value) > 180 || Math.abs(frm.rightlong.value) > 180 || Math.abs(frm.pointlong.value) > 180){
-                  alert("Longitude values can not be greater than 180 or less than -180.");
-                  return false;
-              }
-              if(parseFloat(frm.upperlat.value) < parseFloat(frm.bottomlat.value)){
-                  alert("Your northern latitude value is less then your southern latitude value. Please correct this.");
-                  return false;
-              }
-              if(parseFloat(frm.leftlong.value) > parseFloat(frm.rightlong.value)){
-                  alert("Your western longitude value is greater then your eastern longitude value. Please correct this. Note that western hemisphere longitudes in the decimal format are negitive.");
-                  return false;
-              }
-          }
-
-          //Same with point radius fields
-          if(frm.pointlat.value != '' || frm.pointlong.value != '' || frm.radius.value != ''){
-              if(frm.pointlat.value == '' || frm.pointlong.value == '' || frm.radius.value == ''){
-                  alert("Error: Please make all Lat/Long point-radius values contain a value or all are empty");
-                  return false;
-              }
-          }
-
-          if(frm.elevlow.value || frm.elevhigh.value){
-              if(isNaN(frm.elevlow.value) || isNaN(frm.elevhigh.value)){
-                  alert("Error: Please enter only numbers for elevation values");
-                  return false;
-              }
-          }
-
-          return true;
-      }
-  </script>
-
-  <?php
+	include($SERVER_ROOT.'/includes/header.php');
 	if(isset($collections_harvestparamsCrumbs)){
 		if($collections_harvestparamsCrumbs){
 			echo '<div class="navpath">';
@@ -164,182 +73,232 @@ if(isset($_REQUEST['db'])){
 		<?php
 	}
 	?>
-
 	<div id="innertext">
-        <h3>Search the digitized collections of the Oregon State University Herbarium</h3>
-        <p>This feature gives access to all the digitized collections housed in the Oregon State University Herbarium at Corvallis, which includes specimens originating at University of Oregon (ORE) and Willamette University (WILLU) as well as Oregon State University (OSC).  Collections represented are the vascular plants, algae, bryophytes, fungi, and lichens.  As part of its work to produce the Flora of Oregon in printed and digital formats, OregonFlora aligns the taxonomy of the Oregon vascular plants presented on this website with the Flora of Oregon's taxonomic framework.</p>
-		<h3><?php echo $SEARCHTEXT['PAGE_HEADER']; ?></h3>
-		<?php echo $SEARCHTEXT['GENERAL_TEXT_1']; ?>
-        <div style="margin:5px;">
-			<input type='checkbox' name='showtable' id='showtable' value='1' onchange="changeTableDisplay();" /> Show results in table view
-		</div>
-		<form name="harvestparams" id="harvestparams" action="list.php" method="post" onsubmit="return checkHarvestparamsForm(this);">
-			<div style="margin:10 0 10 0;"><hr></div>
-			<div style='float:right;margin:5px 10px;'>
-				<div style="margin-bottom:10px">
-					<input type="submit" class="nextbtn" value="<?php echo isset($LANG['BUTTON_NEXT'])?$LANG['BUTTON_NEXT']:'Next >'; ?>" />
-					<br><input type="reset" class="nextbtn" value="Reset form" />
+		<form name="harvestparams" id="harvestparams" action="list.php" method="post" onsubmit="return checkHarvestParamsForm(this)">
+			<hr/>
+			<div>
+				<div style="float:left">
+					<div>
+						<div class="catHeaderDiv"><?php echo $LANG['TAXON_HEADER']; ?></div>
+						<div style="margin:10px 0px 0px 5px;"><input type='checkbox' name='usethes' value='1' CHECKED /><?php echo $LANG['INCLUDE_SYNONYMS']; ?></div>
+					</div>
+					<div>
+						<select id="taxontype" name="taxontype">
+							<?php
+							$taxonType = 1;
+							if(isset($DEFAULT_TAXON_SEARCH) && $DEFAULT_TAXON_SEARCH) $taxonType = $DEFAULT_TAXON_SEARCH;
+							$taxonTypeRange = 6;
+							if(isset($DISPLAY_COMMON_NAMES) && !$DISPLAY_COMMON_NAMES) $taxonTypeRange = 5;
+							for($h=1;$h<$taxonTypeRange;$h++){
+								echo '<option value="'.$h.'" '.($taxonType==$h?'SELECTED':'').'>'.$LANG['SELECT_1-'.$h].'</option>';
+							}
+							?>
+						</select>
+						<input id="taxa" type="text" size="60" name="taxa" value="" title="<?php echo $LANG['SEPARATE_MULTIPLE']; ?>" />
+					</div>
 				</div>
-				<div><button type="button" class="resetbtn" onclick='resetHarvestParamsForm(this.form);'><?php echo isset($LANG['BUTTON_RESET'])?$LANG['BUTTON_RESET']:'Reset Form'; ?></button></div>
+				<div style='float:right;margin:0px 10px;'>
+					<div><button type="submit" style="width:100%"><?php echo isset($LANG['BUTTON_NEXT_LIST'])?$LANG['BUTTON_NEXT_LIST']:'List Display'; ?></button></div>
+					<div><button type="button" style="width:100%" onclick="displayTableView(this.form)"><?php echo isset($LANG['BUTTON_NEXT_TABLE'])?$LANG['BUTTON_NEXT_TABLE']:'Table Display'; ?></button></div>
+					<div><button type="reset" style="width:100%" onclick="resetHarvestParamsForm()"><?php echo isset($LANG['BUTTON_RESET'])?$LANG['BUTTON_RESET']:'Reset Form'; ?></button></div>
+				</div>
+			</div>
+			<hr/>
+			<div>
+				<div class="catHeaderDiv"><?php echo $LANG['LOCALITY_CRITERIA']; ?></div>
 			</div>
 			<div>
-				<h3><?php echo $SEARCHTEXT['TAXON_HEADER']; ?></h3>
-				<span style="margin-left:5px;"><input type='checkbox' name='thes' value='1' CHECKED /><?php echo $SEARCHTEXT['GENERAL_TEXT_2']; ?></SPAN>
+				<?php echo $LANG['COUNTRY']; ?>: <input type="text" id="country" size="43" name="country" value="" title="<?php echo $LANG['SEPARATE_MULTIPLE']; ?>" />
 			</div>
-			<div id="taxonSearch0">
+			<div>
+				<?php echo $LANG['STATE']; ?>: <input type="text" id="state" size="37" name="state" value="" title="<?php echo $LANG['SEPARATE_MULTIPLE']; ?>" />
+			</div>
+			<div>
+				<?php echo $LANG['COUNTY']; ?>: <input type="text" id="county" size="37"  name="county" value="" title="<?php echo $LANG['SEPARATE_MULTIPLE']; ?>" />
+			</div>
+			<div>
+				<?php echo $LANG['LOCALITY']; ?>: <input type="text" id="locality" size="43" name="local" value="" />
+			</div>
+			<div>
+				<?php echo $LANG['ELEV_INPUT_1']; ?>: <input type="text" id="elevlow" size="10" name="elevlow" value="" onchange="cleanNumericInput(this);" />
+				<?php echo $LANG['ELEV_INPUT_2']; ?> <input type="text" id="elevhigh" size="10" name="elevhigh" value="" onchange="cleanNumericInput(this);" />
+			</div>
+			<hr>
+			<div class="catHeaderDiv"><?php echo $LANG['LAT_LNG_HEADER']; ?></div>
+			<div>
+				<div class="coordBoxDiv">
+					<div class="labelDiv">
+						<?php echo $LANG['LL_BOUND_TEXT']; ?>
+					</div>
+					<div class="iconDiv">
+						<a href="#" onclick="openCoordAid('rectangle');return false;"><img src="../images/map.png" title="<?php echo (isset($LANG['MAP_AID'])?$LANG['MAP_AID']:'Mapping Aid'); ?>" /></a>
+					</div>
+					<div class="elemDiv">
+						<div>
+							<?php echo $LANG['LL_BOUND_NLAT']; ?>: <input type="text" id="upperlat" name="upperlat" size="7" value="" onchange="cleanNumericInput(this);">
+							<select id="upperlat_NS" name="upperlat_NS">
+								<option id="ulN" value="N"><?php echo $LANG['LL_N_SYMB']; ?></option>
+								<option id="ulS" value="S"><?php echo $LANG['LL_S_SYMB']; ?></option>
+							</select>
+						</div>
+						<div>
+							<?php echo $LANG['LL_BOUND_SLAT']; ?>: <input type="text" id="bottomlat" name="bottomlat" size="7" value="" onchange="cleanNumericInput(this);">
+							<select id="bottomlat_NS" name="bottomlat_NS">
+								<option id="blN" value="N"><?php echo $LANG['LL_N_SYMB']; ?></option>
+								<option id="blS" value="S"><?php echo $LANG['LL_S_SYMB']; ?></option>
+							</select>
+						</div>
+						<div>
+							<?php echo $LANG['LL_BOUND_WLNG']; ?>: <input type="text" id="leftlong" name="leftlong" size="7" value="" onchange="cleanNumericInput(this);">
+							<select id="leftlong_EW" name="leftlong_EW">
+								<option id="llW" value="W"><?php echo $LANG['LL_W_SYMB']; ?></option>
+								<option id="llE" value="E"><?php echo $LANG['LL_E_SYMB']; ?></option>
+							</select>
+						</div>
+						<div>
+							<?php echo $LANG['LL_BOUND_ELNG']; ?>: <input type="text" id="rightlong" name="rightlong" size="7" value="" onchange="cleanNumericInput(this);" style="margin-left:3px;">
+							<select id="rightlong_EW" name="rightlong_EW">
+								<option id="rlW" value="W"><?php echo $LANG['LL_W_SYMB']; ?></option>
+								<option id="rlE" value="E"><?php echo $LANG['LL_E_SYMB']; ?></option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="coordBoxDiv">
+					<div class="labelDiv">
+						<?php echo isset($LANG['LL_POLYGON_TEXT'])?$LANG['LL_POLYGON_TEXT']:''; ?>
+					</div>
+					<div class="iconDiv">
+						&nbsp;<a href="#" onclick="openCoordAid('polygon');return false;"><img src="../images/map.png" title="<?php echo (isset($LANG['MAP_AID'])?$LANG['MAP_AID']:'Mapping Aid'); ?>" /></a>
+					</div>
+					<div class="elemDiv">
+						<textarea id="footprintwkt" name="footprintwkt" style="zIndex:999;width:100%;height:90px"></textarea>
+					</div>
+				</div>
+				<div class="coordBoxDiv">
+					<div class="labelDiv">
+						<?php echo $LANG['LL_P-RADIUS_TEXT']; ?>
+					</div>
+					<div class="iconDiv">
+						<a href="#" onclick="openCoordAid('circle');return false;"><img src="../images/map.png" title="<?php echo (isset($LANG['MAP_AID'])?$LANG['MAP_AID']:'Mapping Aid'); ?>" /></a>
+					</div>
+					<div class="elemDiv">
+						<div>
+							<?php echo $LANG['LL_P-RADIUS_LAT']; ?>: <input type="text" id="pointlat" name="pointlat" size="7" value="" onchange="cleanNumericInput(this);">
+							<select id="pointlat_NS" name="pointlat_NS">
+								<option id="N" value="N"><?php echo $LANG['LL_N_SYMB']; ?></option>
+								<option id="S" value="S"><?php echo $LANG['LL_S_SYMB']; ?></option>
+							</select>
+						</div>
+						<div>
+							<?php echo $LANG['LL_P-RADIUS_LNG']; ?>: <input type="text" id="pointlong" name="pointlong" size="7" value="" onchange="cleanNumericInput(this);">
+							<select id="pointlong_EW" name="pointlong_EW">
+								<option id="W" value="W"><?php echo $LANG['LL_W_SYMB']; ?></option>
+								<option id="E" value="E"><?php echo $LANG['LL_E_SYMB']; ?></option>
+							</select>
+						</div>
+						<div>
+							<?php echo $LANG['LL_P-RADIUS_RADIUS']; ?>: <input type="text" id="radius" name="radius" size="5" value="" onchange="cleanNumericInput(this);">
+							<select id="radiusunits" name="radiusunits">
+								<option value="km"><?php echo $LANG['LL_P-RADIUS_KM']; ?></option>
+								<option value="mi"><?php echo $LANG['LL_P-RADIUS_MI']; ?></option>
+							</select>
+						</div>
+					</div>
+				</div>
+			</div>
+			<hr/>
+			<div class="catHeaderDiv"><?php echo $LANG['COLLECTOR_HEADER']; ?></div>
+			<div>
+				<?php echo $LANG['COLLECTOR_LASTNAME']; ?>:
+				<input type="text" id="collector" size="32" name="collector" value="" title="<?php echo $LANG['SEPARATE_MULTIPLE']; ?>" />
+			</div>
+			<div>
+				<?php echo $LANG['COLLECTOR_NUMBER']; ?>:
+				<input type="text" id="collnum" size="31" name="collnum" value="" title="<?php echo $LANG['TITLE_TEXT_2']; ?>" />
+			</div>
+			<div>
+				<?php echo $LANG['COLLECTOR_DATE']; ?>:
+				<input type="text" id="eventdate1" size="32" name="eventdate1" style="width:100px;" value="" title="<?php echo $LANG['TITLE_TEXT_3']; ?>" /> -
+				<input type="text" id="eventdate2" size="32" name="eventdate2" style="width:100px;" value="" title="<?php echo $LANG['TITLE_TEXT_4']; ?>" />
+			</div>
+			<hr/>
+			<div style="float:left">
 				<div>
-					<select id="taxontype" name="type">
-						<option value='1'><?php echo $SEARCHTEXT['SELECT_1-1']; ?></option>
-						<option value='2'><?php echo $SEARCHTEXT['SELECT_1-2']; ?></option>
-						<option value='3'><?php echo $SEARCHTEXT['SELECT_1-3']; ?></option>
-						<option value='4'><?php echo $SEARCHTEXT['SELECT_1-4']; ?></option>
-						<option value='5'><?php echo $SEARCHTEXT['SELECT_1-5']; ?></option>
-					</select>:
-					<input id="taxa" type="text" size="60" name="taxa" value="" title="<?php echo $SEARCHTEXT['TITLE_TEXT_1']; ?>" />
-				</div>
-			</div>
-			<div style="margin:10 0 10 0;"><hr></div>
-			<div>
-				<h3><?php echo $SEARCHTEXT['LOCALITY_HEADER']; ?></h3>
-			</div>
-			<div>
-				<?php echo $SEARCHTEXT['COUNTRY_INPUT']; ?> <input type="text" id="country" size="43" name="country" value="" title="<?php echo $SEARCHTEXT['TITLE_TEXT_1']; ?>" />
-			</div>
-			<div>
-				<?php echo $SEARCHTEXT['STATE_INPUT']; ?> <input type="text" id="state" size="37" name="state" value="" title="<?php echo $SEARCHTEXT['TITLE_TEXT_1']; ?>" />
-			</div>
-			<div>
-				<?php echo $SEARCHTEXT['COUNTY_INPUT']; ?> <input type="text" id="county" size="37"  name="county" value="" title="<?php echo $SEARCHTEXT['TITLE_TEXT_1']; ?>" />
-			</div>
-			<div>
-				<?php echo $SEARCHTEXT['LOCALITY_INPUT']; ?> <input type="text" id="locality" size="43" name="local" value="" />
-			</div>
-			<div>
-				<?php echo $SEARCHTEXT['ELEV_INPUT_1']; ?> <input type="text" id="elevlow" size="10" name="elevlow" value="" /> <?php echo $SEARCHTEXT['ELEV_INPUT_2']; ?>
-				<input type="text" id="elevhigh" size="10" name="elevhigh" value="" />
-			</div>
-            <?php
-            if($QUICK_HOST_ENTRY_IS_ACTIVE) {
-                ?>
-                <div>
-                    <?php echo $SEARCHTEXT['ASSOC_HOST_INPUT']; ?> <input type="text" id="assochost" size="43" name="assochost" value="" title="<?php echo $SEARCHTEXT['TITLE_TEXT_1']; ?>" />
-                </div>
-                <?php
-            }
-            ?>
-			<div style="margin:10 0 10 0;">
-				<hr>
-				<h3><?php echo $SEARCHTEXT['LAT_LNG_HEADER']; ?></h3>
-			</div>
-			<div style="width:300px;float:left;border:2px solid brown;padding:10px;margin-bottom:10px;">
-				<div style="font-weight:bold;">
-					<?php echo $SEARCHTEXT['LL_BOUND_TEXT']; ?>
+					<div class="catHeaderDiv"><?php echo $LANG['SPECIMEN_HEADER']; ?></div>
 				</div>
 				<div>
-					<?php echo $SEARCHTEXT['LL_BOUND_NLAT']; ?> <input type="text" id="upperlat" name="upperlat" size="7" value="" onchange="checkUpperLat();" style="margin-left:9px;">
-					<select id="upperlat_NS" name="upperlat_NS" onchange="checkUpperLat();">
-						<option id="nlN" value="N"><?php echo $SEARCHTEXT['LL_N_SYMB']; ?></option>
-						<option id="nlS" value="S"><?php echo $SEARCHTEXT['LL_S_SYMB']; ?></option>
-					</select>
+					<?php echo $LANG['CATALOG_NUMBER']; ?>:
+					<input type="text" id="catnum" size="32" name="catnum" value="" title="<?php echo $LANG['SEPARATE_MULTIPLE']; ?>" />
+					<input name="includeothercatnum" type="checkbox" value="1" checked /> <?php echo $LANG['INCLUDE_OTHER_CATNUM']?>
 				</div>
 				<div>
-					<?php echo $SEARCHTEXT['LL_BOUND_SLAT']; ?> <input type="text" id="bottomlat" name="bottomlat" size="7" value="" onchange="javascript:checkBottomLat();" style="margin-left:7px;">
-					<select id="bottomlat_NS" name="bottomlat_NS" onchange="checkBottomLat();">
-						<option id="blN" value="N"><?php echo $SEARCHTEXT['LL_N_SYMB']; ?></option>
-						<option id="blS" value="S"><?php echo $SEARCHTEXT['LL_S_SYMB']; ?></option>
-					</select>
+					<input type='checkbox' name='typestatus' value='1' /> <?php echo isset($LANG['TYPE'])?$LANG['TYPE']:'Limit to Type Specimens Only'; ?>
 				</div>
 				<div>
-					<?php echo $SEARCHTEXT['LL_BOUND_WLNG']; ?> <input type="text" id="leftlong" name="leftlong" size="7" value="" onchange="javascript:checkLeftLong();">
-					<select id="leftlong_EW" name="leftlong_EW" onchange="checkLeftLong();">
-						<option id="llW" value="W"><?php echo $SEARCHTEXT['LL_W_SYMB']; ?></option>
-						<option id="llE" value="E"><?php echo $SEARCHTEXT['LL_E_SYMB']; ?></option>
-					</select>
+					<input type='checkbox' name='hasimages' value='1' /> <?php echo isset($LANG['HAS_IMAGE'])?$LANG['HAS_IMAGE']:'Limit to Specimens with Images Only'; ?>
 				</div>
 				<div>
-					<?php echo $SEARCHTEXT['LL_BOUND_ELNG']; ?> <input type="text" id="rightlong" name="rightlong" size="7" value="" onchange="javascript:checkRightLong();" style="margin-left:3px;">
-					<select id="rightlong_EW" name="rightlong_EW" onchange="checkRightLong();">
-						<option id="rlW" value="W"><?php echo $SEARCHTEXT['LL_W_SYMB']; ?></option>
-						<option id="rlE" value="E"><?php echo $SEARCHTEXT['LL_E_SYMB']; ?></option>
-					</select>
-				</div>
-				<div style="clear:both;float:right;margin-top:8px;cursor:pointer;" onclick="openBoundingBoxMap();">
-					<img src="../images/world.png" width="15px" title="<?php echo $SEARCHTEXT['LL_P-RADIUS_TITLE_1']; ?>" />
-				</div>
-			</div>
-			<div style="width:260px; float:left;border:2px solid brown;padding:10px;margin-left:10px;">
-				<div style="font-weight:bold;">
-					<?php echo $SEARCHTEXT['LL_P-RADIUS_TEXT']; ?>
+					<input type='checkbox' name='hasgenetic' value='1' /> <?php echo isset($LANG['HAS_GENETIC'])?$LANG['HAS_GENETIC']:'Limit to Specimens with Genetic Data Only'; ?>
 				</div>
 				<div>
-					<?php echo $SEARCHTEXT['LL_P-RADIUS_LAT']; ?> <input type="text" id="pointlat" name="pointlat" size="7" value="" onchange="javascript:checkPointLat();" style="margin-left:11px;">
-					<select id="pointlat_NS" name="pointlat_NS" onchange="checkPointLat();">
-						<option id="N" value="N"><?php echo $SEARCHTEXT['LL_N_SYMB']; ?></option>
-						<option id="S" value="S"><?php echo $SEARCHTEXT['LL_S_SYMB']; ?></option>
-					</select>
+					<input type='checkbox' name='hascoords' value='1' /> <?php echo isset($LANG['HAS_COORDS'])?$LANG['HAS_COORDS']:'Limit to Specimens with Geocoordinates Only'; ?>
 				</div>
 				<div>
-					<?php echo $SEARCHTEXT['LL_P-RADIUS_LNG']; ?> <input type="text" id="pointlong" name="pointlong" size="7" value="" onchange="javascript:checkPointLong();">
-					<select id="pointlong_EW" name="pointlong_EW" onchange="checkPointLong();">
-						<option id="W" value="W"><?php echo $SEARCHTEXT['LL_W_SYMB']; ?></option>
-						<option id="E" value="E"><?php echo $SEARCHTEXT['LL_E_SYMB']; ?></option>
-					</select>
-				</div>
-				<div>
-					<?php echo $SEARCHTEXT['LL_P-RADIUS_RADIUS']; ?> <input type="text" id="radiustemp" name="radiustemp" size="5" value="" style="margin-left:15px;" onchange="updateRadius();">
-					<select id="radiusunits" name="radiusunits" onchange="updateRadius();">
-						<option value="km"><?php echo $SEARCHTEXT['LL_P-RADIUS_KM']; ?></option>
-						<option value="mi"><?php echo $SEARCHTEXT['LL_P-RADIUS_MI']; ?></option>
-					</select>
-					<input type="hidden" id="radius" name="radius" value="" />
-				</div>
-				<div style="clear:both;float:right;margin-top:8px;cursor:pointer;" onclick="openPointRadiusMap();">
-					<img src="../images/world.png" width="15px" title="<?php echo $SEARCHTEXT['LL_P-RADIUS_TITLE_1']; ?>" />
+					<input type='checkbox' name='includecult' value='1' /> <?php echo isset($LANG['INCLUDE_CULTIVATED'])?$LANG['INCLUDE_CULTIVATED']:'Include cultivated/captive occurrences'; ?>
 				</div>
 			</div>
-			<div style=";clear:both;"><hr/></div>
-			<div>
-				<h3><?php echo $SEARCHTEXT['COLLECTOR_HEADER']; ?></h3>
-			</div>
-			<div>
-				<?php echo $SEARCHTEXT['COLLECTOR_LASTNAME']; ?>
-				<input type="text" id="collector" size="32" name="collector" value="" title="<?php echo $SEARCHTEXT['TITLE_TEXT_1']; ?>" />
-			</div>
-			<div>
-				<?php echo $SEARCHTEXT['COLLECTOR_NUMBER']; ?>
-				<input type="text" id="collnum" size="31" name="collnum" value="" title="<?php echo $SEARCHTEXT['TITLE_TEXT_2']; ?>" />
-			</div>
-			<div>
-				<?php echo $SEARCHTEXT['COLLECTOR_DATE']; ?>
-				<input type="text" id="eventdate1" size="32" name="eventdate1" style="width:100px;" value="" title="<?php echo $SEARCHTEXT['TITLE_TEXT_3']; ?>" /> -
-				<input type="text" id="eventdate2" size="32" name="eventdate2" style="width:100px;" value="" title="<?php echo $SEARCHTEXT['TITLE_TEXT_4']; ?>" />
-			</div>
+			<?php
+			if(isset($SEARCH_BY_TRAITS) && $SEARCH_BY_TRAITS) {
+				$traitArr = $attribSearch->getTraitSearchArr($SEARCH_BY_TRAITS);
+				if($traitArr){
+					?>
+					<hr/>
+					<div style="float:left">
+						<div>
+							<div class="catHeaderDiv"><?php echo $LANG['TRAIT_HEADER']; ?></div>
+							<div><?php echo $LANG['TRAIT_DESCRIPTION']; ?></div>
+							<input type="hidden" id="SearchByTraits" value="true">
+						</div>
+						<?php
+						foreach($traitArr as $traitID => $traitData){
+							if(!isset($traitData['dependentTrait'])) {
+								?>
+								<fieldset style="margin-top:10px;display:inline;min-width:500px">
+									<legend><b>Trait: <?php echo $traitData['name']; ?></b></legend>
+									<div style="float:right">
+										<div class="trianglediv" style="margin:4px 3px;float:right;cursor:pointer" onclick="setAttributeTree(this)" title="Toggle attribute tree open/close">
+											<img class="triangleright" src="../images/triangleright.png" style="display:none" />
+											<img class="triangledown" src="../images/triangledown.png" style="" />
+										</div>
+									</div>
+									<div class="traitDiv" style="margin-left:5px;float:left">
+										<?php $attribSearch->echoTraitSearchForm($traitID); ?>
+									</div>
+								</fieldset>
+								<?php
+							}
+						}
+						?>
+					</div>
+					<?php
+				}
+			}
+			?>
 			<div style="float:right;">
-				<input type="submit" class="nextbtn" value="<?php echo isset($LANG['BUTTON_NEXT'])?$LANG['BUTTON_NEXT']:'Next >'; ?>" />
-					<br><input type="reset" class="nextbtn" value="Reset form" />
+				<div><button type="submit" style="width:100%"><?php echo isset($LANG['BUTTON_NEXT_LIST'])?$LANG['BUTTON_NEXT_LIST']:'List Display'; ?></button></div>
+				<div><button type="button" style="width:100%" onclick="displayTableView(this.form)"><?php echo isset($LANG['BUTTON_NEXT_TABLE'])?$LANG['BUTTON_NEXT_TABLE']:'Table Display'; ?></button></div>
+				<div><button type="reset" style="width:100%" onclick="resetHarvestParamsForm()"><?php echo isset($LANG['BUTTON_RESET'])?$LANG['BUTTON_RESET']:'Reset Form'; ?></button></div>
 			</div>
 			<div>
-				<h3><?php echo $SEARCHTEXT['SPECIMEN_HEADER']; ?></h3>
+				<input type="hidden" name="reset" value="1" />
+				<input type="hidden" name="db" value="<?php echo $collManager->getSearchTerm('db'); ?>" />
 			</div>
-			<div>
-				<?php echo $SEARCHTEXT['CATALOG_NUMBER']; ?>
-                <input type="text" id="catnum" size="32" name="catnum" value="" title="<?php echo $SEARCHTEXT['TITLE_TEXT_1']; ?>" />
-                <input name="includeothercatnum" type="checkbox" value="1" checked /> <?php echo $SEARCHTEXT['INCLUDE_OTHER_CATNUM']; ?>
-			</div>
-			<div>
-				<input type='checkbox' name='typestatus' value='1' /> <?php echo $SEARCHTEXT['TYPE']; ?>
-			</div>
-			<div>
-				<input type='checkbox' name='hasimages' value='1' /> <?php echo $SEARCHTEXT['HAS_IMAGE']; ?>
-			</div>
-            <div id="searchGeneticCheckbox">
-                <input type='checkbox' name='hasgenetic' value='1' /> <?php echo $SEARCHTEXT['HAS_GENETIC']; ?>
-            </div>
-			<input type="hidden" name="reset" value="1" />
+			<hr/>
 		</form>
-    </div>
+	</div>
 	<?php
-	include($serverRoot.'/footer.php');
+	include($SERVER_ROOT.'/includes/footer.php');
 	?>
 </body>
 </html>

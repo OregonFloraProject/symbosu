@@ -38,19 +38,26 @@ $advFieldArr = array('family'=>'Family','sciname'=>'Scientific Name','identified
 	'georeferencedBy'=>'Georeferenced By','georeferenceProtocol'=>'Georeference Protocol','georeferenceSources'=>'Georeference Sources',
 	'georeferenceVerificationStatus'=>'Georeference Verification Status','georeferenceRemarks'=>'Georeference Remarks',
 	'minimumElevationInMeters'=>'Elevation Minimum (m)','maximumElevationInMeters'=>'Elevation Maximum (m)',
-	'verbatimElevation'=>'Verbatim Elevation','disposition'=>'Disposition');
+	'verbatimElevation'=>'Verbatim Elevation','disposition'=>'Disposition','processingStatus'=>'Processing Status','dbpk'=>'Source Identifier (dbpk)');
 ?>
 <html>
 	<head>
 		<title>Occurrence Export Manager</title>
-		<link href="<?php echo $CLIENT_ROOT; ?>/css/base.css?ver=<?php echo $CSS_VERSION; ?>" type="text/css" rel="stylesheet" />
-		<link href="<?php echo $CLIENT_ROOT; ?>/css/main.css<?php echo (isset($CSS_VERSION_LOCAL)?'?ver='.$CSS_VERSION_LOCAL:''); ?>" type="text/css" rel="stylesheet" />
-		<link href="../../js/jquery-ui-1.12.1/jquery-ui.min.css" type="text/css" rel="Stylesheet" />
+		<?php
+		$activateJQuery = true;
+		if(file_exists($SERVER_ROOT.'/includes/head.php')){
+			include_once($SERVER_ROOT.'/includes/head.php');
+		}
+		else{
+			echo '<link href="'.$CLIENT_ROOT.'/css/jquery-ui.css" type="text/css" rel="stylesheet" />';
+			echo '<link href="'.$CLIENT_ROOT.'/css/base.css?ver=1" type="text/css" rel="stylesheet" />';
+			echo '<link href="'.$CLIENT_ROOT.'/css/main.css?ver=1" type="text/css" rel="stylesheet" />';
+		}
+		?>
 		<script src="../../js/jquery-3.2.1.min.js" type="text/javascript"></script>
 		<script src="../../js/jquery-ui-1.12.1/jquery-ui.min.js" type="text/javascript"></script>
 		<script src="../../js/symb/shared.js" type="text/javascript"></script>
 		<script>
-
 			$(function() {
 				var dialogArr = new Array("schemanative","schemadwc","newrecs");
 				var dialogStr = "";
@@ -103,7 +110,7 @@ $advFieldArr = array('family'=>'Family','sciname'=>'Scientific Name','identified
 							<option value="1" <?php echo ($displayMode==1?'selected':''); ?>>Georeference Export</option>
 						</select>
 						<input name="collid" type="hidden" value="<?php echo $collid; ?>" />
-						<input name="tabindex" type="hidden" value="5" />
+						<input name="tabindex" type="hidden" value="4" />
 					</form>
 				</fieldset>
 			</div>
@@ -221,6 +228,7 @@ $advFieldArr = array('family'=>'Family','sciname'=>'Scientific Name','identified
 												<input name="targetcollid" type="hidden" value="<?php echo $collid; ?>" />
 												<input name="schema" type="hidden" value="georef" />
 												<input name="extended" type="hidden" value="1" />
+												<input name="overrideconditionlimit" type="hidden" value="1" />
 												<input name="submitaction" type="submit" value="Download Records" />
 											</div>
 										</td>
@@ -316,6 +324,7 @@ $advFieldArr = array('family'=>'Family','sciname'=>'Scientific Name','identified
 											<input name="targetcollid" type="hidden" value="<?php echo $collid; ?>" />
 											<input name="schema" type="hidden" value="dwc" />
 											<input name="extended" type="hidden" value="1" />
+											<input name="overrideconditionlimit" type="hidden" value="1" />
 											<input name="submitaction" type="submit" value="Download Records" />
 										</div>
 									</td>
@@ -413,7 +422,8 @@ $advFieldArr = array('family'=>'Family','sciname'=>'Scientific Name','identified
 									</td>
 								</tr>
 								<?php
-								if($traitArr = $dlManager->getAttributeTraits($collid)){
+								$traitArr = $dlManager->getAttributeTraits($collid);
+								if($traitArr){
 									?>
 									<tr>
 										<td valign="top">
@@ -494,7 +504,9 @@ $advFieldArr = array('family'=>'Family','sciname'=>'Scientific Name','identified
 										<div style="margin:10px 0px;">
 											<input type="checkbox" name="identifications" value="1" onchange="extensionSelected(this)" checked /> include Determination History<br/>
 											<input type="checkbox" name="images" value="1" onchange="extensionSelected(this)" checked /> include Image Records<br/>
-											<input type="checkbox" name="attributes" value="1" onchange="extensionSelected(this)" checked /> include Occurrence Trait Attributes (MeasurementOrFact extension)<br/>
+											<?php
+											if($traitArr) echo '<input type="checkbox" name="attributes" value="1" onchange="extensionSelected(this)" checked /> include Occurrence Trait Attributes (MeasurementOrFact extension)<br/>';
+											?>
 											*Output must be a compressed archive
 										</div>
 									</td>
@@ -546,6 +558,7 @@ $advFieldArr = array('family'=>'Family','sciname'=>'Scientific Name','identified
 										<div style="margin:10px;">
 											<input name="targetcollid" type="hidden" value="<?php echo $collid; ?>" />
 											<input name="extended" type="hidden" value="1" />
+											<input name="overrideconditionlimit" type="hidden" value="1" />
 											<input name="submitaction" type="submit" value="Download Records" />
 										</div>
 									</td>

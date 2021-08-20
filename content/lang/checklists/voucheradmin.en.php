@@ -8,6 +8,7 @@ Language: English
 $LANG['NAV_HOME'] = 'Home';
 $LANG['CHECKADMIN'] = 'Checklist Administration';
 $LANG['RETURNCHECK'] = 'Return to Checklist';
+$LANG['ADDIMGVOUCHER'] = 'Add Image Voucher';
 $LANG['EDITSEARCH'] = 'Edit Search Statement';
 $LANG['COUNTRY'] = 'Country';
 $LANG['STATE'] = 'State';
@@ -22,10 +23,9 @@ $LANG['LATN'] = 'Lat North';
 $LANG['LATS'] = 'Lat South';
 $LANG['LONGE'] = 'Long East';
 $LANG['LONGW'] = 'Long West';
-$LANG['INCLUDELATLONG'] = 'Include Lat/Long and locality as an "OR" condition';
 $LANG['ONLYCOORD'] = 'Only include occurrences with coordinates';
-$LANG['EXCLUDE'] = 'Exclude cultivated species';
-$LANG['TAXON'] = 'Taxon';
+$LANG['POLYGON_SEARCH'] = 'Search based on polygon defining checklist research boundaries';
+$LANG['EXCLUDE'] = 'Exclude cultivated/captive occurrences';
 $LANG['SAVESEARCH'] = 'Save Search Terms';
 $LANG['REMOVESEARCH'] = 'Remove Search Statement';
 $LANG['NEWVOUCH'] = 'New Vouchers';
@@ -41,16 +41,18 @@ $LANG['LISTEDBELOW'] = 'Listed below are occurrences that can be batch linked to
 $LANG['CHECKLISTID'] = 'Checklist ID';
 $LANG['ADDNAMECURRTAX'] = ' Add name using current taxonomy';
 $LANG['NOVOUCHLOCA'] = 'No vouchers located';
-$LANG['LISTEDBELOWARESPECINSTRUC'] = 'Listed below are species from the checklist that do not have linked occurrence vouchers. Click on name to use the search statement above to dynamically query the occurrence dataset for
-possible voucher occurrences. Use the pulldown to the right to display the occurrences in a table format.';
+$LANG['LISTEDBELOWARESPECINSTRUC'] = 'Listed below are species from the checklist that do not have linked specimen vouchers.
+Click on name to use the search statement above to dynamically query the occurrence dataset for
+possible voucher specimens. Use the pulldown to the right to display the specimens in a table format.';
 $LANG['ALLTAXACONTAINVOUCH'] = 'All taxa contain voucher links';
 $LANG['FULLSPECLIST'] = 'Full species list (CSV)';
 $LANG['FULLPRINT'] = 'Full species list (Print Friendly)';
-$LANG['FULLSPECLISTVOUCHER'] = 'Full species list with vouchers (CSV)';
+$LANG['FULLSPECLISTVOUCHER'] = 'Full species list with linked vouchers (CSV)';
+$LANG['FULLPRINTVOUCHER'] = 'Full species list with linked vouchers (Print Friendly)';
+$LANG['VOUCHERONLY'] = 'Linked occurrence vouchers only (DwC-A, CSV, Tab-delimited)';
+$LANG['FULLSPECLISTALLOCCUR'] = 'Full species list with all occurrences matching search terms (CSV)';
 $LANG['PENSOFT_XLSX_EXPORT'] = 'Pensoft Excel Export';
-$LANG['VOUCHERONLY'] = 'Occurrence vouchers only (DwC-A, CSV, Tab-delimited)';
-$LANG['FULLPRINTVOUCHER'] = 'Full species list with vouchers (Print Friendly)';
-$LANG['SPECMISSINGTITLE'] = 'Possible species additions based on occurrence vouchers';
+$LANG['SPECMISSINGTITLE'] = 'Possible species additions based on specimen vouchers';
 $LANG['SPECMISSTAXA'] = 'Specimens of taxa missing from checklist (CSV)';
 $LANG['SPECMISSPELLED'] = 'Specimens with misspelled, illegal, and problematic scientific names (CSV)';
 $LANG['CHECKIDNOTSET'] = 'Checklist identifier not set';

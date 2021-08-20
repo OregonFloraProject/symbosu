@@ -1,11 +1,14 @@
 <?php
 include_once('../../config/symbini.php');
-header("Content-Type: text/html; charset=".$charset);
+header("Content-Type: text/html; charset=".$CHARSET);
 
 $locality = $_REQUEST['locality'];
 $country = array_key_exists('country',$_REQUEST)?$_REQUEST['country']:'';
 $state = array_key_exists('state',$_REQUEST)?$_REQUEST['state']:'';
 $county = array_key_exists('county',$_REQUEST)?$_REQUEST['county']:'';
+$decLat = array_key_exists('declat',$_REQUEST)?$_REQUEST['declat']:'';
+$decLng = array_key_exists('declng',$_REQUEST)?$_REQUEST['declng']:'';
+$uncertainty = array_key_exists('uncertainty',$_REQUEST)?$_REQUEST['uncertainty']:'';
 
 if(!$country || !$state || !$county){
 	$locArr = explode(";",$locality);
@@ -13,6 +16,11 @@ if(!$country || !$state || !$county){
 	if(!$country && $locArr) $country = trim(array_shift($locArr));
 	if(!$state && $locArr) $state = trim(array_shift($locArr));
 	if(!$county && $locArr) $county = trim(array_shift($locArr));
+	//Extract lat/long from locality, when it exists
+	if(preg_match('/\(([-]{0,1}\d{1,2}\.\d+)[\s,]+([-]{0,1}\d{1,3}\.\d+)\)/', $locality, $m)){
+		$decLat = $m[1];
+		$decLng = $m[2];
+	}
 }
 //Modify TRS data to make it more compatable to the GeoLocate format (S23 needs to be Sec23)
 if(preg_match('/\d{1,2}[NS]{1}T\s\d{1,2}[EW]{1}R\s\d{1,2}S/',$locality)){
@@ -22,7 +30,7 @@ elseif(preg_match('/R\d{1,2}[EW]{1}\sS\d{1,2}/i',$locality)){
 	$locality = preg_replace('/\sS(\d{1,2})/', ' Sec$1', $locality);
 }
 //Convert latin1 character sets to utf-8
-if(strtolower($charset) == "iso-8859-1"){
+if(strtolower($CHARSET) == "iso-8859-1"){
 	if(mb_detect_encoding($country,'UTF-8,ISO-8859-1') == "UTF-8"){
 		$country = utf8_encode($country);
 	}
@@ -41,7 +49,9 @@ $country = removeAccents($country);
 $state = removeAccents($state);
 $county = removeAccents($county);
 
-$urlVariables = 'country='.urlencode($country).'&state='.urlencode($state).'&county='.urlencode($county).'&locality='.urlencode($locality);
+$urlVariables = 'country='.urlencode($country).'&state='.urlencode($state).'&county='.urlencode($county);
+if($decLat && $decLng) $urlVariables .= '&points='.$decLat.'|'.$decLng.'|Source Coordinates||'.$uncertainty;
+$urlVariables .= '&locality='.urlencode($locality);
 if(isset($PORTAL_GUID) && $PORTAL_GUID){
 	$urlVariables .= '&gc='.$PORTAL_GUID;
 }
@@ -49,10 +59,19 @@ if(isset($PORTAL_GUID) && $PORTAL_GUID){
 ?>
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=<?php echo $charset; ?>">
+	<meta http-equiv="Content-Type" content="text/html; charset=<?php echo $CHARSET; ?>">
 	<title>GEOLocate Tool</title>
-	<link href="<?php echo $clientRoot; ?>/css/base.css?ver=<?php echo $CSS_VERSION; ?>" type="text/css" rel="stylesheet" />
-	<link href="<?php echo $clientRoot; ?>/css/main.css<?php echo (isset($CSS_VERSION_LOCAL)?'?ver='.$CSS_VERSION_LOCAL:''); ?>" type="text/css" rel="stylesheet" />
+  <?php
+    $activateJQuery = false;
+    if(file_exists($SERVER_ROOT.'/includes/head.php')){
+      include_once($SERVER_ROOT.'/includes/head.php');
+    }
+    else{
+      echo '<link href="'.$CLIENT_ROOT.'/css/jquery-ui.css" type="text/css" rel="stylesheet" />';
+      echo '<link href="'.$CLIENT_ROOT.'/css/base.css?ver=1" type="text/css" rel="stylesheet" />';
+      echo '<link href="'.$CLIENT_ROOT.'/css/main.css?ver=1" type="text/css" rel="stylesheet" />';
+    }
+  ?>
 	<style>
 		iframe {
 			width: 1020px;
@@ -63,7 +82,7 @@ if(isset($PORTAL_GUID) && $PORTAL_GUID){
 	</style>
 	<script type="text/javascript">
 	    function transferCoord(evt) {
-	        if(evt.origin.indexOf("geo-locate.org") < 0) {
+	        if(evt.origin.indexOf('geo-locate.org') < 0) {
 				alert("iframe url does not have permision to interact with me");
 	        }
 	        else {//alert(evt.data);
@@ -91,8 +110,8 @@ if(isset($PORTAL_GUID) && $PORTAL_GUID){
 
 <body>
 	<div id="container">
-		<div >
-			<iframe id="Iframe1" src="//www.geo-locate.org/web/WebGeoreflight.aspx?v=1&georef=run&tab=locality&<?php echo $urlVariables; ?>"></iframe>
+		<div>
+			<iframe id="Iframe1" src="//www.geo-locate.org/web/WebGeoreflight.aspx?v=1&georef=run|true|true|true|false|false|false|false|0&tab=locality&<?php echo $urlVariables; ?>"></iframe>
 		</div>
 	</div>
 </body>

@@ -32,7 +32,7 @@ $statusStr = '';
 <body>
 	<?php
 	$displayLeftMenu = false;
-	include($SERVER_ROOT.'/header.php');
+	include($SERVER_ROOT.'/includes/header.php');
 	if(isset($crowdsourcecentral_listCrumbs)){
 		if($crowdsourcecentral_listCrumbs){
 			echo $crowdsourcecentral_listCrumbs;
@@ -73,7 +73,7 @@ $statusStr = '';
 			<?php
 			$userStats = $csManager->getUserStats($catid);
 			?>
-			<fieldset style="background-color:white;margin-bottom:15px;width:250px;padding:15px;">
+			<fieldset style="background-color:white;margin-bottom:15px;width:300px;padding:15px;">
 				<legend><b>Current Standing</b></legend>
 				<?php
 				if($SYMB_UID){
@@ -121,7 +121,7 @@ $statusStr = '';
 					echo '<tr>';
 					echo '<td>';
 					echo '<b>'.$sArr['name'].'</b>';
-					if($IS_ADMIN || in_array($collId, $pArr)) echo ' <a href="../index.php?tabindex=2&collid='.$collId.'"><img src="../../../images/edit.png" style="width:14px;" /></a>';
+					if($IS_ADMIN || in_array($collId, $pArr)) echo ' <a href="../index.php?tabindex=1&collid='.$collId.'"><img src="../../../images/edit.png" style="width:14px;" /></a>';
 					echo '</td>';
 					echo '<td>'.number_format((array_key_exists(5,$cntArr)?$cntArr[5]:0)+(array_key_exists(10,$cntArr)?$cntArr[10]:0)).'</td>';
 					echo '<td>'.number_format(array_key_exists(5,$pointArr)?$pointArr[5]:0).'</td>';
@@ -146,7 +146,7 @@ $statusStr = '';
 		?>
 	</div>
 	<?php
-	include($SERVER_ROOT.'/footer.php');
+	include($SERVER_ROOT.'/includes/footer.php');
 	?>
 </body>
 </html>

@@ -137,7 +137,7 @@ function geoLocateLocality(){
 		var country = encodeURIComponent(f.qcountry.value);
 		var state = encodeURIComponent(f.qstate.value);
 		var county = encodeURIComponent(f.qcounty.value);
-		geolocWindow=open("geolocate.php?country="+country+"&state="+state+"&county="+county+"&locality="+locality,"geoloctool","resizable=1,scrollbars=1,toolbar=1,width=1050,height=700,left=20,top=20");
+		geolocWindow=open("geolocate.php?country="+country+"&state="+state+"&county="+county+"&locality="+locality,"geoloctool","resizable=1,scrollbars=1,toolbar=0,width=1050,height=700,left=20,top=20");
 		if(geolocWindow.opener == null) geolocWindow.opener = self;
 	}
 	else{
@@ -149,13 +149,13 @@ function geoLocateUpdateCoord(latValue,lngValue,coordErrValue,footprintWKTValue)
 	var f = document.georefform;
 	f.decimallatitude.value = latValue;
 	f.decimallongitude.value = lngValue;
-	if(coordErrValue == "Unavailable") coordErrValue = "";
+	if(!isNumeric(coordErrValue)) coordErrValue = "";
 	f.coordinateuncertaintyinmeters.value = coordErrValue;
+	f.geodeticdatum.value = "WGS84";
 	if(footprintWKTValue == "Unavailable") footprintWKTValue = "";
-	if(footprintWKTValue.length > 65000){
-		footprintWKTValue = "";
-		//alert("WKT footprint is too large to save in the database");
-	}
+	else if(footprintWKTValue.length > 65000) footprintWKTValue = "";	//WKT footprint is too large to save in the database
+	else if(footprintWKTValue.indexOf("NaN") > -1) footprintWKTValue = "";
+	else if(footprintWKTValue == "N/A") footprintWKTValue = "";
 	f.footprintwkt.value = footprintWKTValue;
 	var baseStr = f.georeferencesources.value;
 	if(baseStr){
@@ -175,7 +175,7 @@ function geoCloneTool(){
 		url = url + "&state=" + f.qstate.value;
 		url = url + "&county=" + f.qcounty.value;
 		url = url + "&collid=" + f.collid.value;
-		cloneWindow=open(url,"geoclonetool","resizable=1,scrollbars=1,toolbar=1,width=800,height=600,left=20,top=20");
+		cloneWindow=open(url,"geoclonetool","resizable=1,scrollbars=1,toolbar=0,width=800,height=600,left=20,top=20");
 		if(cloneWindow.opener == null) cloneWindow.opener = self;
 	}
 	else{
@@ -191,8 +191,8 @@ function analyseLocalityStr(){
 		var locStr = selObj.options[selObj.selectedIndex].text;
 		
 		var utmRegEx5 = /(\d{1,2})\D{1}\s{1}(\d{2}\s{1}\d{2}\s{1}\d{3})mE\s{1}(\d{2}\s{1}\d{2}\s{1}\d{3})mN/ //Format: ##S ## ## ###mE ## ## ###mN ##
-		var llRegEx1 = /(\d{1,2})[^\.\d]{1,2}(?:deg)*\s*(\d{1,2}(?:\.[0-9])*)[^\.\d]{1,2}(\d{0,2}(?:\.[0-9])*)[^\.\d,;]{1,3}[NS,;]{1}[\.,;]*\s*(\d{1,3})[^\.\d]{1}(?:deg)*\s*(\d{0,2}(?:\.[0-9]+)*)[^\.\d]{1,2}(\d{0,2}(?:\.[0-9]+)*)[^\.\d]{1,3}/i 
-		var llRegEx2 = /(\d{1,2})[^\.\d]{1,2}\s{0,1}(\d{1,2}(?:\.[0-9])*)[^\.\d,;]{1,2}[NS,;]{1}[\.,;]*\s*(\d{1,3})[^\.\d]{1,2}\s*(\d{1,2}(?:\.[0-9])*)[^\.\d]{1,2}/i 
+		var llRegEx1 = /(\d{1,2})[^\.\d]{1,2}(?:deg)*\s*(\d{1,2}(?:\.[0-9])*)[^\.\d]{1,2}\s*(\d{0,2}(?:\.[0-9])*)[^\.\d,;]{1,3}\s*[NS,;]{1}[\.,;]*\s*[EW]{0,1}\s*(\d{1,3})[^\.\d]{1}(?:deg)*\s*(\d{0,2}(?:\.[0-9]+)*)[^\.\d]{1,2}\s*(\d{0,2}(?:\.[0-9]+)*)[^\.\d]{1,3}/i 
+		var llRegEx2 = /(\d{1,2})[^\.\d]{1,2}\s{0,1}(\d{1,2}(?:\.[0-9])*)[^\.\d,;]{1,2}\s{0,1}[NS,;]{1}[\s,;]{0,3}[EW]{0,1}\s{0,2}(\d{1,3})[^\.\d]{1,2}\s*(\d{1,2}(?:\.[0-9])*)[^\.\d]{1,2}/i 
 		var llRegEx3 = /(-{0,1}\d{1,2}\.{1}\d+)[^\d]{1,2},{0,1}\s*(-{0,1}\d{1,3}\.{1}\d+)[^\d]{1}/	//Format: (##.#####, -###.#####)
 		var utmRegEx1 = /(\d{7})N{0,1}\s+(\d{6,7})E{0,1}\s+(\d{1,2})/ 				//Format: #######N ######E ##
 		var utmRegEx2 = /(\d{1,2})\D{0,2}\s+(\d{7})N\s+(\d{6,7})E/ 					//Format: ## #######N ######E 
@@ -307,7 +307,7 @@ function openFirstRecSet(){
 	var selObj = document.getElementById("locallist");
 	if(selObj.selectedIndex > -1){
 		var occidStr = selObj.options[selObj.selectedIndex].value;
-		occWindow=open("../editor/occurrenceeditor.php?collid="+collId+"&q_catalognumber=occid"+occidStr+"&occindex=0","occsearch","resizable=1,scrollbars=1,toolbar=1,width=950,height=700,left=20,top=20");
+		occWindow=open("../editor/occurrenceeditor.php?q_catalognumber=occid"+occidStr+"&occindex=0","occsearch","resizable=1,scrollbars=1,toolbar=0,width=950,height=700,left=20,top=20");
 		if(occWindow.opener == null) occWindow.opener = self;
 	}
 	else{
@@ -347,44 +347,6 @@ function insertUtm(f) {
 	}
 }
 
-function utm2LatLng(zValue, eValue, nValue, datum){
-	//Datum assumed to be  or WGS84
-	var d = 0.99960000000000004; // scale along long0
-	var d1 = 6378137; // Polar Radius
-	var d2 = 0.00669438;
-	if(datum.match(/nad\s?27/i)){
-		//datum is NAD27
-		d1 = 6378206; 
-		d2 = 0.006768658;
-	}
-	else if(datum.match(/nad\s?83/i)){
-		//datum is NAD83
-		d1 = 6378137;
-		d2 = 0.00669438;
-	}
-
-	var d4 = (1 - Math.sqrt(1 - d2)) / (1 + Math.sqrt(1 - d2));
-	var d15 = eValue - 500000;
-	var d16 = nValue;
-	var d11 = ((zValue - 1) * 6 - 180) + 3;
-	var d3 = d2 / (1 - d2);
-	var d10 = d16 / d;
-	var d12 = d10 / (d1 * (1 - d2 / 4 - (3 * d2 * d2) / 64 - (5 * Math.pow(d2,3) ) / 256));
-	var d14 = d12 + ((3 * d4) / 2 - (27 * Math.pow(d4,3) ) / 32) * Math.sin(2 * d12) + ((21 * d4 * d4) / 16 - (55 * Math.pow(d4,4) ) / 32) * Math.sin(4 * d12) + ((151 * Math.pow(d4,3) ) / 96) * Math.sin(6 * d12);
-	var d13 = (d14 / Math.PI) * 180;
-	var d5 = d1 / Math.sqrt(1 - d2 * Math.sin(d14) * Math.sin(d14));
-	var d6 = Math.tan(d14) * Math.tan(d14);
-	var d7 = d3 * Math.cos(d14) * Math.cos(d14);
-	var d8 = (d1 * (1 - d2)) / Math.pow(1 - d2 * Math.sin(d14) * Math.sin(d14), 1.5);
-	var d9 = d15 / (d5 * d);
-	var d17 = d14 - ((d5 * Math.tan(d14)) / d8) * (((d9 * d9) / 2 - (((5 + 3 * d6 + 10 * d7) - 4 * d7 * d7 - 9 * d3) * Math.pow(d9,4) ) / 24) + (((61 + 90 * d6 + 298 * d7 + 45 * d6 * d6) - 252 * d3 - 3 * d7 * d7) * Math.pow(d9,6) ) / 720);
-	var latValue = (d17 / Math.PI) * 180; // Breddegrad (N)
-	var d18 = ((d9 - ((1 + 2 * d6 + d7) * Math.pow(d9,3) ) / 6) + (((((5 - 2 * d7) + 28 * d6) - 3 * d7 * d7) + 8 * d3 + 24 * d6 * d6) * Math.pow(d9,5) ) / 120) / Math.cos(d14);
-	var lngValue = d11 + ((d18 / Math.PI) * 180); // Længdegrad (Ø)
-	return latValue + "," + lngValue;
-
-}
-
 function updateMinElev(minFeetValue){
 	var f = document.georefform;
 	f.minimumelevationinmeters.value = Math.round(minFeetValue*.0305)*10;
@@ -395,14 +357,37 @@ function updateMaxElev(maxFeetValue){
 	f.maximumelevationinmeters.value = Math.round(maxFeetValue*.0305)*10;
 }
 
+function checkSelectCollidForm(f){
+	var formVerified = false;
+	for(var h=0;h<f.length;h++){
+		if(f.elements[h].name == "collid[]" && f.elements[h].checked){
+			formVerified = true;
+			break;
+		}
+	}
+	if(!formVerified){
+		alert("Please choose at least one collection!");
+		return false;
+	}
+	return true;
+}
+
 //Misc functions
+function selectAllCollections(cbObj){
+	var cbStatus = cbObj.checked
+	var f = cbObj.form;
+	for(var i=0;i<f.length;i++){
+		if(f.elements[i].name == "collid[]") f.elements[i].checked = cbStatus;
+	}
+}
+
 function openMappingAid() {
 	var f = document.georefform;
 	var latDef = f.decimallatitude.value;
 	var lngDef = f.decimallongitude.value;
 	var zoom = 5;
 	if(latDef && lngDef) zoom = 11;
-	mapWindow=open("../editor/mappointaid.php?latdef="+latDef+"&lngdef="+lngDef+"&zoom="+zoom,"geomapaid","resizable=0,width=800,height=700,left=20,top=20");
+	mapWindow=open("../tools/mappointaid.php","geomapaid","resizable=0,width=900,height=700,left=20,top=20");
 	if (mapWindow.opener == null) mapWindow.opener = self;
 }
 

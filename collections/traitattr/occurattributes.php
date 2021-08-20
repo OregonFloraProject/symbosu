@@ -3,38 +3,30 @@ include_once('../../config/symbini.php');
 include_once($SERVER_ROOT.'/classes/OccurrenceAttributes.php');
 header("Content-Type: text/html; charset=".$CHARSET);
 
-if(!$SYMB_UID) header('Location: '.$CLIENT_ROOT.'/profile/index.php?refurl=../collections/traitattr/occurattributes.php?'.$_SERVER['QUERY_STRING']);
+if(!$SYMB_UID) header('Location: '.$CLIENT_ROOT.'/profile/index.php?refurl=../collections/traitattr/occurattributes.php?'.htmlspecialchars($_SERVER['QUERY_STRING'], ENT_QUOTES));
 
 $collid = $_REQUEST['collid'];
 $submitForm = array_key_exists('submitform',$_POST)?$_POST['submitform']:'';
 $mode = array_key_exists('mode',$_REQUEST)?$_REQUEST['mode']:1;
 $traitID = array_key_exists('traitid',$_REQUEST)?$_REQUEST['traitid']:'';
-$taxonFilter = array_key_exists('taxonfilter',$_POST)?$_POST['taxonfilter']:'';
-$tidFilter = array_key_exists('tidfilter',$_POST)?$_POST['tidfilter']:'';
 $paneX = array_key_exists('panex',$_POST)?$_POST['panex']:'575';
 $paneY = array_key_exists('paney',$_POST)?$_POST['paney']:'550';
 $imgRes = array_key_exists('imgres',$_POST)?$_POST['imgres']:'med';
 
-$reviewUid = array_key_exists('reviewuid',$_POST)?$_POST['reviewuid']:0;
-$reviewDate = array_key_exists('reviewdate',$_POST)?$_POST['reviewdate']:'';
-$reviewStatus = array_key_exists('reviewstatus',$_POST)?$_POST['reviewstatus']:0;
-$start = array_key_exists('start',$_POST)?$_POST['start']:0;
 
 //Sanitation
 if(!is_numeric($collid)) $collid = 0;
 if(!is_numeric($traitID)) $traitID = '';
-if(!is_numeric($tidFilter)) $tidFilter = '';
 if(!is_numeric($paneX)) $paneX = '';
 if(!is_numeric($paneY)) $paneY = '';
-if(!is_numeric($start)) $start = 0;
 
-$isEditor = 0; 
+$isEditor = 0;
 if($SYMB_UID){
 	if($IS_ADMIN){
 		$isEditor = 2;
 	}
 	elseif($collid){
-		//If a page related to collections, one maight want to... 
+		//If a page related to collections, one maight want to...
 		if(array_key_exists("CollAdmin",$USER_RIGHTS) && in_array($collid,$USER_RIGHTS["CollAdmin"])){
 			$isEditor = 2;
 		}
@@ -45,20 +37,28 @@ if($SYMB_UID){
 }
 
 $attrManager = new OccurrenceAttributes();
-if($tidFilter) $attrManager->setTidFilter($tidFilter);
 $attrManager->setCollid($collid);
+$attrManager->setFilterAttributes($_POST);
+$taxonFilter = $attrManager->getFilterAttribute('taxonfilter');
+$tidFilter = $attrManager->getFilterAttribute('tidfilter');
+$reviewUid = $attrManager->getFilterAttribute('reviewuid');
+$reviewDate = $attrManager->getFilterAttribute('reviewdate');
+$reviewStatus = $attrManager->getFilterAttribute('reviewstatus');
+$sourceFilter = $attrManager->getFilterAttribute('sourcefilter');
+$localFilter = $attrManager->getFilterAttribute('localfilter');
+$start = $attrManager->getFilterAttribute('start');
 
 $statusStr = '';
 if($isEditor){
 	if($submitForm == 'Save and Next'){
-		$attrManager->setTargetOccid($_POST['targetoccid']);
-		if(!$attrManager->saveAttributes($_POST,$_POST['notes'],$SYMB_UID)){
+		$attrManager->setOccid($_POST['targetoccid']);
+		if(!$attrManager->addAttributes($_POST,$SYMB_UID)){
 			$statusStr = $attrManager->getErrorMessage();
 		}
 	}
 	elseif($submitForm == 'Set Status and Save'){
-		$attrManager->setTargetOccid($_POST['targetoccid']);
-		$attrManager->saveReviewStatus($traitID,$_POST);
+		$attrManager->setOccid($_POST['targetoccid']);
+		$attrManager->editAttributes($_POST);
 	}
 }
 $imgArr = array();
@@ -71,24 +71,32 @@ if($traitID){
 		$imgArr = current($imgRetArr);
 	}
 	elseif($mode == 2){
-		$imgRetArr = $attrManager->getReviewUrls($traitID, $reviewUid, $reviewDate, $reviewStatus, $start);
+		$imgRetArr = $attrManager->getReviewUrls($traitID);
 		if($imgRetArr) $imgArr = current($imgRetArr);
-		
+
 	}
 	if($imgRetArr){
 		$catNum = $imgArr['catnum'];
 		unset($imgArr['catnum']);
 		$occid = key($imgRetArr);
-		if($occid) $attrManager->setTargetOccid($occid);
+		if($occid) $attrManager->setOccid($occid);
 	}
 }
 ?>
 <html>
 	<head>
 		<title>Occurrence Attribute batch Editor</title>
-		<link href="../../css/base.css?ver=<?php echo $CSS_VERSION; ?>" type="text/css" rel="stylesheet" />
-		<link href="../../css/main.css<?php echo (isset($CSS_VERSION_LOCAL)?'?ver='.$CSS_VERSION_LOCAL:''); ?>" type="text/css" rel="stylesheet" />
-		<link href="../../css/jquery-ui.css" type="text/css" rel="stylesheet" />
+		<?php
+		$activateJQuery = true;
+		if(file_exists($SERVER_ROOT.'/includes/head.php')){
+			include_once($SERVER_ROOT.'/includes/head.php');
+	    }
+		else{
+			echo '<link href="'.$CLIENT_ROOT.'/css/jquery-ui.css" type="text/css" rel="stylesheet" />';
+			echo '<link href="'.$CLIENT_ROOT.'/css/base.css?ver=1" type="text/css" rel="stylesheet" />';
+			echo '<link href="'.$CLIENT_ROOT.'/css/main.css?ver=1" type="text/css" rel="stylesheet" />';
+		}
+		?>
 		<script src="../../js/jquery.js" type="text/javascript"></script>
 		<script src="../../js/jquery-ui.js" type="text/javascript"></script>
 		<script src="../../js/jquery.imagetool-1.7.js?ver=160102" type="text/javascript"></script>
@@ -102,7 +110,7 @@ if($traitID){
 				$imgDomain = 'http://';
 				if((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443) $imgDomain = 'https://';
 				$imgDomain .= $_SERVER['SERVER_NAME'];
-				if($_SERVER["SERVER_PORT"] && $_SERVER["SERVER_PORT"] != 80) $imgDomain .= ':'.$_SERVER["SERVER_PORT"];
+				if($_SERVER["SERVER_PORT"] && $_SERVER["SERVER_PORT"] != 80 && $_SERVER['SERVER_PORT'] != 443) $imgDomain .= ':'.$_SERVER["SERVER_PORT"];
 			}
 			foreach($imgArr as $cnt => $iArr){
 				//Regular url
@@ -199,20 +207,13 @@ if($traitID){
 			}
 
 			function verifyFilterForm(f){
+				if(f.taxonfilter.value=="All Taxa") f.taxonfilter.value = '';
 				if(f.traitid.value == ""){
 					alert("An occurrence trait must be selected");
 					return false;
 				}
 				if(f.taxonfilter.value != "" && f.tidfilter.value == ""){
 					alert("Taxon filter not syncronized with thesaurus");
-					return false;
-				}
-				return true;
-			}
-
-			function verifyReviewForm(f){
-				if(f.traitid.value == ""){
-					alert("An occurrence trait must be selected");
 					return false;
 				}
 				return true;
@@ -229,14 +230,22 @@ if($traitID){
 				return true;
 			}
 
+			function taxonFilterFocus(formElem){
+				if(formElem.value=="All Taxa") formElem.value = '';
+			}
+
 		</script>
 		<script src="../../js/symb/collections.traitattr.js" type="text/javascript"></script>
 		<script src="../../js/symb/shared.js?ver=151229" type="text/javascript"></script>
+		<style>
+			input{margin:3px}
+			select{margin:3px}
+		</style>
 	</head>
 	<body>
 		<?php
 		$displayLeftMenu = false;
-		include($SERVER_ROOT.'/header.php');
+		include($SERVER_ROOT.'/includes/header.php');
 		if($isEditor == 2){
 			echo '<div style="float:right;margin:0px 3px;font-size:90%">';
 			if($mode == 1){
@@ -249,9 +258,9 @@ if($traitID){
 		}
 		?>
 		<div class="navpath">
-			<a href="../../index.php">Home</a> &gt;&gt; 
+			<a href="../../index.php">Home</a> &gt;&gt;
 			<a href="../misc/collprofiles.php?collid=<?php echo $collid; ?>&emode=1">Collection Management</a> &gt;&gt;
-			<?php 
+			<?php
 			if($mode == 2){
 				echo '<b>Attribute Reviewer</b>';
 			}
@@ -260,7 +269,7 @@ if($traitID){
 			}
 			?>
 		</div>
-		<?php 
+		<?php
 		if($statusStr){
 			echo '<div style="color:red">';
 			echo $statusStr;
@@ -275,21 +284,16 @@ if($traitID){
 			<div style="float:right;width:290px;">
 				<?php
 				$attrNameArr = $attrManager->getTraitNames();
-				if($mode == 1){ 
+				if($mode == 1){
 					?>
 					<fieldset style="margin-top:25px">
 						<legend><b>Filter</b></legend>
 						<form id="filterform" name="filterform" method="post" action="occurattributes.php" onsubmit="return verifyFilterForm(this)" >
 							<div>
-								<b>Taxon: </b>
-								<input id="taxonfilter" name="taxonfilter" type="text" value="<?php echo $taxonFilter; ?>" />
-								<input id="tidfilter" name="tidfilter" type="hidden" value="<?php echo $tidFilter; ?>" />
-							</div>
-							<div>
 								<select name="traitid">
-									<option value="">Select Trait</option>
+									<option value="">Select Trait (required)</option>
 									<option value="">------------------------------------</option>
-									<?php 
+									<?php
 									if($attrNameArr){
 										foreach($attrNameArr as $ID => $aName){
 											echo '<option value="'.$ID.'" '.($traitID==$ID?'SELECTED':'').'>'.$aName.'</option>';
@@ -300,6 +304,22 @@ if($traitID){
 									}
 									?>
 								</select>
+							</div>
+							<div>
+								<select name="localfilter" style="width:250px">
+									<option value="">All Counties & All States</option>
+									<option value="">-----------------------------</option>
+									<?php
+									$localArr = $attrManager->getLocalFilterOptions();
+									foreach($localArr as $localTerm){
+										echo '<option '.($localFilter==$localTerm?'selected':'').'>'.$localTerm.'</option>';
+									}
+									?>
+								</select>
+							</div>
+							<div>
+								<input id="taxonfilter" name="taxonfilter" type="text" value="<?php echo ($taxonFilter?$taxonFilter:'All Taxa'); ?>" taxonFilterFocus(this) />
+								<input id="tidfilter" name="tidfilter" type="hidden" value="<?php echo $tidFilter; ?>" />
 							</div>
 							<div>
 								<input name="collid" type="hidden" value="<?php echo $collid; ?>" />
@@ -316,17 +336,17 @@ if($traitID){
 						</form>
 					</fieldset>
 				<?php
-				} 
+				}
 				elseif($mode == 2){
 					?>
 					<fieldset style="margin-top:25px">
 						<legend><b>Reviewer</b></legend>
-						<form id="reviewform" name="reviewform" method="post" action="occurattributes.php" onsubmit="return verifyReviewForm(this)" >
-							<div style="margin:3px">
+						<form id="reviewform" name="reviewform" method="post" action="occurattributes.php" onsubmit="return verifyFilterForm(this)" >
+							<div>
 								<select name="traitid">
-									<option value="">Select Trait</option>
+									<option value="">Select Trait (required)</option>
 									<option value="">------------------------------------</option>
-									<?php 
+									<?php
 									if($attrNameArr){
 										foreach($attrNameArr as $ID => $aName){
 											echo '<option value="'.$ID.'" '.($traitID==$ID?'SELECTED':'').'>'.$aName.'</option>';
@@ -338,11 +358,11 @@ if($traitID){
 									?>
 								</select>
 							</div>
-							<div style="margin:3px">
+							<div>
 								<select name="reviewuid">
 									<option value="">All Editors</option>
 									<option value="">-----------------------</option>
-									<?php 
+									<?php
 									$editorArr = $attrManager->getEditorArr();
 									foreach($editorArr as $uid => $name){
 										echo '<option value="'.$uid.'" '.($uid==$reviewUid?'SELECTED':'').'>'.$name.'</option>';
@@ -350,11 +370,11 @@ if($traitID){
 									?>
 								</select>
 							</div>
-							<div style="margin:3px">
+							<div>
 								<select name="reviewdate">
 									<option value="">All Dates</option>
 									<option value="">-----------------------</option>
-									<?php 
+									<?php
 									$dateArr = $attrManager->getEditDates();
 									foreach($dateArr as $date){
 										echo '<option '.($date==$reviewDate?'SELECTED':'').'>'.$date.'</option>';
@@ -362,12 +382,40 @@ if($traitID){
 									?>
 								</select>
 							</div>
-							<div style="margin:3px">
+							<div>
 								<select name="reviewstatus">
 									<option value="0">Not reviewed</option>
 									<option value="5" <?php echo  ($reviewStatus==5?'SELECTED':''); ?>>Expert Needed</option>
 									<option value="10" <?php echo  ($reviewStatus==10?'SELECTED':''); ?>>Reviewed</option>
 								</select>
+							</div>
+							<div>
+								<select name="sourcefilter">
+									<option value="">All Source Types</option>
+									<option value="">-----------------------------</option>
+									<?php
+									$sourceControlArr = $attrManager->getSourceControlledArr();
+									foreach($sourceControlArr as $sourceTerm){
+										echo '<option '.($sourceFilter==$sourceTerm?'selected':'').'>'.$sourceTerm.'</option>';
+									}
+									?>
+								</select>
+							</div>
+							<div>
+								<select name="localfilter" style="width:250px;">
+									<option value="">All Countries & All States</option>
+									<option value="">-----------------------------</option>
+									<?php
+									$localArr = $attrManager->getLocalFilterOptions();
+									foreach($localArr as $localTerm){
+										echo '<option '.($localFilter==$localTerm?'selected':'').'>'.$localTerm.'</option>';
+									}
+									?>
+								</select>
+							</div>
+							<div>
+								<input id="taxonfilter" name="taxonfilter" type="text" value="<?php echo ($taxonFilter?$taxonFilter:'All Taxa'); ?>" onfocus="taxonFilterFocus(this)" />
+								<input id="tidfilter" name="tidfilter" type="hidden" value="<?php echo $tidFilter; ?>" />
 							</div>
 							<div style="margin:10px;">
 								<input name="collid" type="hidden" value="<?php echo $collid; ?>" />
@@ -379,89 +427,107 @@ if($traitID){
 								<input name="submitform" type="submit" value="Get Images" />
 							</div>
 							<div>
-								<?php 
+								<?php
 								if($traitID){
-									$rCnt = $attrManager->getReviewCount($traitID, $reviewUid, $reviewDate, $reviewStatus);
+									$rCnt = $attrManager->getReviewCount($traitID);
 									echo '<b>'.($rCnt?$start+1:0).' of '.$rCnt.' records</b>';
 									if($rCnt > 1){
 										$next = ($start+1);
-										if($next >= $rCnt) $next = 0; 
+										if($next >= $rCnt) $next = 0;
 										echo ' (<a href="#" onclick="nextReviewRecord('.($next).')">Next record &gt;&gt;</a>)';
-									} 
-								} 
+									}
+								}
 								?>
 							</div>
 						</form>
 					</fieldset>
 					<?php
-				} 
+				}
 				if($imgArr){
 					$traitArr = $attrManager->getTraitArr($traitID,($mode==2?true:false));
+					$statusCode = 0;
+					$notes = '';
+					foreach($traitArr[$traitID]['states'] as $stArr){
+						if(isset($stArr['statuscode']) && $stArr['statuscode']) $statusCode = $stArr['statuscode'];
+						if(isset($stArr['notes']) && $stArr['notes']) $notes = $stArr['notes'];
+					}
 					?>
-					<fieldset style="margin-top:20px">
-						<legend><b>Action Panel - <?php echo $traitArr[$traitID]['name']; ?></b></legend>
-						<form name="submitform" method="post" action="occurattributes.php" onsubmit="return verifySubmitForm(this)" >
-							<div>
-								<?php 
-								$attrManager->echoFormTraits($traitID);
-								?>
-							</div>
-							<div style="margin-left:5;">
-								Status: 
-								<select name="setstatus">
+					<div id="traitdiv">
+						<fieldset style="margin-top:20px">
+							<legend><b><?php echo $traitArr[$traitID]['name']; ?></b></legend>
+							<form name="submitform" method="post" action="occurattributes.php" onsubmit="return verifySubmitForm(this)" >
+								<div style="float:right;margin-right:10px">
+									<div class="trianglediv" style="margin:4px 3px;float:right;cursor:pointer" onclick="setAttributeTree(this)" title="Toggle attribute tree open/close">
+										<img class="triangleright" src="../../images/triangleright.png" style="" />
+										<img class="triangledown" src="../../images/triangledown.png" style="display:none" />
+									</div>
+								</div>
+								<div>
+									<?php
+									$attrManager->echoFormTraits($traitID);
+									?>
+								</div>
+								<div style="margin:10px 5px;clear:both">
+									Notes:
+									<input name="notes" type="text" style="width:200px" value="<?php echo $notes; ?>" />
+								</div>
+								<div style="margin-left:5;">
+									Status:
+									<select name="setstatus">
+										<?php
+										if($mode == 2){
+											?>
+											<option value="0">Not reviewed</option>
+											<option value="5">Expert Needed</option>
+											<option value="10" selected>Reviewed</option>
+											<?php
+										}
+										else{
+											?>
+											<option value="0">---------------</option>
+											<option value="5">Expert Needed</option>
+											<?php
+										}
+										?>
+									</select>
+								</div>
+								<div style="margin:20px">
+									<input name="taxonfilter" type="hidden" value="<?php echo $taxonFilter; ?>" />
+									<input name="tidfilter" type="hidden" value="<?php echo $tidFilter; ?>" />
+									<input name="traitid" type="hidden" value="<?php echo $traitID; ?>" />
+									<input name="collid" type="hidden" value="<?php echo $collid; ?>" />
+									<input id="panex2" name="panex" type="hidden" value="<?php echo $paneX; ?>" />
+									<input id="paney2" name="paney" type="hidden" value="<?php echo $paneY; ?>" />
+									<input id="imgres2" name="imgres" type="hidden" value="<?php echo $imgRes; ?>" />
+									<input name="targetoccid" type="hidden" value="<?php echo $occid; ?>" />
+									<input name="mode" type="hidden" value="<?php echo $mode; ?>" />
+									<input name="reviewuid" type="hidden" value="<?php echo $reviewUid; ?>" />
+									<input name="reviewdate" type="hidden" value="<?php echo $reviewDate; ?>" />
+									<input name="reviewstatus" type="hidden" value="<?php echo $reviewStatus; ?>" />
 									<?php
 									if($mode == 2){
-										?>
-										<option value="0">Not reviewed</option>
-										<option value="5">Expert Needed</option>
-										<option value="10" selected>Reviewed</option>
-										<?php
+										echo '<input name="submitform" type="submit" value="Set Status and Save" />';
 									}
 									else{
-										?>
-										<option value="0">---------------</option>
-										<option value="5">Expert Needed</option>
-										<?php
-									} 
+										echo '<input name="submitform" type="submit" value="Save and Next" disabled />';
+									}
 									?>
-								</select>
-							</div>
-							<div style="margin:20px">
-								<input name="taxonfilter" type="hidden" value="<?php echo $taxonFilter; ?>" />
-								<input name="tidfilter" type="hidden" value="<?php echo $tidFilter; ?>" />
-								<input name="traitid" type="hidden" value="<?php echo $traitID; ?>" />
-								<input name="collid" type="hidden" value="<?php echo $collid; ?>" />
-								<input id="panex2" name="panex" type="hidden" value="<?php echo $paneX; ?>" />
-								<input id="paney2" name="paney" type="hidden" value="<?php echo $paneY; ?>" />
-								<input id="imgres2" name="imgres" type="hidden" value="<?php echo $imgRes; ?>" />
-								<input name="targetoccid" type="hidden" value="<?php echo $occid; ?>" />
-								<input name="mode" type="hidden" value="<?php echo $mode; ?>" />
-								<input name="reviewuid" type="hidden" value="<?php echo $reviewUid; ?>" /> 
-								<input name="reviewdate" type="hidden" value="<?php echo $reviewDate; ?>" /> 
-								<input name="reviewstatus" type="hidden" value="<?php echo $reviewStatus; ?>" /> 
-								<?php 
-								if($mode == 2){
-									echo '<input name="submitform" type="submit" value="Set Status and Save" />';
-								}
-								else{
-									echo '<input name="submitform" type="submit" value="Save and Next" disabled />';
-								}
-								?>
-							</div>
-						</form>
-					</fieldset>
+								</div>
+							</form>
+						</fieldset>
+					</div>
 					<?php
-				} 
+				}
 				?>
 			</div>
 			<div style="height:600px">
-				<?php 
+				<?php
 				if($imgArr){
 					?>
 					<div>
 						<span><input id="imgresmed" name="resradio"  type="radio" checked onchange="changeImgRes('med')" />Med Res.</span>
 						<span style="margin-left:6px;"><input id="imgreslg" name="resradio" type="radio" onchange="changeImgRes('lg')" />High Res.</span>
-						<?php 
+						<?php
 						if($occid){
 							if(!$catNum) $catNum = 'Specimen Details';
 							echo '<span style="margin-left:50px;">';
@@ -483,10 +549,24 @@ if($traitID){
 					<?php
 				}
 				else{
-					if($submitForm)
-						echo '<div style="margin:50px;color:red;font-weight:bold;font-size:140%">No images available matching taxon search criteria</div>';
-					else 
-						echo '<div style="margin:50px;font-weight:bold;font-size:140%">Select a trait and submit filter in the form to the right to display images that have not yet been scored</div>';
+					if($submitForm){
+						?>
+						<div style="margin:50px;font-size:120%;font-weight: bold">There are no images available matching search criteria</div>
+						<?php
+					}
+					else{
+						?>
+						<div style="margin-top:50px;font-size:120%;font-weight: bold">
+							Select a trait to display images that have not yet been scored
+						</div>
+						<div style="margin-top:15px;">
+							This module allows one to code Occurrence Traits from viewing images of the specimen or observation.
+							Upon submitting the filter to the right, images will be displayed randomly for occurrences that have not yet been coded for the selected trait.
+							Coded trait attributes can be downloaded and shared via the Darwin Core (DwC) Archive export and publishing tools.
+							Traits are included within a <a href="https://tools.gbif.org/dwca-validator/extension.do?id=http://rs.iobis.org/obis/terms/ExtendedMeasurementOrFact" target="_blank">Measurement Or Fact</a> DwC Extension file.
+						</div>
+						<?php
+					}
 				}
 				?>
 			</div>
@@ -494,11 +574,11 @@ if($traitID){
 		}
 		else{
 			echo '<div><b>ERROR: collection identifier is not set</b></div>';
-		} 
+		}
 		?>
 		</div>
-		<?php 
-		include($SERVER_ROOT.'/footer.php');
+		<?php
+		include($SERVER_ROOT.'/includes/footer.php');
 		?>
 	</body>
 </html>

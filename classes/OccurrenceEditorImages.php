@@ -1,7 +1,7 @@
 <?php
-include_once($serverRoot.'/classes/OccurrenceEditorManager.php');
-include_once($serverRoot.'/classes/SpecProcessorOcr.php');
-include_once($serverRoot.'/classes/ImageShared.php');
+include_once($SERVER_ROOT.'/classes/OccurrenceEditorManager.php');
+include_once($SERVER_ROOT.'/classes/SpecProcessorOcr.php');
+include_once($SERVER_ROOT.'/classes/ImageShared.php');
 
 class OccurrenceEditorImages extends OccurrenceEditorManager {
 
@@ -24,9 +24,7 @@ class OccurrenceEditorImages extends OccurrenceEditorManager {
      */
 	public function addImageOccurrence($postArr){
 		$status = true;
-		//Load occurrence record
 		if($this->addOccurrence($postArr)){
-			//Load images
 			if($this->addImage($postArr)){
 				if($this->activeImgId){
 					//Load OCR
@@ -157,20 +155,20 @@ class OccurrenceEditorImages extends OccurrenceEditorManager {
             $kArr = $this->getImageTagValues();
             foreach($kArr as $key => $description) {
                    // Note: By using check boxes, we can't tell the difference between
-                   // an unchecked checkbox and the checkboxes not being present on the 
+                   // an unchecked checkbox and the checkboxes not being present on the
                    // form, we'll get around this by including the original state of the
                    // tags for each image in a hidden field.
                    $sql = null;
                    if (array_key_exists("ch_$key",$_REQUEST)) {
                       // checkbox is selected for this image
                       $sql = "INSERT IGNORE into imagetag (imgid,keyvalue) values (?,?) ";
-                   } else { 
+                   } else {
                       if (array_key_exists("hidden_$key",$_REQUEST) && $_REQUEST["hidden_$key"]==1) {
                          // checkbox is not selected and this tag was used for this image
                          $sql = "DELETE from imagetag where imgid = ? and keyvalue = ? ";
-                      } 
-                   } 
-                   if ($sql!=null) { 
+                      }
+                   }
+                   if ($sql!=null) {
                       $stmt = $this->conn->stmt_init();
                       $stmt->prepare($sql);
                       if ($stmt) {
@@ -182,14 +180,14 @@ class OccurrenceEditorImages extends OccurrenceEditorManager {
                       }
                    }
             }
-        } else { 
+        } else {
 			$status .= "ERROR: image not changed, ".$this->conn->error."SQL: ".$sql;
 		}
 		return $status;
 	}
 
 	public function deleteImage($imgIdDel, $removeImg){
-		$status = true; 
+		$status = true;
 		$imgManager = new ImageShared();
 		if(!$imgManager->deleteImage($imgIdDel, $removeImg)){
 			$this->errorStr = implode('',$imgManager->getErrArr());
@@ -200,36 +198,46 @@ class OccurrenceEditorImages extends OccurrenceEditorManager {
 
 	public function remapImage($imgId, $targetOccid = 0){
 		$status = true;
-		if(!is_numeric($imgId) || !is_numeric($targetOccid)){
+		if(!is_numeric($imgId)){
 			return false;
 		}
-		if($targetOccid){
+		if($targetOccid == 'new'){
+			$sql = 'INSERT INTO omoccurrences(collid, observeruid,processingstatus) SELECT collid, observeruid, "unprocessed" FROM omoccurrences WHERE occid = '.$this->occid;
+			if($this->conn->query($sql)){
+				$targetOccid = $this->conn->insert_id;
+				$status = $targetOccid;
+			}
+			else{
+				$this->errorArr[] = 'Unalbe to relink image to a new blank occurrence record: '.$this->conn->error;
+				return false;
+			}
+		}
+		if($targetOccid && is_numeric($targetOccid)){
 			$sql = 'UPDATE images SET occid = '.$targetOccid.' WHERE (imgid = '.$imgId.')';
 			if($this->conn->query($sql)){
-				$imgSql = 'UPDATE images i INNER JOIN omoccurrences o ON i.occid = o.occid '.
-					'SET i.tid = o.tidinterpreted WHERE (i.imgid = '.$imgId.')';
+				$imgSql = 'UPDATE images i INNER JOIN omoccurrences o ON i.occid = o.occid SET i.tid = o.tidinterpreted WHERE (i.imgid = '.$imgId.')';
 				//echo $imgSql;
 				$this->conn->query($imgSql);
 			}
 			else{
-				$this->errorArr[] = 'ERROR: Unalbe to remap image to another occurrence record. Error msg: '.$this->conn->error;
-				$status = false;
+				$this->errorArr[] = 'Unalbe to remap image to another occurrence record. Error msg: '.$this->conn->error;
+				return false;
 			}
 		}
 		else{
 			$sql = 'UPDATE images SET occid = NULL WHERE (imgid = '.$imgId.')';
 			if(!$this->conn->query($sql)){
-				$this->errorArr[] = 'ERROR: Unalbe to disassociate from occurrence record. Error msg: '.$this->conn->error;
-				$status = false;
+				$this->errorArr[] = 'Unalbe to disassociate from occurrence record. Error msg: '.$this->conn->error;
+				return false;
 			}
 		}
 		return $status;
 	}
-	
+
 	public function addImage($postArr){
 		$status = true;
 		$imgManager = new ImageShared();
-		
+
 		//Set target path
 		$subTargetPath = $this->collMap['institutioncode'];
 		if($this->collMap['collectioncode']) $subTargetPath .= '_'.$this->collMap['collectioncode'];
@@ -259,7 +267,7 @@ class OccurrenceEditorImages extends OccurrenceEditorManager {
 		else{
 			$imgManager->setMapLargeImg(true);
 		}
-		
+
 		//Set image metadata variables
 		if(array_key_exists('caption',$postArr)) $imgManager->setCaption($postArr['caption']);
 		if(array_key_exists('photographeruid',$postArr)) $imgManager->setPhotographerUid($postArr['photographeruid']);
@@ -272,38 +280,40 @@ class OccurrenceEditorImages extends OccurrenceEditorManager {
 		$sourceImgUri = $postArr['imgurl'];
 		if($sourceImgUri){
 			//Source image is a URI supplied by user
+			$imgManager->parseUrl($sourceImgUri);
+			$imgWeb = '';
+			$imgThumb = '';
+			if(isset($postArr['weburl']) && $postArr['weburl']) $imgWeb = $postArr['weburl'];
+			if(isset($postArr['tnurl']) && $postArr['tnurl']) $imgThumb = $postArr['tnurl'];
+			if($imgThumb && !$imgWeb) $imgManager->setCreateWebDerivative(false);
+			if($imgWeb) $imgManager->setImgWebUrl($imgWeb);
+			if($imgThumb) $imgManager->setImgTnUrl($imgThumb);
 			if(array_key_exists('copytoserver',$postArr) && $postArr['copytoserver']){
-				if(!$imgManager->copyImageFromUrl($sourceImgUri)){
-					$status = false;
-				}
+				if(!$imgManager->copyImageFromUrl()) $status = false;
 			}
-			else{
-				$imgManager->parseUrl($sourceImgUri);
-			}
+			else $imgManager->setImgLgUrl($sourceImgUri);
 		}
 		else{
 			//Image is a file upload
-			if(!$imgManager->uploadImage()){
-				$status = false;
-			}
+			if(!$imgManager->uploadImage()) $status = false;
 		}
 		$imgManager->setOccid($this->occid);
 		if(isset($this->occurrenceMap[$this->occid]['tidinterpreted'])) $imgManager->setTid($this->occurrenceMap[$this->occid]['tidinterpreted']);
 		if($imgManager->processImage()){
 			$this->activeImgId = $imgManager->getActiveImgId();
 		}
-		
+
 		//Load tags
 		$status = $imgManager->insertImageTags($postArr);
-		
+
 		//Get errors and warnings
 		$this->errorStr = $imgManager->getErrStr();
 		return $status;
 	}
-	
+
 	private function setRootPaths(){
 		$this->imageRootPath = $GLOBALS["imageRootPath"];
-		if(substr($this->imageRootPath,-1) != "/") $this->imageRootPath .= "/";  
+		if(substr($this->imageRootPath,-1) != "/") $this->imageRootPath .= "/";
 		$this->imageRootUrl = $GLOBALS["imageRootUrl"];
 		if(substr($this->imageRootUrl,-1) != "/") $this->imageRootUrl .= "/";
 	}
@@ -316,7 +326,7 @@ class OccurrenceEditorImages extends OccurrenceEditorManager {
 			while($row = $result->fetch_object()){
 				$this->photographerArr[$row->uid] = $this->cleanOutStr($row->fullname);
 			}
-			$result->close();
+			$result->free();
 		}
 		return $this->photographerArr;
 	}
@@ -324,35 +334,35 @@ class OccurrenceEditorImages extends OccurrenceEditorManager {
     /**
      * Obtain an array of the keys used for tagging images by content type.
      *
-     * @param lang language for the description, only en currently supported.
-     * @return an array of keys for image type tagging along with their descriptions.
+     * param: lang language for the description, only en currently supported.
+     * return: an array of keys for image type tagging along with their descriptions.
      */
-    public function getImageTagValues($lang='en') { 
+    public function getImageTagValues($lang='en') {
        $returnArr = Array();
-       switch ($lang) { 
+       switch ($lang) {
           case 'en':
-          default: 
+          default:
            $sql = "select tagkey, description_en from imagetagkey order by sortorder";
-       } 
+       }
        $stmt = $this->conn->stmt_init();
        $stmt->prepare($sql);
-       if ($stmt) { 
+       if ($stmt) {
           $stmt->bind_result($key,$desc);
           $stmt->execute();
-          while ($stmt->fetch()) { 
+          while ($stmt->fetch()) {
              $returnArr[$key]=$desc;
-          } 
-          $stmt->close(); 
+          }
+          $stmt->close();
        }
        return $returnArr;
-    } 
+    }
 
     /**
      * Obtain an array of the keys used for tagging images by content type.
      *
-     * @param imgid the images.imgid for which to return presence/absence values for each key
-     * @param lang language for the description, only en currently supported.
-     * @return an ImagTagUse object containing the keys for image type tagging along with their
+     * param: imgid the images.imgid for which to return presence/absence values for each key
+     * param: lang language for the description, only en currently supported.
+     * return: an ImagTagUse object containing the keys for image type tagging along with their
      * presence/absence for the provided image and descriptions.
      */
     public function getImageTagUsage($imgid,$lang='en') {
@@ -362,11 +372,11 @@ class OccurrenceEditorImages extends OccurrenceEditorManager {
           default:
             $sql = "select * from ( " .
                    "  select tagkey, description_en, shortlabel, sortorder, not isnull(imgid) from imagetagkey k " .
-                   "     left join imagetag i on k.tagkey = i.keyvalue " . 
+                   "     left join imagetag i on k.tagkey = i.keyvalue " .
                    "     where (i.imgid is null or i.imgid = ? ) " .
                    "  union " .
                    "  select tagkey, description_en, shortlabel, sortorder, 0 from imagetagkey k " .
-                   "     left join imagetag i on k.tagkey = i.keyvalue " . 
+                   "     left join imagetag i on k.tagkey = i.keyvalue " .
                    "     where (i.imgid is not null and i.imgid <> ? ) " .
                    " ) a order by sortorder ";
        }
@@ -393,7 +403,7 @@ class OccurrenceEditorImages extends OccurrenceEditorManager {
     }
 }
 
-class ImageTagUse { 
+class ImageTagUse {
    public $tagkey;  // magic value
    public $shortlabel;  // short human readable value
    public $description; // human readable description

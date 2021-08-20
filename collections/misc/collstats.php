@@ -4,8 +4,8 @@ include_once($SERVER_ROOT.'/classes/OccurrenceCollectionProfile.php');
 header("Content-Type: text/html; charset=".$CHARSET);
 ini_set('max_execution_time', 1200); //1200 seconds = 20 minutes
 
-$catId = array_key_exists("catid",$_REQUEST)?$_REQUEST["catid"]:0;
-if(!$catId && isset($DEFAULTCATID) && $DEFAULTCATID) $catId = $DEFAULTCATID;
+$catID = array_key_exists("catid",$_REQUEST)?$_REQUEST["catid"]:0;
+if(!$catID && isset($DEFAULTCATID) && $DEFAULTCATID) $catID = $DEFAULTCATID;
 $collId = array_key_exists("collid",$_REQUEST)?$_REQUEST["collid"]:0;
 $cPartentTaxon = array_key_exists("taxon",$_REQUEST)?$_REQUEST["taxon"]:'';
 $cCountry = array_key_exists("country",$_REQUEST)?$_REQUEST["country"]:'';
@@ -13,15 +13,21 @@ $days = array_key_exists("days",$_REQUEST)?$_REQUEST["days"]:365;
 $months = array_key_exists("months",$_REQUEST)?$_REQUEST["months"]:12;
 $action = array_key_exists('submitaction',$_REQUEST)?$_REQUEST['submitaction']:'';
 
+//Variable sanitation
+if(!preg_match('/^[0-9,]+$/',$catID)) $catID = 0;
+if(!preg_match('/^[0-9,]+$/',$collId)) $collId = 0;
+if(!is_numeric($days)) $days = 0;
+if(!is_numeric($months)) $months = 0;
+
 $collManager = new OccurrenceCollectionProfile();
 
 //if($collId) $collManager->setCollectionId($collId);
-$collList = $collManager->getStatCollectionList($catId);
+$collList = $collManager->getStatCollectionList($catID);
 $specArr = (isset($collList['spec'])?$collList['spec']:null);
 $obsArr = (isset($collList['obs'])?$collList['obs']:null);
 
 $collIdArr = array();
-$collectionArr = array();
+$resultsTemp = array();
 $familyArr = array();
 $countryArr = array();
 $results = array();
@@ -219,12 +225,13 @@ if($action != "Update Statistics"){
 		<head>
 			<meta name="keywords" content="Natural history collections statistics" />
 			<title><?php echo $DEFAULT_TITLE; ?> Collection Statistics</title>
-			<link rel="stylesheet" href="../../css/base.css?ver=<?php echo $CSS_VERSION; ?>" type="text/css" />
-			<link rel="stylesheet" href="../../css/main.css<?php echo (isset($CSS_VERSION_LOCAL)?'?ver='.$CSS_VERSION_LOCAL:''); ?>" type="text/css" />
-			<link rel="stylesheet" href="../../css/jquery-ui.css" type="text/css" />
-            <script type="text/javascript" src="../../js/jquery.js"></script>
-			<script type="text/javascript" src="../../js/jquery-ui.js"></script>
-			<script type="text/javascript" src="../../js/symb/collections.index.js"></script>
+			<?php
+			include_once($SERVER_ROOT.'/includes/head.php');
+			?>
+			<link href="<?php echo $CSS_BASE_PATH; ?>/collection.css" type="text/css" rel="stylesheet" />
+            <script src="../../js/jquery.js" type="text/javascript"></script>
+			<script src="../../js/jquery-ui.js" type="text/javascript"></script>
+			<script src="../../js/symb/collections.index.js" type="text/javascript"></script>
 			<script type="text/javascript">
 				$(document).ready(function() {
 					$("#tabs").tabs({<?php echo ($action == "Run Statistics"?'active: 1':''); ?>});
@@ -355,7 +362,7 @@ if($action != "Update Statistics"){
 		<body>
 			<?php
 			$displayLeftMenu = (isset($collections_misc_collstatsMenu)?$collections_misc_collstatsMenu:false);
-			include($SERVER_ROOT.'/header.php');
+			include($SERVER_ROOT.'/includes/header.php');
 			if(isset($collections_misc_collstatsCrumbs)){
 				if($collections_misc_collstatsCrumbs){
 					echo "<div class='navpath'>";
@@ -740,7 +747,7 @@ if($action != "Update Statistics"){
 											if($results['SpecimenCount'] && $results['TotalImageCount']){
 												$percImg = (100* ($results['TotalImageCount'] / $results['SpecimenCount']));
 											}
-											echo ($results['TotalImageCount']?number_format($results['TotalImageCount']):0).($percImg?" (".($percImg>1?round($percImg):round($percImg,2))."%)":'')." imaged";
+											echo ($results['TotalImageCount']?number_format($results['TotalImageCount']):0).($percImg?" (".($percImg>1?round($percImg):round($percImg,2))."%)":'')." occurrences imaged";
 											echo "</li>";
 											echo "<li>";
 											$percId = '';
@@ -820,13 +827,9 @@ if($action != "Update Statistics"){
                                             if(!$cPartentTaxon && !$cCountry){
                                                 ?>
                                                 <div style="margin-top:25px;">
-                                                    <form name="orderstats" style="margin-bottom:0px"
-                                                          action="collorderstats.php" method="post" target="_blank"
-                                                          onsubmit="">
-                                                        <input type="hidden" name="collid" id="collid"
-                                                               value='<?php echo $collId; ?>'/>
-                                                        <input type="hidden" name="totalcnt" id="totalcnt"
-                                                               value='<?php echo $results['SpecimenCount']; ?>'/>
+                                                    <form name="orderstats" style="margin-bottom:0px" action="collorderstats.php" method="post" target="_blank">
+                                                        <input type="hidden" name="collid" id="collid" value='<?php echo $collId; ?>'/>
+                                                        <input type="hidden" name="totalcnt" id="totalcnt" value='<?php echo $results['SpecimenCount']; ?>'/>
                                                         <input type="submit" name="action" value="Load Order Distribution"/>
                                                     </form>
                                                 </div>
@@ -840,14 +843,10 @@ if($action != "Update Statistics"){
                                                 ?>
                                                 <fieldset id="yearstatsbox" style="width:275px;">
                                                     <legend><b>Year Stats</b></legend>
-                                                    <form name="yearstats" style="margin-bottom:0px"
-                                                          action="collyearstats.php" method="post" target="_blank"
-                                                          onsubmit="">
-                                                        <input type="hidden" name="collid" id="collid"
-                                                               value='<?php echo $collId; ?>'/>
+                                                    <form name="yearstats" style="margin-bottom:0px" action="collyearstats.php" method="post" target="_blank">
+                                                        <input type="hidden" name="collid" id="collid" value='<?php echo $collId; ?>'/>
                                                         <input type="hidden" name="days" value="<?php echo $days; ?>"/>
-                                                        <input type="hidden" name="months"
-                                                               value="<?php echo $months; ?>"/>
+                                                        <input type="hidden" name="months" value="<?php echo $months; ?>"/>
                                                         <div style="float:left;">
                                                             Years: <input type="text" id="years" size="5" name="years" value="1" />
                                                         </div>
@@ -869,7 +868,7 @@ if($action != "Update Statistics"){
 									<table class="styledtable" style="font-family:Arial;font-size:12px;">
 										<tr>
 											<th style="text-align:center;">Collection</th>
-											<th style="text-align:center;">Specimens</th>
+											<th style="text-align:center;">Occurrences</th>
 											<th style="text-align:center;">Georeferenced</th>
 											<th style="text-align:center;">Imaged</th>
 											<th style="text-align:center;">Species ID</th>
@@ -980,7 +979,7 @@ if($action != "Update Statistics"){
 			</div>
 			<!-- end inner text -->
 			<?php
-				include($SERVER_ROOT.'/footer.php');
+				include($SERVER_ROOT.'/includes/footer.php');
 			?>
 		</body>
 	</html>

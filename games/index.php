@@ -1,7 +1,7 @@
 <?php
 include_once('../config/symbini.php');
 include_once($SERVER_ROOT.'/classes/GamesManager.php');
-header("Content-Type: text/html; charset=".$charset);
+header("Content-Type: text/html; charset=".$CHARSET);
 
 $pid = array_key_exists("pid",$_REQUEST)?$_REQUEST["pid"]:0;
 $gameManager = new GamesManager();
@@ -11,11 +11,18 @@ $clArr = $gameManager->getChecklistArr($pid);
 <html>
 <head>
 	<title><?php echo $DEFAULT_TITLE; ?> Games</title>
-	<link href="../css/base.css?ver=<?php echo $CSS_VERSION; ?>" type="text/css" rel="stylesheet" />
-	<link href="../css/main.css<?php echo (isset($CSS_VERSION_LOCAL)?'?ver='.$CSS_VERSION_LOCAL:''); ?>" type="text/css" rel="stylesheet" />
-	<script type="text/javascript">
-		<?php include_once($SERVER_ROOT.'/config/googleanalytics.php'); ?>
-	</script>
+	<?php
+	$activateJQuery = false;
+	if(file_exists($SERVER_ROOT.'/includes/head.php')){
+		include_once($SERVER_ROOT.'/includes/head.php');
+	}
+	else{
+		echo '<link href="'.$CLIENT_ROOT.'/css/jquery-ui.css" type="text/css" rel="stylesheet" />';
+		echo '<link href="'.$CLIENT_ROOT.'/css/base.css?ver=1" type="text/css" rel="stylesheet" />';
+		echo '<link href="'.$CLIENT_ROOT.'/css/main.css?ver=1" type="text/css" rel="stylesheet" />';
+	}
+	include_once($SERVER_ROOT.'/includes/googleanalytics.php');
+	?>
 	<script type="text/javascript">
 		function checkForm(f){
 			if(f.clid.value == ""){
@@ -31,48 +38,48 @@ $clArr = $gameManager->getChecklistArr($pid);
 
 	<?php
 	$displayLeftMenu = (isset($games_indexMenu)?$games_indexMenu:"true");
-	include($SERVER_ROOT.'/header.php');
+	include($SERVER_ROOT.'/includes/header.php');
 	if(isset($gamess_indexCrumbs)){
 		?>
 		<div class="navpath">
-			<a href="../index.php">Home</a> &gt; 
+			<a href="../index.php">Home</a> &gt;
 			<?php echo $games_indexCrumbs;?>
-			<b><?php echo $DEFAULT_TITLE; ?> Games</b> 
+			<b><?php echo $DEFAULT_TITLE; ?> Games</b>
 		</div>
-		<?php 
+		<?php
 	}
 	?>
-	
+
 	<!-- This is inner text! -->
 	<div id="innertext">
 		<h1><?php echo $DEFAULT_TITLE; ?> Games</h1>
-		
+
 		<div style='margin:10px;'>
-			Games are designed to provide a fun interface for exploring the species found 
-			within a checklist. Select a checklist from the pulldown below to open  
-			a game primed with those species. 
-			Note that all games are also accessable 
-			from the Checklist Explorer page by 
+			Games are designed to provide a fun interface for exploring the species found
+			within a checklist. Select a checklist from the pulldown below to open
+			a game primed with those species.
+			Note that all games are also accessable
+			from the Checklist Explorer page by
 			clicking on "Games" icon located to the right of the checklist title.
-			Have fun and good luck!      
+			Have fun and good luck!
 		</div>
 
 		<h2>Taxon Name Game</h2>
 		<div style='margin:10px;'>
-			Deduce the scientific name of the organisms found within a species list. 
-			A species is randomly selected from a checklist of your choice and you 
-			have to guess the letters found in the name before the apple is eatten, 
-			the flower is plucked, or the plant defoliates. 
+			Deduce the scientific name of the organisms found within a species list.
+			A species is randomly selected from a checklist of your choice and you
+			have to guess the letters found in the name before the apple is eatten,
+			the flower is plucked, or the plant defoliates.
 			<div style="margin:10px;">
 				<form name="namegameform" action="namegame.php" method="post" onsubmit="return checkForm(this);">
 					<select name="clid">
 						<option value="">SELECT A SPECIES CHECKLIST</option>
 						<option value="">---------------------------------</option>
-						<?php 
+						<?php
 						foreach($clArr as $clid => $clName){
 							?>
 							<option value="<?php echo $clid; ?>"><?php echo $clName; ?></option>
-							<?php 
+							<?php
 						}
 						?>
 					</select>
@@ -80,22 +87,22 @@ $clArr = $gameManager->getChecklistArr($pid);
 				</form>
 			</div>
 		</div>
-		
+
 		<h2>Flash Card Quiz</h2>
 		<div style='margin:10px 0px 50px 10px;'>
-			What is this organism? In this game, you have to determine the name of the organism pictured 
-			in a set of images. There are typically several images of each species so before making your 
+			What is this organism? In this game, you have to determine the name of the organism pictured
+			in a set of images. There are typically several images of each species so before making your
 			guess, make sure you have seen all the images by clicking on "Next Image".
 			<div style="margin:10px;">
 				<form name="flashcardform" action="flashcards.php" method="post" onsubmit="return checkForm(this);">
 					<select name="clid">
 						<option value="">SELECT A SPECIES CHECKLIST</option>
 						<option value="">---------------------------------</option>
-						<?php 
+						<?php
 						foreach($clArr as $clid => $clName){
 							?>
 							<option value="<?php echo $clid; ?>"><?php echo $clName; ?></option>
-							<?php 
+							<?php
 						}
 						?>
 					</select>
@@ -106,7 +113,7 @@ $clArr = $gameManager->getChecklistArr($pid);
 	</div>
 	<!-- This ends inner text! -->
 	<?php
-	include($SERVER_ROOT.'/footer.php');
+	include($SERVER_ROOT.'/includes/footer.php');
 	?>
 </body>
 </html>

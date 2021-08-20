@@ -3,25 +3,28 @@ include_once('../config/symbini.php');
 include_once($SERVER_ROOT.'/classes/GlossaryManager.php');
 header("Content-Type: text/html; charset=".$CHARSET);
 
-if(!$SYMB_UID) header('Location: ../profile/index.php?refurl='.$CLIENT_ROOT.'/glossary/addterm.php?'.$_SERVER['QUERY_STRING']);
+if(!$SYMB_UID) header('Location: ../profile/index.php?refurl='.$CLIENT_ROOT.'/glossary/addterm.php?'.htmlspecialchars($_SERVER['QUERY_STRING'], ENT_QUOTES));
 
-$relatedGlossId = array_key_exists('relglossid',$_REQUEST)?$_REQUEST['relglossid']:'';
+$relatedGlossId = array_key_exists('relglossid',$_REQUEST)?$_REQUEST['relglossid']:0;
 $taxaTid  = array_key_exists('taxatid',$_REQUEST)?$_REQUEST['taxatid']:0;
 $taxaName  = array_key_exists('taxaname',$_REQUEST)?$_REQUEST['taxaname']:'';
 $relationship = array_key_exists('relationship',$_REQUEST)?$_REQUEST['relationship']:'';
 $relatedLanguage = array_key_exists('rellanguage',$_REQUEST)?$_REQUEST['rellanguage']:'';
 $formSubmit = array_key_exists('formsubmit',$_POST)?$_POST['formsubmit']:'';
 
-if(!$relatedLanguage){
-	$relatedLanguage = $DEFAULT_LANG;
-}
+//Sanitation
+if(!is_numeric($relatedGlossId)) $relatedGlossId = 0;
+if(!is_numeric($taxaTid)) $taxaTid = 0;
+$taxaName = filter_var($taxaName,FILTER_SANITIZE_STRING);
+$relationship = filter_var($relationship,FILTER_SANITIZE_STRING);
+$relatedLanguage = filter_var($relatedLanguage,FILTER_SANITIZE_STRING);
+
+if(!$relatedLanguage) $relatedLanguage = $DEFAULT_LANG;
 if($relatedLanguage == 'en') $relatedLanguage = 'English';
 if($relatedLanguage == 'es') $relatedLanguage = 'Spanish';
 
 $isEditor = false;
-if($isAdmin || array_key_exists("Taxonomy",$USER_RIGHTS)){
-	$isEditor = true;
-}
+if($IS_ADMIN || array_key_exists('GlossaryEditor',$USER_RIGHTS)) $isEditor = true;
 
 $glosManager = new GlossaryManager();
 
@@ -31,14 +34,14 @@ if($isEditor){
 	if($formSubmit == 'Create Term'){
 		if($glosManager->createTerm($_POST)){
 			if(isset($_POST['tid']) && $_POST['tid']){
-				header('Location: termdetails.php?glossid='.$glosManager->getGlossId());
+				header('Location: termdetails.php?statusstr=successadd&glossid='.$glosManager->getGlossId());
 			}
 			elseif($relatedGlossId && isset($_POST['relation'])){
 				if($_POST['relation'] == "translation"){
-					header('Location: termdetails.php?glossid='.$relatedGlossId.'#termtransdiv');
+					header('Location: termdetails.php?glossid='.$relatedGlossId.'&statusstr=successadd#termtransdiv');
 				}
 				else{
-					header('Location: termdetails.php?glossid='.$relatedGlossId.'#termrelateddiv');
+					header('Location: termdetails.php?glossid='.$relatedGlossId.'&statusstr=successadd#termrelateddiv');
 				}
 			}
 			else{
@@ -53,15 +56,23 @@ if($isEditor){
 ?>
 <html>
 <head>
-    <title><?php echo $DEFAULT_TITLE; ?> Glossary - Add New Term</title>
-    <link href="../css/base.css?ver=<?php echo $CSS_VERSION; ?>" rel="stylesheet" type="text/css" />
-    <link href="../css/main.css<?php echo (isset($CSS_VERSION_LOCAL)?'?ver='.$CSS_VERSION_LOCAL:''); ?>" rel="stylesheet" type="text/css" />
-	<link href="../css/jquery-ui.css" rel="stylesheet" type="text/css" />
+  <title><?php echo $DEFAULT_TITLE; ?> Glossary - Add New Term</title>
+  <?php
+      $activateJQuery = true;
+      if(file_exists($SERVER_ROOT.'/includes/head.php')){
+        include_once($SERVER_ROOT.'/includes/head.php');
+      }
+      else{
+        echo '<link href="'.$CLIENT_ROOT.'/css/jquery-ui.css" type="text/css" rel="stylesheet" />';
+        echo '<link href="'.$CLIENT_ROOT.'/css/base.css?ver=1" type="text/css" rel="stylesheet" />';
+        echo '<link href="'.$CLIENT_ROOT.'/css/main.css?ver=1" type="text/css" rel="stylesheet" />';
+      }
+	?>
 	<script type="text/javascript" src="../js/jquery.js"></script>
 	<script type="text/javascript" src="../js/jquery-ui.js"></script>
 	<script type="text/javascript">
 		$(document).ready(function() {
-			<?php 
+			<?php
 			if($closeWindow){
 				echo 'window.opener.searchform.submit();';
 				echo 'self.close();';
@@ -78,7 +89,7 @@ if($isEditor){
 			if(f.definition.value.length > 1998){
 				if(!confirm("Warning, your definition is close to maximum size limit and may be cut off. Are you sure the definition is completely entered?")) return false;
 			}
-			
+
 			if(!f.language.value){
 				alert("Please select a language");
 				return false;
@@ -96,14 +107,10 @@ if($isEditor){
 				url: "rpc/checkterm.php",
 				data: { term: f.term.value, language: f.language.value, tid: tidValue, relglossid: f.relglossid.value }
 			}).success(function( data ) {
-				if(data == "1"){
-					alert("Term already exists in database in that language and taxonomic group.");
-				}
-				else{
-					f.submit();
-				}
+				if(data == "1") alert("Term already exists in database in that language and taxonomic group.");
+				else f.submit();
 			});
-			
+
 			return false;
 		}
 
@@ -113,13 +120,13 @@ if($isEditor){
 <body>
 	<!-- This is inner text! -->
 	<div id="innertext">
-		<?php 
+		<?php
 		if($statusStr){
 			?>
 			<div style="margin:15px;color:red;">
 				<?php echo $statusStr; ?>
 			</div>
-			<?php 
+			<?php
 		}
 		if($isEditor){
 			?>
@@ -151,7 +158,7 @@ if($isEditor){
 								<select id="langSelect" name="language">
 									<option value="">Select a Language</option>
 									<option value="">---------------------------</option>
-									<?php 
+									<?php
 									$langArr = $glosManager->getLanguageArr('all');
 									foreach($langArr as $langKey => $langValue ){
 										if($relationship != 'translation' || $relatedLanguage != $langValue){
@@ -159,11 +166,11 @@ if($isEditor){
 										}
 									}
 									?>
-								</select> 
+								</select>
 								<a href="#" onclick="toggle('addLangDiv');return false;"><img src="../images/add.png" /></a>&nbsp;&nbsp;
 							</div>
 							<div id="addLangDiv" style="float:left;display:none">
-								<input name="newlang" type="text" maxlength="45" style="width:200px;" /> 
+								<input name="newlang" type="text" maxlength="45" style="width:200px;" />
 								<button onclick="addNewLang(this.form);return false;">Add language</button>
 							</div>
 						</div>
@@ -210,11 +217,11 @@ if($isEditor){
 						<div style="clear:both;"></div>
 						<div style="clear:both;">
 							<fieldset style="padding:10px;margin-top:12px;">
-								<?php 
+								<?php
 								if(!$relatedGlossId){
 									?>
 									<div style="">
-										Please enter the taxonomic group (higher than family) to which this term applies <b>OR</b> link new term to a related existing term 
+										Please enter the taxonomic group (higher than family) to which this term applies <b>OR</b> link new term to a related existing term
 									</div>
 									<div style="padding:4px;">
 										<div style="">
@@ -228,13 +235,13 @@ if($isEditor){
 									<div style="padding:10px;">
 										<b>-- OR --</b>
 									</div>
-									<?php 
+									<?php
 								}
 								?>
 								<div style="padding:4px;font-weight:bold;text-decoration:underline;">Link to related term</div>
 								<div style="margin:10px">
 									<div style="margin:3px">
-										<b>Relationship:</b> 
+										<b>Relationship:</b>
 										<select name="relation" <?php if($relationship) echo 'readonly'; ?>>
 											<option value="">Select Relationship</option>
 											<option value="">----------------------------</option>
@@ -243,11 +250,11 @@ if($isEditor){
 										</select>
 									</div>
 									<div style="margin:3px">
-										<b>Related Term:</b> 
+										<b>Related Term:</b>
 										<select name="relglossid" <?php if($relatedGlossId) echo 'readonly'; ?>>
 											<option value="">Select Term to be Link</option>
 											<option value="">----------------------------</option>
-											<?php 
+											<?php
 											$termList = $glosManager->getTermList($relatedGlossId,$relatedLanguage);
 											foreach($termList as $id => $termName){
 												echo '<option value="'.$id.'" '.($relatedGlossId==$id?'selected':'').'>'.$termName.'</option>';

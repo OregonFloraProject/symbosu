@@ -1,7 +1,7 @@
-<?php 
+<?php
 /*
 ------------------
-Language: Espa�ol (Spanish)
+Language: Espa�ol (Spanish)
 ------------------
 */
 
@@ -9,16 +9,30 @@ include_once('sharedterms.es.php');
 
 $LANG['PAGE_TITLE'] = 'Resultados de Búsqueda de Colecciones';
 $LANG['NAV_SPECIMEN_LIST'] = 'Registros de Ejemplares';
+$LANG['TABLE_DISPLAY'] = 'Mostrar Tabla';
+$LANG['LIST_DISPLAY'] = 'Mostrar Lista';
 $LANG['DOWNLOAD_SPECIMEN_DATA'] = 'Descargar Datos de Ejemplares';
+$LANG['COPY_TO_CLIPBOARD'] = 'Copia URL al Portapapeles';
 $LANG['DATASET'] = 'Conjunto de Datos';
 $LANG['TAXA'] = 'Taxa';
 $LANG['SEARCH_CRITERIA'] = 'Criterios de Búsqueda';
+$LANG['SHOW_ALL'] = 'mostrar todo';
 $LANG['PAGINATION_FIRST'] = 'Primero';
 $LANG['PAGINATION_PAGE'] = 'Página';
 $LANG['PAGINATION_RECORDS'] = 'registros';
 $LANG['PAGINATION_OF'] = 'de';
+$LANG['SELECT_DATASET'] = 'Seleccione un conjunto de datos para agregar ocurrencias o seleccione Crear nuevo conjunto de datos';
+$LANG['SELECT_OCCURRENCE'] = 'Seleccione al menos una ocurrencia para agregar al conjunto de datos';
+$LANG['DATASET_MANAGEMENT'] = 'Gestión de conjuntos de datos';
+$LANG['DATASET_TARGET'] = 'Conjunto de datos';
+$LANG['NO_DATASETS'] = 'no hay conjuntos de datos';
+$LANG['CREATE_DATASET'] = 'Crear nuevo conjunto de datos';
+$LANG['SELECT_ALL_RECORDS'] = 'Seleccionar todos los registros de la página';
+$LANG['ADD_SELECTED'] = 'Agregar registros seleccionados al conjunto de datos';
+$LANG['ADD_COMPLETE_QUERY'] = 'Agregar consulta completa al conjunto de datos';
 $LANG['OCCUR_EDIT_TITLE'] = 'Editar Registro de Ocurrencia';
 $LANG['VOUCHER_LINK_TITLE'] = 'Enlazar voucher de ejemplar a';
+$LANG['PROTECTED'] = 'detalles de la localidad protegida';
 $LANG['FULL_DETAILS'] = 'Detalles completos del registro';
 $LANG['NO_RESULTS'] = 'Su consulta no arrojó resultados. Por favor, modifique sus parámetros de consulta';
 $LANG['PERHAPS_LOOKING_FOR'] = 'Tal vez estuviste buscando por:';

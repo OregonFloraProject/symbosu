@@ -3,7 +3,7 @@ include_once('../../config/symbini.php');
 include_once($SERVER_ROOT.'/classes/OccurrenceAttributes.php');
 header("Content-Type: text/html; charset=".$CHARSET);
 
-if(!$SYMB_UID) header('Location: '.$CLIENT_ROOT.'/profile/index.php?refurl=../collections/traitattr/attributemining.php?'.$_SERVER['QUERY_STRING']);
+if(!$SYMB_UID) header('Location: '.$CLIENT_ROOT.'/profile/index.php?refurl=../collections/traitattr/attributemining.php?'.htmlspecialchars($_SERVER['QUERY_STRING'], ENT_QUOTES));
 
 $collid = array_key_exists('collid',$_REQUEST)?$_REQUEST['collid']:'';
 $selectAll = array_key_exists('selectall',$_POST)?$_POST['selectall']:'';
@@ -22,7 +22,7 @@ $collRights = array();
 if(array_key_exists("CollAdmin",$USER_RIGHTS)) $collRights = $USER_RIGHTS["CollAdmin"];
 if(array_key_exists("CollEditor",$USER_RIGHTS)) $collRights = array_merge($collRights,$USER_RIGHTS["CollEditor"]);
 
-$isEditor = 0; 
+$isEditor = 0;
 if($SYMB_UID){
 	if(!$IS_ADMIN && count($collRights) == 1){
 		//User only has right to a single collection, thus we will auto-select as the default
@@ -58,7 +58,7 @@ if($isEditor){
 			if(!is_array($fieldValueArr)) $fieldValueArr = array($fieldValueArr);
 			$stateIDArr = array();
 			foreach($_POST as $postKey => $postValue){
-				if(substr($postKey,0,8) == 'stateid-'){
+				if(substr($postKey,0,8) == 'traitid-'){
 					if(is_array($postValue)){
 						$stateIDArr = array_merge($stateIDArr,$postValue);
 					}
@@ -78,15 +78,23 @@ if($isEditor){
 
 $fieldArr = array('habitat' => 'Habitat', 'substrate' => 'Substrate', 'occurrenceremarks' => 'Occurrence Remarks (notes)',
 	'dynamicproperties' => 'Dynamic Properties', 'verbatimattributes' => 'Verbatim Attributes (description)',
-	'behavior' => 'Behavior', 'reproductivecondition' => 'Reproductive Condition', 'lifestage' => 'Life Stage', 
+	'behavior' => 'Behavior', 'reproductivecondition' => 'Reproductive Condition', 'lifestage' => 'Life Stage',
 	'sex' => 'Sex');
 ?>
 <html>
 	<head>
 		<title>Occurrence Attribute Mining Tool</title>
-		<link href="../../css/base.css?ver=<?php echo $CSS_VERSION; ?>" type="text/css" rel="stylesheet" />
-		<link href="../../css/main.css<?php echo (isset($CSS_VERSION_LOCAL)?'?ver='.$CSS_VERSION_LOCAL:''); ?>" type="text/css" rel="stylesheet" />
-		<link href="../../css/jquery-ui.css" type="text/css" rel="stylesheet" />
+		<?php
+		$activateJQuery = true;
+		if(file_exists($SERVER_ROOT.'/includes/head.php')){
+			include_once($SERVER_ROOT.'/includes/head.php');
+	    }
+		else{
+			echo '<link href="'.$CLIENT_ROOT.'/css/jquery-ui.css" type="text/css" rel="stylesheet" />';
+			echo '<link href="'.$CLIENT_ROOT.'/css/base.css?ver=1" type="text/css" rel="stylesheet" />';
+			echo '<link href="'.$CLIENT_ROOT.'/css/main.css?ver=1" type="text/css" rel="stylesheet" />';
+		}
+		?>
 		<script src="../../js/jquery.js" type="text/javascript"></script>
 		<script src="../../js/jquery-ui.js" type="text/javascript"></script>
 		<script type="text/javascript">
@@ -108,9 +116,9 @@ $fieldArr = array('habitat' => 'Habitat', 'substrate' => 'Substrate', 'occurrenc
 					alert("You muct select at least one field value");
 					return false;
 				}
-				
+
 				var formVerified = false;
-				$('input[name^="stateid-"]').each(function(){
+				$('input[name^="traitid-"]').each(function(){
 					if(this.checked == true){
 						formVerified = true;
 						return false;
@@ -151,24 +159,29 @@ $fieldArr = array('habitat' => 'Habitat', 'substrate' => 'Substrate', 'occurrenc
 				toggle("collDiv");
 				toggle("displayDiv");
 			}
+
+			function displayDetailDiv(spanObj){
+				toggle("moreSpan");
+				toggle("detailDiv");
+			}
 		</script>
 		<script src="../../js/symb/collections.traitattr.js" type="text/javascript"></script>
 		<script src="../../js/symb/shared.js" type="text/javascript"></script>
 	</head>
-	<body style="width:900px">
+	<body>
 		<?php
 		$displayLeftMenu = false;
-		include($SERVER_ROOT.'/header.php');
+		include($SERVER_ROOT.'/includes/header.php');
 		?>
 		<div class="navpath">
 			<a href="../../index.php">Home</a> &gt;&gt;
-			<?php 
+			<?php
 			if(is_numeric($collid)) echo '<a href="../misc/collprofiles.php?collid='.$collid.'&emode=1">Collection Management</a> &gt;&gt;';
-			if($IS_ADMIN || count($collRights) > 1) echo '<a href="attributemining.php">Adjust Collection Selection</a> &gt;&gt;';
+			else if($IS_ADMIN || count($collRights) > 1) echo '<a href="attributemining.php">Adjust Collection Selection</a> &gt;&gt;';
 			?>
 			<b>Attribute Mining Tool</b>
 		</div>
-		<?php 
+		<?php
 		if($statusStr){
 			echo '<div style="color:red">';
 			echo $statusStr;
@@ -177,7 +190,7 @@ $fieldArr = array('habitat' => 'Habitat', 'substrate' => 'Substrate', 'occurrenc
 		?>
 		<!-- This is inner text! -->
 		<div id="innertext">
-			<?php 
+			<?php
 			if($collid){
 				if($collid == 'all'){
 					echo '<h2 class="heading">Searching All Collections</h2>';
@@ -198,16 +211,23 @@ $fieldArr = array('habitat' => 'Habitat', 'substrate' => 'Substrate', 'occurrenc
 					echo '</fieldset>';
 				}
 				?>
-				<div style="width:650px;">
+				<div style="width:700px;">
+					<div>
+						This module maps Occurrence Traits to specimens based on verbatium text field content.<span id="moreSpan">.. <a href="#" onclick="displayDetailDiv(this)">more</a></span>
+						<div id="detailDiv" style="display:none">For instance, phenology traits can be coded in bulk by mapping various
+						text strings displayed within Reproductive Condition text field to a controled phenology defined within the occurrence trait fields.
+						Coded trait attributes can be downloaded and shared via the Darwin Core (DwC) Archive export and publishing tools.
+						Traits are included within a <a href="https://tools.gbif.org/dwca-validator/extension.do?id=http://rs.iobis.org/obis/terms/ExtendedMeasurementOrFact" target="_blank">Measurement Or Fact</a> DwC Extension file.</div>
+					</div>
 					<fieldset style="margin:15px;padding:15px;">
 						<legend><b>Harvesting Filter</b></legend>
 						<form name="filterform" method="post" action="attributemining.php" onsubmit="return verifyFilterForm(this)" >
 							<div>
-								Occurrence trait: 
+								Occurrence trait:
 								<select name="traitid">
 									<option value="">Select Target Trait (required)</option>
 									<option value="">------------------------------------</option>
-									<?php 
+									<?php
 									$traitNameArr = $attrManager->getTraitNames();
 									if($traitNameArr){
 										foreach($traitNameArr as $ID => $aName){
@@ -221,11 +241,11 @@ $fieldArr = array('habitat' => 'Habitat', 'substrate' => 'Substrate', 'occurrenc
 								</select>
 							</div>
 							<div>
-								Verbatim text source: 
+								Verbatim text source:
 								<select name="fieldname">
 									<option value="">Select Source Field (required)</option>
 									<option value="">------------------------------------</option>
-									<?php 
+									<?php
 									foreach($fieldArr as $k => $fName){
 										echo '<option value="'.$k.'" '.($k==$fieldName?'SELECTED':'').'>'.$fName.'</option>';
 									}
@@ -233,7 +253,7 @@ $fieldArr = array('habitat' => 'Habitat', 'substrate' => 'Substrate', 'occurrenc
 								</select>
 							</div>
 							<div>
-								Filter by text (optional): 
+								Filter by text (optional):
 								<input name="stringfilter" type="text" value="<?php echo $stringFilter; ?>" />
 							</div>
 							<div style="float:right;margin-right:20px">
@@ -241,8 +261,8 @@ $fieldArr = array('habitat' => 'Habitat', 'substrate' => 'Substrate', 'occurrenc
 								<input id="filtersubmit" name="submitform" type="submit" value="Get Field Values" />
 							</div>
 							<div>
-								Filter by taxon (optional): 
-								<input id="taxonfilter" name="taxonfilter" type="text" value="<?php echo $taxonFilter; ?>" /> 
+								Filter by taxon (optional):
+								<input id="taxonfilter" name="taxonfilter" type="text" value="<?php echo $taxonFilter; ?>" />
 								<input id="tidfilter" name="tidfilter" type="hidden" value="<?php echo $tidFilter; ?>" />
 								<span id="verify-span" style="display:none;font-weight:bold;color:green;">verifying taxonomy...</span>
 								<span id="notvalid-span" style="display:none;font-weight:bold;color:red;">taxon not valid...</span>
@@ -250,29 +270,39 @@ $fieldArr = array('habitat' => 'Habitat', 'substrate' => 'Substrate', 'occurrenc
 						</form>
 					</fieldset>
 				</div>
-				<?php 
+				<?php
 				if($traitID && $fieldName){
 					$valueArr = $attrManager->getFieldValueArr($traitID, $fieldName, $tidFilter, $stringFilter);
 					?>
-					<div style="width:600px">
+					<div id="traitdiv" style="width:700px">
 						<fieldset style="margin:15px;padding:15px">
 							<legend><b><?php echo $fieldArr[$fieldName]; ?></b></legend>
 							<form name="miningform" method="post" action="attributemining.php" onsubmit="return verifyMiningForm(this)">
-								<div style="margin:5px;">
-									<b>Select Source Field Value(s)</b> - hold down control or shift buttons to select more than one value<br/>
-									<select name="fieldvalue[]" size="15" multiple="multiple" style="width:100%">
-										<?php 
+								<b>Select Source Field Values</b> - hold down control or shift buttons to select more than one value<br/>
+								<div style="margin:5px;border:2px solid;width:100%;height:200px;resize: both;overflow: auto">
+									<select name="fieldvalue[]" multiple="multiple" style="width:100%;height:100%">
+										<?php
 										foreach($valueArr as $v){
-											if($v) echo '<option value="'.$v.'">'.$v.'</option>';
+											if($v) echo '<option value="'.htmlspecialchars($v).'">'.$v.'</option>';
 										}
 										?>
 									</select>
 								</div>
-								<div>
-									<?php 
+								<div style="float:left">
+									<?php
 									$traitArr = $attrManager->getTraitArr($traitID,false);
 									$attrManager->echoFormTraits($traitID);
 									?>
+								</div>
+								<div class="trianglediv" style="float:left;margin-left:20px">
+									<div style="margin:4px 3px;float:right;cursor:pointer" onclick="setAttributeTree(this)" title="Toggle attribute tree open/close">
+										<img class="triangleright" src="../../images/triangleright.png" style="" />
+										<img class="triangledown" src="../../images/triangledown.png" style="display:none" />
+									</div>
+								</div>
+								<div style="margin:10px 5px;clear:both">
+									Notes:
+									<input name="notes" type="text" style="width:200px" value="" />
 								</div>
 								<div style="margin: 5px">
 									Status: <select name="reviewstatus">
@@ -288,6 +318,7 @@ $fieldArr = array('habitat' => 'Habitat', 'substrate' => 'Substrate', 'occurrenc
 									<input name="fieldname" type="hidden" value="<?php echo $fieldName; ?>" />
 									<input name="collid" type="hidden" value="<?php echo $collid; ?>" />
 									<input name="submitform" type="submit" value="Batch Assign State(s)" />
+									<input name="resetform" type="reset" value="Reset Form" />
 								</div>
 							</form>
 						</fieldset>
@@ -301,7 +332,7 @@ $fieldArr = array('habitat' => 'Habitat', 'substrate' => 'Substrate', 'occurrenc
 				<div style="margin:15px">
 					<form name="collform" method="post" action="attributemining.php" onsubmit="return verifyCollForm(this)">
 						<input name="selectall" type="checkbox" value="1" onchange="selectAll(this)" /> <b>Select/Deselect All</b><br/>
-						<?php 
+						<?php
 						foreach($collArr as $id => $collName){
 							echo '<input name="collid[]" type="checkbox" value="'.$id.'" onchange="collidChanged(this.form)" />';
 							echo $collName;
@@ -313,9 +344,12 @@ $fieldArr = array('habitat' => 'Habitat', 'substrate' => 'Substrate', 'occurrenc
 						</div>
 					</form>
 				</div>
-				<?php 
-			} 
-			?> 
+				<?php
+			}
+			?>
 		</div>
+		<?php
+		include($SERVER_ROOT.'/includes/footer.php');
+		?>
 	</body>
 </html>

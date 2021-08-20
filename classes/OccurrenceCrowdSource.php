@@ -145,9 +145,7 @@ class OccurrenceCrowdSource {
 			$sql .= 'INNER JOIN omcrowdsourcecentral c ON q.omcsid = c.omcsid INNER JOIN omcollcatlink cat ON c.collid = cat.collid ';
 		}
 		$sql .= 'WHERE q.reviewstatus = 10 AND q.points is not null AND q.isvolunteer = 1 ';
-		if($catid){
-			$sql .= 'AND (cat.ccpk = '.$catid.') ';
-		}
+		if(preg_match('/^[,\d]+$/', $catid)) $sql .= 'AND (cat.ccpk IN('.$catid.')) ';
 		$sql .= 'GROUP BY u.firstname, u.lastname ORDER BY sum(q.points) DESC ';
 		$rs = $this->conn->query($sql);
 		$cnt = 0;
@@ -168,9 +166,7 @@ class OccurrenceCrowdSource {
 			'q.reviewstatus, q.isvolunteer, COUNT(q.occid) AS cnt, SUM(IFNULL(q.points,2)) AS points '.
 			'FROM omcrowdsourcequeue q INNER JOIN omcrowdsourcecentral csc ON q.omcsid = csc.omcsid '.
 			'INNER JOIN omcollections c ON csc.collid = c.collid ';
-		if($catid){
-			$sql .= 'INNER JOIN omcollcatlink cat ON c.collid = cat.collid WHERE (cat.ccpk = '.$catid.') ';
-		}
+		if(preg_match('/^[,\d]+$/', $catid)) $sql .= 'INNER JOIN omcollcatlink cat ON c.collid = cat.collid WHERE (cat.ccpk IN('.$catid.')) ';
 		$sql .= 'GROUP BY c.collid,q.reviewstatus,q.uidprocessor,q.isvolunteer '.
 			'HAVING (q.uidprocessor = '.$GLOBALS['SYMB_UID'].' OR q.uidprocessor IS NULL) '.
 			'ORDER BY c.institutioncode,c.collectioncode,q.reviewstatus';
@@ -357,22 +353,42 @@ class OccurrenceCrowdSource {
 			$successArr = array();
 			$con = MySQLiConnectionFactory::getCon("write");
 			foreach($occidArr as $occid){
-				$points = $postArr['p-'.$occid];
-				$comments = $this->cleanInStr($postArr['c-'.$occid]);
-				$sql = 'UPDATE omcrowdsourcequeue '.
-					'SET points = '.$points.',notes = '.($comments?'"'.$comments.'"':'NULL').',reviewstatus = 10 '.
-					'WHERE occid = '.$occid;
-				if($con->query($sql)){
-					$successArr[] = $occid;
-				}
-				else{
-					$statusStr = 'ERROR submitting reviews; '.$con->error.'<br/>SQL = '.$sql;
+				if(isset($postArr['p-'.$occid])){
+					$points = $postArr['p-'.$occid];
+					$comments = $this->cleanInStr($postArr['c-'.$occid]);
+					$sql = 'UPDATE omcrowdsourcequeue '.
+						'SET points = '.$points.',notes = '.($comments?'"'.$comments.'"':'NULL').',reviewstatus = 10 '.
+						'WHERE occid = '.$occid;
+					if($con->query($sql)){
+						$successArr[] = $occid;
+					}
+					else{
+						$statusStr = 'ERROR submitting reviews; '.$con->error.'<br/>SQL = '.$sql;
+					}
 				}
 			}
 			if($successArr && isset($postArr['updateProcessingStatus']) && $postArr['updateProcessingStatus']){
 				//Change status to reviewed
 				$sql2 = 'UPDATE omoccurrences SET processingstatus = "reviewed" WHERE occid IN('.implode(',',$successArr).')';
 				$con->query($sql2);
+			}
+			$con->close();
+		}
+		return $statusStr;
+	}
+
+	public function resetReviewStatus($postArr, $status){
+		$statusStr = '';
+		if($occidArr = $postArr['occid']){
+			$successArr = array();
+			$con = MySQLiConnectionFactory::getCon("write");
+			$sql = 'UPDATE omcrowdsourcequeue SET points = NULL, notes = NULL, reviewstatus = '.$status.' ';
+			if($status === 0){
+				$sql .= ', uidprocessor = NULL, isvolunteer = 1 ';
+			}
+			$sql .= 'WHERE occid IN('.implode(',',$occidArr).')';
+			if(!$con->query($sql)){
+				$statusStr = 'ERROR submitting reviews; '.$con->error.'<br/>SQL = '.$sql;
 			}
 			$con->close();
 		}

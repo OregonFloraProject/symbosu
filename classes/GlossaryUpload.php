@@ -1,17 +1,17 @@
 <?php
-include_once($serverRoot.'/config/dbconnection.php');
+include_once($SERVER_ROOT.'/config/dbconnection.php');
 
 class GlossaryUpload{
-	
+
 	private $conn;
 	private $uploadFileName;
 	private $uploadTargetPath;
 	private $statArr = array();
-	
+
 	private $verboseMode = 1; // 0 = silent, 1 = echo only, 2 = echo and log
 	private $logFH;
 	private $errorStr = '';
-	
+
 	function __construct() {
 		$this->conn = MySQLiConnectionFactory::getCon("write");
  		$this->setUploadTargetPath();
@@ -26,10 +26,10 @@ class GlossaryUpload{
 			if($this->logFH) fclose($this->logFH);
 		}
 	}
-	
+
 	public function setUploadFile($ulFileName = ""){
 		if($ulFileName){
-			//URL to existing file  
+			//URL to existing file
 			if(file_exists($ulFileName)){
 				$pos = strrpos($ulFileName,"/");
 				if(!$pos) $pos = strrpos($ulFileName,"\\");
@@ -59,7 +59,6 @@ class GlossaryUpload{
 		$this->conn->query("TRUNCATE TABLE uploadglossary");
 		$this->conn->query("OPTIMIZE TABLE uploadglossary");
 		$fh = fopen($this->uploadTargetPath.$this->uploadFileName,'r') or die("Can't open file");
-		$headerArr = fgetcsv($fh);
 		$newTermColumn = false;
 		foreach($languageArr as $lang){
 			foreach($fieldMap as $csvField => $field){
@@ -191,16 +190,15 @@ class GlossaryUpload{
 			$this->outputMsg('ERROR: '.$this->conn->error,1);
 		}
 		$sql = 'UPDATE uploadglossary AS u1 LEFT JOIN uploadglossary AS u2 ON u1.newGroupId = u2.newGroupId '.
-			'SET u2.currentGroupId = u1.currentGroupId '. 
+			'SET u2.currentGroupId = u1.currentGroupId '.
 			'WHERE u1.currentGroupId IS NOT NULL AND ISNULL(u1.term) AND u2.term IS NOT NULL ';
 		if(!$this->conn->query($sql)){
 			$this->outputMsg('ERROR: '.$this->conn->error,1);
 		}
-		
+
 	}
-	
+
 	public function analysisUpload(){
-		$retArr = array();
 		//Get total number
 		$sql1 = 'SELECT count(*) as cnt FROM uploadglossary';
 		$rs1 = $this->conn->query($sql1);
@@ -227,17 +225,17 @@ class GlossaryUpload{
 		$languageArr = array();
 		$primaryLanguage = '';
 		$this->outputMsg('Starting data transfer...');
-		
+
 		$sql = 'SELECT COUNT(*) AS cnt FROM uploadglossary WHERE currentGroupId IS NOT NULL';
 		$rs = $this->conn->query($sql);
 		$r = $rs->fetch_object();
 		$existingTerms = $r->cnt;
-		
+
 		$sql = 'SELECT DISTINCT tidStr FROM uploadglossary';
 		$rs = $this->conn->query($sql);
 		$r = $rs->fetch_object();
 		$tidStr = $r->tidStr;
-		
+
 		$sql = 'SELECT DISTINCT `language` FROM uploadglossary';
 		if($rs = $this->conn->query($sql)){
 			while($r = $rs->fetch_object()){
@@ -245,7 +243,7 @@ class GlossaryUpload{
 			}
 			$rs->close();
 		}
-		
+
 		$this->outputMsg('Transferring terms to glossary table... ');
 		if($existingTerms){
 			$this->outputMsg('Adding translations for existing terms... ');
@@ -256,7 +254,7 @@ class GlossaryUpload{
 			if(!$this->conn->query($sql)){
 				$this->outputMsg('ERROR: '.$this->conn->error,1);
 			}
-			
+
 			$this->outputMsg('Linking translations to existing terms... ');
 			$sql = 'INSERT INTO glossarytermlink(glossgrpid,glossid) '.
 				'SELECT DISTINCT ug.currentGroupId, g.glossid '.
@@ -267,16 +265,16 @@ class GlossaryUpload{
 				$this->outputMsg('ERROR: '.$this->conn->error,1);
 			}
 		}
-		
+
 		if(in_array('English',$languageArr)){
 			$primaryLanguage = 'English';
 		}
 		else{
 			$primaryLanguage = $languageArr[0];
 		}
-		
+
 		$tidArr = explode(",",$tidStr);
-		
+
 		$this->outputMsg('Adding new '.$primaryLanguage.' terms... ');
 		$sql = 'INSERT INTO glossary(term,definition,`language`,source,translator,author,notes,resourceurl,uid) '.
 			'SELECT term, definition, `language`, source, translator, author, notes, resourceurl, '.$SYMB_UID.' '.
@@ -285,7 +283,7 @@ class GlossaryUpload{
 		if(!$this->conn->query($sql)){
 			$this->outputMsg('ERROR: '.$this->conn->error,1);
 		}
-		
+
 		$this->outputMsg('Adding new '.$primaryLanguage.' term links... ');
 		$sql = 'INSERT INTO glossarytermlink(glossgrpid,glossid) '.
 			'SELECT DISTINCT g.glossid, g.glossid '.
@@ -295,7 +293,7 @@ class GlossaryUpload{
 		if(!$this->conn->query($sql)){
 			$this->outputMsg('ERROR: '.$this->conn->error,1);
 		}
-		
+
 		$this->outputMsg('Linking synonyms to new '.$primaryLanguage.' terms... ');
 		$sql = 'INSERT INTO glossarytermlink(glossgrpid,glossid,relationshipType) '.
 			'SELECT DISTINCT gt.glossgrpid, g1.glossid, "synonym" '.
@@ -323,7 +321,7 @@ class GlossaryUpload{
 		if(!$this->conn->query($sql)){
 			$this->outputMsg('ERROR: '.$this->conn->error,1);
 		}
-		
+
 		$this->outputMsg('Linking taxa to new '.$primaryLanguage.' terms... ');
 		foreach($tidArr as $tId){
 			$sql = 'INSERT INTO glossarytaxalink(glossid,tid) '.
@@ -336,7 +334,7 @@ class GlossaryUpload{
 				$this->outputMsg('ERROR: '.$this->conn->error,1);
 			}
 		}
-		
+
 		foreach($languageArr as $lang){
 			if($lang != $primaryLanguage){
 				$this->outputMsg('Adding new '.$lang.' terms... ');
@@ -347,7 +345,7 @@ class GlossaryUpload{
 				if(!$this->conn->query($sql)){
 					$this->outputMsg('ERROR: '.$this->conn->error,1);
 				}
-				
+
 				$this->outputMsg('Linking new '.$lang.' translations to new '.$primaryLanguage.' terms... ');
 				$sql = 'INSERT INTO glossarytermlink(glossgrpid,glossid) '.
 					'SELECT DISTINCT gt.glossgrpid, g1.glossid '.
@@ -427,9 +425,8 @@ class GlossaryUpload{
 		}
 		return $fieldArr;
 	}
-	
+
 	private function getUploadGlossaryFieldArr(){
-		//Get metadata
 		$targetArr = array();
 		$sql = "SHOW COLUMNS FROM uploadglossary";
 		$rs = $this->conn->query($sql);
@@ -440,10 +437,10 @@ class GlossaryUpload{
 			}
 		}
 		$rs->free();
-		
+
 		return $targetArr;
 	}
-	
+
 	//Setters and getters
 	private function setUploadTargetPath(){
 		$tPath = $GLOBALS["tempDirRoot"];
@@ -455,11 +452,11 @@ class GlossaryUpload{
 		}
 		if(!$tPath){
 			$tPath = $GLOBALS['SERVER_ROOT'];
-			if(substr($tPath,-1) != '/') $tPath .= "/"; 
+			if(substr($tPath,-1) != '/') $tPath .= "/";
 			$tPath .= "temp/downloads";
 		}
 		if(substr($tPath,-1) != '/') $tPath .= '/';
-		$this->uploadTargetPath = $tPath; 
+		$this->uploadTargetPath = $tPath;
 	}
 
 	public function setFileName($fName){
@@ -469,11 +466,11 @@ class GlossaryUpload{
 	public function getFileName(){
 		return $this->uploadFileName;
 	}
-	
+
 	public function getStatArr(){
 		return $this->statArr;
 	}
-	
+
 	public function getErrorStr(){
 		return $this->errorStr;
 	}
@@ -486,7 +483,7 @@ class GlossaryUpload{
 				//Create log File
 				$logPath = $SERVER_ROOT;
 				if(substr($SERVER_ROOT,-1) != '/' && substr($SERVER_ROOT,-1) != '\\') $logPath .= '/';
-				$logPath .= "temp/logs/glossaryloader_".date('Ymd').".log";
+				$logPath .= "content/logs/glossaryloader_".date('Ymd').".log";
 				$this->logFH = fopen($logPath, 'a');
 				fwrite($this->logFH,"Start time: ".date('Y-m-d h:i:s A')."\n");
 			}
@@ -517,7 +514,7 @@ class GlossaryUpload{
 		$newStr = $this->conn->real_escape_string($newStr);
 		return $newStr;
 	}
-	
+
 	private function encodeArr(&$inArr){
 		foreach($inArr as $k => $v){
 			$inArr[$k] = $this->encodeString($v);
@@ -525,13 +522,9 @@ class GlossaryUpload{
 	}
 
 	private function encodeString($inStr){
-		global $charset;
+		global $CHARSET;
 		$retStr = $inStr;
-		//Get rid of Windows curly (smart) quotes
-		$search = array(chr(145),chr(146),chr(147),chr(148),chr(149),chr(150),chr(151));
-		$replace = array("'","'",'"','"','*','-','-');
-		$inStr= str_replace($search, $replace, $inStr);
-		//Get rid of UTF-8 curly smart quotes and dashes 
+		//Get rid of UTF-8 curly smart quotes and dashes
 		$badwordchars=array("\xe2\x80\x98", // left single quote
 							"\xe2\x80\x99", // right single quote
 							"\xe2\x80\x9c", // left double quote
@@ -541,16 +534,16 @@ class GlossaryUpload{
 		);
 		$fixedwordchars=array("'", "'", '"', '"', '-', '...');
 		$inStr = str_replace($badwordchars, $fixedwordchars, $inStr);
-		
+
 		if($inStr){
-			if(strtolower($charset) == "utf-8" || strtolower($charset) == "utf8"){
+			if(strtolower($CHARSET) == "utf-8" || strtolower($CHARSET) == "utf8"){
 				//$this->outputMsg($inStr.': '.mb_detect_encoding($inStr,'UTF-8,ISO-8859-1',true);
 				if(mb_detect_encoding($inStr,'UTF-8,ISO-8859-1',true) == "ISO-8859-1"){
 					$retStr = utf8_encode($inStr);
 					//$retStr = iconv("ISO-8859-1//TRANSLIT","UTF-8",$inStr);
 				}
 			}
-			elseif(strtolower($charset) == "iso-8859-1"){
+			elseif(strtolower($CHARSET) == "iso-8859-1"){
 				if(mb_detect_encoding($inStr,'UTF-8,ISO-8859-1') == "UTF-8"){
 					$retStr = utf8_decode($inStr);
 					//$retStr = iconv("UTF-8","ISO-8859-1//TRANSLIT",$inStr);

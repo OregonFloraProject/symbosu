@@ -3,7 +3,7 @@ include_once('../../config/symbini.php');
 include_once($SERVER_ROOT.'/classes/KeyCharAdmin.php');
 header("Content-Type: text/html; charset=".$CHARSET);
 
-if(!$SYMB_UID) header('Location: ../../profile/index.php?refurl=../ident/admin/index.php?'.$_SERVER['QUERY_STRING']);
+if(!$SYMB_UID) header('Location: ../../profile/index.php?refurl=../ident/admin/index.php?'.htmlspecialchars($_SERVER['QUERY_STRING'], ENT_QUOTES));
 
 $langId = array_key_exists('langid',$_REQUEST)?$_REQUEST['langid']:'';
 
@@ -14,17 +14,26 @@ $charArr = $charManager->getCharacterArr();
 $headingArr = $charManager->getHeadingArr();
 
 $isEditor = false;
-if($isAdmin || array_key_exists("KeyAdmin",$USER_RIGHTS)){
+if($IS_ADMIN || array_key_exists("KeyAdmin",$USER_RIGHTS)){
 	$isEditor = true;
 }
 
 ?>
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=<?php echo $CHARSET;?>">
+  <meta http-equiv="Content-Type" content="text/html; charset=<?php echo $CHARSET;?>">
 	<title>Character Admin</title>
-    <link href="../../css/base.css?ver=<?php echo $CSS_VERSION; ?>" type="text/css" rel="stylesheet" />
-    <link href="../../css/main.css<?php echo (isset($CSS_VERSION_LOCAL)?'?ver='.$CSS_VERSION_LOCAL:''); ?>" type="text/css" rel="stylesheet" />
+  <?php
+      $activateJQuery = false;
+      if(file_exists($SERVER_ROOT.'/includes/head.php')){
+        include_once($SERVER_ROOT.'/includes/head.php');
+      }
+      else{
+        echo '<link href="'.$CLIENT_ROOT.'/css/jquery-ui.css" type="text/css" rel="stylesheet" />';
+        echo '<link href="'.$CLIENT_ROOT.'/css/base.css?ver=1" type="text/css" rel="stylesheet" />';
+        echo '<link href="'.$CLIENT_ROOT.'/css/main.css?ver=1" type="text/css" rel="stylesheet" />';
+      }
+	?>
 	<script type="text/javascript" src="../../js/symb/shared.js"></script>
 	<script type="text/javascript">
 		function validateNewCharForm(f){
@@ -35,7 +44,7 @@ if($isAdmin || array_key_exists("KeyAdmin",$USER_RIGHTS)){
 			if(f.chartype.value == ""){
 				alert("A character type must be selected");
 				return false;
-			} 
+			}
 			if(f.sortsequence.value && !isNumeric(f.sortsequence.value)){
 				alert("Sort Sequence must be a numeric value only");
 				return false;
@@ -44,25 +53,25 @@ if($isAdmin || array_key_exists("KeyAdmin",$USER_RIGHTS)){
 		}
 
 		function openHeadingAdmin(){
-			newWindow = window.open("headingadmin.php","headingWin","scrollbars=1,toolbar=1,resizable=1,width=800,height=600,left=50,top=50");
+			newWindow = window.open("headingadmin.php","headingWin","scrollbars=1,toolbar=0,resizable=1,width=800,height=600,left=50,top=50");
 			if (newWindow.opener == null) newWindow.opener = self;
 		}
 	</script>
 	<style type="text/css">
-		input{ autocomplete: off; } 
+		input{ autocomplete: off; }
 	</style>
 </head>
 <body>
 	<?php
-	include($SERVER_ROOT."/header.php");
+	include($SERVER_ROOT.'/includes/header.php');
 	?>
 	<div class='navpath'>
-		<a href='../../index.php'>Home</a> &gt;&gt; 
+		<a href='../../index.php'>Home</a> &gt;&gt;
 		<b>Character Management</b>
 	</div>
 	<!-- This is inner text! -->
 	<div id="innertext">
-		<?php 
+		<?php
 		if($isEditor){
 			?>
 			<div id="addeditchar">
@@ -83,7 +92,7 @@ if($isAdmin || array_key_exists("KeyAdmin",$USER_RIGHTS)){
 								<div style="float:left;">
 									Type:<br />
 									<select name="chartype" style="width:180px;">
-										<option value="UM">Unordered Multi-state</option>
+										<option value="UM">Multi-state</option>
 									</select>
 								</div>
 								<div style="margin-left:30px;float:left;">
@@ -97,9 +106,9 @@ if($isAdmin || array_key_exists("KeyAdmin",$USER_RIGHTS)){
 									</select>
 								</div>
 								<div style="margin-left:30px;float:left;">
-									Heading:<br />
-									<select name="hid" style="width:125px;">
-										<option value="">No Heading</option>
+									Grouping:<br />
+									<select name="hid" style="max-width:300px;">
+										<option value="">Not Assigned</option>
 										<option value="">---------------------</option>
 										<?php
 										$hArr = $headingArr;
@@ -108,7 +117,7 @@ if($isAdmin || array_key_exists("KeyAdmin",$USER_RIGHTS)){
 											echo '<option value="'.$k.'">'.$v['name'].'</option>';
 										}
 										?>
-									</select> 
+									</select>
 									<a href="#" onclick="openHeadingAdmin(); return false;"><img src="../../images/edit.png" /></a>
 								</div>
 							</div>
@@ -123,12 +132,12 @@ if($isAdmin || array_key_exists("KeyAdmin",$USER_RIGHTS)){
 					</form>
 				</div>
 				<div id="charlist" style="padding-left:10px;">
-					<?php 
+					<?php
 					if($charArr){
 						?>
-						<h3>Characters by Heading</h3>
+						<h3>Characters</h3>
 						<ul>
-							<?php 
+							<?php
 							foreach($headingArr as $hid => $hArr){
 								if(array_key_exists($hid, $charArr)){
 									?>
@@ -136,12 +145,10 @@ if($isAdmin || array_key_exists("KeyAdmin",$USER_RIGHTS)){
 										<a href="#" onclick="toggle('char-<?php echo $hid; ?>');return false;"><b><?php echo $hArr['name']; ?></b></a>
 										<div id="char-<?php echo $hid; ?>" style="display:block;">
 											<ul>
-												<?php 
+												<?php
 												$charList = $charArr[$hid];
 												foreach($charList as $cid => $charName){
-													echo '<li>';
-													echo '<a href="chardetails.php?cid='.$cid.'">'.$charName.'</a>';
-													echo '</li>';
+													echo '<li><a href="chardetails.php?cid='.$cid.'">'.$charName.'</a></li>';
 												}
 												?>
 											</ul>
@@ -154,14 +161,12 @@ if($isAdmin || array_key_exists("KeyAdmin",$USER_RIGHTS)){
 								$noHeaderArr = $charArr[0];
 								?>
 								<li>
-									<a href="#" onclick="toggle('char-0');return false;"><b>No Assigned Header</b></a>
+									<a href="#" onclick="toggle('char-0');return false;"><b>No Assigned Grouping</b></a>
 									<div id="char-0" style="display:block;">
 										<ul>
-											<?php 
+											<?php
 											foreach($noHeaderArr as $cid => $charName){
-												echo '<li>';
-												echo '<a href="chardetails.php?cid='.$cid.'">'.$charName.'</a>';
-												echo '</li>';
+												echo '<li><a href="chardetails.php?cid='.$cid.'">'.$charName.'</a></li>';
 											}
 											?>
 										</ul>
@@ -171,7 +176,7 @@ if($isAdmin || array_key_exists("KeyAdmin",$USER_RIGHTS)){
 							}
 							?>
 						</ul>
-					<?php 
+					<?php
 					}
 					else{
 						echo '<div style="font-weight:bold;font-size:120%;">There are no existing characters</div>';
@@ -179,15 +184,15 @@ if($isAdmin || array_key_exists("KeyAdmin",$USER_RIGHTS)){
 					?>
 				</div>
 			</div>
-			<?php 
+			<?php
 		}
 		else{
 			echo '<h2>You are not authorized to add characters</h2>';
 		}
 		?>
 	</div>
-	<?php 
-	include($SERVER_ROOT.'/footer.php');
+	<?php
+	include($SERVER_ROOT.'/includes/footer.php');
 	?>
 </body>
 </html>

@@ -3,13 +3,13 @@ include_once($SERVER_ROOT.'/config/dbconnection.php');
 
 class TaxonomyUtilities {
 
-    /*
+	/*
 	 * INPUT: String representing a verbatim scientific name
 	 *        Name may have imbedded authors, cf, aff, hybrid
 	 * OUTPUT: Array containing parsed values
 	 *         Keys: sciname, unitind1, unitname1, unitind2, unitname2, unitind3, unitname3, author, identificationqualifier, rankid
 	 */
-	public static function parseScientificName($inStr, $conn = null, $rankId = 0){
+	public static function parseScientificName($inStr, $conn = null, $rankId = 0, $kingdomName = null){
 		//Converts scinetific name with author embedded into separate fields
 		$retArr = array('unitname1'=>'','unitname2'=>'','unitind3'=>'','unitname3'=>'');
 		if($inStr && is_string($inStr)){
@@ -42,15 +42,17 @@ class TaxonomyUtilities {
 			$inStr = preg_replace('/\s\s+/',' ',$inStr);
 
 			$sciNameArr = explode(' ',$inStr);
+			$okToCloseConn = true;
+			if($conn !== null) $okToCloseConn = false;
 			if(count($sciNameArr)){
-				if(strtolower($sciNameArr[0]) == 'x'){
+				if(strtolower($sciNameArr[0]) == 'x' || ord($sciNameArr[0]) == 215){
 					//Genus level hybrid
 					$retArr['unitind1'] = array_shift($sciNameArr);
 				}
 				//Genus
 				$retArr['unitname1'] = ucfirst(strtolower(array_shift($sciNameArr)));
 				if(count($sciNameArr)){
-					if(strtolower($sciNameArr[0]) == 'x'){
+					if(strtolower($sciNameArr[0]) == 'x' || ord($sciNameArr[0]) == 215){
 						//Species level hybrid
 						$retArr['unitind2'] = array_shift($sciNameArr);
 						$retArr['unitname2'] = array_shift($sciNameArr);
@@ -69,27 +71,28 @@ class TaxonomyUtilities {
 						//Specific Epithet
 						$retArr['unitname2'] = array_shift($sciNameArr);
 					}
-					if($retArr['unitname2'] && !preg_match('/^[\-a-z]+$/',$retArr['unitname2'])){
-						if(preg_match('/[A-Z]{1}[\-a-z]+/',$retArr['unitname2'])){
+					if($retArr['unitname2'] && !preg_match('/^[\-\'a-z]+$/',$retArr['unitname2'])){
+						if(preg_match('/[A-Z]{1}[\-\'a-z]+/',$retArr['unitname2'])){
 							//Check to see if is term is genus author
-							/*$sql = 'SELECT tid FROM taxa WHERE unitname1 = "'.$retArr['unitname1'].'" AND unitname2 = "'.$retArr['unitname2'].'"';
-							$con = MySQLiConnectionFactory::getCon('readonly');
-							$rs = $con->query($sql);
+							if($conn === null) $conn = MySQLiConnectionFactory::getCon('readonly');
+							$sql = 'SELECT tid FROM taxa WHERE unitname1 = "'.$conn->real_escape_string($retArr['unitname1']).'" AND unitname2 = "'.$conn->real_escape_string($retArr['unitname2']).'"';
+							$rs = $conn->query($sql);
 							if($rs->num_rows){
 								if(isset($retArr['author'])) unset($retArr['author']);
 							}
 							else{
 								//Second word is likely author, thus assume assume author has been reach and stop process
+								$retArr['author'] = trim($retArr['unitname2'].' '.implode(' ', $sciNameArr));
 								$retArr['unitname2'] = '';
 								unset($sciNameArr);
 							}
 							$rs->free();
-							$con->close();*/
 						}
 						if($retArr['unitname2']){
 							$retArr['unitname2'] = strtolower($retArr['unitname2']);
-							if(!preg_match('/^[a-z]+$/',$retArr['unitname2'])){
+							if(!preg_match('/^[\-\'a-z]+$/',$retArr['unitname2'])){
 								//Second word unlikely an epithet
+								$retArr['author'] = trim($retArr['unitname2'].' '.implode(' ', $sciNameArr));
 								$retArr['unitname2'] = '';
 								unset($sciNameArr);
 							}
@@ -105,17 +108,10 @@ class TaxonomyUtilities {
 					$authorArr = array();
 					//cycles through the final terms to evaluate and extract infraspecific data
 					while($sciStr = array_shift($sciNameArr)){
-						$sciStrTest = strtolower($sciStr);
-						if($sciStrTest == 'f.' || $sciStrTest == 'fo.' || $sciStrTest == 'fo' || $sciStrTest == 'forma'){
-							self::setInfraNode($sciStr, $sciNameArr, $retArr, $authorArr, 'f.');
+						if($testArr = self::cleanInfra($sciStr)){
+							self::setInfraNode($sciStr, $sciNameArr, $retArr, $authorArr, $testArr['infra']);
 						}
-						elseif($sciStrTest == 'var.' || $sciStrTest == 'var' || $sciStrTest == 'v.'){
-							self::setInfraNode($sciStr, $sciNameArr, $retArr, $authorArr, 'var.');
-						}
-						elseif($sciStrTest == 'ssp.' || $sciStrTest == 'ssp' || $sciStrTest == 'subsp.' || $sciStrTest == 'subsp' || $sciStrTest == 'sudbsp.'){
-							self::setInfraNode($sciStr, $sciNameArr, $retArr, $authorArr, 'subsp.');
-						}
-						elseif(!$retArr['unitname3'] && ($rankId == 230 || preg_match('/^[a-z]{5,}$/',$sciStr))){
+						elseif($kingdomName == 'Animalia' && !$retArr['unitname3'] && ($rankId == 230 || preg_match('/^[a-z]{5,}$/',$sciStr))){
 							$retArr['unitind3'] = '';
 							$retArr['unitname3'] = $sciStr;
 							unset($authorArr);
@@ -130,13 +126,10 @@ class TaxonomyUtilities {
 					if(!$retArr['unitname3'] && $retArr['author']){
 						$arr = explode(' ',$retArr['author']);
 						$firstWord = array_shift($arr);
-						if(preg_match('/^[a-z]{2,}$/',$firstWord)){
-							$sql = 'SELECT unitind3 FROM taxa '.
-								'WHERE unitname1 = "'.$retArr['unitname1'].'" AND unitname2 = "'.$retArr['unitname2'].'" AND unitname3 = "'.$firstWord.'" ';
+						if(preg_match('/^[\-\'a-z]{2,}$/',$firstWord)){
+							if($conn === null) $conn = MySQLiConnectionFactory::getCon('readonly');
+							$sql = 'SELECT unitind3 FROM taxa WHERE unitname1 = "'.$conn->real_escape_string($retArr['unitname1']).'" AND unitname2 = "'.$conn->real_escape_string($retArr['unitname2']).'" AND unitname3 = "'.$conn->real_escape_string($firstWord).'" ';
 							//echo $sql.'<br/>';
-							$makeConn = false;
-							if($conn === null) $makeConn = true;
-							if($makeConn) $conn = MySQLiConnectionFactory::getCon('readonly');
 							$rs = $conn->query($sql);
 							if($r = $rs->fetch_object()){
 								$retArr['unitind3'] = $r->unitind3;
@@ -144,19 +137,12 @@ class TaxonomyUtilities {
 								$retArr['author'] = implode(' ',$arr);
 							}
 							$rs->free();
-							if($makeConn) $conn->close();
 						}
 					}
 				}
 			}
-			if(array_key_exists('unitind3',$retArr) && $retArr['unitind3'] == 'ssp.'){
-				$retArr['unitind3'] == 'subsp.';
-			}
-			//Build sciname, without author
-			$sciname = (isset($retArr['unitind1'])?$retArr['unitind1'].' ':'').$retArr['unitname1'].' ';
-			$sciname .= (isset($retArr['unitind2'])?$retArr['unitind2'].' ':'').$retArr['unitname2'].' ';
-			$sciname .= $retArr['unitind3'].' '.$retArr['unitname3'];
-			$retArr['sciname'] = trim($sciname);
+			if($conn !== null && $okToCloseConn) $conn->close();
+			//Set taxon rankid
 			if($rankId && is_numeric($rankId)){
 				$retArr['rankid'] = $rankId;
 			}
@@ -181,6 +167,48 @@ class TaxonomyUtilities {
 					}
 				}
 			}
+			if($kingdomName == 'Animalia'){
+				if($retArr['unitind3']){
+					$retArr['unitind3'] = '';
+					if($retArr['rankid'] > 220) $retArr['rankid'] = 230;
+				}
+			}
+			//Build sciname, without author
+			$sciname = (isset($retArr['unitind1'])?$retArr['unitind1'].' ':'').$retArr['unitname1'].' ';
+			$sciname .= (isset($retArr['unitind2'])?$retArr['unitind2'].' ':'').$retArr['unitname2'].' ';
+			$sciname .= trim($retArr['unitind3'].' '.$retArr['unitname3']);
+			$retArr['sciname'] = trim($sciname);
+		}
+		return $retArr;
+	}
+
+	public static function cleanInfra($testStr){
+		$retArr = array();
+		$testStr = str_replace(array('-','_',' '),'',$testStr);
+		$testStr = strtolower(trim($testStr,'.'));
+		if($testStr == 'cultivated' || $testStr == 'cv' ){
+			$retArr['infra'] = 'cv.';
+			$retArr['rankid'] = 300;
+		}
+		elseif($testStr == 'subform' || $testStr == 'subforma' || $testStr == 'subf' || $testStr == 'subfo'){
+			$retArr['infra'] = 'subf.';
+			$retArr['rankid'] = 270;
+		}
+		elseif($testStr == 'forma' || $testStr == 'f' || $testStr == 'fo'){
+			$retArr['infra'] = 'f.';
+			$retArr['rankid'] = 260;
+		}
+		elseif($testStr == 'subvariety' || $testStr == 'subvar' || $testStr == 'subv' || $testStr == 'sv'){
+			$retArr['infra'] = 'subvar.';
+			$retArr['rankid'] = 250;
+		}
+		elseif($testStr == 'variety' || $testStr == 'var' || $testStr == 'v'){
+			$retArr['infra'] = 'var.';
+			$retArr['rankid'] = 240;
+		}
+		elseif($testStr == 'subspecies' || $testStr == 'ssp' || $testStr == 'subsp'){
+			$retArr['infra'] = 'subsp.';
+			$retArr['rankid'] = 230;
 		}
 		return $retArr;
 	}
@@ -227,21 +255,26 @@ class TaxonomyUtilities {
 				'SELECT DISTINCT ts.tid, ts.parenttid, ts.taxauthid '.
 				'FROM taxstatus ts '.
 				'WHERE (ts.taxauthid = '.$taxAuthId.') AND ts.tid NOT IN(SELECT tid FROM taxaenumtree WHERE taxauthid = '.$taxAuthId.')';
-			//echo $sql;
 			if(!$conn->query($sql)){
 				$status = 'ERROR seeding taxaenumtree: '.$conn->error;
 			}
-			if($status == true){
-				//Continue building taxaenumtree
+			if($status === true){
+				//Set direct parents for all taxa
 				$sql2 = 'INSERT INTO taxaenumtree(tid,parenttid,taxauthid) '.
+					'SELECT DISTINCT ts.tid, ts.parenttid, ts.taxauthid '.
+					'FROM taxstatus ts LEFT JOIN taxaenumtree e ON ts.tid = e.tid AND ts.parenttid = e.parenttid AND ts.taxauthid = e.taxauthid '.
+					'WHERE (ts.taxauthid = '.$taxAuthId.') AND (e.tid IS NULL)';
+				if(!$conn->query($sql2)) $status = 'ERROR setting direct parents within taxaenumtree: '.$conn->error;
+
+				//Continue adding more distint parents
+				$sql3 = 'INSERT INTO taxaenumtree(tid,parenttid,taxauthid) '.
 					'SELECT DISTINCT e.tid, ts.parenttid, ts.taxauthid '.
 					'FROM taxaenumtree e INNER JOIN taxstatus ts ON e.parenttid = ts.tid AND e.taxauthid = ts.taxauthid '.
 					'LEFT JOIN taxaenumtree e2 ON e.tid = e2.tid AND ts.parenttid = e2.parenttid AND e.taxauthid = e2.taxauthid '.
 					'WHERE (ts.taxauthid = '.$taxAuthId.') AND (e2.tid IS NULL)';
-				//echo $sql;
 				$cnt = 0;
 				do{
-					if(!$conn->query($sql2)){
+					if(!$conn->query($sql3)){
 						$status = 'ERROR building taxaenumtree: '.$conn->error;
 						break;
 					}
@@ -298,6 +331,29 @@ class TaxonomyUtilities {
 		//Return endIndex plus one
 		$endIndex++;
 		return $endIndex;
+	}
+
+	public static function linkOccurrenceTaxa($conn = null){
+		if(!$conn) $conn = MySQLiConnectionFactory::getCon("write");
+
+		$sql1 = 'UPDATE omoccurrences o INNER JOIN taxa t ON o.sciname = t.sciname AND o.scientificnameauthorship = t.author SET o.TidInterpreted = t.tid WHERE (o.TidInterpreted IS NULL)';
+		if(!$conn->query($sql1)){
+			echo '<div>ERROR indexing occurrences by matching sciname and author</div>';
+		}
+
+		$sql2 = 'UPDATE omoccurrences o INNER JOIN taxa t ON o.sciname = t.sciname '.
+			'INNER JOIN taxaenumtree e ON t.tid = e.tid '.
+			'INNER JOIN taxa t2 ON e.parenttid = t2.tid '.
+			'SET o.TidInterpreted = t.tid '.
+			'WHERE (o.TidInterpreted IS NULL) AND (t2.rankid = 140) AND (ts.sciname = o.family)';
+		if(!$conn->query($sql2)){
+			echo '<div>ERROR indexing occurrences by matching sciname and family</div>';
+		}
+
+		$sql3 = 'UPDATE omoccurrences o INNER JOIN taxa t ON o.sciname = t.sciname SET o.TidInterpreted = t.tid WHERE (o.TidInterpreted IS NULL)';
+		if(!$conn->query($sql3)){
+			echo '<div>ERROR indexing occurrences by matching just sciname</div>';
+		}
 	}
 }
 ?>

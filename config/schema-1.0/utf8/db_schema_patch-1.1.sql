@@ -215,6 +215,8 @@ ALTER TABLE `fmprojects`
   ADD COLUMN `headerUrl` VARCHAR(150) NULL AFTER `iconUrl`,
   ADD COLUMN `dynamicProperties` TEXT NULL AFTER `ispublic`;
 
+ALTER TABLE `fmprojects` 
+  CHANGE COLUMN `fulldescription` `fulldescription` VARCHAR(5000) NULL DEFAULT NULL ;
 
 #Identification key
 ALTER TABLE `kmcharacterlang` DROP FOREIGN KEY `FK_characterlang_1`;
@@ -443,10 +445,12 @@ ALTER TABLE `taxa`
   DROP INDEX `sciname_unique`,
   ADD UNIQUE INDEX `sciname_unique` (`SciName` ASC, `RankId` ASC, `Author` ASC),
   ADD INDEX `sciname_index` (`SciName` ASC);
+
+ALTER TABLE `taxa` 
+  ADD INDEX `idx_taxa_kingdomName` (`kingdomName` ASC);
   
 ALTER TABLE `taxalinks` 
   ADD COLUMN `inherit` INT NULL DEFAULT 1 AFTER `icon`;
-
 
 # Needed for FP functions
 CREATE INDEX idx_taxacreated ON taxa(initialtimestamp);
@@ -893,6 +897,7 @@ CREATE TABLE `omoccurlithostratigraphy` (
   CONSTRAINT `FK_occurlitho_occid` FOREIGN KEY (`occid`) REFERENCES `omoccurrences` (`occid`) ON DELETE CASCADE  ON UPDATE CASCADE
 );
 
+
 CREATE TABLE `useraccesstokens` (
   `tokid` int(11) NOT NULL AUTO_INCREMENT,
   `uid` int unsigned NOT NULL,
@@ -904,11 +909,6 @@ CREATE TABLE `useraccesstokens` (
   CONSTRAINT `FK_useraccess_uid` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`) ON DELETE CASCADE  ON UPDATE CASCADE
 );
 
-
-# OK if fails: put at end because may fail due to collid not existing (depending on verion of installation)
-ALTER TABLE `omoccurrencesfulltext` 
-  DROP COLUMN IF EXISTS `collid`,
-  DROP INDEX IF EXISTS `Index_occurfull_collid` ;
 
 
 

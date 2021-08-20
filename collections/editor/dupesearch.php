@@ -1,14 +1,14 @@
 <?php
 include_once('../../config/symbini.php');
-include_once($serverRoot.'/classes/OccurrenceDuplicate.php');
-header("Content-Type: text/html; charset=".$charset);
+include_once($SERVER_ROOT.'/classes/OccurrenceDuplicate.php');
+header("Content-Type: text/html; charset=".$CHARSET);
 
 $occidQuery = array_key_exists('occidquery',$_REQUEST)?$_REQUEST['occidquery']:'';
 $curOccid = (array_key_exists('curoccid',$_GET)?$_REQUEST["curoccid"]:0);
 $collId = (array_key_exists('collid',$_GET)?$_GET['collid']:0);
 $cNum = (array_key_exists('cnum',$_GET)?$_GET['cnum']:'');
 
-$occIdMerge = (array_key_exists('occidmerge',$_GET)?$_GET['occidmerge']:'');
+$occIdMerge = (array_key_exists('occidmerge',$_GET)?$_GET['occidmerge']:0);
 $submitAction = (array_key_exists('submitaction',$_GET)?$_GET['submitaction']:'');
 
 $dupeManager = new OccurrenceDuplicate();
@@ -17,7 +17,7 @@ $dupeType = substr($occidQuery,0,5);
 $occArr = array();
 if(!$submitAction && $occidQuery){
 	$occArr = $dupeManager->getDupesOccid(substr($occidQuery,6));
-	unset($occArr[$curOccid]);  
+	unset($occArr[$curOccid]);
 }
 
 $onLoadStr = '';
@@ -25,13 +25,13 @@ $statusStr = '';
 if($submitAction){
 	$isEditor = 0;
 	if($IS_ADMIN
-		|| (array_key_exists("CollAdmin",$userRights) && in_array($collId,$userRights["CollAdmin"]))
-		|| (array_key_exists("CollEditor",$userRights) && in_array($collId,$userRights["CollEditor"]))){
+		|| (array_key_exists("CollAdmin",$USER_RIGHTS) && in_array($collId,$USER_RIGHTS["CollAdmin"]))
+		|| (array_key_exists("CollEditor",$USER_RIGHTS) && in_array($collId,$USER_RIGHTS["CollEditor"]))){
 		$isEditor = 1;
 	}
 	if($isEditor){
 		if($submitAction == 'mergerecs'){
-			if(!$dupeManager->mergeRecords($curOccid,$occIdMerge)){
+			if(!$dupeManager->mergeRecords($occIdMerge,$curOccid)){
 				$statusStr = $dupeManager->getErrorStr();
 			}
 			$onLoadStr = 'reloadParent();close()';
@@ -41,22 +41,31 @@ if($submitAction){
 //Get list of collections user can edit
 $collRightsArr = array();
 if(!$IS_ADMIN){
-	if(array_key_exists('CollAdmin',$userRights)){
-		$collRightsArr = $userRights['CollAdmin'];
+	if(array_key_exists('CollAdmin',$USER_RIGHTS)){
+		$collRightsArr = $USER_RIGHTS['CollAdmin'];
 	}
-	if(array_key_exists('CollEditor',$userRights)){
-		$collRightsArr = array_merge($collRightsArr,$userRights['CollEditor']);
+	if(array_key_exists('CollEditor',$USER_RIGHTS)){
+		$collRightsArr = array_merge($collRightsArr,$USER_RIGHTS['CollEditor']);
 	}
 }
 ?>
 <html>
 	<head>
-		<title><?php echo $defaultTitle; ?> - Duplicate Record Search</title>
-		<link href="../../css/base.css?ver=<?php echo $CSS_VERSION; ?>" type="text/css" rel="stylesheet" />
-	    <link href="../../css/main.css<?php echo (isset($CSS_VERSION_LOCAL)?'?ver='.$CSS_VERSION_LOCAL:''); ?>" type="text/css" rel="stylesheet" />
-	    <style type="text/css">
-			table.styledtable td { white-space: nowrap; }
-	    </style>
+		<title><?php echo $DEFAULT_TITLE; ?> - Duplicate Record Search</title>
+    <?php
+      $activateJQuery = false;
+      if(file_exists($SERVER_ROOT.'/includes/head.php')){
+        include_once($SERVER_ROOT.'/includes/head.php');
+      }
+      else{
+        echo '<link href="'.$CLIENT_ROOT.'/css/jquery-ui.css" type="text/css" rel="stylesheet" />';
+        echo '<link href="'.$CLIENT_ROOT.'/css/base.css?ver=1" type="text/css" rel="stylesheet" />';
+        echo '<link href="'.$CLIENT_ROOT.'/css/main.css?ver=1" type="text/css" rel="stylesheet" />';
+      }
+    ?>
+    <style type="text/css">
+    table.styledtable td { white-space: nowrap; }
+    </style>
 		<script type="text/javascript">
 			var occArr = new Array();
 			<?php
@@ -118,7 +127,7 @@ if(!$IS_ADMIN){
 			function reloadParent(){
 				opener.pendingDataEdits = false;
 				var qForm = opener.document.queryform;
-				qForm.occid.value = <?php echo $curOccid; ?>;
+				qForm.occid.value = <?php echo $occIdMerge; ?>;
 				if(opener.document.fullform.occindex) qForm.occindex.value = opener.document.fullform.occindex.value;
 				opener.document.queryform.submit();
 				//opener.location.reload();
@@ -164,6 +173,8 @@ if(!$IS_ADMIN){
 					echo '<span style="color:orange;">Possible Matching Duplicate EVENTS</span>';
 				}
 				echo '</div><hr/>';
+				//Experimental devleopment, not yet used
+				/*
 				?>
 				<div id="tableview" style="display:none;">
 					<table class="styledtable" style="font-family:Arial;font-size:12px;">
@@ -214,6 +225,9 @@ if(!$IS_ADMIN){
 						?>
 					</table>
 				</div>
+				<?php
+				*/
+				?>
 				<div id="paragraphview" style="display:block;">
 					<?php
 					foreach($occArr as $occId => $occObj){
@@ -342,10 +356,14 @@ if(!$IS_ADMIN){
 									Transfer to Empty Fields Only
 								</a>
 							</div>
-							<div style="margin-left:30px;float:left;">
-								<input id="linkdupe-<?php echo $occId; ?>" type="checkbox" <?php echo ($dupeType == 'exact'?'checked':''); ?> /> Link as Dupes
-							</div>
 							<?php
+							if(!isset($ACTIVATE_DUPLICATES) || $ACTIVATE_DUPLICATES){
+								?>
+								<div style="margin-left:30px;float:left;">
+									<input id="linkdupe-<?php echo $occId; ?>" type="checkbox" <?php echo ($dupeType == 'exact'?'checked':''); ?> /> Link as Duplicate
+								</div>
+								<?php
+							}
 							if($collId == $occObj['collid']){
 								?>
 								<div style="margin-left:30px;float:left;">

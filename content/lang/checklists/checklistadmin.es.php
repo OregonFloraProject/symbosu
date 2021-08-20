@@ -8,18 +8,22 @@ Language: Español (Spanish)
 include_once('checklist.en.php');
 
 $LANG['NAV_HOME'] = 'Inicio';
-$LANG['CHECKADMIN'] = ' Administraci&oacute;n de Listado de Comprobaci&oacute;n';
+$LANG['CHECKADMIN'] = 'Administraci&oacute;n de Listado de Comprobaci&oacute;n';
+$LANG['SELECTPROJECT'] = 'Selecciona un proyecto';
 $LANG['RETURNCHECK'] = 'Volver al Listado de Comprobaci&oacute;n';
 $LANG['ADMIN'] = 'Admin';
 $LANG['DESCRIPTION'] = 'Descripci&oacute;n';
 $LANG['RELATEDCHECK'] = 'Listados de Comprobaci&oacute;n Relacionados';
-$LANG['ADDIMGV'] = 'Agregar Im&aacute;gen Voucher';
+$LANG['ADDIMGVOUCHER'] = 'Agregar Im&aacute;gen Voucher';
 $LANG['NOEDITOR'] = 'Nadie ha sido asignado expl&iacute;citamente como un editor';
-$LANG['ADDNEWU'] = 'Agregar Usuario Nuevo';
-$LANG['SELECTU'] = 'Seleccionar Usuario';
-$LANG['INVPROJAS'] = 'Asignaciones a Proyecto de Inventario';
-$LANG['CHECKNOTAS'] = 'Listado de Comprobaci&oacute;n no ha sido asignado a ning&uacute;n Proyecto de Inventario';
-$LANG['FILTER'] = 'Filtro:';
+$LANG['ADDNEWUSER'] = 'Agregar Usuario Nuevo';
+$LANG['SELECTUSER'] = 'Seleccionar Usuario';
+$LANG['INVENTORYPROJECTS'] = 'Asignaciones a Proyecto de Inventario';
+$LANG['REMOVEPROJECTCONFIRM'] = '&#191Est&aacute;s seguro de que quieres desvincular el proyecto?';
+$LANG['REMOVEPROJECT'] = 'Desvincular lista del proyecto';
+$LANG['CHECKNOTASSIGNED'] = 'Listado de Comprobaci&oacute;n no ha sido asignado a ning&uacute;n Proyecto de Inventario';
+$LANG['LINKTOPROJECT'] = 'Enlace a un Proyecto';
+$LANG['SUBMIT'] = 'Enviar';
 $LANG['PERMREMOVECHECK'] = 'Retirar permanentemente Listado de Comprobaci&oacute;n';
 $LANG['REMOVEUSERCHECK'] = 'Antes de que una lista de comprobaci&oacute;n se pueda eliminar, todos los editores (excepto a s&iacute; mismo) y las asignaciones del proyecto de inventario deben ser eliminados.
 							Las asignaciones del proyecto de inventario s&oacute;lo pueden ser eliminados por el administrador activo del proyecto o un administrador del sistema. ';
@@ -49,12 +53,15 @@ $LANG['POLYGON_NOT_DEFINED'] = 'Pol&iacute;gono definida<br/>Haga clic en globo 
 $LANG['POLYGON_READY'] = 'Pol&iacute;gono cambiado y listas para guardar';
 $LANG['DEFAULTDISPLAY'] = 'Ajustes de Vista por Defecto';
 $LANG['SHOWDETAILS'] = 'Mostrar Detalles';
+$LANG['DISPLAY_SYNONYMS'] = 'Mostrar Sin&oacute;nimos';
 $LANG['COMMON'] = ' Nombres comunes';
 $LANG['DISPLAYIMG'] = 'Mostrar como Im&aacute;genes';
 $LANG['NOTESVOUC'] = 'Notas &amp; Vouchers';
 $LANG['TAXONAUTHOR'] = 'Autores del Tax&oacute;n';
 $LANG['TAXONABC'] = ' Mostrar Taxa Alfab&eacute;ticamente';
 $LANG['ACTIVATEKEY'] = 'Activate Identification Key';
+$LANG['DEFAULT_SORT'] = 'Secuencia de clasificaci&oacute;n';
+$LANG['ACCESS'] = 'Acceso';
 $LANG['PRIVATE'] = 'Privado';
 $LANG['PUBLIC'] = 'P&uacute;blico';
 $LANG['ADDIMGVOUC'] = 'Agregar Im&aacute;gen Voucher y V&iacute;nculo a Listado de Comprobaci&oacute;n';

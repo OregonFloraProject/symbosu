@@ -37,6 +37,7 @@ body{
 #occedittabs{
 	font-family: Arial,Helvetica,sans-serif;
 	font-size: 12px;
+	height: 730px;
 }
 
 
@@ -100,7 +101,7 @@ body{
 	top: 67px;
 	left: 350px;
 	display:none;
-	width:200px;
+	width:220px;
 	background-color:#FFFFFF;
 	z-index: 10; 
 	padding:25px;
@@ -108,7 +109,7 @@ body{
 }
 
 #dupeMsgDiv div{
-	width:150px;
+	width:170px;
 	border:2px outset blue;
 	padding:3px;
 }
@@ -247,7 +248,7 @@ body{
 	margin-top:2px;
 }
 
-#localityDiv input{
+#localityDiv textarea{
 	width:	500px;
 }
 
@@ -482,33 +483,6 @@ body{
 	cursor: pointer;
 }
 
-#occurrenceRemarksDiv img{
-	width:15px;
-}
-
-#fieldNotesDiv{
-	float: left;
-	margin-top:2px;
-}
-
-#fieldNotesDiv input{
-	width: 550px;
-}
-
-#fieldNotesDiv textarea{
-	width: 550px;
-	resize: vertical;
-}
-
-#fieldNotesDiv span{
-	margin-left: 5px;
-	cursor: pointer;
-}
-
-#fieldNotesDiv img{
-	width:15px;
-}
-
 #dynPropToggleSpan{
 	display:none;
 }
@@ -607,11 +581,17 @@ body{
 }
 
 /* Button Controls */
+#bottomSubmitDiv{
+	margin-top: -20px;
+	padding:10px;
+}
+
 #addButtonDiv{
 	display:none;
 }
 
 #editButtonDiv{
+	margin:	15px 30px;
 	float: left;
 }
 
@@ -649,6 +629,11 @@ img.docimg {
 	border:			0px;
 	width:			9px;
 	margin-bottom:	2px; 
+}
+
+img.editimg { 
+	border:			0px;
+	width:			15px;
 }
 
 table { 

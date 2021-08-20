@@ -1,62 +1,68 @@
 <?php
 include_once('../../config/symbini.php');
-include_once($serverRoot.'/classes/OccurrenceLabel.php');
-header("Content-Type: text/html; charset=".$charset);
+include_once($SERVER_ROOT.'/classes/OccurrenceLabel.php');
+header("Content-Type: text/html; charset=".$CHARSET);
 
 $collid = $_POST["collid"];
 $lHeader = $_POST['lheading'];
 $lFooter = $_POST['lfooter'];
 $detIdArr = $_POST['detid'];
-$speciesAuthors = ((array_key_exists('speciesauthors',$_POST) && $_POST['speciesauthors'])?1:0);
-$clearQueue = ((array_key_exists('clearqueue',$_POST) && $_POST['clearqueue'])?1:0);
 $action = array_key_exists('submitaction',$_POST)?$_POST['submitaction']:'';
-$rowsPerPage = 3;
+$rowsPerPage = array_key_exists('rowcount',$_POST)?$_POST['rowcount']:3;;
 
 $labelManager = new OccurrenceLabel();
 $labelManager->setCollid($collid);
 
 $isEditor = 0;
-if($symbUid){
-	if($isAdmin || (array_key_exists("CollAdmin",$userRights) && in_array($collid,$userRights["CollAdmin"])) || (array_key_exists("CollEditor",$userRights) && in_array($collid,$userRights["CollEditor"]))){
+if($SYMB_UID){
+	if($IS_ADMIN || (array_key_exists("CollAdmin",$USER_RIGHTS) && in_array($collid,$USER_RIGHTS["CollAdmin"])) || (array_key_exists("CollEditor",$USER_RIGHTS) && in_array($collid,$USER_RIGHTS["CollEditor"]))){
 		$isEditor = 1;
 	}
 }
 ?>
 <html>
 	<head>
-		<title><?php echo $defaultTitle; ?> Default Annotations</title>
+		<title><?php echo $DEFAULT_TITLE; ?> Default Annotations</title>
 		<style type="text/css">
 			body {font-family:arial,sans-serif;}
-			table.labels {page-break-before:auto;page-break-inside:avoid;border-spacing:5px;}
-			table.labels td {width:<?php echo ($rowsPerPage==1?'600px':(100/$rowsPerPage).'%'); ?>;border:1px solid black;padding:8px;}
+			table.labels { page-break-before:auto; }
+			table.labels tr td { page-break-inside: avoid; white-space: nowrap; }
+			<?php
+			$marginSize = 5;
+			if(array_key_exists('marginsize',$_POST) && $_POST['marginsize']) $marginSize = $_POST['marginsize'];
+			echo 'table.labels {border-spacing:'.$marginSize.'px;}';
+			$widthStr = '600px';
+			if($rowsPerPage > 1) $widthStr = 100/$rowsPerPage.'%';
+			$borderWidth = 1;
+			if(array_key_exists('borderwidth',$_POST)) $borderWidth = $_POST['borderwidth'];
+			?>
+			table.labels td {width:<?php echo $widthStr; ?>;padding:8px;border:<?php echo $borderWidth; ?>px solid black;}
 			p.printbreak {page-break-after:always;}
 			.lheader {width:100%;margin-bottom:5px;text-align:center;font:bold 9pt arial,sans-serif;}
 			.scientificnamediv {clear:both;font-size:10pt;}
-			.identifiedbydiv {float:left;font-size:8pt;margin-top:5px;}
-			.dateidentifieddiv {float:left;font-size:8pt;}
-			.identificationreferences {clear:both;font-size:8pt;margin-top:5px;}
-			.identificationremarks {clear:both;font-size:8pt;margin-top:5px;}
-			.lfooter {clear:both;width:100%;text-align:center;font:bold 9pt arial,sans-serif;margin-top:18px;}
+			.subfielddiv {font-size:8pt;margin-top:5px;clear:both;}
+			.lfooter {clear:both;width:100%;text-align:center;font:bold 9pt arial,sans-serif;margin-top:10px;}
 		</style>
 	</head>
 	<body style="background-color:#ffffff;">
 		<div>
-			<?php 
+			<?php
 			if($isEditor){
 				if($action){
+					$speciesAuthors = ((array_key_exists('speciesauthors',$_POST) && $_POST['speciesauthors'])?1:0);
 					$labelArr = $labelManager->getAnnoArray($_POST['detid'], $speciesAuthors);
-					if($clearQueue){
+					if(array_key_exists('clearqueue',$_POST) && $_POST['clearqueue']){
 						$labelManager->clearAnnoQueue($_POST['detid']);
 					}
 					$labelCnt = 0;
+					echo '<table class="labels">';
 					foreach($labelArr as $occid => $occArr){
 						$headerStr = trim($lHeader);
 						$footerStr = trim($lFooter);
-						
 						$dupCnt = $_POST['q-'.$occid];
 						for($i = 0;$i < $dupCnt;$i++){
 							$labelCnt++;
-							if($rowsPerPage == 1 || $labelCnt%$rowsPerPage == 1) echo '<table class="labels"><tr>'."\n";
+							if($rowsPerPage == 1 || $labelCnt%$rowsPerPage == 1) echo '<tr>'."\n";
 							?>
 							<td class="" valign="top">
 								<?php
@@ -69,7 +75,7 @@ if($symbUid){
 								}
 								?>
 								<div class="scientificnamediv">
-									<?php 
+									<?php
 									if($occArr['identificationqualifier']) echo '<span class="identificationqualifier">'.$occArr['identificationqualifier'].'</span> ';
 									$scinameStr = $occArr['sciname'];
 									$parentAuthor = (array_key_exists('parentauthor',$occArr)?' '.$occArr['parentauthor']:'');
@@ -89,36 +95,44 @@ if($symbUid){
 									</span>
 									<span class="scientificnameauthorship"><?php echo $occArr['scientificnameauthorship']; ?></span>
 								</div>
-								<?php 
-								if($occArr['identificationremarks']){
-									?>
-									<div class="identificationremarks"><?php echo $occArr['identificationremarks']; ?></div>
-									<?php 
-								}
-								if($occArr['identificationreferences']){
-									?>
-									<div class="identificationreferences"><?php echo $occArr['identificationreferences']; ?></div>
-									<?php 
-								}
+								<?php
 								if($occArr['identifiedby'] || $occArr['dateidentified']){
 									if($occArr['identifiedby']){
 										?>
-										<div class="identifiedbydiv">
-											Determiner: <?php echo $occArr['identifiedby']; ?>
+										<div class="subfielddiv">
+											<?php
+											if($occArr['dateidentified']){
+												?>
+												<div style="float:right">
+													<?php echo $occArr['dateidentified']; ?>
+												</div>
+												<?php
+											}
+											?>
+											<div>
+												Det: <?php echo $occArr['identifiedby']; ?>
+											</div>
 										</div>
 										<?php
-										if($occArr['dateidentified']){
-											echo '<br />';
-										}
 									}
-									if($occArr['dateidentified']){
+									if(array_key_exists('printcatnum',$_POST) && $_POST['printcatnum'] && $occArr['catalognumber']){
 										?>
-										<div class="dateidentifieddiv">
-											Date: <?php echo $occArr['dateidentified']; ?>
+										<div class="subfielddiv">
+											Catalog #: <?php echo $occArr['catalognumber']; ?>
 										</div>
 										<?php
 									}
-								} 
+									if($occArr['identificationreferences']){
+										?>
+										<div class="subfielddiv"><?php echo $occArr['identificationreferences']; ?></div>
+										<?php
+									}
+									if($occArr['identificationremarks']){
+										?>
+										<div class="subfielddiv"><?php echo $occArr['identificationremarks']; ?></div>
+										<?php
+									}
+								}
 								if($footerStr){
 									?>
 									<div class="lfooter">
@@ -127,20 +141,21 @@ if($symbUid){
 									<?php
 								}
 								?>
-							</td> 
+							</td>
 							<?php
 							if($labelCnt%$rowsPerPage == 0){
-								echo '</tr></table>'."\n";
+								echo '</tr>'."\n";
 							}
 						}
 					}
+					echo '</table>';
 					if($labelCnt%$rowsPerPage){
 						$remaining = $rowsPerPage-($labelCnt%$rowsPerPage);
 						for($i = 0;$i < $remaining;$i++){
 							echo '<td></td>';
 						}
 						echo '</tr></table>'."\n"; //If label count is odd, close final labelrowdiv
-					} 
+					}
 				}
 			}
 			?>

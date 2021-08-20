@@ -1,5 +1,5 @@
 <?php
-include_once($serverRoot.'/config/dbconnection.php');
+include_once($SERVER_ROOT.'/config/dbconnection.php');
 
 class KeyManager{
 
@@ -21,7 +21,7 @@ class KeyManager{
 			$sqlWhere = '(TID In ('.$tidStr.')) ';
 			if($charStr) $sqlWhere .= 'AND (CID IN ('.$charStr.'))';
 			if($csStr) $sqlWhere .= 'AND (cs IN ('.$csStr.'))';
-			
+
 			//Version deletes
 			$sqlTrans = 'INSERT INTO kmdescrdeletions ( TID, CID, Modifier, CS, X, TXT, Inherited, Source, Seq, Notes, InitialTimeStamp, DeletedBy ) '.
 				'SELECT TID, CID, Modifier, CS, X, TXT, Inherited, Source, Seq, d.Notes, d.DateEntered, "'.$GLOBALS['USERNAME'].'" '.
@@ -36,9 +36,9 @@ class KeyManager{
 		}
 	}
 
-	protected function insertDescr($tid, $cid, $cs){ 
+	protected function insertDescr($tid, $cid, $cs){
 		if(is_numeric($tid) && is_numeric($cid) && $cs){
-			$sql = "INSERT INTO kmdescr (TID, CID, CS, Source) VALUES ($tid, $cid, '".$cs."', '".$GLOBALS['USERNAME']."')";
+			$sql = "INSERT INTO kmdescr (TID, CID, CS, Source) VALUES ($tid, $cid, '".$this->cleanInStr($cs)."', '".$GLOBALS['USERNAME']."')";
 			$this->conn->query($sql);
 		}
 	}
@@ -46,7 +46,7 @@ class KeyManager{
 	protected function deleteInheritance($tidStr,$cidStr){
 		if($tidStr){
 			//delete all inherited children traits for CIDs that will be modified
-			$childrenStr = trim(implode(',',$this->getChildrenArr($tidStr)).','.$tidStr,' ,'); 
+			$childrenStr = trim(implode(',',$this->getChildrenArr($tidStr)).','.$tidStr,' ,');
 			$sql = "DELETE FROM kmdescr ".
 				"WHERE (TID IN(".$childrenStr.")) ".
 				"AND (CID IN(".$cidStr.")) AND (Inherited Is Not Null AND Inherited <> '')";
@@ -58,7 +58,7 @@ class KeyManager{
 	protected function resetInheritance($tidStr, $cidStr){
 		//Set inheritance for target and all children of target
 		$cnt = 0;
-		$childrenStr = trim(implode(',',$this->getChildrenArr($tidStr)).','.$tidStr,' ,'); 
+		$childrenStr = trim(implode(',',$this->getChildrenArr($tidStr)).','.$tidStr,' ,');
 		do{
 			$sql = 'INSERT IGNORE INTO kmdescr( TID, CID, CS, Modifier, X, TXT, Seq, Notes, Inherited ) '.
 				'SELECT DISTINCT t2.TID, d1.CID, d1.CS, d1.Modifier, d1.X, d1.TXT, '.
@@ -79,48 +79,43 @@ class KeyManager{
 	}
 
 	protected function getChildrenArr($tid){
-		//Return list of accepted taxa, not including target 
+		//Return list of accepted taxa, not including target
 		$retArr = Array();
-		if($tid){
-			$targetStr = $tid;
-			do{
-				if(isset($targetList)) unset($targetList);
-				$targetList = Array();
-				$sql = 'SELECT t.tid '.
-					'FROM taxa t INNER JOIN taxstatus ts ON t.tid = ts.tid '.
-					'WHERE (ts.taxauthid = '.$this->taxAuthId.') AND (ts.ParentTID In ('.$targetStr.')) AND (ts.tid = ts.tidaccepted)';
-				$rs = $this->conn->query($sql);
-				while($row = $rs->fetch_object()){
-					$targetList[] = $row->tid;
-			    }
-			    $rs->free();
-				if($targetList){
-					$targetStr = implode(",", $targetList);
-					$retArr = array_merge($retArr, $targetList);
-				}
-			}while($targetList);
-		}
+		$targetStr = $tid;
+		do{
+			if(isset($targetList)) unset($targetList);
+			$targetList = Array();
+			$sql = 'SELECT t.tid '.
+				'FROM taxa t INNER JOIN taxstatus ts ON t.tid = ts.tid '.
+				'WHERE (ts.taxauthid = '.$this->taxAuthId.') AND (ts.ParentTID In ('.$targetStr.')) AND (ts.tid = ts.tidaccepted)';
+			$rs = $this->conn->query($sql);
+			while($row = $rs->fetch_object()){
+				$targetList[] = $row->tid;
+		    }
+		    $rs->free();
+			if($targetList){
+				$targetStr = implode(",", $targetList);
+				$retArr = array_merge($retArr, $targetList);
+			}
+		}while($targetList);
 		return $retArr;
 	}
-	
+
 	protected function getParentArr($tid){
  		$retArr = Array();
- 		if($tid){
-			$targetTid = $tid;
-			while($targetTid){
-				//$sql = 'SELECT parenttid FROM taxaenumtree WHERE taxauthid = 1 AND (tid = '.$this->tid.')';
-				$sql = 'SELECT parenttid FROM taxstatus '.
-					'WHERE (taxauthid = '.$this->taxAuthId.') AND (tid = '.$targetTid.')';
-				//echo $sql;
-				$rs = $this->conn->query($sql);
-			    if($row = $rs->fetch_object()){
-			    	if(!$row->parenttid || $targetTid == $row->parenttid) break;
-					$targetTid = $row->parenttid;
-					if($targetTid) $retArr[] = $targetTid;
-			    }
-			}
-			$rs->free();
- 		}
+		$targetTid = $tid;
+		while($targetTid){
+			//$sql = 'SELECT parenttid FROM taxaenumtree WHERE taxauthid = 1 AND (tid = '.$this->tid.')';
+			$sql = 'SELECT parenttid FROM taxstatus WHERE (taxauthid = '.$this->taxAuthId.') AND (tid = '.$targetTid.')';
+			//echo $sql;
+			$rs = $this->conn->query($sql);
+		    if($row = $rs->fetch_object()){
+		    	if(!$row->parenttid || $targetTid == $row->parenttid) break;
+				$targetTid = $row->parenttid;
+				if($targetTid) $retArr[] = $targetTid;
+		    }
+		}
+		$rs->free();
 		return $retArr;
 	}
 

@@ -1,13 +1,13 @@
 <?php
-include_once($serverRoot.'/config/dbconnection.php');
+include_once($SERVER_ROOT.'/config/dbconnection.php');
 
 class SiteMapManager{
-	
+
 	private $conn;
 	private $collArr = array();
 	private $obsArr = array();
 	private $genObsArr = array();
-	
+
 	function __construct() {
 		$this->conn = MySQLiConnectionFactory::getCon("readonly");
 	}
@@ -17,17 +17,17 @@ class SiteMapManager{
 	}
 
 	public function setCollectionList(){
-		global $userRights, $isAdmin;
+		global $USER_RIGHTS, $IS_ADMIN;
 		$adminArr = array();
 		$editorArr = array();
 		$sql = 'SELECT c.collid, CONCAT_WS(":",c.institutioncode, c.collectioncode) AS ccode, c.collectionname, c.colltype '.
 			'FROM omcollections c ';
-		if(!$isAdmin){
-			if(array_key_exists("CollAdmin",$userRights)){
-				$adminArr = $userRights['CollAdmin'];
+		if(!$IS_ADMIN){
+			if(array_key_exists("CollAdmin",$USER_RIGHTS)){
+				$adminArr = $USER_RIGHTS['CollAdmin'];
 			}
-			if(array_key_exists("CollEditor",$userRights)){
-				$editorArr = $userRights['CollEditor'];
+			if(array_key_exists("CollEditor",$USER_RIGHTS)){
+				$editorArr = $USER_RIGHTS['CollEditor'];
 			}
 			if($adminArr || $editorArr){
 				$sql .= 'WHERE (c.collid IN('.implode(',',array_merge($adminArr,$editorArr)).')) ';
@@ -43,25 +43,25 @@ class SiteMapManager{
 			if($rs){
 				while($row = $rs->fetch_object()){
 					$name = $row->collectionname.($row->ccode?" (".$row->ccode.")":"");
-					$isCollAdmin = ($isAdmin||in_array($row->collid,$adminArr)?1:0);
+					$isCollAdmin = ($IS_ADMIN||in_array($row->collid,$adminArr)?1:0);
 					if($row->colltype == 'Observations'){
 						$this->obsArr[$row->collid]['name'] = $name;
-						$this->obsArr[$row->collid]['isadmin'] = $isCollAdmin; 
+						$this->obsArr[$row->collid]['isadmin'] = $isCollAdmin;
 					}
 					elseif($row->colltype == 'General Observations'){
 						$this->genObsArr[$row->collid]['name'] = $name;
-						$this->genObsArr[$row->collid]['isadmin'] = $isCollAdmin; 
+						$this->genObsArr[$row->collid]['isadmin'] = $isCollAdmin;
 					}
 					else{
 						$this->collArr[$row->collid]['name'] = $name;
-						$this->collArr[$row->collid]['isadmin'] = $isCollAdmin; 
+						$this->collArr[$row->collid]['isadmin'] = $isCollAdmin;
 					}
 				}
 				$rs->close();
 			}
 		}
 	}
-	
+
 	public function getCollArr(){
 		return $this->collArr;
 	}
@@ -117,25 +117,34 @@ class SiteMapManager{
 		}
 		return $returnArr;
 	}
-	
+
+	public function hasGlossary(){
+		$bool = false;
+		if($rs = $this->conn->query('SELECT glossid FROM glossary LIMIT 1')){
+			if($rs->fetch_object()) $bool = true;
+			$rs->free();
+		}
+		return $bool;
+	}
+
 	/**
-	 * 
+	 *
 	 * Determine the version number of the underlying schema.
-	 * 
+	 *
 	 * @return string representation of the most recently applied schema version
 	 */
 	public function getSchemaVersion() {
-		$result = "No Schema Version Found"; 
+		$result = "No Schema Version Found";
 		$sql = "select versionnumber, dateapplied from schemaversion order by dateapplied desc limit 1 ";
 		$statement = $this->conn->prepare($sql);
 		$statement->execute();
 		$statement->bind_result($version,$dateapplied);
-		while ($statement->fetch())  { 
+		while ($statement->fetch())  {
 			$result = $version;
 		}
 		$statement->close();
-		return $result;		
+		return $result;
 	}
-	
+
 }
 ?>

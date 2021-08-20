@@ -1,9 +1,7 @@
 $('html').hide();
-$(document).ready(function() {
-	$('html').show();
-});
 
 $(document).ready(function() {
+	$('html').show();
 	$('#tabs').tabs({ 
 		active: tabIndex,
 		beforeLoad: function( event, ui ) {
@@ -56,11 +54,12 @@ function initAutoComplete(formElem){
 	$("#"+formElem).autocomplete({
 		source: function( request, response ){
 			$.ajax({
-				url: "rpc/clspeciessuggest.php",
+				url: "rpc/searchsuggest.php",
 				dataType: "json",
 				data: {
 					term : request.term,
-					cl : $('#clvalue').val() 
+					clid : $('#clvalue').val(), 
+					deep : '0' 
 				},
 				success: function(data) {
 					response(data);
@@ -71,7 +70,7 @@ function initAutoComplete(formElem){
 	});
 }
 
-function linkVoucher(occidIn, clidIn){
+function linkVoucher(occidIn, clidIn){ 
 	$.ajax({
 		type: "POST",
 		url: "rpc/linkvoucher.php",
@@ -87,6 +86,18 @@ function linkVoucher(occidIn, clidIn){
 			alert("Voucher link failed: "+msg);
 		}
 	});
+}
+
+function coordInputSelected(formElem){
+	if(formElem.checked == true){
+		var f = formElem.form;
+		var name = formElem.name;
+		if(name != "onlycoord") f.onlycoord.checked = false;
+		if(name != "includewkt") f.includewkt.checked = false;
+		if(name == "includewkt"){
+			if(!footprintwktExists) alert('The checklist polygon needs to be defined before you can use this feature. Click the editing pencil to the right of the checkbox and use the tools in the "Polygon Footprint" box to define the polygon for the research area.');
+		}
+	}
 }
 
 //Validate form functions
@@ -140,13 +151,9 @@ function selectAll(cb){
 
 function openPopup(urlStr,windowName){
 	var wWidth = 900;
-	if(document.getElementById('maintable').offsetWidth){
-		wWidth = document.getElementById('maintable').offsetWidth*1.05;
-	}
-	else if(document.body.offsetWidth){
-		wWidth = document.body.offsetWidth*0.9;
-	}
-	newWindow = window.open(urlStr,windowName,'scrollbars=1,toolbar=1,resizable=1,width='+(wWidth)+',height=600,left=20,top=20');
+	if(document.body.offsetWidth) wWidth = document.body.offsetWidth*0.9;
+	if(wWidth > 1200) wWidth = 1200;
+	newWindow = window.open(urlStr,windowName,'scrollbars=1,toolbar=0,resizable=1,width='+(wWidth)+',height=630,left=20,top=20');
 	if (newWindow.opener == null) newWindow.opener = self;
 	return false;
 }

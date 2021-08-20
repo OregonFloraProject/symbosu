@@ -1,7 +1,7 @@
 <?php
 include_once('../../config/symbini.php');
 include_once($SERVER_ROOT.'/classes/SpecProcessorManager.php');
-if(!$SYMB_UID) header('Location: ../../profile/index.php?refurl=../collections/specprocessor/index.php?'.$_SERVER['QUERY_STRING']);
+if(!$SYMB_UID) header('Location: ../../profile/index.php?refurl=../collections/specprocessor/index.php?'.htmlspecialchars($_SERVER['QUERY_STRING'], ENT_QUOTES));
 
 $collid = $_REQUEST['collid'];
 $menu = array_key_exists('menu',$_REQUEST)&&$_REQUEST['menu']?$_REQUEST['menu']:0;
@@ -9,7 +9,7 @@ $formAction = array_key_exists('formaction',$_REQUEST)?$_REQUEST['formaction']:0
 
 $procManager = new SpecProcessorManager();
 $procManager->setCollId($collid);
-$tabIndex = 4;
+$tabIndex = 3;
 
 $isEditor = false;
 if($IS_ADMIN || (array_key_exists("CollAdmin",$USER_RIGHTS) && in_array($collid,$USER_RIGHTS["CollAdmin"]))){
@@ -155,7 +155,7 @@ if($IS_ADMIN || (array_key_exists("CollAdmin",$USER_RIGHTS) && in_array($collid,
 				$processingStatus = (isset($_GET['processingstatus'])?$_GET['processingstatus']:0);
 				$excludeBatch = (isset($_GET['excludebatch'])?$_GET['excludebatch']:'');
 				?>
-				<fieldset style="padding:15px;width:400px">
+				<fieldset style="padding:15px;width:600px">
 					<legend><b>Filter</b></legend>
 					<form name="userStatsFilterForm" method="get" action="index.php">
 						<div style="margin:2px">
@@ -219,7 +219,7 @@ if($IS_ADMIN || (array_key_exists("CollAdmin",$USER_RIGHTS) && in_array($collid,
 					echo '<tr><th>Time Period</th>';
 					echo '<th>User</th>';
 					if($processingStatus) echo '<th>Previous Status</th><th>Saved Status</th><th>Current Status</th>';
-					echo '<th>All Edits</th>';
+					echo '<th>Edit Count</th>';
 					if($procManager->hasEditType()) echo '<th>Excluding Batch Edits</th>';
 					echo '</tr>';
 					$repArr = $procManager->getFullStatReport($_GET);

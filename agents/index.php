@@ -1,8 +1,8 @@
 <?php
 include_once('../config/symbini.php');
-include_once($serverRoot.'/classes/AgentManager.php');
+include_once($SERVER_ROOT.'/classes/AgentManager.php');
 
-Header("Content-Type: text/html; charset=".$charset);
+Header("Content-Type: text/html; charset=".$CHARSET);
 
 $lang = array_key_exists("lang",$_REQUEST)?$_REQUEST["lang"]:$defaultLang;
 
@@ -11,16 +11,16 @@ $spDisplay = "Agent Search";
 $name = array_key_exists("name",$_REQUEST)?$_REQUEST["name"]:"";
 
 pageheader($name);
-if (strlen($name)>0) { 
+if (strlen($name)>0) {
    echo searchform($name);
    echo search($name);
-} else { 
+} else {
    echo searchform();
    echo browse();
 }
 footer();
 
-function search($term) { 
+function search($term) {
   $am = new AgentManager();
   $result  =  "<div id='loadedWithPage'><table id='innertable'>\n";
   $result .= $am->agentNameSearch($term);
@@ -28,7 +28,7 @@ function search($term) {
   return $result;
 }
 
-function browse() { 
+function browse() {
   $am = new AgentManager();
   $result  =  "<div id='loadedWithPage'>\n";
   $result .= "<h3>Collector and other agent records</h3>";
@@ -44,8 +44,8 @@ function browse() {
   return $result;
 }
 
-function searchform($name="") { 
-   global $clientRoot;
+function searchform($name="") {
+   global $CLIENT_ROOT;
    $result  = "<div id='formDiv'>";
    $result .= "<form method='GET' id='queryForm' style='display:inline;' >\n";
    $result .= "<input type='text' name='name' value='$name'>";
@@ -57,14 +57,14 @@ function searchform($name="") {
    frm.submit(function(event) {
       $("#statusDiv").html("Searching...");
       $.ajax({
-         url: "'.$clientRoot.'/agents/rpc/handler.php",
+         url: "'.$CLIENT_ROOT.'/agents/rpc/handler.php",
          data: frm.serialize(),
          type: "GET",
          dataType : "html",
          success: function( data ) {
             $("#responseDiv").html(data);
             $("#loadedWithPage").html("");
-            var permalink = "&nbsp;<a href=\''.$clientRoot.'/agents/index.php?" + frm.serialize() +"\'>Permalink</a>";
+            var permalink = "&nbsp;<a href=\''.$CLIENT_ROOT.'/agents/index.php?" + frm.serialize() +"\'>Permalink</a>";
             $("#plinkSpan").html(permalink);
          },
          error: function( xhr, status, errorThrown ) {
@@ -78,7 +78,7 @@ function searchform($name="") {
          }
       });
       event.preventDefault();
-   });  
+   });
 </script>
 ';
    $result .= "<div id='responseDiv'></div>\n";
@@ -87,37 +87,34 @@ function searchform($name="") {
    return $result;
 }
 
-function pageheader($name) { 
-   global $serverRoot, $defaultTitle, $spDisplay, $clientRoot, $agents_indexMenu, $agents_indexCrumbs;
+function pageheader($name) {
+   global $SERVER_ROOT, $DEFAULT_TITLE, $spDisplay, $CLIENT_ROOT, $agents_indexMenu, $agents_indexCrumbs;
 echo '<!DOCTYPE HTML>
 <html>
 <head>
-	<title>'.$defaultTitle.' - '.$spDisplay. '</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=<?php echo $charset; ?>"/>
+	<title>'.$DEFAULT_TITLE.' - '.$spDisplay. '</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=<?php echo $CHARSET; ?>"/>
 	<meta name="keywords" content='. $spDisplay .' />
 	<link href="../css/base.css?ver=<?php echo $CSS_VERSION; ?>" type="text/css" rel="stylesheet" />
-	<link href="../css/main.css<?php echo (isset($CSS_VERSION_LOCAL)?'?ver='.$CSS_VERSION_LOCAL:''); ?>" type="text/css" rel="stylesheet" />
-	<link href="../css/speciesprofilebase.css" type="text/css" rel="stylesheet" />
+	<link href="../css/main.css'.(isset($CSS_VERSION_LOCAL)?'?ver='.$CSS_VERSION_LOCAL:'').'" type="text/css" rel="stylesheet" />
 	<script type="text/javascript" src="../js/jquery.js"></script>
-	<script type="text/javascript" src="../js/jquery-ui.js"></script>
-	<script type="text/javascript">';
-    // include_once($serverRoot.'/config/googleanalytics.php'); 
-echo '</script>
-	<script type="text/javascript">
+	<script type="text/javascript" src="../js/jquery-ui.js"></script>';
+    // include_once($SERVER_ROOT.'/includes/googleanalytics.php');
+echo '<script type="text/javascript">
 		var currentLevel = ' . ($descrDisplayLevel?$descrDisplayLevel:"1"). ';
 		var levelArr = new Array('. ($descr?"'".implode("','",array_keys($descr))."'":"") . ');
 	</script>
 </head>
 <body>';
    $displayLeftMenu = (isset($agents_indexMenu)?$agents_indexMenu:false);
-   include($serverRoot.'/header.php');
+   include($SERVER_ROOT.'/includes/header.php');
    if(!isset($agent_indexCrumbs)){
       $agent_indexCrumbs = array();
-      array_push($agent_indexCrumbs,"<a href='$clientRoot/index.php'>Home</a>");
-      array_push($agent_indexCrumbs,"<a href='$clientRoot/agents/index.php'>Agents</a>");
+      array_push($agent_indexCrumbs,"<a href='$CLIENT_ROOT/index.php'>Home</a>");
+      array_push($agent_indexCrumbs,"<a href='$CLIENT_ROOT/agents/index.php'>Agents</a>");
    }
-   if (strlen($name)>0) { 
-      array_push($agent_indexCrumbs,"<a href='$clientRoot/agents/index.php?name=$name'>Search</a>");
+   if (strlen($name)>0) {
+      array_push($agent_indexCrumbs,"<a href='$CLIENT_ROOT/agents/index.php?name=$name'>Search</a>");
    }
    echo "<div class='navpath'>";
    $last = array_pop($agent_indexCrumbs);
@@ -126,11 +123,11 @@ echo '</script>
    array_push($agent_indexCrumbs,$last);
    echo "</div>";
 }
-  
 
-function footer() { 
-   global $serverRoot,$clientRoot;
-  include($serverRoot.'/footer.php');
+
+function footer() {
+   global $SERVER_ROOT,$CLIENT_ROOT;
+  include($SERVER_ROOT.'/includes/footer.php');
   echo "</body>\n</html>";
 }
 

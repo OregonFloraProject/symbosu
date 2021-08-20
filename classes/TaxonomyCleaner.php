@@ -8,7 +8,8 @@ class TaxonomyCleaner extends Manager{
 
 	private $collid;
 	private $taxAuthId = 1;
-	private $targetKingdom;
+	private $targetKingdomName;
+	private $targetKingdomTid;
 	private $autoClean = 0;
 	private $testValidity = 1;
 	private $testTaxonomy = 1;
@@ -69,16 +70,13 @@ class TaxonomyCleaner extends Manager{
 		$this->logOrEcho("Starting taxa check ");
 		$sql = 'SELECT sciname, family, scientificnameauthorship, count(*) as cnt '.$this->getSqlFragment();
 		if($startIndex) $sql .= 'AND (sciname > "'.$this->cleanInStr($startIndex).'") ';
-		$sql .= 'GROUP BY sciname, family ORDER BY sciname LIMIT '.$limit;
+		$sql .= 'GROUP BY sciname, family, scientificnameauthorship LIMIT '.$limit;
 		//echo $sql; exit;
 		if($rs = $this->conn->query($sql)){
 			//Check name through taxonomic resources
 			$taxonHarvester = new  TaxonomyHarvester();
-			if($this->targetKingdom){
-				$kingArr = explode(':',$this->targetKingdom);
-				$taxonHarvester->setKingdomTid($kingArr[0]);
-				$taxonHarvester->setKingdomName($kingArr[1]);
-			}
+			if($this->targetKingdomName) $taxonHarvester->setKingdomName($this->targetKingdomName);
+			if($this->targetKingdomTid) $taxonHarvester->setKingdomTid($this->targetKingdomTid);
 			$taxonHarvester->setTaxonomicResources($taxResource);
 			$taxonHarvester->setVerboseMode(2);
 			$this->setVerboseMode(2);
@@ -95,7 +93,7 @@ class TaxonomyCleaner extends Manager{
 				$sciname = $r->sciname;
 				$tid = 0;
 				$manualCheck = true;
-				$taxonArr = TaxonomyUtilities::parseScientificName($r->sciname,$this->conn);
+				$taxonArr = TaxonomyUtilities::parseScientificName($r->sciname,$this->conn,0,$this->targetKingdomName);
 				if($taxonArr && $taxonArr['sciname']){
 					$sciname = $taxonArr['sciname'];
 					if($sciname != $r->sciname){
@@ -175,8 +173,6 @@ class TaxonomyCleaner extends Manager{
 
 	public function deepIndexTaxa(){
 		$this->setVerboseMode(2);
-		$kingdomName = '';
-		if($this->targetKingdom) $kingdomName = array_pop(explode(':', $this->targetKingdom));
 
 		$this->logOrEcho('Cleaning leading and trialing spaces...');
 		$sql = 'UPDATE omoccurrences '.
@@ -202,10 +198,10 @@ class TaxonomyCleaner extends Manager{
 
 		$this->logOrEcho('Indexing names based on mathcing trinomials without taxonRank designation...');
 		$triCnt = 0;
-		$sql = 'SELECT DISTINCT o.sciname, t.tid '.
+		$sql = 'SELECT DISTINCT o.sciname, t.tid, t.rankid '.
 			'FROM omoccurrences o INNER JOIN taxa t ON o.sciname = CONCAT_WS(" ",t.unitname1,t.unitname2,t.unitname3) '.
 			'WHERE (o.collid IN('.$this->collid.')) AND (t.rankid IN(230,240)) AND (o.sciname LIKE "% % %") AND (o.tidinterpreted IS NULL) ';
-		if($kingdomName) $sql .= 'AND (t.kingdomname = "'.$kingdomName.'") ';
+		if($this->targetKingdomName) $sql .= 'AND (t.kingdomname = "'.$this->targetKingdomName.'") ';
 		$sql .= 'ORDER BY t.rankid';
 		$rs = $this->conn->query($sql);
 		while($r = $rs->fetch_object()){
@@ -220,7 +216,7 @@ class TaxonomyCleaner extends Manager{
 		$sql = 'UPDATE omoccurrences o INNER JOIN taxa t ON SUBSTRING(o.sciname,1, CHAR_LENGTH(o.sciname) - 4) = t.sciname '.
 			'SET o.tidinterpreted = t.tid '.
 			'WHERE (o.collid IN('.$this->collid.')) AND (o.sciname LIKE "% sp.") AND (o.tidinterpreted IS NULL) ';
-		if($kingdomName) $sql .= 'AND (t.kingdomname = "'.$kingdomName.'") ';
+		if($this->targetKingdomName) $sql .= 'AND (t.kingdomname = "'.$this->targetKingdomName.'") ';
 		if($this->conn->query($sql)){
 			$this->logOrEcho($this->conn->affected_rows.' occurrence records mapped',1);
 		}
@@ -231,7 +227,7 @@ class TaxonomyCleaner extends Manager{
 		$sql = 'UPDATE omoccurrences o INNER JOIN taxa t ON REPLACE(o.sciname," spp.","") = t.sciname '.
 			'SET o.tidinterpreted = t.tid '.
 			'WHERE (o.collid IN('.$this->collid.')) AND (o.sciname LIKE "% spp.%") AND (o.tidinterpreted IS NULL) ';
-		if($kingdomName) $sql .= 'AND (t.kingdomname = "'.$kingdomName.'") ';
+		if($this->targetKingdomName) $sql .= 'AND (t.kingdomname = "'.$this->targetKingdomName.'") ';
 		if($this->conn->query($sql)){
 			$this->logOrEcho($this->conn->affected_rows.' occurrence records mapped',1);
 		}
@@ -243,14 +239,14 @@ class TaxonomyCleaner extends Manager{
 		$sql = 'UPDATE omoccurrences o INNER JOIN taxa t ON REPLACE(o.sciname," cf. "," ") = t.sciname '.
 			'SET o.tidinterpreted = t.tid '.
 			'WHERE (o.collid IN('.$this->collid.')) AND (o.sciname LIKE "% cf. %") AND (o.tidinterpreted IS NULL) ';
-		if($kingdomName) $sql .= 'AND (t.kingdomname = "'.$kingdomName.'") ';
+		if($this->targetKingdomName) $sql .= 'AND (t.kingdomname = "'.$this->targetKingdomName.'") ';
 		if($this->conn->query($sql)){
 			$cnt = $this->conn->affected_rows;
 		}
 		$sql = 'UPDATE omoccurrences o INNER JOIN taxa t ON REPLACE(o.sciname," cf "," ") = t.sciname '.
 			'SET o.tidinterpreted = t.tid '.
 			'WHERE (o.collid IN('.$this->collid.')) AND (o.sciname LIKE "% cf %") AND (o.tidinterpreted IS NULL) ';
-		if($kingdomName) $sql .= 'AND (t.kingdomname = "'.$kingdomName.'") ';
+		if($this->targetKingdomName) $sql .= 'AND (t.kingdomname = "'.$this->targetKingdomName.'") ';
 		if($this->conn->query($sql)){
 			$cnt += $this->conn->affected_rows;
 			$this->logOrEcho($cnt.' occurrence records mapped',1);
@@ -262,7 +258,7 @@ class TaxonomyCleaner extends Manager{
 		$sql = 'UPDATE omoccurrences o INNER JOIN taxa t ON REPLACE(o.sciname," aff. "," ") = t.sciname '.
 			'SET o.tidinterpreted = t.tid '.
 			'WHERE (o.collid IN('.$this->collid.')) AND (o.sciname LIKE "% aff. %") AND (o.tidinterpreted IS NULL) ';
-		if($kingdomName) $sql .= 'AND (t.kingdomname = "'.$kingdomName.'") ';
+		if($this->targetKingdomName) $sql .= 'AND (t.kingdomname = "'.$this->targetKingdomName.'") ';
 		if($this->conn->query($sql)){
 			$this->logOrEcho($this->conn->affected_rows.' occurrence records mapped',1);
 		}
@@ -273,7 +269,7 @@ class TaxonomyCleaner extends Manager{
 		$sql = 'UPDATE omoccurrences o INNER JOIN taxa t ON REPLACE(o.sciname," group"," ") = t.sciname '.
 			'SET o.tidinterpreted = t.tid '.
 			'WHERE (o.collid IN('.$this->collid.')) AND (o.sciname LIKE "% group%") AND (o.tidinterpreted IS NULL) ';
-		if($kingdomName) $sql .= 'AND (t.kingdomname = "'.$kingdomName.'") ';
+		if($this->targetKingdomName) $sql .= 'AND (t.kingdomname = "'.$this->targetKingdomName.'") ';
 		if($this->conn->query($sql)){
 			$this->logOrEcho($this->conn->affected_rows.' occurrence records mapped',1);
 		}
@@ -315,7 +311,7 @@ class TaxonomyCleaner extends Manager{
 		$sql = 'UPDATE omoccurrences o INNER JOIN taxa t ON o.sciname = t.sciname '.
 			'SET o.tidinterpreted = t.tid '.
 			'WHERE (o.collid IN('.$this->collid.')) AND (o.tidinterpreted IS NULL) ';
-		if($this->targetKingdom) $sql .= 'AND t.kingdomname = "'.$this->targetKingdom.'" ';
+		//echo $sql;
 		if($this->conn->query($sql)){
 			$this->logOrEcho($this->conn->affected_rows.' occurrence records mapped',1);
 		}
@@ -602,7 +598,7 @@ class TaxonomyCleaner extends Manager{
 		else{
 			//Test taxon does not exists, thus lets load it
 			//Prepare taxon for loading
-			$parsedArr = TaxonomyUtilities::parseScientificName($testObj['name'],$this->conn);
+			$parsedArr = TaxonomyUtilities::parseScientificName($testObj['name'],$this->conn,0,$this->targetKingdomName);
 			if(!array_key_exists('rank',$newTaxon)){
 				//Grab taxon object from EOL or Species2000
 
@@ -645,7 +641,7 @@ class TaxonomyCleaner extends Manager{
 			"INNER JOIN taxa t2 ON ts2.tid = t2.tid) ".
 			"LEFT JOIN kmdescr d2 ON (d1.CID = d2.CID) AND (t2.TID = d2.TID) ".
 			"WHERE (ts1.taxauthid = 1) AND (ts2.taxauthid = 1) AND (ts2.tid = ts2.tidaccepted) ".
-			"AND (t2.tid = $tid) And (d2.CID Is Null)";
+			"AND (t2.tid = $tid) AND (t2.rankid < 221) AND (d2.CID Is Null)";
 		$this->conn->query($sqlAdd1);
 
 		//Set inheritance for all children of target
@@ -716,6 +712,7 @@ class TaxonomyCleaner extends Manager{
 
 	public function getTaxonomicResourceList(){
 		$taArr = array('col'=>'Catalog of Life','worms'=>'World Register of Marine Species','tropicos'=>'TROPICOS','eol'=>'Encyclopedia of Life');
+		//$taArr = array('col'=>'Catalog of Life','worms'=>'World Register of Marine Species','tropicos'=>'TROPICOS','eol'=>'Encyclopedia of Life','IndexFungorum'=>'Index Fungorum');
 		if(!isset($GLOBALS['TAXONOMIC_AUTHORITIES'])) return array('col'=>'Catalog of Life','worms'=>'World Register of Marine Species');
 		return array_intersect_key($taArr,array_change_key_case($GLOBALS['TAXONOMIC_AUTHORITIES']));
 	}
@@ -744,10 +741,7 @@ class TaxonomyCleaner extends Manager{
 					}
 				}
 			}
-			if($this->targetKingdom){
-				$kingdomName = array_pop(explode(':',$this->targetKingdom));
-				$sql .= 'AND (kingdomname IS NULL OR kingdomname = "'.$kingdomName.'") ';
-			}
+			if($this->targetKingdomName) $sql .= 'AND (kingdomname IS NULL OR kingdomname = "'.targetKingdomName.'") ';
 			$sql .= 'LIMIT 30';
 			//echo $sql;
 			$rs = $this->conn->query($sql);
@@ -777,8 +771,12 @@ class TaxonomyCleaner extends Manager{
 		if(is_numeric($id)) $this->taxAuthId = $id;
 	}
 
-	public function setTargetKingdom($k){
-		$this->targetKingdom = $k;
+	public function setTargetKingdomTid($id){
+		if(is_numeric($id)) $this->targetKingdomTid = $id;
+	}
+
+	public function setTargetKingdomName($n){
+		$this->targetKingdomName = $n;
 	}
 
 	public function setAutoClean($v){

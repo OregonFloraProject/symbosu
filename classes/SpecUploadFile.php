@@ -43,7 +43,7 @@ class SpecUploadFile extends SpecUploadBase{
 					return false;
 				}
 			}
-			//If a zip file, unpackage and assume that first and/or only file is the occurrrence file
+			//If a zip file, unpackage and assume that last or only file is the occurrrence file
 			if($finalPath && substr($this->ulFileName,-4) == ".zip"){
 				$this->ulFileName = '';
 				$zipFilePath = $finalPath;
@@ -55,21 +55,23 @@ class SpecUploadFile extends SpecUploadBase{
 						if(substr($fileName,0,2) != '._'){
 							$ext = strtolower(substr(strrchr($fileName, '.'), 1));
 							if($ext == 'csv' || $ext == 'txt'){
+								$this->ulFileName = $fileName;
 								if($this->uploadType != $this->NFNUPLOAD || stripos($fileName,'.reconcile.')){
-									$this->ulFileName = $fileName;
-									$zip->extractTo($this->uploadTargetPath,$fileName);
-									$zip->close();
-									unlink($zipFilePath);
 									break;
 								}
 							}
 						}
+					}
+					if($this->ulFileName){
+						$zip->extractTo($this->uploadTargetPath,$this->ulFileName);
 					}
 				}
 				else{
 					echo 'failed, code:' . $res;
 					return false;
 				}
+				$zip->close();
+				unlink($zipFilePath);
 			}
 		}
 		return $this->ulFileName;
@@ -125,7 +127,7 @@ class SpecUploadFile extends SpecUploadBase{
 						$recMap[$symbField] = $valueStr;
 					}
 				}
-				if($this->uploadType == $this->SKELETAL && !$recMap['catalognumber']){
+				if($this->uploadType == $this->SKELETAL && !isset($recMap['catalognumber']) && !isset($recMap['othercatalognumbers'])){
 					//Skip loading record
 					unset($recMap);
 					continue;
@@ -212,7 +214,7 @@ class SpecUploadFile extends SpecUploadBase{
 				$this->delimiter = "\t";
 			}
 		}
-		//Check to see if file is csv\
+		//Check to see if file is csv
 		if(substr(strtolower($this->ulFileName),-4) == ".csv" || strpos($headerData,$this->delimiter.'"') !== false){
 			$this->isCsv = true;
 		}
@@ -225,15 +227,24 @@ class SpecUploadFile extends SpecUploadBase{
 		else{
 			$headerArr = explode($this->delimiter,$headerData);
 		}
+		$hasEmptyHeader = false;
+		$cnt = 1;
+		$skippedFields = '';
 		$retArr = array();
 		foreach($headerArr as $field){
-			$fieldStr = strtolower(trim($field));
+			$fieldStr = strtolower($this->encodeString(trim($field)));
 			if($fieldStr){
-				$retArr[] = $fieldStr;
+				if($hasEmptyHeader) $skippedFields .= $fieldStr.', ';
+				else{
+					$retArr[] = $fieldStr;
+					$cnt++;
+				}
 			}
-			else{
-				break;
-			}
+			else $hasEmptyHeader = true;
+		}
+		if($hasEmptyHeader && $skippedFields){
+			$this->outputMsg('<span style="color:orange">WARNING: There is an empty header field (column #'.$cnt.')!</span><br/>');
+			$this->outputMsg('<b>Following columns will be skipped:</b> '.trim($skippedFields,', '));
 		}
 		return $retArr;
 	}

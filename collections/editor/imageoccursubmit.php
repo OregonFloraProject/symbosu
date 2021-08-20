@@ -1,15 +1,13 @@
 <?php
 include_once('../../config/symbini.php');
 include_once($SERVER_ROOT.'/classes/OccurrenceEditorImages.php');
-include_once($SERVER_ROOT.'/classes/SOLRManager.php');
 header("Content-Type: text/html; charset=".$CHARSET);
-if(!$SYMB_UID) header('Location: ../../profile/index.php?refurl=../collections/editor/imageoccursubmit.php?'.$_SERVER['QUERY_STRING']);
+if(!$SYMB_UID) header('Location: ../../profile/index.php?refurl=../collections/editor/imageoccursubmit.php?'.htmlspecialchars($_SERVER['QUERY_STRING'], ENT_QUOTES));
 
 $collid  = $_REQUEST["collid"];
 $action = array_key_exists("action",$_POST)?$_POST["action"]:"";
 
 $occurManager = new OccurrenceEditorImages();
-if($SOLR_MODE) $solrManager = new SOLRManager();
 $occurManager->setCollid($collid);
 $collMap = $occurManager->getCollMap();
 
@@ -30,7 +28,6 @@ if($isEditor){
 	if($action == 'Submit Occurrence'){
 		if($occurManager->addImageOccurrence($_POST)){
 			$occid = $occurManager->getOccid();
-            if($SOLR_MODE) $solrManager->updateSOLR();
 			if($occid) $statusStr = 'New record has been created: <a href="occurrenceeditor.php?occid='.$occid.'" target="_blank">'.$occid.'</a>';
 		}
 		else{
@@ -51,9 +48,17 @@ elseif(file_exists('includes/config/occurVarDefault.php')){
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=<?php echo $CHARSET; ?>">
 	<title><?php echo $DEFAULT_TITLE; ?> Occurrence Image Submission</title>
-	<link href="../../css/base.css?ver=<?php echo $CSS_VERSION; ?>" type="text/css" rel="stylesheet" />
-    <link href="../../css/main.css<?php echo (isset($CSS_VERSION_LOCAL)?'?ver='.$CSS_VERSION_LOCAL:''); ?>" type="text/css" rel="stylesheet" />
-	<link href="../../css/jquery-ui.css" type="text/css" rel="stylesheet" />	
+  <?php
+      $activateJQuery = true;
+      if(file_exists($SERVER_ROOT.'/includes/head.php')){
+        include_once($SERVER_ROOT.'/includes/head.php');
+      }
+      else{
+        echo '<link href="'.$CLIENT_ROOT.'/css/jquery-ui.css" type="text/css" rel="stylesheet" />';
+        echo '<link href="'.$CLIENT_ROOT.'/css/base.css?ver=1" type="text/css" rel="stylesheet" />';
+        echo '<link href="'.$CLIENT_ROOT.'/css/main.css?ver=1" type="text/css" rel="stylesheet" />';
+      }
+    ?>
 	<script src="../../js/jquery.js" type="text/javascript"></script>
 	<script src="../../js/jquery-ui.js" type="text/javascript"></script>
 	<script src="../../js/symb/collections.imageoccursubmit.js?ver=141119" type="text/javascript"></script>
@@ -71,7 +76,7 @@ elseif(file_exists('includes/config/occurVarDefault.php')){
 					alert("Image file must be a JPG, GIF, or PNG");
 					return false;
 				}
-			} 
+			}
 			else if(f.imgurl.value != ""){
 				var fileName = f.imgurl.value;
 				if(fileName.substring(0,4).toLowerCase() != 'http'){
@@ -93,7 +98,7 @@ elseif(file_exists('includes/config/occurVarDefault.php')){
 						return false;
 					}
 				});
-			} 
+			}
 		}
 		return true;
 	}
@@ -102,7 +107,7 @@ elseif(file_exists('includes/config/occurVarDefault.php')){
 <body>
 	<?php
 	$displayLeftMenu = false;
-	include($SERVER_ROOT.'/header.php');
+	include($SERVER_ROOT.'/includes/header.php');
 	?>
 	<div class='navpath'>
 		<a href="../../index.php">Home</a> &gt;&gt;
@@ -112,7 +117,7 @@ elseif(file_exists('includes/config/occurVarDefault.php')){
 	<!-- inner text -->
 	<div id="innertext">
 		<h1><?php echo $collMap['collectionname']; ?></h1>
-		<?php 
+		<?php
 		if($statusStr){
 			echo '<div style="margin:15px;color:'.(stripos($statusStr,'error') !== false?'red':'green').';">'.$statusStr.'</div>';
 		}
@@ -133,16 +138,23 @@ elseif(file_exists('includes/config/occurVarDefault.php')){
 					</div>
 					<div class="targetdiv" style="display:none;">
 						<div style="margin-bottom:10px;">
-							Enter a URL to an image already located on a web server. 
-							If the image is larger than a typical web image, the url will be saved as the large version 
-							and a basic web derivative will be created. 
+							Enter a web accessable URL to an image.
+							If the medium and thumbnail urls are left blank, local image derivatives (e.g. thumbnail) will be created.
 						</div>
 						<div>
-							<b>Image URL:</b><br/> 
+							<b>Image URL (required):</b><br/>
 							<input type='text' name='imgurl' size='70' />
 						</div>
 						<div>
-							<input type="checkbox" name="copytoserver" value="1" <?php echo (isset($_POST['copytoserver'])&&$_POST['copytoserver']?'checked':''); ?> /> 
+							<b>Medium Web URL (optional):</b><br/>
+							<input type='text' name='weburl' size='70' />
+						</div>
+						<div>
+							<b>Thumbnail URL (optional):</b><br/>
+							<input type='text' name='tnurl' size='70' />
+						</div>
+						<div>
+							<input type="checkbox" name="copytoserver" value="1" <?php echo (isset($_POST['copytoserver'])&&$_POST['copytoserver']?'checked':''); ?> />
 							Copy large image to server (if left unchecked, source URL will serve as large version)
 						</div>
 					</div>
@@ -155,43 +167,66 @@ elseif(file_exists('includes/config/occurVarDefault.php')){
 						</div>
 					</div>
 					<div>
-						<input type="checkbox" name="nolgimage" value="1" <?php echo (isset($_POST['nolgimage'])&&$_POST['nolgimage']?'checked':''); ?> /> 
-						Do not map large version of image (when applicable) 
+						<input type="checkbox" name="nolgimage" value="1" <?php echo (isset($_POST['nolgimage'])&&$_POST['nolgimage']?'checked':''); ?> />
+						Do not map large version of image (when applicable)
+					</div>
+					<div style="margin-top:10px;">
+						<b>Processing Status:</b>
+						<?php
+						$processingStatusArr = array();
+						if(isset($PROCESSINGSTATUS) && $PROCESSINGSTATUS){
+							$processingStatusArr = $PROCESSINGSTATUS;
+						}
+						else{
+							$processingStatusArr = array('unprocessed','unprocessed/NLP','stage 1','stage 2','stage 3','pending review-nfn','pending review','expert required','reviewed','closed');
+						}
+						?>
+						<select name="processingstatus">
+							<option value=''>No Set Status</option>
+							<option value=''>-------------------</option>
+							<?php
+							$pStatus = (isset($_POST['processingstatus'])?$_POST['processingstatus']:'unprocessed');
+							foreach($processingStatusArr as $v){
+								$keyOut = strtolower($v);
+								echo '<option value="'.$keyOut.'" '.($pStatus==$keyOut?'SELECTED':'').'>'.ucwords($v).'</option>';
+							}
+							?>
+						</select>
 					</div>
 				</fieldset>
 				<fieldset style="padding:15px;">
 					<legend><b>Skeletal Data</b></legend>
 					<div style="margin:3px;">
-						<b>Catalog Number:</b> 
+						<b>Catalog Number:</b>
 						<input name="catalognumber" type="text" onchange="<?php if(!defined('CATNUMDUPECHECK') || CATNUMDUPECHECK) echo 'searchDupesCatalogNumber(this.form,true)'; ?>" />
 					</div>
 					<div style="margin:3px;">
-						<b>Scientific Name:</b> 
-						<input id="sciname" name="sciname" type="text" value="<?php echo (isset($_POST['sciname'])?$_POST['sciname']:''); ?>" style="width:300px"/> 
+						<b>Scientific Name:</b>
+						<input id="sciname" name="sciname" type="text" value="<?php echo (isset($_POST['sciname'])?$_POST['sciname']:''); ?>" style="width:300px"/>
 						<input name="scientificnameauthorship" type="text" value="<?php echo (isset($_POST['scientificnameauthorship'])?$_POST['scientificnameauthorship']:''); ?>" /><br/>
 						<input type="hidden" id="tidinterpreted" name="tidinterpreted" value="<?php echo (isset($_POST['tidinterpreted'])?$_POST['tidinterpreted']:''); ?>" />
 						<b>Family:</b> <input name="family" type="text" value="<?php echo (isset($_POST['family'])?$_POST['family']:''); ?>" />
 					</div>
-					<div> 
+					<div>
 						<div style="float:left;margin:3px;">
-							<b>Country:</b><br/> 
+							<b>Country:</b><br/>
 							<input id="country" name="country" type="text" value="<?php echo (isset($_POST['country'])?$_POST['country']:''); ?>" />
-						</div> 
+						</div>
 						<div style="float:left;margin:3px;">
 							<b>State/Province:</b><br/>
 							<input id="state" name="stateprovince" type="text" value="<?php echo (isset($_POST['stateprovince'])?$_POST['stateprovince']:''); ?>" />
-						</div> 
+						</div>
 						<div style="float:left;margin:3px;">
 							<b>County:</b><br/>
 							<input id="county" name="county" type="text" value="<?php echo (isset($_POST['county'])?$_POST['county']:''); ?>" />
-						</div> 
+						</div>
 					</div>
 					<div style="clear:both;margin:3px;">
 						<?php
 						if(isset($TESSERACT_PATH) && $TESSERACT_PATH){
 							?>
 							<div style="float:left;">
-								<input name="tessocr" type="checkbox" value=1 <?php if(isset($_POST['tessocr'])) echo 'checked'; ?> /> 
+								<input name="tessocr" type="checkbox" value=1 <?php if(isset($_POST['tessocr'])) echo 'checked'; ?> />
 								OCR Text using Tesseract OCR engine
 							</div>
 							<?php
@@ -211,7 +246,7 @@ elseif(file_exists('includes/config/occurVarDefault.php')){
 					<input type="reset" name="reset" value="Reset Form" />
 				</div>
 			</form>
-			<?php 
+			<?php
 		}
 		else{
 			echo 'You are not authorized to submit to an observation. ';
@@ -219,8 +254,8 @@ elseif(file_exists('includes/config/occurVarDefault.php')){
 		}
 		?>
 	</div>
-<?php 	
-include($SERVER_ROOT.'/footer.php');
+<?php
+include($SERVER_ROOT.'/includes/footer.php');
 ?>
 </body>
 </html>

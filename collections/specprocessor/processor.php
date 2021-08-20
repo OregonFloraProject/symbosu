@@ -7,7 +7,7 @@ include_once($SERVER_ROOT.'/classes/SpecProcessorOcr.php');
 
 header("Content-Type: text/html; charset=".$CHARSET);
 
-if(!$SYMB_UID) header('Location: ../../profile/index.php?refurl=../collections/specprocessor/processor.php?'.$_SERVER['QUERY_STRING']);
+if(!$SYMB_UID) header('Location: ../../profile/index.php?refurl=../collections/specprocessor/processor.php?'.htmlspecialchars($_SERVER['QUERY_STRING'], ENT_QUOTES));
 
 $action = array_key_exists('submitaction',$_REQUEST)?$_REQUEST['submitaction']:'';
 $collid = array_key_exists('collid',$_REQUEST)?$_REQUEST['collid']:0;
@@ -20,9 +20,6 @@ $procStatus = array_key_exists('procstatus',$_REQUEST)?$_REQUEST['procstatus']:'
 
 $specManager = new SpecProcessorManager();
 $specManager->setCollId($collid);
-
-// Use image magick if configured in symbini
-$specManager->setUseImageMagick($USE_IMAGE_MAGICK);
 
 $isEditor = false;
 if($IS_ADMIN || (array_key_exists("CollAdmin",$USER_RIGHTS) && in_array($collid,$USER_RIGHTS["CollAdmin"]))){
@@ -39,13 +36,22 @@ $statusStr = "";
 <html>
 	<head>
 		<title>Specimen Processor Control Panel</title>
-		<link href="<?php echo $CLIENT_ROOT; ?>/css/base.css?ver=<?php echo $CSS_VERSION; ?>" type="text/css" rel="stylesheet" />
-		<link href="<?php echo $CLIENT_ROOT; ?>/css/main.css<?php echo (isset($CSS_VERSION_LOCAL)?'?ver='.$CSS_VERSION_LOCAL:''); ?>" type="text/css" rel="stylesheet" />
+		<?php
+		$activateJQuery = true;
+		if(file_exists($SERVER_ROOT.'/includes/head.php')){
+			include_once($SERVER_ROOT.'/includes/head.php');
+		}
+		else{
+			echo '<link href="'.$CLIENT_ROOT.'/css/jquery-ui.css" type="text/css" rel="stylesheet" />';
+			echo '<link href="'.$CLIENT_ROOT.'/css/base.css?ver=1" type="text/css" rel="stylesheet" />';
+			echo '<link href="'.$CLIENT_ROOT.'/css/main.css?ver=1" type="text/css" rel="stylesheet" />';
+		}
+		?>
 	</head>
 	<body>
 		<?php
 		$displayLeftMenu = false;
-		include($SERVER_ROOT.'/header.php');
+		include($SERVER_ROOT.'/includes/header.php');
 		echo '<div class="navpath">';
 		echo '<a href="../../index.php">Home</a> &gt;&gt; ';
 		echo '<a href="../misc/collprofiles.php?collid='.$collid.'&emode=1">Collection Control Panel</a> &gt;&gt; ';
@@ -66,7 +72,7 @@ $statusStr = "";
 						$imageProcessor->setLogMode(3);
 						$imageProcessor->setCollid($collid);
 						$imageProcessor->setSpprid($spprid);
-						$imageProcessor->processIPlantImages($specManager->getSpecKeyPattern(), $_POST);
+						$imageProcessor->processCyVerseImages($specManager->getSpecKeyPattern(), $_POST);
 						echo '</ul>';
 					}
 					else{
@@ -95,7 +101,7 @@ $statusStr = "";
 						if($specManager->getLgMaxFileSize()) $imageProcessor->setLgFileSizeLimit($specManager->getLgMaxFileSize());
 						if($specManager->getJpgQuality()) $imageProcessor->setJpgQuality($specManager->getJpgQuality());
 						$imageProcessor->setUseImageMagick($specManager->getUseImageMagick());
-						$imageProcessor->setWebImg($_POST['createwebimg']);
+						$imageProcessor->setWebImg($_POST['webimg']);
 						$imageProcessor->setTnImg($_POST['createtnimg']);
 						$imageProcessor->setLgImg($_POST['createlgimg']);
 						$imageProcessor->setCreateNewRec($_POST['createnewrec']);
@@ -104,33 +110,23 @@ $statusStr = "";
 						$imageProcessor->setSkeletalFileProcessing($_POST['skeletalFileProcessing']);
 
 						//Run process
-						$imageProcessor->batchLoadImages();
+						$imageProcessor->batchLoadSpecimenImages();
 						echo '</div>'."\n";
 					}
 				}
-				elseif($action == 'Process Output File'){
-					//Process iDigBio Image ingestion appliance ouput file
-					$imageProcessor = new ImageProcessor($specManager->getConn());
-					echo '<ul>';
-					$imageProcessor->setLogMode(3);
-					$imageProcessor->setSpprid($spprid);
-					$imageProcessor->setCollid($collid);
-					$imageProcessor->processiDigBioOutput($specManager->getSpecKeyPattern(),$_POST);
-					echo '</ul>';
-
-				}
-				elseif($action == 'Load Image Data'){
+				elseif($action == 'mapImageFile'){
 					//Process csv file with remote image urls
 					$imageProcessor = new ImageProcessor($specManager->getConn());
 					echo '<ul>';
 					$imageProcessor->setLogMode(3);
 					$imageProcessor->setCollid($collid);
+					if(isset($_POST['createnew']) && $_POST['createnew']) $imageProcessor->setCreateNewRecord(true);
 					$imageProcessor->loadFileData($_POST);
 					echo '</ul>';
 				}
 				elseif($action == 'Run Batch OCR'){
 					$ocrManager = new SpecProcessorOcr();
-					$ocrManager->setVerbose(2);
+					$ocrManager->setVerboseMode(2);
 					$batchLimit = 100;
 					if(array_key_exists('batchlimit',$_POST)) $batchLimit = $_POST['batchlimit'];
 					echo '<ul>';
@@ -140,7 +136,7 @@ $statusStr = "";
 				elseif($action == 'Load OCR Files'){
 					$specManager->addProject($_POST);
 					$ocrManager = new SpecProcessorOcr();
-					$ocrManager->setVerbose(2);
+					$ocrManager->setVerboseMode(2);
 					echo '<ul>';
 					$ocrManager->harvestOcrText($_POST);
 					echo '</ul>';
@@ -161,7 +157,7 @@ $statusStr = "";
 			<div style="font-weight:bold;font-size:120%;"><a href="index.php?collid=<?php echo $collid.'&tabindex='.$tabIndex; ?>"><b>Return to Specimen Processor</b></a></div>
 		</div>
 		<?php
-			include($SERVER_ROOT.'/footer.php');
+			include($SERVER_ROOT.'/includes/footer.php');
 		?>
 	</body>
 </html>

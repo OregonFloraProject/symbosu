@@ -1,230 +1,174 @@
-$(document).ready(function() {
-    function split( val ) {
-        return val.split( /,\s*/ );
-    }
-    function extractLast( term ) {
-        return split( term ).pop();
-    }
-
-    $( "#taxa" )
-    	// don't navigate away from the field on tab when selecting an item
-        .bind( "keydown", function( event ) {
-            if ( event.keyCode === $.ui.keyCode.TAB &&
-                $( this ).data( "autocomplete" ).menu.active ) {
-                event.preventDefault();
-            }
-        })
-        .autocomplete({
-            source: function( request, response ) {
-                $.getJSON( "rpc/taxalist.php", {
-                    term: extractLast( request.term ), t: function() { return document.harvestparams.taxontype.value; }
-                }, response );
-            },
-            search: function() {
-                // custom minLength
-                var term = extractLast( this.value );
-                if ( term.length < 4 ) {
-                    return false;
-                }
-            },
-            focus: function() {
-                // prevent value inserted on focus
-                return false;
-            },
-            select: function( event, ui ) {
-                var terms = split( this.value );
-                // remove the current input
-                terms.pop();
-                // add the selected item
-                terms.push( ui.item.value );
-                this.value = terms.join( ", " );
-                return false;
-            }
-        },{});
-});
-
-	
-
-function changeTableDisplay(){
-    if(document.getElementById("showtable").checked==true){
-        document.harvestparams.action = "listtabledisplay.php";
-        sessionStorage.collsearchtableview = true;
-    }
-    else{
-        document.harvestparams.action = "list.php";
-        sessionStorage.removeItem('collsearchtableview');
-    }
+function displayTableView(f){
+	f.action = "listtabledisplay.php";
+	f.submit();
 }
 
-function checkUpperLat(){
-    if(document.harvestparams.upperlat.value != ""){
-        if(document.harvestparams.upperlat_NS.value=='N'){
-            document.harvestparams.upperlat.value = Math.abs(parseFloat(document.harvestparams.upperlat.value));
-        }
-        else{
-            document.harvestparams.upperlat.value = -1*Math.abs(parseFloat(document.harvestparams.upperlat.value));
-        }
-    }
+function cleanNumericInput(formElem){
+	if(formElem.value != ""){
+		var elemValue = Math.abs(parseFloat(formElem.value));
+		if(!elemValue) elemValue = '';
+		formElem.value = elemValue;
+	}
 }
 
-function checkBottomLat(){
-    if(document.harvestparams.bottomlat.value != ""){
-        if(document.harvestparams.bottomlat_NS.value == 'N'){
-            document.harvestparams.bottomlat.value = Math.abs(parseFloat(document.harvestparams.bottomlat.value));
-        }
-        else{
-            document.harvestparams.bottomlat.value = -1*Math.abs(parseFloat(document.harvestparams.bottomlat.value));
-        }
-    }
-}
+function checkHarvestParamsForm(frm){
+	//make sure they have filled out at least one field.
+	if((frm.taxa.value.trim() == '') && (frm.country.value.trim() == '') && (frm.state.value.trim() == '') && (frm.county.value.trim() == '') &&
+		(frm.local.value.trim() == '') && (frm.elevlow.value.trim() == '') && (frm.upperlat.value.trim() == '') && (frm.footprintwkt.value.trim() == '') && (frm.pointlat.value.trim() == '') &&
+		(frm.collector.value.trim() == '') && (frm.collnum.value.trim() == '') && (frm.eventdate1.value.trim() == '') && (frm.catnum.value.trim() == '') &&
+		(frm.typestatus.checked == false) && (frm.hasimages.checked == false) && (frm.hasgenetic.checked == false) && (frm.hascoords.checked == false)){
+			//Check trait search fields if present
+			if (typeof frm.SearchByTraits !== "undefined" && frm.SearchByTraits.value == "true") {
+				var traitinputs = frm.elements;
+				var traitselected = false;
+			 	for(var i = 0; i < traitinputs.length; i++) {
+					if(traitinputs[i].name.indexOf('traitid-') == 0) {
+						if(traitinputs[i].type == 'checkbox' || traitinputs[i].type == 'radio') {
+							if(traitinputs[i].checked == true) {
+								traitselected = traitinputs[i].checked;
+								break;
+							}
+						} else {
+							if(traitinputs[i].value.trim() !== '') {
+								traitselected = true;
+								break;
+							}
+						}
+					}
+				}
+				if(!traitselected) {
+					alert("Please fill in at least one search parameter!");
+					return false;
+				}
+			} else {
+				alert("Please fill in at least one search parameter!");
+				return false;
+			}
+	}
 
-function checkRightLong(){
-    if(document.harvestparams.rightlong.value != ""){
-        if(document.harvestparams.rightlong_EW.value=='E'){
-            document.harvestparams.rightlong.value = Math.abs(parseFloat(document.harvestparams.rightlong.value));
-        }
-        else{
-            document.harvestparams.rightlong.value = -1*Math.abs(parseFloat(document.harvestparams.rightlong.value));
-        }
-    }
-}
+	if(frm.upperlat.value != '' || frm.bottomlat.value != '' || frm.leftlong.value != '' || frm.rightlong.value != ''){
+		// if Lat/Long field is filled in, they all should have a value!
+		if(frm.upperlat.value == '' || frm.bottomlat.value == '' || frm.leftlong.value == '' || frm.rightlong.value == ''){
+			alert("Error: Please make all Lat/Long bounding box values contain a value or all are empty");
+			return false;
+		}
 
-function checkLeftLong(){
-    if(document.harvestparams.leftlong.value != ""){
-        if(document.harvestparams.leftlong_EW.value=='E'){
-            document.harvestparams.leftlong.value = Math.abs(parseFloat(document.harvestparams.leftlong.value));
-        }
-        else{
-            document.harvestparams.leftlong.value = -1*Math.abs(parseFloat(document.harvestparams.leftlong.value));
-        }
-    }
-}
+		// Check to make sure lat/longs are valid.
+		if(Math.abs(frm.upperlat.value) > 90 || Math.abs(frm.bottomlat.value) > 90 || Math.abs(frm.pointlat.value) > 90){
+			alert("Latitude values can not be greater than 90 or less than -90.");
+			return false;
+		}
+		if(Math.abs(frm.leftlong.value) > 180 || Math.abs(frm.rightlong.value) > 180 || Math.abs(frm.pointlong.value) > 180){
+			alert("Longitude values can not be greater than 180 or less than -180.");
+			return false;
+		}
+		var uLat = frm.upperlat.value;
+		if(frm.upperlat_NS.value == 'S') uLat = uLat * -1;
+		var bLat = frm.bottomlat.value;
+		if(frm.bottomlat_NS.value == 'S') bLat = bLat * -1;
+		if(uLat < bLat){
+			alert("Your northern latitude value is less then your southern latitude value. Please correct this.");
+			return false;
+		}
+		var lLng = frm.leftlong.value;
+		if(frm.leftlong_EW.value == 'W') lLng = lLng * -1;
+		var rLng = frm.rightlong.value;
+		if(frm.rightlong_EW.value == 'W') rLng = rLng * -1;
+		if(lLng > rLng){
+			alert("Your western longitude value is greater then your eastern longitude value. Please correct this. Note that western hemisphere longitudes in the decimal format are negitive.");
+			return false;
+		}
+	}
 
-function checkPointLat(){
-    if(document.harvestparams.pointlat.value != ""){
-        if(document.harvestparams.pointlat_NS.value=='N'){
-            document.harvestparams.pointlat.value = Math.abs(parseFloat(document.harvestparams.pointlat.value));
-        }
-        else{
-            document.harvestparams.pointlat.value = -1*Math.abs(parseFloat(document.harvestparams.pointlat.value));
-        }
-    }
-}
+	//Same with point radius fields
+	if(frm.pointlat.value != '' || frm.pointlong.value != '' || frm.radius.value != ''){
+		if(frm.pointlat.value == '' || frm.pointlong.value == '' || frm.radius.value == ''){
+			alert("Error: Please make all Lat/Long point-radius values contain a value or all are empty");
+			return false;
+		}
+	}
 
-function checkPointLong(){
-    if(document.harvestparams.pointlong.value != ""){
-        if(document.harvestparams.pointlong_EW.value=='E'){
-            document.harvestparams.pointlong.value = Math.abs(parseFloat(document.harvestparams.pointlong.value));
-        }
-        else{
-            document.harvestparams.pointlong.value = -1*Math.abs(parseFloat(document.harvestparams.pointlong.value));
-        }
-    }
-}
-
-function updateRadius(){
-    var radiusUnits = document.getElementById("radiusunits").value;
-    var radiusInMiles = document.getElementById("radiustemp").value;
-    if(radiusUnits == "km"){
-        radiusInMiles = radiusInMiles*0.6214;
-    }
-    document.getElementById("radius").value = radiusInMiles;
+	return true;
 }
 
 function setHarvestParamsForm(){
-    var stArr = JSON.parse(starrJson);
-    if(!stArr['usethes']){document.harvestparams.thes.checked = false;}
-    if(stArr['taxontype']){document.harvestparams.type.value = stArr['taxontype'];}
-    if(stArr['taxa']){document.harvestparams.taxa.value = stArr['taxa'];}
-    if(stArr['country']){
-    	countryStr = stArr['country'];
-    	countryArr = countryStr.split(";");
-    	if(countryArr.indexOf('USA') > -1 || countryArr.indexOf('usa') > -1) countryStr = countryArr[0];
-    	//if(countryStr.indexOf('United States') > -1) countryStr = 'United States';
-    	document.harvestparams.country.value = countryStr;
-    }
-    if(stArr['state']){document.harvestparams.state.value = stArr['state'];}
-    if(stArr['county']){document.harvestparams.county.value = stArr['county'];}
-    if(stArr['local']){document.harvestparams.local.value = stArr['local'];}
-    if(stArr['elevlow']){document.harvestparams.elevlow.value = stArr['elevlow'];}
-    if(stArr['elevhigh']){document.harvestparams.elevhigh.value = stArr['elevhigh'];}
-    if(stArr['assochost']){document.harvestparams.assochost.value = stArr['assochost'];}
-    if(stArr['llbound']){
-        var coordArr = stArr['llbound'].split(';');
-        document.harvestparams.upperlat.value = coordArr[0];
-        document.harvestparams.bottomlat.value = coordArr[1];
-        document.harvestparams.leftlong.value = coordArr[2];
-        document.harvestparams.rightlong.value = coordArr[3];
-    }
-    if(stArr['llpoint']){
-        var coordArr = stArr['llpoint'].split(';');
-        document.harvestparams.pointlat.value = coordArr[0];
-        document.harvestparams.pointlong.value = coordArr[1];
-        document.harvestparams.radiustemp.value = coordArr[2];
-        document.harvestparams.radius.value = coordArr[2]*0.6214;
-    }
-    if(stArr['collector']){document.harvestparams.collector.value = stArr['collector'];}
-    if(stArr['collnum']){document.harvestparams.collnum.value = stArr['collnum'];}
-    if(stArr['eventdate1']){document.harvestparams.eventdate1.value = stArr['eventdate1'];}
-    if(stArr['eventdate2']){document.harvestparams.eventdate2.value = stArr['eventdate2'];}
-    if(stArr['catnum']){document.harvestparams.catnum.value = stArr['catnum'];}
-    //if(!stArr['othercatnum']){document.harvestparams.includeothercatnum.checked = false;}
-    if(stArr['typestatus']){document.harvestparams.typestatus.checked = true;}
-    if(stArr['hasimages']){document.harvestparams.hasimages.checked = true;}
-    if(stArr['hasgenetic']){document.harvestparams.hasgenetic.checked = true;}
-    if(sessionStorage.collsearchtableview){
-        document.getElementById('showtable').checked = true;
-        changeTableDisplay();
-    }
+	if(sessionStorage.querystr){
+		var urlVar = parseUrlVariables(sessionStorage.querystr);
+		var frm = document.harvestparams;
+
+		if(typeof urlVar.usethes !== 'undefined' && (urlVar.usethes == "" || urlVar.usethes == "0")){frm.usethes.checked = false;}
+		if(urlVar.taxontype){frm.taxontype.value = urlVar.taxontype;}
+		if(urlVar.taxa){frm.taxa.value = urlVar.taxa;}
+		if(urlVar.country){
+			countryStr = urlVar.country;
+			countryArr = countryStr.split(";");
+			if(countryArr.indexOf('USA') > -1 || countryArr.indexOf('usa') > -1) countryStr = countryArr[0];
+			//if(countryStr.indexOf('United States') > -1) countryStr = 'United States';
+			frm.country.value = countryStr;
+		}
+		if(urlVar.state){frm.state.value = urlVar.state;}
+		if(urlVar.county){frm.county.value = urlVar.county;}
+		if(urlVar.local){frm.local.value = urlVar.local;}
+		if(urlVar.elevlow){frm.elevlow.value = urlVar.elevlow;}
+		if(urlVar.elevhigh){frm.elevhigh.value = urlVar.elevhigh;}
+		if(urlVar.llbound){
+			var coordArr = urlVar.llbound.split(';');
+			frm.upperlat.value = Math.abs(parseFloat(coordArr[0]));
+			frm.bottomlat.value = Math.abs(parseFloat(coordArr[1]));
+			frm.leftlong.value = Math.abs(parseFloat(coordArr[2]));
+			frm.rightlong.value = Math.abs(parseFloat(coordArr[3]));
+		}
+		if(urlVar.footprintwkt){
+			frm.footprintwkt.value = urlVar.footprintwkt;
+		}
+		if(urlVar.llpoint){
+			var coordArr = urlVar.llpoint.split(';');
+			frm.pointlat.value = Math.abs(parseFloat(coordArr[0]));
+			frm.pointlong.value = Math.abs(parseFloat(coordArr[1]));
+			frm.radius.value = Math.abs(parseFloat(coordArr[2]));
+			if(coordArr[4] == "mi") frm.radiusunits.value = "mi";
+		}
+		if(urlVar.collector){frm.collector.value = urlVar.collector;}
+		if(urlVar.collnum){frm.collnum.value = urlVar.collnum;}
+		if(urlVar.eventdate1){frm.eventdate1.value = urlVar.eventdate1;}
+		if(urlVar.eventdate2){frm.eventdate2.value = urlVar.eventdate2;}
+		if(urlVar.catnum){frm.catnum.value = urlVar.catnum;}
+		//if(!urlVar.othercatnum){frm.includeothercatnum.checked = false;}
+		if(typeof urlVar.typestatus !== 'undefined'){frm.typestatus.checked = true;}
+		if(typeof urlVar.hasimages !== 'undefined'){frm.hasimages.checked = true;}
+		if(typeof urlVar.hasgenetic !== 'undefined'){frm.hasgenetic.checked = true;}
+		if(typeof urlVar.hascoords !== 'undefined'){frm.hascoords.checked = true;}
+		if(typeof urlVar.includecult !== 'undefined'){frm.includecult.checked = true;}
+		if(urlVar.db){frm.db.value = urlVar.db;}
+		for(var i in urlVar) {
+			if(`${i}`.indexOf('traitid-') == 0) {
+				var traitInput = document.getElementById("traitstateid-" + urlVar[i]);
+				if(traitInput.type == 'checkbox' || traitInput.type == 'radio') { traitInput.checked = true; };
+				// if(traitInput.type == 'select') { traitInput.value = urlVar[i]; }; // Must improve this to deal with multiple possible selections
+			}
+		}
+	}
+}
+
+function parseUrlVariables(varStr) {
+	var result = {};
+	varStr.split("&").forEach(function(part) {
+		if(!part) return;
+		part = part.split("+").join(" ");
+		var eq = part.indexOf("=");
+		var key = eq>-1 ? part.substr(0,eq) : part;
+		var val = eq>-1 ? decodeURIComponent(part.substr(eq+1)) : "";
+		result[key] = val;
+	});
+	return result;
 }
 
 function resetHarvestParamsForm(f){
-	f.thes.checked = true;
-	f.type.value = 1;
-	f.taxa.value = '';
-	f.country.value = '';
-	f.state.value = '';
-	f.county.value = '';
-	f.local.value = '';
-	f.elevlow.value = '';
-	f.elevhigh.value = '';
-    if(f.assochost){f.assochost.value = '';}
-	f.upperlat.value = '';
-	f.bottomlat.value = '';
-	f.leftlong.value = '';
-	f.rightlong.value = '';
-	f.upperlat_NS.value = 'N';
-	f.bottomlat_NS.value = 'N';
-	f.leftlong_EW.value = 'W';
-	f.rightlong_EW.value = 'W';
-	f.pointlat.value = '';
-	f.pointlong.value = '';
-	f.radiustemp.value = '';
-	f.pointlat_NS.value = 'N';
-	f.pointlong_EW.value = 'W';
-	f.radiusunits.value = 'km';
-	f.radius.value = '';
-	f.collector.value = '';
-	f.collnum.value = '';
-	f.eventdate1.value = '';
-	f.eventdate2.value = '';
-	f.catnum.value = '';
-	f.includeothercatnum.checked = true;
-	f.typestatus.checked = false;
-	f.hasimages.checked = false;
-    sessionStorage.removeItem('jsonstarr');
-    document.getElementById('showtable').checked = false;
-    changeTableDisplay();
+	sessionStorage.removeItem('querystr');
 }
 
-function openPointRadiusMap() {
-    mapWindow=open("mappointradius.php","pointradius","resizable=0,width=700,height=630,left=20,top=20");
-    if (mapWindow.opener == null) mapWindow.opener = self;
-    mapWindow.focus();
-}
-
-function openBoundingBoxMap() {
-    mapWindow=open("mapboundingbox.php","boundingbox","resizable=0,width=700,height=630,left=20,top=20");
-    if (mapWindow.opener == null) mapWindow.opener = self;
-    mapWindow.focus();
+function openCoordAid(mapMode) {
+	mapWindow=open("tools/mapcoordaid.php?mapmode="+mapMode,"polygon","resizable=0,width=900,height=630,left=20,top=20");
+	if (mapWindow.opener == null) mapWindow.opener = self;
+	mapWindow.focus();
 }

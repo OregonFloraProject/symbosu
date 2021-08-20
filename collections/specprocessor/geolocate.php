@@ -32,7 +32,7 @@ $advFieldArr = array('family'=>'Family','sciname'=>'Scientific Name','identified
 	'recordedBy'=>'Collector/Observer','recordNumber'=>'Collector Number','associatedCollectors'=>'Associated Collectors',
 	'eventDate'=>'Collection Date','verbatimEventDate'=>'Verbatim Date','habitat'=>'Habitat','substrate'=>'Substrate','occurrenceRemarks'=>'Occurrence Remarks',
 	'associatedTaxa'=>'Associated Taxa','verbatimAttributes'=>'Description','reproductiveCondition'=>'Reproductive Condition',
-	'establishmentMeans'=>'Establishment Means','lifeStage'=>'Life Stage','sex'=>'Sex',
+	'establishmentMeans'=>'Establishment Means','cultivationStatus'=>'Cultivation Status','lifeStage'=>'Life Stage','sex'=>'Sex',
 	'individualCount'=>'Individual Count','samplingProtocol'=>'Sampling Protocol','country'=>'Country',
 	'stateProvince'=>'State/Province','county'=>'County','municipality'=>'Municipality','locality'=>'Locality',
 	'decimalLatitude'=>'Decimal Latitude','decimalLongitude'=>'Decimal Longitude','geodeticDatum'=>'Geodetic Datum',
@@ -45,8 +45,17 @@ $advFieldArr = array('family'=>'Family','sciname'=>'Scientific Name','identified
 <html>
 	<head>
 		<title>Occurrence Export Manager</title>
-		<link href="<?php echo $CLIENT_ROOT; ?>/css/base.css?ver=<?php echo $CSS_VERSION; ?>" type="text/css" rel="stylesheet" />
-		<link href="<?php echo $CLIENT_ROOT; ?>/css/main.css<?php echo (isset($CSS_VERSION_LOCAL)?'?ver='.$CSS_VERSION_LOCAL:''); ?>" type="text/css" rel="stylesheet" />
+		<?php
+		$activateJQuery = false;
+		if(file_exists($SERVER_ROOT.'/includes/head.php')){
+			include_once($SERVER_ROOT.'/includes/head.php');
+		}
+		else{
+			echo '<link href="'.$CLIENT_ROOT.'/css/jquery-ui.css" type="text/css" rel="stylesheet" />';
+			echo '<link href="'.$CLIENT_ROOT.'/css/base.css?ver=1" type="text/css" rel="stylesheet" />';
+			echo '<link href="'.$CLIENT_ROOT.'/css/main.css?ver=1" type="text/css" rel="stylesheet" />';
+		}
+		?>
 		<script src="../../js/jquery-3.2.1.min.js" type="text/javascript"></script>
 		<script src="../../js/symb/shared.js" type="text/javascript"></script>
 		<script src="../../js/symb/geolocate.js?ver=1.0" type="text/javascript"></script>
@@ -94,6 +103,9 @@ $advFieldArr = array('family'=>'Family','sciname'=>'Scientific Name','identified
 										</div>
 									</td>
 									<td>
+										<?php
+										$conditionArr = array('EQUALS'=>'EQUALS','NOTEQUALS'=>'NOT EQUALS','STARTS'=>'STARTS WITH','LIKE'=>'CONTAINS','NOTLIKE'=>'DOES NOT CONTAIN','NULL'=>'IS NULL','NOTNULL'=>'IS NOT NULL');
+										?>
 										<div style="margin:10px 0px;">
 											<select name="customfield1" style="width:200px">
 												<option value="">Select Field Name</option>
@@ -105,11 +117,11 @@ $advFieldArr = array('family'=>'Family','sciname'=>'Scientific Name','identified
 												?>
 											</select>
 											<select name="customtype1" onchange="cogeUpdateCount(this)">
-												<option value="EQUALS">EQUALS</option>
-												<option <?php echo ($customType1=='STARTS'?'SELECTED':''); ?> value="STARTS">STARTS WITH</option>
-												<option <?php echo ($customType1=='LIKE'?'SELECTED':''); ?> value="LIKE">CONTAINS</option>
-												<option <?php echo ($customType1=='NULL'?'SELECTED':''); ?> value="NULL">IS NULL</option>
-												<option <?php echo ($customType1=='NOTNULL'?'SELECTED':''); ?> value="NOTNULL">IS NOT NULL</option>
+												<?php
+												foreach($conditionArr as $condKey => $condValue){
+													echo '<option '.($customType1==$condKey?'SELECTED':'').' value="'.$condKey.'">'.$condValue.'</option>';
+												}
+												?>
 											</select>
 											<input name="customvalue1" type="text" value="<?php echo $customValue1; ?>" style="width:200px;" onchange="cogeUpdateCount(this)" />
 										</div>
@@ -124,11 +136,11 @@ $advFieldArr = array('family'=>'Family','sciname'=>'Scientific Name','identified
 												?>
 											</select>
 											<select name="customtype2" onchange="cogeUpdateCount(this)">
-												<option value="EQUALS">EQUALS</option>
-												<option <?php echo ($customType2=='STARTS'?'SELECTED':''); ?> value="STARTS">STARTS WITH</option>
-												<option <?php echo ($customType2=='LIKE'?'SELECTED':''); ?> value="LIKE">CONTAINS</option>
-												<option <?php echo ($customType2=='NULL'?'SELECTED':''); ?> value="NULL">IS NULL</option>
-												<option <?php echo ($customType2=='NOTNULL'?'SELECTED':''); ?> value="NOTNULL">IS NOT NULL</option>
+												<?php
+												foreach($conditionArr as $condKey2 => $condValue2){
+													echo '<option '.($customType2==$condKey2?'SELECTED':'').' value="'.$condKey2.'">'.$condValue2.'</option>';
+												}
+												?>
 											</select>
 											<input name="customvalue2" type="text" value="<?php echo $customValue2; ?>" style="width:200px;" onchange="cogeUpdateCount(this)" />
 										</div>
@@ -156,7 +168,7 @@ $advFieldArr = array('family'=>'Family','sciname'=>'Scientific Name','identified
 												<b>CoGe Authentication:</b>
 												<span id="coge-status" style="width:150px;color:red;">Disconnected</span>
 												<span style="margin-left:40px"><input type="button" name="cogeCheckStatusButton" value="Check Status" onclick="cogeCheckAuthentication()" /></span>
-												<span style="margin-left:40px"><a href="http://coge.geo-locate.org/" target="_blank" onclick="startAuthMonitoring()">Login to CoGe</a></span>
+												<span style="margin-left:40px"><a href="http://coge.geo-locate.org" target="_blank" onclick="startAuthMonitoring()">Login to CoGe</a></span>
 											</div>
 										</fieldset>
 										<fieldset id="coge-communities" style="margin:10px;padding:10px;">
@@ -209,10 +221,10 @@ $advFieldArr = array('family'=>'Family','sciname'=>'Scientific Name','identified
 												<input name="resetbutton" type="button" value="Reset Page" onclick="cogeCheckAuthentication(); return false;" />
 											</div>
 										</div>
-										<div style="float:right;">
+										<div style="margin:20px;">
 											<a href="../editor/editreviewer.php?collid=<?php echo $collid; ?>&display=2">Review and Approve Edits</a>
 										</div>
-										<div style="margin-left:20px;">
+										<div style="margin:20px;">
 											<b>* Default query criteria: catalogNumber and locality are NOT NULL, decimalLatitude is NULL, decimalLongitude is NULL</b>
 										</div>
 									</td>

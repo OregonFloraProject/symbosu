@@ -1,16 +1,10 @@
 <?php
 include_once('../config/symbini.php');
 include_once($SERVER_ROOT.'/classes/GlossaryManager.php');
-require_once($SERVER_ROOT.'/classes/PhpWord/Autoloader.php');
+require_once $SERVER_ROOT.'/vendor/phpoffice/phpword/bootstrap.php';
+
 header("Content-Type: text/html; charset=".$CHARSET);
 ini_set('max_execution_time', 3600);
-
-$ses_id = session_id();
-
-use PhpOffice\PhpWord\Autoloader;
-use PhpOffice\PhpWord\Settings;
-Autoloader::register();
-Settings::loadConfig();
 
 $language = array_key_exists('searchlanguage',$_POST)?$_POST['searchlanguage']:'';
 $taxon = array_key_exists('searchtaxa',$_POST)?$_POST['searchtaxa']:'';
@@ -18,11 +12,17 @@ $exportType = array_key_exists('exporttype',$_POST)?$_POST['exporttype']:'';
 $translations = array_key_exists('language',$_POST)?$_POST['language']:array();
 $definitions = array_key_exists('definitions',$_POST)?$_POST['definitions']:'';
 $images = array_key_exists('images',$_POST)?$_POST['images']:'';
-$formSubmit = array_key_exists('formsubmit',$_POST)?$_POST['formsubmit']:'';
+
+//Sanitation
+$language = filter_var($language,FILTER_SANITIZE_STRING);
+$taxon = filter_var($taxon,FILTER_SANITIZE_STRING);
+$exportType = filter_var($exportType,FILTER_SANITIZE_STRING);
+$definitions = filter_var($definitions,FILTER_SANITIZE_STRING);
+$images = filter_var($images,FILTER_SANITIZE_STRING);
 
 $fileName = '';
-$citationFormat = $DEFAULT_TITLE.'. '.date('Y').'. '; 
-$citationFormat .= 'http//:'.$_SERVER['HTTP_HOST'].$CLIENT_ROOT.(substr($CLIENT_ROOT,-1)=='/'?'':'/').'index.php. '; 
+$citationFormat = $DEFAULT_TITLE.'. '.date('Y').'. ';
+$citationFormat .= 'http//:'.$_SERVER['HTTP_HOST'].$CLIENT_ROOT.(substr($CLIENT_ROOT,-1)=='/'?'':'/').'index.php. ';
 $citationFormat .= 'Accessed on '.date('F d').'. ';
 
 $phpWord = new \PhpOffice\PhpWord\PhpWord();
@@ -46,7 +46,7 @@ $nodefCellStyle = array('valign'=>'center','width'=>2520,'borderSize'=>0,'border
 $imageCellStyle = array('valign'=>'top','width'=>2520,'borderSize'=>0,'borderColor'=>'ffffff');
 
 $section = $phpWord->addSection(array('pageSizeW'=>12240,'pageSizeH'=>15840,'marginLeft'=>1080,'marginRight'=>1080,'marginTop'=>1080,'marginBottom'=>1080,'headerHeight'=>100,'footerHeight'=>0));
-$glosManager = new GlossaryManager(); 
+$glosManager = new GlossaryManager();
 if($exportType == 'translation'){
 	$exportArr = $glosManager->getExportArr($language,$taxon,0,$translations,$definitions);
 	if(in_array($language,$translations)){
@@ -60,15 +60,15 @@ if($exportType == 'translation'){
 
 		//ksort($exportArr, SORT_STRING | SORT_FLAG_CASE);
 		$fileName = $metaArr['sciname'].'_TranslationTable';
-	
+
 		$header = $section->addHeader();
 		$header->addPreserveText($metaArr['sciname'].' - p.{PAGE} '.date("Y-m-d"),null,array('align'=>'right'));
 		$textrun = $section->addTextRun('titlePara');
-		if($GLOSSARY_BANNER){
+		if(isset($GLOSSARY_BANNER) && $GLOSSARY_BANNER){
 			$serverDomain = "http://";
 			if((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443) $serverDomain = "https://";
 			$serverDomain .= $_SERVER["SERVER_NAME"];
-			if($_SERVER["SERVER_PORT"] && $_SERVER["SERVER_PORT"] != 80) $serverDomain .= ':'.$_SERVER["SERVER_PORT"];
+			if($_SERVER["SERVER_PORT"] && $_SERVER["SERVER_PORT"] != 80 && $_SERVER['SERVER_PORT'] != 443) $serverDomain .= ':'.$_SERVER["SERVER_PORT"];
 			$textrun->addImage($serverDomain.$CLIENT_ROOT.'/images/layout/'.$GLOSSARY_BANNER,array('width'=>500,'align'=>'center'));
 			$textrun->addTextBreak(1);
 		}
@@ -195,15 +195,15 @@ elseif($exportType == 'singlelanguage'){
 		unset($exportArr['meta']);
 		//ksort($exportArr, SORT_STRING | SORT_FLAG_CASE);
 		$fileName = $metaArr['sciname'].'_SingleLanguage';
-	
+
 		$header = $section->addHeader();
 		$header->addPreserveText($metaArr['sciname'].' - p.{PAGE} '.date("Y-m-d"),null,array('align'=>'right'));
 		$textrun = $section->addTextRun('titlePara');
-		if($GLOSSARY_BANNER){
+		if(isset($GLOSSARY_BANNER) && $GLOSSARY_BANNER){
 			$serverDomain = "http://";
 			if((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443) $serverDomain = "https://";
 			$serverDomain .= $_SERVER["SERVER_NAME"];
-			if($_SERVER["SERVER_PORT"] && $_SERVER["SERVER_PORT"] != 80) $serverDomain .= ':'.$_SERVER["SERVER_PORT"];
+			if($_SERVER["SERVER_PORT"] && $_SERVER["SERVER_PORT"] != 80 && $_SERVER['SERVER_PORT'] != 443) $serverDomain .= ':'.$_SERVER["SERVER_PORT"];
 			$textrun->addImage($serverDomain.$CLIENT_ROOT.'/images/layout/'.$GLOSSARY_BANNER,array('width'=>500,'align'=>'center'));
 			$textrun->addTextBreak(1);
 		}

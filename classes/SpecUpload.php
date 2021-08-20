@@ -6,8 +6,9 @@ class SpecUpload{
 	protected $conn;
 	protected $collId;
 	protected $uspid;
-	protected $collMetadataArr = Array();
-	
+	protected $collMetadataArr = array();
+	protected $skipOccurFieldArr = array();
+
 	protected $title = "";
 	protected $platform;
 	protected $server;
@@ -23,31 +24,32 @@ class SpecUpload{
 	protected $lastUploadDate;
 	protected $uploadType;
 	private $securityKey;
+	protected $paleoSupport = false;
 
 	protected $verboseMode = 1;	// 0 = silent, 1 = echo, 2 = log
 	private $logFH;
 	protected $errorStr;
 
-	protected $DIRECTUPLOAD = 1, $DIGIRUPLOAD = 2, $FILEUPLOAD = 3, $STOREDPROCEDURE = 4, $SCRIPTUPLOAD = 5, $DWCAUPLOAD = 6, $SKELETAL = 7, $IPTUPLOAD = 8, $NFNUPLOAD = 9;
-	
+	protected $DIRECTUPLOAD = 1, $DIGIRUPLOAD = 2, $FILEUPLOAD = 3, $STOREDPROCEDURE = 4, $SCRIPTUPLOAD = 5, $DWCAUPLOAD = 6, $SKELETAL = 7, $IPTUPLOAD = 8, $NFNUPLOAD = 9, $RESTOREBACKUP = 10;
+
 	function __construct() {
 		$this->conn = MySQLiConnectionFactory::getCon("write");
 	}
-	
+
 	function __destruct(){
  		if($this->conn) $this->conn->close();
 		if($this->verboseMode == 2){
 			if($this->logFH) fclose($this->logFH);
 		}
 	}
-	
+
 	public function setCollId($id){
 		if(is_numeric($id)){
 			$this->collId = $id;
 			$this->setCollInfo();
 		}
 	}
-	
+
 	public function setUspid($id){
 		if($id && is_numeric($id)){
 			$this->uspid = $id;
@@ -100,43 +102,49 @@ class SpecUpload{
 
 	private function setCollInfo(){
 		if($this->collId){
-			$sql = 'SELECT DISTINCT c.collid, c.collectionname, c.institutioncode, c.collectioncode, c.icon, c.colltype, c.managementtype, cs.uploaddate, c.securitykey, c.guidtarget '.
+			$sql = 'SELECT DISTINCT c.collid, c.collectionname, c.institutioncode, c.collectioncode, c.collectionguid, c.icon, c.colltype, c.managementtype, '.
+				'cs.uploaddate, c.securitykey, c.guidtarget, c.dynamicproperties '.
 				'FROM omcollections c LEFT JOIN omcollectionstats cs ON c.collid = cs.collid '.
 				'WHERE (c.collid = '.$this->collId.')';
 			//echo $sql;
 			$result = $this->conn->query($sql);
-			while($row = $result->fetch_object()){
-				$this->collMetadataArr["collid"] = $row->collid;
-				$this->collMetadataArr["name"] = $row->collectionname;
-				$this->collMetadataArr["institutioncode"] = $row->institutioncode;
-				$this->collMetadataArr["collectioncode"] = $row->collectioncode;
-				$dateStr = ($row->uploaddate?date("d F Y g:i:s", strtotime($row->uploaddate)):"");
+			while($r = $result->fetch_object()){
+				$this->collMetadataArr["collid"] = $r->collid;
+				$this->collMetadataArr["name"] = $r->collectionname;
+				$this->collMetadataArr["institutioncode"] = $r->institutioncode;
+				$this->collMetadataArr["collectioncode"] = $r->collectioncode;
+				$this->collMetadataArr["collguid"] = $r->collectionguid;
+				$dateStr = ($r->uploaddate?date("d F Y g:i:s", strtotime($r->uploaddate)):"");
 				$this->collMetadataArr["uploaddate"] = $dateStr;
-				$this->collMetadataArr["colltype"] = $row->colltype;
-				$this->collMetadataArr["managementtype"] = $row->managementtype;
-				$this->collMetadataArr["securitykey"] = $row->securitykey;
-				$this->collMetadataArr["guidtarget"] = $row->guidtarget;
+				$this->collMetadataArr["colltype"] = $r->colltype;
+				$this->collMetadataArr["managementtype"] = $r->managementtype;
+				$this->collMetadataArr["securitykey"] = $r->securitykey;
+				$this->collMetadataArr["guidtarget"] = $r->guidtarget;
+				if($r->dynamicproperties){
+					$propArr = json_decode($r->dynamicproperties,true);
+					if(isset($propArr['editorProps']['modules-panel']['paleo']['status'])){
+						if($propArr['editorProps']['modules-panel']['paleo']['status'] == 1) $this->paleoSupport = true;
+					}
+				}
 			}
 			$result->free();
 		}
 	}
-	
+
 	public function getCollInfo($fieldStr = ""){
 		if(!$this->collMetadataArr) $this->setCollInfo();
 		if($fieldStr){
 			if(array_key_exists($fieldStr,$this->collMetadataArr)){
 				return $this->collMetadataArr[$fieldStr];
 			}
-			return '';			
+			return '';
 		}
 		return $this->collMetadataArr;
 	}
 
 	public function validateSecurityKey($k){
 		if(!$this->collId){
-			$sql = 'SELECT collid '.
-			'FROM omcollections '.
-    		'WHERE securitykey = "'.$k.'"';
+			$sql = 'SELECT collid FROM omcollections WHERE securitykey = "'.$k.'"';
 			//echo $sql;
 			$rs = $this->conn->query($sql);
 	    	if($r = $rs->fetch_object()){
@@ -162,22 +170,31 @@ class SpecUpload{
 		if($this->collId){
 			if(!$searchVariables) $searchVariables = 'TOTAL_TRANSFER';
 			$fileName = $searchVariables.'_'.$this->collId.'_'.'upload.csv';
-			
+
 			header ('Content-Type: text/csv');
 			header ('Content-Disposition: attachment; filename="'.$fileName.'"');
 			$outstream = fopen("php://output", "w");
 			$outputHeader = true;
 
 			$sql = $this->getPendingImportSql($searchVariables) ;
-			//echo "<div>".$sql."</div>"; exit;
+			//echo "<div>".$sql."</div>";
 			$rs = $this->conn->query($sql);
 			if($rs->num_rows){
+				//Determine which fields have data
+				$fieldMap = array();
+				while($r = $rs->fetch_assoc()){
+					foreach($r as $k => $v){
+						if($v && $v !== '0') $fieldMap[$k] = '';
+					}
+				}
+				//Export only fields with data
+				$rs->data_seek(0);
 				while($r = $rs->fetch_assoc()){
 					if($outputHeader){
-						fputcsv($outstream,array_keys($r));
+						fputcsv($outstream,array_keys(array_intersect_key($r, $fieldMap)));
 						$outputHeader = false;
 					}
-					fputcsv($outstream,$r);
+					fputcsv($outstream,array_intersect_key($r, $fieldMap));
 				}
 			}
 			else{
@@ -186,7 +203,6 @@ class SpecUpload{
 			$rs->free();
 		}
 		fclose($outstream);
-		return $retArr;
 	}
 
 	public function getPendingImportData($start, $limit, $searchVariables = ''){
@@ -205,43 +221,48 @@ class SpecUpload{
 	}
 
 	private function getPendingImportSql($searchVariables){
-		$occFieldArr = array('catalognumber', 'othercatalognumbers', 'occurrenceid','family', 'scientificname', 'sciname',
-			'scientificnameauthorship', 'identifiedby', 'dateidentified', 'identificationreferences',
-			'identificationremarks', 'taxonremarks', 'identificationqualifier', 'typestatus', 'recordedby', 'recordnumber',
-			'associatedcollectors', 'eventdate', 'year', 'month', 'day', 'startdayofyear', 'enddayofyear',
-			'verbatimeventdate', 'habitat', 'substrate', 'fieldnumber','occurrenceremarks', 'associatedtaxa', 'verbatimattributes',
-			'dynamicproperties', 'reproductivecondition', 'cultivationstatus', 'establishmentmeans',
-			'lifestage', 'sex', 'individualcount', 'samplingprotocol', 'preparations',
-			'country', 'stateprovince', 'county', 'municipality', 'locality', 'localitysecurity', 'localitysecurityreason',
-			'decimallatitude', 'decimallongitude','geodeticdatum', 'coordinateuncertaintyinmeters', 'footprintwkt',
-			'locationremarks', 'verbatimcoordinates', 'georeferencedby', 'georeferenceprotocol', 'georeferencesources',
-			'georeferenceverificationstatus', 'georeferenceremarks', 'minimumelevationinmeters', 'maximumelevationinmeters',
-			'verbatimelevation', 'disposition', 'language', 'duplicatequantity', 'genericcolumn1', 'genericcolumn2',
-			'labelproject','basisofrecord','ownerinstitutioncode', 'processingstatus', 'recordenteredby');
-		$sql = 'SELECT occid, dbpk, '.implode(',',$occFieldArr).' FROM uploadspectemp '.
-				'WHERE collid IN('.$this->collId.') ';
+		$occFieldArr = array();
+		$this->setSkipOccurFieldArr();
+		$schemaSQL = 'SHOW COLUMNS FROM uploadspectemp';
+		if($searchVariables == 'exist') $schemaSQL = 'SHOW COLUMNS FROM omoccurrences';
+		$schemaRS = $this->conn->query($schemaSQL);
+		while($schemaRow = $schemaRS->fetch_object()){
+			$fieldName = strtolower($schemaRow->Field);
+			if(!in_array($fieldName,$this->skipOccurFieldArr)){
+				$occFieldArr[] = $fieldName;
+			}
+		}
+		$schemaRS->free();
+
+		$sql = 'SELECT occid, dbpk, '.implode(',',$occFieldArr).' FROM uploadspectemp WHERE collid IN('.$this->collId.') ';
 		if($searchVariables){
 			if($searchVariables == 'matchappend'){
 				$sql = 'SELECT DISTINCT u.occid, u.dbpk, u.'.implode(',u.',$occFieldArr).' '.
-						'FROM uploadspectemp u INNER JOIN omoccurrences o ON u.collid = o.collid '.
-						'WHERE (u.collid IN('.$this->collId.')) AND (u.occid IS NULL) AND (u.catalogNumber = o.catalogNumber OR u.othercatalogNumbers = o.othercatalogNumbers) ';
+					'FROM uploadspectemp u INNER JOIN omoccurrences o ON u.collid = o.collid '.
+					'WHERE (u.collid IN('.$this->collId.')) AND (u.occid IS NULL) AND (u.catalogNumber = o.catalogNumber OR u.othercatalogNumbers = o.othercatalogNumbers) ';
 			}
 			elseif($searchVariables == 'sync'){
 				$sql = 'SELECT DISTINCT u.occid, u.dbpk, u.'.implode(',u.',$occFieldArr).' '.
-						'FROM uploadspectemp u INNER JOIN omoccurrences o ON (u.catalogNumber = o.catalogNumber) AND (u.collid = o.collid) '.
-						'WHERE (u.collid IN('.$this->collId.')) AND (u.occid IS NULL) AND (u.catalogNumber IS NOT NULL) '.
-						'AND (o.catalogNumber IS NOT NULL) AND (o.dbpk IS NULL) ';
+					'FROM uploadspectemp u INNER JOIN omoccurrences o ON (u.catalogNumber = o.catalogNumber) AND (u.collid = o.collid) '.
+					'WHERE (u.collid IN('.$this->collId.')) AND (u.occid IS NULL) AND (u.catalogNumber IS NOT NULL) '.
+					'AND (o.catalogNumber IS NOT NULL) AND (o.dbpk IS NULL) ';
+			}
+			elseif($searchVariables == 'new'){
+				$sql = 'SELECT DISTINCT u.occid, u.dbpk, u.'.implode(',u.',$occFieldArr).' '.
+					'FROM uploadspectemp u LEFT JOIN omoccurrences o ON (u.occid = o.occid) '.
+					'WHERE (u.collid IN('.$this->collId.')) AND (u.occid IS NULL OR o.occid IS NULL) ';
 			}
 			elseif($searchVariables == 'exist'){
+				unset($occFieldArr[array_search('associatedsequences', $occFieldArr)]);
 				$sql = 'SELECT DISTINCT o.occid, o.dbpk, o.'.implode(',o.',$occFieldArr).' '.
-						'FROM omoccurrences o LEFT JOIN uploadspectemp u  ON (o.occid = u.occid) '.
-						'WHERE (o.collid IN('.$this->collId.')) AND (u.occid IS NULL) ';
+					'FROM omoccurrences o LEFT JOIN uploadspectemp u  ON (o.occid = u.occid) '.
+					'WHERE (o.collid IN('.$this->collId.')) AND (u.occid IS NULL) ';
 			}
 			elseif($searchVariables == 'dupdbpk'){
 				$sql = 'SELECT DISTINCT u.occid, u.dbpk, u.'.implode(',u.',$occFieldArr).' FROM uploadspectemp u WHERE u.dbpk IN('.
-						'SELECT dbpk FROM uploadspectemp '.
-						'GROUP BY dbpk, collid, basisofrecord '.
-						'HAVING (Count(*)>1) AND (collid IN('.$this->collId.'))) ';
+					'SELECT dbpk FROM uploadspectemp '.
+					'GROUP BY dbpk, collid, basisofrecord '.
+					'HAVING (Count(*)>1) AND (collid IN('.$this->collId.'))) ';
 			}
 			else{
 				$varArr = explode(';',$searchVariables);
@@ -264,6 +285,17 @@ class SpecUpload{
 			}
 		}
 		return $sql;
+	}
+
+	protected function setSkipOccurFieldArr(){
+		$this->skipOccurFieldArr = array('dbpk','initialtimestamp','occid','collid','tidinterpreted','fieldnotes','coordinateprecision',
+			'verbatimcoordinatesystem','institutionid','collectionid','associatedoccurrences','datasetid','associatedreferences',
+			'previousidentifications','storagelocation','genericcolumn1','genericcolumn2');
+		if($this->collMetadataArr['managementtype'] == 'Live Data' && $this->collMetadataArr['guidtarget'] != 'occurrenceId'){
+			//Do not import occurrenceID if dataset is a live dataset, unless occurrenceID is explicitly defined as the guidSource.
+			//This avoids the situtation where folks are exporting data from one collection and importing into their collection along with the other collection's occurrenceID GUID, which is very bad
+			$this->skipOccurFieldArr[] = 'occurrenceid';
+		}
 	}
 
 	public function getUploadCount(){
@@ -368,7 +400,7 @@ class SpecUpload{
 	public function getUspid(){
 		return $this->uspid;
 	}
-	
+
 	public function getTitle(){
 		return $this->title;
 	}
@@ -380,23 +412,23 @@ class SpecUpload{
 	public function getServer(){
 		return $this->server;
 	}
-	
+
 	public function getPort(){
 		return $this->port;
 	}
-	
+
 	public function getUsername(){
 		return $this->username;
 	}
-	
+
 	public function getPassword(){
 		return $this->password;
 	}
-	
+
 	public function getCode(){
 		return $this->code;
 	}
-	
+
 	public function getPath(){
 		return $this->path;
 	}
@@ -420,47 +452,48 @@ class SpecUpload{
 	public function getStoredProcedure(){
 		return $this->storedProcedure;
 	}
-	
+
 	public function getUploadType(){
 		return $this->uploadType;
 	}
-	
+
 	public function setUploadType($uploadType){
 		if(is_numeric($uploadType)){
 			$this->uploadType = $uploadType;
 		}
 	}
-	
+
 	public function getErrorStr(){
 		return $this->errorStr;
 	}
-	
+
 	public function setVerboseMode($vMode, $logTitle = ''){
-		global $serverRoot;
 		if(is_numeric($vMode)){
 			$this->verboseMode = $vMode;
 			if($this->verboseMode == 2){
 				//Create log File
-				if($serverRoot){
-					$logPath = $serverRoot;
-					if(substr($serverRoot,-1) != '/' && substr($serverRoot,-1) != '\\') $logPath .= '/';
-					$logPath .= 'temp/logs/';
-					if($logTitle){
-						$logPath .= $logTitle;
-					}
-					else{
-						$logPath .= 'dataupload';
-					}
-					$logPath .= '_'.date('Ymd').".log";
-					$this->logFH = fopen($logPath, 'a');
-					fwrite($this->logFH,"Start time: ".date('Y-m-d h:i:s A')."\n");
+				$logPath = $GLOBALS['SERVER_ROOT'];
+				if(substr($logPath,-1) != '/') $logPath .= '/';
+				$logPath .= 'content/logs/';
+				if($logTitle){
+					$logPath .= $logTitle;
 				}
+				else{
+					$logPath .= 'dataupload';
+				}
+				$logPath .= '_'.date('Y-m-d').".log";
+				$this->logFH = fopen($logPath, 'a');
+				$this->outputMsg('Start time: '.date('Y-m-d h:i:s A'));
+				if(isset($_SERVER['REMOTE_ADDR'])) $this->outputMsg('REMOTE_ADDR: '.$_SERVER['REMOTE_ADDR']);
+				if(isset($_SERVER['REMOTE_PORT'])) $this->outputMsg('REMOTE_PORT: '.$_SERVER['REMOTE_PORT']);
+				if(isset($_SERVER['QUERY_STRING'])) $this->outputMsg('QUERY_STRING: '.htmlspecialchars($_SERVER['QUERY_STRING'], ENT_QUOTES));
 			}
 		}
 	}
 
-	protected function outputMsg($str, $indent = 0){
+	public function outputMsg($str, $indent = 0){
 		if($this->verboseMode == 1){
+			if($indent) $str = str_replace('<li>', '<li style="margin-left:'.($indent*10).'px">', $str);
 			echo $str;
 			ob_flush();
 			flush();
@@ -469,7 +502,7 @@ class SpecUpload{
 			if($this->logFH) fwrite($this->logFH,($indent?str_repeat("\t",$indent):'').strip_tags($str)."\n");
 		}
 	}
-	
+
 	protected function cleanInStr($inStr){
 		$retStr = trim($inStr);
 		$retStr = str_replace(chr(10),' ',$retStr);
@@ -482,5 +515,4 @@ class SpecUpload{
 		return $retStr;
 	}
 }
-
 ?>

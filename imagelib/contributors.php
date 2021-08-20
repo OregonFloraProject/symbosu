@@ -1,39 +1,49 @@
-<?php 
+<?php
 include_once('../config/symbini.php');
-include_once($SERVER_ROOT.'/classes/ImageLibraryManager.php');
+include_once($SERVER_ROOT.'/classes/ImageLibraryBrowser.php');
 header("Content-Type: text/html; charset=".$CHARSET);
 
-$pManager = new ImageLibraryManager();
+$imgManager = new ImageLibraryBrowser();
 ?>
 <html>
 <head>
 	<title><?php echo $DEFAULT_TITLE; ?> Photographer List</title>
-	<link href="../css/base.css?ver=<?php echo $CSS_VERSION; ?>" type="text/css" rel="stylesheet" />
-	<link href="../css/main.css<?php echo (isset($CSS_VERSION_LOCAL)?'?ver='.$CSS_VERSION_LOCAL:''); ?>" type="text/css" rel="stylesheet" />
+	<?php
+	$activateJQuery = false;
+	if(file_exists($SERVER_ROOT.'/includes/head.php')){
+		include_once($SERVER_ROOT.'/includes/head.php');
+	}
+	else{
+		echo '<link href="'.$CLIENT_ROOT.'/css/jquery-ui.css" type="text/css" rel="stylesheet" />';
+		echo '<link href="'.$CLIENT_ROOT.'/css/base.css?ver=1" type="text/css" rel="stylesheet" />';
+		echo '<link href="'.$CLIENT_ROOT.'/css/main.css?ver=1" type="text/css" rel="stylesheet" />';
+	}
+	include_once($SERVER_ROOT.'/includes/googleanalytics.php');
+	?>
 	<meta name='keywords' content='' />
 </head>
 <body>
 	<?php
 	$displayLeftMenu = (isset($imagelib_photographersMenu)?$imagelib_photographersMenu:false);
-	include($SERVER_ROOT.'/header.php');
+	include($SERVER_ROOT.'/includes/header.php');
 	?>
 	<div class="navpath">
-		<a href="../index.php">Home</a> &gt;&gt; 
-		<a href="index.php">Image Library</a> &gt;&gt; 
-		<b>Image contributors</b> 
+		<a href="../index.php">Home</a> &gt;&gt;
+		<a href="index.php">Image Library</a> &gt;&gt;
+		<b>Image contributors</b>
 	</div>
 
 	<!-- This is inner text! -->
 	<div id="innertext" style="height:100%">
-		<?php 
-		$pList = $pManager->getPhotographerList();
+		<?php
+		$pList = $imgManager->getPhotographerList();
 		if($pList){
 			echo '<div style="float:left;;margin-right:40px;">';
 			echo '<h2>Image Contributors</h2>';
 			echo '<div style="margin-left:15px">';
 			foreach($pList as $uid => $pArr){
 				echo '<div>';
-				$phLink = 'search.php?imagedisplay=thumbnail&imagetype=all&phuidstr='.$uid.'&phjson=[{'.urlencode('"name":"'.$pArr['fullname'].'","id":"'.$uid.'"').'}]&submitaction=Load Images';
+				$phLink = 'search.php?imagetype=all&phuid='.$uid.'&submitaction=search';
 				echo '<a href="'.$phLink.'">'.$pArr['name'].'</a> ('.$pArr['imgcnt'].')</div>';
 			}
 			echo '</div>';
@@ -45,14 +55,14 @@ $pManager = new ImageLibraryManager();
 			<?php
 			ob_flush();
 			flush();
-			$collList = $pManager->getCollectionImageList();
+			$collList = $imgManager->getCollectionImageList();
 			$specList = $collList['coll'];
 			if($specList){
 				echo '<h2>Specimens</h2>';
 				echo '<div style="margin-left:15px;margin-bottom:20px">';
 				foreach($specList as $k => $cArr){
 					echo '<div>';
-					$phLink = 'search.php?nametype=2&taxtp=2&imagecount=all&imagedisplay=thumbnail&imagetype=all&submitaction=Load%20Images&db[]='.$k;
+					$phLink = 'search.php?taxontype=2&imagecount=all&imagetype=all&submitaction=search&db[]='.$k;
 					echo '<a href="'.$phLink.'">'.$cArr['name'].'</a> ('.$cArr['imgcnt'].')</div>';
 				}
 				echo '</div>';
@@ -64,7 +74,7 @@ $pManager = new ImageLibraryManager();
 				echo '<div style="margin-left:15px">';
 				foreach($obsList as $k => $cArr){
 					echo '<div>';
-					$phLink = 'search.php?nametype=2&taxtp=2&imagecount=all&imagedisplay=thumbnail&imagetype=all&submitaction=Load%20Images&db[]='.$k;
+					$phLink = 'search.php?taxontype=2&imagecount=all&imagetype=all&submitaction=search&db[]='.$k;
 					echo '<a href="'.$phLink.'">'.$cArr['name'].'</a> ('.$cArr['imgcnt'].')</div>';
 				}
 				echo '</div>';
@@ -72,8 +82,8 @@ $pManager = new ImageLibraryManager();
 			?>
 		</div>
 	</div>
-	<?php 
-	include($SERVER_ROOT.'/footer.php');
+	<?php
+	include($SERVER_ROOT.'/includes/footer.php');
 	?>
 </body>
 </html>

@@ -4,13 +4,12 @@ include_once($SERVER_ROOT.'/classes/GlossaryManager.php');
 header("Content-Type: text/html; charset=".$CHARSET);
 
 $glossId = array_key_exists('glossid',$_REQUEST)?$_REQUEST['glossid']:0;
-$glimgId = array_key_exists('glimgid',$_REQUEST)?$_REQUEST['glimgid']:0;
-$formSubmit = array_key_exists('formsubmit',$_POST)?$_POST['formsubmit']:'';
+
+//Sanitation
+if(!is_numeric($glossId)) $glossId = 0;
 
 $isEditor = false;
-if($isAdmin || array_key_exists("Taxonomy",$USER_RIGHTS)){
-	$isEditor = true;
-}
+if($IS_ADMIN || array_key_exists('GlossaryEditor',$USER_RIGHTS)) $isEditor = true;
 
 $glosManager = new GlossaryManager();
 $termArr = array();
@@ -40,22 +39,36 @@ if($glossId){
 <html>
 <head>
 	<title><?php echo $DEFAULT_TITLE; ?> Glossary Term Information</title>
-	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-	<link href="../css/base.css?ver=<?php echo $CSS_VERSION; ?>" rel="stylesheet" type="text/css" />
-    <link href="../css/main.css<?php echo (isset($CSS_VERSION_LOCAL)?'?ver='.$CSS_VERSION_LOCAL:''); ?>" rel="stylesheet" type="text/css" />
-	<link href="../css/jquery-ui.css" rel="stylesheet" type="text/css" />
+	<?php
+	$activateJQuery = true;
+	if(file_exists($SERVER_ROOT.'/includes/head.php')){
+		include_once($SERVER_ROOT.'/includes/head.php');
+	}
+	else{
+		echo '<link href="'.$CLIENT_ROOT.'/css/jquery-ui.css" type="text/css" rel="stylesheet" />';
+		echo '<link href="'.$CLIENT_ROOT.'/css/base.css?ver=1" type="text/css" rel="stylesheet" />';
+		echo '<link href="'.$CLIENT_ROOT.'/css/main.css?ver=1" type="text/css" rel="stylesheet" />';
+	}
+	include_once($SERVER_ROOT.'/includes/googleanalytics.php');
+	?>
 	<script type="text/javascript" src="../js/jquery.js"></script>
 	<script type="text/javascript" src="../js/jquery-ui.js"></script>
 	<script type="text/javascript" src="../js/symb/glossary.index.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$('#tabs').tabs({
+				beforeLoad: function( event, ui ) {
+					$(ui.panel).html("<p>Loading...</p>");
+				}
+			});
+		});
+	</script>
 </head>
 
-<body style="overflow-x:hidden;overflow-y:auto;width:700px;margin-left:auto;margin-right:auto;">
-	<script type="text/javascript">
-		<?php include_once($SERVER_ROOT.'/config/googleanalytics.php'); ?>
-	</script>
+<body style="overflow-x:hidden;overflow-y:auto;width:800px;min-width:800px">
 	<!-- This is inner text! -->
-	<div id="innertext" style="width:680px;margin-left:0px;margin-right:0px;">
-		<div id="tabs" style="padding:10px;margin:0px;">
+	<div style="width:100%;margin-left:auto;margin-right:auto">
+		<div id="tabs" style="padding:10px">
 			<div style="clear:both;">
 				<?php
 				if($isEditor){
@@ -77,14 +90,14 @@ if($glossId){
 					<div style="clear:both;">
 						<div style='' >
 							<div style='margin-top:8px;width:95%' >
-								<b>Definition:</b> 
+								<b>Definition:</b>
 								<?php echo $termArr['definition']; ?>
 							</div>
 							<?php
 							if($termArr['author']){
 								?>
 								<div style='margin-top:8px;' >
-									<b>Author:</b> 
+									<b>Author:</b>
 									<?php echo $termArr['author']; ?>
 								</div>
 								<?php
@@ -92,7 +105,7 @@ if($glossId){
 							if($termArr['translator']){
 								?>
 								<div style='margin-top:8px;' >
-									<b>Translator:</b> 
+									<b>Translator:</b>
 									<?php echo $termArr['translator']; ?>
 								</div>
 								<?php
@@ -138,7 +151,7 @@ if($glossId){
 							if($termArr['notes']){
 								?>
 								<div style='margin-top:8px;' >
-									<b>Notes:</b> 
+									<b>Notes:</b>
 									<?php echo $termArr['notes']; ?>
 								</div>
 								<?php
@@ -153,7 +166,7 @@ if($glossId){
 								}
 								?>
 								<div style='margin-top:8px;' >
-									<b>Resource URL:</b> 
+									<b>Resource URL:</b>
 									<?php echo $resource; ?>
 								</div>
 								<?php
@@ -161,7 +174,7 @@ if($glossId){
 							if($termArr['source']){
 								?>
 								<div style='margin-top:8px;' >
-									<b>Source:</b> 
+									<b>Source:</b>
 									<?php echo $termArr['source']; ?>
 								</div>
 								<?php
@@ -169,13 +182,15 @@ if($glossId){
 							?>
 						</div>
 						<div style="clear:both;margin:15px 0px;">
-							<b>Relevant Taxa:</b> 
+							<b>Relevant Taxa:</b>
 							<?php
 							$sourceArr = $glosManager->getTaxonSources();
-							foreach($sourceArr as $tid => $arr){
-								echo '<div style="margin-left:20px">';
-								echo $arr['sciname'].' [<a href="#" onclick="toggle(\''.$tid.'-sourcesdiv\');return false;"><span style="font-size:90%">show sources</span></a>]';
-								echo '</div>';
+							$taxaArr = $glosManager->getTermTaxaArr();
+							$delimter = '';
+							foreach($taxaArr as $tid => $sciname){
+								echo $delimter.$sciname;
+								if(array_key_exists($tid, $sourceArr)) echo ' [<a href="#" onclick="toggle(\''.$tid.'-sourcesdiv\');return false;"><span style="font-size:90%">show sources</span></a>]';
+								$delimter = ', ';
 							}
 							?>
 						</div>
@@ -196,14 +211,14 @@ if($glossId){
 									$urlPrefix = "http://";
 									if((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443) $urlPrefix = "https://";
 									$urlPrefix .= $_SERVER["SERVER_NAME"];
-									if($_SERVER["SERVER_PORT"] && $_SERVER["SERVER_PORT"] != 80) $urlPrefix .= ':'.$_SERVER["SERVER_PORT"];
+									if($_SERVER["SERVER_PORT"] && $_SERVER["SERVER_PORT"] != 80 && $_SERVER['SERVER_PORT'] != 443) $urlPrefix .= ':'.$_SERVER["SERVER_PORT"];
 									$imgUrl = $urlPrefix.$imgUrl;
 								}
 							}
 							?>
 							<fieldset style='clear:both;border:0px;padding:0px;margin-top:10px;'>
 								<div style='width:250px;'>
-									<?php 
+									<?php
 									$imgWidth = 0;
 									$imgHeight = 0;
 									$size = getimagesize(str_replace(' ', '%20', $imgUrl));
@@ -230,7 +245,7 @@ if($glossId){
 									if($imgArr['structures']){
 										?>
 										<div style='overflow:hidden;width:250px;margin-top:8px;' >
-											<b>Structures:</b> 
+											<b>Structures:</b>
 											<?php echo wordwrap($imgArr["structures"], 370, "<br />\n"); ?>
 										</div>
 										<?php
@@ -238,7 +253,7 @@ if($glossId){
 									if($imgArr['notes']){
 										?>
 										<div style='overflow:hidden;width:250px;margin-top:8px;' >
-											<b>Notes:</b> 
+											<b>Notes:</b>
 											<?php echo wordwrap($imgArr["notes"], 370, "<br />\n"); ?>
 										</div>
 										<?php

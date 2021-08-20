@@ -12,11 +12,7 @@ $debug = 0;
 $nlpManager = new SpecProcNlpSalix();
 $dwcArr = array();
 if($rawOcr){
-	//Get rid of Windows curly (smart) quotes
-	$search = array(chr(145),chr(146),chr(147),chr(148),chr(149),chr(150),chr(151));
-	$replace = array("'","'",'"','"','*','-','-');
-	$rawOcr= str_replace($search, $replace, $rawOcr);
-	//Get rid of UTF-8 curly smart quotes and dashes 
+	//Get rid of UTF-8 curly smart quotes and dashes
 	$badwordchars=array("\xe2\x80\x98", // left single quote
 						"\xe2\x80\x99", // right single quote
 						"\xe2\x80\x9c", // left double quote
@@ -29,7 +25,7 @@ if($rawOcr){
 
 	$dwcArr = $nlpManager->parse($rawOcr);
 	if($debug){
-		$fh = fopen($serverRoot.'/temp/logs/ocrdebug.txt','w');
+		$fh = fopen($SERVER_ROOT.'/content/logs/ocrdebug.txt','w');
 		fwrite($fh,'Raw OCR:');
 		fwrite($fh,$rawOcr);
 		fwrite($fh,"\n\n\n------------------------------------------------------------------\n\n\n");

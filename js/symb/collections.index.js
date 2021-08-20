@@ -1,12 +1,9 @@
-
-jQuery(document).ready(function($) {
-	$('html').hide();
-	$(document).ready(function() {
-			$("#tabs").tabs();
-			$('html').show();
-		//document.collections.onkeydown = checkKey;
-	});
+//Used in /collections/index.php and /imagelib/index.php
+$('html').hide();
+$(document).ready(function() {
+	$('html').show();
 });
+
 function toggle(target){
 	var ele = document.getElementById(target);
 	if(ele){

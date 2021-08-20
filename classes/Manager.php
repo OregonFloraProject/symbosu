@@ -26,6 +26,7 @@ class Manager  {
  	public function __destruct(){
  		if(!($this->conn === null)) $this->conn->close();
 		if($this->logFH){
+			fwrite($this->logFH,"\n\n");
 			fclose($this->logFH);
 		}
 	}
@@ -39,7 +40,7 @@ class Manager  {
 		if($this->verboseMode){
 			if($this->verboseMode == 3 || $this->verboseMode == 1){
 				if($this->logFH){
-					fwrite($this->logFH,$str);
+					fwrite($this->logFH,str_repeat("\t", $indexLevel).strip_tags($str)."\n");
 				}
 			}
 			if($this->verboseMode == 3 || $this->verboseMode == 2){
@@ -50,17 +51,8 @@ class Manager  {
 		}
 	}
 
-    public function checkFieldExists($table, $field){
-        $exists = false;
-        $sql = 'SHOW COLUMNS FROM '.$table.' WHERE field = "'.$field.'"';
-        //echo "<div>SQL: ".$sql."</div>";
-        $result = $this->conn->query($sql);
-        if($result->num_rows) $exists = true;
-        return $exists;
-    }
-
 	public function setVerboseMode($c){
-		$this->verboseMode = $c;
+		if(is_numeric($c)) $this->verboseMode = $c;
 	}
 
 	public function getVerboseMode(){
@@ -73,6 +65,14 @@ class Manager  {
 
    public function getWarningArr(){
 		return $this->warningArr;
+	}
+
+	protected function getDomainPath(){
+		$urlDomain = "http://";
+		if((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443) $urlDomain = "https://";
+		$urlDomain .= $_SERVER["SERVER_NAME"];
+		if($_SERVER["SERVER_PORT"] && $_SERVER["SERVER_PORT"] != 80 && $_SERVER['SERVER_PORT'] != 443) $urlDomain .= ':'.$_SERVER["SERVER_PORT"];
+		return $urlDomain;
 	}
 
 	protected function cleanOutStr($str){
@@ -102,10 +102,6 @@ class Manager  {
 		$retStr = '';
 		if($inStr){
 			$retStr = $inStr;
-			//Get rid of Windows curly (smart) quotes
-			$search = array(chr(145),chr(146),chr(147),chr(148),chr(149),chr(150),chr(151));
-			$replace = array("'","'",'"','"','*','-','-');
-			$inStr= str_replace($search, $replace, $inStr);
 			//Get rid of UTF-8 curly smart quotes and dashes
 			$badwordchars=array("\xe2\x80\x98", // left single quote
 								"\xe2\x80\x99", // right single quote

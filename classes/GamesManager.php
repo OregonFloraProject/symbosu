@@ -1,24 +1,23 @@
 <?php
-include_once($SERVER_ROOT.'/config/dbconnection.php');
+include_once($SERVER_ROOT.'/classes/Manager.php');
 
-class GamesManager {
+class GamesManager extends Manager{
 
-	private $conn;
 	private $clid;
 	private $clidStr;
 	private $dynClid;
 	private $taxonFilter;
 	private $showCommon = 0;
-	private $lang;
+	private $langId;
 
 	public function __construct(){
-		$this->conn = MySQLiConnectionFactory::getCon("readonly");
+		parent::__construct();
 	}
 
 	public function __destruct(){
-		if(!($this->conn === null)) $this->conn->close();
+		parent::__destruct();
 	}
-	
+
 	public function getChecklistArr($projId = 0){
 		$retArr = Array();
 		$sql = 'SELECT DISTINCT c.clid, c.name '.
@@ -39,7 +38,7 @@ class GamesManager {
 		return $retArr;
 	}
 
-	//Organism of the day game 
+	//Organism of the day game
 	public function setOOTD($oodID,$clid){
 		global $SERVER_ROOT;
 		//Sanitation: $clid variable cound be a single checklist or a collection of clid separated by commas
@@ -47,18 +46,14 @@ class GamesManager {
 		if(is_numeric($oodID)){
 			$currentDate = date("Y-m-d");
 			$replace = 0;
+			$oldArr = array();
 			if(file_exists($SERVER_ROOT.'/temp/ootd/'.$oodID.'_info.json')){
 				$oldArr = json_decode(file_get_contents($SERVER_ROOT.'/temp/ootd/'.$oodID.'_info.json'), true);
 				$lastDate = $oldArr['lastDate'];
 				$lastCLID = $oldArr['clid'];
-				if(($currentDate > $lastDate) || ($clid != $lastCLID)){
-					$replace = 1;
-				}
+				if(($currentDate > $lastDate) || ($clid && $clid != $lastCLID)) $replace = 1;
 			}
-			else{
-				$replace = 1;
-			}
-			
+			else $replace = 1;
 			if($replace == 1){
 				//Delete old files
 				$previous = Array();
@@ -69,33 +64,30 @@ class GamesManager {
 				if(file_exists($SERVER_ROOT.'/temp/ootd/'.$oodID.'_info.json')){
 					unlink($SERVER_ROOT.'/temp/ootd/'.$oodID.'_info.json');
 				}
-				if(file_exists($SERVER_ROOT.'/temp/ootd/'.$oodID.'_organism300_1.jpg')){
-					unlink($SERVER_ROOT.'/temp/ootd/'.$oodID.'_organism300_1.jpg');
+				if($oldArr){
+					foreach($oldArr['images'] as $imgUrl){
+						$fileUrl = $SERVER_ROOT.substr($imgUrl,strlen($GLOBALS['CLIENT_ROOT']));
+						if(file_exists($fileUrl)) unlink($fileUrl);
+					}
 				}
-				if(file_exists($SERVER_ROOT.'/temp/ootd/'.$oodID.'_organism300_2.jpg')){
-					unlink($SERVER_ROOT.'/temp/ootd/'.$oodID.'_organism300_2.jpg');
-				}
-				if(file_exists($SERVER_ROOT.'/temp/ootd/'.$oodID.'_organism300_3.jpg')){
-					unlink($SERVER_ROOT.'/temp/ootd/'.$oodID.'_organism300_3.jpg');
-				}
-				if(file_exists($SERVER_ROOT.'/temp/ootd/'.$oodID.'_organism300_4.jpg')){
-					unlink($SERVER_ROOT.'/temp/ootd/'.$oodID.'_organism300_4.jpg');
-				}
-				if(file_exists($SERVER_ROOT.'/temp/ootd/'.$oodID.'_organism300_5.jpg')){
-					unlink($SERVER_ROOT.'/temp/ootd/'.$oodID.'_organism300_5.jpg');
-				}
-				
+
 				//Create new files
 				$ootdInfo = array();
 				$ootdInfo['lastDate'] = $currentDate;
-				
+
 				$tidArr = Array();
-				$sql = 'SELECT l.TID, COUNT(i.imgid) AS cnt '. 
+				$sql = 'SELECT l.TID, COUNT(i.imgid) AS cnt '.
 					'FROM fmchklsttaxalink l INNER JOIN images i ON l.TID = i.tid '.
 					'LEFT JOIN omoccurrences o ON i.occid = o.occid '.
 					'LEFT JOIN omcollections c ON o.collid = c.collid '.
 					'WHERE (l.CLID IN('.$clid.')) AND (i.occid IS NULL OR c.CollType LIKE "%Observations") '.
 					'GROUP BY l.TID';
+				/*
+				$sql = 'SELECT l.TID, COUNT(i.imgid) AS cnt '.
+					'FROM fmchklsttaxalink l INNER JOIN images i ON l.TID = i.tid '.
+					'WHERE (l.CLID IN('.$clid.')) '.
+					'GROUP BY l.TID';
+				*/
 				//echo '<div>'.$sql.'</div>';
 				$rs = $this->conn->query($sql);
 				while($row = $rs->fetch_object()){
@@ -110,9 +102,9 @@ class GamesManager {
 					$previous[] = $randTaxa;
 					//echo $randTaxa.' ';
 					//echo json_encode($previous);
-					
+
 					$ootdInfo['clid'] = $clid;
-					
+
 					$sql2 = 'SELECT t.TID, t.SciName, t.UnitName1, s.family '.
 						'FROM taxa AS t INNER JOIN taxstatus AS s ON t.TID = s.tid '.
 						'WHERE s.taxauthid = 1 AND t.TID = '.$randTaxa.' ';
@@ -125,45 +117,37 @@ class GamesManager {
 						$ootdInfo['family'] = $row->family;
 					}
 					$rs->free();
-					
+
+					$domain = "http://";
+					if((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443) $domain = "https://";
+					$domain .= $_SERVER["HTTP_HOST"];
+					if($_SERVER["SERVER_PORT"] && $_SERVER["SERVER_PORT"] != 80 && $_SERVER['SERVER_PORT'] != 443) $domain .= ':'.$_SERVER["SERVER_PORT"];
+
 					$files = Array();
-					$sql3 = 'SELECT i.url '.
-						'FROM images i '.
-						'WHERE (i.tid = '.$randTaxa.') '.
-						'ORDER BY i.sortsequence ';
+					$sql3 = 'SELECT url FROM images WHERE (tid = '.$randTaxa.' AND url IS NOT NULL AND url != "empty") ORDER BY sortsequence ';
 					//echo '<div>'.$sql.'</div>';
 					$cnt = 1;
 					$repcnt = 1;
 					$rs = $this->conn->query($sql3);
+					$newfileBase = '/temp/ootd/'.$oodID.'_'.time().'_';
 					while(($row = $rs->fetch_object()) && ($cnt < 6)){
 						$file = '';
 						if (substr($row->url, 0, 1) == '/'){
-							//If imageDomain variable is set within symbini file, image  
-							if(isset($GLOBALS['imageDomain']) && $GLOBALS['imageDomain']){
-								$file = $GLOBALS['imageDomain'].$row->url;
-							}
-							else{
-								//Use local domain 
-								$domain = "http://";
-								if((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443) $domain = "https://";
-								$domain .= $_SERVER["HTTP_HOST"];
-								if($_SERVER["SERVER_PORT"] && $_SERVER["SERVER_PORT"] != 80) $domain .= ':'.$_SERVER["SERVER_PORT"];
-								$file = $domain.$row->url;
-							}
+							if(isset($GLOBALS['imageDomain']) && $GLOBALS['imageDomain']) $file = $GLOBALS['imageDomain'].$row->url;
+							else $file = $domain.$row->url;
 						}
 						else{
 							$file = $row->url;
 						}
-						$newfile = $SERVER_ROOT.'/temp/ootd/'.$oodID.'_organism300_'.$cnt.'.jpg';
-						if(fopen($file, "r")){
-							copy($file, $newfile);
-							$files[] = '../../temp/ootd/'.$oodID.'_organism300_'.$cnt.'.jpg';
+						$newfile = $newfileBase.$cnt.'.jpg';
+						if(copy($file, $SERVER_ROOT.$newfile)){
+							$files[] = $GLOBALS['CLIENT_ROOT'].$newfile;
 							$cnt++;
 						}
 					}
 					$rs->free();
 					$ootdInfo['images'] = $files;
-					
+
 					if(array_diff($tidArr,$previous)){
 						$fp = fopen($SERVER_ROOT.'/temp/ootd/'.$oodID.'_previous.json', 'w');
 						fwrite($fp, json_encode($previous));
@@ -174,18 +158,18 @@ class GamesManager {
 					fclose($fp);
 				}
 			}
-			
+
 			$infoArr = json_decode(file_get_contents($SERVER_ROOT.'/temp/ootd/'.$oodID.'_info.json'), true);
 			//echo json_encode($infoArr);
 		}
 		return $infoArr;
 	}
-	
+
 	//Flashcard functions
 	public function getFlashcardImages(){
 		//Get species list
 		$retArr = Array();
-		//Grab a random list of no more than 1000 taxa 
+		//Grab a random list of no more than 1000 taxa
 		$sql = '';
 		if($this->clid){
 			if(!$this->clidStr) $this->setClidStr();
@@ -214,12 +198,12 @@ class GamesManager {
 		if($retArr){
 			$tidStr = implode(',',array_keys($retArr));
 			$tidComplete = array();
-	
+
 			if($this->showCommon){
 				//Grab vernaculars
 				$sqlV = 'SELECT ts.tidaccepted, v.vernacularname '.
 					'FROM taxavernaculars v INNER JOIN taxstatus ts ON v.tid = ts.tid '.
-					'WHERE v.Language = "'.$this->lang.'" AND ts.tidaccepted IN('.$tidStr.') '.
+					'WHERE v.langid = '.$this->langId.' AND ts.tidaccepted IN('.$tidStr.') '.
 					'ORDER BY v.SortSequence';
 				if($rsV = $this->conn->query($sqlV)){
 					while($rV = $rsV->fetch_object()){
@@ -228,7 +212,7 @@ class GamesManager {
 					$rsV->free();
 				}
 			}
-			
+
 			//Grab images, first pass
 			$sqlImg = 'SELECT DISTINCT i.url, ts.tidaccepted FROM images i INNER JOIN taxstatus ts ON i.tid = ts.tid '.
 				'WHERE ts.tidaccepted IN('.$tidStr.') AND i.occid IS NULL '.
@@ -246,11 +230,11 @@ class GamesManager {
 					$retArr[$rImg->tidaccepted]['url'][] = $url;
 				}
 				else{
-					$tidComplete[$rImg->tidaccepted] = $rImg->tidaccepted; 
+					$tidComplete[$rImg->tidaccepted] = $rImg->tidaccepted;
 				}
 			}
 			$rsImg->free();
-			
+
 			//For taxa without 5 images, look for images linked to children taxa
 			if(count($tidComplete) < count($retArr)){
 				$newTidStr = implode(',',array_keys(array_diff_key($retArr,$tidComplete)));
@@ -270,12 +254,12 @@ class GamesManager {
 					}
 				}
 				$rsImg2->free();
-			}		
+			}
 		}
-		
+
 		return $retArr;
 	}
-	
+
 	public function echoFlashcardTaxonFilterList(){
 		$returnArr = Array();
 		if($this->clid || $this->dynClid){
@@ -299,7 +283,7 @@ class GamesManager {
 				$returnArr[] = $row->family;
 			}
 			$rsFamily->free();
-			
+
 			$sqlGenus = '';
 			if($this->clid){
 				$sqlGenus = 'SELECT DISTINCT t.unitname1 '.
@@ -373,12 +357,25 @@ class GamesManager {
 		}while($childStr);
 		$this->clidStr = implode(',',$clidArr);
 	}
-	
+
+	public function getSynonymArr($tid){
+		$retArr = array();
+		if(is_numeric($tid)){
+			$sql = 'SELECT DISTINCT t.sciname FROM taxa t INNER JOIN taxstatus ts ON t.tid = ts.tid INNER JOIN taxstatus ts2 ON ts.tidaccepted = ts2.tidaccepted WHERE ts2.tid = '.$tid;
+			$rs = $this->conn->query($sql);
+			while($r = $rs->fetch_object()){
+				$retArr[] = strtolower($r->sciname);
+			}
+			$rs->free();
+		}
+		return $retArr;
+	}
+
 	//Setters and getters
 	public function getClid(){
 		return $this->clid;
 	}
-	
+
 	public function getDynClid(){
 		return $this->dynClid;
 	}
@@ -406,15 +403,17 @@ class GamesManager {
 	}
 
 	public function setLang($l){
-		$lang = strtolower($l);
-		if(strlen($lang) == 2){
-			if($lang == 'en') $lang = 'english';
-			if($lang == 'es') $lang = 'spanish';
-			if($lang == 'fr') $lang = 'french';
+		if(is_numeric($l)) $this->langId = $l;
+		else{
+			$sql = 'SELECT langid FROM adminlanguages WHERE langname = "'.$this->cleanInStr($l).'" OR iso639_1 = "'.$this->cleanInStr($l).'"';
+			$rs = $this->conn->query($sql);
+			while($r = $rs->fetch_object()){
+				$this->langId = $r->langid;
+			}
+			$rs->free();
 		}
-		$this->lang = $lang;
 	}
-	
+
 	public function getClName(){
 		$retStr = '';
 		if($this->clid || $this->dynClid){
@@ -433,6 +432,6 @@ class GamesManager {
 			$rs->free();
 		}
 		return $retStr;
-	}	
+	}
 }
 ?>

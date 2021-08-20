@@ -1,6 +1,6 @@
 <?php
-include_once($serverRoot.'/config/dbconnection.php');
-include_once($serverRoot.'/classes/UuidFactory.php');
+include_once($SERVER_ROOT.'/config/dbconnection.php');
+include_once($SERVER_ROOT.'/classes/UuidFactory.php');
 
 class OccurrenceSkeletal {
 
@@ -26,7 +26,7 @@ class OccurrenceSkeletal {
 			'VI' => 'Virgin Islands', 'VA' => 'Virginia', 'WA' => 'Washington', 'WV' => 'West Virginia', 'WI' => 'Wisconsin', 'WY' =>  'Wyoming');
 		$this->allowedFields = array('collid'=>'n','catalognumber'=>'s','othercatalognumbers'=>'s','sciname'=>'s','tidinterpreted'=>'s','family'=>'s',
 			'scientificnameauthorship'=>'s','localitysecurity'=>'n','country'=>'s','stateprovince'=>'s','county'=>'s','processingstatus'=>'s',
-			'recordedby'=>'s','recordnumber'=>'s','eventdate'=>'d','language'=>'s');
+			'recordedby'=>'s','recordnumber'=>'s','eventdate'=>'d','labelproject'=>'s','language'=>'s');
 	}
 
 	public function __destruct(){

@@ -1,13 +1,14 @@
 ﻿<?php
 /*
 ------------------
-Language: Español (Spanish)
+Language:  Español (Spanish)
 ------------------
 */
 
 $LANG['NAV_HOME'] = 'Inicio';
 $LANG['CHECKADMIN'] = 'Administraci&oacute;n de Listados de Comprobaci&oacute;n';
 $LANG['RETURNCHECK'] = 'Regresar al Listado de Comprobaci&oacute;n';
+$LANG['ADDIMGVOUCHER'] = 'Agregar Im&aacute;gen Voucher';
 $LANG['EDITSEARCH'] = 'Editar Instrucci&oacute;n de B&uacute;squeda';
 $LANG['COUNTRY'] = 'Pa&iacute;s';
 $LANG['STATE'] = 'Estado';
@@ -22,9 +23,9 @@ $LANG['LATN'] = 'Lat Norte';
 $LANG['LATS'] = 'Lat Sur';
 $LANG['LONGE'] = 'Long Este';
 $LANG['LONGW'] = 'Long Oeste';
-$LANG['INCLUDELATLONG'] = 'Incluir Lat/Long y localidad como una condici&oacute;n "OR"';
 $LANG['ONLYCOORD'] = 'Solamente incluir ocurrencias con coordenadas';
-$LANG['EXCLUDE'] = 'Excluir especies cultivadas';
+$LANG['POLYGON_SEARCH'] = 'B&uacute;squeda basada en el pol&iacute;gono que define los l&iacute;mites de investigaci&oacute;n de la lista de verificaci&oacute;n';
+$LANG['EXCLUDE'] = 'Excluir especies cultivadas/cautivas';
 $LANG['TAXON'] = 'Tax&oacute;n';
 $LANG['SAVESEARCH'] = 'Guardar T&eacute;rminos de B&uacute;squeda';
 $LANG['REMOVESEARCH'] = 'Quitar Declaraci&oacute;n de B&uacute;squeda';
@@ -41,14 +42,17 @@ $LANG['LISTEDBELOW'] = 'A continuaci&oacute;n se enumeran las ocurrencias que pu
 $LANG['CHECKLISTID'] = 'Checklist ID';
 $LANG['ADDNAMECURRTAX'] = ' Agregar nombre utilizando la taxonom&iacute;a actual';
 $LANG['NOVOUCHLOCA'] = 'No se localizaron vouchers';
-$LANG['LISTEDBELOWARESPECINSTRUC'] = 'A continuaci&oacute;n se enumeran las especies de la lista de control que no han sido vinculadas a esp&eacute;cimenes voucher.  Haga clic en el nombre para utilizar la instrucci&oacute;n de b&uacute;squeda de arriba para consultar de forma din&aacute;mica el conjunto de datos de ocurrencia de espec&iacute;menes voucher posibles. Utilice la lista desplegable a la derecha para mostrar los espec&iacute;menes en un formato de tabla.';
+$LANG['LISTEDBELOWARESPECINSTRUC'] = 'A continuaci&oacute;n se enumeran las especies de la lista de control que no han sido vinculadas a esp&eacute;cimenes voucher.
+Haga clic en el nombre para utilizar la instrucci&oacute;n de b&uacute;squeda de arriba para consultar de forma din&aacute;mica el conjunto de datos de ocurrencia de
+espec&iacute;menes voucher posibles. Utilice la lista desplegable a la derecha para mostrar los espec&iacute;menes en un formato de tabla.';
 $LANG['ALLTAXACONTAINVOUCH'] = 'Todos los taxones contienen enlaces a vouchers';
 $LANG['FULLSPECLIST'] = 'Listado de especies completo (CSV)';
 $LANG['FULLPRINT'] = 'Listado de especies completo (Print Friendly)';
-$LANG['FULLSPECLISTVOUCHER'] = 'Listado de especies completo con vouchers (CSV)';
+$LANG['FULLSPECLISTVOUCHER'] = 'Listado de especies completo con vouchers vinculados (CSV)';
+$LANG['FULLPRINTVOUCHER'] = 'Listado de especies completo con vouchers vinculados (Print Friendly)';
+$LANG['VOUCHERONLY'] = 'Vouchers vinculados solomente (DwC-A, CSV, Tab-delimited)';
+$LANG['FULLSPECLISTALLOCCUR'] = 'Listado de especies completo con todos ocurrencias (CSV)';
 $LANG['PENSOFT_XLSX_EXPORT'] = 'Listado de especies en el formato del Pensoft';
-$LANG['VOUCHERONLY'] = 'Vouchers solomente (DwC-A, CSV, Tab-delimited)';
-$LANG['FULLPRINTVOUCHER'] = 'Listado de especies completo con vouchers (Print Friendly)';
 $LANG['SPECMISSINGTITLE'] = 'Posibles adiciones de especies basadas en vales de muestra';
 $LANG['SPECMISSTAXA'] = 'Espec&iacute;menes de taxa faltantes del listado de Comprobaci&oacute;n (CSV)';
 $LANG['SPECMISSPELLED'] = 'Espec&iacute;menes con nombres cient&iacute;ficos mal escritos, ilegales, y problem&aacute;ticos (CSV)';

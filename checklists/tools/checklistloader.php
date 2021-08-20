@@ -2,7 +2,7 @@
 include_once('../../config/symbini.php');
 include_once($SERVER_ROOT.'/classes/ChecklistLoaderManager.php');
 header("Content-Type: text/html; charset=".$CHARSET);
-if(!$SYMB_UID) header('Location: ../../profile/index.php?refurl=../checklists/tools/checklistloader.php?'.$_SERVER['QUERY_STRING']);
+if(!$SYMB_UID) header('Location: ../../profile/index.php?refurl=../checklists/tools/checklistloader.php?'.htmlspecialchars($_SERVER['QUERY_STRING'], ENT_QUOTES));
 
 $clid = array_key_exists("clid",$_REQUEST)?$_REQUEST["clid"]:"";
 $pid = array_key_exists("pid",$_REQUEST)?$_REQUEST["pid"]:"";
@@ -21,8 +21,17 @@ if($IS_ADMIN || (array_key_exists("ClAdmin",$USER_RIGHTS) && in_array($clid,$USE
 <html>
 <head>
 	<title><?php echo $DEFAULT_TITLE; ?> Species Checklist Loader</title>
-	<link href="../../css/base.css?ver=<?php echo $CSS_VERSION; ?>" type="text/css" rel="stylesheet" />
-	<link href="../../css/main.css<?php echo (isset($CSS_VERSION_LOCAL)?'?ver='.$CSS_VERSION_LOCAL:''); ?>" type="text/css" rel="stylesheet" />
+	<?php
+    $activateJQuery = false;
+    if(file_exists($SERVER_ROOT.'/includes/head.php')){
+      include_once($SERVER_ROOT.'/includes/head.php');
+    }
+    else{
+      echo '<link href="'.$CLIENT_ROOT.'/css/jquery-ui.css" type="text/css" rel="stylesheet" />';
+      echo '<link href="'.$CLIENT_ROOT.'/css/base.css?ver=1" type="text/css" rel="stylesheet" />';
+      echo '<link href="'.$CLIENT_ROOT.'/css/main.css?ver=1" type="text/css" rel="stylesheet" />';
+    }
+	?>
 	<script type="text/javascript">
 		function validateUploadForm(thisForm){
 			var testStr = document.getElementById("uploadfile").value;
@@ -47,20 +56,20 @@ if($IS_ADMIN || (array_key_exists("ClAdmin",$USER_RIGHTS) && in_array($clid,$USE
 <body>
 	<?php
 	$displayLeftMenu = true;
-	include($SERVER_ROOT.'/header.php');
+	include($SERVER_ROOT.'/includes/header.php');
 	?>
 	<div class='navpath'>
 		<a href='../../index.php'>Home</a> &gt;&gt;
 		<?php
 		if($pid) echo '<a href="'.$CLIENT_ROOT.'/projects/index.php?pid='.$pid.'">';
-		echo '<a href="../checklist.php?cl='.$clid.'&pid='.$pid.'">Return to Checklist</a> &gt;&gt; ';
+		echo '<a href="../checklist.php?clid='.$clid.'&pid='.$pid.'">Return to Checklist</a> &gt;&gt; ';
 		?>
 		<a href="checklistloader.php?clid=<?php echo $clid.'&pid='.$pid; ?>"><b>Checklists Loader</b></a>
 	</div>
 	<!-- This is inner text! -->
 	<div id="innertext">
 		<h1>
-			<a href="<?php echo $CLIENT_ROOT."/checklists/checklist.php?cl=".$clid.'&pid='.$pid; ?>">
+			<a href="<?php echo $CLIENT_ROOT."/checklists/checklist.php?clid=".$clid.'&pid='.$pid; ?>">
 				<?php echo $clMeta['name']; ?>
 			</a>
 		</h1>
@@ -76,7 +85,7 @@ if($IS_ADMIN || (array_key_exists("ClAdmin",$USER_RIGHTS) && in_array($clid,$USE
 							<li>Loading checklist...</li>
 							<?php
 							$cnt = $clLoaderManager->uploadCsvList($thesId);
-							$statusStr = $clLoaderManager->getErrorStr();
+							$statusStr = $clLoaderManager->getErrorMessage();
 							if(!$cnt && $statusStr){
 								echo '<div style="margin:20px;font-weight:bold;">';
 								echo '<div style="font-size:110%;color:red;">'.$statusStr.'</div>';
@@ -85,13 +94,13 @@ if($IS_ADMIN || (array_key_exists("ClAdmin",$USER_RIGHTS) && in_array($clid,$USE
 								exit;
 							}
 							$probCnt = count($clLoaderManager->getProblemTaxa());
-							$errorArr = $clLoaderManager->getErrorArr();
+							$errorArr = $clLoaderManager->getWarningArr();
 							?>
 							<li>Upload status...</li>
 							<li style="margin-left:10px;">Taxa successfully loaded: <?php echo $cnt; ?></li>
 							<li style="margin-left:10px;">Problematic Taxa: <?php echo $probCnt.($probCnt?' (see below)':''); ?></li>
 							<li style="margin-left:10px;">General errors: <?php echo count($errorArr); ?></li>
-							<li style="margin-left:10px;">Upload Complete! <a href="../checklist.php?cl=<?php echo $clid.'&pid='.$pid; ?>">Proceed to Checklists</a></li>
+							<li style="margin-left:10px;">Upload Complete! <a href="../checklist.php?clid=<?php echo $clid.'&pid='.$pid; ?>">Proceed to Checklists</a></li>
 						</ul>
 						<?php
 						if($probCnt){
@@ -145,16 +154,17 @@ if($IS_ADMIN || (array_key_exists("ClAdmin",$USER_RIGHTS) && in_array($clid,$USE
 
 							</div>
 							<div style="margin-top:10px;">
-								<div>Must be a CSV text file with the first row containing the following columns. Note that Excel spreadsheets can be saved as a CSV file.</div>
+								<div>Input file must be a CSV text file containing the following columns.
+								Column order does not matter, though the first row should contain columns names in accordance with the names in bold listed below.
+								Note that Excel spreadsheets (xlsx) can be saved as a CSV file via the "Save as..." option.</div>
 								<ul>
-									<li>sciname (required)</li>
-									<li>family (optional)</li>
-									<li>habitat (optional)</li>
-									<li>abundance (optional)</li>
-									<li>notes (optional)</li>
-									<li>internalnotes (optional) - displayed only to editors</li>
-									<li>source (optional)</li>
-
+									<li><b>sciname</b> (required)</li>
+									<li><b>family</b> (optional)</li>
+									<li><b>habitat</b> (optional)</li>
+									<li><b>abundance</b> (optional)</li>
+									<li><b>notes</b> (optional)</li>
+									<li><b>internalnotes</b> (optional) - displayed only to editors</li>
+									<li><b>source</b> (optional)</li>
 								</ul>
 							</div>
 							<div style="margin:25px;">
@@ -172,7 +182,7 @@ if($IS_ADMIN || (array_key_exists("ClAdmin",$USER_RIGHTS) && in_array($clid,$USE
 		?>
 	</div>
 	<?php
-		include($SERVER_ROOT.'/footer.php');
+		include($SERVER_ROOT.'/includes/footer.php');
 	?>
 </body>
 </html>

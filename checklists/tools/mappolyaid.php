@@ -1,6 +1,6 @@
 <?php
 include_once('../../config/symbini.php');
-include_once($SERVER_ROOT.'/content/lang/shared/mapaids.'.$LANG_TAG.'.php');
+include_once($SERVER_ROOT.'/content/lang/collections/tools/mapaids.'.$LANG_TAG.'.php');
 include_once($SERVER_ROOT.'/classes/ChecklistAdmin.php');
 header("Content-Type: text/html; charset=".$CHARSET);
 
@@ -9,6 +9,7 @@ $formSubmit = array_key_exists("formsubmit",$_POST)?$_POST["formsubmit"]:0;
 $latDef = array_key_exists("latdef",$_REQUEST)?$_REQUEST["latdef"]:'';
 $lngDef = array_key_exists("lngdef",$_REQUEST)?$_REQUEST["lngdef"]:'';
 $zoom = array_key_exists("zoom",$_REQUEST)&&$_REQUEST["zoom"]?$_REQUEST["zoom"]:5;
+$eMode = array_key_exists("emode",$_REQUEST)?$_REQUEST["emode"]:1;
 
 $clManager = new ChecklistAdmin();
 $clManager->setClid($clid);
@@ -46,7 +47,7 @@ else{
 		<title><?php echo $DEFAULT_TITLE; ?> - Coordinate Aid</title>
 		<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 		<script src="//maps.googleapis.com/maps/api/js?v=3.exp&libraries=drawing<?php echo (isset($GOOGLE_MAP_KEY) && $GOOGLE_MAP_KEY?'&key='.$GOOGLE_MAP_KEY:''); ?>"></script>
-		<script src="<?php echo $CLIENT_ROOT; ?>/js/symb/wktpolygontools.js" type="text/javascript"></script>
+		<script src="<?php echo $CLIENT_ROOT; ?>/js/symb/wktpolygontools.js?ver=1" type="text/javascript"></script>
 		<script type="text/javascript">
 			var map;
 			var selectedShape = null;
@@ -93,7 +94,7 @@ else{
 					polygonOptions: polyOptions
 				});
 
-				drawingManager.setMap(map);
+				drawingManager.setMap(<?php echo ($eMode?'map':'null'); ?>);
 
 				google.maps.event.addListener(drawingManager, 'overlaycomplete', function(e) {
 					if (e.type != google.maps.drawing.OverlayType.MARKER) {
@@ -173,7 +174,7 @@ else{
 						strokeWeight: 0,
 						fillOpacity: 0.45,
 						editable: true,
-						draggable: true,
+						draggable: false,
 						map: map
 					});
 					footPoly.type = 'polygon';
@@ -192,6 +193,11 @@ else{
 				return !isNaN(parseFloat(n)) && isFinite(n);
 			}
 
+			function reformatCoordinates(f){
+				reformCoordinates(f);
+				resetPolygon();
+			}
+
 			function resetPolygon(){
 				if(selectedShape) selectedShape.setMap(null);
 				setPolygon();
@@ -199,10 +205,8 @@ else{
 
 			function setSelection(shape) {
 				selectedShape = shape;
-				selectedShape.setEditable(true);
-				if (shape.type == 'polygon') {
-					setPolygonStr(shape);
-				}
+				selectedShape.setEditable(<?php echo ($eMode?'true':'false'); ?>);
+				if (shape.type == 'polygon') setPolygonStr(shape);
 			}
 
 			function clearSelection() {
@@ -221,8 +225,11 @@ else{
 					var latlngArr = mvcString.split(",");
 					coordinates.push(parseFloat(latlngArr[0]).toFixed(6)+" "+parseFloat(latlngArr[1]).toFixed(6));
 				}
-				if(coordinates[0] != coordinates[i]) coordinates.push(coordinates[0]);
-				document.getElementById("footprintwkt").value = "POLYGON (("+coordinates.toString()+"))";
+				if(coordinates[0] != coordinates[i-1]) coordinates.push(coordinates[0]);
+				var coordStr = coordinates.toString();
+				if(coordStr && coordStr != "" && coordStr != undefined){
+					document.getElementById("footprintwkt").value = "POLYGON (("+coordStr+"))";
+				}
 			}
 
 			function deleteSelectedShape(f) {
@@ -251,12 +258,31 @@ else{
 				}
 				return true;
 			}
+
+			function toggle(target){
+				var ele = document.getElementById(target);
+				if(ele){
+					if(ele.style.display=="none"){
+						ele.style.display="";
+			  		}
+				 	else{
+				 		ele.style.display="none";
+				 	}
+				}
+			}
 		</script>
 	</head>
 	<body style="background-color:#ffffff;" onload="initialize()">
 		<div id='map_canvas' style='width:100%;height:600px;'></div>
 		<div>
 			<div id="reformatdiv" style="display:none;color:red">Polygon has been reformated. The new polygon must be saved before it is usable!</div>
+			<div id="helptext" style="display:none;margin:5px 0px">
+				Click on polygon symbol to activate polygon tool and create a shape representing research area.
+				Click save button to link polygon to checklist.
+				The WKT polygon footprint within the text box can be modifed by hand and rebuilt on map using the Redraw Polygon button.
+				A WKT polygon definition can be copied into text area from another application.
+				Use Switch Coordinate Order button to convert Long-Lat coordinate pairs to Lat-Long format.
+			</div>
 			<form name="polygonSubmitForm" method="post" action="mappolyaid.php" onsubmit="return submitPolygonForm(this)">
 				<div style="float:left">
 					<textarea id="footprintwkt" name="footprintwkt" style="width:650px;height:75px;"><?php echo $clManager->getFootprintWkt(); ?></textarea>
@@ -265,22 +291,19 @@ else{
 					<input name="lngdef" type="hidden" value="<?php echo $lngDef; ?>" />
 					<input name="zoom" type="hidden" value="<?php echo $zoom; ?>" />
 				</div>
-				<div style="float:left">
-					<button type="button" onclick="resetPolygon()">Redraw Polygon</button>
-					<a href="#" onclick="toggle('helptext')"><img alt="Display Help Text" src="../../images/qmark_big.png" style="width:15px;" /></a><br/>
-					<button type="button" onclick="reformCoordinates(this.form);">Reformat Coordinates</button><br/>
-					<button name="formsubmit" type="submit" value="save">Save Polygon</button><br/>
-					<button name="formsubmit" type="submit" value="save" onclick="deleteSelectedShape(this.form)">Delete Selected Shape</button>
-				</div>
-				<div style="clear: both;">
-					<div id="helptext" style="clear:both;display:none;">
-						Click on polygon symbol to activate polygon tool and create a shape representing research area.<br/>
-						Click save button to link polygon to checklist.<br/>
-						The WKT polygon footprint within the text box can be modifed by hand and rebuilt on map using the Redraw Polygon button.<br/>
-						A WKT polygon definition can be copied into text area from another application. <br/>
-						Use Switch Coordinate Order button to convert Long-Lat coordinate pairs to Lat-Long format
+				<?php
+				if($eMode){
+					?>
+					<div style="float:left">
+						<button name="formsubmit" type="submit" value="save">Save Polygon</button>
+						<a href="#" onclick="toggle('helptext')"><img alt="Display Help Text" src="../../images/qmark_big.png" style="width:15px;" /></a><br/>
+						<button name="formsubmit" type="submit" value="save" onclick="deleteSelectedShape(this.form)">Delete Selected Shape</button><br/>
+						<button type="button" onclick="resetPolygon()">Redraw Polygon</button><br/>
+						<button type="button" onclick="reformatCoordinates(this.form);">Reformat Coordinates</button>
 					</div>
-				</div>
+					<?php
+				}
+				?>
 			</form>
 		</div>
 	</body>

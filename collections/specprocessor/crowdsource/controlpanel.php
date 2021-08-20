@@ -1,7 +1,7 @@
 <?php
 include_once('../../../config/symbini.php');
-include_once($serverRoot.'/classes/OccurrenceCrowdSource.php');
-header("Content-Type: text/html; charset=".$charset);
+include_once($SERVER_ROOT.'/classes/OccurrenceCrowdSource.php');
+header("Content-Type: text/html; charset=".$CHARSET);
 
 $collid= array_key_exists('collid',$_REQUEST)?$_REQUEST['collid']:0;
 $omcsid= array_key_exists('omcsid',$_REQUEST)?$_REQUEST['omcsid']:0;
@@ -15,7 +15,7 @@ if($IS_ADMIN){
 	$isEditor = 1;
 }
 elseif($collid){
-	if(array_key_exists("CollAdmin",$userRights) && in_array($collid,$userRights["CollAdmin"])){
+	if(array_key_exists("CollAdmin",$USER_RIGHTS) && in_array($collid,$USER_RIGHTS["CollAdmin"])){
 		$isEditor = 1;
 	}
 }
@@ -58,7 +58,7 @@ $projArr = $csManager->getProjectDetails();
 					<div>
 						<input name="collid" type="hidden" value="<?php echo $collid; ?>" />
 						<input name="omcsid" type="hidden" value="<?php echo $omcsid; ?>" />
-						<input name="tabindex" type="hidden" value="2" />
+						<input name="tabindex" type="hidden" value="1" />
 						<input name="submitaction" type="submit" value="Edit Crowdsource Project" />
 					</div>
 				</form>
@@ -83,7 +83,7 @@ $projArr = $csManager->getProjectDetails();
 							echo '<a href="../editor/occurrencetabledisplay.php?csmode=1&occindex=0&displayquery=1&reset=1&collid='.$collid.'" target="_blank">';
 							echo $unprocessedCnt;
 							echo '</a> ';
-							echo '<a href="index.php?submitaction=delqueue&tabindex=2&collid='.$collid.'&omcsid='.$omcsid.'">';
+							echo '<a href="index.php?submitaction=delqueue&tabindex=1&collid='.$collid.'&omcsid='.$omcsid.'">';
 							echo '<img src="../../images/drop.png" style="width:12px;" title="Delete all unprocessed records from queue" />';
 							echo '</a>';
 						}
@@ -184,7 +184,7 @@ $projArr = $csManager->getProjectDetails();
 										<div>
 											<input name="collid" type="hidden" value="<?php echo $collid; ?>" />
 											<input name="omcsid" type="hidden" value="<?php echo $omcsid; ?>" />
-											<input name="tabindex" type="hidden" value="2" />
+											<input name="tabindex" type="hidden" value="1" />
 											<input name="submitaction" type="submit" value="Add to Queue" />
 										</div>
 									</fieldset>

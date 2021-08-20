@@ -1,6 +1,8 @@
 <?php
 include_once('../config/symbini.php');
-include_once($serverRoot.'/classes/ReferenceManager.php');
+include_once($SERVER_ROOT.'/classes/ReferenceManager.php');
+header("Content-Type: text/html; charset=".$CHARSET);
+if(!$SYMB_UID) header('Location: ../profile/index.php?refurl=../references/index.php?'.htmlspecialchars($_SERVER['QUERY_STRING'], ENT_QUOTES));
 
 $refId = array_key_exists('refid',$_REQUEST)?$_REQUEST['refid']:0;
 $authId = array_key_exists('authid',$_REQUEST)?$_REQUEST['authid']:0;
@@ -11,16 +13,19 @@ $refManager = new ReferenceManager();
 $authArr = '';
 $authExist = false;
 
+$isEditor = false;
+if($IS_ADMIN) $isEditor = true;
+
 $statusStr = '';
-if($formSubmit){
+if($isEditor && $formSubmit){
 	if($formSubmit == 'Add Author'){
 		$refManager->createAuthor($_POST['firstname'],$_POST['middlename'],$_POST['lastname']);
 		$authId = $refManager->getRefAuthId();
 	}
-	if($formSubmit == 'Edit Author'){
+	elseif($formSubmit == 'Edit Author'){
 		$statusStr = $refManager->editAuthor($_POST);
 	}
-	if($formSubmit == 'Delete Author'){
+	elseif($formSubmit == 'Delete Author'){
 		$statusStr = $refManager->deleteAuthor($authId);
 		$authId = 0;
 	}
@@ -41,18 +46,23 @@ if(!$addAuth){
 	}
 }
 
-header("Content-Type: text/html; charset=".$charset);
 ?>
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-   "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE HTML>
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=<?php echo $charset;?>">
-	<title><?php echo $defaultTitle; ?> Author Management</title>
-    <link href="../css/base.css?ver=<?php echo $CSS_VERSION; ?>" rel="stylesheet" type="text/css" />
-    <link href="../css/main.css<?php echo (isset($CSS_VERSION_LOCAL)?'?ver='.$CSS_VERSION_LOCAL:''); ?>" rel="stylesheet" type="text/css" />
-	<link href="../css/jquery-ui.css" rel="stylesheet" type="text/css" />
+    <meta http-equiv="Content-Type" content="text/html; charset=<?php echo $CHARSET;?>">
+	<title><?php echo $DEFAULT_TITLE; ?> Author Management</title>
+	<?php
+	$activateJQuery = true;
+	if(file_exists($SERVER_ROOT.'/includes/head.php')){
+		include_once($SERVER_ROOT.'/includes/head.php');
+	}
+	else{
+		echo '<link href="'.$CLIENT_ROOT.'/css/jquery-ui.css" type="text/css" rel="stylesheet" />';
+		echo '<link href="'.$CLIENT_ROOT.'/css/base.css?ver=1" type="text/css" rel="stylesheet" />';
+		echo '<link href="'.$CLIENT_ROOT.'/css/main.css?ver=1" type="text/css" rel="stylesheet" />';
+	}
+	?>
 	<script type="text/javascript" src="../js/jquery.js"></script>
 	<script type="text/javascript" src="../js/jquery-ui.js"></script>
 	<script type="text/javascript" src="../js/symb/references.index.js"></script>
@@ -64,38 +74,25 @@ header("Content-Type: text/html; charset=".$charset);
 	<?php
 	if(!$addAuth){
 		$displayLeftMenu = (isset($reference_indexMenu)?$reference_indexMenu:false);
-		include($serverRoot."/header.php");
-		if(isset($reference_indexCrumbs)){
-			if($reference_indexCrumbs){
-				?>
-				<div class='navpath'>
-					<a href='../index.php'>Home</a> &gt;&gt; 
-					<?php echo $reference_indexCrumbs; ?>
-					<a href='authoreditor.php'> <b>Author Management</b></a>
-				</div>
-				<?php 
-			}
-		}
-		else{
-			?>
-			<div class='navpath'>
-				<a href='../index.php'>Home</a> &gt;&gt; 
-				<a href='authoreditor.php'> <b>Author Management</b></a>
-			</div>
-			<?php 
-		}
+		include($SERVER_ROOT.'/includes/header.php');
+		?>
+		<div class='navpath'>
+			<a href='../index.php'>Home</a> &gt;&gt;
+			<a href='authoreditor.php'> <b>Author Management</b></a>
+		</div>
+		<?php
 	}
 	?>
 	<!-- This is inner text! -->
 	<div id="innertext">
-		<?php 
-		if($symbUid){
+		<?php
+		if($isEditor){
 			if($statusStr){
 				?>
 				<div style="margin:15px;color:red;">
 					<?php echo $statusStr; ?>
 				</div>
-				<?php 
+				<?php
 			}
 			?>
 			<div id="authlistdiv" style="min-height:200px;">
@@ -161,7 +158,7 @@ header("Content-Type: text/html; charset=".$charset);
 							<li><a href="#authlinksdiv">Publications</a></li>
 							<li><a href="#authadmindiv">Admin</a></li>
 						</ul>
-						
+
 						<div id="authdetaildiv" style="">
 							<div id="authdetails" style="overflow:auto;">
 								<form name="authoreditform" id="authoreditform" action="authoreditor.php" method="post" onsubmit="return verifyNewAuthForm(this.form);">
@@ -187,7 +184,7 @@ header("Content-Type: text/html; charset=".$charset);
 								</form>
 							</div>
 						</div>
-						
+
 						<div id="authlinksdiv" style="">
 							<div style="width:600px;">
 								<?php
@@ -210,12 +207,12 @@ header("Content-Type: text/html; charset=".$charset);
 								?>
 							</div>
 						</div>
-						
+
 						<div id="authadmindiv" style="">
 							<form name="delauthform" action="authoreditor.php" method="post" onsubmit="return confirm('Are you sure you want to permanently delete this author?')">
 								<fieldset style="width:350px;margin:20px;padding:20px;">
 									<legend><b>Delete Author</b></legend>
-									<?php 
+									<?php
 									if($authPubArr){
 										echo '<div style="font-weight:bold;margin-bottom:15px;">';
 										echo 'Author cannot be deleted until all linked publications are removed';
@@ -232,21 +229,16 @@ header("Content-Type: text/html; charset=".$charset);
 				}
 				?>
 			</div>
-			<?php 
+			<?php
 		}
 		else{
-			if(!$symbUid){
-				echo 'Please <a href="../profile/index.php?refurl=../references/authoreditor.php">login</a>';
-			}
-			else{
-				echo '<h2>ERROR: unknown error, please contact system administrator</h2>';
-			}
+			echo '<h2>ERROR: please contact system administrator</h2>';
 		}
 		?>
 	</div>
 	<?php
 	if(!$addAuth){
-		include($serverRoot."/footer.php");
+		include($SERVER_ROOT.'/includes/footer.php');
 	}
 	?>
 </body>

@@ -1,35 +1,36 @@
 <?php
 include_once('../../config/symbini.php');
+include_once($SERVER_ROOT.'/classes/DwcArchiverCore.php');
 header("Content-Type: text/html; charset=".$CHARSET);
 
-$downloadType = array_key_exists("dltype",$_REQUEST)?$_REQUEST["dltype"]:"specimen"; 
-$taxonFilterCode = array_key_exists("taxonFilterCode",$_REQUEST)?$_REQUEST["taxonFilterCode"]:0; 
-$stArrCollJson = array_key_exists("jsoncollstarr",$_REQUEST)?$_REQUEST["jsoncollstarr"]:'';
-$stArrSearchJson = array_key_exists("starr",$_REQUEST)?$_REQUEST["starr"]:'';
+$sourcePage = array_key_exists("sourcepage",$_REQUEST)?$_REQUEST["sourcepage"]:"specimen";
+$downloadType = array_key_exists("dltype",$_REQUEST)?$_REQUEST["dltype"]:"specimen";
+$taxonFilterCode = array_key_exists("taxonFilterCode",$_REQUEST)?$_REQUEST["taxonFilterCode"]:0;
+$displayHeader = array_key_exists("displayheader",$_REQUEST)?$_REQUEST["displayheader"]:0;
+$searchVar = array_key_exists("searchvar",$_REQUEST)?$_REQUEST['searchvar']:'';
+
+$dwcManager = new DwcArchiverCore();
 ?>
 <html>
 <head>
 	<title>Collections Search Download</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=<?php echo $CHARSET; ?>"/>
-	<link href="../../css/base.css?ver=<?php echo $CSS_VERSION; ?>" type="text/css" rel="stylesheet" />
-	<link href="../../css/main.css<?php echo (isset($CSS_VERSION_LOCAL)?'?ver='.$CSS_VERSION_LOCAL:''); ?>" type="text/css" rel="stylesheet" />
-	<link href="../../css/jquery-ui.css" type="text/css" rel="stylesheet" />
+	<?php
+	$activateJQuery = true;
+	if(file_exists($SERVER_ROOT.'/includes/head.php')){
+		include_once($SERVER_ROOT.'/includes/head.php');
+	}
+	else{
+		echo '<link href="'.$CLIENT_ROOT.'/css/jquery-ui.css" type="text/css" rel="stylesheet" />';
+		echo '<link href="'.$CLIENT_ROOT.'/css/base.css?ver=1" type="text/css" rel="stylesheet" />';
+		echo '<link href="'.$CLIENT_ROOT.'/css/main.css?ver=1" type="text/css" rel="stylesheet" />';
+	}
+	include_once($SERVER_ROOT.'/includes/googleanalytics.php');
+	?>
 	<script src="../../js/jquery.js" type="text/javascript"></script>
 	<script src="../../js/jquery-ui.js" type="text/javascript"></script>
 	<script>
 		$(document).ready(function() {
-			var crumbs = document.getElementsByClassName('navpath')[0].getElementsByTagName('a');
-			for(var i = 0; i < crumbs.length; i++){
-				if (crumbs[i].getAttribute("href") == "../list.php"){
-					crumbs[i].setAttribute('href','../list.php?starr=<?php echo $stArrSearchJson; ?>&jsoncollstarr=<?php echo $stArrCollJson; ?>');
-				}
-				if (crumbs[i].getAttribute("href") == "../harvestparams.php"){
-					crumbs[i].setAttribute('href','../harvestparams.php?starr=<?php echo $stArrSearchJson; ?>&jsoncollstarr=<?php echo $stArrCollJson; ?>');
-				}
-			}
-		});
-		
-		$(function() {
 			var dialogArr = new Array("schemanative","schemadwc");
 			var dialogStr = "";
 			for(i=0;i<dialogArr.length;i++){
@@ -39,12 +40,21 @@ $stArrSearchJson = array_key_exists("starr",$_REQUEST)?$_REQUEST["starr"]:'';
 					modal: true,
 					position: { my: "left top", at: "center", of: "#"+dialogStr }
 				});
-	
+
 				$( "#"+dialogStr ).click(function() {
 					$( "#"+this.id+"dialog" ).dialog( "open" );
 				});
 			}
-	
+
+			<?php
+			if(!$searchVar){
+				?>
+				if(sessionStorage.querystr){
+					window.location = "index.php?"+sessionStorage.querystr;
+				}
+				<?php
+			}
+			?>
 		});
 
 		function extensionSelected(obj){
@@ -57,189 +67,145 @@ $stArrSearchJson = array_key_exists("starr",$_REQUEST)?$_REQUEST["starr"]:'';
 			if(obj.checked == false){
 				obj.form.images.checked = false;
 				obj.form.identifications.checked = false;
+				obj.form.attributes.checked = false;
 			}
 		}
-		
+
 		function validateDownloadForm(f){
+			workingcircle
+			document.getElementById("workingcircle").style.display = "inline";
 			return true;
 		}
-	</script>
-</head>
-<body>
-<?php
-	$displayLeftMenu = (isset($collections_download_downloadMenu)?$collections_download_downloadMenu:false);
-	include($SERVER_ROOT.'/header.php');
-	if(isset($collections_download_downloadCrumbs)){
-		if($collections_download_downloadCrumbs){
-			?>
-			<div class='navpath'>
-				<?php echo $collections_download_downloadCrumbs; ?>
-				<b>Specimen Download</b>
-			</div>
-			<?php 
+
+		function closePage(timeToClose){
+			setTimeout(function () {
+				window.close();
+			}, timeToClose);
 		}
-	}
-	else{
+	</script>
+	<style>
+		fieldset{ margin:10px; padding:10px }
+		legend{ font-weight:bold }
+		.sectionDiv{ clear:both; margin:20px; overflow:auto; }
+		.labelDiv{ float:left; font-weight:bold; width:200px }
+		.formElemDiv{ float:left }
+	</style>
+</head>
+<body style="width:700px;min-width:700px;background-color:#ffffff">
+	<?php
+	if($displayHeader){
+		$displayLeftMenu = (isset($collections_download_downloadMenu)?$collections_download_downloadMenu:false);
+		include($SERVER_ROOT.'/includes/header.php');
 		?>
 		<div class="navpath">
-			<a href="../../index.php">Home</a> &gt; 
-			<a href="../index.php">Collections</a> &gt; 
-			<a href="../harvestparams.php">Search Criteria</a> &gt; 
-			<a href="../list.php">Specimen Records</a> &gt;
-			<b>Specimen Download</b>
+			<a href="../../index.php">Home</a> &gt;&gt;
+			<a href="#" onclick="closePage(0)">Return to Search Page</a> &gt;&gt;
+			<b>Occurrence Record Download</b>
 		</div>
-		<?php 
+		<?php
 	}
 	?>
-
-	<div id="innertext">
+	<div style="width:100%; background-color:white">
 		<h2>Data Usage Guidelines</h2>
-	 	 <div style="margin:15px;">
-	 	 	By downloading data, the user confirms that he/she has read and agrees with the general 
-	 	 	<a href="../../misc/usagepolicy.php#images">data usage terms</a>. 
-	 	 	Note that additional terms of use specific to the individual collections 
-	 	 	may be distributed with the data download. When present, the terms 
-	 	 	supplied by the owning institution should take precedence over the 
-	 	 	general terms posted on the website.
-	 	 </div>
-		<div style='margin:30px;'>
+		<div style="margin:15px 0px;">
+			By downloading data, the user confirms that he/she has read and agrees with the general <a href="../../includes/usagepolicy.php#images">data usage terms</a>.
+			Note that additional terms of use specific to the individual collections may be distributed with the data download. When present, the terms
+			supplied by the owning institution should take precedence over the general terms posted on the website.
+		</div>
+		<div style='margin:30px 15px;'>
 			<form name="downloadform" action="downloadhandler.php" method="post" onsubmit="return validateDownloadForm(this);">
 				<fieldset>
-					<?php 
-					if($downloadType == 'checklist'){
-						echo '<legend><b>Download Checklist</b></legend>';
-					}
-					elseif($downloadType == 'georef'){
-						echo '<legend><b>Download Georeference Data</b></legend>';
-					}
-					else{
-						echo '<legend><b>Download Specimen Records</b></legend>';
-					}
-					if(!$stArrCollJson && !$stArrSearchJson){
-						echo '<div style="color:red;font-weight:bold;">An error occurred in retrieving your search parameters. Please redo the search and navigate back to this page.</div>';
+					<legend>
+						<?php
+						if($downloadType == 'checklist') echo 'Download Checklist';
+						elseif($downloadType == 'georef') echo 'Download Georeference Data';
+						else echo 'Download Specimen Records';
+						?>
+					</legend>
+					<?php
+					if($downloadType == 'specimen'){
+						?>
+						<div class="sectionDiv">
+							<div class="labelDiv">Structure:</div>
+							<div class="formElemDiv">
+								<input type="radio" name="schema" value="symbiota" onclick="georefRadioClicked(this)" CHECKED />
+								Symbiota Native
+								<a id="schemanativeinfo" href="#" onclick="return false" title="More Information">
+									<img src="../../images/info.png" style="width:13px;" />
+								</a><br/>
+								<div id="schemanativeinfodialog">
+									Symbiota native is very similar to Darwin Core except with the addtion of a few fields
+									such as substrate, associated collectors, verbatim description.
+								</div>
+								<input type="radio" name="schema" value="dwc" onclick="georefRadioClicked(this)" />
+								Darwin Core
+								<a id="schemadwcinfo" href="#" target="" title="More Information">
+									<img src="../../images/info.png" style="width:13px;" />
+								</a><br/>
+								<div id="schemadwcinfodialog">
+									Darwin Core (DwC) is a TDWG endorsed exchange standard specifically for biodiversity datasets.
+									For more information on what data fields are included in DwC, visit the
+									<a href="http://rs.tdwg.org/dwc/index.htm"target='_blank'>DwC Quick Reference Guide</a>.
+								</div>
+								*<a href='http://rs.tdwg.org/dwc/index.htm' class='bodylink' target='_blank'>What is Darwin Core?</a>
+							</div>
+						</div>
+						<div class="sectionDiv">
+							<div class="labelDiv">Data Extensions:</div>
+							<div class="formElemDiv">
+								<input type="checkbox" name="identifications" value="1" onchange="extensionSelected(this)" checked /> include Determination History<br/>
+								<input type="checkbox" name="images" value="1" onchange="extensionSelected(this)" checked /> include Image Records<br/>
+								<?php
+								if($dwcManager->hasAttributes()) echo '<input type="checkbox" name="attributes" value="1" onchange="extensionSelected(this)" checked /> include Occurrence Trait Attributes<br/>';
+								?>
+								*Output must be a compressed archive
+							</div>
+						</div>
+						<?php
 					}
 					?>
-					<table>
-						<?php 
-						if($downloadType == 'specimen'){
-							?>
-							<tr>
-								<td valign="top">
-									<div style="margin:10px;">
-										<b>Structure:</b>
-									</div> 
-								</td>
-								<td>
-									<div style="margin:10px 0px;">
-										<input type="radio" name="schema" value="symbiota" onclick="georefRadioClicked(this)" CHECKED /> 
-										Symbiota Native
-										<a id="schemanativeinfo" href="#" onclick="return false" title="More Information">
-											<img src="../../images/info.png" style="width:13px;" />
-										</a><br/>
-										<div id="schemanativeinfodialog">
-											Symbiota native is very similar to Darwin Core except with the addtion of a few fields
-											such as substrate, associated collectors, verbatim description.
-										</div>
-										<input type="radio" name="schema" value="dwc" onclick="georefRadioClicked(this)" /> 
-										Darwin Core
-										<a id="schemadwcinfo" href="#" target="" title="More Information">
-											<img src="../../images/info.png" style="width:13px;" />
-										</a><br/>
-										<div id="schemadwcinfodialog">
-											Darwin Core (DwC) is a TDWG endorsed exchange standard specifically for biodiversity datasets. 
-											For more information on what data fields are included in DwC, visit the 
-											<a href="http://rs.tdwg.org/dwc/index.htm"target='_blank'>DwC Quick Reference Guide</a>.
-										</div>
-										*<a href='http://rs.tdwg.org/dwc/index.htm' class='bodylink' target='_blank'>What is Darwin Core?</a>
-									</div>
-								</td>
-							</tr>
-							<tr>
-								<td valign="top">
-									<div style="margin:10px;">
-										<b>Data Extensions:</b>
-									</div> 
-								</td>
-								<td>
-									<div style="margin:10px 0px;">
-										<input type="checkbox" name="identifications" value="1" onchange="extensionSelected(this)" checked /> include Determination History<br/>
-										<input type="checkbox" name="images" value="1" onchange="extensionSelected(this)" checked /> include Image Records<br/>
-										<!--  <input type="checkbox" name="attributes" value="1" onchange="extensionSelected(this)" checked /> include Occurrence Trait Attributes (MeasurementOrFact extension)<br/>  -->
-										*Output must be a compressed archive 
-									</div>
-								</td>
-							</tr>
+					<div class="sectionDiv">
+						<div class="labelDiv">File Format:</div>
+						<div class="formElemDiv">
+							<input type="radio" name="format" value="csv" CHECKED /> Comma Delimited (CSV)<br/>
+							<input type="radio" name="format" value="tab" /> Tab Delimited<br/>
+						</div>
+					</div>
+					<div class="sectionDiv">
+						<div class="labelDiv">Character Set:</div>
+						<div class="formElemDiv">
 							<?php
-						} 
+							//$cSet = strtolower($CHARSET);
+							$cSet = 'iso-8859-1';
+							?>
+							<input type="radio" name="cset" value="iso-8859-1" <?php echo ($cSet=='iso-8859-1'?'checked':''); ?> /> ISO-8859-1 (western)<br/>
+							<input type="radio" name="cset" value="utf-8" <?php echo ($cSet=='utf-8'?'checked':''); ?> /> UTF-8 (unicode)
+						</div>
+					</div>
+					<div class="sectionDiv">
+						<div class="labelDiv">Compression:</div>
+						<div class="formElemDiv">
+							<input type="checkbox" name="zip" value="1" onchange="zipSelected(this)" checked />Compressed ZIP file<br/>
+						</div>
+					</div>
+					<div class="sectionDiv">
+						<?php
+						if($downloadType == 'checklist') echo '<input name="schema" type="hidden" value="checklist" />';
+						elseif($downloadType == 'georef') echo '<input name="schema" type="hidden" value="georef" />';
 						?>
-						<tr>
-							<td valign="top">
-								<div style="margin:10px;">
-									<b>File Format:</b>
-								</div> 
-							</td>
-							<td>
-								<div style="margin:10px 0px;">
-									<input type="radio" name="format" value="csv" CHECKED /> Comma Delimited (CSV)<br/>
-									<input type="radio" name="format" value="tab" /> Tab Delimited<br/>
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<td valign="top">
-								<div style="margin:10px;">
-									<b>Character Set:</b>
-								</div> 
-							</td>
-							<td>
-								<div style="margin:10px 0px;">
-									<?php 
-									//$cSet = strtolower($CHARSET);
-									$cSet = 'iso-8859-1';
-									?>
-									<input type="radio" name="cset" value="iso-8859-1" <?php echo ($cSet=='iso-8859-1'?'checked':''); ?> /> ISO-8859-1 (western)<br/>
-									<input type="radio" name="cset" value="utf-8" <?php echo ($cSet=='utf-8'?'checked':''); ?> /> UTF-8 (unicode)
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<td valign="top">
-								<div style="margin:10px;">
-									<b>Compression:</b>
-								</div> 
-							</td>
-							<td>
-								<div style="margin:10px 0px;">
-									<input type="checkbox" name="zip" value="1" onchange="zipSelected(this)" checked />Compressed ZIP file<br/>
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="2">
-								<div style="margin:10px;">
-									<?php 
-									if($downloadType == 'checklist'){
-										echo '<input name="schema" type="hidden" value="checklist" />';
-									}
-									elseif($downloadType == 'georef'){
-										echo '<input name="schema" type="hidden" value="georef" />';
-									}
-									?>
-									<input name="publicsearch" type="hidden" value="1" />
-									<input name="taxonFilterCode" type="hidden" value="<?php echo $taxonFilterCode; ?>" />
-									<input name="jsoncollstarr" type="hidden" value='<?php echo $stArrCollJson; ?>' />
-									<input name="starr" type="hidden" value='<?php echo $stArrSearchJson; ?>' />
-									<input type="submit" name="submitaction" value="Download Data" <?php echo (!$stArrCollJson && !$stArrSearchJson?'disabled ':''); ?>/>
-								</div>
-							</td>
-						</tr>
-					</table>							
+						<input name="publicsearch" type="hidden" value="1" />
+						<input name="taxonFilterCode" type="hidden" value="<?php echo $taxonFilterCode; ?>" />
+						<input name="sourcepage" type="hidden" value="<?php echo $sourcePage; ?>" />
+						<input name="searchvar" type="hidden" value="<?php echo str_replace('"','&quot;',$searchVar); ?>" />
+						<button type="submit" name="submitaction">Download Data</button>
+						<img id="workingcircle" src="../../images/ajax-loader_sm.gif" style="margin-bottom:-4px;width:20px;display:none;" />
+					</div>
 				</fieldset>
 			</form>
 		</div>
 	</div>
-<?php 
-	include($SERVER_ROOT.'/footer.php');
-?>
+	<?php
+	if($displayHeader) include($SERVER_ROOT.'/includes/footer.php');
+	?>
 </body>
 </html>

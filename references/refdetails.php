@@ -1,6 +1,7 @@
 <?php
 include_once('../config/symbini.php');
-include_once($serverRoot.'/classes/ReferenceManager.php');
+include_once($SERVER_ROOT.'/classes/ReferenceManager.php');
+header("Content-Type: text/html; charset=".$CHARSET);
 
 $refId = array_key_exists('refid',$_REQUEST)?$_REQUEST['refid']:0;
 $formSubmit = array_key_exists('formsubmit',$_POST)?$_POST['formsubmit']:'';
@@ -66,18 +67,24 @@ else{
 	header("Location: index.php");
 }
 
-header("Content-Type: text/html; charset=".$charset);
 ?>
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-   "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE HTML>
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=<?php echo $charset;?>">
-	<title><?php echo $defaultTitle; ?> Reference Management</title>
-    <link href="../css/base.css?ver=<?php echo $CSS_VERSION; ?>" rel="stylesheet" type="text/css" />
-    <link href="../css/main.css<?php echo (isset($CSS_VERSION_LOCAL)?'?ver='.$CSS_VERSION_LOCAL:''); ?>" rel="stylesheet" type="text/css" />
-	<link href="../css/jquery-ui.css" rel="stylesheet" type="text/css" />
+    <meta http-equiv="Content-Type" content="text/html; charset=<?php echo $CHARSET;?>">
+	<title><?php echo $DEFAULT_TITLE; ?> Reference Management</title>
+    <?php
+      $activateJQuery = true;
+      if(file_exists($SERVER_ROOT.'/includes/head.php')){
+        include_once($SERVER_ROOT.'/includes/head.php');
+      }
+      else{
+        echo '<link href="'.$CLIENT_ROOT.'/css/jquery-ui.css" type="text/css" rel="stylesheet" />';
+        echo '<link href="'.$CLIENT_ROOT.'/css/base.css?ver=1" type="text/css" rel="stylesheet" />';
+        echo '<link href="'.$CLIENT_ROOT.'/css/main.css?ver=1" type="text/css" rel="stylesheet" />';
+      }
+    ?>
 	<style type="text/css">
 		#tabs a{
 			outline-color: transparent;
@@ -91,7 +98,7 @@ header("Content-Type: text/html; charset=".$charset);
 	<script type="text/javascript">
 		var refid = <?php echo $refId; ?>;
 		var parentChild = false;
-		
+
 		<?php
 		if($parentChild){
 			echo 'parentChild = true;';
@@ -102,37 +109,37 @@ header("Content-Type: text/html; charset=".$charset);
 <body>
 	<?php
 	$displayLeftMenu = (isset($reference_indexMenu)?$reference_indexMenu:false);
-	include($serverRoot."/header.php");
+	include($SERVER_ROOT.'/includes/header.php');
 	if(isset($reference_indexCrumbs)){
 		if($reference_indexCrumbs){
 			?>
 			<div class='navpath'>
-				<a href='../index.php'>Home</a> &gt;&gt; 
+				<a href='../index.php'>Home</a> &gt;&gt;
 				<?php echo $reference_indexCrumbs; ?>
 				<a href='index.php'> <b>Reference Management</b></a>
 			</div>
-			<?php 
+			<?php
 		}
 	}
 	else{
 		?>
 		<div class='navpath'>
-			<a href='../index.php'>Home</a> &gt;&gt; 
+			<a href='../index.php'>Home</a> &gt;&gt;
 			<a href='index.php'> <b>Reference Management</b></a>
 		</div>
-		<?php 
+		<?php
 	}
 	?>
 	<!-- This is inner text! -->
 	<div id="innertext">
-		<?php 
-		if($symbUid){
+		<?php
+		if($SYMB_UID){
 			if($statusStr){
 				?>
 				<div style="margin:15px;color:red;">
 					<?php echo $statusStr; ?>
 				</div>
-				<?php 
+				<?php
 			}
 			?>
 			<div id="tabs" style="margin:0px;">
@@ -141,7 +148,7 @@ header("Content-Type: text/html; charset=".$charset);
 					<li><a href="#reflinksdiv">Links</a></li>
 					<li><a href="#refadmindiv">Admin</a></li>
 				</ul>
-				
+
 				<div id="refdetaildiv" style="">
 					<div style="width:300px;float:right;">
 						<form name='authorform' id='authorform' action='index.php' method='post'>
@@ -175,7 +182,7 @@ header("Content-Type: text/html; charset=".$charset);
 									?>
 								</div>
 							</fieldset>
-						</form>	
+						</form>
 					</div>
 					<div id="refdetails" style="overflow:auto;">
 						<form name="referenceeditform" id="referenceeditform" action="refdetails.php" method="post" onsubmit="return verifyEditRefForm(this.form);">
@@ -188,7 +195,7 @@ header("Content-Type: text/html; charset=".$charset);
 										<select name="ReferenceTypeId" id="ReferenceTypeId" style="width:200px;" onchange="verifyRefTypeChange();">
 											<option value="">Select Reference Type</option>
 											<option value="">-------------------------------</option>
-											<?php 
+											<?php
 											$typeArr = $refManager->getRefTypeArr();
 											foreach($typeArr as $k => $v){
 												echo '<option value="'.$k.'" '.($refArr['ReferenceTypeId']==$k?'SELECTED':'').'>'.$v.'</option>';
@@ -431,20 +438,20 @@ header("Content-Type: text/html; charset=".$charset);
 						</form>
 					</div>
 				</div>
-				
+
 				<div id="reflinksdiv" style="">
 					<div style="width:600px;">
 						<?php
 						if($refChecklistArr || $refCollArr || $refOccArr || $refTaxaArr){
 							echo '<h2>Reference Links:</h2>';
-							
+
 							echo '<b>Checklist links:</b>';
 							echo '<div id="referencechecklistlink">';
 							if($refChecklistArr){
 								echo '<ul>';
 								foreach($refChecklistArr as $k => $v){
 									echo '<li>';
-									echo '<a href="../checklists/checklist.php?cl='.$k.'&pid=1" target="_blank" >';
+									echo '<a href="../checklists/checklist.php?clid='.$k.'&pid=" target="_blank" >';
 									echo $v;
 									echo '</a>';
 									echo '</li>';
@@ -455,7 +462,7 @@ header("Content-Type: text/html; charset=".$charset);
 								echo 'There are no checklists linked with this reference';
 							}
 							echo '</div><br />';
-							
+
 							echo '<b>Collection links:</b>';
 							echo '<div id="referencecollectionlink">';
 							if($refCollArr){
@@ -473,7 +480,7 @@ header("Content-Type: text/html; charset=".$charset);
 								echo 'There are no collections linked with this reference';
 							}
 							echo '</div><br />';
-							
+
 							echo '<b>Occurrence links:</b>';
 							echo '<div id="referenceoccurlink">';
 							if($refOccArr){
@@ -491,7 +498,7 @@ header("Content-Type: text/html; charset=".$charset);
 								echo 'There are no occurrences linked with this reference';
 							}
 							echo '</div><br />';
-							
+
 							echo '<b>Taxa links:</b>';
 							echo '<div id="referencetaxalink">';
 							if($refTaxaArr){
@@ -517,12 +524,12 @@ header("Content-Type: text/html; charset=".$charset);
 						?>
 					</div>
 				</div>
-				
+
 				<div id="refadmindiv" style="">
 					<form name="delrefform" action="index.php" method="post" onsubmit="return confirm('Are you sure you want to permanently delete this reference?')">
 						<fieldset style="width:350px;margin:20px;padding:20px;">
 							<legend><b>Delete Reference</b></legend>
-							<?php 
+							<?php
 							if($refChecklistArr || $refCollArr || $refOccArr || $refTaxaArr){
 								echo '<div style="font-weight:bold;margin-bottom:15px;">';
 								echo 'Reference cannot be deleted until all linked records are removed.';
@@ -540,10 +547,10 @@ header("Content-Type: text/html; charset=".$charset);
 					</form>
 				</div>
 			</div>
-			<?php 
+			<?php
 		}
 		else{
-			if(!$symbUid){
+			if(!$SYMB_UID){
 				echo 'Please <a href="../profile/index.php?refurl=../references/index.php">login</a>';
 			}
 			else{
@@ -553,7 +560,7 @@ header("Content-Type: text/html; charset=".$charset);
 		?>
 	</div>
 	<?php
-	include($serverRoot."/footer.php");
+	include($SERVER_ROOT.'/includes/footer.php');
 	?>
 </body>
 </html>

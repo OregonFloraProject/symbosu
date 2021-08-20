@@ -1,13 +1,13 @@
 <?php
 include_once('../config/symbini.php');
-include_once($serverRoot . '/classes/ImageLibraryManager.php');
-include_once($serverRoot . '/classes/ImageExplorer.php');
-@header("Content-Type: text/html; charset=".$charset);
+include_once($SERVER_ROOT . '/classes/ImageLibraryManager.php');
+include_once($SERVER_ROOT . '/classes/ImageExplorer.php');
+@header("Content-Type: text/html; charset=".$CHARSET);
 
 $collId = array_key_exists("collid",$_REQUEST)?$_REQUEST["collid"]:0;
 $formSubmit = array_key_exists("formsubmit",$_REQUEST)?$_REQUEST["formsubmit"]:"";
 
-$pManager = new ImageLibraryManager();
+$imgManager = new ImageLibraryManager();
 $imageExplorer = new ImageExplorer();
 
 ?>
@@ -65,7 +65,7 @@ our animation centered, and no-repeating */
     <script type="text/javascript">
         <?php
             $pList = array();
-            foreach($pManager->getPhotographerList() as $uid => $pArr){
+            foreach($imgManager->getPhotographerList() as $uid => $pArr){
                 $pList[] = (object)array(
                     'value' => (string)$uid,
                     'label' => $pArr['name']);
@@ -103,7 +103,8 @@ our animation centered, and no-repeating */
             var taxaSuggest = function (searchTerm, callback) {
                 if (searchTerm.length >= 3) {
                     $.get('rpc/gettaxasuggest.php?term=' + searchTerm, function (data, status) {
-                        callback(eval(data));
+                        //callback(eval(data));
+                    	callback(data);
                     });
                 }
             };
