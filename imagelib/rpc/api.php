@@ -2,7 +2,8 @@
 
 include_once("../../config/symbini.php");
 include_once($SERVER_ROOT.'/classes/ImageDetailManager.php');
-include_once($SERVER_ROOT . '/classes/ImageExplorer.php');
+include_once($SERVER_ROOT.'/classes/ImageExplorer.php');
+include_once($SERVER_ROOT.'/classes/Functional.php');
 
 #returns metadata for one image
 function get_image($imgId) {
@@ -19,9 +20,9 @@ function get_image($imgId) {
 #returns images for one taxa
 function get_taxa_images($tid) {
 	$imageExplorer = new ImageExplorer();
-	$searchCriteria['taxa'] = intval($tid);
-	$res = $imageExplorer->getImages(json_encode($searchCriteria));
-	
+	$searchCriteria['taxa'] = array(intval($tid));
+	$res = $imageExplorer->getImages($searchCriteria);
+	return $res;
 }
 
 $result = [];

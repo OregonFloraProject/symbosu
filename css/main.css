@@ -2071,7 +2071,7 @@ input[type="reset"],
 input[type="submit"]{
 	display: inline-block;
 	background: #4E1E97;
-	color: #ffffff !important;
+	color: #ffffff;
 	padding: 5px 8px;
 	margin-top: 5px;
 }

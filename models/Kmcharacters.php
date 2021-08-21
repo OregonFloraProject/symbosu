@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Kmcharacters
  *
- * @ORM\Table(name="kmcharacters", indexes={@ORM\Index(name="Index_sort", columns={"sortsequence"}), @ORM\Index(name="FK_charheading_idx", columns={"hid"}), @ORM\Index(name="Index_charname", columns={"charname"})})
+ * @ORM\Table(name="kmcharacters", indexes={@ORM\Index(name="Index_sort", columns={"sortsequence"}), @ORM\Index(name="FK_charheading_idx", columns={"hid"}), @ORM\Index(name="FK_kmchar_glossary_idx", columns={"glossid"}), @ORM\Index(name="Index_charname", columns={"charname"})})
  * @ORM\Entity
  */
 class Kmcharacters

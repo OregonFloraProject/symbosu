@@ -553,6 +553,12 @@ const headerContainer = document.getElementById("react-header");
 const dataProps = JSON.parse(headerContainer.getAttribute("data-props"));
 const domContainer = document.getElementById("react-explore-app");
 const queryParams = getUrlQueryParams(window.location.search);
+
+// Use both cl and clid (symbiota-light) to denote the checklist
+if (queryParams.clid) {
+  queryParams.cl = queryParams.clid;
+}
+
 if (queryParams.cl) {
   ReactDOM.render(
     <ExploreApp clid={queryParams.cl } pid={queryParams.pid } showVouchers={ queryParams.showvouchers } clientRoot={ dataProps["clientRoot"] } googleMapKey={ dataProps["googleMapKey"] }/>,

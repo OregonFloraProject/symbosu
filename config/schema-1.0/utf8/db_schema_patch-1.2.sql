@@ -308,6 +308,9 @@ ALTER TABLE `images`
   CHANGE COLUMN `url` `url` VARCHAR(255) NULL DEFAULT NULL;
 
 ALTER TABLE `images` 
+  DROP INDEX `Index_images_datelastmod`;
+
+ALTER TABLE `images` 
   ADD INDEX `Index_images_datelastmod` (`InitialTimeStamp` ASC);
 
 ALTER TABLE `images` 
@@ -510,7 +513,7 @@ DROP TABLE paleochronostratigraphy;
 
 ALTER TABLE `omcollections` 
   ADD COLUMN `dynamicProperties` TEXT NULL AFTER `accessrights`,
-  ADD COLUMN `datasetID` VARCHAR(250) NULL AFTER `collectionId`;
+  #ADD COLUMN `datasetID` VARCHAR(250) NULL AFTER `collectionId`;
 
 ALTER TABLE `omcollections` 
   ADD COLUMN `contactJson` LONGTEXT NULL AFTER `email`;
@@ -837,7 +840,8 @@ UPDATE omoccuredits e INNER JOIN (SELECT initialtimestamp, uid, count(DISTINCT o
 	#Add exportHeader for trait name
 	#Add exportHeader for state name
 
-
+/*
+JGM: Run the first three triggers in misc/build_triggers.sql instead
 
 DELIMITER //
 
@@ -888,3 +892,6 @@ END
 //
 
 DELIMITER ;
+
+*/
+

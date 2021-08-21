@@ -910,6 +910,11 @@ CREATE TABLE `useraccesstokens` (
 );
 
 
+# OK if fails: put at end because may fail due to collid not existing (depending on verion of installation)
+ALTER TABLE `omoccurrencesfulltext` 
+  DROP COLUMN IF EXISTS `collid`,
+  DROP INDEX IF EXISTS `Index_occurfull_collid` ;
+
 
 
 

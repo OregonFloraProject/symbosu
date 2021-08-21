@@ -37,7 +37,7 @@ if($tid){
 										}
 										?>
 										<td align='center' valign='bottom'>
-											<div style='margin:20px 0px 0px 0px;'>
+											<div style='margin:20px 20px 0px 0px;'>
 												<a href="<?php echo $webUrl; ?>" target="_blank">
 													<img width="150" src="<?php echo $tnUrl;?>" />
 												</a>

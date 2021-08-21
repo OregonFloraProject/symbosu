@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Kmcs
  *
- * @ORM\Table(name="kmcs", indexes={@ORM\Index(name="FK_cs_chars", columns={"cid"})})
+ * @ORM\Table(name="kmcs", indexes={@ORM\Index(name="FK_cs_chars", columns={"cid"}), @ORM\Index(name="FK_kmcs_glossid_idx", columns={"glossid"})})
  * @ORM\Entity
  */
 class Kmcs

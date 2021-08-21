@@ -129,6 +129,25 @@ if($isEditor && $action){
 		echo '<link href="'.$CLIENT_ROOT.'/css/main.css?ver=1" type="text/css" rel="stylesheet" />';
 	}
 	?>
+	<style type="text/css">
+		.sectionDiv{ clear:both; }
+		.sectionDiv div{ float:left }
+		.labelDiv{ margin-right: 5px }
+		#redirectedfrom{ font-size:16px; margin-top:5px; margin-left:10px; font-weight:bold; }
+		#taxonDiv{ font-size:18px; margin-top:15px; margin-left:10px; }
+		#taxonDiv a{ color:#990000; font-weight: bold; font-style: italic; }
+		#taxonDiv img{ border: 0px; margin: 0px; height: 15px; }
+		#familyDiv{ margin-left:20px; margin-top:0.25em; }
+		.tox-dialog{ min-height: 400px }
+		input{ margin:3px;}
+		hr{ margin:30px 0px; }
+	</style>
+</head>
+<body>
+	<?php
+	$displayLeftMenu = (isset($taxa_admin_tpeditorMenu)?$taxa_admin_tpeditorMenu:false);
+	include($SERVER_ROOT.'/includes/header.php');
+	?>
 	<script type="text/javascript" src="../../js/symb/shared.js"></script>
 	<script type="text/javascript" src="../../js/jquery.js"></script>
 	<script type="text/javascript" src="../../js/jquery-ui.js"></script>
@@ -166,25 +185,6 @@ if($isEditor && $action){
 		}
 	</script>
 	<script src="../../js/symb/api.taxonomy.taxasuggest.js" type="text/javascript"></script>
-	<style type="text/css">
-		.sectionDiv{ clear:both; }
-		.sectionDiv div{ float:left }
-		.labelDiv{ margin-right: 5px }
-		#redirectedfrom{ font-size:16px; margin-top:5px; margin-left:10px; font-weight:bold; }
-		#taxonDiv{ font-size:18px; margin-top:15px; margin-left:10px; }
-		#taxonDiv a{ color:#990000; font-weight: bold; font-style: italic; }
-		#taxonDiv img{ border: 0px; margin: 0px; height: 15px; }
-		#familyDiv{ margin-left:20px; margin-top:0.25em; }
-		.tox-dialog{ min-height: 400px }
-		input{ margin:3px; border:inset; }
-		hr{ margin:30px 0px; }
-	</style>
-</head>
-<body>
-	<?php
-	$displayLeftMenu = (isset($taxa_admin_tpeditorMenu)?$taxa_admin_tpeditorMenu:false);
-	include($SERVER_ROOT.'/includes/header.php');
-	?>
 	<div class="navpath">
 		<a href="../../index.php">Home</a> &gt;&gt;
 		<?php

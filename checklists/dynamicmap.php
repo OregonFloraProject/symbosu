@@ -6,7 +6,7 @@ header('Content-Type: text/html; charset='.$CHARSET);
 
 $tid = array_key_exists('tid',$_REQUEST)?$_REQUEST['tid']:0;
 $taxa = array_key_exists('taxa',$_REQUEST)?$_REQUEST['taxa']:'';
-$interface = array_key_exists('interface',$_REQUEST)&&$_REQUEST['interface']?$_REQUEST['interface']:'checklist';
+$interface = array_key_exists('interface',$_REQUEST)&&$_REQUEST['interface']?htmlspecialchars($_REQUEST['interface']):'checklist';
 $latCen = array_key_exists('lat',$_REQUEST)?$_REQUEST['lat']:'';
 $longCen = array_key_exists('long',$_REQUEST)?$_REQUEST['long']:'';
 $zoomInt = array_key_exists('zoom',$_REQUEST)?$_REQUEST['zoom']:'';
@@ -38,6 +38,7 @@ if(!$zoomInt){
 <html>
 <head>
 	<title><?php echo $DEFAULT_TITLE.' - '.(isset($LANG['CHECKLIST_GENERATOR'])?$LANG['CHECKLIST_GENERATOR']:'Dynamic Checklist Generator'); ?></title>
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 	<?php
 	$activateJQuery = true;
 	if(file_exists($SERVER_ROOT.'/includes/head.php')){
@@ -49,11 +50,17 @@ if(!$zoomInt){
 		echo '<link href="'.$CLIENT_ROOT.'/css/main.css?ver=1" type="text/css" rel="stylesheet" />';
 	}
 	?>
+</head>
+<body style="background-color:#ffffff;" onload="initialize()">
+	<?php
+	$displayLeftMenu = false;
+	include($SERVER_ROOT.'/header.php');
+	
+  ?>
 	<script src="../js/jquery.js" type="text/javascript"></script>
 	<script src="../js/jquery-ui.js" type="text/javascript"></script>
 	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 	<script src="//maps.googleapis.com/maps/api/js?<?php echo (isset($GOOGLE_MAP_KEY) && $GOOGLE_MAP_KEY?'key='.$GOOGLE_MAP_KEY:''); ?>"></script>
-
 	<script type="text/javascript">
 	    var map;
 	    var currentMarker;
@@ -119,12 +126,9 @@ if(!$zoomInt){
 			alert("<?php echo (isset($LANG['CLICK_MAP'])?$LANG['CLICK_MAP']:'You must first click on map to capture coordinate points'); ?>");
 			return false;
 		}
-	</script>
-</head>
-<body style="background-color:#ffffff;" onload="initialize()">
-	<?php
-		$displayLeftMenu = false;
-		include($SERVER_ROOT.'/includes/header.php');
+  </script>
+
+  <?php
 		if(isset($checklists_dynamicmapCrumbs)){
 			if($checklists_dynamicmapCrumbs){
 				echo "<div class='navpath'>";
@@ -144,51 +148,56 @@ if(!$zoomInt){
 		}
 		?>
 		<div id='innertext'>
-			<div>
-				<?php echo (isset($LANG['CAPTURE_COORDS'])?$LANG['CAPTURE_COORDS']:'Pan, zoom and click on map to capture coordinates, then submit coordinates to build a species list.'); ?>
-				<span id="moredetails" style="cursor:pointer;color:blue;font-size:80%;" onclick="this.style.display='none';document.getElementById('moreinfo').style.display='inline';document.getElementById('lessdetails').style.display='inline';">
+            <div>
+                <h3>An easy-to-use plant identification tool based on the plant features you recognize.
+                <span id="moredetails" style="cursor:pointer;color:blue;font-size:70%;" onclick="this.style.display='none';document.getElementById('moreinfo').style.display='inline';document.getElementById('lessdetails').style.display='inline';">
 					<?php echo (isset($LANG['MORE_DETAILS'])?$LANG['MORE_DETAILS']:'More Details'); ?>
 				</span>
+                </h3>
 				<span id="moreinfo" style="display:none;">
-					<?php echo (isset($LANG['RADIUS_DESCRIPTION'])?$LANG['RADIUS_DESCRIPTION']:'If a radius is defined, species lists are generated using specimen data collected within the defined area.
-					If a radius is not supplied, the area is sampled in concentric rings until the sample size is determined to
-					best represent the local species diversity. In other words, poorly collected areas will have a larger radius sampled.
-					Setting the taxon filter will limit the return to species found within that taxonomic group.');
+					<?php echo (isset($LANG['RADIUS_DESCRIPTION'])?$LANG['RADIUS_DESCRIPTION']:'If a radius is defined, species lists are generated using specimen data collected within the defined area.');
 					?>
 				</span>
-				<span id="lessdetails" style="cursor:pointer;color:blue;font-size:80%;display:none;" onclick="this.style.display='none';document.getElementById('moreinfo').style.display='none';document.getElementById('moredetails').style.display='inline';">
+				<span id="lessdetails" style="cursor:pointer;color:blue;display:none;" onclick="this.style.display='none';document.getElementById('moreinfo').style.display='none';document.getElementById('moredetails').style.display='inline';">
 					<?php echo (isset($LANG['LESS_DETAILS'])?$LANG['LESS_DETAILS']:'Less Details'); ?>
 				</span>
-			</div>
+                <ul>
+                    <li>Begin by marking on the map the approximate location of your unknown plant.</li>
+                    <li>Click &ldquo;Search&rdquo; to create a list of plants that occur in the region of your unknown.</li>
+                    <li>Select any of the recognizable characters to narrow the possibilities.</li>
+                    <li>Open the profile pages of plants in the list and compare to your unknown.</li>
+                </ul>
+            </div>
 			<div style="margin-top:5px;">
 				<form name="mapForm" action="dynamicchecklist.php" method="post" onsubmit="return checkForm();">
-					<div style="float:left;width:300px;">
-						<div>
-							<input type="hidden" name="interface" value="<?php echo $interface; ?>" />
-							<input type="hidden" id="latbox" name="lat" value="" />
-							<input type="hidden" id="lngbox" name="lng" value="" />
-							<button type="submit" name="buildchecklistbutton" value="Build Checklist" disabled ><?php echo (isset($LANG['BUILD_CHECKLIST'])?$LANG['BUILD_CHECKLIST']:'Build Checklist'); ?></button>
-						</div>
-						<div>
-							<b><?php echo (isset($LANG['POINT'])?$LANG['POINT']:'Point (Lat, Long)'); ?>:</b>
-							<span id="latlngspan"> &lt; <?php echo (isset($LANG['CLICK_MAP'])?$LANG['CLICK_MAP']:'Click on map'); ?> &gt; </span>
-						</div>
-					</div>
-					<div style="float:left;">
+					<div style="float:left; margin-bottom: 5px;">
 						<div style="margin-right:35px;">
 							<b><?php echo (isset($LANG['TAXON_FILTER'])?$LANG['TAXON_FILTER']:'Taxon Filter'); ?>:</b>
-							<input id="taxa" name="taxa" type="text" value="<?php echo $taxa; ?>" />
+							<input id="taxa" name="taxa" type="text" placeholder="(optional)" value="<?php echo $taxa; ?>" />
 							<input id="tid" name="tid" type="hidden" value="<?php echo $tid; ?>" />
 						</div>
 						<div>
 							<b><?php echo (isset($LANG['RADIUS'])?$LANG['RADIUS']:'Radius'); ?>:</b>
-							<input name="radius" value="(optional)" type="text" style="width:140px;" onfocus="this.value = ''" />
+							<input name="radius" placeholder="(optional)" type="text" style="width:140px;" onfocus="this.value = ''" />
 							<select name="radiusunits">
 								<option value="km"><?php echo (isset($LANG['KM'])?$LANG['KM']:'Kilometers'); ?></option>
 								<option value="mi"><?php echo (isset($LANG['MILES'])?$LANG['MILES']:'Miles'); ?></option>
 							</select>
 						</div>
 					</div>
+					<div style="float:left;width:300px;">
+						<div>
+							<b><?php echo (isset($LANG['POINT'])?$LANG['POINT']:'Point (Lat, Long)'); ?>:</b>
+							<span id="latlngspan"> &lt; <?php echo (isset($LANG['CLICK_MAP'])?$LANG['CLICK_MAP']:'Click on map'); ?> &gt; </span>
+						</div>
+						<div>
+							<input type="submit" name="buildchecklistbutton" value="<?php echo (isset($LANG['BUILD_CHECKLIST'])?$LANG['BUILD_CHECKLIST']:'Build Checklist'); ?>" disabled class="btn-primary"/>
+							<input type="hidden" name="interface" value="<?php echo $interface; ?>" />
+							<input type="hidden" id="latbox" name="lat" value="" />
+							<input type="hidden" id="lngbox" name="lng" value="" />
+						</div>
+					</div>
+
 				</form>
 			</div>
 			<div id='map_canvas' style='width:95%; height:650px; clear:both;'></div>

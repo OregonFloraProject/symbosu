@@ -48,12 +48,6 @@ if($isEditor){
 		echo '<link href="'.$CLIENT_ROOT.'/css/main.css?ver=1" type="text/css" rel="stylesheet" />';
 	}
 	?>
-	<script type="text/javascript" src="../../js/jquery.js"></script>
-	<script type="text/javascript" src="../../js/jquery-ui.js"></script>
-	<script type="text/javascript">
-		var tabIndex = <?php echo $tabIndex; ?>;
-	</script>
-	<script type="text/javascript" src="../../js/symb/collections.loans.js?ver=1"></script>
 	<style>
 		fieldset{ padding:15px; margin:15px }
 		fieldset legend{ font-weight:bold }
@@ -64,6 +58,12 @@ if($isEditor){
 	$displayLeftMenu = false;
 	include($SERVER_ROOT.'/includes/header.php');
 	?>
+	<script type="text/javascript" src="../../js/jquery.js"></script>
+	<script type="text/javascript" src="../../js/jquery-ui.js"></script>
+	<script type="text/javascript">
+		var tabIndex = <?php echo $tabIndex; ?>;
+	</script>
+	<script type="text/javascript" src="../../js/symb/collections.loans.js?ver=1"></script>
 	<div class="navpath">
 		<a href='../../index.php'>Home</a> &gt;&gt;
 		<a href="../misc/collprofiles.php?collid=<?php echo $collid; ?>&emode=1">Collection Management Menu</a> &gt;&gt;

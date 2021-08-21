@@ -218,7 +218,7 @@ if(isset($_REQUEST['db'])) $imgLibManager->setCollectionVariables($_REQUEST);
 							$startPage = ($pageNumber > 4?$pageNumber - 4:1);
 							$endPage = ($lastPage > $startPage + 9?$startPage + 9:$lastPage);
 							$url = 'search.php?'.$imgLibManager->getQueryTermStr().'&submitaction=search';
-							$pageBar = '<div style="float:left" >';
+							$pageBar = '<div style="float:left" class="pagination" >';
 							if($startPage > 1){
 								$pageBar .= '<span class="pagination" style="margin-right:5px;"><a href="'.$url.'&page=1">First</a></span>';
 								$pageBar .= '<span class="pagination" style="margin-right:5px;"><a href="'.$url.'&page='.(($pageNumber - 10) < 1 ?1:$pageNumber - 10).'">&lt;&lt;</a></span>';

@@ -77,43 +77,6 @@ if($clArray['defaultsettings']){
 		echo '<link href="'.$CLIENT_ROOT.'/css/main.css?ver=1" type="text/css" rel="stylesheet" />';
 	}
 	?>
-	<script type="text/javascript" src="../js/jquery.js"></script>
-	<script type="text/javascript" src="../js/jquery-ui.js"></script>
-	<script type="text/javascript" src="../js/tinymce/tinymce.min.js"></script>
-	<script type="text/javascript">
-		var clid = <?php echo $clid; ?>;
-		var tabIndex = <?php echo $tabIndex; ?>;
-
-		tinymce.init({
-			selector: "textarea",
-			width: "100%",
-			height: 300,
-			menubar: false,
-			plugins: "link,charmap,code,paste",
-			toolbar : "bold italic underline cut copy paste outdent indent undo redo subscript superscript removeformat link charmap code",
-			default_link_target: "_blank",
-			paste_as_text: true
-		});
-
-		function verifyAddUser(f){
-			if(f.editoruid.value == ""){
-				alert("<?php echo isset($LANG['SELECTUSER'])?$LANG['SELECTUSER']:'Select User'; ?>");
-				return false;
-			}
-			return true;
-		}
-
-		function validateAddProjectForm(f){
-			if(f.pid.value == ""){
-				alert("<?php echo isset($LANG['SELECTPROJECT'])?$LANG['SELECTPROJECT']:'Select a project'; ?>");
-				return false;
-			}
-			return true;
-		}
-
-	</script>
-	<script type="text/javascript" src="../js/symb/shared.js"></script>
-	<script type="text/javascript" src="../js/symb/checklists.checklistadmin.js?ver=2"></script>
 	<style type="text/css">
 		.tox-dialog { min-height: 400px }
 		fieldset{ padding:15px; margin:40px 10px; }
@@ -127,14 +90,51 @@ if($clArray['defaultsettings']){
 $displayLeftMenu = false;
 include($SERVER_ROOT.'/includes/header.php');
 ?>
+<script type="text/javascript" src="../js/jquery.js"></script>
+<script type="text/javascript" src="../js/jquery-ui.js"></script>
+<script type="text/javascript" src="../js/tinymce/tinymce.min.js"></script>
+<script type="text/javascript">
+	var clid = <?php echo $clid; ?>;
+	var tabIndex = <?php echo $tabIndex; ?>;
+
+	tinymce.init({
+		selector: "textarea",
+		width: "100%",
+		height: 300,
+		menubar: false,
+		plugins: "link,charmap,code,paste",
+		toolbar : "bold italic underline cut copy paste outdent indent undo redo subscript superscript removeformat link charmap code",
+		default_link_target: "_blank",
+		paste_as_text: true
+	});
+
+	function verifyAddUser(f){
+		if(f.editoruid.value == ""){
+			alert("<?php echo isset($LANG['SELECTUSER'])?$LANG['SELECTUSER']:'Select User'; ?>");
+			return false;
+		}
+		return true;
+	}
+
+	function validateAddProjectForm(f){
+		if(f.pid.value == ""){
+			alert("<?php echo isset($LANG['SELECTPROJECT'])?$LANG['SELECTPROJECT']:'Select a project'; ?>");
+			return false;
+		}
+		return true;
+	}
+
+</script>
+<script type="text/javascript" src="../js/symb/shared.js"></script>
+<script type="text/javascript" src="../js/symb/checklists.checklistadmin.js?ver=2"></script>
 <div class="navpath">
 	<a href="../index.php"><?php echo $LANG['NAV_HOME'];?></a> &gt;&gt;
-	<a href="checklist.php?clid=<?php echo $clid.'&pid='.$pid; ?>"><?php echo $LANG['RETURNCHECK'];?></a> &gt;&gt;
+	<a href="checklist.php?clid=<?php echo $clid.($pid != "" ? '&pid='.$pid : ""); ?>"><?php echo $LANG['RETURNCHECK'];?></a> &gt;&gt;
 	<b><?php echo $LANG['CHECKADMIN']; ?></b>
 </div>
 <div id='innertext'>
 	<div style="color:#990000;font-size:20px;font-weight:bold;margin:0px 10px 10px 0px;">
-		<a href="checklist.php?clid=<?php echo $clid.'&pid='.$pid; ?>">
+		<a href="checklist.php?clid=<?php echo $clid.($pid != "" ? '&pid='.$pid : ""); ?>">
 			<?php echo $clManager->getClName(); ?>
 		</a>
 	</div>

@@ -714,6 +714,11 @@ const dataProps = JSON.parse(headerContainer.getAttribute("data-props"));
 const domContainer = document.getElementById("react-identify-app");
 const queryParams = getUrlQueryParams(window.location.search);
 
+// Use both cl and clid (symbiota-light) to denote the checklist
+if (queryParams.clid) {
+  queryParams.cl = queryParams.clid;
+}
+
 if (queryParams.cl || queryParams.dynclid) {
   ReactDOM.render(
     <IdentifyApp 

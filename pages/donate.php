@@ -44,7 +44,7 @@ header( "Content-Type: text/html; charset=" . $charset );
                         <form class="link-donate" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
                             <input type="hidden" name="cmd" value="_s-xclick">
                             <input type="hidden" name="hosted_button_id" value="ELVFJLHX3T9JU">
-                            <button type="submit" formaction="https://www.paypal.com/cgi-bin/webscr">Will you help us</button>?
+                            <button type="submit" style="background: none;" formaction="https://www.paypal.com/cgi-bin/webscr">Will you help us</button>?
                         </form>
                     </h2>
                     <p>From the windswept marshes feeding the mouth of the Columbia, to the craggy face of Steens Mountain; from the pristine meadows of the Wallowas to the serpentine soils of the Siskiyous, Oregon is home to a fragile and varied trove of plant life.</p>

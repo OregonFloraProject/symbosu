@@ -283,7 +283,7 @@ class TaxonomyDisplayManager extends Manager{
 				echo "<div>".str_repeat('&nbsp;',$indent/5);
 				if($taxonRankId > 139) echo '<a href="../index.php?taxon='.$key.'" target="_blank">'.$sciName.'</a>';
 				else echo $sciName;
-				if($this->isEditor) echo ' <a href="taxoneditor.php?tid='.$key.'" target="_blank"><img src="../../images/edit.png" style="width:11px" /></a>';
+				if($this->isEditor) echo ' <a href="taxoneditor.php?tid='.$key.'" target="_blank"><img src="../../images/edit.png" style="width:11px" /></a> <a href="../profile/tpeditor.php?tid='.$key.'" target="_blank"><img src="../../images/info2.png" style="width:15px" /></a>';
 				if(!$this->displayFullTree){
 					if(($this->targetRankId < 140 && $taxonRankId == 140) || !$this->targetStr && $taxonRankId == 10){
 						echo ' <a href="taxonomydisplay.php?target='.$sciName.'">';

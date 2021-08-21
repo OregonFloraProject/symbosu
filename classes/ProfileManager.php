@@ -1,5 +1,6 @@
 <?php
 include_once($SERVER_ROOT.'/config/dbconnection.php');
+include_once($SERVER_ROOT.'/classes/Manager.php');
 include_once('Person.php');
 include_once('Encryption.php');
 @include_once 'Mail.php';
@@ -810,6 +811,14 @@ class ProfileManager{
 		$PARAMS_ARR = $_SESSION['userparams'];
 		$GLOBALS['USERNAME'] = $this->userName;
 	}
+
+	// Added for compatibility with OregonFlora.org
+    public function setTokenAuthSql(){
+        $this->authSql = 'SELECT u.uid, u.firstname, u.lastname '.
+            'FROM users AS u INNER JOIN userlogin AS ul ON u.uid = ul.uid '.
+            'INNER JOIN useraccesstokens AS ut ON u.uid = ut.uid '.
+            'WHERE (ul.username = "'.$this->userName.'") AND (ut.token = "'.$this->token.'") ';
+    }
 
 	public function setToken($token){
 		$this->token = $token;

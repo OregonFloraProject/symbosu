@@ -24,6 +24,8 @@ $clManager = new ChecklistManager();
 #Settings::loadConfig();
 
 $clValue = array_key_exists("cl",$_REQUEST)?$_REQUEST["cl"]:0; 
+// Use clid instead if it is set (compatibility with symbiota-light)
+$clValue = array_key_exists("clid",$_REQUEST)?$_REQUEST["clid"]:$clValue; 
 $dynClid = array_key_exists("dynclid",$_REQUEST)?$_REQUEST["dynclid"]:0;
 $pageNumber = array_key_exists("pagenumber",$_REQUEST)?$_REQUEST["pagenumber"]:1;
 $pid = array_key_exists("pid",$_REQUEST)?$_REQUEST["pid"]:"";
@@ -43,7 +45,7 @@ $exportEngine = 'Word2007';
 $exportExtension = 'docx';
 
 if($clValue){
-	$statusStr = $clManager->setClValue($clValue);
+	$statusStr = $clManager->setClid($clValue);
 }
 elseif($dynClid){
 	$clManager->setDynClid($dynClid);
@@ -72,12 +74,13 @@ if($searchCommon){
 	$showCommon = 1;
 	$clManager->setSearchCommon();
 }
-if($searchSynonyms) $clManager->setSearchSynonyms();
-if($showAuthors) $clManager->setShowAuthors();
-if($showCommon) $clManager->setShowCommon();
-if($showImages) $clManager->setShowImages();
-if($showVouchers) $clManager->setShowVouchers();
-if($showAlphaTaxa) $clManager->setShowAlphaTaxa();
+
+if($searchSynonyms) $clManager->setSearchSynonyms(true);
+if($showAuthors) $clManager->setShowAuthors(true);
+if($showCommon) $clManager->setShowCommon(true);
+if($showImages) $clManager->setShowImages(true);
+if($showVouchers) $clManager->setShowVouchers(true);
+if($showAlphaTaxa) $clManager->setShowAlphaTaxa(true);
 $clid = $clManager->getClid();
 $pid = $clManager->getPid();
 

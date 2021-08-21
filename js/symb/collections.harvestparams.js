@@ -40,9 +40,10 @@ function checkHarvestParamsForm(frm){
 					alert("Please fill in at least one search parameter!");
 					return false;
 				}
-			} else {
-				alert("Please fill in at least one search parameter!");
-				return false;
+			// JGM: allow for searches without any search parameters
+			//} else {
+			//	alert("Please fill in at least one search parameter!");
+			//	return false;
 			}
 	}
 

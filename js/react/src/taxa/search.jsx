@@ -152,7 +152,6 @@ const queryParams = getUrlQueryParams(window.location.search);
 //let family = TaxaSearchResults.defaultProps.family;
 //let genus = TaxaSearchResults.defaultProps.genus;
 let searchText = TaxaSearchResults.defaultProps.searchText;
-
 if (queryParams.search) {
 	searchText = queryParams.search.trim();
 }/*else if (queryParams.family) {

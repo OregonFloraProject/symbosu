@@ -92,6 +92,12 @@ if($isEditor){
 			echo '<link href="'.$CLIENT_ROOT.'/css/main.css?ver=1" type="text/css" rel="stylesheet" />';
 		}
 		?>
+	</head>
+	<body>
+		<?php
+		$displayLeftMenu = false;
+		include($SERVER_ROOT.'/includes/header.php');
+		?>
 		<script src="../../js/jquery-3.2.1.min.js" type="text/javascript"></script>
 		<script src="../../js/jquery-ui-1.12.1/jquery-ui.min.js" type="text/javascript"></script>
 		<script src="../../js/symb/shared.js?ver=131106" type="text/javascript"></script>
@@ -109,11 +115,7 @@ if($isEditor){
 
 			});
 		</script>
-	</head>
-	<body>
 		<?php
-		$displayLeftMenu = false;
-		include($SERVER_ROOT.'/includes/header.php');
 		if(isset($collections_specprocessor_indexCrumbs)){
 			if($collections_specprocessor_indexCrumbs){
 				echo "<div class='navpath'>";

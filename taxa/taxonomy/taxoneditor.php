@@ -87,6 +87,13 @@ if($isEditor){
 		echo '<link href="'.$CLIENT_ROOT.'/css/main.css?ver=1" type="text/css" rel="stylesheet" />';
 	}
 	?>
+	
+</head>
+<body>
+<?php
+	$displayLeftMenu = (isset($taxa_admin_taxonomyeditorMenu)?$taxa_admin_taxonomyeditorMenu:"true");
+	include($SERVER_ROOT.'/includes/header.php');
+	?>
 	<script src="../../js/jquery-3.2.1.min.js" type="text/javascript"></script>
 	<script src="../../js/jquery-ui-1.12.1/jquery-ui.min.js" type="text/javascript"></script>
 	<script>
@@ -101,11 +108,7 @@ if($isEditor){
 		.tsedit{ float:left; margin-left:5px; }
 		.headingDiv{ font-size:110%;font-weight:bold;font-style:italic }
 	</style>
-</head>
-<body>
-<?php
-	$displayLeftMenu = (isset($taxa_admin_taxonomyeditorMenu)?$taxa_admin_taxonomyeditorMenu:"true");
-	include($SERVER_ROOT.'/includes/header.php');
+	<?php
 	if(isset($taxa_admin_taxonomyeditorCrumbs)){
 		if($taxa_admin_taxonomyeditorCrumbs){
 			echo "<div class='navpath'>";

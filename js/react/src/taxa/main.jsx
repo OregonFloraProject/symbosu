@@ -822,6 +822,12 @@ const headerContainer = document.getElementById("react-header");
 const dataProps = JSON.parse(headerContainer.getAttribute("data-props"));
 const domContainer = document.getElementById("react-taxa-app");
 const queryParams = getUrlQueryParams(window.location.search);
+
+// Use both taxon and tid (symbiota-light) to denote the taxon
+if (queryParams.tid) {
+  queryParams.taxon = queryParams.tid;
+}
+
 if (queryParams.search) {
   window.location = `./search.php?search=${encodeURIComponent(queryParams.search)}`;
 } else if (queryParams.taxon) {

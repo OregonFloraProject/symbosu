@@ -18,7 +18,6 @@ if(!is_numeric($pageNumber)) $pageNumber = 1;
 
 $collManager = new OccurrenceListManager();
 $searchVar = $collManager->getQueryTermStr();
-if($targetTid && array_key_exists('mode', $_REQUEST)) $searchVar .= '&mode=voucher&targettid='.$targetTid;
 $occurArr = $collManager->getSpecimenMap($pageNumber,$cntPerPage);
 ?>
 <html>
@@ -27,10 +26,16 @@ $occurArr = $collManager->getSpecimenMap($pageNumber,$cntPerPage);
 	<title><?php echo $DEFAULT_TITLE.' '.$LANG['PAGE_TITLE']; ?></title>
 	<?php
 	$activateJQuery = true;
-	include_once($SERVER_ROOT.'/includes/head.php');
+	if(file_exists($SERVER_ROOT.'/includes/head.php')){
+		include_once($SERVER_ROOT.'/includes/head.php');
+	}
+	else{
+		echo '<link href="'.$CLIENT_ROOT.'/css/jquery-ui.css" type="text/css" rel="stylesheet" />';
+		echo '<link href="'.$CLIENT_ROOT.'/css/base.css?ver=1" type="text/css" rel="stylesheet" />';
+		echo '<link href="'.$CLIENT_ROOT.'/css/main.css?ver=1" type="text/css" rel="stylesheet" />';
+	}
 	include_once($SERVER_ROOT.'/includes/googleanalytics.php');
 	?>
-	<link href="<?php echo $CSS_BASE_PATH; ?>/collection.css" type="text/css" rel="stylesheet" />
 	<script src="../js/jquery-3.2.1.min.js" type="text/javascript"></script>
 	<script src="../js/jquery-ui-1.12.1/jquery-ui.min.js" type="text/javascript"></script>
 	<script type="text/javascript">
@@ -101,6 +106,10 @@ $occurArr = $collManager->getSpecimenMap($pageNumber,$cntPerPage);
 <?php
 	$displayLeftMenu = (isset($collections_listMenu)?$collections_listMenu:false);
 	include($SERVER_ROOT.'/includes/header.php');
+?>
+	<script type="text/javascript" src="../js/jquery.js?ver=20130917"></script>
+	<script type="text/javascript" src="../js/jquery-ui.js?ver=20130917"></script>
+<?php
 	if(isset($collections_listCrumbs)){
 		if($collections_listCrumbs){
 			echo '<div class="navpath">';
@@ -199,7 +208,7 @@ $occurArr = $collManager->getSpecimenMap($pageNumber,$cntPerPage);
 				</div>
 				<div style="clear:both;"></div>
 				<?php
-				$paginationStr = '<div><div style="clear:both;"><hr/></div><div style="float:left;margin:5px;">';
+				$paginationStr = '<div><div style="clear:both;"><hr/></div><div class="pagination" style="float:left;margin:5px;">';
 				$lastPage = (int)($collManager->getRecordCnt() / $cntPerPage) + 1;
 				$startPage = ($pageNumber > 5?$pageNumber - 5:1);
 				$endPage = ($lastPage > $startPage + 10?$startPage + 10:$lastPage);
@@ -249,11 +258,11 @@ $occurArr = $collManager->getSpecimenMap($pageNumber,$cntPerPage);
 									echo '<a href="misc/collprofiles.php?collid='.$collId.'">'.$fieldArr["collname"].'</a>';
 									echo '</h2><hr /></td></tr>';
 								}
-								echo '<tr><td width="60" valign="top" align="center">';
+								echo '<tr><td width="80" valign="top" align="center">';
 								echo '<a href="misc/collprofiles.php?collid='.$collId.'&acronym='.$fieldArr["instcode"].'">';
 								if($fieldArr["icon"]){
 									$icon = (substr($fieldArr["icon"],0,6)=='images'?'../':'').$fieldArr["icon"];
-									echo '<img align="bottom" src="'.$icon.'" style="width:35px;border:0px;" />';
+									echo '<img align="bottom" src="'.$icon.'" style="width:70px;border:0px;" />';
 								}
 								echo '</a>';
 								echo '<div style="font-weight:bold;font-size:75%;">';
@@ -266,7 +275,7 @@ $occurArr = $collManager->getSpecimenMap($pageNumber,$cntPerPage);
 								if($isEditor || ($SYMB_UID && $SYMB_UID == $fieldArr['obsuid'])){
 									echo '<div style="float:right;" title="'.$LANG['OCCUR_EDIT_TITLE'].'">';
 									echo '<a href="editor/occurrenceeditor.php?occid='.$occid.'" target="_blank">';
-									echo '<img src="../images/edit.png" srcset="../images/edit.svg" style="width:15px;height:15px;" /></a></div>';
+									echo '<img src="../images/edit.png" srcset="../images/edit.svg" style="width:15px;height:15px;border:none;" /></a></div>';
 								}
 								$targetClid = $collManager->getSearchTerm("targetclid");
 								if($collManager->getClName() && $targetTid && array_key_exists('mode', $_REQUEST)){
@@ -277,7 +286,7 @@ $occurArr = $collManager->getSpecimenMap($pageNumber,$cntPerPage);
 								if(isset($fieldArr['img'])){
 									echo '<div style="float:right;margin:5px 25px;">';
 									echo '<a href="#" onclick="return openIndPU('.$occid.','.($targetClid?$targetClid:"0").');">';
-									echo '<img src="'.$fieldArr['img'].'" style="height:70px" /></a></div>';
+									echo '<img src="'.$fieldArr['img'].'" style="height:100px" /></a></div>';
 								}
 								echo '<div style="margin:4px;">';
 								if(isset($fieldArr['sciname'])){

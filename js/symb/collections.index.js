@@ -1,9 +1,12 @@
 //Used in /collections/index.php and /imagelib/index.php
-$('html').hide();
-$(document).ready(function() {
-	$('html').show();
+jQuery(document).ready(function($) {
+	$('html').hide();
+	$(document).ready(function() {
+			$("#tabs").tabs();
+			$('html').show();
+		//document.collections.onkeydown = checkKey;
+	});
 });
-
 function toggle(target){
 	var ele = document.getElementById(target);
 	if(ele){

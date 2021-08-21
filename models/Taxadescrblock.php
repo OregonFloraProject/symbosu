@@ -13,7 +13,8 @@ use Doctrine\ORM\Mapping as ORM;
  																@ORM\UniqueConstraint(name="Index_unique", columns={"tid","displaylevel","language"})
  														}, 
  					indexes={
- 										@ORM\Index(name="FK_taxadesc_lang_idx", columns={"langid"})
+ 										@ORM\Index(name="FK_taxadesc_lang_idx", columns={"langid"}), 
+                    @ORM\Index(name="FK_taxadescrblock_tid_idx", columns={"tid"})
  									}
  	)
  * @ORM\Entity

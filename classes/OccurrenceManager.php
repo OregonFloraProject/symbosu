@@ -15,6 +15,7 @@ class OccurrenceManager extends OccurrenceTaxaManager {
 	protected $searchSupportManager = null;
 	protected $errorMessage;
 
+
 	public function __construct($type='readonly'){
 		parent::__construct($type);
  		if(array_key_exists('reset',$_REQUEST) && $_REQUEST['reset'])  $this->reset();
@@ -41,6 +42,10 @@ class OccurrenceManager extends OccurrenceTaxaManager {
 			if($dbsTemp) $this->searchTermArr["db"] = $dbsTemp;
 			if($clidTemp) $this->searchTermArr["clid"] = $clidTemp;
 		}
+	}
+
+	public function getSearchTerms(){
+		return $this->searchTermArr;
 	}
 
 	public function getSqlWhere(){
@@ -977,6 +982,14 @@ class OccurrenceManager extends OccurrenceTaxaManager {
 	public function getClFootprintWkt(){
 		if(!$this->voucherManager) return false;
 		return $this->voucherManager->getClFootprintWkt();
+	}
+
+	public function setSearchTermsArr($stArr){
+		if($stArr) $this->searchTermArr = $stArr;
+	}
+
+	public function getSearchTermsArr(){
+		return $this->searchTermArr;
 	}
 
 	public function getTaxaArr(){

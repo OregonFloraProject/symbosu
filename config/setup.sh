@@ -13,6 +13,12 @@ echo "Creating footer include: /includes/footer.php"
 cp ../includes/footer_template.php ../includes/footer.php
 echo "Creating head include: /includes/head.php"
 cp ../includes/head_template.php ../includes/head.php
+echo "Creating central CSS: /css/main.css"
+cp ../css/main_template.css ../css/main.css
+echo "Creating CSS for Taxon Profile page: /css/speciesprofile.css"
+cp ../css/speciesprofile_template.css ../css/speciesprofile.css
+echo "Creating default JQuery CSS: /css/jquery-ui.css"
+cp ../css/jquery-ui_template.css ../css/jquery-ui.css
 echo "Creating usage policy include: /includes/usagepolicy.php"
 cp ../includes/usagepolicy_template.php ../includes/usagepolicy.php
 echo "Creating About Project page: /misc/aboutproject.php"
@@ -39,6 +45,7 @@ echo "Adjusting file permissions"
 chmod 777 ../webservices/dwc/rss.xml
 chmod -R 777 ../temp
 chmod -R 777 ../content/collicon
+chmod -R 777 ../content/css
 chmod -R 777 ../content/dwca
 chmod -R 777 ../content/geolocate
 chmod -R 777 ../content/imglib

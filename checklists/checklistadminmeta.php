@@ -336,6 +336,9 @@ if(!$clid){
 					<a href="../checklists/checklistadmin.php?clid=<?php echo $kClid; ?>&emode=1">
 						<img src="../images/edit.png" style="width:15px;border:0px;" title="<?php echo (isset($LANG['EDITCHECKLIST'])?$LANG['EDITCHECKLIST']:'Edit Checklist');?>" />
 					</a>
+					<a href="../checklists/voucheradmin.php?clid=<?php echo $kClid; ?>&emode=1">
+						<img src="../images/link.png" style="width:15px;border:0px;" title="Voucher Admin" />
+					</a>
 				</li>
 				<?php
 			}

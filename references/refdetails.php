@@ -85,6 +85,12 @@ else{
         echo '<link href="'.$CLIENT_ROOT.'/css/main.css?ver=1" type="text/css" rel="stylesheet" />';
       }
     ?>
+</head>
+<body>
+	<?php
+	$displayLeftMenu = (isset($reference_indexMenu)?$reference_indexMenu:false);
+	include($SERVER_ROOT.'/includes/header.php');
+	?>
 	<style type="text/css">
 		#tabs a{
 			outline-color: transparent;
@@ -105,11 +111,7 @@ else{
 		}
 		?>
 	</script>
-</head>
-<body>
 	<?php
-	$displayLeftMenu = (isset($reference_indexMenu)?$reference_indexMenu:false);
-	include($SERVER_ROOT.'/includes/header.php');
 	if(isset($reference_indexCrumbs)){
 		if($reference_indexCrumbs){
 			?>

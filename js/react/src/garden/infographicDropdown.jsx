@@ -60,7 +60,8 @@ class InfographicDropdown extends React.Component {
 							bottom: 0,
 							right: 0,
 							marginRight: "-2.5em",
-							marginBottom: "-3.5em"
+							marginBottom: "-3.5em", 
+							background: "none"
 						}}
 						onClick={ this.onButtonClicked.bind(this) }>
 						<img

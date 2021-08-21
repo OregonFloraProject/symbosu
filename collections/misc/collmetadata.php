@@ -79,6 +79,18 @@ $collManager->cleanOutArr($collData);
 		echo '<link href="'.$CLIENT_ROOT.'/css/main.css?ver=1" type="text/css" rel="stylesheet" />';
 	}
 	?>
+	<style type="text/css">
+		fieldset { background-color: #f9f9f9; padding:15px }
+		legend { font-weight: bold; }
+		.field-block { margin: 5px 0px; }
+		.field-label {  }
+	</style>
+</head>
+<body>
+	<?php
+	$displayLeftMenu = (isset($collections_misc_collmetadataMenu)?$collections_misc_collmetadataMenu:true);
+	include($SERVER_ROOT.'/includes/header.php');
+	?>
 	<script src="../../js/jquery.js" type="text/javascript"></script>
 	<script src="../../js/jquery-ui.js" type="text/javascript"></script>
 	<script src="../../js/symb/common.js" type="text/javascript"></script>
@@ -216,17 +228,7 @@ $collManager->cleanOutArr($collData);
 			}
 		}
 	</script>
-	<style type="text/css">
-		fieldset { background-color: #f9f9f9; padding:15px }
-		legend { font-weight: bold; }
-		.field-block { margin: 5px 0px; }
-		.field-label {  }
-	</style>
-</head>
-<body>
 	<?php
-	$displayLeftMenu = (isset($collections_misc_collmetadataMenu)?$collections_misc_collmetadataMenu:true);
-	include($SERVER_ROOT.'/includes/header.php');
 	echo '<div class="navpath">';
 	echo '<a href="../../index.php">Home</a> &gt;&gt; ';
 	if($collid){

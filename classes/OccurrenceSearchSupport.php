@@ -94,7 +94,7 @@ class OccurrenceSearchSupport {
 		$targetCatID = (string)$targetCatID;
 		if($targetCatID != '') $targetCatArr = explode(',', $targetCatID);
 		elseif($DEFAULTCATID != '') $targetCatArr = explode(',', $DEFAULTCATID);
-		$buttonStr = '<button type="submit" value="search">'.(isset($LANG['BUTTON_NEXT'])?$LANG['BUTTON_NEXT']:'Next &gt;').'</button>';
+		$buttonStr = '<input type="submit" class="nextbtn" value="'.(isset($LANG['BUTTON_NEXT'])?$LANG['BUTTON_NEXT']:'Next &gt;').'"></input>';
 		$collCnt = 0;
 		$borderStyle = ($displayIcons?'margin:10px;padding:10px 20px;border:inset':'margin-left:10px;');
 		echo '<div style="position:relative">';
@@ -182,16 +182,18 @@ class OccurrenceSearchSupport {
 												echo '<input data-role="none" name="db[]" value="'.$collid.'" type="checkbox" class="cat-'.$idStr.'" onclick="unselectCat(\'cat-'.$idStr.'-Input\')" '.($catSelected || !$collSelArr || in_array($collid, $collSelArr)?'checked':'').' />';
 												?>
 											</td>
-											<td>
+											<td style="padding:6px">
 												<div class="collectiontitle">
-													<?php
-													$codeStr = ' ('.$collName2['instcode'];
-													if($collName2['collcode']) $codeStr .= '-'.$collName2['collcode'];
-													$codeStr .= ')';
-													echo '<div class="collectionname">'.$collName2["collname"].'</div><div class="collectioncode">'.$codeStr.'</div>';
-													?>
-													<a href='<?php echo $CLIENT_ROOT; ?>/collections/misc/collprofiles.php?collid=<?php echo $collid; ?>' target="_blank">
-														<?php echo (isset($LANG['MORE_INFO'])?$LANG['MORE_INFO']:'more info...'); ?>
+													<a href = 'misc/collprofiles.php?collid=<?php echo $collid; ?>'>
+														<?php
+														$codeStr = ' ('.$collName2['instcode'];
+														if($collName2['collcode']) $codeStr .= '-'.$collName2['collcode'];
+														$codeStr .= ')';
+														echo $collName2["collname"].$codeStr;
+														?>
+													</a>
+													<a href = 'misc/collprofiles.php?collid=<?php echo $collid; ?>' style='font-size:75%;'>
+														more info
 													</a>
 												</div>
 											</td>
@@ -241,16 +243,18 @@ class OccurrenceSearchSupport {
 							echo '<input data-role="none" name="db[]" value="'.$collid.'" type="checkbox" onclick="uncheckAll()" '.(!$collSelArr || in_array($collid, $collSelArr)?'checked':'').' />';
 							?>
 						</td>
-						<td>
+						<td style="padding:6px">
 							<div class="collectiontitle">
-								<?php
-								$codeStr = '('.$cArr['instcode'];
-								if($cArr['collcode']) $codeStr .= '-'.$cArr['collcode'];
-								$codeStr .= ')';
-								echo '<div class="collectionname">'.$cArr["collname"].'</div> <div class="collectioncode">'.$codeStr.'</div> ';
-								?>
-								<a href = '<?php echo $CLIENT_ROOT; ?>/collections/misc/collprofiles.php?collid=<?php echo $collid; ?>' target="_blank">
-									<?php echo (isset($LANG['MORE_INFO'])?$LANG['MORE_INFO']:'more info...'); ?>
+								<a href = 'misc/collprofiles.php?collid=<?php echo $collid; ?>'>
+									<?php
+									$codeStr = ' ('.$cArr['instcode'];
+									if($cArr['collcode']) $codeStr .= '-'.$cArr['collcode'];
+									$codeStr .= ')';
+									echo $cArr["collname"].$codeStr;
+									?>
+								</a>
+								<a href = 'misc/collprofiles.php?collid=<?php echo $collid; ?>' style='font-size:75%;'>
+									more info
 								</a>
 							</div>
 						</td>

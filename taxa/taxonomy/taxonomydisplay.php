@@ -52,6 +52,12 @@ if($IS_ADMIN || array_key_exists("Taxonomy",$USER_RIGHTS)){
 	}
 	include_once($SERVER_ROOT.'/includes/googleanalytics.php');
 	?>
+</head>
+<body>
+	<?php
+	$displayLeftMenu = (isset($taxa_admin_taxonomydisplayMenu)?$taxa_admin_taxonomydisplayMenu:'false');
+	include($SERVER_ROOT.'/includes/header.php');
+	?>
 	<script type="text/javascript" src="../../js/jquery.js"></script>
 	<script type="text/javascript" src="../../js/jquery-ui.js"></script>
 	<script type="text/javascript">
@@ -69,12 +75,6 @@ if($IS_ADMIN || array_key_exists("Taxonomy",$USER_RIGHTS)){
 			$("#taxMetaDiv").show();
 		}
 	</script>
-</head>
-<body>
-	<?php
-	$displayLeftMenu = (isset($taxa_admin_taxonomydisplayMenu)?$taxa_admin_taxonomydisplayMenu:'false');
-	include($SERVER_ROOT.'/includes/header.php');
-	?>
 	<div class="navpath">
 		<a href="../../index.php">Home</a> &gt;&gt;
 		<a href="taxonomydisplay.php"><b>Taxonomic Tree Viewer</b></a>

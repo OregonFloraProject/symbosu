@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Taxstatus
  *
- * @ORM\Table(name="taxstatus", uniqueConstraints={@ORM\UniqueConstraint(name="PRIMARY", columns={"tid", "tidaccepted", "taxauthid"})}, indexes={@ORM\Index(name="FK_taxstatus_tidacc", columns={"tidaccepted"}), @ORM\Index(name="FK_taxstatus_taid", columns={"taxauthid"}), @ORM\Index(name="Index_ts_family", columns={"family"}), @ORM\Index(name="Index_parenttid", columns={"parenttid"}), @ORM\Index(name="Index_hierarchy", columns={"hierarchystr"})})
+ * @ORM\Table(name="taxstatus", uniqueConstraints={@ORM\UniqueConstraint(name="PRIMARY", columns={"tid", "tidaccepted", "taxauthid"})}, indexes={@ORM\Index(name="FK_taxstatus_tidacc", columns={"tidaccepted"}), @ORM\Index(name="FK_taxstatus_taid", columns={"taxauthid"}), @ORM\Index(name="Index_ts_family", columns={"family"}), @ORM\Index(name="Index_parenttid", columns={"parenttid"})})
  * @ORM\Entity
  */
 class Taxstatus
@@ -43,13 +43,6 @@ class Taxstatus
      * @ORM\Column(name="parenttid", type="integer", nullable=false)
      */
     private $parenttid;
-    
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="hierarchystr", type="string", length=200, nullable=true)
-     */
-    private $hierarchystr;
 
     /**
      * @var string|null
@@ -158,30 +151,6 @@ class Taxstatus
     public function getParenttid()
     {
         return $this->parenttid;
-    }
-
-    /**
-     * Set hierarchystr.
-     *
-     * @param string|null $hierarchystr
-     *
-     * @return Taxavernaculars
-     */
-    public function setHierarchystr($hierarchystr = null)
-    {
-        $this->hierarchystr = $hierarchystr;
-
-        return $this;
-    }
-
-    /**
-     * Get hierarchystr.
-     *
-     * @return string|null
-     */
-    public function getHierarchystr()
-    {
-        return $this->hierarchystr;
     }
         
     /**

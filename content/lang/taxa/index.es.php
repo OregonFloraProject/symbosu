@@ -26,9 +26,12 @@ $LANG['INITIAL_IMAGES'] = 'Im&aacute;genes Iniciales';
 $LANG['VIEW_ALL_IMAGES'] = 'Ver Todas las Im&aacute;genes';
 $LANG['GO_TO_PARENT'] = 'Ir al Tax&oacute;n Superior';
 $LANG['EDIT_TAXON_DATA'] = 'Editar Datos del Tax&oacute;n';
+$LANG['CHECKLIST'] = 'listado';
+$LANG['SPECIES_WITHIN'] = 'Especies con';
 $LANG['PHOTOGRAPHER'] = 'Fot&oacute;grafo';
 $LANG['MAP_NOT_AVAILABLE'] = 'Mapa no<br />Disponible';
 $LANG['WEB_LINKS'] = 'Enlaces Web';
+$LANG['VIEW_PARENT'] = 'Ver tax&oacute;n principal';
 $LANG['NOT_FOUND'] = 'no encontrado';
 $LANG['DID_YOU_MEAN'] = '&#191;Quiso decir?';
 

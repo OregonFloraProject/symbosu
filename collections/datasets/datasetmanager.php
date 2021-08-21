@@ -125,135 +125,6 @@ if($isEditor){
 			echo '<link href="'.$CLIENT_ROOT.'/css/main.css?ver=1" type="text/css" rel="stylesheet" />';
 		}
 		?>
-		<script type="text/javascript" src="../../js/jquery.js"></script>
-		<script type="text/javascript" src="../../js/jquery-ui.js"></script>
-		<script type="text/javascript" src="../../js/symb/shared.js"></script>
-		<script type="text/javascript">
-			var isDownloadAction = false;
-			$(document).ready(function() {
-				var dialogArr = new Array("schemanative","schemadwc");
-				var dialogStr = "";
-				for(i=0;i<dialogArr.length;i++){
-					dialogStr = dialogArr[i]+"info";
-					$( "#"+dialogStr+"dialog" ).dialog({
-						autoOpen: false,
-						modal: true,
-						position: { my: "left top", at: "center", of: "#"+dialogStr }
-					});
-
-					$( "#"+dialogStr ).click(function() {
-						$( "#"+this.id+"dialog" ).dialog( "open" );
-					});
-				}
-
-				$('#tabs').tabs({
-					active: <?php echo $tabIndex; ?>,
-					beforeLoad: function( event, ui ) {
-						$(ui.panel).html("<p>Loading...</p>");
-					}
-				});
-
-				$( "#userinput" ).autocomplete({
-					source: "rpc/getuserlist.php",
-					minLength: 3,
-					autoFocus: true,
-					select: function( event, ui ) {
-						$('#uid-add').val(ui.item.id);
-					}
-				});
-
-			});
-
-			function selectAll(cb){
-				boxesChecked = true;
-				if(!cb.checked){
-					boxesChecked = false;
-				}
-				var dbElements = document.getElementsByName("occid[]");
-				for(i = 0; i < dbElements.length; i++){
-					var dbElement = dbElements[i];
-					dbElement.checked = boxesChecked;
-				}
-			}
-
-			function validateDataSetForm(f){
-				var dbElements = document.getElementsByName("dsids[]");
-				for(i = 0; i < dbElements.length; i++){
-					var dbElement = dbElements[i];
-					if(dbElement.checked) return true;
-				}
-				alert("Please select at least one dataset!");
-
-				var confirmStr = '';
-				if(f.submitaction.value == "Merge"){
-					confirmStr = 'Are you sure you want to merge selected datasets?';
-				}
-				else if(f.submitaction.value == "Clone (make copy)"){
-					confirmStr = 'Are you sure you want to clone selected datasets?';
-				}
-				else if(f.submitaction.value == "Delete"){
-					confirmStr = 'Are you sure you want to delete selected datasets?';
-				}
-				if(confirmStr == '') return true;
-				return confirm(confirmStr);
-			}
-
-			function validateEditForm(f){
-				if(f.name.value == ''){
-					alert("Dataset name cannot be null");
-					return false;
-				}
-				return true;
-			}
-
-			function validateOccurForm(f){
-				var occidChecked = false;
-				var dbElements = document.getElementsByName("occid[]");
-				for(i = 0; i < dbElements.length; i++){
-					var dbElement = dbElements[i];
-					if(dbElement.checked){
-						occidChecked = true;
-						break;
-					}
-				}
-				if(!occidChecked){
-				   	alert("Please select at least one specimen!");
-				   	return false;
-				}
-				if(isDownloadAction){
-					f.action = "../download/index.php";
-					targetDownloadPopup(f);
-				}
-			  	return true;
-			}
-
-			function validateUserAddForm(f){
-				if(f.uid.value == ""){
-					alert("Select a user from the list");
-					return false;
-				}
-				return true;
-			}
-
-			function openIndPopup(occid){
-				openPopup("../individual/index.php?occid="+occid);
-			}
-
-			function openPopup(urlStr){
-				var wWidth = 900;
-				if(document.body.offsetWidth) wWidth = document.body.offsetWidth*0.9;
-				if(wWidth > 1200) wWidth = 1200;
-				newWindow = window.open(urlStr,'popup','scrollbars=1,toolbar=0,resizable=1,width='+(wWidth)+',height=600,left=20,top=20');
-				if (newWindow.opener == null) newWindow.opener = self;
-				newWindow.focus();
-				return false;
-			}
-
-			function targetDownloadPopup(f) {
-				window.open('', 'downloadpopup', 'left=100,top=50,width=900,height=700');
-				f.target = 'downloadpopup';
-			}
-		</script>
 		<style>
 			.section-title{ margin:0px 15px; font-weight:bold; text-decoration:underline; }
 		</style>
@@ -263,6 +134,135 @@ if($isEditor){
 	$displayLeftMenu = (isset($collections_datasets_indexMenu)?$collections_datasets_indexMenu:false);
 	include($SERVER_ROOT.'/includes/header.php');
 	?>
+	<script type="text/javascript" src="../../js/jquery.js"></script>
+	<script type="text/javascript" src="../../js/jquery-ui.js"></script>
+	<script type="text/javascript" src="../../js/symb/shared.js"></script>
+	<script type="text/javascript">
+		var isDownloadAction = false;
+		$(document).ready(function() {
+			var dialogArr = new Array("schemanative","schemadwc");
+			var dialogStr = "";
+			for(i=0;i<dialogArr.length;i++){
+				dialogStr = dialogArr[i]+"info";
+				$( "#"+dialogStr+"dialog" ).dialog({
+					autoOpen: false,
+					modal: true,
+					position: { my: "left top", at: "center", of: "#"+dialogStr }
+				});
+
+				$( "#"+dialogStr ).click(function() {
+					$( "#"+this.id+"dialog" ).dialog( "open" );
+				});
+			}
+
+			$('#tabs').tabs({
+				active: <?php echo $tabIndex; ?>,
+				beforeLoad: function( event, ui ) {
+					$(ui.panel).html("<p>Loading...</p>");
+				}
+			});
+
+			$( "#userinput" ).autocomplete({
+				source: "rpc/getuserlist.php",
+				minLength: 3,
+				autoFocus: true,
+				select: function( event, ui ) {
+					$('#uid-add').val(ui.item.id);
+				}
+			});
+
+		});
+
+		function selectAll(cb){
+			boxesChecked = true;
+			if(!cb.checked){
+				boxesChecked = false;
+			}
+			var dbElements = document.getElementsByName("occid[]");
+			for(i = 0; i < dbElements.length; i++){
+				var dbElement = dbElements[i];
+				dbElement.checked = boxesChecked;
+			}
+		}
+
+		function validateDataSetForm(f){
+			var dbElements = document.getElementsByName("dsids[]");
+			for(i = 0; i < dbElements.length; i++){
+				var dbElement = dbElements[i];
+				if(dbElement.checked) return true;
+			}
+			alert("Please select at least one dataset!");
+
+			var confirmStr = '';
+			if(f.submitaction.value == "Merge"){
+				confirmStr = 'Are you sure you want to merge selected datasets?';
+			}
+			else if(f.submitaction.value == "Clone (make copy)"){
+				confirmStr = 'Are you sure you want to clone selected datasets?';
+			}
+			else if(f.submitaction.value == "Delete"){
+				confirmStr = 'Are you sure you want to delete selected datasets?';
+			}
+			if(confirmStr == '') return true;
+			return confirm(confirmStr);
+		}
+
+		function validateEditForm(f){
+			if(f.name.value == ''){
+				alert("Dataset name cannot be null");
+				return false;
+			}
+			return true;
+		}
+
+		function validateOccurForm(f){
+			var occidChecked = false;
+			var dbElements = document.getElementsByName("occid[]");
+			for(i = 0; i < dbElements.length; i++){
+				var dbElement = dbElements[i];
+				if(dbElement.checked){
+					occidChecked = true;
+					break;
+				}
+			}
+			if(!occidChecked){
+			   	alert("Please select at least one specimen!");
+			   	return false;
+			}
+			if(isDownloadAction){
+				f.action = "../download/index.php";
+				targetDownloadPopup(f);
+			}
+		  	return true;
+		}
+
+		function validateUserAddForm(f){
+			if(f.uid.value == ""){
+				alert("Select a user from the list");
+				return false;
+			}
+			return true;
+		}
+
+		function openIndPopup(occid){
+			openPopup("../individual/index.php?occid="+occid);
+		}
+
+		function openPopup(urlStr){
+			var wWidth = 900;
+			if(document.body.offsetWidth) wWidth = document.body.offsetWidth*0.9;
+			if(wWidth > 1200) wWidth = 1200;
+			newWindow = window.open(urlStr,'popup','scrollbars=1,toolbar=0,resizable=1,width='+(wWidth)+',height=600,left=20,top=20');
+			if (newWindow.opener == null) newWindow.opener = self;
+			newWindow.focus();
+			return false;
+		}
+
+		function targetDownloadPopup(f) {
+			window.open('', 'downloadpopup', 'left=100,top=50,width=900,height=700');
+			f.target = 'downloadpopup';
+		}
+	</script>
 	<div class='navpath'>
 		<a href='../../index.php'>Home</a> &gt;&gt;
 		<a href="../../profile/viewprofile.php?tabindex=1">My Profile</a> &gt;&gt;

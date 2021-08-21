@@ -79,6 +79,14 @@ if(!$cid) header('Location: index.php');
         echo '<link href="'.$CLIENT_ROOT.'/css/main.css?ver=1" type="text/css" rel="stylesheet" />';
       }
 	?>
+	<style type="text/css">
+		fieldset{ margin:15px;padding:15px; }
+	</style>
+</head>
+<body>
+	<?php
+	include($SERVER_ROOT.'/includes/header.php');
+	?>
 	<script type="text/javascript" src="../../js/jquery.js"></script>
 	<script type="text/javascript" src="../../js/jquery-ui.js"></script>
 	<script type="text/javascript" src="../../js/symb/shared.js"></script>
@@ -233,14 +241,6 @@ if(!$cid) header('Location: index.php');
 			if (newWindow.opener == null) newWindow.opener = self;
 		}
 	</script>
-	<style type="text/css">
-		fieldset{ margin:15px;padding:15px; }
-	</style>
-</head>
-<body>
-	<?php
-	include($SERVER_ROOT.'/includes/header.php');
-	?>
 	<div class='navpath'>
 		<a href='../../index.php'>Home</a> &gt;&gt;
 		<a href='index.php'> <b>Character Management</b></a>

@@ -24,6 +24,21 @@ $attribSearch = new OccurrenceAttributeSearch();
 	}
     include_once($SERVER_ROOT.'/includes/googleanalytics.php');
     ?>
+	<style type="text/css">
+		hr{ clear:both; margin: 10px 0px }
+		.catHeaderDiv { font-weight:bold; font-size: 18px }
+		.coordBoxDiv { float:left; border:2px solid brown; padding:10px; margin:5px; white-space: nowrap; }
+		.coordBoxDiv .labelDiv { font-weight:bold;float:left }
+		.coordBoxDiv .iconDiv { float:right;margin-left:5px; }
+		.coordBoxDiv .iconDiv img { width:18px; }
+		.coordBoxDiv .elemDiv { clear:both; }
+	</style>
+</head>
+<body>
+<?php
+	$displayLeftMenu = (isset($collections_harvestparamsMenu)?$collections_harvestparamsMenu:false);
+	include($SERVER_ROOT.'/includes/header.php');
+	?>
 	<script src="../js/jquery-3.2.1.min.js?ver=3" type="text/javascript"></script>
 	<script src="../js/jquery-ui-1.12.1/jquery-ui.min.js?ver=3" type="text/javascript"></script>
 	<script src="../js/symb/collections.harvestparams.js?ver=180721" type="text/javascript"></script>
@@ -41,20 +56,7 @@ $attribSearch = new OccurrenceAttributeSearch();
 		});
 	</script>
 	<script src="../js/symb/api.taxonomy.taxasuggest.js?ver=3" type="text/javascript"></script>
-	<style type="text/css">
-		hr{ clear:both; margin: 10px 0px }
-		.catHeaderDiv { font-weight:bold; font-size: 18px }
-		.coordBoxDiv { float:left; border:2px solid brown; padding:10px; margin:5px; white-space: nowrap; }
-		.coordBoxDiv .labelDiv { font-weight:bold;float:left }
-		.coordBoxDiv .iconDiv { float:right;margin-left:5px; }
-		.coordBoxDiv .iconDiv img { width:18px; }
-		.coordBoxDiv .elemDiv { clear:both; }
-	</style>
-</head>
-<body>
-<?php
-	$displayLeftMenu = (isset($collections_harvestparamsMenu)?$collections_harvestparamsMenu:false);
-	include($SERVER_ROOT.'/includes/header.php');
+	<?php
 	if(isset($collections_harvestparamsCrumbs)){
 		if($collections_harvestparamsCrumbs){
 			echo '<div class="navpath">';
@@ -74,12 +76,14 @@ $attribSearch = new OccurrenceAttributeSearch();
 	}
 	?>
 	<div id="innertext">
+		<h3>Search the digitized collections of the Oregon State University Herbarium</h3>
+        <p>This feature gives access to all the digitized collections housed in the Oregon State University Herbarium at Corvallis, which includes specimens originating at University of Oregon (ORE) and Willamette University (WILLU) as well as Oregon State University (OSC).  Collections represented are the vascular plants, algae, bryophytes, fungi, and lichens.  As part of its work to produce the Flora of Oregon in printed and digital formats, OregonFlora aligns the taxonomy of the Oregon vascular plants presented on this website with the Flora of Oregon's taxonomic framework.</p>
 		<form name="harvestparams" id="harvestparams" action="list.php" method="post" onsubmit="return checkHarvestParamsForm(this)">
 			<hr/>
 			<div>
 				<div style="float:left">
 					<div>
-						<div class="catHeaderDiv"><?php echo $LANG['TAXON_HEADER']; ?></div>
+						<h3><?php echo $LANG['TAXON_HEADER']; ?></h3>
 						<div style="margin:10px 0px 0px 5px;"><input type='checkbox' name='usethes' value='1' CHECKED /><?php echo $LANG['INCLUDE_SYNONYMS']; ?></div>
 					</div>
 					<div>
@@ -97,15 +101,15 @@ $attribSearch = new OccurrenceAttributeSearch();
 						<input id="taxa" type="text" size="60" name="taxa" value="" title="<?php echo $LANG['SEPARATE_MULTIPLE']; ?>" />
 					</div>
 				</div>
-				<div style='float:right;margin:0px 10px;'>
-					<div><button type="submit" style="width:100%"><?php echo isset($LANG['BUTTON_NEXT_LIST'])?$LANG['BUTTON_NEXT_LIST']:'List Display'; ?></button></div>
-					<div><button type="button" style="width:100%" onclick="displayTableView(this.form)"><?php echo isset($LANG['BUTTON_NEXT_TABLE'])?$LANG['BUTTON_NEXT_TABLE']:'Table Display'; ?></button></div>
-					<div><button type="reset" style="width:100%" onclick="resetHarvestParamsForm()"><?php echo isset($LANG['BUTTON_RESET'])?$LANG['BUTTON_RESET']:'Reset Form'; ?></button></div>
+				<div style='float:right;margin:5px 10px;'>
+					<div><input type="submit" class="nextbtn" style="width:100%" value="<?php echo isset($LANG['BUTTON_NEXT_LIST'])?$LANG['BUTTON_NEXT_LIST']:'List Display'; ?>"></input></div>
+					<div><input type="button" class="nextbtn" style="width:100%" onclick="displayTableView(this.form)"value="<?php echo isset($LANG['BUTTON_NEXT_TABLE'])?$LANG['BUTTON_NEXT_TABLE']:'Table Display'; ?>"></input></div>
+					<div><input type="reset" class="nextbtn" style="width:100%" onclick="resetHarvestParamsForm()" value="<?php echo isset($LANG['BUTTON_RESET'])?$LANG['BUTTON_RESET']:'Reset Form'; ?>"></input></div>
 				</div>
 			</div>
 			<hr/>
 			<div>
-				<div class="catHeaderDiv"><?php echo $LANG['LOCALITY_CRITERIA']; ?></div>
+				<h3><?php echo $LANG['LOCALITY_CRITERIA']; ?></h3>
 			</div>
 			<div>
 				<?php echo $LANG['COUNTRY']; ?>: <input type="text" id="country" size="43" name="country" value="" title="<?php echo $LANG['SEPARATE_MULTIPLE']; ?>" />
@@ -124,7 +128,7 @@ $attribSearch = new OccurrenceAttributeSearch();
 				<?php echo $LANG['ELEV_INPUT_2']; ?> <input type="text" id="elevhigh" size="10" name="elevhigh" value="" onchange="cleanNumericInput(this);" />
 			</div>
 			<hr>
-			<div class="catHeaderDiv"><?php echo $LANG['LAT_LNG_HEADER']; ?></div>
+			<h3><?php echo $LANG['LAT_LNG_HEADER']; ?></h3>
 			<div>
 				<div class="coordBoxDiv">
 					<div class="labelDiv">
@@ -208,7 +212,7 @@ $attribSearch = new OccurrenceAttributeSearch();
 				</div>
 			</div>
 			<hr/>
-			<div class="catHeaderDiv"><?php echo $LANG['COLLECTOR_HEADER']; ?></div>
+			<h3><?php echo $LANG['COLLECTOR_HEADER']; ?></h3>
 			<div>
 				<?php echo $LANG['COLLECTOR_LASTNAME']; ?>:
 				<input type="text" id="collector" size="32" name="collector" value="" title="<?php echo $LANG['SEPARATE_MULTIPLE']; ?>" />
@@ -225,7 +229,7 @@ $attribSearch = new OccurrenceAttributeSearch();
 			<hr/>
 			<div style="float:left">
 				<div>
-					<div class="catHeaderDiv"><?php echo $LANG['SPECIMEN_HEADER']; ?></div>
+					<h3><?php echo $LANG['SPECIMEN_HEADER']; ?></h3>
 				</div>
 				<div>
 					<?php echo $LANG['CATALOG_NUMBER']; ?>:
@@ -286,9 +290,9 @@ $attribSearch = new OccurrenceAttributeSearch();
 			}
 			?>
 			<div style="float:right;">
-				<div><button type="submit" style="width:100%"><?php echo isset($LANG['BUTTON_NEXT_LIST'])?$LANG['BUTTON_NEXT_LIST']:'List Display'; ?></button></div>
-				<div><button type="button" style="width:100%" onclick="displayTableView(this.form)"><?php echo isset($LANG['BUTTON_NEXT_TABLE'])?$LANG['BUTTON_NEXT_TABLE']:'Table Display'; ?></button></div>
-				<div><button type="reset" style="width:100%" onclick="resetHarvestParamsForm()"><?php echo isset($LANG['BUTTON_RESET'])?$LANG['BUTTON_RESET']:'Reset Form'; ?></button></div>
+				<div><input type="submit" class="nextbtn" style="width:100%" value="<?php echo isset($LANG['BUTTON_NEXT_LIST'])?$LANG['BUTTON_NEXT_LIST']:'List Display'; ?>"></input></div>
+				<div><input type="button" class="nextbtn" style="width:100%" onclick="displayTableView(this.form)"value="<?php echo isset($LANG['BUTTON_NEXT_TABLE'])?$LANG['BUTTON_NEXT_TABLE']:'Table Display'; ?>"></input></div>
+				<div><input type="reset" class="nextbtn" style="width:100%" onclick="resetHarvestParamsForm()" value="<?php echo isset($LANG['BUTTON_RESET'])?$LANG['BUTTON_RESET']:'Reset Form'; ?>"></input></div>
 			</div>
 			<div>
 				<input type="hidden" name="reset" value="1" />

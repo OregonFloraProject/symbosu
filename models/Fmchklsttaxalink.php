@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Fmchklsttaxalink
  * @ORM\Entity
- * @ORM\Table(name="fmchklsttaxalink", indexes={@ORM\Index(name="FK_chklsttaxalink_cid", columns={"CLID"}), @ORM\Index(name="IDX_7E381424C4FE2EBB", columns={"TID"})})
+ * @ORM\Table(name="fmchklsttaxalink", indexes={@ORM\Index(name="FK_chklsttaxalink_cid", columns={"CLID"}), @ORM\Index(name="FK_chklsttaxalink_tid", columns={"TID"})})
  */
 class Fmchklsttaxalink
 {

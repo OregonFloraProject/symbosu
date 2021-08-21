@@ -7,11 +7,12 @@ $lat = $_POST['lat'];
 $lng = $_POST['lng'];
 $radius = $_POST['radius'];
 $radiusUnits = $_POST['radiusunits'];
-$dynamicRadius = (isset($DYN_CHECKLIST_RADIUS)?$DYN_CHECKLIST_RADIUS:10);
+$dynamicRadius = (isset($dynChecklistRadius)?$dynChecklistRadius:(isset($dynKeyRadius)?$dynKeyRadius:5));
+//$dynamicRadius = (isset($DYN_CHECKLIST_RADIUS)?$DYN_CHECKLIST_RADIUS:10);
 $taxa = $_POST['taxa'];
 $tid = $_POST['tid'];
 $interface = $_POST['interface'];
-
+ 
 //sanitation
 if(!is_numeric($lat)) $lat = 0;
 if(!is_numeric($lng)) $lng = 0;
@@ -29,13 +30,17 @@ if($radius) $dynClid = $dynClManager->createChecklist($lat, $lng, $radius, $radi
 else $dynClid = $dynClManager->createDynamicChecklist($lat, $lng, $dynamicRadius, $tid);
 
 if($dynClid){
-	if($interface == "key"){
+if($interface == "key"){
 		header("Location: ".$CLIENT_ROOT."/ident/key.php?dynclid=".$dynClid."&taxon=All Species");
-	}
-	else{
+	#echo $url;exit;
+	//header("Location: ". $url);
+}
+else{
 		header("Location: ".$CLIENT_ROOT."/checklists/checklist.php?dynclid=".$dynClid);
 	}
 }
 else echo 'ERROR generating checklist';
+ob_flush();
+flush();
 $dynClManager->removeOldChecklists();
 ?>

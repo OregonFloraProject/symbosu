@@ -31,7 +31,7 @@ const DROPDOWNS = {
 			{ title: "OSU Herbarium", href: "/collections/harvestparams.php?db[]=5,8,10,7,238,239,240,241" },
 			{ title: "Grow Natives", href: "/garden/index.php" },
 			//{ title: "Image Search", href: "/imagelib/search.php" },
-			{ title: "Taxonomic Tree", href: "/taxa/admin/taxonomydisplay.php" },
+			{ title: "Taxonomic Tree", href: "/taxa/taxonomy/taxonomydisplay.php" },
 		]
 	},
 	"resources" : {

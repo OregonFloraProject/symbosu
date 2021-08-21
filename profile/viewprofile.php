@@ -32,9 +32,13 @@ if(!$userId) header('Location: index.php?refurl=viewprofile.php');
 $pHandler = new ProfileManager();
 $pHandler->setUid($userId);
 
+// Set Occurrence Management Tab as the default if the person is an editor of a collection
+if(!empty($pHandler->getCollectionArr())) $tabIndex = 1;
+
 $statusStr = "";
 $person = null;
 if($isEditor){
+
 	// ******************************  editing a profile  ************************************//
 	if($action == "Submit Edits"){
 		$firstname = $_REQUEST["firstname"];
@@ -143,6 +147,17 @@ if($isEditor){
         echo '<link href="'.$CLIENT_ROOT.'/css/main.css?ver=1" type="text/css" rel="stylesheet" />';
       }
     ?>
+	<style type="text/css">
+		fieldset{ padding:15px;margin:15px; }
+		legend{ font-weight: bold; }
+		.tox-dialog { min-height: 400px }
+	</style>
+</head>
+<body>
+	<?php
+	$displayLeftMenu = (isset($profile_viewprofileMenu)?$profile_viewprofileMenu:"true");
+	include($SERVER_ROOT.'/includes/header.php');
+	?>
 	<script type="text/javascript" src="../js/jquery.js"></script>
 	<script type="text/javascript" src="../js/jquery-ui.js"></script>
 	<script type="text/javascript" src="../js/tinymce/tinymce.min.js"></script>
@@ -163,17 +178,6 @@ if($isEditor){
 	</script>
 	<script type="text/javascript" src="../js/symb/profile.viewprofile.js?ver=20170530"></script>
 	<script type="text/javascript" src="../js/symb/shared.js"></script>
-	<style type="text/css">
-		fieldset{ padding:15px;margin:15px; }
-		legend{ font-weight: bold; }
-		.tox-dialog { min-height: 400px }
-	</style>
-</head>
-<body>
-	<?php
-	$displayLeftMenu = (isset($profile_viewprofileMenu)?$profile_viewprofileMenu:"true");
-	include($SERVER_ROOT.'/includes/header.php');
-	?>
 	<div class="navpath">
 		<a href='../index.php'><?php echo (isset($LANG['HOME'])?$LANG['HOME']:'Home'); ?></a> &gt;&gt;
 		<a href="../profile/viewprofile.php"><?php echo (isset($LANG['MY_PROFILE'])?$LANG['MY_PROFILE']:'My Profile'); ?></a>

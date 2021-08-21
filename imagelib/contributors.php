@@ -27,6 +27,14 @@ $imgManager = new ImageLibraryBrowser();
 	$displayLeftMenu = (isset($imagelib_photographersMenu)?$imagelib_photographersMenu:false);
 	include($SERVER_ROOT.'/includes/header.php');
 	?>
+	<style>
+		/* JGM Fix for proper footer display */
+		#innertext:after {
+			content: "";
+			display: table;
+			clear: both;
+		}
+	</style>
 	<div class="navpath">
 		<a href="../index.php">Home</a> &gt;&gt;
 		<a href="index.php">Image Library</a> &gt;&gt;
@@ -34,11 +42,11 @@ $imgManager = new ImageLibraryBrowser();
 	</div>
 
 	<!-- This is inner text! -->
-	<div id="innertext" style="height:100%">
+	<div id="innertext" style="height:auto;">
 		<?php
 		$pList = $imgManager->getPhotographerList();
 		if($pList){
-			echo '<div style="float:left;;margin-right:40px;">';
+			echo '<div style="float:left;margin-right:40px;">';
 			echo '<h2>Image Contributors</h2>';
 			echo '<div style="margin-left:15px">';
 			foreach($pList as $uid => $pArr){

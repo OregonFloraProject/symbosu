@@ -177,11 +177,11 @@ include($SERVER_ROOT.'/includes/header.php');
 		<fieldset style="margin:20px;width:350px;">
 			<legend><?php echo (isset($LANG['PORTAL_LOGIN'])?$LANG['PORTAL_LOGIN']:'Portal Login'); ?></legend>
 			<form id="loginform" name="loginform" action="index.php" onsubmit="return checkCreds();" method="post">
-				<div style="margin: 10px;">
-					<?php echo (isset($LANG['LOGIN_NAME'])?$LANG['LOGIN_NAME']:'Login'); ?>: <input id="login" name="login" value="<?php echo $login; ?>" style="border-style:inset;" />
+				<div style="margin: 10px;font-weight: bold;">
+					<?php echo (isset($LANG['LOGIN_NAME'])?$LANG['LOGIN_NAME']:'Login'); ?>: <br/><input id="login" name="login" value="<?php echo $login; ?>" style="border-style:inset;" />
 				</div>
-				<div style="margin:10px;">
-					<?php echo (isset($LANG['PASSWORD'])?$LANG['PASSWORD']:"Password"); ?>:
+				<div style="margin:10px;font-weight: bold;">
+					<?php echo (isset($LANG['PASSWORD'])?$LANG['PASSWORD']:"Password"); ?>: <br/>
 					<input type="password" id="password" name="password"  style="border-style:inset;" autocomplete="off" />
 				</div>
 				<div style="margin:10px">

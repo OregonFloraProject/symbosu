@@ -322,8 +322,17 @@ $smManager = new SiteMapManager();
 					<ul>
 						<?php
 						if($clAdmin){
+							// JGM Added links to checklist admin and voucher admin, since checklist.php no longer does this
 							foreach($clAdmin as $k => $v){
-								echo "<li><a href='".$CLIENT_ROOT."/checklists/checklist.php?clid=".$k."&emode=1'>$v</a></li>";
+								echo '<li><a href="'.$CLIENT_ROOT.'/checklists/checklist.php?clid='.$k.'&emode=1">'.$v.'</a>
+								<a href="'.$CLIENT_ROOT.'/checklists/checklistadmin.php?clid='.$k.'&emode=1">
+									<img src="'.$CLIENT_ROOT.'/images/edit.png" style="width:15px;border:0px;" title="Checklist Admin"/>
+								</a>
+								<a href="'.$CLIENT_ROOT.'/checklists/voucheradmin.php?clid='.$k.'&emode=1" title="Voucher Admin">
+									<img src="'.$CLIENT_ROOT.'/images/link.png" style="width:15px;border:0px;"/>
+								</a>
+								</li>';
+		
 							}
 						}
 						else{

@@ -41,9 +41,15 @@ unset($rsArr['stats']);
 		echo '<link href="'.$CLIENT_ROOT.'/css/main.css?ver=1" type="text/css" rel="stylesheet" />';
 	}
 	?>
+</head>
+<body>
+<?php
+$displayLeftMenu = (isset($collections_misc_rarespeciesMenu)?$collections_misc_rarespeciesMenu:true);
+include($SERVER_ROOT.'/includes/header.php');
+?>
 	<script src="../../js/jquery.js" type="text/javascript"></script>
 	<script src="../../js/jquery-ui.js" type="text/javascript"></script>
-	<script>
+		<script>
 		$(document).ready(function() {
 			$("#speciestoadd").autocomplete({
 				source: "rpc/speciessuggest.php" },{ minLength: 3, autoFocus: true
@@ -102,11 +108,7 @@ unset($rsArr['stats']);
 			});
 		}
 	</script>
-</head>
-<body>
 <?php
-$displayLeftMenu = (isset($collections_misc_rarespeciesMenu)?$collections_misc_rarespeciesMenu:true);
-include($SERVER_ROOT.'/includes/header.php');
 if(isset($collections_misc_rarespeciesCrumbs)){
 	echo "<div class='navpath'>";
 	echo "<a href='../index.php'>Home</a> &gt;&gt; ";

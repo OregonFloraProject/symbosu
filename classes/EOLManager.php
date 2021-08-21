@@ -30,7 +30,7 @@ class EOLManager {
 		$rs->close();
 		return $tidCnt;
 	}
-
+	
 	public function mapTaxa($makePrimaryLink,$tidStart,$restart){
 		$successCnt = 0;
 		set_time_limit(36000);
@@ -75,10 +75,14 @@ class EOLManager {
 		echo "</ol>\n";
 		$rs->close();
 	}
-
+	
 	private function queryEolIdentifier($tid, $sciName, $makePrimaryLink){
 		$retStatus = false;
 		$url = 'http://eol.org/api/search/1.0.json?q='.urlencode($sciName);
+
+// Compatibility fix for OregonFlora symbini.php
+		if(isset($GLOBALS['EOL_KEY']) && $GLOBALS['EOL_KEY']) $url .= '&key='.$GLOBALS['EOL_KEY'];
+
 		if(isset($GLOBALS['TAXONOMIC_AUTHORITIES']['EOL']) && $GLOBALS['TAXONOMIC_AUTHORITIES']['EOL']){
 			$url .= '&key='.$GLOBALS['TAXONOMIC_AUTHORITIES']['EOL'];
 		}
@@ -118,7 +122,7 @@ class EOLManager {
 		sleep(2);
 		return $retStatus;
 	}
-
+	
 	public function getImageDeficiencyCount(){
 		$tidCnt = 0;
 		$sql = 'SELECT COUNT(t.tid) AS tidcnt '.
@@ -134,7 +138,7 @@ class EOLManager {
 		$rs->close();
 		return $tidCnt;
 	}
-
+	
 	public function mapImagesForTaxa($tidStart,$restart){
 		set_time_limit(36000);
 		if(!is_numeric($tidStart)) $tidStart = 0;
@@ -152,7 +156,7 @@ class EOLManager {
 			$rs->free();
 		}
 		if($tidStart && $tidStart > $startingTid) $startingTid = $tidStart;
-
+		
 		$successCnt = 0;
 		$sql = 'SELECT t.tid, t.sciname, l.sourceidentifier '.
 			'FROM taxa t INNER JOIN taxalinks l ON t.tid = l.tid '.
@@ -160,7 +164,7 @@ class EOLManager {
 			'AND t.tid NOT IN (SELECT ts1.tidaccepted FROM images ii INNER JOIN taxstatus ts1 ON ii.tid = ts1.tid '.
 			'WHERE ts1.taxauthid = 1) ';
 			//'WHERE ts1.taxauthid = 1 AND (ii.imagetype NOT LIKE "%specimen%" OR ii.imagetype IS NULL)) ';
-		if($startingTid) $sql .= 'AND t.tid >= '.$startingTid.' ';
+		if($startingTid) $sql .= 'AND t.tid >= '.$startingTid.' '; 
 		$sql .= 'ORDER BY t.tid';
 		$rs = $this->conn->query($sql);
 		$recCnt = $rs->num_rows;
@@ -169,7 +173,7 @@ class EOLManager {
 		echo "<ul>\n";
 		$this->imgManager = new ImageShared();
 		while($r = $rs->fetch_object()){
-			$tid = $r->tid;
+			$tid = $r->tid;  
 			echo '<li>Mapping images for '.$this->cleanOutStr($r->sciname).' (tid: <a href="../index.php?taxon='.$tid.'" target="_blank">'.$tid.'</a>; EOL:<a href="http://eol.org/pages/'.$r->sourceidentifier.'/overview" target="_blank">'.$r->sourceidentifier."</a>)</li>\n";
 			if($this->mapEolImages($tid, $this->cleanOutStr($r->sourceidentifier))){
 				$successCnt++;
@@ -185,6 +189,10 @@ class EOLManager {
 		$retStatus = false;
 		$url = 'http://eol.org/api/pages/1.0.json?id='.$identifier.'&images_per_page=20&vetted=2&details=1';
 		//echo $url;
+
+// Compatibility fix for OregonFlora symbini.php
+		if(isset($GLOBALS['EOL_KEY']) && $GLOBALS['EOL_KEY']) $url .= '&key='.$GLOBALS['EOL_KEY'];
+
 		if(isset($GLOBALS['TAXONOMIC_AUTHORITIES']['EOL']) && $GLOBALS['TAXONOMIC_AUTHORITIES']['EOL']){
 			$url .= '&key='.$GLOBALS['TAXONOMIC_AUTHORITIES']['EOL'];
 		}
@@ -200,7 +208,7 @@ class EOLManager {
 				$imgCnt = 0;
 				foreach($dataObjArr as $objArr){
 					if(array_key_exists('mimeType',$objArr) && $objArr['mimeType'] == 'image/jpeg'){
-						$resourceArr = array();
+						$resourceArr = array(); 
 						$imageUrl = '';
 						if(array_key_exists('mediaURL',$objArr)){
 							$imageUrl = $objArr['mediaURL'];
@@ -221,7 +229,7 @@ class EOLManager {
 									if($agentObj['role'] == 'photographer'){
 										$resourceArr['photographer'] = $this->cleanInStr($agentObj['full_name']);
 										unset($agentArr);
-										break;
+										break; 
 									}
 									$agentCnt++;
 								}
@@ -232,7 +240,7 @@ class EOLManager {
 						if(array_key_exists('description',$objArr)) $noteStr .= '; '.$this->cleanInStr($objArr['description']);
 						$resourceArr['notes'] = $noteStr;
 						if(array_key_exists('title',$objArr)) $resourceArr['title'] = $this->cleanInStr($objArr['title']);
-						if(array_key_exists('rights',$objArr)) $resourceArr['copyright'] = $this->cleanInStr($objArr['rights']);
+						if(array_key_exists('rights',$objArr)) $resourceArr['copyright'] = $this->cleanInStr($objArr['rights']);  
 						if(array_key_exists('rightsHolder',$objArr)) $resourceArr['owner'] = $this->cleanInStr($objArr['rightsHolder']);
 						if(array_key_exists('license',$objArr)) $resourceArr['rights'] = $this->cleanInStr($objArr['license']);
 						if(array_key_exists('source',$objArr)) $resourceArr['source'] = $this->cleanInStr($objArr['source']);
@@ -279,7 +287,7 @@ class EOLManager {
 				//Start with building thumbnail
 				if($this->imgManager->createNewImage('_tn',$this->imgManager->getTnPixWidth())){
 					$imgTnUrl = $this->imgManager->getUrlBase().$this->imgManager->getImgName().'_tn.jpg';
-					//Build web image
+					//Build web image 
 					//If web image is too large, transfer to large image and create new web image
 					$fileSize = $this->imgManager->getSourceFileSize();
 					list($sourceWidth, $sourceHeight) = getimagesize(str_replace(' ', '%20', $this->imgManager->getSourcePath()));
@@ -331,7 +339,7 @@ class EOLManager {
 		}
 		return $status;
 	}
-
+	
 	private function encodeString($inStr){
 		global $CHARSET;
  		$retStr = trim($inStr);
@@ -351,14 +359,14 @@ class EOLManager {
  		}
 		return $retStr;
 	}
-
+	
 	private function cleanOutStr($str){
 		$newStr = str_replace('"',"&quot;",$str);
 		$newStr = str_replace("'","&apos;",$newStr);
 		//$newStr = $this->conn->real_escape_string($newStr);
 		return $newStr;
 	}
-
+	
 	private function cleanInStr($str){
 		$newStr = trim($str);
 		$newStr = preg_replace('/\s\s+/', ' ',$newStr);
@@ -367,7 +375,7 @@ class EOLManager {
 		$newStr = str_replace(chr(13)," ",$newStr);
 
 		$newStr = $this->encodeString($newStr);
-
+		
 		//$newStr = $this->conn->real_escape_string($newStr);
 		return $newStr;
 	}
