@@ -251,6 +251,13 @@ if(isset($collections_misc_rarespeciesCrumbs)){
 					echo $stateArr['locality'].': '.$stateArr['name'];
 					echo '</a>';
 					if($stateArr['access'] == 'private') echo ' (private)';
+					if($SYMB_UID){
+						if($IS_ADMIN){
+							echo '<a href="'.$CLIENT_ROOT.'/checklists/checklistadmin.php?clid='.$clid.'&emode=1">';
+							echo '	<img src="'.$CLIENT_ROOT.'/images/edit.png" style="width:15px;border:0px;" title="Checklist Admin"/>';
+							echo '</a>';
+						}
+					}
 					echo '</div>';
 					$emptyList = false;
 				}
