@@ -1,7 +1,9 @@
 <?php
 include_once('../../config/symbini.php');
+include_once($SERVER_ROOT.'/classes/SOLRManager.php');
 include_once($SERVER_ROOT.'/content/lang/collections/misc/collprofiles.'.$LANG_TAG.'.php');
 include_once($SERVER_ROOT.'/classes/OccurrenceCollectionProfile.php');
+
 header("Content-Type: text/html; charset=".$CHARSET);
 unset($_SESSION['editorquery']);
 
@@ -14,8 +16,9 @@ if($eMode && !$SYMB_UID){
 }
 
 $collManager = new OccurrenceCollectionProfile();
-if(!$collManager->setCollid($collid)) $collid = '';
 
+if(!$collManager->setCollid($collid)) $collid = '';
+if($SOLR_MODE) $solrManager = new SOLRManager();
 $collData = $collManager->getCollectionMetadata();
 
 $editCode = 0;		//0 = no permissions; 1 = CollEditor; 2 = CollAdmin; 3 = SuperAdmin
@@ -88,6 +91,17 @@ if($SYMB_UID){
 				$collManager->updateStatistics(true);
 				echo '<hr/>';
 			}
+			if($action == 'cleanSOLR'){
+	                echo '<h2> '.$LANG['CLEAN_SOLR'].'</h2>';
+	                $solrManager->cleanSOLRIndex($collid);
+	                echo '<hr/>';
+	        }
+	        if($action == 'rebuildSOLR'){
+	                echo '<h2> '.$LANG['REBUILD_SOLR'].'</h2>';
+	                $fullUpdate = $solrManager->updateSOLR($collid);
+	                echo $fullUpdate ? '<li>Performing a full index update (several hours)</li>' : '<li>Performing a delta update</li>';
+	                echo '<hr/>';
+	        }
 		}
 		if($editCode && $collid){
 			?>
@@ -381,6 +395,22 @@ if($SYMB_UID){
 										<?php echo (isset($LANG['UPDATE_STATS'])?$LANG['UPDATE_STATS']:'Update Statistics');?>
 									</a>
 								</li>
+								<?php
+                                if($SOLR_MODE){
+                                    ?>
+                                    <li style="margin-left:10px;">
+                                        <a href="collprofiles.php?collid=<?php echo $collid; ?>&emode=1&action=rebuildSOLR">
+                                            <?php echo $LANG['REBUILD_SOLR']; ?>
+                                        </a>
+                                    </li>
+                                    <li style="margin-left:10px;">
+                                        <a href="collprofiles.php?collid=<?php echo $collid; ?>&emode=1&action=cleanSOLR">
+                                            <?php echo $LANG['CLEAN_SOLR']; ?>
+                                        </a>
+                                    </li>
+                                    <?php
+                                }
+                                ?>
 							</ul>
 						</fieldset>
 						<?php
