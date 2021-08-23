@@ -61,6 +61,12 @@ elseif(file_exists('includes/config/occurVarDefault.php')){
         echo '<link href="'.$CLIENT_ROOT.'/css/main.css?ver=1" type="text/css" rel="stylesheet" />';
       }
     ?>
+</head>
+<body>
+	<?php
+	$displayLeftMenu = false;
+	include($SERVER_ROOT.'/includes/header.php');
+	?>
 	<script src="../../js/jquery.js" type="text/javascript"></script>
 	<script src="../../js/jquery-ui.js" type="text/javascript"></script>
 	<script src="../../js/symb/collections.imageoccursubmit.js?ver=141119" type="text/javascript"></script>
@@ -105,12 +111,6 @@ elseif(file_exists('includes/config/occurVarDefault.php')){
 		return true;
 	}
 	</script>
-</head>
-<body>
-	<?php
-	$displayLeftMenu = false;
-	include($SERVER_ROOT.'/includes/header.php');
-	?>
 	<div class='navpath'>
 		<a href="../../index.php"><?php echo $LANG['HOME']?></a> &gt;&gt;
 		<a href="../misc/collprofiles.php?collid=<?php echo $collid; ?>&emode=1"><?php echo $LANG['COL_MNT']?></a> &gt;&gt;

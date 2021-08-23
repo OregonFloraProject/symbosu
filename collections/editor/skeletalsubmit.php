@@ -44,16 +44,17 @@ if($collid){
 		echo '<link href="'.$CLIENT_ROOT.'/css/main.css?ver=1" type="text/css" rel="stylesheet" />';
 	}
 	?>
-	<script src="../../js/jquery.js" type="text/javascript"></script>
-	<script src="../../js/jquery-ui.js" type="text/javascript"></script>
-	<script src="../../js/symb/collections.editor.skeletal.js?ver=1" type="text/javascript"></script>
-	<script src="../../js/symb/shared.js?ver=150324" type="text/javascript"></script>
+	
 </head>
 <body>
 	<?php
 	$displayLeftMenu = false;
 	include($SERVER_ROOT.'/includes/header.php');
 	?>
+	<script src="../../js/jquery.js" type="text/javascript"></script>
+	<script src="../../js/jquery-ui.js" type="text/javascript"></script>
+	<script src="../../js/symb/collections.editor.skeletal.js?ver=1" type="text/javascript"></script>
+	<script src="../../js/symb/shared.js?ver=150324" type="text/javascript"></script>
 	<div class='navpath'>
 		<a href="../../index.php"><?php echo $LANG['HOME']; ?></a> &gt;&gt;
 		<a href="../misc/collprofiles.php?collid=<?php echo $collid; ?>&emode=1"><?php echo $LANG['COL_MNGMT']; ?></a> &gt;&gt;
