@@ -85,7 +85,7 @@ class OccurrenceSearchSupport {
 	}
 
 	public function outputFullCollArr($collGrpArr, $targetCatID = '', $displayIcons = true, $displaySearchButtons = true){
-		global $CLIENT_ROOT, $DEFAULTCATID, $LANG;
+		global $CLIENT_ROOT, $LANG;
 		$catSelArr = array();
 		$collSelArr = array();
 		if(isset($_POST['cat'])) $catSelArr = $_POST['cat'];
@@ -93,7 +93,7 @@ class OccurrenceSearchSupport {
 		$targetCatArr = array();
 		$targetCatID = (string)$targetCatID;
 		if($targetCatID != '') $targetCatArr = explode(',', $targetCatID);
-		elseif($DEFAULTCATID != '') $targetCatArr = explode(',', $DEFAULTCATID);
+		elseif($GLOBALS['DEFAULTCATID'] != '') $targetCatArr = explode(',', $GLOBALS['DEFAULTCATID']);
 		$buttonStr = '<input type="submit" class="nextbtn" value="'.(isset($LANG['BUTTON_NEXT'])?$LANG['BUTTON_NEXT']:'Next &gt;').'"></input>';
 		$collCnt = 0;
 		$borderStyle = ($displayIcons?'margin:10px;padding:10px 20px;border:inset':'margin-left:10px;');
@@ -184,16 +184,16 @@ class OccurrenceSearchSupport {
 											</td>
 											<td style="padding:6px">
 												<div class="collectiontitle">
-													<a href = 'misc/collprofiles.php?collid=<?php echo $collid; ?>'>
+													<a href='<?php echo $CLIENT_ROOT; ?>/collections/misc/collprofiles.php?collid=<?php echo $collid; ?>' target="_blank">
 														<?php
 														$codeStr = ' ('.$collName2['instcode'];
 														if($collName2['collcode']) $codeStr .= '-'.$collName2['collcode'];
 														$codeStr .= ')';
-														echo $collName2["collname"].$codeStr;
+													echo '<div class="collectionname">'.$collName2["collname"].'</div><div class="collectioncode">'.$codeStr.'</div>';
 														?>
 													</a>
-													<a href = 'misc/collprofiles.php?collid=<?php echo $collid; ?>' style='font-size:75%;'>
-														more info
+													<a href='<?php echo $CLIENT_ROOT; ?>/collections/misc/collprofiles.php?collid=<?php echo $collid; ?>' target="_blank" style="font-size:75%;">
+														<?php echo (isset($LANG['MORE_INFO'])?$LANG['MORE_INFO']:'more info'); ?>
 													</a>
 												</div>
 											</td>
@@ -245,16 +245,15 @@ class OccurrenceSearchSupport {
 						</td>
 						<td style="padding:6px">
 							<div class="collectiontitle">
-								<a href = 'misc/collprofiles.php?collid=<?php echo $collid; ?>'>
-									<?php
+								<a href='<?php echo $CLIENT_ROOT; ?>/collections/misc/collprofiles.php?collid=<?php echo $collid; ?>' target="_blank">									<?php
 									$codeStr = ' ('.$cArr['instcode'];
 									if($cArr['collcode']) $codeStr .= '-'.$cArr['collcode'];
 									$codeStr .= ')';
-									echo $cArr["collname"].$codeStr;
+								echo $cArr["collname"].$codeStr;
 									?>
 								</a>
-								<a href = 'misc/collprofiles.php?collid=<?php echo $collid; ?>' style='font-size:75%;'>
-									more info
+								<a href='<?php echo $CLIENT_ROOT; ?>/collections/misc/collprofiles.php?collid=<?php echo $collid; ?>' target="_blank" style="font-size:75%;">
+														<?php echo (isset($LANG['MORE_INFO'])?$LANG['MORE_INFO']:'more info'); ?>
 								</a>
 							</div>
 						</td>

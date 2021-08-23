@@ -513,13 +513,14 @@ DROP TABLE paleochronostratigraphy;
 
 ALTER TABLE `omcollections` 
   ADD COLUMN `dynamicProperties` TEXT NULL AFTER `accessrights`,
-  #ADD COLUMN `datasetID` VARCHAR(250) NULL AFTER `collectionId`;
+  ADD COLUMN `datasetID` VARCHAR(250) NULL AFTER `collectionId`;
 
 ALTER TABLE `omcollections` 
   ADD COLUMN `contactJson` LONGTEXT NULL AFTER `email`;
 
-ALTER TABLE `omcollections` 
-  CHANGE COLUMN `contactJson` `contactJson` JSON NULL DEFAULT NULL;
+# JGM: Breaks in MariaDB versions used by OregonFlora
+#ALTER TABLE `omcollections` 
+#  CHANGE COLUMN `contactJson` `contactJson` JSON NULL DEFAULT NULL;
 
 UPDATE omcollections
   SET contactJson = CONCAT('[{"firstName":"","lastName":"',contact,'","email":"',email,'"}]')
@@ -528,8 +529,9 @@ UPDATE omcollections
 ALTER TABLE `omcollections` 
   ADD COLUMN `resourceJson` LONGTEXT NULL AFTER `homepage`;
 
-ALTER TABLE `omcollections` 
-  CHANGE COLUMN `resourceJson` `resourceJson` JSON NULL DEFAULT NULL;
+# JGM: Breaks in MariaDB versions used by OregonFlora
+#ALTER TABLE `omcollections` 
+#  CHANGE COLUMN `resourceJson` `resourceJson` JSON NULL DEFAULT NULL;
 
 UPDATE omcollections
   SET resourceJson = CONCAT('[{"title":{"en":"Homepage"},"url":"',homepage,'"}]')
