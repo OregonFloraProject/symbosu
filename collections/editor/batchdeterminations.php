@@ -58,244 +58,244 @@ if($isEditor){
         echo '<link href="'.$CLIENT_ROOT.'/css/main.css?ver=1" type="text/css" rel="stylesheet" />';
       }
     ?>
-		<script src="../../js/jquery.js" type="text/javascript"></script>
-		<script src="../../js/jquery-ui.js" type="text/javascript"></script>
-		<script type="text/javascript">
-			function initScinameAutocomplete(f){
-				$( f.sciname ).autocomplete({
-					source: "rpc/getspeciessuggest.php",
-					minLength: 3,
-					change: function(event, ui) {
-					}
-				});
-			}
-
-			function initDetAutocomplete(f){
-				$( f.sciname ).autocomplete({
-					source: "rpc/getspeciessuggest.php",
-					minLength: 3,
-					change: function(event, ui) {
-						if(f.sciname.value){
-							pauseSubmit = true;
-							verifyDetSciName(f);
-						}
-						else{
-							f.scientificnameauthorship.value = "";
-							f.family.value = "";
-							f.tidtoadd.value = "";
-						}
-					}
-				});
-			}
-
-			function submitAccForm(f){
-				var workingObj = document.getElementById("workingcircle");
-				workingObj.style.display = "inline"
-				var allCatNum = 0;
-				if(f.allcatnum.checked) allCatNum = 1;
-
-				$.ajax({
-					type: "POST",
-					url: "rpc/getnewdetitem.php",
-					dataType: "json",
-					data: {
-						catalognumber: f.catalognumber.value,
-						allcatnum: allCatNum,
-						sciname: f.sciname.value,
-						collid: f.collid.value
-					}
-				}).done(function( retStr ) {
-					if(retStr != ""){
-						for (var occid in retStr) {
-							var occObj = retStr[occid];
-							if(f.catalognumber.value && checkCatalogNumber(occid, occObj["cn"])){
-								alert("<?php echo $LANG['RECORD_EXISTS']; ?>");
-							}
-							else{
-								var trNode = createNewTableRow(occid, occObj);
-								var tableBody = document.getElementById("catrecordstbody");
-								tableBody.insertBefore(trNode, tableBody.firstElementChild);
-							}
-						}
-						document.getElementById("accrecordlistdviv").style.display = "block";
-					}
-					else{
-						alert("<?php echo $LANG['NO_RECORDS']; ?>");
-					}
-				});
-
-				if(f.catalognumber.value != ""){
-					f.catalognumber.value = '';
-					f.catalognumber.focus();
-				}
-				workingObj.style.display = "none";
-				return false;
-			}
-
-			function checkCatalogNumber(catNum){
-				var dbElements = document.getElementsByName("occid[]");
-				for(i = 0; i < dbElements.length; i++){
-					if(dbElements[i].value == catNum) return true;
-				}
-				return false;
-			}
-
-			function createNewTableRow(occid, occObj){
-				var trNode = document.createElement("tr");
-				var inputNode = document.createElement("input");
-				inputNode.setAttribute("type", "checkbox");
-				inputNode.setAttribute("name", "occid[]");
-				inputNode.setAttribute("value", occid);
-				inputNode.setAttribute("checked", "checked");
-				var tdNode1 = document.createElement("td");
-				tdNode1.appendChild(inputNode);
-				trNode.appendChild(tdNode1);
-				var tdNode2 = document.createElement("td");
-				var anchor1 = document.createElement("a");
-				anchor1.setAttribute("href","#");
-				anchor1.setAttribute("onclick","openIndPopup("+occid+"); return false;");
-				if(occObj["cn"]) anchor1.innerHTML = occObj["cn"];
-				else anchor1.innerHTML = "[no catalog number]";
-				tdNode2.appendChild(anchor1);
-				var anchor2 = document.createElement("a");
-				anchor2.setAttribute("href","#");
-
-				tdNode2.appendChild(anchor2);
-				trNode.appendChild(tdNode2);
-				var tdNode3 = document.createElement("td");
-				tdNode3.appendChild(document.createTextNode(occObj["sn"]));
-				trNode.appendChild(tdNode3);
-				var tdNode4 = document.createElement("td");
-				tdNode4.appendChild(document.createTextNode(occObj["coll"]+'; '+occObj["loc"]));
-				trNode.appendChild(tdNode4);
-				return trNode;
-			}
-
-			function clearAccForm(f){
-				if(confirm("<?php echo $LANG['CLEAR_FORM_RESETS']; ?>") == true){
-					document.getElementById("accrecordlistdviv").style.display = "none";
-					document.getElementById("catrecordstbody").innerHTML = '';
-					f.catalognumber.value = '';
-					f.sciname.value = '';
-				}
-			}
-
-			function validateSelectForm(f){
-				var specNotSelected = true;
-				var dbElements = document.getElementsByName("occid[]");
-				for(i = 0; i < dbElements.length; i++){
-					var dbElement = dbElements[i];
-					if(dbElement.checked){
-						specNotSelected = false;
-						break;
-					}
-				}
-				if(specNotSelected){
-					alert("<?php echo $LANG['SELECT_ONE']; ?>");
-					return false;
-				}
-
-				if(f.sciname.value == ""){
-					alert("<?php echo $LANG['SCINAME_NEEDS_VALUE']; ?>");
-					return false;
-				}
-				if(f.identifiedby.value == ""){
-					alert("<?php echo $LANG['DETERMINER_NEEDS_VALUE']; ?>");
-					return false;
-				}
-				if(f.dateidentified.value == ""){
-					alert("<?php echo $LANG['DET_DATE_NEEDS_VALUE']; ?>");
-					return false;
-				}
-				return true;
-			}
-
-			function selectAll(cb){
-				boxesChecked = true;
-				if(!cb.checked){
-					boxesChecked = false;
-				}
-				var dbElements = document.getElementsByName("occid[]");
-				for(i = 0; i < dbElements.length; i++){
-					var dbElement = dbElements[i];
-					dbElement.checked = boxesChecked;
-				}
-			}
-
-			function annotationTypeChanged(selectElem){
-				var f = selectElem.form;
-				if(selectElem.value == "na"){
-					f.identificationqualifier.value = "";
-					$("#idQualifierDiv").hide();
-					f.confidenceranking.value = "";
-					$("#codDiv").hide();
-					f.identifiedby.value = "Nomenclatural Adjustment";
-					f.identifiedby.readonly = true;
-					f.makecurrent.checked = true;
-
-					var today = new Date();
-					var month = (today.getMonth() + 1);
-					var day = today.getDate();
-					var year = today.getFullYear();
-					if(month < 10) month = '0' + month;
-					if(day < 10) day = '0' + day;
-					f.dateidentified.value = [year, month, day].join('-');
-				}
-				else{
-					$("#idQualifierDiv").show();
-					f.confidenceranking.value = 5;
-					$("#codDiv").show();
-					f.identifiedby.value = "";
-					f.identifiedby.readonly = true;
-					f.dateidentified.value = "";
-					f.makecurrent.checked = false;
-				}
-			}
-
-			function verifyDetSciName(f){
-				$.ajax({
-					type: "POST",
-					url: "rpc/verifysciname.php",
-					dataType: "json",
-					data: { term: f.sciname.value }
-				}).done(function( data ) {
-					if(data){
-						f.scientificnameauthorship.value = data.author;
-						f.family.value = data.family;
-						f.tidtoadd.value = data.tid;
-					}
-					else{
-						alert("<?php echo $LANG['WARNING_TAXON_NOT_FOUND']; ?>");
-						f.scientificnameauthorship.value = "";
-						f.family.value = "";
-						f.tidtoadd.value = "";
-					}
-				});
-			}
-
-			function openIndPopup(occid){
-				openPopup('../individual/index.php?occid=' + occid);
-			}
-
-			function openEditorPopup(occid){
-				openPopup('occurrenceeditor.php?occid=' + occid);
-			}
-
-			function openPopup(urlStr){
-				var wWidth = 900;
-				if(document.body.offsetWidth) wWidth = document.body.offsetWidth*0.9;
-				if(wWidth > 1200) wWidth = 1200;
-				newWindow = window.open(urlStr,'popup','scrollbars=1,toolbar=0,resizable=1,width='+(wWidth)+',height=600,left=20,top=20');
-				if (newWindow.opener == null) newWindow.opener = self;
-				return false;
-			}
-		</script>
 	</head>
 	<body>
 	<?php
 	$displayLeftMenu = (isset($collections_batchdeterminationsMenu)?$collections_batchdeterminationsMenu:false);
 	include($SERVER_ROOT.'/includes/header.php');
 	?>
+	<script src="../../js/jquery.js" type="text/javascript"></script>
+	<script src="../../js/jquery-ui.js" type="text/javascript"></script>
+	<script type="text/javascript">
+		function initScinameAutocomplete(f){
+			$( f.sciname ).autocomplete({
+				source: "rpc/getspeciessuggest.php",
+				minLength: 3,
+				change: function(event, ui) {
+				}
+			});
+		}
+
+		function initDetAutocomplete(f){
+			$( f.sciname ).autocomplete({
+				source: "rpc/getspeciessuggest.php",
+				minLength: 3,
+				change: function(event, ui) {
+					if(f.sciname.value){
+						pauseSubmit = true;
+						verifyDetSciName(f);
+					}
+					else{
+						f.scientificnameauthorship.value = "";
+						f.family.value = "";
+						f.tidtoadd.value = "";
+					}
+				}
+			});
+		}
+
+		function submitAccForm(f){
+			var workingObj = document.getElementById("workingcircle");
+			workingObj.style.display = "inline"
+			var allCatNum = 0;
+			if(f.allcatnum.checked) allCatNum = 1;
+
+			$.ajax({
+				type: "POST",
+				url: "rpc/getnewdetitem.php",
+				dataType: "json",
+				data: {
+					catalognumber: f.catalognumber.value,
+					allcatnum: allCatNum,
+					sciname: f.sciname.value,
+					collid: f.collid.value
+				}
+			}).done(function( retStr ) {
+				if(retStr != ""){
+					for (var occid in retStr) {
+						var occObj = retStr[occid];
+						if(f.catalognumber.value && checkCatalogNumber(occid, occObj["cn"])){
+							alert("<?php echo $LANG['RECORD_EXISTS']; ?>");
+						}
+						else{
+							var trNode = createNewTableRow(occid, occObj);
+							var tableBody = document.getElementById("catrecordstbody");
+							tableBody.insertBefore(trNode, tableBody.firstElementChild);
+						}
+					}
+					document.getElementById("accrecordlistdviv").style.display = "block";
+				}
+				else{
+					alert("<?php echo $LANG['NO_RECORDS']; ?>");
+				}
+			});
+
+			if(f.catalognumber.value != ""){
+				f.catalognumber.value = '';
+				f.catalognumber.focus();
+			}
+			workingObj.style.display = "none";
+			return false;
+		}
+
+		function checkCatalogNumber(catNum){
+			var dbElements = document.getElementsByName("occid[]");
+			for(i = 0; i < dbElements.length; i++){
+				if(dbElements[i].value == catNum) return true;
+			}
+			return false;
+		}
+
+		function createNewTableRow(occid, occObj){
+			var trNode = document.createElement("tr");
+			var inputNode = document.createElement("input");
+			inputNode.setAttribute("type", "checkbox");
+			inputNode.setAttribute("name", "occid[]");
+			inputNode.setAttribute("value", occid);
+			inputNode.setAttribute("checked", "checked");
+			var tdNode1 = document.createElement("td");
+			tdNode1.appendChild(inputNode);
+			trNode.appendChild(tdNode1);
+			var tdNode2 = document.createElement("td");
+			var anchor1 = document.createElement("a");
+			anchor1.setAttribute("href","#");
+			anchor1.setAttribute("onclick","openIndPopup("+occid+"); return false;");
+			if(occObj["cn"]) anchor1.innerHTML = occObj["cn"];
+			else anchor1.innerHTML = "[no catalog number]";
+			tdNode2.appendChild(anchor1);
+			var anchor2 = document.createElement("a");
+			anchor2.setAttribute("href","#");
+
+			tdNode2.appendChild(anchor2);
+			trNode.appendChild(tdNode2);
+			var tdNode3 = document.createElement("td");
+			tdNode3.appendChild(document.createTextNode(occObj["sn"]));
+			trNode.appendChild(tdNode3);
+			var tdNode4 = document.createElement("td");
+			tdNode4.appendChild(document.createTextNode(occObj["coll"]+'; '+occObj["loc"]));
+			trNode.appendChild(tdNode4);
+			return trNode;
+		}
+
+		function clearAccForm(f){
+			if(confirm("<?php echo $LANG['CLEAR_FORM_RESETS']; ?>") == true){
+				document.getElementById("accrecordlistdviv").style.display = "none";
+				document.getElementById("catrecordstbody").innerHTML = '';
+				f.catalognumber.value = '';
+				f.sciname.value = '';
+			}
+		}
+
+		function validateSelectForm(f){
+			var specNotSelected = true;
+			var dbElements = document.getElementsByName("occid[]");
+			for(i = 0; i < dbElements.length; i++){
+				var dbElement = dbElements[i];
+				if(dbElement.checked){
+					specNotSelected = false;
+					break;
+				}
+			}
+			if(specNotSelected){
+				alert("<?php echo $LANG['SELECT_ONE']; ?>");
+				return false;
+			}
+
+			if(f.sciname.value == ""){
+				alert("<?php echo $LANG['SCINAME_NEEDS_VALUE']; ?>");
+				return false;
+			}
+			if(f.identifiedby.value == ""){
+				alert("<?php echo $LANG['DETERMINER_NEEDS_VALUE']; ?>");
+				return false;
+			}
+			if(f.dateidentified.value == ""){
+				alert("<?php echo $LANG['DET_DATE_NEEDS_VALUE']; ?>");
+				return false;
+			}
+			return true;
+		}
+
+		function selectAll(cb){
+			boxesChecked = true;
+			if(!cb.checked){
+				boxesChecked = false;
+			}
+			var dbElements = document.getElementsByName("occid[]");
+			for(i = 0; i < dbElements.length; i++){
+				var dbElement = dbElements[i];
+				dbElement.checked = boxesChecked;
+			}
+		}
+
+		function annotationTypeChanged(selectElem){
+			var f = selectElem.form;
+			if(selectElem.value == "na"){
+				f.identificationqualifier.value = "";
+				$("#idQualifierDiv").hide();
+				f.confidenceranking.value = "";
+				$("#codDiv").hide();
+				f.identifiedby.value = "Nomenclatural Adjustment";
+				f.identifiedby.readonly = true;
+				f.makecurrent.checked = true;
+
+				var today = new Date();
+				var month = (today.getMonth() + 1);
+				var day = today.getDate();
+				var year = today.getFullYear();
+				if(month < 10) month = '0' + month;
+				if(day < 10) day = '0' + day;
+				f.dateidentified.value = [year, month, day].join('-');
+			}
+			else{
+				$("#idQualifierDiv").show();
+				f.confidenceranking.value = 5;
+				$("#codDiv").show();
+				f.identifiedby.value = "";
+				f.identifiedby.readonly = true;
+				f.dateidentified.value = "";
+				f.makecurrent.checked = false;
+			}
+		}
+
+		function verifyDetSciName(f){
+			$.ajax({
+				type: "POST",
+				url: "rpc/verifysciname.php",
+				dataType: "json",
+				data: { term: f.sciname.value }
+			}).done(function( data ) {
+				if(data){
+					f.scientificnameauthorship.value = data.author;
+					f.family.value = data.family;
+					f.tidtoadd.value = data.tid;
+				}
+				else{
+					alert("<?php echo $LANG['WARNING_TAXON_NOT_FOUND']; ?>");
+					f.scientificnameauthorship.value = "";
+					f.family.value = "";
+					f.tidtoadd.value = "";
+				}
+			});
+		}
+
+		function openIndPopup(occid){
+			openPopup('../individual/index.php?occid=' + occid);
+		}
+
+		function openEditorPopup(occid){
+			openPopup('occurrenceeditor.php?occid=' + occid);
+		}
+
+		function openPopup(urlStr){
+			var wWidth = 900;
+			if(document.body.offsetWidth) wWidth = document.body.offsetWidth*0.9;
+			if(wWidth > 1200) wWidth = 1200;
+			newWindow = window.open(urlStr,'popup','scrollbars=1,toolbar=0,resizable=1,width='+(wWidth)+',height=600,left=20,top=20');
+			if (newWindow.opener == null) newWindow.opener = self;
+			return false;
+		}
+	</script>
 	<div class='navpath'>
 		<a href='../../index.php'><?php echo $LANG['HOME']; ?></a> &gt;&gt;
 		<a href="../misc/collprofiles.php?collid=<?php echo $collid; ?>&emode=1"><?php echo $LANG['COLL_MANAGE']; ?></a> &gt;&gt;
