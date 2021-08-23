@@ -105,6 +105,14 @@ else{
 			}
 		</script>
 		<script src="<?php echo $CLIENT_ROOT; ?>/js/symb/shared.js" type="text/javascript" ></script>
+		<style>
+            /* JGM Fix for proper footer display */
+            #innertext:after {
+            	content: "";
+            	display: table;
+        		clear: both;
+        	}
+    	</style>
 	</head>
 	<body>
 		<?php
