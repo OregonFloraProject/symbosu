@@ -237,6 +237,9 @@
 
                 var edge = self._getEdge(mouseX, mouseY);
 
+                // JGM: Check whether the user is on a mac
+                isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+                console.log(mousedownEvent.metaKey,isMac);
                 if(edge) {
                         $(document).mousemove(function(e) {
                                 self._handleViewPortResize(e, edge);
@@ -250,7 +253,7 @@
                                 self._handleZoom(e);
                         });
                 }
-                else if(o.allowZoom && (mousedownEvent.ctrlKey) ) {
+                else if(o.allowZoom && ((!isMac && mousedownEvent.ctrlKey) || (mousedownEvent.metaKey && isMac) ) ) {
                     var o = this.options;
                     var self = this;
 
