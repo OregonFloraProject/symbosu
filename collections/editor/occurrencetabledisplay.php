@@ -153,7 +153,9 @@ else{
 			<div style="text-align:right;width:790px;margin:-30px 15px 5px 0px;">
 				<a href="#" title="<?php echo $LANG['SEARCH_FILTER']; ?>" onclick="toggleQueryForm();"><img src="../../images/find.png" style="width:16px;" /></a>
 				<?php
-				if($isEditor == 1 || $isGenObs){
+				# JGM: Allowing editors to use the batch update tool, at least for now
+				//if($isEditor == 1 || $isGenObs){
+				if($isEditor || $isGenObs){
 					?>
 					<a href="#" title="Batch Update Tool" onclick="toggleBatchUpdate();return false;"><img src="../../images/editplus.png" style="width:14px;" /></a>
 					<?php
@@ -184,7 +186,9 @@ else{
 				}
 				$headerMap = array_intersect_key($headerMapBase, $headerArr);
 			}
-			if($isEditor == 1 || $isGenObs){
+			# JGM: Allowing editors to use the batch update tool, at least for now
+			//if($isEditor == 1 || $isGenObs){
+			if($isEditor || $isGenObs){
 				$buFieldName = (array_key_exists('bufieldname',$_REQUEST)?$_REQUEST['bufieldname']:'');
 				?>
 				<div id="batchupdatediv" style="width:600px;clear:both;display:<?php echo ($buFieldName?'block':'none'); ?>;">
