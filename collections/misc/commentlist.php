@@ -95,12 +95,27 @@ if($isEditor){
 		?>
 		<script>
 		</script>
+
 	</head>
 	<body>
 		<?php
 		$displayLeftMenu = false;
 		include($SERVER_ROOT.'/includes/header.php');
 		?>
+		<style>
+			hr {
+				overflow: hidden;
+			}
+			fieldset {
+				border: 1px solid;
+				margin: 0 2px;
+				padding: 0.35em 0.625em 0.75em;
+			}
+			legend {
+				width: auto;
+				padding: 0px 5px !important;
+			}
+		</style>
 		<div class="navpath">
 			<a href="<?php echo $CLIENT_ROOT; ?>/index.php">Home</a> &gt;&gt;
 			<?php

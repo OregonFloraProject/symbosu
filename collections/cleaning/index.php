@@ -50,6 +50,17 @@ if($collMap['colltype'] == 'General Observations'){
 	$displayLeftMenu = false;
 	include($SERVER_ROOT.'/includes/header.php');
 	?>
+	<style>
+		fieldset {
+			border: 1px solid;
+			margin: 0 2px;
+			padding: 0.35em 0.625em 0.75em;
+		}
+		legend {
+			width: auto;
+			padding: 0px 5px !important;
+		}
+	</style>
 	<div class='navpath'>
 		<a href="../../index.php">Home</a> &gt;&gt;
 		<a href="../misc/collprofiles.php?collid=<?php echo $collid; ?>&emode=1">Collection Management</a> &gt;&gt;
