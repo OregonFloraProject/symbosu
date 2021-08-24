@@ -472,6 +472,7 @@ class SOLRManager extends OccurrenceManager{
         if($needsFullUpdate){
             $this->resetSOLRInfoFile();
         }
+        return $needsFullUpdate;
     }
 
     public function deleteSOLRDocument($occid){
