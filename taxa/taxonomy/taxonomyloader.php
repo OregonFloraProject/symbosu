@@ -32,15 +32,15 @@ if($isEditor){
 	$activateJQuery = true;
 	include_once($SERVER_ROOT.'/includes/head.php');
 	?>
-	<script type="text/javascript" src="../../js/jquery.js"></script>
-	<script type="text/javascript" src="../../js/jquery-ui.js"></script>
-	<script src="../../js/symb/taxa.taxonomyloader.js?ver=19"></script>
 </head>
 <body>
 <?php
 	$displayLeftMenu = false;
 	include($SERVER_ROOT.'/includes/header.php');
 	?>
+	<script type="text/javascript" src="../../js/jquery.js"></script>
+	<script type="text/javascript" src="../../js/jquery-ui.js"></script>
+	<script src="../../js/symb/taxa.taxonomyloader.js?ver=19"></script>
 	<div class="navpath">
 		<a href="../../index.php">Home</a> &gt;&gt;
 		<a href="taxonomydisplay.php">Taxonomy Tree Viewer</a> &gt;&gt;
