@@ -98,6 +98,12 @@ if($isEditor){
 		$displayLeftMenu = false;
 		include($SERVER_ROOT.'/includes/header.php');
 		?>
+		<style>
+			legend {
+				width: auto;
+				padding: 0px 5px !important;
+		}
+	</style>
 		<script src="../../js/jquery-3.2.1.min.js" type="text/javascript"></script>
 		<script src="../../js/jquery-ui-1.12.1/jquery-ui.min.js" type="text/javascript"></script>
 		<script src="../../js/symb/shared.js?ver=131106" type="text/javascript"></script>

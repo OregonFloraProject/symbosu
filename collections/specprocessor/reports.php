@@ -44,7 +44,7 @@ if($IS_ADMIN || (array_key_exists("CollAdmin",$USER_RIGHTS) && in_array($collid,
 				//General stats
 				$statsArr = $procManager->getProcessingStats();
 				?>
-				<div style="margin:10px;height:400px;">
+				<div style="margin:10px;">
 					<div style="margin:5px;">
 						<b>Total Specimens:</b>
 						<?php
