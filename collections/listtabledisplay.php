@@ -55,6 +55,9 @@ $searchVar = $collManager->getQueryTermStr();
 		});
 	</script>
 	<script src="../js/symb/collections.list.js?ver=9" type="text/javascript"></script>
+	<style>
+		.ui-button {background: none;}
+	</style>
 </head>
 <body style="margin-left: 0px; margin-right: 0px;background-color:white;">
 	<div id="">

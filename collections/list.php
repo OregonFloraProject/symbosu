@@ -109,6 +109,9 @@ $occurArr = $collManager->getSpecimenMap($pageNumber,$cntPerPage);
 ?>
 	<script type="text/javascript" src="../js/jquery.js?ver=20130917"></script>
 	<script type="text/javascript" src="../js/jquery-ui.js?ver=20130917"></script>
+	<style>
+		.ui-button, .icon-button {background: none;}
+	</style>
 <?php
 	if(isset($collections_listCrumbs)){
 		if($collections_listCrumbs){
