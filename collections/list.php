@@ -373,7 +373,7 @@ $occurArr = $collManager->getSpecimenMap($pageNumber,$cntPerPage);
 			</div>
 			<div style='margin:10 0 0 20;'>
 				<button>
-					<a href="#" onclick="openMapPU();" >
+					<a href="#" style="color: white !important; text-decoration: none !important;" onclick="openMapPU();" >
 						<?php echo $LANG['GOOGLE_MAP_DISPLAY']; ?>
 					</a>
 				</button>
