@@ -60,8 +60,11 @@ function openIndPU(occId,clid){
 }
 
 function openMapPU(){
-	var url = 'map/googlemap.php?'+sessionStorage.querystr;
-	window.open(url,'gmap','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=1150,height=900,left=20,top=20');
+	var url = 'map/googlemap.php?minClusterSetting=10&gridSizeSetting=30&'+sessionStorage.querystr;
+
+	// Don't open in a popup window, just open as another browser window
+	//window.open(url,'gmap','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1,width=1150,height=900,left=20,top=20');
+	window.open(url,'gmap');
 }
 
 function targetPopup(f) {
