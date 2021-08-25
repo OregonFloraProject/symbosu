@@ -47,6 +47,7 @@ if(array_key_exists('taxa', $taxaArr)){
       echo '<link href="'.$CLIENT_ROOT.'/css/main.css?ver=1" type="text/css" rel="stylesheet" />';
     }
   ?>
+  	<meta name="google" content="notranslate">
 	<script src="//www.google.com/jsapi"></script>
 	<script src="//maps.googleapis.com/maps/api/js?<?php echo (isset($GOOGLE_MAP_KEY) && $GOOGLE_MAP_KEY?'key='.$GOOGLE_MAP_KEY:''); ?>"></script>
 	<script type="text/javascript" src="../../js/symb/markerclusterer.js?ver=260913"></script>
@@ -205,8 +206,15 @@ if(array_key_exists('taxa', $taxaArr)){
 				<?php
 				$spCnt++;
 			}
+
+			// Restrict map view to OregonFlora map boundaries by default
+			if($boundLatMin > $minLat) $minLat = $boundLatMin;
+			if($boundLatMax < $maxLat) $maxLat = $boundLatMax;
+			if($boundLngMin > $minLng) $minLng = $boundLngMin;
+			if($boundLngMax < $maxLng) $maxLng = $boundLngMax;
+
 			//Add some padding
-			$padding = 0.5;
+			$padding = 0.1;
 			if($minLat > -80) $minLat -= $padding;
 			if($maxLat < 80) $maxLat += $padding;
 			if($minLng > -170) $minLng -= $padding;
@@ -318,6 +326,23 @@ if(array_key_exists('taxa', $taxaArr)){
 </head>
 <body style="background-color:#ffffff;width:100%" onload="initialize();">
 	<?php
+	$displayLeftMenu = false;
+	include($SERVER_ROOT.'/header.php');
+	?>
+	<style>
+		fieldset {
+			border: 1px solid;
+			margin: 0 2px;
+			padding: 0.35em 0.625em 0.75em;
+		}
+
+		legend {
+			width: auto;
+			padding: 0px 5px;
+		}
+	</style>
+	<div id="innertext" style="margin-top: 30px;">
+	<?php
 	if(!$coordArr){
 		?>
 			<div style="font-size:120%;font-weight:bold;">
@@ -335,7 +360,7 @@ if(array_key_exists('taxa', $taxaArr)){
 		<?php
 	}
 	?>
-	<div id="map_canvas" style="width:100%;height:700px"></div>
+	<div id="map_canvas" class="googlemapphp" style="width:100%;height:700px"></div>
 	<table title='Add Point of Reference' style="width:100%;" >
 		<tr>
 			<td style="width:330px" valign='top'>
@@ -427,5 +452,9 @@ if(array_key_exists('taxa', $taxaArr)){
 			</td>
 		</tr>
 	</table>
+	</div>
+	<?php
+	include_once($SERVER_ROOT.'/includes/footer.php');
+	?>
 </body>
 </html>
