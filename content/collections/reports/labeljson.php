@@ -2,22 +2,393 @@
  $LABEL_FORMAT_JSON = '{
     "labelFormats": [
         {
-            "title": "Generic Herbarium Label",
-            "displaySpeciesAuthor": 1,
-            "displayBarcode": 0,
-            "labelType": "2",
-            "customStyles": "body{ font-size:10pt; }",
-            "defaultCss": "..\/..\/css\/symb\/labelhelpers.css",
-            "customCss": "",
-            "customJs": "",
-            "pageSize": "letter",
+            "title": "Basic Herbarium Label",
             "labelHeader": {
                 "prefix": "Flora of ",
-                "midText": 3,
+                "midText": "2",
+                "suffix": ", U.S.A.",
+                "className": "",
+                "style": "font-weight: bold;"
+            },
+            "labelFooter": {
+                "textValue": "Oregon State University",
+                "className": "",
+                "style": "background-image: url(\u0027..\/..\/images\/icons\/portal-label.png\u0027); background-repeat: no-repeat; background-position: left center;"
+            },
+            "customStyles": ".associatedtaxaPrefix{font-style: normal; font-variant: small-caps;}",
+            "defaultCss": "..\/..\/css\/symb\/labelhelpers.css",
+            "customCss": "",
+            "customJS": "",
+            "labelType": "2",
+            "pageSize": "letter",
+            "displaySpeciesAuthor": 0,
+            "displayBarcode": 0,
+            "labelBlocks": [
+                {
+                    "divBlock": {
+                        "className": "label-blocks",
+                        "style": "",
+                        "blocks": [
+                            {
+                                "fieldBlock": [
+                                    {
+                                        "field": "family",
+                                        "className": "font-family-times"
+                                    }
+                                ],
+                                "delimiter": " ",
+                                "className": "mb-2 mt-2"
+                            },
+                            {
+                                "fieldBlock": [
+                                    {
+                                        "field": "scientificname",
+                                        "className": "font-family-times font-bold italic"
+                                    },
+                                    {
+                                        "field": "scientificnameauthorship",
+                                        "className": "font-family-times"
+                                    }
+                                ],
+                                "delimiter": " ",
+                                "className": "mb-2"
+                            },
+                            {
+                                "fieldBlock": [
+                                    {
+                                        "field": "county",
+                                        "className": "font-family-times",
+                                        "suffix": " Co.,"
+                                    },
+                                    {
+                                        "field": "stateprovince",
+                                        "className": "font-family-times",
+                                        "suffix": ":"
+                                    },
+                                    {
+                                        "field": "locality",
+                                        "className": "font-family-times"
+                                    },
+                                    {
+                                        "field": "elevationinmeters",
+                                        "className": "font-family-times",
+                                        "prefix": "Elev. ",
+                                        "suffix": "m."
+                                    }
+                                ],
+                                "delimiter": " ",
+                                "className": "mb-2"
+                            },
+                            {
+                                "fieldBlock": [
+                                    {
+                                        "field": "decimallatitude",
+                                        "className": "font-family-times",
+                                        "suffix": "\u00b0"
+                                    },
+                                    {
+                                        "field": "decimallongitude",
+                                        "className": "font-family-times",
+                                        "suffix": "\u00b0"
+                                    },
+                                    {
+                                        "field": "coordinateuncertaintyinmeters",
+                                        "className": "font-family-times",
+                                        "prefix": "\u00b1",
+                                        "suffix": " m."
+                                    },
+                                    {
+                                        "field": "geodeticdatum",
+                                        "prefix": "(",
+                                        "suffix": ")"
+                                    }
+                                ],
+                                "delimiter": " ",
+                                "className": "mb-2"
+                            },
+                            {
+                                "fieldBlock": [
+                                    {
+                                        "field": "habitat",
+                                        "className": "font-family-times",
+                                        "prefix": "Habitat: "
+                                    },
+                                    {
+                                        "field": "substrate"
+                                    }
+                                ],
+                                "delimiter": " ",
+                                "className": "mb-2"
+                            },
+                            {
+                                "fieldBlock": [
+                                    {
+                                        "field": "verbatimattributes",
+                                        "className": "font-family-times"
+                                    },
+                                    {
+                                        "field": "reproductivecondition",
+                                        "className": "font-family-times"
+                                    },
+                                    {
+                                        "field": "occurrenceremarks",
+                                        "className": "font-family-times"
+                                    }
+                                ],
+                                "delimiter": " ",
+                                "className": "mb-2"
+                            },
+                            {
+                                "fieldBlock": [
+                                    {
+                                        "field": "associatedtaxa",
+                                        "className": "font-family-times italic",
+                                        "prefix": "Associated taxa: "
+                                    }
+                                ],
+                                "delimiter": " ",
+                                "className": "mb-2"
+                            },
+                            {
+                                "fieldBlock": [
+                                    {
+                                        "field": "recordedby",
+                                        "className": "font-family-times"
+                                    },
+                                    {
+                                        "field": "recordnumber",
+                                        "className": "font-family-times"
+                                    },
+                                    {
+                                        "field": "eventdate",
+                                        "className": "font-family-times float-right"
+                                    }
+                                ],
+                                "delimiter": " ",
+                                "className": "mb-2"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "title": "Mickley Label",
+            "labelHeader": {
+                "prefix": "Flora of ",
+                "midText": "2",
+                "suffix": "",
+                "className": "font-family-times",
+                "style": "text-transform: uppercase; font-weight: bold;"
+            },
+            "labelFooter": {
+                "textValue": "OSC Herbarium \u2013 Oregon State University",
+                "className": "",
+                "style": "font-variant: small-caps; font-size: 0.9em; transform: scaleY(1.1); text-align: center; margin-top: 0.5em; background-image: url(\u0027..\/..\/images\/icons\/portal-label.png\u0027); background-repeat: no-repeat; background-position: left center;"
+            },
+            "customStyles": ".field-block{clear: both;} .family{font-variant: small-caps;} .associatedtaxaPrefix{font-style: normal; font-variant: small-caps;} .text-base{font-size: 0.95em;} .text-sm{font-size: 0.8em;} .cn-barcode{text-align: center;} .label{box-shadow: inset 0 0 0 5px white, inset 0 0 0 6px black;}",
+            "defaultCss": "..\/..\/css\/symb\/labelhelpers.css",
+            "customCss": "",
+            "customJS": "",
+            "labelType": "2",
+            "pageSize": "letter",
+            "displaySpeciesAuthor": 0,
+            "displayBarcode": 0,
+            "labelBlocks": [
+                {
+                    "divBlock": {
+                        "className": "label-blocks",
+                        "style": "",
+                        "blocks": [
+                            {
+                                "fieldBlock": [
+                                    {
+                                        "field": "family",
+                                        "className": "float-right font-family-arial text-base"
+                                    }
+                                ],
+                                "delimiter": " ",
+                                "className": "mt-2 mb-2"
+                            },
+                            {
+                                "fieldBlock": [
+                                    {
+                                        "field": "scientificname",
+                                        "className": "font-bold font-family-arial italic text-base"
+                                    },
+                                    {
+                                        "field": "scientificnameauthorship",
+                                        "className": "font-family-arial text-base"
+                                    }
+                                ],
+                                "delimiter": " ",
+                                "className": "mb-1"
+                            },
+                            {
+                                "fieldBlock": [
+                                    {
+                                        "field": "identifiedby",
+                                        "className": "text-sm font-family-arial",
+                                        "prefix": "Det: "
+                                    },
+                                    {
+                                        "field": "dateidentified",
+                                        "className": "text-sm font-family-arial"
+                                    }
+                                ],
+                                "delimiter": " ",
+                                "className": "mb-2 text-align-left ml-2"
+                            },
+                            {
+                                "fieldBlock": [
+                                    {
+                                        "field": "country",
+                                        "className": "font-bold font-family-arial text-base",
+                                        "suffix": ","
+                                    },
+                                    {
+                                        "field": "stateprovince",
+                                        "className": "font-bold font-family-arial text-base",
+                                        "suffix": ","
+                                    },
+                                    {
+                                        "field": "county",
+                                        "className": "font-bold font-family-arial text-base",
+                                        "suffix": " County,"
+                                    },
+                                    {
+                                        "field": "locality",
+                                        "className": "font-family-arial text-base"
+                                    }
+                                ],
+                                "delimiter": " "
+                            },
+                            {
+                                "fieldBlock": [
+                                    {
+                                        "field": "decimallatitude",
+                                        "className": "font-family-arial text-base",
+                                        "suffix": "\u00b0,"
+                                    },
+                                    {
+                                        "field": "decimallongitude",
+                                        "className": "font-family-arial text-base",
+                                        "suffix": "\u00b0"
+                                    },
+                                    {
+                                        "field": "coordinateuncertaintyinmeters",
+                                        "className": "font-family-arial text-base",
+                                        "prefix": "\u00b1",
+                                        "suffix": " m"
+                                    },
+                                    {
+                                        "field": "geodeticdatum",
+                                        "className": "font-family-arial text-base",
+                                        "prefix": "(",
+                                        "suffix": ")."
+                                    },
+                                    {
+                                        "field": "elevationinmeters",
+                                        "className": "font-family-arial text-base",
+                                        "prefix": "Elev: ",
+                                        "suffix": " m."
+                                    }
+                                ],
+                                "delimiter": " ",
+                                "className": "mb-2"
+                            },
+                            {
+                                "fieldBlock": [
+                                    {
+                                        "field": "habitat",
+                                        "className": "font-family-arial text-sm",
+                                        "suffix": "."
+                                    },
+                                    {
+                                        "field": "substrate",
+                                        "className": "font-family-arial text-sm",
+                                        "suffix": "."
+                                    },
+                                    {
+                                        "field": "verbatimattributes",
+                                        "className": "font-family-arial text-sm",
+                                        "suffix": "."
+                                    },
+                                    {
+                                        "field": "occurrenceremarks",
+                                        "className": "text-sm font-family-arial",
+                                        "suffix": "."
+                                    }
+                                ],
+                                "delimiter": " ",
+                                "className": "mb-2"
+                            },
+                            {
+                                "fieldBlock": [
+                                    {
+                                        "field": "associatedtaxa",
+                                        "className": "text-sm font-family-arial italic",
+                                        "prefix": "Associated Species: "
+                                    }
+                                ],
+                                "delimiter": " ",
+                                "className": "mb-2"
+                            },
+                            {
+                                "fieldBlock": [
+                                    {
+                                        "field": "recordedby",
+                                        "className": "font-bold font-family-arial text-base"
+                                    },
+                                    {
+                                        "field": "recordnumber",
+                                        "className": "font-family-arial font-bold text-base"
+                                    },
+                                    {
+                                        "field": "eventdate",
+                                        "className": "font-family-arial float-right font-bold text-base"
+                                    }
+                                ],
+                                "delimiter": " "
+                            },
+                            {
+                                "fieldBlock": [
+                                    {
+                                        "field": "associatedcollectors",
+                                        "className": "font-family-arial text-sm",
+                                        "prefix": "    With: "
+                                    }
+                                ],
+                                "delimiter": " ",
+                                "className": "ml-2 mb-2"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "title": "Symbiota Generic Herbarium Label",
+            "labelHeader": {
+                "prefix": "Flora of ",
+                "midText": "3",
                 "suffix": " county",
                 "className": "text-center font-bold font-sans text-2xl",
                 "style": "margin-bottom:10px;"
             },
+            "labelFooter": {
+                "textValue": "",
+                "className": "text-center font-bold font-sans",
+                "style": "margin-top:10px;"
+            },
+            "customStyles": "body{ font-size:10pt; }",
+            "defaultCss": "..\/..\/css\/symb\/labelhelpers.css",
+            "customCss": "",
+            "customJS": "",
+            "labelType": "2",
+            "pageSize": "letter",
+            "displaySpeciesAuthor": 1,
+            "displayBarcode": 0,
             "labelBlocks": [
                 {
                     "divBlock": {
@@ -256,26 +627,13 @@
                         ]
                     }
                 }
-            ],
-            "labelFooter": {
-                "textValue": "",
-                "className": "text-center font-bold font-sans",
-                "style": "margin-top:10px;"
-            }
+            ]
         },
         {
-            "title": "Generic Vertebrate Label",
-            "displaySpeciesAuthor": 0,
-            "displayBarcode": 0,
-            "labelType": "3",
-            "customStyles": "body{ font-size:10pt; }",
-            "defaultCss": "..\/..\/css\/symb\/labelhelpers.css",
-            "customCss": "",
-            "customJs": "",
-            "pageSize": "letter",
+            "title": "Symbiota Generic Vertebrate Label",
             "labelHeader": {
                 "prefix": "",
-                "midText": 0,
+                "midText": "0",
                 "suffix": "",
                 "className": "text-center font-bold font-sans text-2xl",
                 "style": "text-align:center;margin-bottom:5px;font:bold 7pt arial,sans-serif;clear:both;"
@@ -285,6 +643,14 @@
                 "className": "text-center font-bold font-sans text-2xl",
                 "style": "text-align:center;margin-top:10px;font:bold 10pt arial,sans-serif;clear:both;"
             },
+            "customStyles": "body{ font-size:10pt; }",
+            "defaultCss": "..\/..\/css\/symb\/labelhelpers.css",
+            "customCss": "",
+            "customJS": "",
+            "labelType": "3",
+            "pageSize": "letter",
+            "displaySpeciesAuthor": 0,
+            "displayBarcode": 0,
             "labelBlocks": [
                 {
                     "divBlock": {
@@ -471,201 +837,6 @@
                                         }
                                     ]
                                 }
-                            }
-                        ]
-                    }
-                }
-            ]
-        },
-        {
-            "title": "Mickley Label",
-            "labelHeader": {
-                "prefix": "Flora of ",
-                "midText": "2",
-                "suffix": "",
-                "className": "font-family-times",
-                "style": "text-transform: uppercase; font-weight: bold;"
-            },
-            "labelFooter": {
-                "textValue": "OSC Herbarium \u2013 Oregon State University",
-                "className": "",
-                "style": "font-variant: small-caps; font-size: 0.8em; text-align: center; margin-top: 0.5em;"
-            },
-            "customStyles": ".field-block{clear: both;} .family{font-variant: small-caps;} .associatedtaxaPrefix{font-style: normal; font-variant: small-caps;} .text-base{font-size: 0.95em;} .text-sm{font-size: 0.8em;} .cn-barcode{text-align: center;} .label{box-shadow: inset 0 0 0 5px white, inset 0 0 0 6px black;}",
-            "defaultCss": "..\/..\/css\/symb\/labelhelpers.css",
-            "customCss": "",
-            "customJS": "",
-            "labelType": "2",
-            "pageSize": "letter",
-            "displaySpeciesAuthor": 0,
-            "displayBarcode": 0,
-            "labelBlocks": [
-                {
-                    "divBlock": {
-                        "className": "label-blocks",
-                        "style": "",
-                        "blocks": [
-                            {
-                                "fieldBlock": [
-                                    {
-                                        "field": "family",
-                                        "className": "float-right font-family-arial text-base"
-                                    }
-                                ],
-                                "delimiter": " ",
-                                "className": "mb-1"
-                            },
-                            {
-                                "fieldBlock": [
-                                    {
-                                        "field": "scientificname",
-                                        "className": "font-bold font-family-arial italic text-base"
-                                    },
-                                    {
-                                        "field": "scientificnameauthorship",
-                                        "className": "font-family-arial text-base"
-                                    }
-                                ],
-                                "delimiter": " ",
-                                "className": "mb-1"
-                            },
-                            {
-                                "fieldBlock": [
-                                    {
-                                        "field": "identifiedby",
-                                        "className": "text-sm font-family-arial",
-                                        "prefix": "Det: "
-                                    },
-                                    {
-                                        "field": "dateidentified",
-                                        "className": "text-sm font-family-arial"
-                                    }
-                                ],
-                                "delimiter": " ",
-                                "className": "mb-2 text-align-left ml-2"
-                            },
-                            {
-                                "fieldBlock": [
-                                    {
-                                        "field": "country",
-                                        "className": "font-bold font-family-arial text-base",
-                                        "suffix": ","
-                                    },
-                                    {
-                                        "field": "stateprovince",
-                                        "className": "font-bold font-family-arial text-base",
-                                        "suffix": ","
-                                    },
-                                    {
-                                        "field": "county",
-                                        "className": "font-bold font-family-arial text-base",
-                                        "suffix": " County,"
-                                    },
-                                    {
-                                        "field": "locality",
-                                        "className": "font-family-arial text-base"
-                                    }
-                                ],
-                                "delimiter": " "
-                            },
-                            {
-                                "fieldBlock": [
-                                    {
-                                        "field": "decimallatitude",
-                                        "className": "font-family-arial text-base",
-                                        "suffix": "\u00b0,"
-                                    },
-                                    {
-                                        "field": "decimallongitude",
-                                        "className": "font-family-arial text-base",
-                                        "suffix": "\u00b0"
-                                    },
-                                    {
-                                        "field": "coordinateuncertaintyinmeters",
-                                        "className": "font-family-arial text-base",
-                                        "prefix": "\u00b1",
-                                        "suffix": " m"
-                                    },
-                                    {
-                                        "field": "geodeticdatum",
-                                        "className": "font-family-arial text-base",
-                                        "prefix": "(",
-                                        "suffix": ")."
-                                    },
-                                    {
-                                        "field": "elevationinmeters",
-                                        "className": "font-family-arial text-base",
-                                        "prefix": "Elev: ",
-                                        "suffix": " m."
-                                    }
-                                ],
-                                "delimiter": " ",
-                                "className": "mb-2"
-                            },
-                            {
-                                "fieldBlock": [
-                                    {
-                                        "field": "habitat",
-                                        "className": "font-family-arial text-sm",
-                                        "suffix": "."
-                                    },
-                                    {
-                                        "field": "substrate",
-                                        "className": "font-family-arial text-sm",
-                                        "suffix": "."
-                                    },
-                                    {
-                                        "field": "verbatimattributes",
-                                        "className": "font-family-arial text-sm",
-                                        "suffix": "."
-                                    },
-                                    {
-                                        "field": "occurrenceremarks",
-                                        "className": "text-sm font-family-arial",
-                                        "suffix": "."
-                                    }
-                                ],
-                                "delimiter": " ",
-                                "className": "mb-2"
-                            },
-                            {
-                                "fieldBlock": [
-                                    {
-                                        "field": "associatedtaxa",
-                                        "className": "text-sm font-family-arial italic",
-                                        "prefix": "Associated Species: "
-                                    }
-                                ],
-                                "delimiter": " ",
-                                "className": "mb-2"
-                            },
-                            {
-                                "fieldBlock": [
-                                    {
-                                        "field": "recordedby",
-                                        "className": "font-bold font-family-arial text-base"
-                                    },
-                                    {
-                                        "field": "recordnumber",
-                                        "className": "font-family-arial font-bold text-base"
-                                    },
-                                    {
-                                        "field": "eventdate",
-                                        "className": "font-family-arial float-right font-bold text-base"
-                                    }
-                                ],
-                                "delimiter": " "
-                            },
-                            {
-                                "fieldBlock": [
-                                    {
-                                        "field": "associatedcollectors",
-                                        "className": "font-family-arial text-sm",
-                                        "prefix": "    With: "
-                                    }
-                                ],
-                                "delimiter": " ",
-                                "className": "ml-2"
                             }
                         ]
                     }
