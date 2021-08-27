@@ -80,9 +80,6 @@ class EOLManager {
 		$retStatus = false;
 		$url = 'http://eol.org/api/search/1.0.json?q='.urlencode($sciName);
 
-// Compatibility fix for OregonFlora symbini.php
-		if(isset($GLOBALS['EOL_KEY']) && $GLOBALS['EOL_KEY']) $url .= '&key='.$GLOBALS['EOL_KEY'];
-
 		if(isset($GLOBALS['TAXONOMIC_AUTHORITIES']['EOL']) && $GLOBALS['TAXONOMIC_AUTHORITIES']['EOL']){
 			$url .= '&key='.$GLOBALS['TAXONOMIC_AUTHORITIES']['EOL'];
 		}
@@ -189,9 +186,6 @@ class EOLManager {
 		$retStatus = false;
 		$url = 'http://eol.org/api/pages/1.0.json?id='.$identifier.'&images_per_page=20&vetted=2&details=1';
 		//echo $url;
-
-// Compatibility fix for OregonFlora symbini.php
-		if(isset($GLOBALS['EOL_KEY']) && $GLOBALS['EOL_KEY']) $url .= '&key='.$GLOBALS['EOL_KEY'];
 
 		if(isset($GLOBALS['TAXONOMIC_AUTHORITIES']['EOL']) && $GLOBALS['TAXONOMIC_AUTHORITIES']['EOL']){
 			$url .= '&key='.$GLOBALS['TAXONOMIC_AUTHORITIES']['EOL'];
