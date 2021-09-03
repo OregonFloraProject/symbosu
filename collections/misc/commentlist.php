@@ -136,8 +136,8 @@ if($isEditor){
 		}
 		?>
 		<!-- This is inner text! -->
-		<h1><?php echo $collMeta['name']; ?></h1>
 		<div id="innertext">
+			<h1><?php echo $collMeta['name']; ?></h1>
 			<?php
 			if($collid){
 				$pageBar = '';

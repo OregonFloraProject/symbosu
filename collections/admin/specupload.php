@@ -361,6 +361,9 @@ if($isEditor && $collid){
 			}
 		}
 	</script>
+	<style type="text/css">
+		.unmapped{ background: yellow; }
+	</style>
 </head>
 <body>
 <?php
@@ -914,7 +917,7 @@ if($isEditor && $collid){
 										<option value="">----------------------------------</option>
 										<?php
 										foreach($dbpkOptions as $f){
-											echo '<option '.($dbpk==$f?'SELECTED':'').'>'.$f.'</option>';
+											echo '<option value="'.strtolower($f).'" '.($dbpk==strtolower($f)?'SELECTED':'').'>'.$f.'</option>';
 										}
 										?>
 									</select>
