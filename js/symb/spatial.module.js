@@ -44,6 +44,11 @@ $(document).ready(function() {
                 var rankLow = '';
                 var rankHigh = '';
                 var rankLimit = '';
+                var oregon = 0;
+                // Check whether to restrict the autosuggest to Oregon vascular plants curated by OregonFlora
+                if(document.getElementById("oregonvascplant").checked) {
+                    oregon = 1;
+                }
                 if(t == 5){
                     source = '../webservices/autofillvernacular.php';
                 }
@@ -55,10 +60,10 @@ $(document).ready(function() {
                     rankHigh = 139;
                 }
                 else if(t == 2){
-                    rankLimit = 140;
+                    rankLow = 141;
                 }
                 else if(t == 3){
-                    rankLow = 141;
+                    rankLimit = 140;
                 }
                 else{
                     rankLow = 140;
@@ -69,6 +74,7 @@ $(document).ready(function() {
                     rlow: rankLow,
                     rhigh: rankHigh,
                     rlimit: rankLimit,
+                    oregon: oregon,
                     hideauth: true,
                     limit: 20
                 }, response );

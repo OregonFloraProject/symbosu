@@ -247,6 +247,9 @@ $dbArr = Array();
                                 <div>
                                     <span style=""><input data-role="none" type='checkbox' name='thes' id='thes' onchange="buildQueryStrings();" value='1' CHECKED><?php echo $SEARCHTEXT['GENERAL_TEXT_2_MAP']; ?></span>
                                 </div>
+                                <div>
+                                    <span style=""><input data-role="none" type='checkbox' name='oregonvascplant' id='oregonvascplant' onchange="buildQueryStrings();" value='1' CHECKED>Restrict autosuggest to Oregon vascular plant taxa</span>
+                                </div>
                                 <div id="taxonSearch0">
                                     <div id="taxa_autocomplete" >
                                         <div style="margin-top:5px;">

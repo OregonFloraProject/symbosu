@@ -37,6 +37,8 @@ $rankLimit = array_key_exists('rlimit',$_REQUEST)?$_REQUEST['rlimit']:0;
 $rankLow = array_key_exists('rlow',$_REQUEST)?$_REQUEST['rlow']:0;
 $rankHigh = array_key_exists('rhigh',$_REQUEST)?$_REQUEST['rhigh']:0;
 $limit = array_key_exists('limit',$_REQUEST)?$_REQUEST['limit']:0;
+// Check whether autosuggest is restricted to Oregon vascular plants curated by OregonFlora
+$oregonVascPlant = array_key_exists('oregon',$_REQUEST)?$_REQUEST['oregon']:0;
 
 $qHandler = new TaxonomyAPIManager();
 $listArr = Array();
@@ -49,6 +51,8 @@ if($queryString){
     $qHandler->setRankLow($rankLow);
     $qHandler->setRankHigh($rankHigh);
     $qHandler->setLimit($limit);
+    // Restrict taxonomy to Oregon vascular plants curated by OregonFlora
+	$qHandler->setOregonVascPlant($oregonVascPlant);
 
     $listArr = $qHandler->generateSciNameList($queryString);
     echo json_encode($listArr);

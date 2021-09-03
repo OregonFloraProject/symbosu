@@ -717,7 +717,13 @@ class ChecklistManager {
 	public function getUpperTaxa($term){
 		$retArr = array();
 		$param = "{$term}%";
-		$sql = 'SELECT tid, sciname FROM taxa WHERE (rankid < 180) AND (sciname LIKE ?) ORDER BY sciname';
+		$sql = 'SELECT t.tid, t.sciname FROM taxa t ';
+		// Add whether each taxon belongs to any checklists
+		$sql .= 'LEFT JOIN `fmchklsttaxalink` as cl ON t.tid = cl.tid ';
+		$sql .= 'WHERE (t.rankid < 180) AND (t.sciname LIKE ?) ';
+		// Restrict to taxa contained in the State of Oregon vascular plant checklist (clid=1)
+		$sql .= 'And (cl.clid = 1) ';
+		$sql .= 'ORDER BY t.sciname ';
 		$stmt = $this->conn->prepare($sql);
 		$stmt->bind_param('s', $param);
 		$stmt->execute();

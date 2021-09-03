@@ -12,6 +12,7 @@ class TaxonomyAPIManager{
     private $limit = 0;
     private $hideAuth = false;
     private $hideProtected = false;
+    private $oregonVascPlant = false;
 	
 	function __construct(){
 		$this->conn = MySQLiConnectionFactory::getCon("readonly");
@@ -26,7 +27,9 @@ class TaxonomyAPIManager{
         $sql = '';
 
  	    $sql = 'SELECT DISTINCT t.SciName, t.Author, t.TID '.
-            'FROM taxa AS t ';
+            'FROM taxa AS t '.
+            // Add whether each taxon belongs to any checklists
+            'LEFT JOIN `fmchklsttaxalink` as cl ON t.tid = cl.tid ';
  	    if($this->taxAuthId){
             $sql .= 'INNER JOIN taxstatus AS ts ON t.tid = ts.tid ';
         }
@@ -48,6 +51,10 @@ class TaxonomyAPIManager{
         if($this->hideProtected){
             $sql .= 'AND t.SecurityStatus <> 2 ';
         }
+        // Restrict to taxa contained in the State of Oregon vascular plant checklist (clid=1)
+        if($this->oregonVascPlant){
+            $sql .= 'AND (cl.clid = 1) ';
+        }
         if($this->limit){
             $sql .= 'LIMIT '.$this->limit.' ';
         }
@@ -66,9 +73,15 @@ class TaxonomyAPIManager{
         $retArr = Array();
         $sql = '';
 
-        $sql = 'SELECT DISTINCT v.VernacularName '.
-            'FROM taxavernaculars AS v ';
+        $sql = 'SELECT DISTINCT v.TID, v.VernacularName '.
+            'FROM taxavernaculars AS v '.
+            // Add whether each taxon belongs to any checklists
+            'LEFT JOIN `fmchklsttaxalink` as cl ON v.TID = cl.tid ';
         $sql .= 'WHERE v.VernacularName LIKE "%'.$this->cleanInStr($queryString).'%" ';
+        // Restrict to taxa contained in the State of Oregon vascular plant checklist (clid=1)
+        if($this->oregonVascPlant){
+            $sql .= 'AND (cl.clid = 1) ';
+        }
         if($this->limit){
             $sql .= 'LIMIT '.$this->limit.' ';
         }
@@ -106,6 +119,16 @@ class TaxonomyAPIManager{
 
     public function setHideProtected($val){
         $this->hideProtected = $this->cleanInStr($val);
+    }
+
+    // Added to allow for restricting taxonomy to Oregon vascular plants curated by OregonFlora
+    public function getOregonVascPlant(){
+        return $this->oregonVascPlant;
+    }
+    
+    // Added to allow for restricting taxonomy to Oregon vascular plants curated by OregonFlora
+    public function setOregonVascPlant($bool){
+        if($bool) $this->oregonVascPlant = $bool;
     }
 	
 	protected function cleanInStr($str){

@@ -4,6 +4,8 @@ include_once($SERVER_ROOT.'/classes/TaxonomyDisplayManager.php');
 header("Content-Type: text/html; charset=".$CHARSET);
 
 $target = array_key_exists("target",$_REQUEST)?$_REQUEST["target"]:"";
+// Check whether the taxonomic tree viewer is restricted to Oregon vascular plants curated by OregonFlora
+$oregonVascPlant = array_key_exists('oregonvascplant',$_REQUEST)?$_REQUEST['oregonvascplant']:0;
 $displayAuthor = array_key_exists('displayauthor',$_REQUEST)?$_REQUEST['displayauthor']:0;
 $matchOnWords = array_key_exists('matchonwords',$_POST)?$_POST['matchonwords']:0;
 $displayFullTree = array_key_exists('displayfulltree',$_REQUEST)?$_REQUEST['displayfulltree']:0;
@@ -11,6 +13,7 @@ $displaySubGenera = array_key_exists('displaysubgenera',$_REQUEST)?$_REQUEST['di
 $taxAuthId = array_key_exists("taxauthid",$_REQUEST)?$_REQUEST["taxauthid"]:1;
 $statusStr = array_key_exists('statusstr',$_REQUEST)?$_REQUEST['statusstr']:'';
 
+if(!is_numeric($oregonVascPlant)) $oregonVascPlant = 0;
 if(!is_numeric($displayAuthor)) $displayAuthor = 0;
 if(!is_numeric($matchOnWords)) $matchOnWords = 0;
 if(!is_numeric($displayFullTree)) $displayFullTree = 0;
@@ -21,6 +24,8 @@ if($statusStr) str_replace(';', '<br/>', $statusStr);
 
 if(!array_key_exists("target",$_REQUEST)){
 	$matchOnWords = 1;
+	// Restrict to Oregon vascular plants by default
+	$oregonVascPlant = 1;
 }
 
 $taxonDisplayObj = new TaxonomyDisplayManager();
@@ -30,6 +35,8 @@ $taxonDisplayObj->setDisplayAuthor($displayAuthor);
 $taxonDisplayObj->setMatchOnWholeWords($matchOnWords);
 $taxonDisplayObj->setDisplayFullTree($displayFullTree);
 $taxonDisplayObj->setDisplaySubGenera($displaySubGenera);
+// Restrict taxonomy to Oregon vascular plants curated by OregonFlora
+$taxonDisplayObj->setOregonVascPlant($oregonVascPlant);
 
 $isEditor = false;
 if($IS_ADMIN || array_key_exists("Taxonomy",$USER_RIGHTS)){
@@ -64,7 +71,12 @@ if($IS_ADMIN || array_key_exists("Taxonomy",$USER_RIGHTS)){
 		$(document).ready(function() {
 			$("#taxontarget").autocomplete({
 				source: function( request, response ) {
-					$.getJSON( "rpc/gettaxasuggest.php", { term: request.term, taid: document.tdform.taxauthid.value }, response );
+					var oregon = 0;
+					// Check whether to restrict the autosuggest to Oregon vascular plants curated by OregonFlora
+					if(document.tdform.oregonvascplant.checked) {
+						oregon = 1;
+					}
+					$.getJSON( "rpc/gettaxasuggest.php", { term: request.term, taid: document.tdform.taxauthid.value, oregon: oregon}, response );
 				}
 			},{ minLength: 3 }
 			);
@@ -131,6 +143,9 @@ if($IS_ADMIN || array_key_exists("Taxonomy",$USER_RIGHTS)){
 						<input name="taxauthid" type="hidden" value="<?php echo $taxAuthId; ?>" />
 					</div>
 					<div style="clear:both;padding-top:15px; margin-left:60px;">
+						<div style="margin:3px;">
+							<input name="oregonvascplant" type="checkbox" value="1" <?php echo ($oregonVascPlant?'checked':''); ?> /> Restrict to Oregon vascular plant taxa
+						</div>
 						<div style="margin:3px;">
 							<input name="displayauthor" type="checkbox" value="1" <?php echo ($displayAuthor?'checked':''); ?> /> Display authors
 						</div>

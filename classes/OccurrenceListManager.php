@@ -29,7 +29,9 @@ class OccurrenceListManager extends OccurrenceManager{
 		$sql = 'SELECT o.occid, c.collid, c.institutioncode, c.collectioncode, c.collectionname, c.icon, o.institutioncode AS instcodeoverride, o.collectioncode AS collcodeoverride, '.
 			'o.catalognumber, o.family, o.sciname, o.scientificnameauthorship, o.tidinterpreted, o.recordedby, o.recordnumber, o.eventdate, o.year, o.startdayofyear, o.enddayofyear, '.
 			'o.country, o.stateprovince, o.county, o.locality, o.decimallatitude, o.decimallongitude, o.localitysecurity, o.localitysecurityreason, '.
-			'o.habitat, o.substrate, o.minimumelevationinmeters, o.maximumelevationinmeters, o.observeruid, c.sortseq '.
+			'o.habitat, o.substrate, o.minimumelevationinmeters, o.maximumelevationinmeters, o.observeruid, c.sortseq, '.
+			// Check whether the taxon is contained in the State of Oregon vascular plant checklist (clid=1)
+			'(SELECT f.clid FROM `fmchklsttaxalink` f WHERE f.TID = o.tidinterpreted AND clid = 1) as oregon '.
 			'FROM omoccurrences o LEFT JOIN omcollections c ON o.collid = c.collid ';
 		$sql .= $this->getTableJoins($sqlWhere).$sqlWhere;
 		//Don't allow someone to query all occurrences if there are no conditions
@@ -68,6 +70,8 @@ class OccurrenceListManager extends OccurrenceManager{
 				if($securityClearance || $row->localitysecurity == 1){
 					$retArr[$row->occid]["sciname"] = ($row->sciname?$this->cleanOutStr($row->sciname):'undetermined');
 					$retArr[$row->occid]["tid"] = $row->tidinterpreted;
+					// Add a field showing whether the taxon is contained in the State of Oregon vascular plant checklist curated by OregonFlora
+					$retArr[$row->occid]["oregon"] = $row->oregon;
 					$retArr[$row->occid]["author"] = $this->cleanOutStr($row->scientificnameauthorship);
 				}
 				$retArr[$row->occid]["collector"] = $this->cleanOutStr($row->recordedby);

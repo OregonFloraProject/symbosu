@@ -4,6 +4,7 @@ include_once($SERVER_ROOT.'/classes/RpcBase.php');
 class RpcTaxonomy extends RpcBase{
 
 	private $taxAuthID = 1;
+	private $oregonVascPlant = false;
 
 	function __construct(){
 		parent::__construct();
@@ -26,7 +27,10 @@ class RpcTaxonomy extends RpcBase{
 			foreach($termArr as $k => $v){
 				if(mb_strlen($v) == 1) unset($termArr[$k]);
 			}
-			$sql = 'SELECT DISTINCT t.tid, t.sciname, t.author FROM taxa t INNER JOIN taxstatus ts ON t.tid = ts.tid WHERE ts.taxauthid = '.$this->taxAuthID.' AND (t.sciname LIKE "'.$term.'%" ';
+			$sql = 'SELECT DISTINCT t.tid, t.sciname, t.author FROM taxa t INNER JOIN taxstatus ts ON t.tid = ts.tid '.
+			// Add whether each taxon belongs to any checklists
+			'LEFT JOIN `fmchklsttaxalink` as cl ON t.tid = cl.tid '.
+			'WHERE ts.taxauthid = '.$this->taxAuthID.' AND (t.sciname LIKE "'.$term.'%" ';
 			$sqlFrag = '';
 			if($unit1 = array_shift($termArr)) $sqlFrag =  't.unitname1 LIKE "'.$unit1.'%" ';
 			if($unit2 = array_shift($termArr)) $sqlFrag .=  'AND t.unitname2 LIKE "'.$unit2.'%" ';
@@ -37,6 +41,8 @@ class RpcTaxonomy extends RpcBase{
 				if($rankLow) $sql .= 'AND (t.rankid > '.$rankLow.' OR t.rankid IS NULL) ';
 				if($rankHigh) $sql .= 'AND (t.rankid < '.$rankHigh.' OR t.rankid IS NULL) ';
 			}
+			// Restrict to taxa contained in the State of Oregon vascular plant checklist (clid=1)
+			$sql .= ($this->oregonVascPlant ? 'AND (cl.clid = 1)' : '');
 			$sql .= 'ORDER BY t.sciname';
 			$rs = $this->conn->query($sql);
 			while($r = $rs->fetch_object()) {
@@ -256,6 +262,16 @@ class RpcTaxonomy extends RpcBase{
 		$status = parent::isValidApiCall();
 		if(!$status) return false;
 		return true;
+	}
+
+	// Added to allow for restricting taxonomy to Oregon vascular plants curated by OregonFlora
+	public function getOregonVascPlant(){
+		return $this->oregonVascPlant;
+	}
+
+	// Added to allow for restricting taxonomy to Oregon vascular plants curated by OregonFlora
+	public function setOregonVascPlant($bool){
+		if($bool) $this->oregonVascPlant = $bool;
 	}
 }
 ?>

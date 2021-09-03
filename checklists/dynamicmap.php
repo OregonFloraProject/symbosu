@@ -162,6 +162,7 @@ if(!$zoomInt){
 				</span>
                 <ul>
                     <li>Begin by marking on the map the approximate location of your unknown plant.</li>
+                    <li>Optionally specify a higher taxon filter (e.g., plant family) to restrict your search to that group of plants</li>
                     <li>Click &ldquo;Search&rdquo; to create a list of plants that occur in the region of your unknown.</li>
                     <li>Select any of the recognizable characters to narrow the possibilities.</li>
                     <li>Open the profile pages of plants in the list and compare to your unknown.</li>

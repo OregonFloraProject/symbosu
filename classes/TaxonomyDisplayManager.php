@@ -9,6 +9,7 @@ class TaxonomyDisplayManager extends Manager{
 	private $targetRankId = 0;
 	private $taxAuthId = 1;
 	private $taxonomyMeta = array();
+	private $oregonVascPlant = false;
 	private $displayAuthor = false;
 	private $displayFullTree = false;
 	private $displaySubGenera = false;
@@ -42,7 +43,11 @@ class TaxonomyDisplayManager extends Manager{
 		$taxaParentIndex = Array();
 		$sql = 'SELECT DISTINCT t.tid, ts.tidaccepted, t.sciname, t.author, t.rankid, ts.parenttid '.
 			'FROM taxa t LEFT JOIN taxstatus ts ON t.tid = ts.tid '.
+			// Restrict to taxa that are contained in a checklist
+			($this->oregonVascPlant ? 'INNER JOIN `fmchklsttaxalink` as cl ON t.tid = cl.tid ' : '').
 			'WHERE (ts.taxauthid = '.$this->taxAuthId.') ';
+			// Restrict to taxa contained in the State of Oregon vascular plant checklist (cl=1)
+			$sql .= ($this->oregonVascPlant ? 'AND (cl.clid = 1)' : '');
 		if(is_numeric($this->targetStr)){
 			$sql .= 'AND (ts.tid = '.$this->targetStr.') ';
 		}
@@ -111,13 +116,20 @@ class TaxonomyDisplayManager extends Manager{
 			//Get direct children, but only accepted children
 			$tidStr = implode(',',array_keys($this->taxaArr));
 			$childArr = array();
-			$sql2 = 'SELECT DISTINCT t.tid, t.sciname, t.author, t.rankid, ts.parenttid '.
+			// Add a field for whether taxa are in the State of Oregon vascular plant checklist (clid = 1). 
+			// This equals 1 if in the checklist or NULL
+			$sql2 = 'SELECT t.tid, t.sciname, t.author, t.rankid, ts.parenttid, IF(cl.clid = 1, cl.clid, NULL) as clid '.
 				'FROM taxa t INNER JOIN taxstatus ts ON t.tid = ts.tid '.
 				'INNER JOIN taxaenumtree te ON t.tid = te.tid '.
+				// Join the checklist taxa table, but the left join only adds a clid if it equals 1 (State of Oregon)
+				'LEFT JOIN `fmchklsttaxalink` as cl ON t.tid = cl.tid '.
 				'WHERE (ts.taxauthid = '.$this->taxAuthId.') AND (ts.tid = ts.tidaccepted) AND (te.taxauthid = '.$this->taxAuthId.') '.
+				// Restrict to taxa contained in the State of Oregon vascular plant checklist (clid=1)
+				($this->oregonVascPlant ? 'AND (cl.clid = 1)' : '').
 				'AND ((te.parenttid IN('.$tidStr.')) OR (t.tid IN('.$tidStr.'))) ';
 			if(!$this->targetStr) $sql2 .= 'AND t.rankid <= 10 ';
 			elseif($this->targetRankId < 140 && !$this->displayFullTree) $sql2 .= 'AND t.rankid <= 140 ';
+			$sql2 .= 'GROUP BY t.tid, t.sciname, t.author, t.rankid, ts.parenttid ';
 			//echo $sql2.'<br>';
 			$rs2 = $this->conn->query($sql2);
 			while($row2 = $rs2->fetch_object()){
@@ -128,6 +140,7 @@ class TaxonomyDisplayManager extends Manager{
 				$this->taxaArr[$tid]["rankid"] = $row2->rankid;
 				$parentTid = $row2->parenttid;
 				$this->taxaArr[$tid]["parenttid"] = $parentTid;
+				$this->taxaArr[$tid]["oregon"] = $row2->clid;
 				if($parentTid) $taxaParentIndex[$tid] = $parentTid;
 				if($row2->rankid == 190) $subGenera[] = $tid;
 			}
@@ -266,10 +279,14 @@ class TaxonomyDisplayManager extends Manager{
 				else{
 					$sciName = "<br/>Problematic Rooting (".$key.")";
 				}
+
+				// Check whether this is a taxon in the Oregon Vascular Plants Thesaurus
+				$oregonSpp = isset($this->taxaArr[$key]["oregon"]) && $this->taxaArr[$key]["oregon"] ? 1 : 0;
 				$indent = $taxonRankId;
 				if($indent > 230) $indent -= 10;
 				echo "<div>".str_repeat('&nbsp;',$indent/5);
-				if($taxonRankId > 139) echo '<a href="../index.php?taxon='.$key.'" target="_blank">'.$sciName.'</a>';
+				// Only show a link to the taxon page for Oregon species curated by OregonFlora
+				if($taxonRankId > 139 && $oregonSpp) echo '<a href="../index.php?taxon='.$key.'" target="_blank">'.$sciName.'</a>';
 				else echo $sciName;
 				if($this->isEditor) echo ' <a href="taxoneditor.php?tid='.$key.'" target="_blank"><img src="../../images/edit.png" style="width:11px" /></a> <a href="../profile/tpeditor.php?tid='.$key.'" target="_blank"><img src="../../images/info2.png" style="width:15px" /></a>';
 				if(!$this->displayFullTree){
@@ -287,7 +304,9 @@ class TaxonomyDisplayManager extends Manager{
 						$synName = str_replace($this->targetStr,"<b>".$this->targetStr."</b>",$synName);
 						echo '<div>'.str_repeat('&nbsp;',$indent/5).str_repeat('&nbsp;',7);
 						echo '[';
-						if($taxonRankId > 139) echo '<a href="../index.php?taxon='.$synTid.'" target="_blank">';
+						// Only show a link to the taxon page for Oregon species curated by OregonFlora
+						// Also change the page displayed to the accepted taxon, but referencing the synonym
+						if($taxonRankId > 139  && $oregonSpp) echo '<a href="../index.php?taxon='.$key.'&synonym='.$synTid.'" target="_blank">';
 						echo $synName;
 						if($taxonRankId > 139) echo '</a>';
 						if($this->isEditor) echo ' <a href="taxoneditor.php?tid='.$synTid.'" target="_blank"><img src="../../images/edit.png" style="width:11px" /></a>';
@@ -461,6 +480,16 @@ class TaxonomyDisplayManager extends Manager{
 
 	public function setMatchOnWholeWords($bool){
 		$this->matchOnWholeWords = $bool;
+	}
+
+	// Added to allow for restricting taxonomy to Oregon vascular plants curated by OregonFlora
+	public function getOregonVascPlant(){
+		return $this->oregonVascPlant;
+	}
+
+	// Added to allow for restricting taxonomy to Oregon vascular plants curated by OregonFlora
+	public function setOregonVascPlant($bool){
+		if($bool) $this->oregonVascPlant = $bool;
 	}
 
 	//Misc functions

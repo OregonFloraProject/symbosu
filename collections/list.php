@@ -294,7 +294,8 @@ $occurArr = $collManager->getSpecimenMap($pageNumber,$cntPerPage);
 								echo '<div style="margin:4px;">';
 								if(isset($fieldArr['sciname'])){
 									$sciStr = '<span style="font-style:italic;">'.$fieldArr['sciname'].'</span>';
-									if(isset($fieldArr['tid']) && $fieldArr['tid']) $sciStr = '<a target="_blank" href="../taxa/index.php?tid='.$fieldArr['tid'].'">'.$sciStr.'</a>';
+									// Only show a link to the taxon page for Oregon species curated by OregonFlora that are in the Taxonomic Thesaurus
+									if(isset($fieldArr['tid']) && $fieldArr['tid'] && $fieldArr['oregon'] == 1) $sciStr = '<a target="_blank" href="../taxa/index.php?tid='.$fieldArr['tid'].'">'.$sciStr.'</a>';
 									if(isset($fieldArr['author']) && $fieldArr['author']) $sciStr .= ' '.$fieldArr['author'];
 									echo $sciStr;
 								}
