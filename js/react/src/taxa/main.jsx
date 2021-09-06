@@ -218,7 +218,8 @@ function MapItem(props) {
 	let mapImage = null;
 	mapImage = `${props.clientRoot}/images/maps/${props.tid}.jpg`;
 	// /map/googlemap.php?maptype=taxa&taxon=6076&clid=0
-	let mapLink = `${props.clientRoot}/map/googlemap.php?maptype=taxa&clid=0&taxon=${props.tid}`;
+	//let mapLink = `${props.clientRoot}/map/googlemap.php?maptype=taxa&clid=0&taxon=${props.tid}`;
+	let mapLink = `${props.clientRoot}/collections/map/googlemap.php?usethes=1&taxa=${props.tid}&minClusterSetting=10&gridSizeSetting=30`;
 	
   return (
   	<div className={ "sidebar-section mb-5 distribution" }>
