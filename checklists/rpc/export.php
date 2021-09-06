@@ -1,4 +1,9 @@
 <?php
+/*
+	custom for OF - this file doesn't exist in Symbiota 1 or Symbiota Light
+	written from scratch by aparker to avoid using the composer Word libraries;
+	since this exports CSV, it doesn't need all that overhead
+*/
 include_once("../../config/symbini.php");
 
 include_once("$SERVER_ROOT/config/SymbosuEntityManager.php");
