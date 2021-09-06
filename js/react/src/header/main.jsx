@@ -263,8 +263,8 @@ class HeaderApp extends React.Component {
   }
 
   render() {
-  	let lgLogo = `${this.props.clientRoot}/images/header/oregonflora-logo.png`;
-  	let smLogo = `${this.props.clientRoot}/images/header/oregonflora-logo-sm.png`;
+  	let lgLogo = `${this.props.clientRoot}/images/header/oregonflora-logo2.png`;
+  	let smLogo = `${this.props.clientRoot}/images/header/oregonflora-logo-sm2.png`;
   	let mainOpacity = (this.state.headerHeight-60)/40;
 
     return (
