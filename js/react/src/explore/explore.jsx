@@ -98,8 +98,8 @@ class ExploreApp extends React.Component {
     // Load search results
     //this.onSearch({ text: this.state.searchText });
     let url = `${this.props.clientRoot}/checklists/rpc/api.php?clid=${this.props.clid}&pid=${this.props.pid}`;
-    console.log(url);
-    console.log(this.state.showTaxaDetail);
+    //console.log(url);
+    //console.log(this.state.showTaxaDetail);
     httpGet(url)
 			.then((res) => {
 				// /checklists/rpc/api.php?clid=3
