@@ -237,10 +237,10 @@ class IdentifyApp extends React.Component {
     switch (key) {
       case "searchText":
         this.setState({
-          //searchText: ViewOpts.DEFAULT_SEARCH_TEXT },
-          //() => this.onSearch({ text: ViewOpts.DEFAULT_SEARCH_TEXT, value: -1 })
           filters: Object.assign({}, this.state.filters, { searchText: ViewOpts.DEFAULT_SEARCH_TEXT })
-        });
+        },function() {
+					this.doQuery();
+    		});
         this.updateExportUrls();
         break;
 
