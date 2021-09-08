@@ -134,7 +134,7 @@ else{
 					<div class="fieldDiv" style="<?php echo ($isGenObs?'display:none':''); ?>">
 						Entered by:
 						<input type="text" name="q_recordenteredby" value="<?php echo $qRecordEnteredBy; ?>" style="width:70px;" onchange="setOrderBy(this)" />
-						<button type="button" onclick="enteredByCurrentUser()" style="font-size:70%" title="Limit to recent records entered by current user">CU</button>
+						<button type="button" onclick="enteredByCurrentUser()" style="font-size:70%; margin: 0 auto;" title="Limit to recent records entered by current user">CU</button>
 					</div>
 					<div class="fieldDiv" title="Enter ranges separated by ' - ' (space before and after dash required), e.g.: 2002-01-01 - 2003-01-01. Dates can also be specified with < or > signs, e.g.: >2021-01-01">
 						Date entered:
@@ -244,7 +244,7 @@ else{
                     <option <?php echo ($qCustomOpenParen1=='(('?'SELECTED':''); ?> value="((">((</option>
                     <option <?php echo ($qCustomOpenParen1=='((('?'SELECTED':''); ?> value="(((">(((</option>
                 </select>
-				<select name="q_customfield1" onchange="customSelectChanged(1)">
+				<select name="q_customfield1" onchange="customSelectChanged(1)" style="max-width: 170px;">
 					<option value="">Select Field Name</option>
 					<option value="">---------------------------------</option>
 					<?php
@@ -285,7 +285,7 @@ else{
                   	<option <?php echo ($qCustomOpenParen2=='(('?'SELECTED':''); ?> value="((">((</option>
                     <option <?php echo ($qCustomOpenParen2=='((('?'SELECTED':''); ?> value="(((">(((</option>
                 </select>
-				<select name="q_customfield2" onchange="customSelectChanged(2)">
+				<select name="q_customfield2" onchange="customSelectChanged(2)" style="max-width: 170px;">
 					<option value="">Select Field Name</option>
 					<option value="">---------------------------------</option>
 					<?php
@@ -327,7 +327,7 @@ else{
                     <option <?php echo ($qCustomOpenParen3=='(('?'SELECTED':''); ?> value="((">((</option>
                     <option <?php echo ($qCustomOpenParen3=='((('?'SELECTED':''); ?> value="(((">(((</option>
                 </select>
-				<select name="q_customfield3" onchange="customSelectChanged(3)">
+				<select name="q_customfield3" onchange="customSelectChanged(3)" style="max-width: 170px;">
 					<option value="">Select Field Name</option>
 					<option value="">---------------------------------</option>
 					<?php
@@ -370,7 +370,7 @@ else{
                     <option <?php echo ($qCustomOpenParen4=='(('?'SELECTED':''); ?> value="((">((</option>
                     <option <?php echo ($qCustomOpenParen4=='((('?'SELECTED':''); ?> value="(((">(((</option>
                 </select>
-				<select name="q_customfield4" onchange="customSelectChanged(4)">
+				<select name="q_customfield4" onchange="customSelectChanged(4)" style="max-width: 170px;">
 					<option value="">Select Field Name</option>
 					<option value="">---------------------------------</option>
 					<?php
@@ -413,7 +413,7 @@ else{
                     <option <?php echo ($qCustomOpenParen5=='(('?'SELECTED':''); ?> value="((">((</option>
                     <option <?php echo ($qCustomOpenParen5=='((('?'SELECTED':''); ?> value="(((">(((</option>
                 </select>
-				<select name="q_customfield5" onchange="customSelectChanged(5)">
+				<select name="q_customfield5" onchange="customSelectChanged(5)" style="max-width: 170px;">
 					<option value="">Select Field Name</option>
 					<option value="">---------------------------------</option>
 					<?php
@@ -456,7 +456,7 @@ else{
                     <option <?php echo ($qCustomOpenParen6=='(('?'SELECTED':''); ?> value="((">((</option>
                     <option <?php echo ($qCustomOpenParen6=='((('?'SELECTED':''); ?> value="(((">(((</option>
                 </select>
-				<select name="q_customfield6" onchange="customSelectChanged(6)">
+				<select name="q_customfield6" onchange="customSelectChanged(6)" style="max-width: 170px;">
 					<option value="">Select Field Name</option>
 					<option value="">---------------------------------</option>
 					<?php
@@ -498,7 +498,7 @@ else{
                     <option <?php echo ($qCustomOpenParen7=='('?'SELECTED':''); ?> value="(">(</option>
                     <option <?php echo ($qCustomOpenParen7=='(('?'SELECTED':''); ?> value="((">((</option>
                 </select>
-				<select name="q_customfield7" onchange="customSelectChanged(7)">
+				<select name="q_customfield7" onchange="customSelectChanged(7)" style="max-width: 170px;">
 					<option value="">Select Field Name</option>
 					<option value="">---------------------------------</option>
 					<?php
@@ -539,7 +539,7 @@ else{
                     <option value="">---</option>
                     <option <?php echo ($qCustomOpenParen8=='('?'SELECTED':''); ?> value="(">(</option>
                 </select>
-				<select name="q_customfield8" onchange="customSelectChanged(8)">
+				<select name="q_customfield8" onchange="customSelectChanged(8)" style="max-width: 170px;">
 					<option value="">Select Field Name</option>
 					<option value="">---------------------------------</option>
 					<?php
@@ -609,12 +609,12 @@ else{
 				<input type="hidden" name="direction" value="" />
 				<input type="button" name="submitaction" value="Display Editor" onclick="submitQueryEditor(this.form)" />
 				<input type="button" name="submitaction" value="Display Table" onclick="submitQueryTable(this.form)" />
-				<span style="margin-left:10px;">
+				<span style="margin-left:0px;">
 					<input type="button" name="reset" value="Reset Form" onclick="resetQueryForm(this.form)" />
 				</span>
-				<span style="margin-left:10px;">
+				<span style="margin-left:0px;">
 					Sort by:
-					<select name="orderby">
+					<select name="orderby" style="max-width: 170px;">
 						<option value=""></option>
 						<option value="recordedby" <?php echo ($qOrderBy=='recordedby'?'SELECTED':''); ?>><?php echo (defined('RECORDEDBYLABEL')?RECORDEDBYLABEL:'Collector'); ?></option>
 						<option value="recordnumber" <?php echo ($qOrderBy=='recordnumber'?'SELECTED':''); ?>><?php echo (defined('RECORDNUMBERLABEL')?RECORDNUMBERLABEL:'Number'); ?></option>
@@ -622,7 +622,7 @@ else{
 						<option value="catalognumber" <?php echo ($qOrderBy=='catalognumber'?'SELECTED':''); ?>><?php echo (defined('CATALOGNUMBERLABEL')?CATALOGNUMBERLABEL:'Catalog Number'); ?></option>
 						<option value="recordenteredby" <?php echo ($qOrderBy=='recordenteredby'?'SELECTED':''); ?>>Entered By</option>
 						<option value="dateentered" <?php echo ($qOrderBy=='dateentered'?'SELECTED':''); ?>>Date Entered</option>
-						<option value="datelastmodified" <?php echo ($qOrderBy=='datelastmodified'?'SELECTED':''); ?>>Date Last modified</option>
+						<option value="datelastmodified" <?php echo ($qOrderBy=='datelastmodified'?'SELECTED':''); ?>>Date Last Modified</option>
 						<option value="processingstatus" <?php echo ($qOrderBy=='processingstatus'?'SELECTED':''); ?>><?php echo (defined('PROCESSINGSTATUSLABEL')?PROCESSINGSTATUSLABEL:'Processing Status'); ?></option>
 						<option value="sciname" <?php echo ($qOrderBy=='sciname'?'SELECTED':''); ?>><?php echo (defined('SCIENTIFICNAMELABEL')?SCIENTIFICNAMELABEL:'Scientific Name'); ?></option>
 						<option value="family" <?php echo ($qOrderBy=='family'?'SELECTED':''); ?>><?php echo (defined('FAMILYLABEL')?FAMILYLABEL:'Family'); ?></option>
@@ -644,7 +644,7 @@ else{
 						<option value="DESC" <?php echo ($qOrderByDir=='DESC'?'SELECTED':''); ?>>descending</option>
 					</select>
 				</span>
-				<input type="button" name="copylink" value="Copy Search As Link" onclick="copyQueryLink(event)">
+				<input type="button" name="copylink" value="Copy Search Link" onclick="copyQueryLink(event)">
 			</div>
 		</fieldset>
 	</form>
