@@ -33,6 +33,7 @@ class ExploreApp extends React.Component {
       abstract: '',
       displayAbstract: 'default',
       googleMapUrl: '',
+      exportUrl: '',
       exportUrlCsv: '',
       exportUrlWord: '',
       //taxa: [],
@@ -98,6 +99,7 @@ class ExploreApp extends React.Component {
     // Load search results
     //this.onSearch({ text: this.state.searchText });
     let url = `${this.props.clientRoot}/checklists/rpc/api.php?clid=${this.props.clid}&pid=${this.props.pid}`;
+    let exportUrl = `${this.props.clientRoot}/ident/rpc/api.php`;//use identify api for export
     //console.log(url);
     //console.log(this.state.showTaxaDetail);
     httpGet(url)
@@ -140,9 +142,11 @@ class ExploreApp extends React.Component {
 					totals: res.totals,
 					fixedTotals: res.totals,
 					googleMapUrl: googleMapUrl,
-					exportUrlCsv: `${this.props.clientRoot}/checklists/rpc/export.php?clid=` + this.getClid() + `&pid=` + this.getPid(),
-					//exportUrlCsv: `${this.props.clientRoot}/checklists/reports/voucherreporthandler.php?clid=` + this.getClid(),
-					exportUrlWord: `${this.props.clientRoot}/checklists/defaultchecklistexport.php?cl=` + this.getClid() + `&pid=` + this.getPid()
+					//exportUrlCsv: `${this.props.clientRoot}/checklists/rpc/export.php?clid=` + this.getClid() + `&pid=` + this.getPid(),
+					//exportUrlWord: `${this.props.clientRoot}/checklists/defaultchecklistexport.php?cl=` + this.getClid() + `&pid=` + this.getPid()
+					exportUrl: exportUrl,
+					exportUrlCsv: exportUrl + `?export=csv&clid=` + this.getClid() + `&pid=` + this.getPid(),// + `&dynclid=` + this.getDynclid(),
+					exportUrlWord: exportUrl + `?export=word&clid=` + this.getClid() + `&pid=` + this.getPid(),// + `&dynclid=` + this.getDynclid()
 				});
 				const pageTitle = document.getElementsByTagName("title")[0];
 				pageTitle.innerHTML = `${pageTitle.innerHTML} ${res.title}`;
@@ -160,13 +164,17 @@ class ExploreApp extends React.Component {
     this.updateExportUrlWord();
   }
   updateExportUrlCsv() {
-  
-  	//test this
-  	let url = `${this.props.clientRoot}/checklists/rpc/export.php`;
+
+  	//let url = `${this.props.clientRoot}/checklists/rpc/export.php`;
+  	let url = this.state.exportUrl;
   	let exportParams = new URLSearchParams();
   	
+		exportParams.append("export",'csv');
 		exportParams.append("clid",this.getClid());
 		exportParams.append("pid",this.getPid());
+		//exportParams.append("dynclid",this.getDynclid());
+		
+		/*TBD
 		if (this.state.searchName) {
 			exportParams.append("name",this.state.searchName);
 		}
@@ -175,36 +183,28 @@ class ExploreApp extends React.Component {
 		}
 		if (this.state.filters.searchText) {
 			exportParams.append("search",this.state.filters.searchText);
-		}
+		}*/
   	url += '?' + exportParams.toString();
   	
-  	/*
-  	let url = `${this.props.clientRoot}/checklists/reports/voucherreporthandler.php`;
-  	let exportParams = new URLSearchParams();
-  	//params here match /checklists/reports/voucherreporthandler.php
-		exportParams.append("clid",this.getClid());
-		if (this.state.showTaxaDetail === 'on') {
-			exportParams.append("rtype",'fullvoucherscsv');
-		} else {
-			exportParams.append("rtype",'fullcsv');
-		}
-  	url += '?' + exportParams.toString();
-  	console.log(url);
-  	*/
 	  this.setState({
       exportUrlCsv: url,
     });
   }
   updateExportUrlWord() {
-  	let url = `${this.props.clientRoot}/checklists/defaultchecklistexport.php`;
+  	//let url = `${this.props.clientRoot}/checklists/defaultchecklistexport.php`;
+  	let url = this.state.exportUrl;
   	let exportParams = new URLSearchParams();
-  	//params here match /checklists/defaultchecklistexport.php
-		exportParams.append("cl",this.getClid());
+  	
+		exportParams.append("export",'word');
+		exportParams.append("clid",this.getClid());
 		exportParams.append("pid",this.getPid());
+		//exportParams.append("dynclid",this.getDynclid());
 		exportParams.append("showcommon",1);
 		if (this.state.filters.searchText) {
 			exportParams.append("taxonfilter",this.state.filters.searchText);
 		}
+		/*TBD
+  	//params here match /checklists/defaultchecklistexport.php - this is old - ap
 		if (this.state.searchName === 'commonname') {
 			exportParams.append("searchcommon",1);
 		}
@@ -220,7 +220,7 @@ class ExploreApp extends React.Component {
 		if (this.state.showTaxaDetail === 'on') {
 			exportParams.append("showauthors",1);
 			exportParams.append("showvouchers",1);
-		}
+		}*/
 		
   	url += '?' + exportParams.toString();
 	  this.setState({
