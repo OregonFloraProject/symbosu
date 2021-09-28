@@ -266,11 +266,15 @@ class HeaderApp extends React.Component {
   	let lgLogo = `${this.props.clientRoot}/images/header/oregonflora-logo2.png`;
   	let smLogo = `${this.props.clientRoot}/images/header/oregonflora-logo-sm2.png`;
   	let mainOpacity = (this.state.headerHeight-60)/40;
+  	let fixedLogoClass = 'tall';
+  	if (this.state.headerHeight == 60) {
+  		fixedLogoClass = 'short';
+  	}
 
     return (
     <div className="header-wrapper" style={{ backgroundImage: `url(${this.props.clientRoot}/images/header/OF-Header_May8.png)` }}>
     	<div className="fixed-logo-wrapper">
-        <a id="fixed-logo" className="navbar-brand" rel="external" href={ `${this.props.clientRoot}/` }>
+        <a id="fixed-logo" className={ fixedLogoClass + " navbar-brand" } rel="external" href={ `${this.props.clientRoot}/` }>
 					
 						<img 
 							style={{ opacity: mainOpacity }}

@@ -277,6 +277,7 @@ class IdentManager extends Manager {
 			#$taxa->groupBy(join(", ",$groupBy));
 			$taxa->orderBy(join(",",$orderBy));
 			$tquery = $taxa->getQuery();
+			#var_dump($this->searchName);
 			#var_dump($tquery->getSQL());
 			$this->currQuery = $tquery;
 			$results = $tquery->getResult();
@@ -311,7 +312,7 @@ class IdentManager extends Manager {
 						$currIdx = $idx;
 					}
 				}
-			}	
+			}#end foreach $results	
 		}
 		$this->taxa = array_values($newResults);
 		$em->flush();

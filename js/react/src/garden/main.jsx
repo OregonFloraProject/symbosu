@@ -303,11 +303,11 @@ class GardenPageApp extends React.Component {
 					this.setState({ isSearching: false, searchInit: true });
 					this.mobileScrollToResults();
 				});
-			}else{//reset
-				this.setDefaultTids();
-				this.setState({ isSearching: false });
-				this.mobileScrollToResults();
-			}
+		}else{//reset
+			this.setDefaultTids();
+			this.setState({ isSearching: false });
+			this.mobileScrollToResults();
+		}
   }
   mobileScrollToResults() {
     if (this.state.isMobile && this.getFilterCount() > 0) {

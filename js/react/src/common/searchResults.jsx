@@ -141,7 +141,8 @@ class GardenSearchContainer extends React.Component {
 
 function ExploreSearchResult(props) {
   const useGrid = props.viewType === "grid";
-	return (
+  if (props.display) {
+		return (
 			<div className={ "card search-result " + (useGrid ? "grid-result" : "list-result") }>
 					<div className={useGrid ? "" : "card-body"}>
 						{useGrid &&
@@ -167,7 +168,7 @@ function ExploreSearchResult(props) {
 								</a>
 								{
 									props.showTaxaDetail === 'on' && props.vouchers.length && 
-								
+							
 										<div className="vouchers">Vouchers:&nbsp;          		
 										{
 											props.vouchers.map((voucher) =>  {
@@ -187,11 +188,14 @@ function ExploreSearchResult(props) {
 						</div>
 					</div>
 			</div>
-	)
+		);
+	}
+  return <span style={{ display: "none" }}/>;
 }
 function ExploreSearchContainer(props) {
   const useGrid = props.viewType === "grid";
-	if (props.searchResults) {
+  
+	if (props.currentTids.length) {
 		if (props.sortBy === 'taxon') {		
 			return (
 				<div
@@ -204,8 +208,10 @@ function ExploreSearchContainer(props) {
 				/>
 				{	props.searchResults.taxonSort.map((result) =>  {
 						//console.log(result);
+						let display = (props.currentTids.indexOf(result.tid) > -1);
 						return (
 							<ExploreSearchResult
+								display={ display }
 								key={ result.tid }
 								viewType={ props.viewType }
 								showTaxaDetail={ props.showTaxaDetail }
@@ -235,30 +241,39 @@ function ExploreSearchContainer(props) {
 				/>
 				{
 						Object.entries(props.searchResults.familySort).map(([family, results]) => {
-							return (
-								<div key={ family } className="family-group">
-									<h4>{ family }</h4>	
-									<div className={ (props.viewType === "grid" ? " search-result-grid" : "") } >
-									{ results.map((result) =>  {
-											return (
-												<ExploreSearchResult
-													key={ result.tid }
-													viewType={ props.viewType }
-													showTaxaDetail={ props.showTaxaDetail }
-													href={ getTaxaPage(props.clientRoot, result.tid) }
-													src={ result.thumbnail }
-													commonName={ getCommonNameStr(result) }
-													sciName={ result.sciname ? result.sciname : '' }
-													author={ result.author ? result.author : '' }
-													vouchers={  result.vouchers ? result.vouchers : '' }
-													clientRoot={ props.clientRoot }
-												/>
-											)
-										})
-									}
+							let thisTids = results.map((result) =>  {
+					  		return result.tid;
+  						});
+  						let currentTidsInThisFamily = props.currentTids.filter(value => thisTids.includes(value));
+  						if (currentTidsInThisFamily.length > 0) {
+								return (
+									<div key={ family } className="family-group">
+										<h4>{ family }</h4>	
+										<div className={ (props.viewType === "grid" ? " search-result-grid" : "") } >
+										{ results.map((result) =>  {
+												let display = (props.currentTids.indexOf(result.tid) > -1);
+												return (
+													<ExploreSearchResult
+														display={ display }
+														key={ result.tid }
+														viewType={ props.viewType }
+														showTaxaDetail={ props.showTaxaDetail }
+														href={ getTaxaPage(props.clientRoot, result.tid) }
+														src={ result.thumbnail }
+														commonName={ getCommonNameStr(result) }
+														sciName={ result.sciname ? result.sciname : '' }
+														author={ result.author ? result.author : '' }
+														vouchers={  result.vouchers ? result.vouchers : '' }
+														clientRoot={ props.clientRoot }
+													/>
+												)
+											})
+										}
+										</div>
 									</div>
-								</div>
-							)
+								);
+  						//return <span style={{ display: "none" }}/>;
+  						}
 						})
 				}
 				</div>
