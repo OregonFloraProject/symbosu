@@ -232,7 +232,7 @@ define('COLLECTIONCODETIP','Should always be "V". Do not edit this for OSU colle
 define('OWNERINSTITUTIONCODETIP','Do not edit this for OSU collections.');
 define('PROCESSINGSTATUSTIP','This field is used to indicate the record’s stage in the workflow. Use ‘Status Auto-set’ below to set the processing status for batches of records. Generally if the specimen record has no issues, set it as “Pending review”, If you there are issues you are unsure about, flag it as “Expert required” and note what the issues are in the Transcription Notes field. The full list of statuses is provided in the protocol.');
 define('DATAGENERALIZATIONSTIP','Information derived from the transcription process which is not stated on the original label. Use this to note an issue with transcription that requires future investigation. Also used to indicate interpretations such as “county interpreted” if the county was derived from an annotation and not stated on the label.');
-define('STATUSAUTOSETTIP','Set this status once, and it sets all subsequent records to the same text. Note that this will OVERRIDE the processing status set in the processing status field itself. Options are:
+define('STATUSAUTOSETTIP','Set this status once, and it sets all subsequent records to the same processing status. Note that this will OVERRIDE the processing status set in the processing status field itself. Options are:
   * Quality Control: The first 10-15 records for new transcribers in training
   * Pending Review: Once training is completed, all records are set to this status, unless there is an issue (see next)
   * Assistant Curator: If there is an outstanding issue with transcription of the record, use this status (remember to reset the next record back to "Pending Review")');
