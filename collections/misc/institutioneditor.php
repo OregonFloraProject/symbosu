@@ -97,6 +97,7 @@ if($editorCode){
         echo '<link href="'.$CLIENT_ROOT.'/css/main.css?ver=1" type="text/css" rel="stylesheet" />';
       }
   ?>
+  	<script src="../../js/symb/collections.indexherbariorum.js?ver=1" type="text/javascript"></script>
 	<script language=javascript>
 		
 		function toggle(target){
@@ -185,7 +186,7 @@ include($SERVER_ROOT.'/includes/header.php');
 				?>
 			</div>
 			<div style="clear:both;">
-				<form name="insteditform" action="institutioneditor.php" method="post">
+				<form id="insteditform" name="insteditform" action="institutioneditor.php" method="post">
 					<fieldset style="padding:20px;">
 						<legend><b>Address Details</b></legend>
 						<div style="position:relative;">
@@ -196,7 +197,8 @@ include($SERVER_ROOT.'/includes/header.php');
 								<?php echo $instArr['institutioncode']; ?>
 							</div>
 							<div class="editdiv" style="display:<?php echo $eMode?'block':'none'; ?>;">
-								<input name="institutioncode" type="text" value="<?php echo $instArr['institutioncode']; ?>" />
+								<input name="institutioncode" type="text" value="<?php echo $instArr['institutioncode']; ?>"/>
+								<input name="indexHerbariorum" type="button" value="Update from Index Herbariorum" onClick="indexherbariorum('insteditform')"/>
 							</div>
 						</div>
 						<div style="position:relative;clear:both;">
@@ -353,7 +355,7 @@ include($SERVER_ROOT.'/includes/header.php');
 				</form>
 				<div style="clear:both;">
 					<fieldset style="padding:20px;">
-						<legend><b>Collecitons Linked to Institution Address</b></legend>
+						<legend><b>Collections Linked to Institution Address</b></legend>
 						<div>
 							<?php 
 							if($collList){
@@ -431,7 +433,7 @@ include($SERVER_ROOT.'/includes/header.php');
 				</a>
 			</div>
 			<div id="instadddiv" style="display:<?php echo ($eMode?'block':'none'); ?>;margin-bottom:8px;">
-				<form name="instaddform" action="institutioneditor.php" method="post">
+				<form id="instaddform" name="instaddform" action="institutioneditor.php" method="post">
 					<fieldset style="padding:20px;">
 						<legend><b>Add New Institution</b></legend>
 						<div style="position:relative;">
@@ -439,8 +441,10 @@ include($SERVER_ROOT.'/includes/header.php');
 								Institution Code:
 							</div>
 							<div>
-								<input name="institutioncode" type="text" value="<?php echo $instCodeDefault; ?>" />
+								<input name="institutioncode" type="text" value="<?php echo $instCodeDefault; ?>"/>
+								<input name="indexHerbariorum" type="button" value="Get data from Index Herbariorum" onClick="indexherbariorum('instaddform')"/>
 							</div>
+							
 						</div>
 						<div style="position:relative;clear:both;">
 							<div style="float:left;width:155px;font-weight:bold;">
