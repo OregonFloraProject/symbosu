@@ -244,7 +244,7 @@ function abbrState(state){
     var regions = states.concat(provinces);
 
     // Check for a case insensitive match in states and provinces
-	const selectedState = states.find(s =>
+	const selectedState = regions.find(s =>
 		s.find(x => x.toLowerCase() === state.toLowerCase())
 	)
 
