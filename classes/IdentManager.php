@@ -324,7 +324,7 @@ class IdentManager extends Manager {
 			$charList = array();
 			$em = SymbosuEntityManager::getEntityManager();
 			$qb = $em->createQueryBuilder();
-			$em3 = $em->createQueryBuilder();
+			#$em3 = $em->createQueryBuilder();
 			$chars = $em->createQueryBuilder()
 				->select(['t.tid, descr.cid'])
 				->from("Taxa","t")
@@ -358,73 +358,7 @@ class IdentManager extends Manager {
 			}
 			$cids = array_unique(array_merge($cids,array_keys($this->attrs)));
 			
-			$selects = [
-				"descr.tid",
-				"chars.cid",
-				"cs.cs",
-				"cs.charstatename",
-				"cs.description as csdescr",
-				"chars.charname",
-				"chars.description as chardescr",
-				"chars.helpurl",
-				"chars.difficultyrank",
-				"chars.display",
-				"chars.units",
-				"chars.defaultlang",
-				"Count(cs.cs) as ct",
-				"chead.hid",
-				"chead.headingname"
-			];
-			$groupBy = [
-				"chead.language", 
-				"cs.cid", 
-				"cs.cs", 
-				"cs.charstatename", 
-				"chars.charname", 
-				"chead.headingname", 
-				"chars.helpurl",
-				"chars.difficultyrank", 
-				"chars.defaultlang", 
-				"chars.chartype"
-			];
-			$having = [
-				$qb->expr()->andX(
-					$qb->expr()->eq('chead.language',':lang'),
-					$qb->expr()->in('cs.cid',":cids"),
-					$qb->expr()->neq('cs.cs',":cs"), 
-					$qb->expr()->orX(
-						$qb->expr()->eq('chars.chartype',":UM"),
-						$qb->expr()->eq('chars.chartype',":OM")
-					),
-					$qb->expr()->lt('chars.difficultyrank',":difficultyrank")
-				)
-			];
-			$chars = $em->createQueryBuilder()
-				->select($selects)
-				->from("Kmdescr","descr")
-				->innerJoin("Kmcs","cs","WITH",$qb->expr()->andX(
-											$qb->expr()->eq('descr.cs','cs.cs'),
-											$qb->expr()->eq('descr.cid','cs.cid')
-										))
-				->innerJoin("Kmcharacters","chars","WITH","chars.cid = cs.cid")
-				->innerJoin("Kmcharheading","chead","WITH","chars.hid = chead.hid")
-				->andWhere($qb->expr()->in('descr.tid',':tids'))
-				->setParameter(":tids",$taxa_tids)
-				->setParameter(":cids",$cids)
-				->setParameter(":lang","English")
-				->setParameter(":difficultyrank",3)
-				->setParameter(":cs",'-')
-				->setParameter(":UM",'UM')
-				->setParameter(":OM",'OM')
-				->groupBy(join(", ",$groupBy))
-				->having(join(", ",$having))
-				->orderBy("chead.sortsequence, chars.sortsequence, chars.charname, cs.sortsequence, cs.charstatename")
-				->distinct()
-			;
-			$cquery = $chars->getQuery();
-			#var_dump($cquery->getSQL());
-			#var_dump($cquery->getParameters());
-			$cresults = $cquery->execute();
+			$cresults = $this->getCharQuery($taxa_tids,$cids);
 			$results = [];
 
 			foreach ($cresults as $cres) {
@@ -465,7 +399,78 @@ class IdentManager extends Manager {
 			#IN(4835,5242,5665,6117)
 		}
 	}
-
+	public function getCharQuery($tids,$cids) {
+		$em = SymbosuEntityManager::getEntityManager();
+		$qb = $em->createQueryBuilder();
+		$selects = [
+			"descr.tid",
+			"chars.cid",
+			"cs.cs",
+			"cs.charstatename",
+			"cs.description as csdescr",
+			"chars.charname",
+			"chars.description as chardescr",
+			"chars.helpurl",
+			"chars.difficultyrank",
+			"chars.display",
+			"chars.units",
+			"chars.defaultlang",
+			"Count(cs.cs) as ct",
+			"chead.hid",
+			"chead.headingname"
+		];
+		$groupBy = [
+			"chead.language", 
+			"cs.cid", 
+			"cs.cs", 
+			"cs.charstatename", 
+			"chars.charname", 
+			"chead.headingname", 
+			"chars.helpurl",
+			"chars.difficultyrank", 
+			"chars.defaultlang", 
+			"chars.chartype"
+		];
+		$having = [
+			$qb->expr()->andX(
+				$qb->expr()->eq('chead.language',':lang'),
+				$qb->expr()->in('cs.cid',":cids"),
+				$qb->expr()->neq('cs.cs',":cs"), 
+				$qb->expr()->orX(
+					$qb->expr()->eq('chars.chartype',":UM"),
+					$qb->expr()->eq('chars.chartype',":OM")
+				),
+				$qb->expr()->lt('chars.difficultyrank',":difficultyrank")
+			)
+		];
+		$chars = $em->createQueryBuilder()
+			->select($selects)
+			->from("Kmdescr","descr")
+			->innerJoin("Kmcs","cs","WITH",$qb->expr()->andX(
+										$qb->expr()->eq('descr.cs','cs.cs'),
+										$qb->expr()->eq('descr.cid','cs.cid')
+									))
+			->innerJoin("Kmcharacters","chars","WITH","chars.cid = cs.cid")
+			->innerJoin("Kmcharheading","chead","WITH","chars.hid = chead.hid")
+			->andWhere($qb->expr()->in('descr.tid',':tids'))
+			->setParameter(":tids",$tids)
+			->setParameter(":cids",$cids)
+			->setParameter(":lang","English")
+			->setParameter(":difficultyrank",3)
+			->setParameter(":cs",'-')
+			->setParameter(":UM",'UM')
+			->setParameter(":OM",'OM')
+			->groupBy(join(", ",$groupBy))
+			->having(join(", ",$having))
+			->orderBy("chead.sortsequence, chars.sortsequence, chars.charname, cs.sortsequence, cs.charstatename")
+			->distinct()
+		;
+		$cquery = $chars->getQuery();
+		#var_dump($cquery->getSQL());
+		#var_dump($cquery->getParameters());
+		$cresults = $cquery->execute();
+		return $cresults;
+	}
 	public function getAttrs() {
 		return $this->attrs;
 	}
