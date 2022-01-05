@@ -200,8 +200,9 @@ class SideBar extends React.Component {
 							{	this.props.characteristics &&
 								Object.keys(this.props.characteristics).map((idx) => {
 								let firstLevel = this.props.characteristics[idx];
+								let accordionKey = firstLevel.hid.toString() + firstLevel.headingname;//hids are duplicated, so use name also
 									return (					
-										<SidebarAccordion key={ firstLevel.hid } title={ firstLevel.headingname } subheading={ firstLevel.subheading }>
+										<SidebarAccordion key={ accordionKey } title={ firstLevel.headingname } subheading={ firstLevel.subheading }>
 										{
 											Object.keys(firstLevel.characters).map((idx2) => {
 												let secondLevel = firstLevel.characters[idx2];
@@ -223,6 +224,7 @@ class SideBar extends React.Component {
 															this.props.onWholePlantChanged(plantFeature, featureKey)
 														}}*/
 														onAttrClicked={ this.props.onAttrClicked } 
+														onGroupFilterClicked={ this.props.onGroupFilterClicked }
 														onSliderChanged={ this.props.onSliderChanged } 
 													/>
 												)
@@ -233,7 +235,11 @@ class SideBar extends React.Component {
 									)
 								})
 							}
+							{
+							/*
 							<SidebarAccordion title="Commercial Availability (Coming soon)" disabled={ true } />
+							*/
+							}
 							
 							<div className="p-3 metro">
 								<p><a href="https://www.oregonmetro.gov/" target="_blank"><img 

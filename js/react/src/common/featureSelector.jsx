@@ -98,7 +98,47 @@ class SelectDropdown extends React.Component {
 		);
 	}
 }
+class GroupFilter extends React.Component {
+  constructor(props) {
+    super(props);
+    //this.getDropdownId = this.getDropdownId.bind(this);
+    //this.onAttrClicked = this.props.onAttrClicked.bind(this);
+  }
 
+	render() {
+		//console.log(this.props.states);
+		return (
+	 		<div
+				className="group-filter"
+				style={{ overflow: "hidden", whiteSpace: "nowrap" }}>
+				{
+					Object.keys(this.props.states).map((itemKey) => {
+						let itemVal = this.props.states[itemKey];
+						let attr = itemVal.cid + '-' + itemVal.cs;
+						let title = itemVal.charstatename;
+						let checked = (this.props.attrs[attr] ? true: false );
+						return (
+								<div 
+									className="btn btn-primary alt-button region" 
+									role="button" 
+									name={ attr } 
+									key={ attr }
+									onClick={() => {
+										this.props.onGroupFilterClicked(itemVal.children)
+									}}
+								>
+								{ title }
+								</div>
+
+
+						)
+					})
+				}
+			</div>
+	
+		);
+	}
+}
 /**
  * Slider from 0, 50+ with minimum and maximum value handles
  */
@@ -186,7 +226,6 @@ class PlantSlider extends React.Component {
   }
   
   /**
-	* DUPLICATED IN garden/sidebar.jsx
 	* @param valueArray {number[]} An array in the form [min, max]
 	* @returns {string} An English description of the [min, max] values
 	*/
@@ -270,6 +309,7 @@ class FeatureSelector extends React.Component {
     this.getDropdownId = this.getDropdownId.bind(this);
     this.toggleFeature = this.toggleFeature.bind(this);
     this.onAttrClicked = this.props.onAttrClicked.bind(this);
+    this.onGroupFilterClicked = this.props.onGroupFilterClicked.bind(this);
     this.onSliderChanged = this.props.onSliderChanged.bind(this);
   }
 
@@ -300,6 +340,15 @@ class FeatureSelector extends React.Component {
 						attrs={ this.props.attrs }
 						cid={ this.props.cid }
 						onAttrClicked={ this.onAttrClicked }
+					/>
+			 	)
+  		case 'groupfilter':
+  			return (
+  				<GroupFilter 
+						states={ this.props.states }
+						attrs={ this.props.attrs }
+						cid={ this.props.cid }
+						onGroupFilterClicked={ this.onGroupFilterClicked }
 					/>
 			 	)
   	

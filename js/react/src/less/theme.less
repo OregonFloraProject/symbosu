@@ -1954,7 +1954,8 @@ img {
 				}
 			}
 			
-			&#maturesize-accordion {
+			&#maturesize-accordion,
+			&#commercialavailability-accordion {
 				.second-level {
 					.feature-selectors{
 						.feature-selector-header {
@@ -1964,7 +1965,7 @@ img {
 							}
 						}
 						.feature-input.slider,
-						.feature-input.slider.short {
+						.feature-input.slider.short{
 							height: auto !important;
 							margin-top: 2rem;
 							overflow: visible;
@@ -1972,6 +1973,31 @@ img {
 					}
 				}
 			}
+			&#commercialavailability-accordion {
+				.second-level {
+					&:first-child {
+						margin-bottom: 0;
+						border-bottom-right-radius: 0;
+						border-bottom-left-radius: 0;
+					}
+					&:nth-child(2) {
+						border-top-right-radius: 0;
+						border-top-left-radius: 0;
+					}
+					.feature-selectors{
+						.feature-input,
+						.feature-input.short {
+							height: auto !important;
+							margin-top: .7rem;
+							overflow: visible;
+						}
+					}
+				}
+			}
+			
+			
+			
+			
 		}
 		.sliders {
 			font-size: .9em;
