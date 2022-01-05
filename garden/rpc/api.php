@@ -299,7 +299,7 @@ function get_garden_characteristics($tids) {
 		}
 	}
 	foreach ($vresults as $vres) {
-		if ($vres['clidChild'] != NULL) {
+		if (isset($vres['clidChild']) && $vres['clidChild'] != NULL) {
 			$childLookup[$vres['sortSequence']][] = $cisLookup[$vres['clidChild']];
 		}
 	}
