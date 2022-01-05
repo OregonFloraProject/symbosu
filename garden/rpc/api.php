@@ -294,7 +294,7 @@ function get_garden_characteristics($tids) {
 	
 	$cisLookup = [];
 	foreach ($vresults as $vres) {
-		if (!$cisLookup[$vres['clid']]) {
+		if (!isset($cisLookup[$vres['clid']])) {
 			$cisLookup[$vres['clid']] = $vres['sortSequence'];
 		}
 	}
