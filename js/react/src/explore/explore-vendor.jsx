@@ -552,7 +552,7 @@ ExploreApp.defaultProps = {
 
 const headerContainer = document.getElementById("react-header");
 const dataProps = JSON.parse(headerContainer.getAttribute("data-props"));
-const domContainer = document.getElementById("react-explore-app");
+const domContainer = document.getElementById("react-explore-vendor-app");
 const queryParams = getUrlQueryParams(window.location.search);
 
 // Use both cl and clid (symbiota-light) to denote the checklist
