@@ -2,6 +2,11 @@ import React from "react";
 import { RangeSlider } from "@blueprintjs/core";//
 import CheckboxItem from "../common/checkboxItem.jsx";
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons'
+library.add( faExternalLinkAlt)
+
 class CheckboxList extends React.Component {
   constructor(props) {
     super(props);
@@ -10,6 +15,8 @@ class CheckboxList extends React.Component {
   }
 
 	render() {
+	
+	
 		return (
 	 		<ul
 				className="list-unstyled"
@@ -19,6 +26,10 @@ class CheckboxList extends React.Component {
 						let itemVal = this.props.states[itemKey];
 						let attr = itemVal.cid + '-' + itemVal.cs;
 						let checked = (this.props.attrs[attr] ? true: false );
+						let href = '';
+						if (itemVal.clid && itemVal.pid) {
+							href= `${this.props.clientRoot}/checklists/checklist.php?cl=` + itemVal.clid + `&pid=` + itemVal.pid;
+						}
 						return (
 							<li key={ attr }>
 								
@@ -31,7 +42,17 @@ class CheckboxList extends React.Component {
 											this.onAttrClicked(attr,itemVal.charstatename,(checked? 'off':'on'))
 										}}
 									/>
-									<label htmlFor={ attr }>{ itemVal.charstatename }</label>
+									<label htmlFor={ attr }>{ itemVal.charstatename }
+									{ href && 
+										<a 
+											href={ href }
+											className="external-link"
+											title="List of all native species this nursery carries"
+										>
+											<FontAwesomeIcon icon="external-link-alt" />
+										</a>		
+									}							
+									</label>
 					
 							</li>
 						)
@@ -118,19 +139,19 @@ class GroupFilter extends React.Component {
 						let title = itemVal.charstatename;
 						let checked = (this.props.attrs[attr] ? true: false );
 						return (
-								<div 
+							<div
+									key={ attr }>
+								<span 
 									className="btn btn-primary alt-button region" 
 									role="button" 
 									name={ attr } 
-									key={ attr }
 									onClick={() => {
 										this.props.onGroupFilterClicked(itemVal.children)
 									}}
 								>
 								{ title }
-								</div>
-
-
+								</span>
+							</div>
 						)
 					})
 				}
@@ -358,6 +379,7 @@ class FeatureSelector extends React.Component {
 						states={ this.props.states }
 						attrs={ this.props.attrs }
 						onAttrClicked={ this.onAttrClicked }
+						clientRoot={ this.props.clientRoot }
 					/>
 			 	)
 
@@ -397,7 +419,8 @@ class FeatureSelector extends React.Component {
 
 FeatureSelector.defaultProps = {
   states: [],
-  onAttrClicked: () => {}
+  onAttrClicked: () => {},
+  clientRoot: '',
 };
 
 export default FeatureSelector;
