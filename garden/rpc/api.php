@@ -214,10 +214,10 @@ $CUSTOM_GARDEN_CHARACTERISTICS = [
 	[
 		'hid' => 5,
 		'headingname' => 'Commercial Availability',
-		'subheading'	=> '',
+		'subheading'	=> '',//'<a href="' . $CLIENT_ROOT . '/projects/index.php?pid=4">View all participating nurseries and the native species they carry</a>',
 		'characters' => [
 			[		
-				'charname' 		=> 'commercial availability by region',
+				'charname' 		=> 'click to auto-select nurseries from a region below',
 				'cid'					=> $CID_REGION,
 				'display'			=> 'groupfilter',
 				'units'				=> '',
@@ -293,14 +293,18 @@ function get_garden_characteristics($tids) {
 	$vresults = $vquery->execute();
 	
 	$cisLookup = [];
+	$clidLookup = [];
 	foreach ($vresults as $vres) {
 		if (!isset($cisLookup[$vres['clid']])) {
 			$cisLookup[$vres['clid']] = $vres['sortSequence'];
 		}
 	}
+	//var_dump($cisLookup);
 	foreach ($vresults as $vres) {
 		if (isset($vres['clidChild']) && $vres['clidChild'] != NULL) {
 			$childLookup[$vres['sortSequence']][] = $cisLookup[$vres['clidChild']];
+		}else{
+			$clidLookup[$vres['sortSequence']] = $vres['clid'];
 		}
 	}
 
@@ -332,6 +336,13 @@ function get_garden_characteristics($tids) {
 						if ($childLookup[$cs['cs']]) {
 							$tmp['children'] = $childLookup[$cs['cs']];
 						}
+					}		
+					if ($CID_NURSERY == $char['cid']) {	
+						if ($clidLookup[$cs['cs']]) {
+							$tmp['clid'] = $clidLookup[$cs['cs']];
+							$tmp['pid'] = Fmchecklists::$PID_VENDOR_ALL;
+						}
+					}
 					/*
 						switch ($cs['cs']) {
 							#$CUSTOM_GARDEN_CHARACTERISTICS[$idx]['characters'][$gidx]['children'][] = [];
@@ -348,9 +359,7 @@ function get_garden_characteristics($tids) {
 								$tmp['children'] = [1];#14920 Althouse
 								break;
 						}
-						*/
-						
-					}						
+						*/			
 					$CUSTOM_GARDEN_CHARACTERISTICS[$idx]['characters'][$gidx]['states'][] = $tmp;
 					
 				}
