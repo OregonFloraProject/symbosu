@@ -111,8 +111,8 @@ class SideBar extends React.Component {
 			isMobile: isMobile
 		});
 	};
-	
-	componentWillReceiveProps(nextProps) {//necessary because React doesn't set isMobile in componentDidMount grr
+	/*
+	componentWillReceiveProps(nextProps) {
   	let displayFilters = this.state.displayFilters;
 		let isMobile = this.state.isMobile;
 		
@@ -127,7 +127,7 @@ class SideBar extends React.Component {
 			isMobile: isMobile
 		});
 		
-	}
+	}*/
   
   toggleFilters = () => {
 		let newVal = true;
