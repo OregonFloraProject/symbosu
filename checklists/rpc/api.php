@@ -18,9 +18,13 @@ function getEmpty() {
     "iconUrl" => '',
     "authors" => '',
     "abstract" => '',
-    "lat" => 0,
-    "lng" => 0,
-    "taxa" => [],
+    "latcentroid" => 0,
+    "longcentroid" => 0,
+    'locality'=>'',
+		'publication'=>'',
+		'notes'=>'',
+		'pointradiusmeters'=> 0,
+    "taxa" => []
   ];
 }
 
@@ -35,14 +39,19 @@ function buildResult($checklistObj) {
   		$project = InventoryManager::fromModel($model);
   		$result["projName"] = $project->getProjname();
   	}
+  	  	
     $result["clid"] = $checklistObj->getClid();
     $result["title"] = $checklistObj->getTitle();
     $result["intro"] = ($checklistObj->getIntro()? $checklistObj->getIntro() :'') ;
     $result["iconUrl"] = ($checklistObj->getIconUrl()? $checklistObj->getIconUrl() :'') ;
     $result["authors"] = ($checklistObj->getAuthors()? $checklistObj->getAuthors() :'') ;
     $result["abstract"] = ($checklistObj->getAbstract()? $checklistObj->getAbstract() :'') ;
-    $result["lat"] = ($checklistObj->getLat()? $checklistObj->getLat() :'') ;
-    $result["lng"] = ($checklistObj->getLng()? $checklistObj->getLng() :'') ;
+    $result["locality"] = ($checklistObj->getLocality()? $checklistObj->getLocality() :'') ;
+    $result["publication"] = ($checklistObj->getPublication()? $checklistObj->getPublication() :'') ;
+    $result["notes"] = ($checklistObj->getNotes()? $checklistObj->getNotes() :'') ;
+    $result["pointradiusmeters"] = ($checklistObj->getPointRadius()? $checklistObj->getPointRadius() :'') ;
+    $result["latcentroid"] = ($checklistObj->getLatcentroid()? $checklistObj->getLatcentroid() :'') ;
+    $result["longcentroid"] = ($checklistObj->getLongcentroid()? $checklistObj->getLongcentroid() :'') ;
     $taxa = $checklistObj->getTaxa(); 
     if (sizeof($taxa)) {
 			$taxaRepo = SymbosuEntityManager::getEntityManager()->getRepository("Taxa");					
@@ -78,6 +87,7 @@ function buildResult($checklistObj) {
 
 
 $result = [];
+
 if (array_key_exists("clid", $_GET) && is_numeric($_GET["clid"])&& array_key_exists("pid", $_GET) && is_numeric($_GET["pid"])) {
   $em = SymbosuEntityManager::getEntityManager();
   $repo = $em->getRepository("Fmchecklists");
@@ -87,19 +97,42 @@ if (array_key_exists("clid", $_GET) && is_numeric($_GET["clid"])&& array_key_exi
 	  $checklist->setPid($_GET["pid"]);
 	}
   
-	if ( 	 ( array_key_exists("search", $_GET) && !empty($_GET["search"]) )
-			&& ( array_key_exists("name", $_GET) && in_array($_GET['name'],array('sciname','commonname')) )
-	) {
-		$checklist->setSearchTerm($_GET["search"]);
-		$checklist->setSearchName($_GET['name']);
+  if (array_key_exists("update", $_GET)) {
+		if ($_GET['update'] == 'info') {
+			$fields = array(
+											'name'=>'setName',
+											'authors'=>'setAuthors',
+											'locality'=>'setLocality',
+											'publication'=>'setPublication',
+											'abstract'=>'setAbstract',
+											'notes'=>'setNotes',
+											'latcentroid'=>'setLatcentroid',
+											'longcentroid'=>'setLongcentroid',
+											'pointradiusmeters'=>'setPointradiusmeters'
+			);
+			foreach ($fields as $field => $function) {
+				if (isset($_GET[$field]) && method_exists($model,$function)) {
+					$model->$function($_GET[$field]);
+				}
+			}
+			$em->persist($model);
+			$em->flush();
+		}
+	}else{
+  
+		if ( 	 ( array_key_exists("search", $_GET) && !empty($_GET["search"]) )
+				&& ( array_key_exists("name", $_GET) && in_array($_GET['name'],array('sciname','commonname')) )
+		) {
+			$checklist->setSearchTerm($_GET["search"]);
+			$checklist->setSearchName($_GET['name']);
 		
-		$synonyms = (isset($_GET['synonyms']) && $_GET['synonyms'] == 'on') ? true : false;
-		$checklist->setSearchSynonyms($synonyms);
+			$synonyms = (isset($_GET['synonyms']) && $_GET['synonyms'] == 'on') ? true : false;
+			$checklist->setSearchSynonyms($synonyms);
+		}
+		#$test = $checklist->getPid();
+		#var_dump($test);
+		$result = buildResult($checklist);
 	}
-	#$test = $checklist->getPid();
-	#var_dump($test);
-	$result = buildResult($checklist);
-
 }else{
 	#todo: generate error or redirect
 }

@@ -10,29 +10,38 @@ import {addUrlQueryParam, getUrlQueryParams} from "../common/queryParams.js";
 import {getCommonNameStr, getTaxaPage, getIdentifyPage} from "../common/taxaUtils";
 import PageHeader from "../common/pageHeader.jsx";
 import Loading from "../common/loading.jsx";
+import TextField from "../common/formFields.jsx";
+import TextareaField from "../common/textarea.jsx";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { library } from "@fortawesome/fontawesome-svg-core";
-import {faChevronDown, faChevronUp, faListUl, faSearchPlus } from '@fortawesome/free-solid-svg-icons'
-library.add( faChevronDown, faChevronUp, faListUl, faSearchPlus );
+import {faChevronDown, faChevronUp, faListUl, faSearchPlus, faEdit } from '@fortawesome/free-solid-svg-icons'
+library.add( faChevronDown, faChevronUp, faListUl, faSearchPlus, faEdit );
 
 class ExploreApp extends React.Component {
   constructor(props) {
     super(props);
     const queryParams = getUrlQueryParams(window.location.search);
     
-    
     // TODO: searchText is both a core state value and a state.filters value; How can we make the filtering system more efficient?
     this.state = {
       isLoading: true,
       isSearching: false,
+      isEditing: {info: false},
+      updatedData: {info: {}},
       clid: null,
       pid: null,
       projName: null,
       title: '',
       authors: '',
       abstract: '',
-      displayAbstract: 'default',
+      locality: '',
+      publication: '',
+      notes: '',
+      latcentroid: '',
+      longcentroid: '',
+      pointradiusmeters: '',
+      displayDescription: 'default',
       googleMapUrl: '',
       exportUrl: '',
       exportUrlCsv: '',
@@ -76,6 +85,9 @@ class ExploreApp extends React.Component {
     this.onFilterRemoved = this.onFilterRemoved.bind(this);
     this.sortResults = this.sortResults.bind(this);
     this.clearTextSearch = this.clearTextSearch.bind(this);
+    this.toggleEditing = this.toggleEditing.bind(this);
+    this.updateField = this.updateField.bind(this);
+    this.updateSection = this.updateSection.bind(this);
     
   }
 
@@ -87,22 +99,58 @@ class ExploreApp extends React.Component {
   }
   toggleDisplay = () => {
 		let newVal = 'default';
-		if (this.state.displayAbstract == 'default') {
+		if (this.state.displayDescription == 'default') {
 			newVal = 'expanded';
 		} 
 		this.setState({
-			displayAbstract: newVal
+			displayDescription: newVal
 		});
 
   }
-
+  toggleEditing(section) {
+    let isEditing = this.state.isEditing;
+  	let newVal;
+  	if (this.state.isEditing[section] == true) {
+  		newVal = false;
+  	}else{
+  		newVal = true;
+  	}
+		isEditing[section] = newVal;
+    this.setState({
+      isEditing: Object.assign({}, this.state.isEditing, isEditing)
+    });
+  
+  }
+	updateField(obj) {
+		let section = obj.section;
+		let name = obj.name;
+		let value = obj.value;
+		let stateData = this.state.updatedData;
+		stateData[section][name] = value;
+		this.setState({
+      updatedData: Object.assign(this.state.updatedData, stateData)
+    },function() {
+			//console.log(this.state.updatedData);
+    });
+	}
+	updateSection(section) {
+		//console.log(this.state.updatedData[section]);
+    let url = `${this.props.clientRoot}/checklists/rpc/api.php`;
+		let mapParams = new URLSearchParams();
+		mapParams.append('update',section);
+		mapParams.append('pid',this.props.pid);
+		mapParams.append('clid',this.props.clid);
+    Object.entries(this.state.updatedData[section]).map(([key, value]) => {
+			mapParams.append(key,value);
+    });
+		url += '?' + mapParams.toString();
+    console.log(url);
+	}
   componentDidMount() {
     // Load search results
-    //this.onSearch({ text: this.state.searchText });
     let url = `${this.props.clientRoot}/checklists/rpc/api.php?clid=${this.props.clid}&pid=${this.props.pid}`;
     let exportUrl = `${this.props.clientRoot}/ident/rpc/api.php`;//use identify api for export
     //console.log(url);
-    //console.log(this.state.showTaxaDetail);
     httpGet(url)
 			.then((res) => {
 				// /checklists/rpc/api.php?clid=3
@@ -111,7 +159,7 @@ class ExploreApp extends React.Component {
 				let googleMapUrl = '';			
 				let host = window.location.host;
 						
-				if (res.lat !== '' && res.lng !== '') {
+				if (res.latcentroid !== '' && res.longcentroid !== '') {
 					
 					googleMapUrl += 'https://maps.google.com/maps/api/staticmap';
 					let mapParams = new URLSearchParams();
@@ -120,7 +168,7 @@ class ExploreApp extends React.Component {
 					mapParams.append("maptype",'terrain');
 					mapParams.append("size",'220x220');
 					mapParams.append("zoom",6);
-					mapParams.append("markers",'icon:' + markerUrl + '|anchor:center|' + res.lat + ',' + res.lng);
+					mapParams.append("markers",'icon:' + markerUrl + '|anchor:center|' + res.latcentroid + ',' + res.longcentroid);
 		
 					googleMapUrl += '?' + mapParams.toString();
 				}
@@ -137,14 +185,18 @@ class ExploreApp extends React.Component {
 					title: res.title,
 					authors: res.authors,
 					abstract: res.abstract,
+					locality: res.locality,
+					publication: res.publication,
+					notes: res.notes,
+					latcentroid: res.latcentroid,
+					longcentroid: res.longcentroid,
+					pointradiusmeters: res.pointradiusmeters,
 					viewType: viewType,
 					//taxa: res.taxa,
 					searchResults: this.sortResults(res.taxa),
 					totals: res.totals,
 					fixedTotals: res.totals,
 					googleMapUrl: googleMapUrl,
-					//exportUrlCsv: `${this.props.clientRoot}/checklists/rpc/export.php?clid=` + this.getClid() + `&pid=` + this.getPid(),
-					//exportUrlWord: `${this.props.clientRoot}/checklists/defaultchecklistexport.php?cl=` + this.getClid() + `&pid=` + this.getPid()
 					exportUrl: exportUrl,
 					exportUrlCsv: exportUrl + `?export=csv&clid=` + this.getClid() + `&pid=` + this.getPid(),// + `&dynclid=` + this.getDynclid(),
 					exportUrlWord: exportUrl + `?export=word&clid=` + this.getClid() + `&pid=` + this.getPid(),// + `&dynclid=` + this.getDynclid()
@@ -174,17 +226,7 @@ class ExploreApp extends React.Component {
 		exportParams.append("clid",this.getClid());
 		exportParams.append("pid",this.getPid());
 		//exportParams.append("dynclid",this.getDynclid());
-		
-		/*TBD
-		if (this.state.searchName) {
-			exportParams.append("name",this.state.searchName);
-		}
-		if (this.state.searchSynonyms) {
-			exportParams.append("synonyms",this.state.searchSynonyms);
-		}
-		if (this.state.filters.searchText) {
-			exportParams.append("search",this.state.filters.searchText);
-		}*/
+
   	url += '?' + exportParams.toString();
   	
 	  this.setState({
@@ -204,24 +246,6 @@ class ExploreApp extends React.Component {
 		if (this.state.filters.searchText) {
 			exportParams.append("taxonfilter",this.state.filters.searchText);
 		}
-		/*TBD
-  	//params here match /checklists/defaultchecklistexport.php - this is old - ap
-		if (this.state.searchName === 'commonname') {
-			exportParams.append("searchcommon",1);
-		}
-		if (this.state.searchSynonyms) {
-			exportParams.append("searchsynonyms",this.state.searchSynonyms);
-		}
-		if (this.state.sortBy === 'taxon') {
-			exportParams.append("showalphataxa",1);
-		}
-		if (this.state.viewType === 'grid') {
-			exportParams.append("showimages",1);
-		}
-		if (this.state.showTaxaDetail === 'on') {
-			exportParams.append("showauthors",1);
-			exportParams.append("showvouchers",1);
-		}*/
 		
   	url += '?' + exportParams.toString();
 	  this.setState({
@@ -253,16 +277,7 @@ class ExploreApp extends React.Component {
   }
 
   // On search start
-  onSearch(searchObj) {
-    //const newQueryStr = addUrlQueryParam("search", searchObj.text);
-    
-    /*window.history.replaceState(
-      { query: newQueryStr },
-      '',
-      window.location.pathname + newQueryStr
-    );*/
-
-    
+  onSearch(searchObj) {  
     this.setState({
       isSearching: true,
       searchText: searchObj.text,
@@ -338,39 +353,13 @@ class ExploreApp extends React.Component {
     this.setState({ searchName: name },function() {
     	this.updateExportUrls();
     });
-/*
-    let newName;
-    if (name === "commonname") {
-      newName = name;
-    } else {
-      newName = 'sciname';
-    }*/
-    //let newQueryStr = addUrlQueryParam("searchName", newName);
-    /*window.history.replaceState({ query: newQueryStr }, '', window.location.pathname + newQueryStr);*/
   }
   onSearchSynonymsChanged(synonyms) {
     this.setState({ searchSynonyms: synonyms },function() {
     	this.updateExportUrls();
     });
-
-/*    let newSynonyms;
-    if (synonyms === 'off') {
-      newSynonyms = synonyms;
-    } else {
-      newSynonyms = 'on';
-    }*/
-    //let newQueryStr = addUrlQueryParam("searchSynonyms", newSynonyms);
-    /*window.history.replaceState({ query: newQueryStr }, '', window.location.pathname + newQueryStr);*/
   }
   onViewTypeChanged(type) {
-/*
-    let newType;
-    if (type) {
-      newType = type;
-    } else {
-      newType = 'list';
-    }
-  */  
     this.setState({ viewType: type },function() {
 			if (type === 'grid') {
 				this.setState({showTaxaDetail: "off"},function() {
@@ -380,30 +369,14 @@ class ExploreApp extends React.Component {
    			 this.updateExportUrls();
 			}
     });
-    //let newQueryStr = addUrlQueryParam("viewType", newType);
-    /*window.history.replaceState({ query: newQueryStr }, '', window.location.pathname + newQueryStr);*/
   }
   onTaxaDetailChanged(taxaDetail) {
   	this.setState({showTaxaDetail: taxaDetail},function() {
     	this.updateExportUrls();
     });
- /* 	
-  	let newVal;
-  	if (taxaDetail === 'on') {
-  		newVal = taxaDetail;
-  	}else{
-  		newVal = 'off';
-  	}
-  */	
-  	//let newQueryStr = addUrlQueryParam("taxaDetail",newVal);
-    /*window.history.replaceState({ query: newQueryStr }, '', window.location.pathname + newQueryStr);*/
   }
 
   render() {
-		let shortAbstract = '';
-		if (this.state.abstract.length > 0) {
-			shortAbstract = this.state.abstract.replace(/^(.{240}[^\s]*).*/, "$1") + "...";//wordsafe truncate
-		}
 
     return (
     <div className="wrapper">
@@ -417,35 +390,80 @@ class ExploreApp extends React.Component {
       <div className="container explore" style={{ minHeight: "45em" }}>
  				<div className="row pb-2">
           <div className="col-9 copy">
-            <h2>{ this.state.title }</h2>
-            {this.state.authors.length > 0 &&
-            <p className="authors"><strong>Authors:</strong> <span className="authors-content" dangerouslySetInnerHTML={{__html: this.state.authors}} /></p>
+          {	this.state.isEditing['info'] == false &&
+	          <h2>{ this.state.title }</h2>	
+	        }
+          {	this.state.isEditing['info'] == true &&
+	          <h2>Title: <TextField section="info" name="title" value={ this.state.title } onUpdate={this.updateField} /></h2>	
+	        }
+            {this.state.displayDescription == 'expanded' && this.state.isEditing['info'] == false && 
+
+            	<div>
+ 		           	<p className="authors"><strong>Authors: </strong> <span className="authors-content" dangerouslySetInnerHTML={{__html: this.state.authors}} /></p>
+								<p className="abstract"><strong>Abstract: </strong> <span className="abstract-content" dangerouslySetInnerHTML={{__html: this.state.abstract}} /></p>
+ 		           	<p className="locality"><strong>Locality: </strong> <span className="locality-content" dangerouslySetInnerHTML={{__html: this.state.locality}} /></p>
+ 		           	<p className="publication"><strong>Citation: </strong> <span className="publication-content" dangerouslySetInnerHTML={{__html: this.state.publication}} /></p>
+ 		           	<p className="notes"><strong>Notes: </strong> <span className="notes-content" dangerouslySetInnerHTML={{__html: this.state.notes}} /></p>
+ 		           	<p className="latcentroid"><strong>Latitude: </strong> <span className="latcentroid-content" dangerouslySetInnerHTML={{__html: this.state.latcentroid}} /></p>
+ 		           	<p className="longcentroid"><strong>Longitude: </strong> <span className="longcentroid-content" dangerouslySetInnerHTML={{__html: this.state.longcentroid}} /></p>
+ 		           	<p className="pointradiusmeters"><strong>Point Radius(meters): </strong> <span className="pointradiusmeters-content" dangerouslySetInnerHTML={{__html: this.state.pointradiusmeters}} /></p>
+								
+								<div className="less more-less" onClick={() => this.toggleEditing('info')}>
+										<FontAwesomeIcon icon="edit" />Toggle Editing
+								</div>
+								
+							</div>
 						}
-						{this.state.abstract.length > 0 && this.state.displayAbstract == 'default' &&
-							<div>
-							<p className="abstract"><strong>Abstract:</strong> <span className="abstract-content" dangerouslySetInnerHTML={{__html: shortAbstract}} /></p>
+            {this.state.displayDescription == 'expanded' && this.state.isEditing['info'] == true && 
+            	<div>
+						 		<p className="authors"><strong>Authors:</strong>
+						 			<TextField section="info" name="authors" value={ this.state.authors } onUpdate={this.updateField} />
+						 		</p>
+								<p className="abstract"><strong>Abstract:</strong> 
+						 			<TextareaField section="info" name="abstract" value={ this.state.abstract } onUpdate={this.updateField} />
+								</p>
+						 		<p className="locality"><strong>Locality:</strong>
+						 			<TextField section="info" name="locality" value={ this.state.locality } onUpdate={this.updateField} />
+						 		</p>
+						 		<p className="publication"><strong>Citation:</strong>
+						 			<TextField section="info" name="publication" value={ this.state.publication } onUpdate={this.updateField} />
+						 		</p>
+						 		<p className="notes"><strong>Notes:</strong>
+						 			<TextField section="info" name="notes" value={ this.state.notes } onUpdate={this.updateField} />
+						 		</p>
+						 		<p className="lat-lng">
+								 		<strong>Latitude:</strong><TextField section="info" name="latcentroid" value={ this.state.latcentroid } onUpdate={this.updateField} />
+								 		<strong>Longitude:</strong><TextField section="info" name="longcentroid" value={ this.state.longcentroid } onUpdate={this.updateField} />
+								 		<strong>Point Radius (meters):</strong><TextField section="info" name="pointradiusmeters" value={ this.state.pointradiusmeters } onUpdate={this.updateField} />
+						 		</p>
+								
+									<input 
+										type="button"
+										name="submitInfo"
+										onClick={ this.updateSection.bind(this,'info')} 
+										value="Update Info"
+									></input>
+							
+								<div className="less more-less" onClick={() => this.toggleEditing('info')}>
+										<FontAwesomeIcon icon="edit" />Toggle Editing
+								</div>
+								
+							</div>
+						}
+						
+						{this.state.displayDescription == 'default' &&
 							<div className="more more-less" onClick={() => this.toggleDisplay()}>
-									<FontAwesomeIcon icon="chevron-down" />Show Abstract
-							</div>
+									<FontAwesomeIcon icon="chevron-down" />Show Vendor Info
 							</div>
 						}
-						{this.state.abstract.length > 0 && this.state.displayAbstract == 'expanded' &&
-							<div>
-							<p className="abstract"><strong>Abstract:</strong> <span className="abstract-content" dangerouslySetInnerHTML={{__html: this.state.abstract}} /></p>
+						{this.state.displayDescription == 'expanded' &&
 							<div className="less more-less" onClick={() => this.toggleDisplay()}>
-									<FontAwesomeIcon icon="chevron-up" />Hide Abstract
-							</div>
+									<FontAwesomeIcon icon="chevron-up" />Hide Vendor Info
 							</div>
 						}				
 				
           </div>
           <div className="col-3 text-right mt-3 map">
-          		{ /*this.state.googleMapUrl.length > 0 &&
-          			<a href={ this.props.clientRoot + "/checklists/checklistmap.php?clid=" + this.getClid() } target="_blank">
-              		<img className="img-fluid" src={this.state.googleMapUrl} title="Project map" alt="Map representation of checklists" />
-              	</a>
-              	*/
-              }
           		{ this.state.googleMapUrl.length > 0 &&
           			<a href={ this.props.clientRoot + "/map/googlemap.php?maptype=occquery&clid=" + this.getClid() } target="_blank">
               		<img className="img-fluid" src={this.state.googleMapUrl} title="Project map" alt="Map representation of checklists" />
@@ -459,7 +477,6 @@ class ExploreApp extends React.Component {
 					{
 					
 						<SideBar
-							//ref={ this.sideBarRef }
 							clid={ this.state.clid }
 							style={{ background: "#DFEFD3" }}
 							isLoading={ this.state.isLoading }
