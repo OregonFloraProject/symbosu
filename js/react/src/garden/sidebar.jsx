@@ -6,8 +6,8 @@ import FeatureSelector from "../common/featureSelector.jsx";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { library } from "@fortawesome/fontawesome-svg-core";
-import {faFileCsv, faFileWord, faPrint, faChevronDown, faChevronUp, faChevronCircleDown, faChevronCircleUp, faCircle } from '@fortawesome/free-solid-svg-icons'
-library.add( faFileCsv, faFileWord, faPrint, faChevronDown, faChevronUp, faChevronCircleDown, faChevronCircleUp, faCircle );
+import {faFileCsv, faFileWord, faPrint, faChevronDown, faChevronUp, faChevronCircleDown, faChevronCircleUp, faCircle, faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons'
+library.add( faFileCsv, faFileWord, faPrint, faChevronDown, faChevronUp, faChevronCircleDown, faChevronCircleUp, faCircle, faExternalLinkAlt );
 
 
 /**
@@ -48,6 +48,7 @@ class SidebarAccordion extends React.Component {
   render() {
     let dropdownId = this.props.title;
     dropdownId = dropdownId.toLowerCase().replace(/[^a-z]/g, "").concat("-accordion");
+    let projectHref = `${this.props.clientRoot}/projects/index.php?pid=4`;
     return (
       <div
         className={ "top-level" + (this.props.disabled === true ? " dropdown-disabled" : "") }
@@ -56,8 +57,16 @@ class SidebarAccordion extends React.Component {
         <div className="row">
           <h4 className="">
             {this.props.title}
+            { this.props.title == 'Commercial Availability' && 
+							<a 
+								href={ projectHref }
+								className = "external-link"
+								title="View all participating nurseries and the native species they carry">
+								<FontAwesomeIcon icon="external-link-alt" />
+							</a>
+            }
           </h4>
-					<span className="subheading">{ this.props.subheading }</span>
+					<span className="subheading" dangerouslySetInnerHTML={{__html: this.props.subheading}} />
         </div>
         <div className="">
           <div className="">
@@ -102,8 +111,8 @@ class SideBar extends React.Component {
 			isMobile: isMobile
 		});
 	};
-	
-	componentWillReceiveProps(nextProps) {//necessary because React doesn't set isMobile in componentDidMount grr
+	/*
+	componentWillReceiveProps(nextProps) {
   	let displayFilters = this.state.displayFilters;
 		let isMobile = this.state.isMobile;
 		
@@ -118,7 +127,7 @@ class SideBar extends React.Component {
 			isMobile: isMobile
 		});
 		
-	}
+	}*/
   
   toggleFilters = () => {
 		let newVal = true;
@@ -202,7 +211,12 @@ class SideBar extends React.Component {
 								let firstLevel = this.props.characteristics[idx];
 								let accordionKey = firstLevel.hid.toString() + firstLevel.headingname;//hids are duplicated, so use name also
 									return (					
-										<SidebarAccordion key={ accordionKey } title={ firstLevel.headingname } subheading={ firstLevel.subheading }>
+										<SidebarAccordion 
+											key={ accordionKey } 
+											title={ firstLevel.headingname } 
+											subheading={ firstLevel.subheading }
+											clientRoot={this.props.clientRoot}
+										>
 										{
 											Object.keys(firstLevel.characters).map((idx2) => {
 												let secondLevel = firstLevel.characters[idx2];
