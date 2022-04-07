@@ -714,5 +714,96 @@
 		}
 	}
 }
-
+#react-explore-vendor-app {
+	.info {
+		.more-less {
+			cursor: pointer;
+			&.display {
+				margin-top: 1.5rem;
+				text-align: right;
+			}
+			&.editing.less {
+				color: @dark-green;
+			}
+		}
+		h2 {
+			margin-bottom: 1rem;
+		}
+		.editable-content {
+			box-sizing: border-box;
+			padding: 3px 2px 1px;
+			border: 1px solid transparent;
+		}
+		input[type="text"],
+		textarea {
+			border: 1px solid #cccccc;
+			padding: 0 2px;
+			line-height: 1.4em;
+			color: #000;
+			box-shadow: inset 0 0 6px #ddd;
+		}
+		textarea {
+			width: 300px;
+			height: 100px;
+		}
+		.btn-primary {
+			padding: .7rem 1em;
+			width: 100px;
+			&.updating {
+				background-image: white;
+				color: @med-green !important;
+			}
+		}
+		.submit-wrapper {
+			text-align: center;
+		}
+		.row.title {
+			min-height: 100px;
+			.editable-content {
+				padding-top: 5px;
+				line-height: 52px;
+			}
+			input[type="text"] {
+				font-weight: bold;
+				
+			}
+		}
+		.row.abstract {
+			min-height: 120px;
+			span {
+				font-size: 1rem;
+			}
+		}
+	}
+	.add-buttons {
+		min-height: 20px;
+	}
+	.msg {
+		text-align: center;
+		border-radius: 12px;
+		border: none;//1px solid white;
+		font-size: 18px;
+		line-height: 1em;
+		height: 40px;
+		background-color: transparent;
+		color: transparent;
+		transition: color 500ms, background-color 500ms, border-color 500ms;
+		padding: 10px 0;
+		margin: 2rem 10px;
+		&.display {
+			background-color: @light-green-alpha;
+			color: @med-green;
+			//border-color: @dark-green;
+		}
+	}
+	.taxa-delete {
+		margin-left: 4px;
+		a {
+			background-color: transparent;
+			color: @med-green !important;
+			width: auto;
+			padding: 6px 2px;
+		}
+	}
+}
 

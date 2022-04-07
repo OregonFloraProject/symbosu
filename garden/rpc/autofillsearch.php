@@ -9,7 +9,12 @@ $RANK_GENUS = 180;
 $results = [];
 
 if (array_key_exists("q", $_REQUEST)) {
+	$omit = [-1];
+	if (array_key_exists("omit", $_REQUEST)) {
+		$omit = array_map('intval',explode(',',$_REQUEST['omit']));
+	}
   $em = SymbosuEntityManager::getEntityManager();
+  $q = $em->createQueryBuilder();
 
   $sciNameResults = $em->createQueryBuilder()
     ->select("t.sciname as text, t.tid as value")
@@ -18,8 +23,10 @@ if (array_key_exists("q", $_REQUEST)) {
     ->where("tl.clid = $CLID_GARDEN_ALL")
     ->andWhere("t.sciname LIKE :search")
     ->andWhere("t.rankid > $RANK_GENUS")
+    ->andWhere("t.tid NOT IN (:omit)")
     ->groupBy("t.tid")
     ->setParameter("search",  "%" . $_REQUEST["q"] . '%')
+    ->setParameter("omit",$omit)
     ->setMaxResults(3)
     ->getQuery()
     ->getArrayResult();
@@ -32,8 +39,10 @@ if (array_key_exists("q", $_REQUEST)) {
     ->where("tl.clid = $CLID_GARDEN_ALL")
     ->andWhere("v.vernacularname LIKE :search")
     ->andWhere("t.rankid > $RANK_GENUS")
+    ->andWhere("t.tid NOT IN (:omit)")
     ->groupBy("v.vernacularname")
     ->setParameter("search",  "%" . $_REQUEST["q"] . '%')
+    ->setParameter("omit",$omit)
     ->orderBy("v.sortsequence")
     ->setMaxResults(3)
     ->getQuery()

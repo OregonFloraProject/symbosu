@@ -107,6 +107,7 @@ class ExploreManager {
   public function setSearchSynonyms($bool) {
   	$this->searchSynonyms = ($bool === true? true: false);
   }
+
   
   private function populateTaxa($clid) {
   
@@ -119,7 +120,6 @@ class ExploreManager {
   	$wheres = array(); 
   	$params = array();
   	$orderBy = 't.sciname';
-  	
   	
   	$innerJoins[] = array("Fmchklsttaxalink", "ctl", "WITH", "t.tid = ctl.tid");
   	#$innerJoins[] = array("Fmchecklists", "cl", "WITH", "ctl.clid = cl.clid");

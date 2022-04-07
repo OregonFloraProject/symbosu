@@ -11,6 +11,7 @@ export default class TextareaField extends TextField {
 				name={this.state.name}
 				section={this.state.section}
 				defaultValue={this.state.value}
+				placeholder={this.state.placeholder}
 				onBlur={ this.handleBlur.bind(this)}
 				onChange={ this.handleChange}
 			/>

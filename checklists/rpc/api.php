@@ -84,7 +84,85 @@ function buildResult($checklistObj) {
   }
   return $result;
 }
-
+function updateInfo($em,$model) {
+	$result = [];
+	$fields = array(
+		'name'=>'setName',
+		'authors'=>'setAuthors',
+		'locality'=>'setLocality',
+		'publication'=>'setPublication',
+		'abstract'=>'setAbstract',
+		'notes'=>'setNotes',
+		'latcentroid'=>'setLatcentroid',
+		'longcentroid'=>'setLongcentroid',
+		'pointradiusmeters'=>'setPointradiusmeters'
+	);
+	$success = 0;
+	$error = 0;
+	foreach ($fields as $field => $function) {
+		if (isset($_GET[$field]) && method_exists($model,$function)) {
+			$model->$function($_GET[$field]);
+			$success++;
+		}
+	}
+	$em->persist($model);
+	$em->flush();
+	$result = [
+		"success" => $success
+	];
+	
+	return $result;
+}
+function updateSPP() {
+	$result = [];
+	$success = 0;
+	$error = 0;
+	
+	if (array_key_exists("spp", $_GET) && array_key_exists("action", $_GET) ) {
+		if ($_GET['action'] == 'add') {
+			foreach ($_GET['spp'] as $tid) {
+				try {
+					/*
+						merge will be deprecated in future versions.  
+						Using persist can cause a duplicate key error, 
+						which should be handled by try/catch, but isn't.
+						So for now, we stick with merge.
+					*/
+  				$em = SymbosuEntityManager::getEntityManager();
+					$repo = new Fmchklsttaxalink();
+					$repo->setTid($tid);
+					$repo->setClid($_GET['clid']);
+					$repo->setInitialtimestamp(new \DateTime());
+					$em->merge($repo);#persist
+					$em->flush();
+					$success++;
+				}
+				catch (UniqueConstraintViolationException $e) {
+					#SymbosuEntityManager::resetManager();
+				}
+			}
+		}elseif($_GET['action'] == 'delete') {
+			foreach ($_GET['spp'] as $tid) {
+  			$em = SymbosuEntityManager::getEntityManager();
+  			$repo = $em->getRepository("Fmchklsttaxalink");
+				$link = $repo->find([
+					'tid' => $tid,
+					'clid' => $_GET['clid'],
+					'morphospecies' => ''
+				]);
+				$em->remove($link);
+				$em->flush();
+				$success++;
+			}
+		}
+	}
+	$result = [
+		"success" => $success
+	];
+	#var_dump($result);
+	#exit;
+	return $result;
+}
 
 $result = [];
 
@@ -98,26 +176,14 @@ if (array_key_exists("clid", $_GET) && is_numeric($_GET["clid"])&& array_key_exi
 	}
   
   if (array_key_exists("update", $_GET)) {
-		if ($_GET['update'] == 'info') {
-			$fields = array(
-											'name'=>'setName',
-											'authors'=>'setAuthors',
-											'locality'=>'setLocality',
-											'publication'=>'setPublication',
-											'abstract'=>'setAbstract',
-											'notes'=>'setNotes',
-											'latcentroid'=>'setLatcentroid',
-											'longcentroid'=>'setLongcentroid',
-											'pointradiusmeters'=>'setPointradiusmeters'
-			);
-			foreach ($fields as $field => $function) {
-				if (isset($_GET[$field]) && method_exists($model,$function)) {
-					$model->$function($_GET[$field]);
-				}
-			}
-			$em->persist($model);
-			$em->flush();
-		}
+  	switch ($_GET['update']) {
+  		case 'info':
+				$result = updateInfo($em,$model);
+				break;
+			case 'spp':
+				$result = updateSPP($em);
+				break;
+		}		
 	}else{
   
 		if ( 	 ( array_key_exists("search", $_GET) && !empty($_GET["search"]) )
