@@ -73,6 +73,17 @@ export class SearchWidget extends React.Component {
     	if (this.props.searchName) {
     		suggestionUrl += "&name=" + this.props.searchName;
     	}
+    	if (this.props.searchResults && this.props.searchResults.taxonSort.length > 0) {
+    		let tids = this.props.searchResults.taxonSort.map((key) => {
+    				//console.log(key);
+						//return { key: filterKey, val: this.state.filters[filterKey] }
+						return key.tid;
+				})
+				if (tids.length > 0) {
+    			suggestionUrl += "&omit=" + tids.join(',');
+    			///garden/rpc/autofillsearch.php?q=ju&clid=54&dynclid=-1&name=sciname&omit=2400,2404,2705,2835,3212,4274,4546,6450
+				}
+    	}
   		httpGet(suggestionUrl).then((res) => {
         return JSON.parse(res);
       }).catch((err) => {

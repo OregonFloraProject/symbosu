@@ -4,8 +4,8 @@ import Searching from "../common/searching.jsx";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faSquare } from '@fortawesome/free-solid-svg-icons'
-library.add( faSquare );
+import { faSquare, faMinusCircle } from '@fortawesome/free-solid-svg-icons'
+library.add( faSquare, faMinusCircle );
 
 
 function SearchResult(props) {
@@ -140,9 +140,9 @@ class GardenSearchContainer extends React.Component {
 }
 
 function ExploreSearchResult(props) {
+//console.log(props);
   const useGrid = props.viewType === "grid";
-  if (props.display) {
-		return (
+	return (
 			<div className={ "card search-result " + (useGrid ? "grid-result" : "list-result") }>
 					<div className={useGrid ? "" : "card-body"}>
 						{useGrid &&
@@ -168,7 +168,7 @@ function ExploreSearchResult(props) {
 								</a>
 								{
 									props.showTaxaDetail === 'on' && props.vouchers.length && 
-							
+								
 										<div className="vouchers">Vouchers:&nbsp;          		
 										{
 											props.vouchers.map((voucher) =>  {
@@ -183,19 +183,34 @@ function ExploreSearchResult(props) {
 											.reduce((prev, curr) => [prev, ', ', curr])
 										}
 										</div>
-								}                         
+								} 
+								{
+									props.isEditable == true && 
+									<span className="taxa-delete">
+										<a 
+											type="button"
+											className="btn"
+											name={ props.sciName }
+											value={ props.sciName }	
+											action={ 'delete' }
+											tid={ props.tid } 				
+											title={ 'Delete from checklist' }
+											onClick={ () => props.storeChange({'action': 'delete','name': props.sciName, 'value': props.tid, 'section': 'spp'})} 
+										>
+											<FontAwesomeIcon icon="minus-circle" />
+										</a>
+									</span>
+								}                        
 							</div>
 						</div>
 					</div>
 			</div>
-		);
-	}
-  return <span style={{ display: "none" }}/>;
+	)
 }
 function ExploreSearchContainer(props) {
+	//console.log(props);
   const useGrid = props.viewType === "grid";
-  
-	if (props.currentTids.length) {
+	if (props.searchResults) {
 		if (props.sortBy === 'taxon') {		
 			return (
 				<div
@@ -208,11 +223,11 @@ function ExploreSearchContainer(props) {
 				/>
 				{	props.searchResults.taxonSort.map((result) =>  {
 						//console.log(result);
-						let display = (props.currentTids.indexOf(result.tid) > -1);
 						return (
 							<ExploreSearchResult
-								display={ display }
 								key={ result.tid }
+								tid={ result.tid }
+								section={ props.section }
 								viewType={ props.viewType }
 								showTaxaDetail={ props.showTaxaDetail }
 								href={ getTaxaPage(props.clientRoot, result.tid) }
@@ -222,6 +237,8 @@ function ExploreSearchContainer(props) {
 								author={ result.author ? result.author : '' }
 								vouchers={  result.vouchers ? result.vouchers : '' }
 								clientRoot={ props.clientRoot }
+								isEditable={ props.isEditable }
+								storeChange={ props.storeChange } 
 							/>
 						)
 					})
@@ -241,39 +258,33 @@ function ExploreSearchContainer(props) {
 				/>
 				{
 						Object.entries(props.searchResults.familySort).map(([family, results]) => {
-							let thisTids = results.map((result) =>  {
-					  		return result.tid;
-  						});
-  						let currentTidsInThisFamily = props.currentTids.filter(value => thisTids.includes(value));
-  						if (currentTidsInThisFamily.length > 0) {
-								return (
-									<div key={ family } className="family-group">
-										<h4>{ family }</h4>	
-										<div className={ (props.viewType === "grid" ? " search-result-grid" : "") } >
-										{ results.map((result) =>  {
-												let display = (props.currentTids.indexOf(result.tid) > -1);
-												return (
-													<ExploreSearchResult
-														display={ display }
-														key={ result.tid }
-														viewType={ props.viewType }
-														showTaxaDetail={ props.showTaxaDetail }
-														href={ getTaxaPage(props.clientRoot, result.tid) }
-														src={ result.thumbnail }
-														commonName={ getCommonNameStr(result) }
-														sciName={ result.sciname ? result.sciname : '' }
-														author={ result.author ? result.author : '' }
-														vouchers={  result.vouchers ? result.vouchers : '' }
-														clientRoot={ props.clientRoot }
-													/>
-												)
-											})
-										}
-										</div>
+							return (
+								<div key={ family } className="family-group">
+									<h4>{ family }</h4>	
+									<div className={ (props.viewType === "grid" ? " search-result-grid" : "") } >
+									{ results.map((result) =>  {
+											return (
+												<ExploreSearchResult
+													key={ result.tid }
+													tid={ result.tid }
+													viewType={ props.viewType }
+													showTaxaDetail={ props.showTaxaDetail }
+													href={ getTaxaPage(props.clientRoot, result.tid) }
+													src={ result.thumbnail }
+													commonName={ getCommonNameStr(result) }
+													sciName={ result.sciname ? result.sciname : '' }
+													author={ result.author ? result.author : '' }
+													vouchers={  result.vouchers ? result.vouchers : '' }
+													clientRoot={ props.clientRoot }
+													isEditable={ props.isEditable }
+													storeChange={ props.storeChange } 
+												/>
+											)
+										})
+									}
 									</div>
-								);
-  						//return <span style={{ display: "none" }}/>;
-  						}
+								</div>
+							)
 						})
 				}
 				</div>
@@ -363,9 +374,17 @@ function IdentifySearchContainer(props) {
 	}
   return <span style={{ display: "none" }}/>;
 }
+
 IdentifySearchContainer.defaultProps = {
   searchResults: [],
 };
+/*
+ExploreSearchResult.defaultProps = {
+	tid: -1,
+	sciName: '',
+	section: ''
+	
+};*/
 
 export { SearchResultContainer, SearchResult, GardenSearchContainer, GardenSearchResult, ExploreSearchResult, ExploreSearchContainer, IdentifySearchResult, IdentifySearchContainer };
 

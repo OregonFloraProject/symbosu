@@ -20,7 +20,8 @@ class ExploreApp extends React.Component {
   constructor(props) {
     super(props);
     const queryParams = getUrlQueryParams(window.location.search);
-
+    
+    
     // TODO: searchText is both a core state value and a state.filters value; How can we make the filtering system more efficient?
     this.state = {
       isLoading: true,
