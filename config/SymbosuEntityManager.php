@@ -51,8 +51,11 @@ $cache = null;
     return $config;
   }
 
-  private static function getDbConfig() {
-    $dbParams = MySQLiConnectionFactory::getConParams("readonly");
+  private static function getDbConfig($perm = 'readonly') {
+  	$perms = ['readonly','write'];
+  	$perm = (in_array($perm,$perms)? $perm : 'readonly');
+  	
+    $dbParams = MySQLiConnectionFactory::getConParams($perm);
     return array(
       "dbname" => $dbParams["database"],
       "user" => $dbParams["username"],
@@ -66,10 +69,10 @@ $cache = null;
    * @return \Doctrine\ORM\EntityManager
    * @throws \Doctrine\ORM\ORMException
    */
-  public static function getEntityManager() {
+  public static function getEntityManager($perm = 'readonly') {
     if (SymbosuEntityManager::$EntityManager === null) {
       SymbosuEntityManager::$EntityManager = EntityManager::create(
-        SymbosuEntityManager::getDbConfig(),
+        SymbosuEntityManager::getDbConfig($perm),
         SymbosuEntityManager::getMetaConfig()
       );
     }

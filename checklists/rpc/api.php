@@ -137,7 +137,8 @@ function buildDynResult($dynclid) {
   return $result;
 }
 
-function updateInfo($em,$model) {
+function updateInfo($model) {
+	$em = SymbosuEntityManager::getEntityManager('write');
 	$result = [];
 	$fields = array(
 		'name'=>'setName',
@@ -181,7 +182,7 @@ function updateSPP() {
 						which should be handled by try/catch, but isn't.
 						So for now, we stick with merge.
 					*/
-  				$em = SymbosuEntityManager::getEntityManager();
+  				$em = SymbosuEntityManager::getEntityManager('write');
 					$repo = new Fmchklsttaxalink();
 					$repo->setTid($tid);
 					$repo->setClid($_GET['clid']);
@@ -231,10 +232,10 @@ if (array_key_exists("clid", $_GET) && is_numeric($_GET["clid"])&& array_key_exi
   if (array_key_exists("update", $_GET)) {
   	switch ($_GET['update']) {
   		case 'info':
-				$result = updateInfo($em,$model);
+				$result = updateInfo($model);
 				break;
 			case 'spp':
-				$result = updateSPP($em);
+				$result = updateSPP();
 				break;
 		}		
 	}else{
