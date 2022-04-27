@@ -100,7 +100,7 @@
 
       ul {
         .text-center();
-        padding-left: calc(1.5em + 87px);
+        padding-left: calc(1.5em + 57px);
 				li {
 					margin-left: .7em;
 					margin-right: .7em;
@@ -112,7 +112,7 @@
 			margin-bottom: .5rem;
 			@media screen and (max-width: @xlarge) {
 				ul {
-					padding-left: calc(.5em + 87px);
+					//padding-left: calc(.5em + 87px);
 					li {
 						margin-left: .3em;
 						margin-right: .3em;
@@ -143,15 +143,12 @@
   }
   .search-wrapper {
 		order: 3;
-  	flex-basis: 500px;
+  	flex-basis: 430px;
   	margin-right: -41px;
 		margin-bottom: .55rem;
 		padding: 0px 20px 0 20px;
 		text-align: right;
-		@media screen and (max-width: @xlarge) {
-			padding-left: 0px;
-			flex-basis: 450px;
-		}	
+	
   	.row {
 	  	margin: 0;
 	  }
@@ -169,15 +166,15 @@
     }
     .widget-wrapper {
     	justify-content: flex-end;
-    	margin-left: 49px;
+    	margin-left: 36px;
 			.search-widget {
 				padding: .5rem 0 0 0;
-				width: 400px;
+				width: 330px;
 				position: relative;
 				vertical-align: middle;
 				input {
 					margin-right: 10px;
-					max-width: 353px !important;
+					max-width: 350px !important;
 					height: 40px;
 					border: 2px solid @med-green;
 					display: inline;
@@ -205,8 +202,13 @@
 		@media screen and (max-width: @xlarge) {
 			margin-right: 0px;
 			padding-right: 0px;
+			padding-left: 0px;
+			flex-basis: 350px;
 			.widget-wrapper {
 				margin-left: 0px;
+				.search-widget {
+					width: 250px;
+				}
 			}
 			.header-button-bar {
 				margin-right: 30px;
