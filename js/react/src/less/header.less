@@ -9,6 +9,9 @@
 	@media screen and (max-width: @large) {
 		height: 3.8em !important;
 	}
+	.navbar-expand-lg {//override
+		justify-content: space-between;
+	}
 	.header-wrapper {
     background-size: auto;
   	box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.16);
@@ -21,11 +24,15 @@
 			margin-right: auto;
 			margin-left: auto;
 			@media screen and (max-width: @xlarge) {
-				max-width: 920px;
+				max-width: 1080px;
+			}
+			@media screen and (max-width: 1100px) {
+				max-width: 940px;
 			}
 			@media screen and (max-width: @large) {
 				max-height: 61px;
-			}
+			}	
+
 		}
 		.fixed-logo-wrapper {
 			z-index: 1200;
@@ -200,12 +207,13 @@
 		}
 		
 		@media screen and (max-width: @xlarge) {
-			margin-right: 0px;
-			padding-right: 0px;
-			padding-left: 0px;
-			flex-basis: 350px;
+			margin-right: 0;
+			margin-left: 0 !important;
+			padding-right: 0;
+			padding-left: 0;
+			flex-basis: 300px;
 			.widget-wrapper {
-				margin-left: 0px;
+				margin-left: 30px;
 				.search-widget {
 					width: 250px;
 				}
