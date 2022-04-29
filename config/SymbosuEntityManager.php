@@ -20,7 +20,6 @@ class SymbosuEntityManager {
 
   // Doctrine config
   private static $EntityManager = null;
-  #private static $conn = null;
 
   private static function getMetaConfig() {
     global $SERVER_ROOT;
@@ -52,12 +51,8 @@ $cache = null;
     return $config;
   }
 
-  private function getDbConfig($perm) {
-  	$perms = ['readonly','write'];
-  	$perm = (in_array($perm,$perms)? $perm : 'write');
-  	#$this->setConn($perm);
-  	
-    $dbParams = MySQLiConnectionFactory::getConParams($perm);
+  private static function getDbConfig() {
+    $dbParams = MySQLiConnectionFactory::getConParams("readonly");
     return array(
       "dbname" => $dbParams["database"],
       "user" => $dbParams["username"],
@@ -71,22 +66,15 @@ $cache = null;
    * @return \Doctrine\ORM\EntityManager
    * @throws \Doctrine\ORM\ORMException
    */
-  public static function getEntityManager($perm = 'write') {
+  public static function getEntityManager() {
     if (SymbosuEntityManager::$EntityManager === null) {
       SymbosuEntityManager::$EntityManager = EntityManager::create(
-        SymbosuEntityManager::getDbConfig($perm),
+        SymbosuEntityManager::getDbConfig(),
         SymbosuEntityManager::getMetaConfig()
       );
     }
 
     return SymbosuEntityManager::$EntityManager;
   }
-  /*
-  private function setConn($conn) {
-  	$this->conn = $conn;
-  }
-  private function getConn() {
-  	return $this->conn;
-  }*/
 }
 ?>

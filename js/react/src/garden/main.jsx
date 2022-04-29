@@ -71,7 +71,6 @@ class GardenPageApp extends React.Component {
     this.updateViewport = this.updateViewport.bind(this);
       
     this.onAttrChanged = this.onAttrChanged.bind(this);
-    this.onGroupFilterClicked = this.onGroupFilterClicked.bind(this);
     this.resetSlider = this.resetSlider.bind(this);
     this.resetCanned = this.resetCanned.bind(this);
     this.getCannedByClid = this.getCannedByClid.bind(this);
@@ -94,7 +93,10 @@ class GardenPageApp extends React.Component {
     return parseInt(this.props.pid);
   }
   componentDidMount() {
-     
+
+      
+
+      
     let apiUrl = `${this.props.clientRoot}/garden/rpc/api.php`;
     let url = apiUrl;
 
@@ -118,13 +120,13 @@ class GardenPageApp extends React.Component {
 				});
     });
 		
-		/*const characteristics = new Promise((resolve, reject) => {
+		const characteristics = new Promise((resolve, reject) => {
 			let charURL = `${this.props.clientRoot}/garden/rpc/api.php?chars=true`;
 			httpGet(charURL)
 				.then((res) => {
 					resolve(JSON.parse(res));
 				})
-   	});*/
+   	});
    	const garden = new Promise((resolve, reject) => {
 			httpGet(url)
 				.then((res) => {
@@ -134,9 +136,10 @@ class GardenPageApp extends React.Component {
 
 		Promise.all([
 			cannedSearches,
+      characteristics,
       garden
     ]).then((cres) => {
-			let res = cres[1];
+			let res = cres[2];
 			let taxa = '';
 			let tids = [];
 			if (res && res.taxa) {
@@ -156,7 +159,7 @@ class GardenPageApp extends React.Component {
 				apiUrl: apiUrl,
 				currentTids: tids,
 				cannedSearches: cres[0],
-				characteristics: res.characteristics
+				characteristics: cres[1]
 			});
 			const pageTitle = document.getElementsByTagName("title")[0];
 			pageTitle.innerHTML = `${pageTitle.innerHTML} ${res.title}`;
@@ -300,11 +303,11 @@ class GardenPageApp extends React.Component {
 					this.setState({ isSearching: false, searchInit: true });
 					this.mobileScrollToResults();
 				});
-		}else{//reset
-			this.setDefaultTids();
-			this.setState({ isSearching: false });
-			this.mobileScrollToResults();
-		}
+			}else{//reset
+				this.setDefaultTids();
+				this.setState({ isSearching: false });
+				this.mobileScrollToResults();
+			}
   }
   mobileScrollToResults() {
     if (this.state.isMobile && this.getFilterCount() > 0) {
@@ -438,17 +441,6 @@ class GardenPageApp extends React.Component {
     });
     
   }
-  onGroupFilterClicked(children) {
-  	//console.log(children);
-  	let nurseries = this.state.characteristics[5].characters[1];//as hardcoded in garden/rpc/api.php
-  	nurseries.states.map((attr) => {
-  		let val = 'off';
-			if (children.indexOf(attr.cs) != -1) {
-				val = 'on';
-			}
-			this.onAttrChanged(attr.cid + '-' + attr.cs,attr.charstatename,val);
-  	});
-  }
 
   onViewTypeChanged(type) {
     this.setState({ viewType: type });
@@ -575,7 +567,6 @@ class GardenPageApp extends React.Component {
 								sortBy={ this.state.sortBy }
 								onSortByClicked={ this.onSortByChanged }
 								onAttrClicked={ this.onAttrChanged }
-								onGroupFilterClicked={ this.onGroupFilterClicked }
 								onSliderChanged={ this.onSliderChanged }
 								onFilterClicked={ this.onFilterRemoved }
 								onClearSearch={ this.clearTextSearch }
