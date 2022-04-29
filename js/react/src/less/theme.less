@@ -538,6 +538,9 @@ img {
   p,
   li {
     font-size: 22px;
+    a {
+    	text-decoration: underline;
+    }
   }
 
   .figure-caption {
@@ -959,7 +962,7 @@ img {
 			}
 		}
 		#column-main {
-			padding-left: 20px;	
+			padding-left: 15px;	
 		}
 		#column-right {
 			padding-left: 40px;
@@ -975,6 +978,11 @@ img {
 				h2 {
 					margin-bottom: 1rem;
 				}
+			}			
+		}
+		@media screen and (max-width: @large){
+			#column-right {
+				padding-left: 15px;
 			}
 		}
 	}
@@ -1019,11 +1027,14 @@ img {
 						line-height: 30px;
 						color: @dark-grn-type;
 						font-weight: bold;
+						a {
+							text-decoration: none;
+						}
 					}
 					.taxon-link {
 						flex-basis: percentage(150/705);
 						text-align: center;
-						.btn {
+						a.btn {
 							margin-top: 0;
 							background-color: transparent;
 							border: 2px solid white !important;
@@ -1031,38 +1042,59 @@ img {
 							border-radius: 6px;
 							text-transform: uppercase;
 							transition: border-color 200ms;
+							text-decoration: none;
 							&:hover {
 								border-color: @med-green !important;
 							}
 						}
 					}
-				}
+				}		
+			}					
+		}	
+		.index {
+			margin-top: 0;
+			margin-bottom: 1rem;
+			padding: 1rem;
+			background-color: @light-green;
+			h3 {
+				color: @med-green;
+				margin-top: 0;	
 			}
-		}
-		#column-right {		
-			.sidebox.index {
-				margin-top: 0;
-				h3 {
-					color: @med-green;
-					margin-top: 0;	
-				}
-				ul {
-					list-style: none;
-					padding: 0;
-					margin: 0;
-					li {
-						a.anchor {
-						
-						}
-						.btn-primary {
-							font-size: 16px;
-							line-height: 20px;
-							text-transform: uppercase;
-							padding: .4rem 1.2rem;
-						}
+			ul {
+				list-style: none;
+				padding-inline-start: 0;
+				display: flex;
+				flex-flow: row nowrap;
+				justify-content: space-between;
+				align-items: flex-start;
+				//gap: 1.5rem;
+				li {
+					margin-bottom: 0;
+					a.anchor {
+						text-decoration: none;
+					}
+					a.btn-primary {
+						font-size: 16px;
+						line-height: 20px;
+						text-transform: uppercase;
+						padding: .4rem 1.2rem;
+						text-decoration: none;
 					}
 				}
 			}
+		}
+		@media screen and (max-width: @large){
+			#column-main {
+				ul.factsheets {
+					li {
+						.pdf,
+						.taxon-name,
+				 		.taxon-link {
+				 			padding: 0 .5rem;
+				 		}
+				 	}
+				}
+			}		
 		}
 	}
 	&.taxonomic-checklist {
@@ -1085,12 +1117,28 @@ img {
 					margin-top: 0;
 				}
 			}
+			.access {
+				background-color: @light-green;
+				border-radius: 8px;
+				border: 5px solid transparent;
+				padding: 1rem;
+			}
 			img.vouchers {
 				float: left;
 				width: 60%;
 				height: auto;
 				padding-right: 5%;
 				padding-bottom: 5%;
+			}
+			figcaption {
+				display: flex;
+				flex-flow: row nowrap;
+				padding-right: 5%;
+				div {
+					flex-basis: 50%;
+					padding: 0 7%;
+					text-align: center;
+				}
 			}
 		}
 		#column-right {		
@@ -1102,26 +1150,36 @@ img {
 				&.inset {
 					padding-top: 0;
 				}
-				&.access,
 				&.search {
 					background-color: @light-green;
 					border-radius: 8px;
 					border: 5px solid transparent;
-				}
-				&.access {
-					p,
-					ul li {
-						font-size: 16px;
-						line-height: 20px;
-						letter-spacing: -.1px;
-					}
-				}
-				&.search {
 					p, 
 					ul li {
 						font-size: 14px;
 						line-height: 20px;
 						letter-spacing: -.08px;
+					}
+					input[type="text"] {
+						border-radius: .5rem !important;
+						margin-right: 10px;
+						margin-bottom: 1rem;
+						//max-width: 350px !important;
+						height: 40px;
+						border: 2px solid @med-green;
+						//display: inline;
+						color: @med-green;
+						padding: .375rem .75rem;
+						font-size: 1rem;
+						font-weight: 400;
+						line-height: 1.5em;
+					}
+					button.btn-search {
+						background-color: transparent;
+						margin-right: 0;
+						margin-top: 6px;
+						line-height: 2rem;
+						vertical-align: top;
 					}
 				}
 			}
@@ -1207,6 +1265,7 @@ img {
 					}			
 					img {
 						width: 40%;
+						padding-left: 5%;
 						height: auto;
 						float: right;
 					}
@@ -1265,6 +1324,34 @@ img {
 					margin-bottom: 1.5rem;
 					&:before {
 						content: "—";
+					}
+				}
+			}
+		}
+		@media screen and (max-width: @large){
+			#column-main {
+				.volumes {
+					.volume-detail {
+						.cta {
+							text-align: center;
+						}
+					}
+				}
+			}
+			#column-right {
+				margin-top: 2rem;
+				.sidebox {
+					&.sponsor {
+						img {
+							width: 25%;
+						}
+						.cta {
+							clear: both;
+							text-align: center;
+						}
+					}
+					cite {
+						margin-bottom: 2rem;
 					}
 				}
 			}
