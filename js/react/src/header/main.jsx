@@ -23,7 +23,7 @@ const DROPDOWNS = [
 */
 const DROPDOWNS = {
 	"tools" : {
-		title: "Tools",
+		title: "Explore",
 		children: [
 			{ title: "Mapping", href: "/spatial/index.php" },
 			{ title: "Identify Plants", href: "/checklists/dynamicmap.php?interface=key" },
@@ -39,8 +39,16 @@ const DROPDOWNS = {
   	children: [
 			{ title: "Tutorials and Tips", href: "/pages/tutorials.php" },
 			{ title: "News and Events", href: "/pages/news-events.php" },
-			{ title: "Archived Newsletters", href: "/newsletters/index.php" },
 			{ title: "Links", href: "/pages/links.php" }
+		],
+	},
+	"publications" : {
+		title: "Publications",
+		children: [
+			{ title: "Flora of Oregon", href: "/pages/flora-of-oregon.php" },
+			{ title: "Taxonomic Checklist", href: "/pages/taxonomic-checklist.php" },
+			{ title: "Rare Plant Factsheets", href: "/pages/rare-plant-factsheets.php" },
+			{ title: "Newsletters", href: "/newsletters/index.php" },
 		],
 	},
 	"about" : {
@@ -263,14 +271,18 @@ class HeaderApp extends React.Component {
   }
 
   render() {
-  	let lgLogo = `${this.props.clientRoot}/images/header/oregonflora-logo.png`;
-  	let smLogo = `${this.props.clientRoot}/images/header/oregonflora-logo-sm.png`;
+  	let lgLogo = `${this.props.clientRoot}/images/header/oregonflora-logo2.png`;
+  	let smLogo = `${this.props.clientRoot}/images/header/oregonflora-logo-sm2.png`;
   	let mainOpacity = (this.state.headerHeight-60)/40;
+  	let fixedLogoClass = 'tall';
+  	if (this.state.headerHeight == 60) {
+  		fixedLogoClass = 'short';
+  	}
 
     return (
     <div className="header-wrapper" style={{ backgroundImage: `url(${this.props.clientRoot}/images/header/OF-Header_May8.png)` }}>
     	<div className="fixed-logo-wrapper">
-        <a id="fixed-logo" className="navbar-brand" rel="external" href={ `${this.props.clientRoot}/` }>
+        <a id="fixed-logo" className={ fixedLogoClass + " navbar-brand" } rel="external" href={ `${this.props.clientRoot}/` }>
 					
 						<img 
 							style={{ opacity: mainOpacity }}
