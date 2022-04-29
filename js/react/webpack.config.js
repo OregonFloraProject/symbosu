@@ -36,7 +36,6 @@ const reactConfig = {
     "taxa-search": path.join(SRC_DIR, "taxa", "search.jsx"),
     "taxa-garden": path.join(SRC_DIR, "taxa", "taxa-garden.jsx"),
     explore: path.join(SRC_DIR, "explore", "explore.jsx"), 
-    "explore-vendor": path.join(SRC_DIR, "explore", "explore-vendor.jsx")
   },
   output: {
     path: REACT_OUT_DIR
