@@ -32,7 +32,9 @@ header( "Content-Type: text/html; charset=" . $charset );
         <!-- .inner-content makes a column max width 1100px, centered in the viewport -->
         <div class="inner-content">
 					<!-- place static page content here. -->
-					<h2>Taxonomy is the science of organism relatedness. New discoveries change our understanding of those relationships and consequently how we name plants. Our Checklist captures this knowledge and is periodically updated to reflect the latest botanical research.</h2>
+					<h2>Taxonomy is the science of organism relatedness. 
+					New discoveries change our understanding of those relationships and consequently how we name plants. 
+					Our Checklist captures this knowledge and is periodically updated to reflect the latest botanical research.</h2>
 
 					<div class="row columns">
 						<div id="column-main" class="col-lg-8">
@@ -46,14 +48,15 @@ header( "Content-Type: text/html; charset=" . $charset );
 							</div>
 							<h2>The birth of a flora starts with a checklist of names</h2>
 							<p>The Oregon Vascular Plant Checklist provides a framework of scientific names for all vascular plant taxa growing in the wild in our state for which a confirmed voucher exists, including native, naturalized, non-naturalized, and sporadic taxa. 
-							The Checklist’s taxonomy is reflected throughout the OregonFlora website, and it serves as a primary source for the Flora of Oregon.
+							The Checklist’s taxonomy is reflected throughout the OregonFlora website, and it serves as a primary source for the <em>Flora of Oregon</em>.
 							</p>
 							<p>
 							The Checklist presents the plant diversity of Oregon. 
 							It is a living document that is continuously revised to reflect current research and information. 
-							Preparation of the original Checklist began in 1994; it involved many contributing taxonomists (most of whom volunteered their expertise and are listed here), as well as volunteers, student workers, and OregonFlora staff.
+							Preparation of the original Checklist began in 1994; it involved many contributing taxonomists 
+							(most of whom volunteered their expertise<?php /*and are listed here*/ ?>), as well as volunteers, student workers, and OregonFlora staff.
 							</p>
-							<h2>What’s the difference between the Checklist and Flora of Oregon?</h2>
+							<h2>What’s the difference between the Checklist and <em>Flora of Oregon</em>?</h2>
 							<figure>
 							<img src="../pages/images/flora_vs_checklist_image.jpg" alt="comparing the OregonFlora checklist against the Flora of Oregon printed volumes">
 							<figcaption>
@@ -61,8 +64,8 @@ header( "Content-Type: text/html; charset=" . $charset );
 								<div>All Oregon taxa from the Checklist that are native or naturalized</div>
 							</figcaption>
 							</figure>
-							<p>The Flora of Oregon recognizes 4,710 taxa (distinct vascular plants) that grow in our state in the wild and without cultivation. 
-							We estimate 4,380 taxa will have detailed descriptions once Flora of Oregon is completed.
+							<p>The <em>Flora of Oregon</em> recognizes 4,710 taxa (distinct vascular plants) that grow in our state in the wild and without cultivation. 
+							We estimate 4,380 taxa will have detailed descriptions once <em>Flora of Oregon</em> is completed.
 							</p>
 							<p>
 							The Oregon Vascular Plant Checklist presents 10,487 scientific names that are reflected throughout our website tools. 
@@ -91,8 +94,8 @@ header( "Content-Type: text/html; charset=" . $charset );
 									<li>Its origin (native or exotic) </li>
 									<li>The herbarium which houses a primary confirmed voucher specimen</li>
 									<li>The year the taxon was most recently collected, using OSU Herbarium collections as the primary source </li>
-									<li>Citations for each Oregon taxon in several local floras [anchor link to list of local floras, below] </li>
-									<li>Synonyms for each Oregon taxon and their citations, mostly originating from accepted names in the same local floras [anchor link to list of local floras, below] mentioned above </li>
+									<li>Citations for each Oregon taxon in several local floras </li>
+									<li>Synonyms for each Oregon taxon and their citations, mostly originating from accepted names in the same local floras mentioned above </li>
 									<li>Excluded names and their synonyms </li>
 									<li>Pertinent references</li>
 								</ul>

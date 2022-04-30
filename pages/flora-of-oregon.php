@@ -41,7 +41,28 @@ header( "Content-Type: text/html; charset=" . $charset );
 									Volumes 1 and 2 were published in 2015 and 2020, respectively, and can be purchased directly from the publisher, the <a href="https://shop.brit.org/Flora-of-Oregon-2?page=1" target="_blank">Botanical Research Institute of Texas Press</a>, or from other vendors. 
 									Volume 3 has a projected publication date of 2023. Upon completion, we estimate detailed descriptions of 4,380 native and naturalized taxa will be published in the three volumes.
 									</p>
-									
+									<div class="inset updates">
+										<h3>Stay informed and keep your Flora up-to-date</h3>
+										<?php /* <em>(Click an icon to download)</em> */ ?>
+										<ul class="downloads">
+											<li>
+												<div class="title">Errata for volumes 1&amp;2</div>
+												<div class="icon pdf"><a href="pdfs/Errata_Web_April2022.pdf" download><img src="../images/Adobe_PDF_file_icon_32x32.png"></a></div>
+												<?php /* <div class="icon csv"></div> */ ?>
+											</li>
+											<li>
+												<div class="title">Volume 1 &amp; 2 taxa not treated in the printed Flora, but present on our website</div>
+												<?php /* <div class="icon pdf"><img src="../images/Adobe_PDF_file_icon_32x32.png"></div> */ ?>
+												<div class="icon csv"><a href="data/Flora_NewSincePub.csv" download>CSV</a></div>
+											</li>
+											<li>
+												<div class="title">Taxonomic changes since publication of the flora volumes</div>
+												<?php /* <div class="icon pdf"><img src="../images/Adobe_PDF_file_icon_32x32.png"></div> */ ?>
+												<div class="icon csv"><a href="data/Flora_ChangeSincePublication.2.csv" download>CSV</a></div>
+											</li>
+										
+										</ul>
+									</div>
 									<div class="volumes">
 									
 										<div class="description">
@@ -83,32 +104,6 @@ header( "Content-Type: text/html; charset=" . $charset );
 										<div class="cta"><a href="pdfs/OregonFlora_Volume_3_sponsorship.pdf" download class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Help sponsor Volume 3</a></div>
 										
 									</div>
-									<?php
-									/*
-									<div class="sidebox inset updates">
-										<h3>Stay informed and keep your Flora up-to-date</h3>
-										<em>(Click an icon to download)</em>
-										<ul class="downloads">
-											<li>
-												<div class="title">Errata for volumes 1&amp;2</div>
-												<div class="icon pdf"><a href="pdfs/errata_Vol1.pdf" download><img src="../images/Adobe_PDF_file_icon_32x32.png"></a></div>
-												<div class="icon csv"></div>
-											</li>
-											<li>
-												<div class="title">Volume 1&amp;2 taxa not treated in our flora, but listed on our website</div>
-												<div class="icon pdf"><img src="../images/Adobe_PDF_file_icon_32x32.png"></div>
-												<div class="icon csv"><a href="pdfs/V1_V2_NonTreatedTaxa.csv" download>C</a></div>
-											</li>
-											<li>
-												<div class="title">Taxonomic changes since publication of the flora volumes</div>
-												<div class="icon pdf"><img src="../images/Adobe_PDF_file_icon_32x32.png"></div>
-												<div class="icon csv">C</div>
-											</li>
-										
-										</ul>
-									</div>
-									*/
-									?>
 									<div class="sidebox praise">
 										<h2>Praise for <em>Flora of Oregon</em></h2>
 										<blockquote>There is now a new standard of excellence for a state flora.

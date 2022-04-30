@@ -960,6 +960,9 @@ img {
 			a {
 				text-decoration: none;
 			}
+		}		
+		.inset {
+			padding: 1rem;
 		}
 		#column-main {
 			padding-left: 15px;	
@@ -972,9 +975,6 @@ img {
 			}
 			.sidebox {
 				margin-bottom: 2rem;
-				&.inset {
-					padding: 1rem;
-				}
 				h2 {
 					margin-bottom: 1rem;
 				}
@@ -1193,7 +1193,41 @@ img {
 		}
 	}
 	&.flora-of-oregon {
-		#column-main {
+		#column-main {	
+			.updates {
+				border: 5px solid @light-green;
+				border-top-left-radius: 8px;
+				border-top-right-radius: 8px;
+				h3 {
+					color: @med-green;
+					font-size: 22px;
+					line-height: 23px;
+				}
+				em {
+					font-size: 14px;
+					line-height: 20px;
+				}
+				ul.downloads {
+					padding: 0;
+					margin: 1rem 0 1rem;
+					li {
+						border-top: 1px dashed black;
+						display: grid;
+						grid-template-columns: 70% 15% 15%;
+						padding-top: .6rem;
+						font-weight: bold;
+						font-size: 16px;
+						line-height: 20px;
+						letter-spacing: -.1px;
+						.icon {
+							display: flex;
+							flex-flow: row nowrap;
+							justify-content: flex-end;
+							align-items: center;
+						}
+					}
+				}
+			}
 			.volumes {
 				background-color: @light-green;
 				border: 1px dashed black;
@@ -1275,40 +1309,6 @@ img {
 						padding-left: 5%;
 						height: auto;
 						float: right;
-					}
-				}
-				&.updates {
-					border: 5px solid @light-green;
-					border-top-left-radius: 8px;
-					border-top-right-radius: 8px;
-					h3 {
-						color: @med-green;
-						font-size: 22px;
-						line-height: 23px;
-					}
-					em {
-						font-size: 14px;
-						line-height: 20px;
-					}
-					ul.downloads {
-						padding: 0;
-						margin: 1rem 0 1rem;
-						li {
-							border-top: 1px dashed black;
-							display: grid;
-							grid-template-columns: 70% 15% 15%;
-							padding-top: .6rem;
-							font-weight: bold;
-							font-size: 16px;
-							line-height: 20px;
-							letter-spacing: -.1px;
-							.icon {
-								display: flex;
-								flex-flow: row nowrap;
-								justify-content: flex-end;
-								align-items: center;
-							}
-						}
 					}
 				}
 				blockquote {
