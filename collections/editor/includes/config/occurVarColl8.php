@@ -6,7 +6,7 @@
 //const JSARR = array('example1.js','example2.js'); 
 
 //Custom Processing Status setting
-const PROCESSINGSTATUS = ['unprocessed','label transcription','link duplicate','expert required','pending review','reviewed','unaccessioned','closed','curator','assistant curator','director','quality control','non-oregon','re-image', 'no dupes', 'special request','unprocessed/NLP','stage 1','stage 2','stage 3','pending review-nfn', 'unaccessioned', 'Unprocessed - Fern Project', 'de-accession', 'crowdsource','coge','notes from nature'];
+const PROCESSINGSTATUS = ['unprocessed','label transcription','skeletal entry','link duplicate','expert required','pending review','reviewed','unaccessioned','closed','curator','assistant curator','director','quality control','non-oregon','re-image', 'no dupes', 'special request','unprocessed/NLP','stage 1','stage 2','stage 3','pending review-nfn', 'unaccessioned', 'Unprocessed - Fern Project', 'de-accession', 'crowdsource','coge','notes from nature'];
 
 //Uncomment to turn catalogNumber duplicate search check on/off (on by default)
 //define('CATNUMDUPECHECK',true); 
