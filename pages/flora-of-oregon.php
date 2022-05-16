@@ -38,7 +38,7 @@ header( "Content-Type: text/html; charset=" . $charset );
 								<div id="column-main" class="col-lg-8">
 									<p>
 									The Flora of Oregon is a three-volume reference that will be the state’s only flora published in the past half century and the first illustrated floristic work that exclusively addresses Oregon. 
-									Volumes 1 and 2 were published in 2015 and 2020, respectively, and can be purchased directly from the publisher, the <a href="https://shop.brit.org/Flora-of-Oregon-2?page=1" target="_blank">Botanical Research Institute of Texas Press</a>, or from other vendors. 
+									Volumes 1 and 2 were published in 2015 and 2020, respectively, and can be purchased directly from the publisher, the <a href="https://shopbritpress.org/collections/all" target="_blank">Botanical Research Institute of Texas Press</a>, or from other vendors. 
 									Volume 3 has a projected publication date of 2023. Upon completion, we estimate detailed descriptions of 4,380 native and naturalized taxa will be published in the three volumes.
 									</p>
 									<div class="inset updates">
@@ -77,7 +77,7 @@ header( "Content-Type: text/html; charset=" . $charset );
 												<p>Notable families in Volume 1 include all ferns and fern allies, conifers, sedges (Cyperaceae), grasses (Poaceae), orchids (Orchidaceae), and lilies. 
 												Front chapters are richly illustrated with color photographs; they describe the state’s ecology and predominant plant habitats, 50 of the best places to see wildflowers, and biographical sketches of notable Oregon botanists. 
 												Appendices detail taxa restricted to a single ecoregion, endemics, and those not collected in more than 50 years.</p>
-												<div class="cta"><a href="https://shop.brit.org/Flora-of-Oregon" target="_blank" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Purchase Volume 1</a></div>
+												<div class="cta"><a href="https://shopbritpress.org/collections/all-titles/products/floraoforegon1" target="_blank" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Purchase Volume 1</a></div>
 											</div>
 										</div>
 										<div class="volume-detail">
@@ -88,7 +88,7 @@ header( "Content-Type: text/html; charset=" . $charset );
 												<p>Notable families in Volume 2 include the sunflowers (Asteraceae), mustards (Brassicaceae), heaths (Ericaceae), and legumes (Fabaceae). 
 												Filled with photographs, the front chapters cover gardening with native plants and plant-insect interactions with a focus on butterflies and pollinators. 
 												Appendices list butterfly-foodplant pairs, pollinator specialists and their targeted plants, native garden plants that support insects, and features of native species used for gardening and landscaping.
-												<div class="cta"><a href="https://shop.brit.org/Flora-of-Oregon-V2" target="_blank" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Purchase Volume 2</a></div>
+												<div class="cta"><a href="https://shopbritpress.org/collections/all-titles/products/floraoforegon2" target="_blank" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Purchase Volume 2</a></div>
 											</div>
 										</div>
 										
