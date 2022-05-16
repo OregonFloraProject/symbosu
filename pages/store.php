@@ -66,7 +66,7 @@ header("Content-Type: text/html; charset=" . $charset);
                         <p>$75.00</p>
                     </div>
                     <div class="store-item-link">
-                        <p><a href="https://shop.brit.org/Flora-of-Oregon" target="_blank"
+                        <p><a href="https://shopbritpress.org/collections/all-titles/products/floraoforegon1" target="_blank"
                               class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Learn more or
                                 purchase online</a></p>
                     </div>
@@ -98,7 +98,7 @@ header("Content-Type: text/html; charset=" . $charset);
                         <p>$85.00</p>
                     </div>
                     <div class="store-item-link">
-                        <p><a href="https://shop.brit.org/Flora-of-Oregon-V2" target="_blank"
+                        <p><a href="https://shopbritpress.org/collections/all-titles/products/floraoforegon2" target="_blank"
                               class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Learn more or
                                 purchase online</a></p>
                     </div>
