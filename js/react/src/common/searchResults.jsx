@@ -1,11 +1,12 @@
 import React from "react";
 import {getCommonNameStr, getTaxaPage, getGardenTaxaPage} from "../common/taxaUtils";
 import Searching from "../common/searching.jsx";
+import TextareaField from "../common/textarea.jsx";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faSquare, faMinusCircle } from '@fortawesome/free-solid-svg-icons'
-library.add( faSquare, faMinusCircle );
+import { faSquare, faMinusCircle, faEdit } from '@fortawesome/free-solid-svg-icons'
+library.add( faSquare, faMinusCircle, faEdit );
 
 
 function SearchResult(props) {
@@ -139,73 +140,175 @@ class GardenSearchContainer extends React.Component {
   }
 }
 
-function ExploreSearchResult(props) {
-//console.log(props);
-  const useGrid = props.viewType === "grid";
-	return (
-			<div className={ "card search-result " + (useGrid ? "grid-result" : "list-result") }>
-					<div className={useGrid ? "" : "card-body"}>
-						{useGrid &&
-							<img
-								className={useGrid ? "card-img-top grid-image" : "d-inline-block mr-1 list-image"}
-								alt={props.title}
-								src={props.src}
-							/>
-						}
-						{!useGrid && 
-							<FontAwesomeIcon icon="square" />
-						}
-						<div className={(useGrid ? "card-body" : "d-inline py-1") + " px-0"} style={{overflow: "hidden"}}>
-							<div className={"card-text" + (useGrid ? "" : " d-inline")}>
-								<a href={props.href} className="text-decoration-none" style={{ maxWidth: "185px" }} target="_blank">
-									<span className="font-italic sci-name">{props.sciName}</span>
-									{
-										props.showTaxaDetail === 'on' &&
-										<span className="author"> ({props.author})</span>
-									}
-									{ !useGrid && props.commonName.length > 0? <span dangerouslySetInnerHTML={{__html: ' &mdash; '}} /> :''}
-									<span className="common-name">{props.commonName}</span>
-								</a>
-								{
-									props.showTaxaDetail === 'on' && props.vouchers.length && 
-								
-										<div className="vouchers">Vouchers:&nbsp;          		
+class ExploreSearchResult extends React.Component  {
+  constructor(props) {
+    super(props);
+    this.state = { 
+			editNotes: false,
+			updatedData: {}
+		};
+    this.updateSPPFields = this.updateSPPFields.bind(this);
+    this.saveEditSPP = this.saveEditSPP.bind(this);
+    this.toggleEditingNotes = this.toggleEditingNotes.bind(this);
+  }
+  toggleEditingNotes() {
+  	let newEditNotes = true;
+  	if (this.state.editNotes == true) {
+  		newEditNotes = false;
+  	}
+  	this.setState({
+      editNotes: newEditNotes
+    },function() {
+			//console.log(this.state.editNotes);
+    });
+  }
+	updateSPPFields(e) {
+		//console.log(e.target.value);
+		//Object { name: "notes", value: "My damn notesasdfasdf", section: "spp" }
+
+		let name = e.target.name;
+		let value = e.target.value;
+		let stateData = {};// = this.state.updatedData;
+		stateData[name] = value;
+		//console.log(stateData);
+		this.setState({
+      updatedData: Object.assign(this.state.updatedData, stateData)
+    },function() {
+			//console.log(this.state.updatedData);
+    });
+	}
+	saveEditSPP(obj) {
+		let self = this;
+		this.props.storeChange({'action': obj.action,'name': obj.name, 'value': obj.value, 'section': obj.section, 'notes': obj.notes});
+		setTimeout(function() {
+			self.toggleEditingNotes();
+		},1500);
+	}
+	
+  render() {
+  	const useGrid = this.props.viewType === "grid";
+  	//console.log(this.props);
+		return (
+				<div className={ "card search-result " + (useGrid ? "grid-result" : "list-result") }>
+						<div className={useGrid ? "" : "card-body"}>
+							{useGrid &&
+								<img
+									className={useGrid ? "card-img-top grid-image" : "d-inline-block mr-1 list-image"}
+									alt={this.props.title}
+									src={this.props.src}
+								/>
+							}
+							{!useGrid && 
+								<FontAwesomeIcon icon="square" />
+							}
+							<div className={(useGrid ? "card-body" : "d-inline py-1") + " px-0"} style={{overflow: "hidden"}}>
+								<div className={"card-text" + (useGrid ? "" : " d-inline")}>
+									<a href={this.props.href} className="text-decoration-none" style={{ maxWidth: "185px" }} target="_blank">
+										<span className="font-italic sci-name">{this.props.sciName}</span>
 										{
-											props.vouchers.map((voucher) =>  {
-												return (
-													<a href={ props.clientRoot + "/collections/individual/index.php?occid=" + voucher.occid } target="_blank" key={ voucher.occid } className={ "voucher" } >
-														<span className={ "recorded-by" }>{voucher.recordedby} </span>
-														<span className={ "event-date" }>{voucher.eventdate}</span>
-														<span className={ "institution-code" }> [{ voucher.institutioncode }]</span>
-													</a>
-												)
-											})
-											.reduce((prev, curr) => [prev, ', ', curr])
+											this.props.showTaxaDetail === 'on' &&
+											<span className="author"> ({this.props.author})</span>
 										}
-										</div>
-								} 
-								{
-									props.isEditable == true && 
-									<span className="taxa-delete">
-										<a 
-											type="button"
-											className="btn"
-											name={ props.sciName }
-											value={ props.sciName }	
-											action={ 'delete' }
-											tid={ props.tid } 				
-											title={ 'Delete from checklist' }
-											onClick={ () => props.storeChange({'action': 'delete','name': props.sciName, 'value': props.tid, 'section': 'spp'})} 
-										>
-											<FontAwesomeIcon icon="minus-circle" />
-										</a>
-									</span>
-								}                        
+										{ !useGrid && this.props.commonName.length > 0? <span dangerouslySetInnerHTML={{__html: ' &mdash; '}} /> :''}
+										<span className="common-name">{this.props.commonName}</span>
+									</a>
+									{
+										this.props.showTaxaDetail === 'on' && this.props.vouchers.length && 
+								
+											<div className="vouchers">Vouchers:&nbsp;          		
+											{
+												this.props.vouchers.map((voucher) =>  {
+													return (
+														<a href={ this.props.clientRoot + "/collections/individual/index.php?occid=" + voucher.occid } target="_blank" key={ voucher.occid } className={ "voucher" } >
+															<span className={ "recorded-by" }>{voucher.recordedby} </span>
+															<span className={ "event-date" }>{voucher.eventdate}</span>
+															<span className={ "institution-code" }> [{ voucher.institutioncode }]</span>
+														</a>
+													)
+												})
+												.reduce((prev, curr) => [prev, ', ', curr])
+											}
+											</div>
+									} 
+									{
+										this.props.isEditable == true && 
+										<span>
+											<span className="taxa-edit">
+												<a 
+													type="button"
+													className="btn"
+													name={ this.props.sciName }
+													value={ this.props.sciName }	
+													action={ 'edit' }
+													tid={ this.props.tid } 				
+													title={ 'Edit Notes' }
+													onClick={ () => this.toggleEditingNotes()} 
+												>
+													<FontAwesomeIcon icon="edit" />
+												</a>
+											</span>
+									
+											<span className="taxa-delete">
+												<a 
+													type="button"
+													className="btn"
+													name={ this.props.sciName }
+													value={ this.props.sciName }	
+													action={ 'delete' }
+													tid={ this.props.tid } 				
+													title={ 'Delete from checklist' }
+													onClick={ () => this.props.storeChange({'action': 'delete','name': this.props.sciName, 'value': this.props.tid, 'section': 'spp'})} 
+												>
+													<FontAwesomeIcon icon="minus-circle" />
+												</a>
+											</span>
+										</span>
+									}         
+									
+									{
+										this.props.isEditable == true && this.state.editNotes &&
+										        		
+											<div className="vouchers notes spp">
+										
+												<div>			
+													<textarea
+														aria-label="notes"
+														section="spp" 
+														name="notes" 
+														defaultValue={this.props.checklistNotes}
+														placeholder="Your notes here" 
+														onChange={ this.updateSPPFields}
+													/>
+													<a 
+														type="button"
+														className="btn btn-primary"
+														onClick={ () => this.saveEditSPP({'action': 'edit','name': this.props.sciName, 'value': this.props.tid, 'section': 'spp', 'notes': this.state.updatedData['notes']})} 
+													>Save</a>
+													<a 
+														type="button"
+														className="btn btn-primary"
+														onClick={ () => this.toggleEditingNotes()} 
+													>Cancel</a>
+												</div>
+											
+											</div>
+									}     
+									{
+										this.props.isEditable == true && this.state.editNotes != true &&
+											
+											<div className="vouchers notes spp">
+											{
+												this.props.checklistNotes
+											}
+											</div>
+									}    
+									      
+								</div>
 							</div>
 						</div>
-					</div>
-			</div>
-	)
+				</div>
+		)
+	}
 }
 function ExploreSearchContainer(props) {
 	//console.log(props);
@@ -238,7 +341,8 @@ function ExploreSearchContainer(props) {
 								vouchers={  result.vouchers ? result.vouchers : '' }
 								clientRoot={ props.clientRoot }
 								isEditable={ props.isEditable }
-								storeChange={ props.storeChange } 
+								storeChange={ props.storeChange }
+								checklistNotes={ result.checklistNotes ? result.checklistNotes : ''} 
 							/>
 						)
 					})
@@ -278,6 +382,7 @@ function ExploreSearchContainer(props) {
 													clientRoot={ props.clientRoot }
 													isEditable={ props.isEditable }
 													storeChange={ props.storeChange } 
+													checklistNotes={ result.checklistNotes ? result.checklistNotes : ''}
 												/>
 											)
 										})

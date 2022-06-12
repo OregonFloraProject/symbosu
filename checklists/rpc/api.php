@@ -73,6 +73,7 @@ function buildResult($checklistObj) {
 				#var_dump($vouchers);
 				$tjresult['vouchers'] = $vouchers[$rowArr['tid']];
 				$tjresult['sciname'] = $taxa->getSciname();
+				$tjresult['checklistNotes'] = $rowArr['checklistNotes'];
 				/*if (sizeof(explode(" ",$tjresult['sciname'])) == 1) {
 					$tjresult['sciname'] .= " sp.";#the old code does this, but Katie says it's unnecessary
 				}*/
@@ -205,6 +206,20 @@ function updateSPP() {
 					'morphospecies' => ''
 				]);
 				$em->remove($link);
+				$em->flush();
+				$success++;
+			}
+		}elseif($_GET['action'] == 'edit') {
+			if (!empty($_GET['spp']) && !empty($_GET['notes'])) {
+  			$em = SymbosuEntityManager::getEntityManager();
+  			$repo = $em->getRepository("Fmchklsttaxalink");
+				$link = $repo->find([
+					'tid' => $_GET['spp'],
+					'clid' => $_GET['clid'],
+					'morphospecies' => ''
+				]);
+				$link->setNotes($_GET['notes']);
+				$em->merge($link);#persist
 				$em->flush();
 				$success++;
 			}

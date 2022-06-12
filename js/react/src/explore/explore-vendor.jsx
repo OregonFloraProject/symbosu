@@ -158,6 +158,7 @@ class ExploreApp extends React.Component {
 		let name = obj.name;
 		let value = obj.value;
 		let action = obj.action;
+		let fields = {};
 		let actionStr = '';
 		switch (action) {
 			case 'add':
@@ -169,7 +170,12 @@ class ExploreApp extends React.Component {
 					return;
 				}
 				break;
+			case 'edit':
+				actionStr = 'edited';
+				fields['notes'] = obj.notes;
+				break;
 		}
+		//console.log(this.state.updatedData);
 		let stateData = this.state.updatedData;
 		stateData[section][name] = value;
     if ( Object.keys(stateData[section]).length > 0 ) {
@@ -180,10 +186,21 @@ class ExploreApp extends React.Component {
 			mapParams.append('pid',this.props.pid);
 			mapParams.append('clid',this.props.clid);
     	Object.entries(this.state.updatedData[section]).map(([key, value]) => {
-				mapParams.append(section + '[]',value);
+    		if (actionStr == 'edited') {
+					mapParams.append(section,value);//not an array
+				}else{
+					mapParams.append(section + '[]',value);
+				}
+			});
+			Object.entries(fields).map(([key,value]) => {
+				mapParams.append(key,value);
 			});
 			url += '?' + mapParams.toString();
 			//console.log(url);
+			//return;
+			///checklists/rpc/api.php?update=spp&action=delete&pid=4&clid=14920&spp[]=3249
+			///checklists/rpc/api.php?update=spp&action=add&pid=4&clid=14920&spp[]=3549
+			///checklists/rpc/api.php?update=spp&action=edit&pid=4&clid=14920&spp=3277&notes=My+notes
 			
 			httpGet(url)
 				.then((res) => {
@@ -209,6 +226,11 @@ class ExploreApp extends React.Component {
 						msgDiv.classList.remove("display");
 						msgDiv.innerHTML = '';
 					},2000);
+					
+					if (actionStr == 'edit') {
+					
+					
+					}
 			})
 			.catch((err) => {
 				//window.location = "/";
@@ -738,7 +760,7 @@ class ExploreApp extends React.Component {
 										isSearching={this.state.isSearching}
 										isEditable={ true }
 										storeChange={this.updateSPP } 
-			
+								
 									/>
 											
 							</div>

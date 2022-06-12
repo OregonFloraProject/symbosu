@@ -18,7 +18,7 @@ class SideBarVendor extends React.Component {
     this.state = { 
 			section: props.section
 		};
-    this.updateChange = this.props.updateChange.bind(this);
+    //this.updateChange = this.props.updateChange.bind(this);
     this.storeChange = this.props.storeChange.bind(this);
   }
   handleAddSPP(e) {
@@ -103,7 +103,7 @@ class SideBarVendor extends React.Component {
 						Object.keys(this.props.spp).length > 0 && 
 						<div className="container row">
 						 {Object.keys(this.props.spp).map((label) => {
-								//console.log(this.props.spp[label]);
+								//console.log(label);
 								//let obj = {section:"spp", name:label, value:this.props.spp[label]};
 								return (
 								
