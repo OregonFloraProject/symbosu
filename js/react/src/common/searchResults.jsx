@@ -183,6 +183,7 @@ class ExploreSearchResult extends React.Component  {
 		setTimeout(function() {
 			self.toggleEditingNotes();
 		},1500);
+		
 	}
 	
   render() {
