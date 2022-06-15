@@ -245,14 +245,20 @@ if (array_key_exists("clid", $_GET) && is_numeric($_GET["clid"])&& array_key_exi
 	}
   
   if (array_key_exists("update", $_GET)) {
-  	switch ($_GET['update']) {
-  		case 'info':
-				$result = updateInfo($model);
-				break;
-			case 'spp':
-				$result = updateSPP();
-				break;
-		}		
+  
+		if($IS_ADMIN || (array_key_exists("ClAdmin",$USER_RIGHTS) && in_array($_GET["clid"],$USER_RIGHTS["ClAdmin"]))){
+			$isEditor = true;
+		}
+		if ($isEditor) {
+			switch ($_GET['update']) {
+				case 'info':
+					$result = updateInfo($model);
+					break;
+				case 'spp':
+					$result = updateSPP();
+					break;
+			}		
+		}
 	}else{
   
 		if ( 	 ( array_key_exists("search", $_GET) && !empty($_GET["search"]) )
