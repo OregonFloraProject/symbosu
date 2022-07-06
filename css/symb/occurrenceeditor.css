@@ -93,16 +93,19 @@ body{
 /* Field entry divs and input objects */
 #catalogNumberDiv {
 	float:	left;
-	margin-top: 5px;
+	
 }
 
 #catalogNumberDiv input{
-	width:	200px;
+	width:	120px;
 }
 
 #otherCatalogNumbersDiv {
 	float:	left;
-	margin-left: 10px;
+}
+
+#otherCatalogNumbersDiv input {
+	width:	110px;
 }
 
 .idNameInput{

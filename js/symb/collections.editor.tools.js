@@ -194,9 +194,8 @@ function searchCatalogNumber(f,verbose){
 	}
 }
 
-function searchOtherCatalogNumbers(inputElem){
-	var ocnValue = inputElem.value;
-	var f = inputElem.form;
+function searchOtherCatalogNumbers(f){
+	var ocnValue = f.othercatalognumbers.value;
 	if(ocnValue){
 		document.getElementById("dupeMsgDiv").style.display = "block";
 		document.getElementById("dupesearch").style.display = "block";
