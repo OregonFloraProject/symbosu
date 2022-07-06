@@ -140,7 +140,7 @@ class ChecklistVoucherReport extends ChecklistVoucherAdmin {
 	public function getMissingTaxa(){
 		$retArr = Array();
 		if($sqlFrag = $this->getSqlFrag()){
-			$sql = 'SELECT DISTINCT t.tid, t.sciname, o.sciname AS occur_sciname '.$this->getMissingTaxaBaseSql($sqlFrag);
+			$sql = 'SELECT DISTINCT t.tid, t.sciname, o.sciname AS occur_sciname '.$this->getMissingTaxaBaseSql($sqlFrag).' LIMIT 1000 ';
 			//echo '<div>'.$sql.'</div>'; exit;
 			$rs = $this->conn->query($sql);
 			while($r = $rs->fetch_object()){
@@ -162,8 +162,9 @@ class ChecklistVoucherReport extends ChecklistVoucherAdmin {
 			$sql = 'SELECT DISTINCT o.occid, c.institutioncode ,c.collectioncode, o.catalognumber, '.
 				'o.tidinterpreted, t.sciname, o.sciname AS occur_sciname, o.recordedby, o.recordnumber, o.eventdate, '.
 				'CONCAT_WS("; ",o.country, o.stateprovince, o.county, o.locality) as locality '.
-				$sqlBase.' ORDER BY t.sciname LIMIT '.($limitIndex?($limitIndex*1000).',':'').$limitRange;
-			//echo '<div>'.$sql.'</div>'; exit;
+				$sqlBase.' LIMIT '.($limitIndex?($limitIndex*1000).',':'').$limitRange;
+			//echo '<div>'.$sql.'</div>';
+			$cnt = 0;
 			$rs = $this->conn->query($sql);
 			while($r = $rs->fetch_object()){
 				$retArr[$r->sciname][$r->occid]['o_sn'] = $r->occur_sciname;
@@ -178,17 +179,22 @@ class ChecklistVoucherReport extends ChecklistVoucherAdmin {
 				$retArr[$r->sciname][$r->occid]['recordnumber'] = $r->recordnumber;
 				$retArr[$r->sciname][$r->occid]['eventdate'] = $r->eventdate;
 				$retArr[$r->sciname][$r->occid]['locality'] = $r->locality;
+				$cnt++;
 			}
 			$rs->free();
+			ksort($retArr);
 
 			//Set missing taxa count
-			$sqlB = 'SELECT COUNT(DISTINCT ts.tidaccepted) as cnt '.$sqlBase;
-			//echo '<div>'.$sqlB.'</div>'; exit;
-			$rsB = $this->conn->query($sqlB);
-			if($r = $rsB->fetch_object()){
-				$this->missingTaxaCount = $r->cnt;
+			if($cnt<1000){
+				$sqlB = 'SELECT COUNT(DISTINCT ts.tidaccepted) as cnt '.$sqlBase;
+				//echo '<div>'.$sqlB.'</div>'; exit;
+				$rsB = $this->conn->query($sqlB);
+				if($r = $rsB->fetch_object()){
+					$this->missingTaxaCount = $r->cnt;
+				}
+				$rsB->free();
 			}
-			$rsB->free();
+			else $this->missingTaxaCount = '1000+';
 		}
 		return $retArr;
 	}
@@ -200,14 +206,14 @@ class ChecklistVoucherReport extends ChecklistVoucherAdmin {
 			$clidStr .= ','.implode(',',$this->childClidArr);
 		}
 		$sql = 'SELECT DISTINCT t.tid, v.clid, t.sciname AS listid, o.recordedby, o.recordnumber, o.sciname, o.identifiedby, o.dateidentified, o.occid '.
-				'FROM taxstatus ts1 INNER JOIN omoccurrences o ON ts1.tid = o.tidinterpreted '.
-				'INNER JOIN fmvouchers v ON o.occid = v.occid '.
-				'INNER JOIN taxstatus ts2 ON v.tid = ts2.tid '.
-				'INNER JOIN taxa t ON v.tid = t.tid '.
-				'INNER JOIN taxstatus ts3 ON ts1.tidaccepted = ts3.tid '.
-				'WHERE (v.clid IN('.$clidStr.')) AND ts1.taxauthid = 1 AND ts2.taxauthid = 1 AND ts1.tidaccepted <> ts2.tidaccepted '.
-				'AND ts1.parenttid <> ts2.tidaccepted AND v.tid <> o.tidinterpreted AND ts3.parenttid <> v.tid '.
-				'ORDER BY t.sciname ';
+			'FROM taxstatus ts1 INNER JOIN omoccurrences o ON ts1.tid = o.tidinterpreted '.
+			'INNER JOIN fmvouchers v ON o.occid = v.occid '.
+			'INNER JOIN taxstatus ts2 ON v.tid = ts2.tid '.
+			'INNER JOIN taxa t ON v.tid = t.tid '.
+			'INNER JOIN taxstatus ts3 ON ts1.tidaccepted = ts3.tid '.
+			'WHERE (v.clid IN('.$clidStr.')) AND ts1.taxauthid = 1 AND ts2.taxauthid = 1 AND ts1.tidaccepted <> ts2.tidaccepted '.
+			'AND ts1.parenttid <> ts2.tidaccepted AND v.tid <> o.tidinterpreted AND ts3.parenttid <> v.tid '.
+			'ORDER BY t.sciname ';
 		//echo $sql;
 		$rs = $this->conn->query($sql);
 		$cnt = 0;

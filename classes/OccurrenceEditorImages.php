@@ -2,6 +2,8 @@
 include_once($SERVER_ROOT.'/classes/OccurrenceEditorManager.php');
 include_once($SERVER_ROOT.'/classes/SpecProcessorOcr.php');
 include_once($SERVER_ROOT.'/classes/ImageShared.php');
+if($LANG_TAG != 'en' && file_exists($SERVER_ROOT.'/content/lang/classes/OccurrenceEditorImages'.$LANG_TAG.'.php')) include_once($SERVER_ROOT.'/content/lang/classes/OccurrenceEditorImages.'.$LANG_TAG.'.php');
+else include_once($SERVER_ROOT.'/content/lang/classes/OccurrenceEditorImages.en.php');
 
 class OccurrenceEditorImages extends OccurrenceEditorManager {
 
@@ -12,17 +14,33 @@ class OccurrenceEditorImages extends OccurrenceEditorManager {
 
 	public function __construct(){
  		parent::__construct();
+ 		$this->imageRootPath = $GLOBALS["imageRootPath"];
+ 		if(substr($this->imageRootPath,-1) != "/") $this->imageRootPath .= "/";
+ 		$this->imageRootUrl = $GLOBALS["imageRootUrl"];
+ 		if(substr($this->imageRootUrl,-1) != "/") $this->imageRootUrl .= "/";
 	}
 
 	public function __destruct(){
  		parent::__destruct();
 	}
 
-    /**
-     * Takes parameters from a form submission and modifies an existing image record
-     * in the database.
-     */
+	public function getImageMap($imgId = 0){
+		$imageMap = parent::getImageMap($imgId);
+		if($imageMap){
+			$imageTagArr = $this->getImageTags(implode(',',array_keys($imageMap)));
+			foreach($imageTagArr as $imgId => $vArr){
+				$imageMap[$imgId]['tags'] = $vArr;
+			}
+		}
+		return $imageMap;
+	}
+
+	/**
+	 * Takes parameters from a form submission and modifies an existing image record
+	 * in the database.
+	 */
 	public function addImageOccurrence($postArr){
+		global $LANG;
 		$status = true;
 		if($this->addOccurrence($postArr)){
 			if($this->addImage($postArr)){
@@ -42,10 +60,9 @@ class OccurrenceEditorImages extends OccurrenceEditorManager {
 					}
 					if($rawStr){
 						if($ocrSource) $ocrSource .= ': '.date('Y-m-d');
-						$sql = 'INSERT INTO specprocessorrawlabels(imgid, rawstr, source) '.
-							'VALUES('.$this->activeImgId.',"'.$this->cleanInStr($rawStr).'","'.$this->cleanInStr($ocrSource).'")';
+						$sql = 'INSERT INTO specprocessorrawlabels(imgid, rawstr, source) VALUES('.$this->activeImgId.',"'.$this->cleanInStr($rawStr).'","'.$this->cleanInStr($ocrSource).'")';
 						if(!$this->conn->query($sql)){
-							$this->errorStr = 'ERROR loading OCR text block: '.$this->conn->error;
+							$this->errorStr = $LANG['ERROR_LOAD_OCR'].': '.$this->conn->error;
 						}
 					}
 				}
@@ -57,133 +74,154 @@ class OccurrenceEditorImages extends OccurrenceEditorManager {
 		return $status;
 	}
 
-	public function editImage(){
-		$this->setRootpaths();
-		$status = "Image editted successfully!";
-		$imgId = $_REQUEST["imgid"];
-	 	$url = $_REQUEST["url"];
-	 	$tnUrl = $_REQUEST["tnurl"];
-	 	$origUrl = $_REQUEST["origurl"];
-	 	if(array_key_exists("renameweburl",$_REQUEST)){
-	 		$oldUrl = $_REQUEST["oldurl"];
-	 		$oldName = str_replace($this->imageRootUrl,$this->imageRootPath,$oldUrl);
-	 		$newWebName = str_replace($this->imageRootUrl,$this->imageRootPath,$url);
-	 		if($url != $oldUrl){
-	 			if(file_exists($newWebName)){
- 					$status = 'ERROR: unable to modify image URL because a file already exists with that name; ';
-		 			$url = $oldUrl;
-	 			}
-	 			else{
-		 			if(!rename($oldName,$newWebName)){
-		 				$url = $oldUrl;
-			 			$status .= "Web URL rename FAILED (possible write permissions issue); ";
-		 			}
-	 			}
-	 		}
-		}
-		if(array_key_exists("renametnurl",$_REQUEST)){
-	 		$oldTnUrl = $_REQUEST["oldtnurl"];
-	 		$oldName = str_replace($this->imageRootUrl,$this->imageRootPath,$oldTnUrl);
-	 		$newName = str_replace($this->imageRootUrl,$this->imageRootPath,$tnUrl);
-	 		if($tnUrl != $oldTnUrl){
-	 			if(file_exists($newName)){
- 					$status = 'ERROR: unable to modify image URL because a file already exists with that name; ';
-		 			$tnUrl = $oldTnUrl;
-	 			}
-	 			else{
-		 			if(!rename($oldName,$newName)){
-		 				$tnUrl = $oldTnUrl;
-			 			$status = "Thumbnail URL rename FAILED (possible write permissions issue); ";
-		 			}
-	 			}
-	 		}
-		}
-		if(array_key_exists("renameorigurl",$_REQUEST)){
-	 		$oldOrigUrl = $_REQUEST["oldorigurl"];
-	 		$oldName = str_replace($this->imageRootUrl,$this->imageRootPath,$oldOrigUrl);
-	 		$newName = str_replace($this->imageRootUrl,$this->imageRootPath,$origUrl);
-	 		if($origUrl != $oldOrigUrl){
-	 			if(file_exists($newName)){
- 					$status = 'ERROR: unable to modify image URL because a file already exists with that name; ';
-		 			$tnUrl = $oldTnUrl;
-	 			}
-	 			else{
-		 			if(!rename($oldName,$newName)){
-		 				$origUrl = $oldOrigUrl;
-			 			$status .= "ERROR: Thumbnail URL rename FAILED (possible write permissions issue); ";
-		 			}
-	 			}
-	 		}
-		}
-		$occId = $_REQUEST["occid"];
-		$caption = $this->cleanInStr($_REQUEST["caption"]);
-		$photographer = $this->cleanInStr($_REQUEST["photographer"]);
-		$photographerUid = (array_key_exists('photographeruid',$_REQUEST)?$_REQUEST['photographeruid']:'');
-		$notes = $this->cleanInStr($_REQUEST["notes"]);
-		$copyRight = $this->cleanInStr($_REQUEST["copyright"]);
-		$sortSeq = (is_numeric($_REQUEST["sortsequence"])?$_REQUEST["sortsequence"]:'');
-		$sourceUrl = $this->cleanInStr($_REQUEST["sourceurl"]);
+	public function editImage($imgArr){
+		$status = false;
+		$imgId = $imgArr['imgid'];
+		if(!$imgId) return false;
+		$sql = 'UPDATE images SET ';
+		$fieldArr = array();
+		$types = '';
 
-		//If central images are on remote server and new ones stored locally, then we need to use full domain
-	    //e.g. this portal is sister portal to central portal
-    	if($GLOBALS['imageDomain']){
-    		if(substr($url,0,1) == '/'){
-	    		$url = 'http://'.$_SERVER['HTTP_HOST'].$url;
-    		}
-    		if($tnUrl && substr($tnUrl,0,1) == '/'){
-	    		$tnUrl = 'http://'.$_SERVER['HTTP_HOST'].$tnUrl;
-    		}
-    		if($origUrl && substr($origUrl,0,1) == '/'){
-	    		$origUrl = 'http://'.$_SERVER['HTTP_HOST'].$origUrl;
-    		}
-    	}
+		$url = null;
+		if(array_key_exists('url', $imgArr)) $url = $imgArr['url'];
+		if(array_key_exists('renameweburl',$imgArr)){
+			$url = $imgArr['oldurl'];
+			if($newUrl = $this->renameImage($imgArr['oldurl'], $imgArr['url'])){
+				$url = $newUrl;
+				$this->errorArr['web'] = 1;
+			}
+			else $this->errorArr['web'] = 0;
+		}
+		if($url !== null){
+			if($GLOBALS['IMAGE_DOMAIN'] && substr($url,0,1) == '/') $url = $GLOBALS['IMAGE_DOMAIN'].$url;
+			$sql .= 'url=?, ';
+			$fieldArr[] = $url;
+			$types .= 's';
+		}
 
-	    $sql = 'UPDATE images '.
-			'SET url = "'.$url.'", thumbnailurl = '.($tnUrl?'"'.$tnUrl.'"':'NULL').
-			',originalurl = '.($origUrl?'"'.$origUrl.'"':'NULL').',occid = '.$occId.',caption = '.
-			($caption?'"'.$caption.'"':'NULL').
-			',photographer = '.($photographer?'"'.$photographer.'"':"NULL").
-			',photographeruid = '.($photographerUid?$photographerUid:"NULL").
-			',notes = '.($notes?'"'.$notes.'"':'NULL').
-			($sortSeq?',sortsequence = '.$sortSeq:'').
-			',copyright = '.($copyRight?'"'.$copyRight.'"':'NULL').',imagetype = "specimen",sourceurl = '.
-			($sourceUrl?'"'.$sourceUrl.'"':'NULL').
-			' WHERE (imgid = '.$imgId.')';
-		//echo $sql;
-		if($this->conn->query($sql)){
-            // update image tags
-            $kArr = $this->getImageTagValues();
-            foreach($kArr as $key => $description) {
-                   // Note: By using check boxes, we can't tell the difference between
-                   // an unchecked checkbox and the checkboxes not being present on the
-                   // form, we'll get around this by including the original state of the
-                   // tags for each image in a hidden field.
-                   $sql = null;
-                   if (array_key_exists("ch_$key",$_REQUEST)) {
-                      // checkbox is selected for this image
-                      $sql = "INSERT IGNORE into imagetag (imgid,keyvalue) values (?,?) ";
-                   } else {
-                      if (array_key_exists("hidden_$key",$_REQUEST) && $_REQUEST["hidden_$key"]==1) {
-                         // checkbox is not selected and this tag was used for this image
-                         $sql = "DELETE from imagetag where imgid = ? and keyvalue = ? ";
-                      }
-                   }
-                   if ($sql!=null) {
-                      $stmt = $this->conn->stmt_init();
-                      $stmt->prepare($sql);
-                      if ($stmt) {
-                         $stmt->bind_param('is',$imgId,$key);
-                         if (!$stmt->execute()) {
-                            $status .= " (Warning: Failed to update image tag [$key] for $imgId.  " . $stmt->error ;
-                         }
-                         $stmt->close();
-                      }
-                   }
-            }
-        } else {
-			$status .= "ERROR: image not changed, ".$this->conn->error."SQL: ".$sql;
+		$tnUrl = null;
+		if(array_key_exists('tnurl', $imgArr)) $tnUrl = $imgArr['tnurl'];
+		elseif(array_key_exists('thumbnailurl', $imgArr)) $tnUrl = $imgArr['thumbnailurl'];
+		if(array_key_exists('renametnurl',$imgArr)){
+			$tnUrl = $imgArr['oldtnurl'];
+			if($newUrl = $this->renameImage($imgArr['oldtnurl'], $imgArr['tnurl'])){
+				$tnUrl = $newUrl;
+				$this->errorArr['tn'] = 1;
+			}
+			else $this->errorArr['tn'] = 0;
+		}
+		if($tnUrl !== null){
+			if($GLOBALS['IMAGE_DOMAIN'] && substr($tnUrl,0,1) == '/') $tnUrl = $GLOBALS['IMAGE_DOMAIN'].$tnUrl;
+			$fieldArr[] = $tnUrl;
+			$sql .= 'thumbnailurl=?, ';
+			$types .= 's';
+		}
+
+		$origUrl = null;
+		if(array_key_exists('origurl', $imgArr)) $origUrl = $imgArr['origurl'];
+		elseif(array_key_exists('originalurl', $imgArr)) $origUrl = $imgArr['originalurl'];
+		if(array_key_exists('renameorigurl',$imgArr)){
+			$origUrl = $imgArr['oldorigurl'];
+			if($newUrl = $this->renameImage($imgArr['oldorigurl'], $imgArr['origurl'])){
+				$origUrl = $newUrl;
+				$this->errorArr['orig'] = 1;
+			}
+			else $this->errorArr['orig'] = 0;
+		}
+		if($origUrl !== null){
+			if($GLOBALS['IMAGE_DOMAIN'] && substr($origUrl,0,1) == '/') $origUrl = $GLOBALS['IMAGE_DOMAIN'].$origUrl;
+			$fieldArr[] = $origUrl?$origUrl:NULL;
+			$sql .= 'originalurl=?, ';
+			$types .= 's';
+		}
+
+		$additionalFields= array('occid' => 'i', 'tidinterpreted' => 'i', 'caption' => 's', 'photographer' => 's', 'photographeruid' => 'i', 'notes' => 's', 'copyright' => 's', 'sortoccurrence' => 'i', 'sourceurl' => 's');
+		foreach($additionalFields as $fieldName => $t){
+			if(array_key_exists($fieldName, $imgArr)){
+				if($imgArr[$fieldName]) $fieldArr[] = $imgArr[$fieldName];
+				else $fieldArr[] = null;
+				$sql .= $fieldName.'=?, ';
+				$types .= $t;
+			}
+		}
+		if($fieldArr){
+			$fieldArr[] = 'specimen';
+			$fieldArr[] = $imgId;
+			$sql .= 'imagetype=? WHERE (imgid= ?)';
+			$types .= 'si';
+			$imgUpdateStatus = false;
+			$stmt = $this->conn->stmt_init();
+			$stmt->prepare($sql);
+			$stmt->bind_param($types, ...$fieldArr);
+			if($stmt->execute()){
+				$imgUpdateStatus = true;
+				if(array_key_exists('occid', $fieldArr) || array_key_exists('tidinterpreted', $fieldArr)){
+					$imgSql = 'UPDATE images i INNER JOIN omoccurrences o ON i.occid = o.occid SET i.tid = o.tidinterpreted WHERE (i.imgid = '.$imgId.')';
+					$this->conn->query($imgSql);
+				}
+				$status = true;
+			}
+			else $status = false;
+			$stmt->close();
+
+			if($imgUpdateStatus){
+				// update image tags
+				$kArr = $this->getImageTagArr();
+				foreach($kArr as $key => $description) {
+					// Note: By using check boxes, we can't tell the difference between
+					// an unchecked checkbox and the checkboxes not being present on the
+					// form, we'll get around this by including the original state of the
+					// tags for each image in a hidden field.
+					if(array_key_exists('hidden_'.$key, $imgArr)){
+						$sql = null;
+						if(array_key_exists("ch_$key",$imgArr)) {
+							if(!$imgArr['hidden_'.$key]) $sql = 'INSERT IGNORE into imagetag (imgid,keyvalue) values (?,?)';
+						}
+						else{
+							// checkbox is not selected and this tag was used for this image
+							if($imgArr['hidden_'.$key] == 1) $sql = 'DELETE from imagetag where imgid = ? and keyvalue = ?';
+						}
+						if($sql) {
+							$stmt = $this->conn->stmt_init();
+							$stmt->prepare($sql);
+							if ($stmt) {
+								$stmt->bind_param('is',$imgId,$key);
+								if (!$stmt->execute()) {
+									//$status .= ' ('.$LANG['WARNING_FAILED_TAG'].' (tag: '.[$key].', imgid: '.$imgId.'): '.$stmt->error ;
+								}
+								$stmt->close();
+							}
+						}
+					}
+				}
+			}
+			else $this->errorArr['error'] = $this->conn->error;
 		}
 		return $status;
+	}
+
+	private function renameImage($currentUrl, $newUrl){
+		if($currentUrl == $newUrl) return false;
+		if(strpos($currentUrl,$this->imageRootUrl) !== 0) return false;
+		if(strpos($newUrl,$this->imageRootUrl) !== 0) return false;
+		$currentPath = $this->imageRootPath.substr($currentUrl, strlen($this->imageRootUrl));
+		$newPath = $this->imageRootPath.substr($newUrl, strlen($this->imageRootUrl));
+		$cnt = 0;
+		while(file_exists($newPath)){
+			$ext = substr($newPath, strrpos($newPath,'.'));
+			$pathFrag = substr($newPath, 0, strrpos($newPath,'.'));
+			$newPath = $pathFrag.'_'.$cnt.$ext;
+			$cnt++;
+		}
+		if(is_writable($currentPath)){
+			if(rename($currentPath, $newPath)){
+				$finalUrl = $this->imageRootUrl.substr($newPath, strlen($this->imageRootPath));
+				return $finalUrl;
+			}
+			else{
+				return false;
+			}
+		}
 	}
 
 	public function deleteImage($imgIdDel, $removeImg){
@@ -196,11 +234,76 @@ class OccurrenceEditorImages extends OccurrenceEditorManager {
 		return $status;
 	}
 
-	public function remapImage($imgId, $targetOccid = 0){
-		$status = true;
-		if(!is_numeric($imgId)){
-			return false;
+	public function isRemappable($imgArr){
+		$bool = false;
+		//If all images are writable, then we can rename the images to ensure they will not match incoming images
+		$bool = $this->imagesAreWritable($imgArr);
+		if(!$bool){
+			//Or if the image name doesn't contain the catalog number or there is a timestamp added to filename
+			$bool = $this->imageNotCatalogNumberLimited($imgArr);
 		}
+		return $bool;
+	}
+
+	private function imagesAreWritable($imgArr){
+		$bool = false;
+		$testArr = array();
+		if($imgArr['origurl']) $testArr[] = $imgArr['origurl'];
+		if($imgArr['url']) $testArr[] = $imgArr['url'];
+		if($imgArr['tnurl']) $testArr[] = $imgArr['tnurl'];
+		foreach($testArr as $url){
+			if(strpos($url, $this->imageRootUrl) === 0){
+				$rootPath = $this->imageRootPath.substr($url, strlen($this->imageRootUrl));
+				if(is_writable($rootPath)){
+					$bool = true;
+				}
+				else{
+					$bool = false;
+					break;
+				}
+			}
+		}
+		return $bool;
+	}
+
+	private function imageNotCatalogNumberLimited($imgArr){
+		$bool = true;
+		$testArr = array();
+		if($imgArr['origurl']) $testArr[] = $imgArr['origurl'];
+		if($imgArr['url']) $testArr[] = $imgArr['url'];
+		if($imgArr['tnurl']) $testArr[] = $imgArr['tnurl'];
+		//Load identifiers
+		$idArr = array();
+		$sql = 'SELECT o.catalogNumber, o.otherCatalogNumbers, i.identifierValue FROM omoccurrences o LEFT JOIN omoccuridentifiers i ON o.occid = i.occid WHERE (o.occid = '.$this->occid.')';
+		$rs = $this->conn->query($sql);
+		$cnt = 0;
+		while($r = $rs->fetch_object()){
+			if(!$cnt){
+				if($r->catalogNumber) $idArr[] = $r->catalogNumber;
+				if($r->otherCatalogNumbers) $idArr[] = $r->otherCatalogNumbers;
+			}
+			if($r->identifierValue) $idArr[] = $r->identifierValue;
+			$cnt++;
+		}
+		$rs->free();
+		//Iterate through identifiers and check for identifiers in name
+		foreach($idArr as $idStr){
+			foreach($testArr as $url){
+				if($fileName = substr($url, strrpos($url, '/'))){
+					if(strpos($fileName, $idStr) !== false && !preg_match('/_\d{10}[_\.]{1}/', $fileName)){
+						$bool = false;
+						break 2;
+					}
+				}
+			}
+		}
+		return $bool;
+	}
+
+	public function remapImage($imgId, $targetOccid = 0){
+		global $LANG;
+		$status = true;
+		if(!is_numeric($imgId)) return false;
 		if($targetOccid == 'new'){
 			$sql = 'INSERT INTO omoccurrences(collid, observeruid,processingstatus) SELECT collid, observeruid, "unprocessed" FROM omoccurrences WHERE occid = '.$this->occid;
 			if($this->conn->query($sql)){
@@ -208,26 +311,49 @@ class OccurrenceEditorImages extends OccurrenceEditorManager {
 				$status = $targetOccid;
 			}
 			else{
-				$this->errorArr[] = 'Unalbe to relink image to a new blank occurrence record: '.$this->conn->error;
+				$this->errorArr[] = $LANG['UNABLE_RELINK_BLANK'].': '.$this->conn->error;
 				return false;
 			}
 		}
 		if($targetOccid && is_numeric($targetOccid)){
-			$sql = 'UPDATE images SET occid = '.$targetOccid.' WHERE (imgid = '.$imgId.')';
-			if($this->conn->query($sql)){
-				$imgSql = 'UPDATE images i INNER JOIN omoccurrences o ON i.occid = o.occid SET i.tid = o.tidinterpreted WHERE (i.imgid = '.$imgId.')';
-				//echo $imgSql;
-				$this->conn->query($imgSql);
+			$imgArr = array_intersect_key(current(parent::getImageMap($imgId)), array('url'=>'','tnurl'=>'','origurl'=>''));
+			$editArr = array('imgid' => $imgId, 'occid' => $targetOccid);
+			if(!$this->imageNotCatalogNumberLimited($imgArr)){
+				if($this->imagesAreWritable($imgArr)){
+					//Rename images to ensure that files are not written over with file named using previous catalog number
+					$ts = time();
+					if(isset($imgArr['url']) && $imgArr['url']){
+						$ext = substr($imgArr['url'], strrpos($imgArr['url'],'.'));
+						$pathFrag = substr($imgArr['url'], 0, strrpos($imgArr['url'],'.'));
+						$editArr['renameweburl'] = 1;
+						$editArr['oldurl'] = $imgArr['url'];
+						$editArr['url'] = $pathFrag.'_'.$ts.$ext;
+					}
+					if(isset($imgArr['tnurl']) && $imgArr['tnurl']){
+						$ext = substr($imgArr['tnurl'], strrpos($imgArr['tnurl'],'.'));
+						$pathFrag = substr($imgArr['tnurl'], 0, strrpos($imgArr['tnurl'],'.'));
+						$editArr['renametnurl'] = 1;
+						$editArr['oldtnurl'] = $imgArr['tnurl'];
+						$editArr['tnurl'] = $pathFrag.'_'.$ts.$ext;
+					}
+					if(isset($imgArr['origurl']) && $imgArr['origurl']){
+						$ext = substr($imgArr['origurl'], strrpos($imgArr['origurl'],'.'));
+						$pathFrag = substr($imgArr['origurl'], 0, strrpos($imgArr['origurl'],'.'));
+						$editArr['renameorigurl'] = 1;
+						$editArr['oldorigurl'] = $imgArr['origurl'];
+						$editArr['origurl'] = $pathFrag.'_'.$ts.$ext;
+					}
+				}
 			}
-			else{
-				$this->errorArr[] = 'Unalbe to remap image to another occurrence record. Error msg: '.$this->conn->error;
+			if(!$this->editImage($editArr)){
+				$this->errorArr[] = $LANG['UNABLE_REMAP_ANOTHER'].': '.$this->conn->error;
 				return false;
 			}
 		}
 		else{
 			$sql = 'UPDATE images SET occid = NULL WHERE (imgid = '.$imgId.')';
 			if(!$this->conn->query($sql)){
-				$this->errorArr[] = 'Unalbe to disassociate from occurrence record. Error msg: '.$this->conn->error;
+				$this->errorArr[] = $LANG['UNABLE_DISSOCIATE'].': '.$this->conn->error;
 				return false;
 			}
 		}
@@ -237,7 +363,6 @@ class OccurrenceEditorImages extends OccurrenceEditorManager {
 	public function addImage($postArr){
 		$status = true;
 		$imgManager = new ImageShared();
-
 		//Set target path
 		$subTargetPath = $this->collMap['institutioncode'];
 		if($this->collMap['collectioncode']) $subTargetPath .= '_'.$this->collMap['collectioncode'];
@@ -274,8 +399,8 @@ class OccurrenceEditorImages extends OccurrenceEditorManager {
 		if(array_key_exists('photographer',$postArr)) $imgManager->setPhotographer($postArr['photographer']);
 		if(array_key_exists('sourceurl',$postArr)) $imgManager->setSourceUrl($postArr['sourceurl']);
 		if(array_key_exists('copyright',$postArr)) $imgManager->setCopyright($postArr['copyright']);
-		if(array_key_exists("notes",$postArr)) $imgManager->setNotes($postArr['notes']);
-		if(array_key_exists("sortsequence",$postArr)) $imgManager->setSortSeq($postArr['sortsequence']);
+		if(array_key_exists('notes',$postArr)) $imgManager->setNotes($postArr['notes']);
+		if(array_key_exists('sortoccurrence',$postArr)) $imgManager->setSortOccurrence($postArr['sortoccurrence']);
 
 		$sourceImgUri = $postArr['imgurl'];
 		if($sourceImgUri){
@@ -311,13 +436,6 @@ class OccurrenceEditorImages extends OccurrenceEditorManager {
 		return $status;
 	}
 
-	private function setRootPaths(){
-		$this->imageRootPath = $GLOBALS["imageRootPath"];
-		if(substr($this->imageRootPath,-1) != "/") $this->imageRootPath .= "/";
-		$this->imageRootUrl = $GLOBALS["imageRootUrl"];
-		if(substr($this->imageRootUrl,-1) != "/") $this->imageRootUrl .= "/";
-	}
-
 	public function getPhotographerArr(){
 		if(!$this->photographerArr){
 			$sql = "SELECT u.uid, CONCAT_WS(', ',u.lastname,u.firstname) AS fullname ".
@@ -331,83 +449,15 @@ class OccurrenceEditorImages extends OccurrenceEditorManager {
 		return $this->photographerArr;
 	}
 
-    /**
-     * Obtain an array of the keys used for tagging images by content type.
-     *
-     * param: lang language for the description, only en currently supported.
-     * return: an array of keys for image type tagging along with their descriptions.
-     */
-    public function getImageTagValues($lang='en') {
-       $returnArr = Array();
-       switch ($lang) {
-          case 'en':
-          default:
-           $sql = "select tagkey, description_en from imagetagkey order by sortorder";
-       }
-       $stmt = $this->conn->stmt_init();
-       $stmt->prepare($sql);
-       if ($stmt) {
-          $stmt->bind_result($key,$desc);
-          $stmt->execute();
-          while ($stmt->fetch()) {
-             $returnArr[$key]=$desc;
-          }
-          $stmt->close();
-       }
-       return $returnArr;
-    }
-
-    /**
-     * Obtain an array of the keys used for tagging images by content type.
-     *
-     * param: imgid the images.imgid for which to return presence/absence values for each key
-     * param: lang language for the description, only en currently supported.
-     * return: an ImagTagUse object containing the keys for image type tagging along with their
-     * presence/absence for the provided image and descriptions.
-     */
-    public function getImageTagUsage($imgid,$lang='en') {
-       $resultArr = Array();
-       switch ($lang) {
-          case 'en':
-          default:
-            $sql = "select * from ( " .
-                   "  select tagkey, description_en, shortlabel, sortorder, not isnull(imgid) from imagetagkey k " .
-                   "     left join imagetag i on k.tagkey = i.keyvalue " .
-                   "     where (i.imgid is null or i.imgid = ? ) " .
-                   "  union " .
-                   "  select tagkey, description_en, shortlabel, sortorder, 0 from imagetagkey k " .
-                   "     left join imagetag i on k.tagkey = i.keyvalue " .
-                   "     where (i.imgid is not null and i.imgid <> ? ) " .
-                   " ) a order by sortorder ";
-       }
-       $stmt = $this->conn->stmt_init();
-       $stmt->prepare($sql);
-       if ($stmt) {
-          $stmt->bind_param('ii',$imgid,$imgid);
-          $stmt->bind_result($key,$desc,$lab,$sort,$value);
-          $stmt->execute();
-          $i = 0;
-          while ($stmt->fetch()) {
-             $result = new ImageTagUse();
-             $result->tagkey = $key;
-             $result->shortlabel = $lab;
-             $result->description = $desc;
-             $result->sortorder = $sort;
-             $result->value = $value;
-             $resultArr[$i] = $result;
-             $i++;
-          }
-          $stmt->close();
-       }
-       return $resultArr;
-    }
-}
-
-class ImageTagUse {
-   public $tagkey;  // magic value
-   public $shortlabel;  // short human readable value
-   public $description; // human readable description
-   public $sortorder;
-   public $value;  // 0 or 1
+	public function getImageTagArr(){
+		$retArr = Array();
+		$sql = 'SELECT tagkey, description_en FROM imagetagkey ORDER BY sortorder';
+		$rs = $this->conn->query($sql);
+		while($r = $rs->fetch_object()){
+			$retArr[$r->tagkey] = $r->description_en;
+		}
+		$rs->free();
+		return $retArr;
+	}
 }
 ?>

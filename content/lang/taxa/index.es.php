@@ -29,10 +29,14 @@ $LANG['EDIT_TAXON_DATA'] = 'Editar Datos del Tax&oacute;n';
 $LANG['CHECKLIST'] = 'listado';
 $LANG['SPECIES_WITHIN'] = 'Especies con';
 $LANG['PHOTOGRAPHER'] = 'Fot&oacute;grafo';
-$LANG['MAP_NOT_AVAILABLE'] = 'Mapa no<br />Disponible';
+$LANG['MAP_NOT_AVAILABLE'] = 'Mapa no<br/>Disponible';
+$LANG['RESOURCES'] = 'Recursos';
+$LANG['INTERNAL_RESOURCES'] = 'Recursos internos';
+$LANG['OCCURRENCES'] = 'muestras';
+$LANG['EXTERNAL_LINKS'] = 'Recursos externos';
 $LANG['WEB_LINKS'] = 'Enlaces Web';
 $LANG['VIEW_PARENT'] = 'Ver tax&oacute;n principal';
 $LANG['NOT_FOUND'] = 'no encontrado';
 $LANG['DID_YOU_MEAN'] = '&#191;Quiso decir?';
-
+$LANG['CALENDAR_TRAIT_PLOT'] = 'Gr&aacute;ficos de Rasgos';
 ?>
