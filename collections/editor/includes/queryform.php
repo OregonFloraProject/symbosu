@@ -614,10 +614,10 @@ else{
 				<input type="hidden" name="occindex" value="<?php echo $occManager->getOccIndex(); ?>" />
 				<input type="hidden" name="occidlist" value="<?php echo $occManager->getOccidIndexStr(); ?>" />
 				<input type="hidden" name="direction" value="" />
-				<input type="button" name="submitaction" value="Display Editor" onclick="submitQueryEditor(this.form)" />
-				<input type="button" name="submitaction" value="Display Table" onclick="submitQueryTable(this.form)" />
+				<button name="submitaction" type="submit" onclick="submitQueryEditor(this.form)" ><?php echo $LANG['DISPLAY_EDITOR']; ?></button>
+				<button name="submitaction" type="submit" onclick="submitQueryTable(this.form)" ><?php echo $LANG['DISPLAY_TABLE']; ?></button>
 				<span style="margin-left:0px;">
-					<input type="button" name="reset" value="Reset Form" onclick="resetQueryForm(this.form)" />
+					<button type="button" name="reset" value="Reset Form" onclick="resetQueryForm(this.form)">Reset Form</button>
 				</span>
 				<span style="margin-left:0px;">
 					<?php echo $LANG['SORT_BY']; ?>:

@@ -67,7 +67,7 @@ elseif(file_exists('includes/config/occurVarDefault.php')){
 	<script src="../../js/symb/collections.editor.skeletal.js?ver=1" type="text/javascript"></script>
 	<script src="../../js/symb/shared.js?ver=150324" type="text/javascript"></script>
 	<style type="text/css">
-		label{  }
+		label{ font-weight: bold; }
 		fieldset{ padding: 15px; }
 		legend{ font-weight: bold; }
 	</style>

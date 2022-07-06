@@ -74,6 +74,28 @@ $duManager->setMatchOtherCatalogNumbers($matchOtherCatNum);
 $duManager->setVerifyImageUrls($verifyImages);
 $duManager->setProcessingStatus($processingStatus);
 
+//Bring in config variables
+if($duManager->getCollInfo('colltype') == 'General Observations'){
+	if(file_exists('../editor/includes/config/occurVarGenObs'.$SYMB_UID.'.php')){
+		//Specific to particular general observation collection
+		include('../editor/includes/config/occurVarGenObs'.$SYMB_UID.'.php');
+	}
+	elseif(file_exists('../editor/includes/config/occurVarGenObsDefault.php')){
+		//Specific to Default values for portal
+		include('../editor/includes/config/occurVarGenObsDefault.php');
+	}
+}
+else{
+	if($collid && file_exists('../editor/includes/config/occurVarColl'.$collid.'.php')){
+		//Specific to particular collection
+		include('../editor/includes/config/occurVarColl'.$collid.'.php');
+	}
+	elseif(file_exists('../editor/includes/config/occurVarDefault.php')){
+		//Specific to Default values for portal
+		include('../editor/includes/config/occurVarDefault.php');
+	}
+}
+
 if($action == 'Automap Fields') $autoMap = true;
 
 $statusStr = '';
@@ -273,8 +295,17 @@ include($SERVER_ROOT.'/includes/header.php');
 		//Grab collection name and last upload date and display for all
 		echo '<div style="font-weight:bold;font-size:130%;">'.$duManager->getCollInfo('name').'</div>';
 		echo '<div style="margin:0px 0px 15px 15px;"><b>Last Upload Date:</b> '.($duManager->getCollInfo('uploaddate')?$duManager->getCollInfo('uploaddate'):(isset($LANG['NOT_REC'])?$LANG['NOT_REC']:'not recorded')).'</div>';
-		$processingList = array('unprocessed' => 'Unprocessed', 'stage 1' => 'Stage 1', 'stage 2' => 'Stage 2', 'stage 3' => 'stage 3', 'pending review' => 'Pending Review',
+		
+
+		// Set the list of processing statuses, from the collection editor template
+		$processingList = array();
+		if (defined('PROCESSINGSTATUS') && PROCESSINGSTATUS) {
+			$processingList = PROCESSINGSTATUS;
+		} else {
+			$processingList = array('unprocessed' => 'Unprocessed', 'stage 1' => 'Stage 1', 'stage 2' => 'Stage 2', 'stage 3' => 'stage 3', 'pending review' => 'Pending Review',
 			'expert required' => 'Expert Required', 'pending review-nfn' => 'Pending Review-NfN', 'reviewed' => 'Reviewed', 'closed' => 'Closed');
+		}
+
 		if(!$ulPath) $ulPath = $duManager->uploadFile();
 		if(($uploadType == $DWCAUPLOAD || $uploadType == $IPTUPLOAD || $uploadType == $SYMBIOTA) && $ulPath){
 			//Data has been uploaded and it's a DWCA upload type
@@ -463,7 +494,7 @@ include($SERVER_ROOT.'/includes/header.php');
 												<option value="">--------------------------</option>
 												<?php
 												foreach($processingList as $ps){
-													echo '<option value="'.$ps.'">'.ucwords($ps).'</option>';
+													echo '<option value="'.strtolower($ps).'">'.ucwords($ps).'</option>';
 												}
 												?>
 											</select>
@@ -506,7 +537,7 @@ include($SERVER_ROOT.'/includes/header.php');
 								<option value="">--------------------------</option>
 								<?php
 								foreach($processingList as $ps){
-									echo '<option value="'.$ps.'">'.ucwords($ps).'</option>';
+									echo '<option value="'.strtolower($ps).'">'.ucwords($ps).'</option>';
 								}
 								?>
 							</select>
@@ -634,7 +665,7 @@ include($SERVER_ROOT.'/includes/header.php');
 									<option value="">--------------------------</option>
 									<?php
 									foreach($processingList as $ps){
-										echo '<option value="'.$ps.'">'.ucwords($ps).'</option>';
+										echo '<option value="'.strtolower($ps).'">'.ucwords($ps).'</option>';
 									}
 									?>
 								</select>
