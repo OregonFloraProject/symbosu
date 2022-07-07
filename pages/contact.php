@@ -39,13 +39,21 @@ function obfuscate($email) {
         <div class="inner-content">
             <!-- place static page content here. -->
             <h2>Location:</h2>
-            <p>Room 1162<br />4575 SW Research Way<br />Corvallis, OR 97333</p>
+            <p>Rooms 2625, 2627 Cordley Hall<br />Oregon State University<br />2701 SW Campus Way<br />Corvallis, OR 97331</p>
             <h2>Mailing Address:</h2>
-            <p>OregonFlora<br />OSU Dept. Botany &amp; Plant Pathology<br />4575 SW Research Way<br />Corvallis, OR 97333</p>
+            <p>OSU Dept. Botany &amp; Plant Pathology<br />Attn: OregonFlora<br />2701 SW Campus Way<br />Corvallis, OR 97331</p>
             <h2>Correspondence:</h2>
-            <p>OregonFlora<br/>Dr. Linda K. Hardison, Director<br/>OSU Dept. Botany &amp; Plant Pathology<br/>4575 SW Research Way<br/>Corvallis, OR 97333<br/>541-737-4338</p>
+            <p>OSU Dept. Botany &amp; Plant Pathology<br/>Attn: Dr. Linda Hardison, Director, OregonFlora<br/>2701 SW Campus Way<br/>Corvallis, OR 97331<br/>541-737-4338</p>
             <h2>Send contributions of species lists, digital images, and other data to:</h2>
             <p><a href="mailto:info@oregonflora.org">info@oregonflora.org</a></p>
+            <h2>Staff:</h2>
+            <p>Linda Hardison, Director<br />linda.hardison@oregonstate.edu      541-737-4338</p>
+            <p>Tanya Harvey, <i>Flora of Oregon</i> graphic designer<br />tanya@westerncascades.com</p>
+            <p>Thea Jaster, Database manager, Botanist<br />theodora.jaster@oregonstate.edu      541-737-2445</p>
+            <p>Stephen Meyers, Taxonomic Director<br />stephen.meyers@oregonstate.edu      541-737-2445</p>
+            <p>Katie Mitchell, Database manager, Botanist<br />katie.mitchell@oregonstate.edu</p>
+            <p>John Myers, <i>Flora of Oregon</i> principal illustrator<br />myersj8@oregonstate.edu</p>
+
         </div> <!-- .inner-content -->
     </section>
 </div> <!-- .info-page -->
