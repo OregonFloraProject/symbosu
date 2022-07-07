@@ -36,11 +36,11 @@ elseif($activeCollArr){
 	<head>
 		<title><?php echo $DEFAULT_TITLE.' '.$LANG['OCC_TAX_CLEAN']; ?></title>
 		<?php
-		$activateJQuery = true;
 		include_once($SERVER_ROOT.'/includes/head.php');
 		?>
 		<script src="../../js/jquery-3.2.1.min.js?ver=3" type="text/javascript"></script>
-		<script src="../../js/jquery-ui-1.12.1/jquery-ui.min.js?ver=3" type="text/javascript"></script>
+		<script src="../../js/jquery-ui/jquery-ui.min.js?ver=3" type="text/javascript"></script>
+		<link href="../../js/jquery-ui/jquery-ui.min.css" type="text/css" rel="Stylesheet" />
 		<script>
 
 			var cache = {};
@@ -297,6 +297,7 @@ elseif($activeCollArr){
 									</div>
 								</div>
 							</form>
+							<!--
 							<hr/>
 							<form name="deepindexform" action="taxonomycleaner.php" method="post">
 								<div style="margin:20px 10px">
@@ -309,6 +310,7 @@ elseif($activeCollArr){
 									</div>
 								</div>
 							</form>
+							 -->
 						</fieldset>
 					</div>
 					<?php

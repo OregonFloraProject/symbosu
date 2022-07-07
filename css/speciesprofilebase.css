@@ -326,13 +326,17 @@
 }
 
 /*Text Description*/
-div.sptab{
+.ui-tabs .ui-tabs-panel {
+	padding-right: 0em;
+}
+
+.sptab{
 	height:		330px;
 	width:		94%;
 	overflow: 	auto;
 }
 
-div.spptab{
+.spptab{
 	height:		330px;
 	width:		94%;
 	overflow: 	auto;

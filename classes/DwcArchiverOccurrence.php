@@ -234,12 +234,10 @@ class DwcArchiverOccurrence{
 			$this->occurDefArr['fields']['member'] = 'paleo.member';
 			$this->occurDefArr['terms']['bed'] = 'http://rs.tdwg.org/dwc/terms/bed';
 			$this->occurDefArr['fields']['bed'] = 'paleo.bed';
-			$this->occurDefArr['terms']['lithology'] = 'http://rs.tdwg.org/dwc/terms/lithostratigraphicTerms';
+			$this->occurDefArr['terms']['lithology'] = 'http://rs.tdwg.org/dwc/terms/lithostratigraphic';
 			$this->occurDefArr['fields']['lithology'] = 'paleo.lithology';
 			$this->occurDefArr['terms']['stratRemarks'] = 'https://symbiota.org/terms/paleo-stratRemarks';
 			$this->occurDefArr['fields']['stratRemarks'] = 'paleo.stratRemarks';
-			$this->occurDefArr['terms']['lithDescription'] = 'https://symbiota.org/terms/paleo-lithDescription';
-			$this->occurDefArr['fields']['lithDescription'] = 'paleo.lithDescription';
 			$this->occurDefArr['terms']['element'] = 'https://symbiota.org/terms/paleo-element';
 			$this->occurDefArr['fields']['element'] = 'paleo.element';
 			$this->occurDefArr['terms']['slideProperties'] = 'https://symbiota.org/terms/paleo-slideProperties';
@@ -263,6 +261,8 @@ class DwcArchiverOccurrence{
 		$this->occurDefArr['fields']['processingStatus'] = 'o.processingstatus';
 		$this->occurDefArr['terms']['duplicateQuantity'] = 'https://symbiota.org/terms/duplicateQuantity';
 		$this->occurDefArr['fields']['duplicateQuantity'] = 'o.duplicateQuantity';
+		$this->occurDefArr['terms']['labelProject'] = 'https://symbiota.org/terms/labelProject';
+		$this->occurDefArr['fields']['labelProject'] = 'o.labelProject';
 		$this->occurDefArr['terms']['recordEnteredBy'] = 'https://symbiota.org/terms/recordEnteredBy';
 		$this->occurDefArr['fields']['recordEnteredBy'] = 'o.recordEnteredBy';
 		$this->occurDefArr['terms']['dateEntered'] = 'https://symbiota.org/terms/dateEntered';
@@ -280,9 +280,9 @@ class DwcArchiverOccurrence{
 		$this->occurDefArr['terms']['sourcePrimaryKey-dbpk'] = 'https://symbiota.org/terms/sourcePrimaryKey-dbpk';
 		$this->occurDefArr['fields']['sourcePrimaryKey-dbpk'] = 'o.dbpk';
 		$this->occurDefArr['terms']['collID'] = 'https://symbiota.org/terms/collID';
-		$this->occurDefArr['fields']['collID'] = 'c.collid';
-		$this->occurDefArr['terms']['recordID'] = 'http://symbiota.org/terms/recordId';
-		$this->occurDefArr['fields']['recordID'] = 'g.guid AS recordId';
+		$this->occurDefArr['fields']['collID'] = 'c.collID';
+		$this->occurDefArr['terms']['recordID'] = 'https://symbiota.org/terms/recordID';
+		$this->occurDefArr['fields']['recordID'] = 'g.guid AS recordID';
 		$this->occurDefArr['terms']['references'] = 'http://purl.org/dc/terms/references';
 		$this->occurDefArr['fields']['references'] = '';
 		if($this->schemaType == 'pensoft'){
@@ -293,13 +293,13 @@ class DwcArchiverOccurrence{
 			if($this->schemaType == 'dwc' || $this->schemaType == 'pensoft'){
 				$trimArr = array('recordedByID','associatedCollectors','substrate','verbatimAttributes','cultivationStatus',
 					'localitySecurityReason','genericcolumn1','genericcolumn2','storageLocation','observerUid','processingStatus',
-					'duplicateQuantity','dateEntered','dateLastModified','sourcePrimaryKey-dbpk');
+					'duplicateQuantity','labelProject','dateEntered','dateLastModified','sourcePrimaryKey-dbpk');
 				$this->occurDefArr[$k] = array_diff_key($vArr,array_flip($trimArr));
 			}
 			elseif($this->schemaType == 'symbiota'){
 				$trimArr = array();
 				if(!$this->extended){
-					$trimArr = array('collectionID','rights','rightsHolder','accessRights','storageLocation','observerUid','processingStatus','duplicateQuantity','dateEntered','dateLastModified');
+					$trimArr = array('collectionID','rights','rightsHolder','accessRights','storageLocation','observerUid','processingStatus','duplicateQuantity','labelProject','dateEntered','dateLastModified');
 				}
 				$this->occurDefArr[$k] = array_diff_key($vArr,array_flip($trimArr));
 			}
@@ -313,7 +313,7 @@ class DwcArchiverOccurrence{
 					'recordedBy','recordNumber','eventDate','year','month','day','fieldNumber','country','stateProvince','county','municipality',
 					'locality','localitySecurity','geodeticDatum','decimalLatitude','decimalLongitude','verbatimCoordinates',
 					'minimumElevationInMeters','maximumElevationInMeters','verbatimElevation','maximumDepthInMeters','minimumDepthInMeters','establishmentMeans','cultivationStatus',
-					'sex','occurrenceRemarks','preparationType','individualCount','dateEntered','dateLastModified','recordId','references','collId');
+					'sex','occurrenceRemarks','preparationType','individualCount','dateEntered','dateLastModified','recordID','references','collID');
 				$this->occurDefArr[$k] = array_intersect_key($vArr,array_flip($targetArr));
 			}
 		}
@@ -354,14 +354,15 @@ class DwcArchiverOccurrence{
 	public function getAdditionalCatalogNumberStr($occid){
 		$retStr = '';
 		if(is_numeric($occid)){
-			$sql = 'SELECT GROUP_CONCAT(CONCAT_WS(": ",identifierName, identifierValue) SEPARATOR "; ") as idStr FROM omoccuridentifiers WHERE occid = '.$occid;
+			$sql = 'SELECT identifierName, identifierValue FROM omoccuridentifiers WHERE occid = '.$occid.' ORDER BY sortBy';
 			$rs = $this->conn->query($sql);
-			if($r = $rs->fetch_object()){
-				$retStr = $r->idStr;
+			while($r = $rs->fetch_object()){
+				if($r->identifierName) $retStr .= $r->identifierName.': ';
+				$retStr .= $r->identifierValue.'; ';
 			}
 			$rs->free();
 		}
-		return $retStr;
+		return trim($retStr,'; ');
 	}
 
 	public function setIncludeExsiccatae(){
@@ -371,8 +372,8 @@ class DwcArchiverOccurrence{
 		$rs->free();
 	}
 
-	public function getExsiccateStr($occid){
-		$retStr = '';
+	public function getExsiccateArr($occid){
+		$retArr = array();
 		if($this->includeExsiccatae && is_numeric($occid)){
 			$sql = 'SELECT t.title, t.abbreviation, t.editor, t.exsrange, n.exsnumber, l.notes '.
 				'FROM omexsiccatiocclink l INNER JOIN omexsiccatinumbers n ON l.omenid = n.omenid '.
@@ -380,16 +381,25 @@ class DwcArchiverOccurrence{
 				'WHERE l.occid = '.$occid;
 			$rs = $this->conn->query($sql);
 			while($r = $rs->fetch_object()){
-				$retStr = $r->title;
-				if($r->abbreviation) $retStr .= ' ['.$r->abbreviation.']';
-				if($r->exsrange) $retStr .= ', '.$r->exsrange;
-				if($r->editor) $retStr .= ', '.$r->editor;
-				$retStr .= ', exs #: '.$r->exsnumber;
-				if($r->notes) $retStr .= ' ('.$r->notes.')';
+				$exsStr = $r->title;
+				if($r->abbreviation) $exsStr .= ' ['.$r->abbreviation.']';
+				if($r->exsrange) $exsStr .= ', '.$r->exsrange;
+				if($r->editor) $exsStr .= ', '.$r->editor;
+				$exsStr .= ', exs #: '.$r->exsnumber;
+				if($r->notes) $exsStr .= ' ('.$r->notes.')';
+				$retArr['exsStr'] = $exsStr;
+				$dynProp = array();
+				$dynProp['exsTitle'] = $r->title;
+				if($r->abbreviation) $dynProp['exsAbbreviation'] = $r->abbreviation;
+				if($r->exsrange) $dynProp['exsRange'] = $r->exsrange;
+				if($r->editor) $dynProp['exsEditor'] = $r->editor;
+				$dynProp['exsNumber'] = $r->exsnumber;
+				if($r->notes) $dynProp['exsNotes'] = $r->notes;
+				$retArr['exsJson'] = json_encode($dynProp);
 			}
 			$rs->free();
 		}
-		return $retStr;
+		return $retArr;
 	}
 
 	public function getAssociationStr($occid){
@@ -556,7 +566,7 @@ class DwcArchiverOccurrence{
 					$higherStr .= '|'.$row->sciname;
 				}
 				$rs->free();
-				if($higherStr) $r['t_higherClassification'] = trim($higherStr,'| ');
+				if($higherStr && $this->schemaType != 'coge') $r['t_higherClassification'] = trim($higherStr,'| ');
 				if(count($this->upperTaxonomy)<1000 || !is_numeric($target)){
 					if(isset($r['t_kingdom'])) $this->upperTaxonomy[$target]['k'] = $r['t_kingdom'];
 					if(isset($r['t_phylum'])) $this->upperTaxonomy[$target]['p'] = $r['t_phylum'];

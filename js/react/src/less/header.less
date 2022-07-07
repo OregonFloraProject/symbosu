@@ -9,6 +9,9 @@
 	@media screen and (max-width: @large) {
 		height: 3.8em !important;
 	}
+	.navbar-expand-lg {//override
+		justify-content: space-between;
+	}
 	.header-wrapper {
     background-size: auto;
   	box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.16);
@@ -21,11 +24,15 @@
 			margin-right: auto;
 			margin-left: auto;
 			@media screen and (max-width: @xlarge) {
-				max-width: 920px;
+				max-width: 1080px;
+			}
+			@media screen and (max-width: 1100px) {
+				max-width: 940px;
 			}
 			@media screen and (max-width: @large) {
 				max-height: 61px;
-			}
+			}	
+
 		}
 		.fixed-logo-wrapper {
 			z-index: 1200;
@@ -33,6 +40,7 @@
 			#fixed-logo {
 				width: 87px;
 				height: 100px;
+				max-height: 100%;
 				margin-left: -6px;
 				position: fixed;
 				top: 6px;
@@ -44,6 +52,12 @@
 					height: 122px;
 					&#site-header-logo-sm {
 						height: 50px;
+					}
+				}
+				&.short {
+					max-height: 60px !important;
+					img#site-header-logo {
+						display: none;
 					}
 				}
 			}
@@ -100,7 +114,7 @@
 
       ul {
         .text-center();
-        padding-left: calc(1.5em + 87px);
+        padding-left: calc(1.5em + 57px);
 				li {
 					margin-left: .7em;
 					margin-right: .7em;
@@ -112,7 +126,7 @@
 			margin-bottom: .5rem;
 			@media screen and (max-width: @xlarge) {
 				ul {
-					padding-left: calc(.5em + 87px);
+					//padding-left: calc(.5em + 87px);
 					li {
 						margin-left: .3em;
 						margin-right: .3em;
@@ -143,15 +157,12 @@
   }
   .search-wrapper {
 		order: 3;
-  	flex-basis: 500px;
+  	flex-basis: 430px;
   	margin-right: -41px;
 		margin-bottom: .55rem;
 		padding: 0px 20px 0 20px;
 		text-align: right;
-		@media screen and (max-width: @xlarge) {
-			padding-left: 0px;
-			flex-basis: 450px;
-		}	
+	
   	.row {
 	  	margin: 0;
 	  }
@@ -169,15 +180,15 @@
     }
     .widget-wrapper {
     	justify-content: flex-end;
-    	margin-left: 49px;
+    	margin-left: 36px;
 			.search-widget {
 				padding: .5rem 0 0 0;
-				width: 400px;
+				width: 330px;
 				position: relative;
 				vertical-align: middle;
 				input {
 					margin-right: 10px;
-					max-width: 353px !important;
+					max-width: 350px !important;
 					height: 40px;
 					border: 2px solid @med-green;
 					display: inline;
@@ -203,10 +214,16 @@
 		}
 		
 		@media screen and (max-width: @xlarge) {
-			margin-right: 0px;
-			padding-right: 0px;
+			margin-right: 0;
+			margin-left: 0 !important;
+			padding-right: 0;
+			padding-left: 0;
+			flex-basis: 300px;
 			.widget-wrapper {
-				margin-left: 0px;
+				margin-left: 30px;
+				.search-widget {
+					width: 250px;
+				}
 			}
 			.header-button-bar {
 				margin-right: 30px;

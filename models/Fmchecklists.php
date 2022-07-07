@@ -14,6 +14,8 @@ use Doctrine\ORM\Mapping as ORM;
 class Fmchecklists
 {
     public static $CLID_GARDEN_ALL = 54;
+    public static $PID_GARDEN_ALL = 3;
+    public static $PID_VENDOR_ALL = 4;
 
     /**
      * @var int

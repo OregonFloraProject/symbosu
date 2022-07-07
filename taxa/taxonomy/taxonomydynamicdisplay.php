@@ -1,25 +1,32 @@
 <?php
 include_once('../../config/symbini.php');
 include_once($SERVER_ROOT.'/classes/TaxonomyDisplayManager.php');
-header("Content-Type: text/html; charset=".$CHARSET);
-header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
-header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
+header('Content-Type: text/html; charset='.$CHARSET);
+header('Cache-Control: no-cache, must-revalidate'); // HTTP/1.1
+header('Expires: Sat, 26 Jul 1997 05:00:00 GMT'); // Date in the past
 
-$target = array_key_exists("target",$_REQUEST)?$_REQUEST["target"]:"";
+$target = array_key_exists('target',$_REQUEST)?$_REQUEST['target']:'';
 $displayAuthor = array_key_exists('displayauthor',$_REQUEST)?$_REQUEST['displayauthor']:0;
-$taxAuthId = array_key_exists("taxauthid",$_REQUEST)?$_REQUEST["taxauthid"]:1;
+$taxAuthId = array_key_exists('taxauthid',$_REQUEST)?$_REQUEST['taxauthid']:1;
 $editorMode = array_key_exists('emode',$_POST)?$_POST['emode']:0;
 $statusStr = array_key_exists('statusstr',$_REQUEST)?$_REQUEST['statusstr']:'';
+
+//Sanitation
+$target = filter_var($target, FILTER_SANITIZE_STRING);
+$displayAuthor = (is_numeric($displayAuthor)?$displayAuthor:0);
+$taxAuthId = (is_numeric($taxAuthId)?$taxAuthId:0);
+$editorMode = (is_numeric($editorMode)?$editorMode:0);
+$statusStr = filter_var($statusStr, FILTER_SANITIZE_STRING);
 
 $taxonDisplayObj = new TaxonomyDisplayManager();
 $taxonDisplayObj->setTargetStr($target);
 $taxonDisplayObj->setTaxAuthId($taxAuthId);
 
 $isEditor = false;
-if($IS_ADMIN || array_key_exists("Taxonomy",$USER_RIGHTS)){
+if($IS_ADMIN || array_key_exists('Taxonomy',$USER_RIGHTS)){
 	$isEditor = true;
 	$editorMode = 1;
-	if(array_key_exists("target",$_POST) && !array_key_exists('emode',$_POST)) $editorMode = 0;
+	if(array_key_exists('target',$_POST) && !array_key_exists('emode',$_POST)) $editorMode = 0;
 }
 
 $treePath = $taxonDisplayObj->getDynamicTreePath();
@@ -29,21 +36,14 @@ reset($treePath);
 ?>
 <html>
 <head>
-	<title><?php echo $DEFAULT_TITLE." Taxonomy Explorer: ".$taxonDisplayObj->getTargetStr(); ?></title>
+	<title><?php echo $DEFAULT_TITLE.' Taxonomy Explorer: '.$taxonDisplayObj->getTargetStr(); ?></title>
 	<meta http-equiv="Content-Type" content="text/html; charset=<?php echo $CHARSET; ?>"/>
 	<?php
 	$activateJQuery = true;
-	if(file_exists($SERVER_ROOT.'/includes/head.php')){
-		include_once($SERVER_ROOT.'/includes/head.php');
-	}
-	else{
-		echo '<link href="'.$CLIENT_ROOT.'/css/jquery-ui.css" type="text/css" rel="stylesheet" />';
-		echo '<link href="'.$CLIENT_ROOT.'/css/base.css?ver=1" type="text/css" rel="stylesheet" />';
-		echo '<link href="'.$CLIENT_ROOT.'/css/main.css?ver=1" type="text/css" rel="stylesheet" />';
-	}
+	include_once($SERVER_ROOT.'/includes/head.php');
 	include_once($SERVER_ROOT.'/includes/googleanalytics.php');
 	?>
-	<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/dojo/1.10.4/dijit/themes/claro/claro.css" media="screen">
+	<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/dojo/1.14.1/dijit/themes/claro/claro.css" media="screen">
 	<style type="text/css">
 		.dijitLeaf,
 		.dijitIconLeaf,
@@ -56,9 +56,9 @@ reset($treePath);
 			height: 0px;
 		}
 	</style>
-	<script type="text/javascript" src="../../js/jquery.js"></script>
-	<script type="text/javascript" src="../../js/jquery-ui.js"></script>
-	<script src="//ajax.googleapis.com/ajax/libs/dojo/1.10.4/dojo/dojo.js" data-dojo-config="async: true"></script>
+	<script src="../../js/jquery.js" type="text/javascript" ></script>
+	<script src="../../js/jquery-ui.js" type="text/javascript" ></script>
+	<script src="//ajax.googleapis.com/ajax/libs/dojo/1.14.1/dojo/dojo.js"></script>
 	<script type="text/javascript">
 		$(document).ready(function() {
 			$("#taxontarget").autocomplete({
@@ -157,10 +157,6 @@ reset($treePath);
 				"dojo/store/JsonRest",
 				"dojo/domReady!"
 			], function(win, declare, dom, on, Tree, ObjectStoreModel, dndSource, JsonRest){
-			/*require([
-				"dojo/_base/declare", "dojo/aspect", "dojo/json", "dojo/query", "dojo/store/Memory", "dojo/store/Observable",
-				"dijit/Tree", "dijit/tree/ObjectStoreModel", "dijit/tree/dndSource", "dojo/domReady!"
-			], function(declare, aspect, json, query, Memory, Observable, Tree, ObjectStoreModel, dndSource){*/
 				// set up the store to get the tree data
 				var taxonTreeStore = new JsonRest({
 					target: "rpc/getdynamicchildren.php",
@@ -221,7 +217,11 @@ reset($treePath);
 
 				taxonTree.set("path", <?php echo json_encode($treePath); ?>).then(
 					function(path){
-						win.scrollIntoView(taxonTree.selectedNode.id);
+						if(taxonTree.selectedNode){
+							taxonTree._expandNode(taxonTree.selectedNode);
+							document.getElementById(taxonTree.selectedNode.id).scrollIntoView();
+							//win.scrollIntoView(taxonTree.selectedNode.id);
+						}
 					}
 				);
 				taxonTree.startup();
@@ -237,37 +237,6 @@ reset($treePath);
 					}
 				});*/
 			});
-
-			/*query("#add-new-child").on("click", function(){
-				// get the selected object from the tree
-				var selectedObject = taxonTree.get("selectedItems")[0];
-				if(!selectedObject){
-					return alert("No object selected");
-				}
-
-				// add a new child item
-				var childItem = {
-					name: "New child",
-					id: Math.random()
-				};
-				taxonTreeStore.put(childItem, {
-					overwrite: true,
-					parent: selectedObject
-				});
-			});
-
-			query("#remove").on("click", function(){
-				var selectedObject = taxonTree.get("selectedItems")[0];
-				if(!selectedObject){
-					return alert("No object selected");
-				}
-				taxonTreeStore.remove(selectedObject.id);
-			});
-
-			taxonTree.on("dblclick", function(object){
-				object.name = prompt("Enter a new name for the object");
-				taxonTreeStore.put(object);
-			}, true);*/
 
 		</script>
 	</div>

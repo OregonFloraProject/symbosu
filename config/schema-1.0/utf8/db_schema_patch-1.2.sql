@@ -366,8 +366,8 @@ ALTER TABLE `taxstatus`
 ALTER TABLE `taxstatus` 
   DROP FOREIGN KEY `FK_taxstatus_tidacc`;
   
-ALTER TABLE `taxstatus` 
-  CHANGE COLUMN `tidaccepted` `tidaccepted` INT(10) UNSIGNED NULL DEFAULT NULL ;
+#ALTER TABLE `taxstatus` 
+#  CHANGE COLUMN `tidaccepted` `tidaccepted` INT(10) UNSIGNED NULL DEFAULT NULL ;
   
 ALTER TABLE `taxstatus` 
   ADD CONSTRAINT `FK_taxstatus_tidacc` FOREIGN KEY (`tidaccepted`)  REFERENCES `taxa` (`TID`);
@@ -648,6 +648,11 @@ ALTER TABLE `users`
 
 ALTER TABLE `userroles` 
   ADD UNIQUE INDEX `Unique_userroles` (`uid` ASC, `role` ASC, `tablename` ASC, `tablepk` ASC);
+  
+# If you run into an error setting the Unique_userroles UNIQUE INDEX above, 
+# run the following SQL to locate the duplicate record interferring with setting that INDEX.
+# Delete the duplicate records to avoid the error
+# SELECT uid, role, tablename, tablepk, count(*) as cnt FROM userroles GROUP BY uid, role, tablename, tablepk HAVING cnt > 1; 
 
 #Tag all collection admin and editors as non-volunteer crowdsource editors   
 UPDATE omcrowdsourcecentral c INNER JOIN omcrowdsourcequeue q ON c.omcsid = q.omcsid

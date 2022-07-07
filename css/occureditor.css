@@ -55,7 +55,7 @@ body{
 #dupeMsgDiv{
 	position: absolute;
 	top: 78px;
-	left: 617px;
+	left: 615px;
 	display:none;
 	background-color: lightgrey;
 	z-index: 10; 
@@ -64,7 +64,7 @@ body{
 }
 
 #dupeMsgDiv div{
-	width:150px;
+	width:170px;
 	border:2px outset blue;
 	background-color: white;
 	padding:3px;
@@ -96,7 +96,7 @@ body{
 }
 
 #catalogNumberDiv input{
-	width:	120px;
+	width:	150px;
 }
 
 #otherCatalogNumbersDiv {
@@ -104,7 +104,7 @@ body{
 }
 
 #otherCatalogNumbersDiv input{
-	width:	110px;
+	width:	200px;
 }
 
 #recordedByDiv {
@@ -304,13 +304,24 @@ body{
 	width:	150px;
 }
 
+#locationIdDiv{
+	float:	left;
+	margin-left: 25px;
+}
+
+#locationIdDiv input{
+	width:	100px;
+}
+
 #localityDiv{
 	clear:	both;
 	margin:	4px 0px 2px 0px;
 }
 
-#localityDiv input{
-	width: 97%;
+#localityDiv textarea{
+	height:	15px;
+	width: 95%;
+	height: 22px; 
 }
 
 #localSecurityDiv{
@@ -408,16 +419,16 @@ body{
 #dmsAidDiv{
 	 float:	left;
 	 padding:	15px 10px;
-	 background-color: lightyellow;
-	 border: 1px solid yellow;
+	 background-color: #f2f2f2;
+	 border: 2px outset #E8EEFA;
 	 width:	260px;
 }
 
 #utmAidDiv{
 	 float:	left;
 	 padding:	15px 10px;
-	 background-color:	lightyellow;
-	 border:1px solid yellow;
+	 background-color: #f2f2f2;
+	 border: 2px outset #E8EEFA;
 	 width:150px;
 	 margin-bottom:10px;
 }
@@ -425,8 +436,8 @@ body{
 #trsAidDiv{
 	float:	left;
 	padding:15px 10px;
-	background-color:lightyellow;
-	border:	1px solid yellow;
+	 background-color: #f2f2f2;
+	 border: 2px outset #E8EEFA;
 }
 
 #geodeticDatumDiv{
@@ -580,11 +591,7 @@ body{
 #associatedTaxaDiv textarea{
 	height:	15px;
 	width:	95%;
-}
-
-#associatedTaxaDiv img{
-	width:	15px;
-	border:	0px;
+	height: 22px; 
 }
 
 #verbatimAttributesDiv{
@@ -607,32 +614,6 @@ body{
 #occurrenceRemarksDiv span{
 	margin-left: 5px;
 	cursor: pointer;
-}
-
-#occurrenceRemarksDiv img{
-	width:15px;
-}
-
-#fieldNotesDiv{
-	padding: 2px;
-}
-
-#fieldNotesDiv input{
-	width: 95%;
-}
-
-#fieldNotesDiv textarea{
-	width: 95%;
-	resize: vertical;
-}
-
-#fieldNotesDiv span{
-	margin-left: 5px;
-	cursor: pointer;
-}
-
-#fieldNotesDiv img{
-	width:15px;
 }
 
 #dynamicPropertiesDiv{
@@ -820,17 +801,46 @@ body{
 	width: 500px;
 }
 
-#processingStatusDiv{
-	float:left;
-	margin:3px;
-}
+#processingStatusDiv{	float:left;	margin:3px;}
 
 #pkDiv{
 	padding:3px;
 	clear:both;
 }
 
+/* Paleo fields */
+#eonDiv{ float:left; margin:3px; }
+#eraDiv{ float:left; margin:3px; }
+#periodDiv{ float:left; margin:3px; }
+#epochDiv{ float:left; margin:3px; }
+#earlyIntervalDiv{ float:left; margin:3px; }
+#lateIntervalDiv{ float:left; margin:3px; }
+#absoluteAgeDiv{ float:left; margin:3px; }
+#storageAgeDiv{ float:left; margin:3px; }
+#stageDiv{ float:left; margin:3px; }
+#localStageDiv{ float:left; margin:3px; }
+#biotaDiv{ float:left; margin:3px; }
+#biostratigraphyDiv{ float:left; margin:3px; }
+#lithoGroupDiv{ float:left; margin:3px; }
+#formationDiv{ float:left; margin:3px; }
+#taxonEnvironmentDiv{ float:left; margin:3px; }
+#memberDiv{ float:left; margin:3px; }
+#bedDiv{ float:left; margin:3px; }
+#lithologyDiv{ float:left; margin:3px; }
+#lithologyDiv input{ width:600px; }
+#stratRemarksDiv{ float:left; margin:3px; }
+#stratRemarksDiv input{ width:600px; }
+#elementDiv{ float:left; margin:3px; }
+#slidePropertiesDiv{ float:left; margin:3px; }
+#slidePropertiesDiv input{ width:400px; }
+#geologicalContextIdDiv{ float:left; margin:3px; }
+#geologicalContextIdDiv input{ width:120px; }
+
 /* Button Controls */
+#bottomSubmitDiv{
+	padding:10px;
+}
+
 #addButtonDiv{
 	width:		450px;
 	border:		1px solid black;
@@ -850,7 +860,20 @@ img.docimg {
 	margin-bottom:	2px; 
 }
 
+img.editimg { 
+	border:			0px;
+	width:			15px;
+}
+
 table { 
 	font-family: 	Arial, Helvetica, sans-serif; 
 	font-size: 		12px;
 }
+
+.divTable{ display: table; }
+.divTableRow { display: table-row; }
+.divTableHeading { display: table-header-group;}
+.divTableCell, .divTableHead { display: table-cell;}
+.divTableHeading { display: table-header-group;}
+.divTableFoot { display: table-footer-group;}
+.divTableBody { display: table-row-group;}

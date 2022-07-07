@@ -23,7 +23,7 @@ class Fmchklstprojlink
   /**
    * @var integer
    *
-   * @ORM\Column(name="clid")
+   * @ORM\Column(name="clid", type="integer")
    * @ORM\Id
    */
   private $clid;
@@ -34,6 +34,14 @@ class Fmchklstprojlink
    * @ORM\Column(name="clnameoverride")
    */
   private $clnameoverride;
+  
+  /**
+   * @var integer
+   *
+   * @ORM\Column(name="sortSequence", type="integer")
+   * @ORM\Id
+   */
+  private $sortSequence;
   
   /**
    * @var integer

@@ -1,8 +1,5 @@
 <script>
-<!--
-if (top.frames.length!=0)
-  top.location=self.document.location;
-// -->
+	//if(top.frames.length!=0) top.location=self.document.location;
 </script>
 <table id="maintable" cellspacing="0">
 	<tr>
@@ -13,7 +10,7 @@ if (top.frames.length!=0)
 				</div>
 				<div style="margin-left: 40px; color: #fff; font-family: 'Mate', serif; letter-spacing: 1px; text-shadow: 0 0 7px rgba(0,0,0,0.5);">
 					<div style="margin-top:30px; font-size:60px; line-height:48px;">
-						First Level Title
+						<h1><?php echo ($DEFAULT_TITLE) ? $DEFAULT_TITLE : "First Level Title"; ?></h1>
 					</div>
 					<div style="margin-top:20px; font-size:35px; font-style: italic">
 						Second Level Title

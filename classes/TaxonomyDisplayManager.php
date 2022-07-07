@@ -5,7 +5,8 @@ include_once($SERVER_ROOT.'/classes/TaxonomyUtilities.php');
 class TaxonomyDisplayManager extends Manager{
 
 	private $taxaArr = Array();
-	private $targetStr = "";
+	private $targetStr = '';
+	private $targetTid = 0;
 	private $targetRankId = 0;
 	private $taxAuthId = 1;
 	private $taxonomyMeta = array();
@@ -41,6 +42,7 @@ class TaxonomyDisplayManager extends Manager{
 		$this->primeTaxaEnumTree();
 		$subGenera = array();
 		$taxaParentIndex = Array();
+		$zeroRank = array();
 		$sql = 'SELECT DISTINCT t.tid, ts.tidaccepted, t.sciname, t.author, t.rankid, ts.parenttid '.
 			'FROM taxa t LEFT JOIN taxstatus ts ON t.tid = ts.tid '.
 			// Restrict to taxa that are contained in a checklist
@@ -48,9 +50,7 @@ class TaxonomyDisplayManager extends Manager{
 			'WHERE (ts.taxauthid = '.$this->taxAuthId.') ';
 			// Restrict to taxa contained in the State of Oregon vascular plant checklist (cl=1)
 			$sql .= ($this->oregonVascPlant ? 'AND (cl.clid = 1)' : '');
-		if(is_numeric($this->targetStr)){
-			$sql .= 'AND (ts.tid = '.$this->targetStr.') ';
-		}
+		if($this->targetTid) $sql .= 'AND (ts.tid = '.$this->targetTid.') ';
 		elseif($this->targetStr){
 			$term = $this->targetStr;
 			$termArr = explode(' ',$term);
@@ -62,19 +62,17 @@ class TaxonomyDisplayManager extends Manager{
 			if($unit2 = array_shift($termArr)) $sqlFrag .=  'AND t.unitname2 LIKE "'.$unit2.($this->matchOnWholeWords?'':'%').'" ';
 
 			if($this->matchOnWholeWords){
-				$sql .= 'AND ((t.sciname = "'.$term.'") OR (t.sciname LIKE "'.$term.' %") ';
+				$sql .= 'AND ((t.sciname = "'.$this->cleanInStr($term).'") OR (t.sciname LIKE "'.$this->cleanInStr($term).' %") ';
 			}
 			else{
 				//Rankid >= species level and not will author included
-				$sql .= 'AND ((t.sciname LIKE "'.$term.'%") ';
+				$sql .= 'AND ((t.sciname LIKE "'.$this->cleanInStr($term).'%") ';
 			}
-			$sql .= 'OR (CONCAT(t.sciname," ",t.author) = "'.$term.'") ';
+			$sql .= 'OR (CONCAT(t.sciname," ",t.author) = "'.$this->cleanInStr($term).'") ';
 			if($sqlFrag) $sql .= 'OR ('.$sqlFrag.')';
 			$sql .= ') ';
 		}
-		else{
-			$sql .= 'AND (t.rankid = 10) ';
-		}
+		else $sql .= 'AND (t.rankid = 10) ';
 		$sql .= 'ORDER BY t.rankid DESC ';
 		$tidAcceptedArr = array();
 		$rs = $this->conn->query($sql);
@@ -84,6 +82,7 @@ class TaxonomyDisplayManager extends Manager{
 				$this->taxaArr[$tid]['sciname'] = $r->sciname;
 				$this->taxaArr[$tid]['author'] = $r->author;
 				$this->taxaArr[$tid]['rankid'] = $r->rankid;
+				if(!$r->rankid) $zeroRank[] = $tid;
 				$this->taxaArr[$tid]['parenttid'] = $r->parenttid;
 				if($r->rankid == 190) $subGenera[] = $tid;
 				$this->targetRankId = $r->rankid;
@@ -103,6 +102,7 @@ class TaxonomyDisplayManager extends Manager{
 				$this->taxaArr[$tid]['sciname'] = $r1->sciname;
 				$this->taxaArr[$tid]['author'] = $r1->author;
 				$this->taxaArr[$tid]['rankid'] = $r1->rankid;
+				if(!$r1->rankid) $zeroRank[] = $tid;
 				$this->taxaArr[$tid]['parenttid'] = $r1->parenttid;
 				if($r1->rankid == 190) $subGenera[] = $tid;
 				$this->targetRankId = $r1->rankid;
@@ -127,7 +127,7 @@ class TaxonomyDisplayManager extends Manager{
 				// Restrict to taxa contained in the State of Oregon vascular plant checklist (clid=1)
 				($this->oregonVascPlant ? 'AND (cl.clid = 1)' : '').
 				'AND ((te.parenttid IN('.$tidStr.')) OR (t.tid IN('.$tidStr.'))) ';
-			if(!$this->targetStr) $sql2 .= 'AND t.rankid <= 10 ';
+			if(!$this->targetStr) $sql2 .= 'AND t.rankid <= 10 AND t.rankid != 0 ';
 			elseif($this->targetRankId < 140 && !$this->displayFullTree) $sql2 .= 'AND t.rankid <= 140 ';
 			$sql2 .= 'GROUP BY t.tid, t.sciname, t.author, t.rankid, ts.parenttid ';
 			//echo $sql2.'<br>';
@@ -138,6 +138,7 @@ class TaxonomyDisplayManager extends Manager{
 				$this->taxaArr[$tid]["sciname"] = $row2->sciname;
 				$this->taxaArr[$tid]["author"] = $row2->author;
 				$this->taxaArr[$tid]["rankid"] = $row2->rankid;
+				if(!$row2->rankid) $zeroRank[] = $tid;
 				$parentTid = $row2->parenttid;
 				$this->taxaArr[$tid]["parenttid"] = $parentTid;
 				$this->taxaArr[$tid]["oregon"] = $row2->clid;
@@ -174,6 +175,7 @@ class TaxonomyDisplayManager extends Manager{
 				$this->taxaArr[$tid]["sciname"] = $row3->sciname;
 				$this->taxaArr[$tid]["author"] = $row3->author;
 				$this->taxaArr[$tid]["rankid"] = $row3->rankid;
+				if(!$row3->rankid) $zeroRank[] = $tid;
 				$this->taxaArr[$tid]["parenttid"] = $parentTid;
 				if($row3->rankid == 190) $subGenera[] = $tid;
 				if($parentTid) $taxaParentIndex[$tid] = $parentTid;
@@ -200,9 +202,9 @@ class TaxonomyDisplayManager extends Manager{
 			//Grab parentTids that are not indexed in $taxaParentIndex. This would be due to a parent mismatch or a missing hierarchy definition
 			$orphanTaxa = array_unique(array_diff($taxaParentIndex,array_keys($taxaParentIndex)));
 			if($orphanTaxa){
-				$sqlOrphan = "SELECT t.tid, t.sciname, t.author, ts.parenttid, t.rankid ".
-					"FROM taxa t INNER JOIN taxstatus ts ON t.tid = ts.tid ".
-					"WHERE (ts.taxauthid = '.$this->taxAuthId.') AND (ts.tid = ts.tidaccepted) AND (t.tid IN (".implode(",",$orphanTaxa)."))";
+				$sqlOrphan = 'SELECT t.tid, t.sciname, t.author, ts.parenttid, t.rankid '.
+					'FROM taxa t INNER JOIN taxstatus ts ON t.tid = ts.tid '.
+					'WHERE (ts.taxauthid = '.$this->taxAuthId.') AND (ts.tid = ts.tidaccepted) AND (t.tid IN ('.implode(',',$orphanTaxa).'))';
 				//echo $sqlOrphan;
 				$rsOrphan = $this->conn->query($sqlOrphan);
 				while($row4 = $rsOrphan->fetch_object()){
@@ -212,6 +214,7 @@ class TaxonomyDisplayManager extends Manager{
 					$this->taxaArr[$tid]["author"] = $row4->author;
 					$this->taxaArr[$tid]["parenttid"] = $row4->parenttid;
 					$this->taxaArr[$tid]["rankid"] = $row4->rankid;
+					if(!$row4->rankid) $zeroRank[] = $tid;
 					if($row4->rankid == 190) $subGenera[] = $tid;
 				}
 				$rsOrphan->free();
@@ -253,6 +256,10 @@ class TaxonomyDisplayManager extends Manager{
 						if($pos) $this->taxaArr[$tid]['sciname'] = $this->taxaArr[$tArr['parenttid']]['sciname'].' '.trim(substr($sn, $pos));
 					}
 				}
+			}
+			foreach($zeroRank as $tidToFix){
+				if(isset($this->taxaArr[$tid]['parenttid']) && $this->taxaArr[$this->taxaArr[$tid]['parenttid']]['rankid']) $this->taxaArr[$tidToFix]['rankid'] = $this->taxaArr[$this->taxaArr[$tid]['parenttid']]['rankid'];
+				else $this->taxaArr[$tidToFix]['rankid'] = 60;
 			}
 		}
 		return $hierarchyArr;
@@ -343,12 +350,10 @@ class TaxonomyDisplayManager extends Manager{
 				'LEFT JOIN taxstatus ts1 ON t.tid = ts1.tidaccepted '.
 				'LEFT JOIN taxa t1 ON ts1.tid = t1.tid '.
 				'WHERE (ts.taxauthid = '.$this->taxAuthId.' OR ts.taxauthid IS NULL) AND (ts1.taxauthid = '.$this->taxAuthId.' OR ts1.taxauthid IS NULL) ';
-			if(is_numeric($this->targetStr)){
-				$sql1 .= 'AND (t.tid IN('.implode(',',$this->targetStr).') OR (ts1.tid = '.$this->targetStr.'))';
-			}
+			if($this->targetTid) $sql1 .= 'AND (t.tid IN('.$this->targetTid.') OR (ts1.tid = '.$this->targetTid.'))';
 			else{
-				$sql1 .= 'AND ((t.sciname = "'.$this->targetStr.'") OR (t1.sciname = "'.$this->targetStr.'") '.
-					'OR (CONCAT(t.sciname," ",t.author) = "'.$this->targetStr.'") OR (CONCAT(t1.sciname," ",t1.author) = "'.$this->targetStr.'")) ';
+				$sql1 .= 'AND ((t.sciname = "'.$this->cleanInStr($this->targetStr).'") OR (t1.sciname = "'.$this->cleanInStr($this->targetStr).'") '.
+					'OR (CONCAT(t.sciname," ",t.author) = "'.$this->cleanInStr($this->targetStr).'") OR (CONCAT(t1.sciname," ",t1.author) = "'.$this->cleanInStr($this->targetStr).'")) ';
 			}
 			//echo "<div>".$sql1."</div>";
 			$rs1 = $this->conn->query($sql1);
@@ -363,61 +368,63 @@ class TaxonomyDisplayManager extends Manager{
 			}
 			$rs1->free();
 		}
-
 		//Set all parents
-		$i = 1;
-		$prevTid = '';
-		$retArr[0] = 'root';
 		$sql2 = '';
 		if($tid){
-			$sql2 = 'SELECT t.RankId, e.parenttid, ts.tidaccepted, ts.parenttid AS par2 '.
+			$sql2 = 'SELECT t.rankid, ts.tidaccepted, ts.parenttid '.
 				'FROM taxaenumtree e INNER JOIN taxa t ON e.parenttid = t.tid '.
 				'INNER JOIN taxstatus ts ON e.parenttid = ts.tid '.
-				'WHERE e.tid = '.($acceptedTid?$acceptedTid:$tid).' AND e.taxauthid = '.$this->taxAuthId.' AND ts.taxauthid = '.$this->taxAuthId.' '.
-				'ORDER BY t.RankId ';
+				'WHERE e.tid = '.($acceptedTid?$acceptedTid:$tid).' AND e.taxauthid = '.$this->taxAuthId.' AND ts.taxauthid = '.$this->taxAuthId;
 		}
 		else{
-			$sql2 = 'SELECT t2.RankId, e.parenttid, ts.tidaccepted, ts.parenttid AS par2 '.
+			$sql2 = 'SELECT t2.rankid, ts.tidaccepted, ts.parenttid '.
 				'FROM taxa t INNER JOIN taxaenumtree e ON t.tid = e.tid '.
 				'INNER JOIN taxa t2 ON e.parenttid = t2.tid '.
 				'INNER JOIN taxstatus ts ON e.parenttid = ts.tid '.
-				'WHERE t.rankid = 10 AND e.taxauthid = '.$this->taxAuthId.' AND ts.taxauthid = '.$this->taxAuthId.' '.
-				'ORDER BY t.RankId ';
+				'WHERE t.rankid = 10 AND e.taxauthid = '.$this->taxAuthId.' AND ts.taxauthid = '.$this->taxAuthId;
 		}
-		//echo "<div>".$sql2."</div>";
+		//echo '<div>'.$sql2.'</div>';
+		$baseTid = 0;
+		$lowestRank = 400;
+		$parArr = array();
 		$rs2 = $this->conn->query($sql2);
 		while($row2 = $rs2->fetch_object()){
-			if(!$prevTid || ($row2->par2 == $prevTid)){
-				$retArr[$i] = $row2->tidaccepted;
-				$prevTid = $row2->tidaccepted;
+			if($row2->rankid && $row2->rankid < $lowestRank){
+				$baseTid = $row2->tidaccepted;
+				$lowestRank = $row2->rankid;
 			}
-			else{
-				$sql3 = 'SELECT tid '.
-					'FROM taxstatus '.
-					'WHERE parenttid = '.$prevTid.' AND taxauthid = '.$this->taxAuthId.' '.
-					'AND tid IN(SELECT parenttid FROM taxaenumtree WHERE tid = '.$tid.' AND taxauthid = '.$this->taxAuthId.') ';
-				//echo "<div>".$sql3."</div>";
-				$rs3 = $this->conn->query($sql3);
-				while($row3 = $rs3->fetch_object()){
-					$retArr[$i] = $row3->tid;
-					$prevTid = $row3->tid;
-				}
-				$rs3->free();
-			}
-			$i++;
+			if($row2->parenttid != $row2->tidaccepted) $parArr[$row2->parenttid] = $row2->tidaccepted;
 		}
 		$rs2->free();
+
+		$retArr[0] = 'root';
+		$retArr[1] = $baseTid;
+		$i = 2;
+		while(isset($parArr[$baseTid])){
+			$baseTid = $parArr[$baseTid];
+			$retArr[$i] = $baseTid;
+			$i++;
+		}
 		if($acceptedTid){
 			$retArr[$i] = $acceptedTid;
 			$i++;
 		}
-		$retArr[$i] = $tid;
+		if($tid) $retArr[$i] = $tid;
 		return $retArr;
 	}
 
 	//Setters and getters
 	public function setTargetStr($target){
-		$this->targetStr = $this->cleanInStr(ucfirst($target));
+		if(is_numeric($target)){
+			$this->targetTid = $target;
+			$sql = 'SELECT sciname FROM taxa WHERE tid = '.$target;
+			$rs = $this->conn->query($sql);
+			while($r = $rs->fetch_object()){
+				$this->targetStr = $r->sciname;
+			}
+			$rs->free();
+		}
+		else $this->targetStr = ucfirst(trim($target));
 	}
 
 	public function setTaxAuthId($id){
