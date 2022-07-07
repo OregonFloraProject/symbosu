@@ -34,7 +34,6 @@ $occurArr = $collManager->getSpecimenMap($pageNumber,$cntPerPage);
 	?>
 	<link href="<?php echo $CSS_BASE_PATH; ?>/collection.css" type="text/css" rel="stylesheet" />
 	<script src="../js/jquery-3.2.1.min.js" type="text/javascript"></script>
-	<script src="../js/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
 	<link href="../js/jquery-ui/jquery-ui.min.css" type="text/css" rel="Stylesheet" />
 	<script type="text/javascript">
 		var urlQueryStr = "<?php echo $searchVar.'&page='.$pageNumber; ?>";
@@ -104,6 +103,12 @@ $occurArr = $collManager->getSpecimenMap($pageNumber,$cntPerPage);
 <?php
 	$displayLeftMenu = (isset($collections_listMenu)?$collections_listMenu:false);
 	include($SERVER_ROOT.'/includes/header.php');
+	?>
+	<script src="../js/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
+	<style>
+		.ui-button, .icon-button {background:  none;}
+	</style>
+	<?php
 	if(isset($collections_listCrumbs)){
 		if($collections_listCrumbs){
 			echo '<div class="navpath">';
@@ -203,7 +208,7 @@ $occurArr = $collManager->getSpecimenMap($pageNumber,$cntPerPage);
 				</div>
 				<div style="clear:both;"></div>
 				<?php
-				$paginationStr = '<div><div style="clear:both;"><hr/></div><div style="float:left;margin:5px;">';
+				$paginationStr = '<div><div style="clear:both;"><hr/></div><div class="pagination" style="float:left;margin:5px;">';
 				$lastPage = (int)($collManager->getRecordCnt() / $cntPerPage) + 1;
 				$startPage = ($pageNumber > 5?$pageNumber - 5:1);
 				$endPage = ($lastPage > $startPage + 10?$startPage + 10:$lastPage);
