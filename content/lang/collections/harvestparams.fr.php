@@ -44,7 +44,7 @@ $LANG['LL_P-RADIUS_KM'] = 'Kilomètres';
 $LANG['LL_P-RADIUS_MI'] = 'Milles';
 $LANG['MAP_AID'] = 'Aide à Cartographie';
 $LANG['COLLECTOR_HEADER'] = 'Critères du Collecteur';
-$LANG['COLLECTOR_LASTNAME'] = 'Nom de Famille du Collectionneur';
+$LANG['COLLECTOR_LASTNAME'] = 'Collectionneur';
 $LANG['TITLE_TEXT_2'] = 'Séparez plusieurs termes par des virgules et des plages par " - " (espace avant et après le tiret requis), par exemple : 3542 3602 3700 - 3750';
 $LANG['COLLECTOR_NUMBER'] = 'Numéro de Collectionneur';
 $LANG['COLLECTOR_DATE'] = 'Date de Collecte';
@@ -59,5 +59,5 @@ $LANG['HAS_GENETIC'] = 'Limiter aux Spécimens avec des Données Génétiques';
 $LANG['HAS_COORDS'] = 'Limiter aux Spécimens avec Géocoordonnées';
 $LANG['INCLUDE_CULTIVATED'] = 'Inclure Occurrences Cultivées/Captives';
 $LANG['TRAIT_HEADER'] = 'Critères de Trait';
-$LANG['TRAIT_DESCRIPTION'] = 'La sélection de plusieurs traits renverra tous les enregistrements avec au moins un de ces traits';
+$LANG['TRAIT_DESCRIPTION'] = 'La sélection de plusieurs traits renverra tous les enregistrements avec <b>au moins un</b> de ces traits';
 ?>

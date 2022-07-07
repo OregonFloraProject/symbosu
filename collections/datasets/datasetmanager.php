@@ -145,10 +145,10 @@ if($isEditor){
         selector: '#description',
         plugins: 'link lists image',
         menubar: '',
-        toolbar: [
-          'undo redo | bold italic underline | link | alignleft aligncenter alignright | formatselect | bullist numlist | indent outdent | blockquote | image',
-        ],
-        branding: false
+		toolbar: [ 'undo redo | bold italic underline | link | alignleft aligncenter alignright | formatselect | bullist numlist | indent outdent | blockquote | image'],
+		branding: false,
+		default_link_target: "_blank",
+		paste_as_text: true
       });
     </script>
 	<script type="text/javascript">
@@ -404,7 +404,7 @@ if($isEditor){
                   <b>Publicly Visible</b>
                   </p>
                   </div>
-									<div>
+                  <div>
 										<p><b>Notes (Internal usage, not displayed publicly)</b></p>
 										<input name="notes" type="text" value="<?php echo $mdArr['notes']; ?>" style="width:70%" />
 									</div>

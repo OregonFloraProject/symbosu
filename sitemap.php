@@ -12,14 +12,7 @@ $smManager = new SiteMapManager();
 	<title><?php echo $DEFAULT_TITLE; ?><?php echo $LANG['SITEMAP'];?></title>
 	<?php
 	$activateJQuery = false;
-	if(file_exists($SERVER_ROOT.'/includes/head.php')){
-		include_once($SERVER_ROOT.'/includes/head.php');
-	}
-	else{
-		echo '<link href="'.$CLIENT_ROOT.'/css/jquery-ui.css" type="text/css" rel="stylesheet" />';
-		echo '<link href="'.$CLIENT_ROOT.'/css/base.css?ver=1" type="text/css" rel="stylesheet" />';
-		echo '<link href="'.$CLIENT_ROOT.'/css/main.css?ver=1" type="text/css" rel="stylesheet" />';
-	}
+	include_once($SERVER_ROOT.'/includes/head.php');
 	include_once($SERVER_ROOT.'/includes/googleanalytics.php');
 	?>
 	<script type="text/javascript">
@@ -36,14 +29,10 @@ $smManager = new SiteMapManager();
 	<?php
 	$displayLeftMenu = (isset($sitemapMenu)?$sitemapMenu:"true");
 	include($SERVER_ROOT.'/includes/header.php');
-	if(isset($sitemapCrumbs)){
-		echo "<div class='navpath'>";
-		echo '<a href="index.php">'.$LANG['HOME'].'</a> &gt; ';
-		echo $sitemapCrumbs;
-		echo " <b>".$LANG['SITEMAP']."</b>";
-		echo "</div>";
-	}
-
+	echo '<div class="navpath">';
+	echo '<a href="index.php">'.$LANG['HOME'].'</a> &gt; ';
+	echo ' <b>'.$LANG['SITEMAP'].'</b>';
+	echo '</div>';
 	?>
 	<!-- This is inner text! -->
 	<div id="innertext">
@@ -63,14 +52,13 @@ $smManager = new SiteMapManager();
 				<li style="margin-left:15px"><a href="collections/datasets/rsshandler.php" target="_blank"><?php echo $LANG['COLLECTIONS_RSS'];?></a></li>
 				<li style="margin-left:15px"><a href="collections/datasets/datapublisher.php"><?php echo $LANG['DARWINCORE'];?></a> - <?php echo $LANG['PUBDATA'];?></li>
 				<?php
-				if(file_exists('webservices/dwc/rss.xml')){
-					echo '<li style="margin-left:15px;"><a href="webservices/dwc/rss.xml" target="_blank">'.$LANG['RSS'].'</a></li>';
-				}
+				$rssPath = $GLOBALS['CLIENT_ROOT'].'/content/dwca/rss.xml';
+				$deprecatedRssPath = $GLOBALS['CLIENT_ROOT'].'/webservices/dwc/rss.xml';
+				if(!file_exists($rssPath) && file_exists($deprecatedRssPath)) $rssPath = $deprecatedRssPath;
+				if(file_exists($rssPath)) echo '<li style="margin-left:15px;"><a href="'.$rssPath.'" target="_blank">'.$LANG['RSS'].'</a></li>';
 				?>
 				<li><a href="collections/misc/protectedspecies.php"><?php echo $LANG['PROTECTED_SPECIES'];?></a> - <?php echo $LANG['LISTOFTAXA'];?></li>
-
 			</ul>
-
 			<div style="margin-top:10px;"><h2><?php echo $LANG['IMGLIB'];?></h2></div>
 			<ul>
 				<li><a href="imagelib/index.php"><?php echo $LANG['IMGLIB'];?></a></li>
@@ -113,11 +101,10 @@ $smManager = new SiteMapManager();
 				<li><a href="checklists/index.php"><?php echo (isset($LANG['ALL_CHECKLISTS'])?$LANG['ALL_CHECKLISTS']:'All Public Checklists'); ?></a></li>
 			</ul>
 
-      <h2><?php echo (isset($LANG['DATASETS'])?$LANG['DATASETS']:'Datasets') ;?></h2>
-      <ul>
-      <li><a href="collections/datasets/publiclist.php">All Publicly Viewable Datasets</a></li>
-      </ul>
-
+			<h2><?php echo (isset($LANG['DATASETS'])?$LANG['DATASETS']:'Datasets') ;?></h2>
+			<ul>
+				<li><a href="collections/datasets/publiclist.php"><?php echo (isset($LANG['ALLPUBDAT'])?$LANG['ALLPUBDAT']:'All Publicly Viewable Datasets') ;?></a></li>
+			</ul>
 			<div style="margin-top:10px;"><h2><?php echo $LANG['DYNAMIC'];?></h2></div>
 			<ul>
 				<li>
@@ -152,10 +139,17 @@ $smManager = new SiteMapManager();
 								</a>
 							</li>
 							<li>
+								<a href="<?php echo $CLIENT_ROOT; ?>/geothesaurus/index.php">
+									<?php echo isset($LANG['GEOTHESAURUS'])?$LANG['GEOTHESAURUS']:'Geographic Thesaurus'; ?>
+								</a>
+							</li>
+							<!--
+							<li>
 								<a href="<?php echo $CLIENT_ROOT; ?>/collections/cleaning/coordinatevalidator.php">
 									<?php echo isset($LANG['COORDVALIDATOR'])?$LANG['COORDVALIDATOR']:'Verify coordinates against political boundaries';?>
 								</a>
 							</li>
+							-->
 							<li>
 								<a href="<?php echo $CLIENT_ROOT; ?>/imagelib/admin/thumbnailbuilder.php">
 									<?php echo $LANG['THUMBNAIL_BUILDER'];?>
@@ -227,7 +221,7 @@ $smManager = new SiteMapManager();
 					<h3><?php echo $LANG['IMAGES'];?></h3>
 					<div style="margin:10px;">
 						<?php echo $LANG['SEESYMBDOC'];?>
-						<a href="https://symbiota.org/docs/image-submission-2/"><?php echo $LANG['IMGSUB'];?></a>
+						<a href="https://biokic.github.io/symbiota-docs/editor/images/"><?php echo $LANG['IMGSUB'];?></a>
 						<?php echo $LANG['FORANOVERVIEW'];?>
 					</div>
 					<ul>
@@ -276,11 +270,10 @@ $smManager = new SiteMapManager();
 						?>
 					</ul>
 
-          <h3><?php echo (isset($LANG['DATASETS'])?$LANG['DATASETS']:'Datasets') ;?></h3>
-          <ul>
-            <li><a href="collections/datasets/index.php">Dataset Management Page</a> - datasets you are authorized to edit</li>
-          </ul>
-
+					<h3><?php echo (isset($LANG['DATASETS'])?$LANG['DATASETS']:'Datasets') ;?></h3>
+					<ul>
+						<li><a href="collections/datasets/index.php"><?php echo (isset($LANG['DATMANPAG'])?$LANG['DATMANPAG']:'Dataset Management Page</a> - datasets you are authorized to edit') ;?></li>
+					</ul>
 					<h3><?php echo $LANG['TAXONPROF'];?></h3>
 					<?php
 					if($IS_ADMIN || array_key_exists("TaxonProfile",$USER_RIGHTS)){
@@ -396,7 +389,7 @@ $smManager = new SiteMapManager();
 					<h3><?php echo $LANG['OBSERV'];?></h3>
 					<div style="margin:10px;">
 						<?php echo $LANG['PARA2'];?>
-						<a href="https://symbiota.org/docs/specimen-data-management/" target="_blank"><?php echo $LANG['SYMBDOCU'];?></a> <?php echo $LANG['FORMOREINFO'];?>.
+						<a href="https://symbiota.org/specimen-data-management/" target="_blank"><?php echo $LANG['SYMBDOCU'];?></a> <?php echo $LANG['FORMOREINFO'];?>.
 					</div>
 					<div style="margin:10px;">
 						<?php
@@ -476,13 +469,10 @@ $smManager = new SiteMapManager();
 				}
 			?>
 			</fieldset>
-
-			<h2><?php echo $LANG['ABOUT'];?></h2>
-			<ul>
-				<li>
-					<?php echo $LANG['SCHEMA'].' '.$smManager->getSchemaVersion(); ?>
-				</li>
-			</ul>
+			<div style="margin: 15px">
+				<div style="margin: 5px"><img src="https://img.shields.io/badge/Symbiota-v<?php echo $CODE_VERSION; ?>-blue.svg" /></div>
+				<div style="margin: 5px"><img src="https://img.shields.io/badge/Schema-<?php echo 'v'.$smManager->getSchemaVersion(); ?>-blue.svg" /></div>
+			</div>
 		</div>
 	</div>
 	<?php

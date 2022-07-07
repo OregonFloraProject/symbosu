@@ -4,8 +4,8 @@ import Searching from "../common/searching.jsx";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faSquare, faMinusCircle } from '@fortawesome/free-solid-svg-icons'
-library.add( faSquare, faMinusCircle );
+import { faSquare } from '@fortawesome/free-solid-svg-icons'
+library.add( faSquare );
 
 
 function SearchResult(props) {
@@ -140,7 +140,6 @@ class GardenSearchContainer extends React.Component {
 }
 
 function ExploreSearchResult(props) {
-//console.log(props);
   const useGrid = props.viewType === "grid";
 	return (
 			<div className={ "card search-result " + (useGrid ? "grid-result" : "list-result") }>
@@ -183,24 +182,7 @@ function ExploreSearchResult(props) {
 											.reduce((prev, curr) => [prev, ', ', curr])
 										}
 										</div>
-								} 
-								{
-									props.isEditable == true && 
-									<span className="taxa-delete">
-										<a 
-											type="button"
-											className="btn"
-											name={ props.sciName }
-											value={ props.sciName }	
-											action={ 'delete' }
-											tid={ props.tid } 				
-											title={ 'Delete from checklist' }
-											onClick={ () => props.storeChange({'action': 'delete','name': props.sciName, 'value': props.tid, 'section': 'spp'})} 
-										>
-											<FontAwesomeIcon icon="minus-circle" />
-										</a>
-									</span>
-								}                        
+								}                         
 							</div>
 						</div>
 					</div>
@@ -208,7 +190,6 @@ function ExploreSearchResult(props) {
 	)
 }
 function ExploreSearchContainer(props) {
-	//console.log(props);
   const useGrid = props.viewType === "grid";
 	if (props.searchResults) {
 		if (props.sortBy === 'taxon') {		
@@ -226,8 +207,6 @@ function ExploreSearchContainer(props) {
 						return (
 							<ExploreSearchResult
 								key={ result.tid }
-								tid={ result.tid }
-								section={ props.section }
 								viewType={ props.viewType }
 								showTaxaDetail={ props.showTaxaDetail }
 								href={ getTaxaPage(props.clientRoot, result.tid) }
@@ -237,8 +216,6 @@ function ExploreSearchContainer(props) {
 								author={ result.author ? result.author : '' }
 								vouchers={  result.vouchers ? result.vouchers : '' }
 								clientRoot={ props.clientRoot }
-								isEditable={ props.isEditable }
-								storeChange={ props.storeChange } 
 							/>
 						)
 					})
@@ -266,7 +243,6 @@ function ExploreSearchContainer(props) {
 											return (
 												<ExploreSearchResult
 													key={ result.tid }
-													tid={ result.tid }
 													viewType={ props.viewType }
 													showTaxaDetail={ props.showTaxaDetail }
 													href={ getTaxaPage(props.clientRoot, result.tid) }
@@ -276,8 +252,6 @@ function ExploreSearchContainer(props) {
 													author={ result.author ? result.author : '' }
 													vouchers={  result.vouchers ? result.vouchers : '' }
 													clientRoot={ props.clientRoot }
-													isEditable={ props.isEditable }
-													storeChange={ props.storeChange } 
 												/>
 											)
 										})
@@ -374,17 +348,9 @@ function IdentifySearchContainer(props) {
 	}
   return <span style={{ display: "none" }}/>;
 }
-
 IdentifySearchContainer.defaultProps = {
   searchResults: [],
 };
-/*
-ExploreSearchResult.defaultProps = {
-	tid: -1,
-	sciName: '',
-	section: ''
-	
-};*/
 
 export { SearchResultContainer, SearchResult, GardenSearchContainer, GardenSearchResult, ExploreSearchResult, ExploreSearchContainer, IdentifySearchResult, IdentifySearchContainer };
 

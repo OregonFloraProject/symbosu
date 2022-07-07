@@ -59,16 +59,16 @@ class FooterApp extends React.Component {
                 4575 SW Research Way Corvallis, OR 97333<br/>
                 <a href="mailto:info@oregonflora.org" target="_blank">info@oregonflora.org</a>
               </p>
-            </div>
+            </div> 
             <div className="col-md symbiota">
-              <a href={ "http://symbiota.org/docs/" } target="_blank"><img
+              <a href={ "https://symbiota.org/" } target="_blank"><img
                 className="d-block mb-2"
                 style={{ width: "10em" }}
-                src={ `${this.props.clientRoot}/images/footer/Symbiota2-logo.png` }
+                src={ `${this.props.clientRoot}/images/footer/LogoSymbiotaPNG.png` }
                 alt="Symbiota logo"
               /></a>
               <p>
-                OregonFlora is built on <a href={ "http://symbiota.org/docs/" } target="_blank"><strong>Symbiota</strong></a>, a collaborative, open source content
+                OregonFlora is built on <a href={ "https://symbiota.org/" } target="_blank"><strong>Symbiota</strong></a>, a collaborative, open source content
                 management system for curating specimen- and observation-based biodiversity data.
               </p>
             </div>

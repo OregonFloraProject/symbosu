@@ -6,7 +6,7 @@ class DwcArchiverImage{
 		$termArr['identifier'] = 'http://purl.org/dc/terms/identifier';
 		$fieldArr['identifier'] = 'IFNULL(i.originalurl,i.url) as identifier';
 		$termArr['accessURI'] = 'http://rs.tdwg.org/ac/terms/accessURI';
-		$fieldArr['accessURI'] = 'IFNULL(i.originalurl,i.url) as accessURI';
+		$fieldArr['accessURI'] = 'IFNULL(NULLIF(i.originalurl,""),i.url) as accessURI';
 		$termArr['thumbnailAccessURI'] = 'http://rs.tdwg.org/ac/terms/thumbnailAccessURI';
 		$fieldArr['thumbnailAccessURI'] = 'i.thumbnailurl as thumbnailAccessURI';
 		$termArr['goodQualityAccessURI'] = 'http://rs.tdwg.org/ac/terms/goodQualityAccessURI';
@@ -15,6 +15,8 @@ class DwcArchiverImage{
 		$fieldArr['rights'] = 'c.rights';
 		$termArr['Owner'] = 'http://ns.adobe.com/xap/1.0/rights/Owner';	//Institution name
 		$fieldArr['Owner'] = 'IFNULL(c.rightsholder,CONCAT(c.collectionname," (",CONCAT_WS("-",c.institutioncode,c.collectioncode),")")) AS owner';
+		$termArr['creator'] = 'http://purl.org/dc/elements/1.1/creator';
+		$fieldArr['creator'] = 'IF(i.photographeruid IS NOT NULL,CONCAT_WS(" ",u.firstname,u.lastname),i.photographer) AS creator';
 		$termArr['UsageTerms'] = 'http://ns.adobe.com/xap/1.0/rights/UsageTerms';	//Creative Commons BY-SA 3.0 license
 		$fieldArr['UsageTerms'] = 'i.copyright AS usageterms';
 		$termArr['WebStatement'] = 'http://ns.adobe.com/xap/1.0/rights/WebStatement';	//http://creativecommons.org/licenses/by-nc-sa/3.0/us/
@@ -37,8 +39,8 @@ class DwcArchiverImage{
 		$fieldArr['subtype'] = '';
 		$termArr['metadataLanguage'] = 'http://rs.tdwg.org/ac/terms/metadataLanguage';	//en
 		$fieldArr['metadataLanguage'] = '';
-		$termArr['imgID'] = 'https://symbiota.org/terms/imgid';	//en
-		$fieldArr['imgID'] = 'i.imgid';
+		$termArr['imgID'] = 'https://symbiota.org/terms/imgID';	//en
+		$fieldArr['imgID'] = 'i.imgID';
 
 		if($schemaType == 'backup') $fieldArr['rights'] = 'i.copyright';
 
@@ -65,6 +67,7 @@ class DwcArchiverImage{
 			$sql = 'SELECT '.trim($sqlFrag,', ').
 				' FROM images i INNER JOIN omoccurrences o ON i.occid = o.occid '.
 				'LEFT JOIN omcollections c ON o.collid = c.collid '.
+				'LEFT JOIN users u ON i.photographeruid = u.uid '.
 				'INNER JOIN guidimages g ON i.imgid = g.imgid ';
 			if(strpos($conditionSql,'ts.taxauthid')){
 				$sql .= 'LEFT JOIN taxstatus ts ON o.tidinterpreted = ts.tid ';
@@ -102,7 +105,6 @@ class DwcArchiverImage{
 				}
 			}
 		}
-		//echo $sql; exit;
 		return $sql;
 	}
 }

@@ -212,7 +212,6 @@ class TaxonomyEditorManager extends Manager{
 	//Edit Functions
 	public function submitTaxonEdits($postArr){
 		$statusStr = '';
-		//Update taxa record
 		$sql = 'UPDATE taxa SET '.
 			'unitind1 = '.($postArr['unitind1']?'"'.$this->cleanInStr($postArr['unitind1']).'"':'NULL').', '.
 			'unitname1 = "'.$this->cleanInStr($postArr['unitname1']).'",'.
@@ -220,7 +219,7 @@ class TaxonomyEditorManager extends Manager{
 			'unitname2 = '.($postArr['unitname2']?'"'.$this->cleanInStr($postArr['unitname2']).'"':'NULL').', '.
 			'unitind3 = '.($postArr['unitind3']?'"'.$this->cleanInStr($postArr['unitind3']).'"':'NULL').', '.
 			'unitname3 = '.($postArr['unitname3']?'"'.$this->cleanInStr($postArr['unitname3']).'"':'NULL').', '.
-			'author = '.($postArr['author']?'"'.$this->cleanInStr($postArr['author']).'"':'NULL').', '.
+			'author = "'.($postArr['author']?$this->cleanInStr($postArr['author']):'').'", '.
 			'rankid = '.(is_numeric($postArr['rankid'])?$postArr['rankid']:'NULL').', '.
 			'source = '.($postArr['source']?'"'.$this->cleanInStr($postArr['source']).'"':'NULL').', '.
 			'notes = '.($postArr['notes']?'"'.$this->cleanInStr($postArr['notes']).'"':'NULL').', '.
@@ -283,8 +282,7 @@ class TaxonomyEditorManager extends Manager{
 		$family = "";$parentTid = 0;
 		$statusStr = '';
 		if(is_numeric($tidAcc)){
-			$sqlFam = 'SELECT ts.family, ts.parenttid '.
-				'FROM taxstatus ts WHERE (ts.tid = '.$this->tid.') AND (ts.taxauthid = '.$this->taxAuthId.')';
+			$sqlFam = 'SELECT ts.family, ts.parenttid FROM taxstatus ts WHERE (ts.tid = '.$this->tid.') AND (ts.taxauthid = '.$this->taxAuthId.')';
 			$rs = $this->conn->query($sqlFam);
 			if($row = $rs->fetch_object()){
 				$family = $row->family;
@@ -296,10 +294,8 @@ class TaxonomyEditorManager extends Manager{
 				$sqlDel = "DELETE FROM taxstatus WHERE (tid = ".$this->tid.") AND (taxauthid = ".$this->taxAuthId.')';
 				$this->conn->query($sqlDel);
 			}
-			$sql = 'INSERT INTO taxstatus (tid,tidaccepted,taxauthid,family,parenttid) '.
-				'VALUES ('.$this->tid.', '.$tidAcc.', '.$this->taxAuthId.','.
-				($family?'"'.$family.'"':"NULL").','.
-				$parentTid.') ';
+			$sql = 'INSERT INTO taxstatus (tid,tidaccepted,taxauthid,family,parenttid,modifiedUid) '.
+				'VALUES ('.$this->tid.', '.$tidAcc.', '.$this->taxAuthId.','.($family?'"'.$family.'"':"NULL").','.$parentTid.','.$GLOBALS['SYMB_UID'].') ';
 			//echo $sql;
 			if(!$this->conn->query($sql)){
 				$statusStr = 'ERROR adding accepted link: '.$this->conn->error;
@@ -537,8 +533,8 @@ class TaxonomyEditorManager extends Manager{
 		$tid = 0;
 		$sqlTaxa = 'INSERT INTO taxa(sciname, author, rankid, unitind1, unitname1, unitind2, unitname2, unitind3, unitname3, '.
 			'source, notes, securitystatus, modifiedUid, modifiedTimeStamp) '.
-			'VALUES ("'.$this->cleanInStr($dataArr['sciname']).'",'.
-			($dataArr['author']?'"'.$this->cleanInStr($dataArr['author']).'"':'NULL').','.
+			'VALUES ("'.$this->cleanInStr($dataArr['sciname']).'","'.
+			($dataArr['author']?$this->cleanInStr($dataArr['author']):'').'",'.
 			($dataArr['rankid']?$dataArr['rankid']:'NULL').','.
 			($dataArr['unitind1']?'"'.$this->cleanInStr($dataArr['unitind1']).'"':'NULL').',"'.
 			$this->cleanInStr($dataArr['unitname1']).'",'.
@@ -581,9 +577,9 @@ class TaxonomyEditorManager extends Manager{
 				}
 
 				//Load new record into taxstatus table
-				$sqlTaxStatus = 'INSERT INTO taxstatus(tid, tidaccepted, taxauthid, family, parenttid, unacceptabilityreason) '.
+				$sqlTaxStatus = 'INSERT INTO taxstatus(tid, tidaccepted, taxauthid, family, parenttid, unacceptabilityreason, modifiedUid) '.
 					'VALUES ('.$tid.','.$tidAccepted.','.$this->taxAuthId.','.($family?'"'.$this->cleanInStr($family).'"':'NULL').','.
-					$parTid.','.($dataArr["unacceptabilityreason"]?'"'.$this->cleanInStr($dataArr["unacceptabilityreason"]).'"':'NULL').') ';
+					$parTid.','.($dataArr["unacceptabilityreason"]?'"'.$this->cleanInStr($dataArr["unacceptabilityreason"]).'"':'NULL').','.$GLOBALS['SYMB_UID'].') ';
 				//echo "sqlTaxStatus: ".$sqlTaxStatus;
 				if(!$this->conn->query($sqlTaxStatus)){
 					return "ERROR: Taxon loaded into taxa, but failed to load taxstatus: ".$this->conn->error.'; '.$sqlTaxStatus;
@@ -1056,17 +1052,30 @@ class TaxonomyEditorManager extends Manager{
 
 	public function getChildren(){
 		$retArr = array();
-		$sql = 'SELECT t.tid, t.sciname, t.author '.
+		$sql = 'SELECT t.tid, t.sciname, t.author, a.tid AS accTid, a.sciname AS accSciname, a.author AS accAuthor '.
 			'FROM taxa t INNER JOIN taxstatus ts ON t.tid = ts.tid '.
+			'INNER JOIN taxa a ON ts.tidaccepted = a.tid '.
 			'WHERE (ts.taxauthid = '.$this->taxAuthId.') AND (ts.parenttid = '.$this->tid.')';
 		$rs = $this->conn->query($sql);
 		while($r = $rs->fetch_object()){
-			$retArr[$r->tid]['name'] = $r->sciname;
+			$retArr[$r->tid]['sciname'] = $r->sciname;
 			$retArr[$r->tid]['author'] = $r->author;
+			$retArr[$r->tid]['accTid'] = $r->accTid;
+			$retArr[$r->tid]['accSciname'] = $r->accSciname;
+			$retArr[$r->tid]['accAuthor'] = $r->accAuthor;
 		}
 		$rs->free();
 		asort($retArr);
 		return $retArr;
+	}
+
+	public function hasAcceptedChildren(){
+		$bool = false;
+		$sql = 'SELECT tid FROM taxstatus WHERE (taxauthid = '.$this->taxAuthId.') AND (parenttid = '.$this->tid.') AND (tid = tidaccepted) LIMIT 1';
+		$rs = $this->conn->query($sql);
+		if($rs->num_rows) $bool = true;
+		$rs->free();
+		return $bool;
 	}
 }
 ?>

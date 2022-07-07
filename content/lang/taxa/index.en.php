@@ -29,9 +29,14 @@ $LANG['EDIT_TAXON_DATA'] = 'Edit Taxon Data';
 $LANG['CHECKLIST'] = 'checklist';
 $LANG['SPECIES_WITHIN'] = 'Species within';
 $LANG['PHOTOGRAPHER'] = 'Photographer';
-$LANG['MAP_NOT_AVAILABLE'] = 'Map not<br />Available';
+$LANG['MAP_NOT_AVAILABLE'] = 'Map not<br/>Available';
+$LANG['RESOURCES'] = 'Resources';
+$LANG['INTERNAL_RESOURCES'] = 'Internal Resources';
+$LANG['OCCURRENCES'] = 'occurrences';
+$LANG['EXTERNAL_RESOURCES'] = 'External Resources';
 $LANG['WEB_LINKS'] = 'Web Links';
 $LANG['VIEW_PARENT'] = 'View Parent Taxon';
 $LANG['NOT_FOUND'] = 'not found';
 $LANG['DID_YOU_MEAN'] = 'Did you mean?';
+$LANG['CALENDAR_TRAIT_PLOT'] = 'Traits Plots';
 ?>

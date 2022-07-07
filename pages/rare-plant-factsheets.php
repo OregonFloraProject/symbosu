@@ -16,12 +16,20 @@ usort($factsheets,function($a,$b) {
 });
 $currIndex = null;
 $indexes = [];
+foreach ($factsheets as $factsheet) {
+	$first = substr(strtolower($factsheet[2]),0,1);#first letter of title
+	if ($first != $currIndex) {
+		$currIndex = $first;
+		$indexes[] = $currIndex;
+	}
+}
+
 
 header( "Content-Type: text/html; charset=" . $charset );
 ?>
 <html>
 <head>
-    <title><?php echo $defaultTitle ?> How to get the most our of our site</title>
+    <title><?php echo $defaultTitle ?> Rare Plant Fact Sheets</title>
     <meta charset="UTF-8">
 		<link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/css/base.css?<?php echo filemtime($SERVER_ROOT . '/css/base.css'); ?>">    
 		<link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/css/main.css?<?php echo filemtime($SERVER_ROOT . '/css/main.css'); ?>">   
@@ -40,7 +48,7 @@ header( "Content-Type: text/html; charset=" . $charset );
 <div class="info-page page2022 rare-plant-factsheets">
     <section id="titlebackground" class="title-publications">
         <div class="inner-content">
-            <h1>Rare Plant Factsheets</h1>
+            <h1>Rare Plant Fact Sheets</h1>
         </div>
     </section>
     <section>
@@ -48,11 +56,23 @@ header( "Content-Type: text/html; charset=" . $charset );
         <!-- .inner-content makes a column max width 1100px, centered in the viewport -->
         <div class="inner-content">
 					<!-- place static page content here. -->
-					<h2>Here are printable factsheets to help identify 156 rare taxa in Oregon. Each has features such as ‘look-alike taxa’, best survey times, and illustrations highlighting important characters. Great for rare plant surveys and made for ease of use!</h2>
-					<p>To download a taxon fact sheet, simply click on its name or its PDF icon. We’ve also included a link to each taxon’s profile page.</p>
+					<h2>Here are printable factsheets to help identify 100 rare taxa in Oregon. Each has features such as ‘look-alike’ species, best survey times, and illustrations highlighting important characters.</h2>
+					<div class="inset index">
+						<?php /* <h3>Index</h3> */ ?>
+						<p><em>Jump to a section:</em></p>
+						<ul>
+						<?php
+							foreach ($indexes as $index) {
+								echo '<li><a href="#index-' .$index  . '" class="btn btn-primary active" role="button" aria-pressed="true">' .$index  . '</a></li>';
+							}
+						?>
+							
+						</ul>
+					</div>
+					<p>To download a rare plant fact sheet, click on the taxon name or its PDF icon. We’ve also included a link to each taxon’s profile page.</p>
 					
 					<div class="row columns">
-						<div id="column-main" class="col-lg-8">
+						<div id="column-main" class="col-lg-12">
 							<ul class="factsheets">
 							<?php
 								foreach ($factsheets as $factsheet) {
@@ -61,7 +81,6 @@ header( "Content-Type: text/html; charset=" . $charset );
 										if ($first != $currIndex) {
 											$currIndex = $first;
 											echo '<a name="index-' . $currIndex . '" class="anchor"></a>';
-											$indexes[] = $currIndex;
 										}
 										echo '<div class="pdf"><a href="https://oregonflora.org' . $factsheet[1] . '" download><img src="../images/Adobe_PDF_file_icon_32x32.png"></a></div>';
 										echo '<div class="taxon-name"><a href="https://oregonflora.org' . $factsheet[1] . '" download>' . $factsheet[2] . '</a></div>';
@@ -73,21 +92,7 @@ header( "Content-Type: text/html; charset=" . $charset );
 							
 							</ul>
 						</div>
-						<div id="column-right" class="col-lg-4">
-							<div class="sidebox inset index">
-								<h3>Index</h3>
-								<p><em>Jump to a section:</em></p>
-								<ul>
-								<?php
-									foreach ($indexes as $index) {
-										echo '<li><a href="#index-' .$index  . '" class="btn btn-primary active" role="button" aria-pressed="true">' .$index  . '</a></li>';
-									}
-								?>
-									
-								</ul>
-							</div>
-		
-						</div>
+
 					</div>  
         </div> <!-- .inner-content -->
     </section>

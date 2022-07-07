@@ -40,10 +40,13 @@ $attribSearch = new OccurrenceAttributeSearch();
 	include($SERVER_ROOT.'/includes/header.php');
 	?>
 	<script src="../js/jquery-3.2.1.min.js?ver=3" type="text/javascript"></script>
-	<script src="../js/jquery-ui-1.12.1/jquery-ui.min.js?ver=3" type="text/javascript"></script>
+	<script src="../js/jquery-ui/jquery-ui.min.js?ver=3" type="text/javascript"></script>
+	<link href="../js/jquery-ui/jquery-ui.min.css" type="text/css" rel="Stylesheet" />
 	<script src="../js/symb/collections.harvestparams.js?ver=180721" type="text/javascript"></script>
 	<script src="../js/symb/collections.traitsearch.js?ver=8" type="text/javascript"></script> <!-- Contains serach-by-trait modifications -->
+	<script src="../js/symb/wktpolygontools.js?ver=1c" type="text/javascript"></script>
 	<script type="text/javascript">
+		var clientRoot = "<?php echo $CLIENT_ROOT; ?>";
 		$(document).ready(function() {
 			<?php
 			if($searchVar){
@@ -55,7 +58,7 @@ $attribSearch = new OccurrenceAttributeSearch();
 			setHarvestParamsForm();
 		});
 	</script>
-	<script src="../js/symb/api.taxonomy.taxasuggest.js?ver=3" type="text/javascript"></script>
+	<script src="../js/symb/api.taxonomy.taxasuggest.js?ver=4" type="text/javascript"></script>
 	<?php
 	if(isset($collections_harvestparamsCrumbs)){
 		if($collections_harvestparamsCrumbs){
@@ -176,7 +179,7 @@ $attribSearch = new OccurrenceAttributeSearch();
 						&nbsp;<a href="#" onclick="openCoordAid('polygon');return false;"><img src="../images/map.png" title="<?php echo (isset($LANG['MAP_AID'])?$LANG['MAP_AID']:'Mapping Aid'); ?>" /></a>
 					</div>
 					<div class="elemDiv">
-						<textarea id="footprintwkt" name="footprintwkt" style="zIndex:999;width:100%;height:90px"></textarea>
+						<textarea id="footprintwkt" name="footprintwkt" onchange="this.value = validatePolygon(this.value)" style="zIndex:999;width:100%;height:90px"></textarea>
 					</div>
 				</div>
 				<div class="coordBoxDiv">
