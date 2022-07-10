@@ -168,11 +168,15 @@ function updateInfo($model) {
 	
 	return $result;
 }
+function rewriteSPP() {
+
+
+}
+
 function updateSPP() {
 	$result = [];
 	$success = 0;
 	$error = 0;
-	
 	if (array_key_exists("spp", $_GET) && array_key_exists("action", $_GET) ) {
 		if ($_GET['action'] == 'add') {
 			foreach ($_GET['spp'] as $tid) {
@@ -224,6 +228,43 @@ function updateSPP() {
 				$success++;
 			}
 		}
+	}elseif($_GET['action'] == 'rewrite') {
+			$CLID_GARDEN_ALL = 54;
+			$arr = json_decode( preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $_GET['upload']), true );
+			#var_dump($arr);
+			$newArr = [];
+			#compile verified list to update, then delete existing, then add new
+			#more forgiving of empty columns in csv
+			#standardize formatting
+			#join on natives checklist
+			$em = SymbosuEntityManager::getEntityManager();
+			$q = $em->createQueryBuilder();
+			foreach ($arr as $obj) {
+				echo $obj['sciname'] . ":<br>";
+				
+				$sciNameResults = $em->createQueryBuilder()
+					->select("t.sciname as text, t.tid as value")
+					->from("Taxa", "t")
+    			->innerJoin("Fmchklsttaxalink", "tl", "WITH", "t.tid = tl.tid")
+			    ->where("tl.clid = $CLID_GARDEN_ALL")
+					->andWhere("t.sciname LIKE :search")
+					#->andWhere("t.rankid > $RANK_GENUS")
+					#->groupBy("t.tid")
+					->setParameter("search",  "%" . $obj['sciname'] . '%')
+					#->setParameter("omit",$omit)
+					->setMaxResults(3)
+					->getQuery()
+					->getArrayResult();
+					
+				#usort($sciNameResults, function ($a, $b) {
+				#	return strcmp($a["text"], $b["text"]);
+				#});
+				var_dump($sciNameResults);
+				echo "<br>";
+				#$em->flush();
+  			#exit;
+			}
+			exit;
 	}
 	$result = [
 		"success" => $success

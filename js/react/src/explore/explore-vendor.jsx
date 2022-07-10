@@ -94,6 +94,7 @@ class ExploreApp extends React.Component {
     this.updateField = this.updateField.bind(this);
     this.updateSPP = this.updateSPP.bind(this);
     this.updateSection = this.updateSection.bind(this);
+    this.handleSPPlist = this.handleSPPlist.bind(this);
     
   }
 
@@ -149,6 +150,18 @@ class ExploreApp extends React.Component {
     },function() {
 			//console.log(this.state.updatedData);
     });
+	}
+	handleSPPlist(arr) {
+		console.log(arr);
+		let url = `${this.props.clientRoot}/checklists/rpc/api.php`;
+		let mapParams = new URLSearchParams();
+		mapParams.append('update','spp');
+		mapParams.append('action','rewrite');
+		mapParams.append('pid',this.props.pid);
+		mapParams.append('clid',this.props.clid);
+		mapParams.append('upload',JSON.stringify(arr));
+		url += '?' + mapParams.toString();
+		console.log(url);
 	}
 	
 	updateSPP(obj) {
@@ -508,7 +521,7 @@ class ExploreApp extends React.Component {
   	var infoSubmitValue = 'Update Info';//(this.state.isUpdating['info']? 'Updating' : 'Update Info');
   	var infoSubmitClass = "btn-primary " + (this.state.isUpdating['info']? 'updating' : 'normal');
 		let suggestionUrl = `${this.props.clientRoot}/garden/rpc/autofillsearch.php`;
-		
+		//console.log(this.state.searchResults);
     return (
     <div className="wrapper">
 			<Loading 
@@ -725,6 +738,7 @@ class ExploreApp extends React.Component {
 							spp={ this.state.updatedData.spp }
 							updateChange={this.updateField } 
 							storeChange={this.updateSPP } 
+							updateSPPlist={this.handleSPPlist}
 						/>
 						
 					}
@@ -732,6 +746,7 @@ class ExploreApp extends React.Component {
 					<div className="col-12 col-xl-8 col-md-7 results-wrapper">
 						<div className="row">
 							<div className="col">
+							{/*
 								<div className="explore-header inventory-header">
 									<div className="current-wrapper">
 										<div className="btn btn-primary current-button" role="button"><FontAwesomeIcon icon="list-ul" /> Explore</div>
@@ -751,6 +766,7 @@ class ExploreApp extends React.Component {
 										</a>
 									</div>
 								</div>
+								*/ }
 									<ExploreSearchContainer
 										searchResults={ this.state.searchResults }
 										viewType={ this.state.viewType }

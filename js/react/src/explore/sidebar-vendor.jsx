@@ -1,5 +1,5 @@
 import React from "react";
-
+import Papa from "papaparse"; 
 //import HelpButton from "../common/helpButton.jsx";
 import {SearchWidget} from "../common/search.jsx";
 //import ViewOpts from "./viewOpts.jsx";
@@ -16,16 +16,32 @@ class SideBarVendor extends React.Component {
   constructor(props) {
     super(props);
     this.state = { 
-			section: props.section
+			section: props.section,
+			file: null
 		};
     //this.updateChange = this.props.updateChange.bind(this);
     this.storeChange = this.props.storeChange.bind(this);
+    this.handleUpload = this.handleUpload.bind(this);
   }
   handleAddSPP(e) {
 		let obj = {'action': e.target.getAttribute('action'),'name': e.target.name, 'value': e.target.getAttribute("tid"), 'section': e.target.getAttribute("section")};
 		this.storeChange(obj);
   }
-
+  handleUpload(e) {
+	  //console.log(event.target.files[0]);
+	  let updateSPPlist = this.props.updateSPPlist;
+	  Papa.parse(event.target.files[0], {
+      header: true,
+      skipEmptyLines: true,
+      complete: function (results) {
+      	if (results.meta.fields.indexOf('sciname') != -1) {
+	        updateSPPlist(results.data);
+	      }else{
+	      	//msg that first row must contain sciname
+	      }
+      },
+    });
+  }
 
   render() {
   
@@ -82,6 +98,21 @@ class SideBarVendor extends React.Component {
 				</div>
 		  		<div className="filter-tools">
 				  <h3 className="container">Manage plants</h3>
+				  
+				  {
+				  	<div className="file-upload">
+					  	<form>
+					  		<input 
+					  			name="vendor-upload"
+					  			type="file" 
+					  			accept=".csv"
+					  			onChange={this.handleUpload}
+					  		/>
+					  		<button type="submit">Upload</button>
+					  	</form>
+					  </div>
+				
+				  }
 
 					{
 					<SearchWidget
