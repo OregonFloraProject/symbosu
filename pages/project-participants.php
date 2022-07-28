@@ -74,8 +74,8 @@ function obfuscate($email) {
         <div class="inner-content">
         <!-- place static page content here. -->
             <h2>Project Partners</h2>
-		<p>The <a href="http://npsoregon.org/"  target="_blank">Native Plant Society of Oregon (NPSO)</a> has been a sponsor of OregonFlora since the project’s inception in 1994. The Society and its chapters provide financial support and promote the exchange of plant observation data and photographs.</p>
-		<p>Our close ties with the <a href="https://bpp.oregonstate.edu/herbarium"  target="_blank">OSU Herbarium</a> are mutually beneficial — the Herbarium excels as a dynamic resource with exceptional depth in its Oregon collections, and OregonFlora enhances their value with careful taxonomic analysis and digital presentation within the context of the OregonFlora tools.</p>
+		<p>The <a href="http://npsoregon.org/"  target="_blank">Native Plant Society of Oregon (NPSO)</a> has been a sponsor of OregonFlora since the project's inception in 1994. The Society and its chapters provide financial support and promote the exchange of plant observation data and photographs.</p>
+		<p>Our close ties with the <a href="https://bpp.oregonstate.edu/herbarium"  target="_blank">OSU Herbarium</a> are mutually beneficial - the Herbarium excels as a dynamic resource with exceptional depth in its Oregon collections, and OregonFlora enhances their value with careful taxonomic analysis and digital presentation within the context of the OregonFlora tools.</p>
 		<p><a href="https://oregonmetro.gov/garden"  target="_blank">Metro</a> and its partners in the Northwest Adult Conservation Educators (NW-ACE) working group have led the development and support of the Grow Natives section of this website. These groups conceived and developed the foundation of this tool and have assisted in its launching.</p>
 		<p>Primary members/contributors of NW-ACE are: <a href="https://backyardhabitats.org/"  target="_blank">Backyard Habitat Certification Program</a>, City of Gresham, City of Portland, <a href="https://www.cleanwaterservices.org/" target="_blank">Clean Water Services</a>, <a href="https://emswcd.org/in-your-yard/" target="_blank">East Multnomah Soil & Water Conservation District</a>, <a href="https://tualatinswcd.org" target="_blank">Tualatin Soil & Water Conservation District</a>, and <a href="https://wmswcd.org"target="_blank">West Multnomah Soil & Water Conservation District</a>.</p>
 		<p>This website uses the Symbiota platform with customized modules. Our website is hosted at the College of Science Information Network (COSINe) at Oregon State University.</p>
@@ -106,7 +106,7 @@ function obfuscate($email) {
 			<p>Brandy Deliguin</p>
 			<p>Tanya Einhorn</p>
 			<p>Julia Metzler (MS student, Dept. Botany)</p>
-			<p>Amadeo Ramos</p>
+			<p>Amadeo Ramos Jr.</p>
 			<p>Jessica Tuson</p>
 			<br>	
 			
@@ -116,6 +116,7 @@ function obfuscate($email) {
 			<p>Gerald Carr</p>
 			<p>Kenton Chambers</p>
 			<p>Christian Feuillet</p>
+			<p>Dayne Galash</p>
 			<p>Richard Halse</p>
 			<p>George Kral</p>
 			<p>James Mickley</p>
