@@ -106,7 +106,7 @@ function obfuscate($email) {
 			<p>Brandy Deliguin</p>
 			<p>Tanya Einhorn</p>
 			<p>Julia Metzler (MS student, Dept. Botany)</p>
-			<p>Amadeo Ramos</p>
+			<p>Amadeo Ramos Jr.</p>
 			<p>Jessica Tuson</p>
 			<br>	
 			
@@ -116,6 +116,7 @@ function obfuscate($email) {
 			<p>Gerald Carr</p>
 			<p>Kenton Chambers</p>
 			<p>Christian Feuillet</p>
+			<p>Dayne Galash</p>
 			<p>Richard Halse</p>
 			<p>George Kral</p>
 			<p>James Mickley</p>
