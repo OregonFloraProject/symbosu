@@ -616,20 +616,20 @@ else{
 						</tr>
 						<tr>
 							<td style="width: 50%;">
-								<div id="exchangetrue" class="box"><?php if($loanType == "exchange" && $invoiceArr['invoicebalance'] > 0) echo 'X'; ?></div>
+								<div id="exchangetrue" class="box"><?php if($loanType == "exchange" && $invoiceArr['totalexmounted'] + $invoiceArr['totalexunmounted'] > 0) echo 'X';?></div>
 								Exchange
 							</td>
 							<td>
-								<?php if($loanType == "exchange" && $invoiceArr['invoicebalance'] > 0) echo $addressArr['institutioncode'].' Transaction ID: <strong>'.$invoiceArr['identifier'] . '</strong>'; ?>
+								<?php if($loanType == "exchange" && $invoiceArr['totalexmounted'] + $invoiceArr['totalexunmounted'] > 0) echo $addressArr['institutioncode'].' Transaction ID: <strong>'.$invoiceArr['identifier'] . '</strong>'; ?>
 							</td>
 						</tr>
 						<tr>
 							<td>
-								<div class="box"><?php if($loanType == "exchange" && $invoiceArr['invoicebalance'] == 0) echo 'X'; ?></div>
+								<div class="box"><?php if($loanType == "exchange" && $invoiceArr['totalgift'] + $invoiceArr['totalgiftdet'] > 0) echo 'X'; ?></div>
 								Gift
 							</td>
 							<td>
-								<?php if($loanType == "exchange" && $invoiceArr['invoicebalance'] == 0) echo $addressArr['institutioncode'].' Transaction ID: <strong>'.$invoiceArr['identifier'] . '</strong>'; ?>
+								<?php if($loanType == "exchange" && $invoiceArr['totalexmounted'] + $invoiceArr['totalexunmounted'] == 0) echo $addressArr['institutioncode'].' Transaction ID: <strong>'.$invoiceArr['identifier'] . '</strong>'; ?>
 							</td>
 						</tr>
 						<tr>
@@ -675,9 +675,7 @@ else{
 					<div class="description">DESCRIPTION OF SPECIMENS</div>
 					<?php
 
-					// Loan recipient
-					if(array_key_exists('forwhom',$invoiceArr) && $invoiceArr['forwhom']) echo '<div>Loan for study by ' . $invoiceArr['forwhom'] . '</div>';
-
+					
 					// Description
 					if($invoiceArr['description']) {
 						
@@ -688,7 +686,9 @@ else{
 						// Add description
 						echo '<div>' . $invoiceArr['description'] . '</div>';
 					}
-					
+
+					// Loan recipient
+					if(array_key_exists('forwhom',$invoiceArr) && $invoiceArr['forwhom']) echo '<div>Loan for study by ' . $invoiceArr['forwhom'] . '</div>';
 
 					// Additional message
 					if(array_key_exists('invoicemessage',$invoiceArr) || array_key_exists('invoicemessageown',$invoiceArr) || array_key_exists('invoicemessageborr',$invoiceArr)){
