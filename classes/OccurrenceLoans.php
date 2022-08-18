@@ -714,7 +714,7 @@ class OccurrenceLoans extends Manager{
 		$retArr = array();
 		if(is_numeric($id)){
 			if($loanType == 'exchange'){
-				$sql = 'SELECT e.exchangeid, e.identifier, e.iid, '.
+				$sql = 'SELECT e.exchangeid, e.identifier, e.iid, e.datesent, '.
 					'e.totalboxes, e.shippingmethod, e.totalexmounted, e.totalexunmounted, e.totalgift, e.totalgiftdet, '.
 					'e.invoicebalance, e.invoicemessage, e.description, i.contact, i.institutionname, i.institutionname2, '.
 					'i.institutioncode, i.address1, i.address2, i.city, i.stateprovince, i.postalcode, i.country '.
@@ -725,6 +725,7 @@ class OccurrenceLoans extends Manager{
 						$retArr['exchangeid'] = $r->exchangeid;
 						$retArr['identifier'] = $r->identifier;
 						$retArr['iid'] = $r->iid;
+						$retArr['datesent'] = $r->datesent;
 						$retArr['totalboxes'] = $r->totalboxes;
 						$retArr['shippingmethod'] = $r->shippingmethod;
 						$retArr['totalexmounted'] = $r->totalexmounted;
@@ -792,8 +793,8 @@ class OccurrenceLoans extends Manager{
 	public function getFromAddress($collid){
 		$retArr = array();
 		if(is_numeric($collid)){
-			$sql = 'SELECT i.institutionname, i.institutionname2, i.phone, '.
-				'i.institutioncode, i.address1, i.address2, i.city, i.stateprovince, i.postalcode, i.country '.
+			$sql = 'SELECT i.institutionname, i.institutionname2, i.phone, i.url, '.
+				'i.institutioncode, i.address1, i.address2, i.city, i.stateprovince, i.postalcode, i.country, o.icon '.
 				'FROM omcollections o INNER JOIN institutions i ON o.iid = i.iid '.
 				'WHERE o.collid = '.$collid;
 			if($rs = $this->conn->query($sql)){
@@ -801,6 +802,7 @@ class OccurrenceLoans extends Manager{
 					$retArr['institutionname'] = $r->institutionname;
 					$retArr['institutionname2'] = $r->institutionname2;
 					$retArr['phone'] = $r->phone;
+					$retArr['url'] = $r->url;
 					$retArr['institutioncode'] = $r->institutioncode;
 					$retArr['address1'] = $r->address1;
 					$retArr['address2'] = $r->address2;
@@ -808,6 +810,7 @@ class OccurrenceLoans extends Manager{
 					$retArr['stateprovince'] = $r->stateprovince;
 					$retArr['postalcode'] = $r->postalcode;
 					$retArr['country'] = $r->country;
+					$retArr['icon'] = $r->icon;
 				}
 				$rs->free();
 			}
