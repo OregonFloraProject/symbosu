@@ -230,6 +230,7 @@ else{
 		.fieldDiv{ float:left; margin-right: 20px}
 		#innertext{ background-color: white; margin: 0px 10px; }
 		.editimg{ width: 15px; }
+		button, input, fieldset, form div {all: revert;} /* revert OregonFlora styles in the queryform */
 	</style>
 </head>
 <body style="margin-left: 0px; margin-right: 0px;background-color:white;">
