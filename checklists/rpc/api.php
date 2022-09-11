@@ -1,13 +1,15 @@
 <?php
 include_once("../../config/symbini.php");
-
+if (empty($CLIENT_ROOT)) {#I don't know why this is empty
+	$CLIENT_ROOT = '/';
+}
 include_once("$SERVER_ROOT/config/SymbosuEntityManager.php");
 include_once("$SERVER_ROOT/classes/Functional.php");
 include_once("$SERVER_ROOT/classes/ExploreManager.php");
 include_once("$SERVER_ROOT/classes/InventoryManager.php");
 include_once("$SERVER_ROOT/classes/TaxaManager.php");
 include_once("$SERVER_ROOT/classes/IdentManager.php");
-
+		
 $result = [];
 
 function getEmpty() {
@@ -109,11 +111,11 @@ function buildDynResult($dynclid) {
 		$identManager = new IdentManager();
 		$identManager->setDynClid($dynclid);
 	
-		if (	array_key_exists("search", $_GET) && !empty($_GET["search"])	) {
-			$identManager->setSearchTerm($_GET["search"]);
+		if (	array_key_exists("search", $_REQUEST) && !empty($_REQUEST["search"])	) {
+			$identManager->setSearchTerm($_REQUEST["search"]);
 			//$identManager->setIDsOnly(true);
-			if (	array_key_exists("name", $_GET) && !empty($_GET["name"])	) {
-				$identManager->setSearchName($_GET["name"]);			
+			if (	array_key_exists("name", $_REQUEST) && !empty($_REQUEST["name"])	) {
+				$identManager->setSearchName($_REQUEST["name"]);			
 			}			
 		}
 
@@ -155,8 +157,8 @@ function updateInfo($model) {
 	$success = 0;
 	$error = 0;
 	foreach ($fields as $field => $function) {
-		if (isset($_GET[$field]) && method_exists($model,$function)) {
-			$model->$function($_GET[$field]);
+		if (isset($_REQUEST[$field]) && method_exists($model,$function)) {
+			$model->$function($_REQUEST[$field]);
 			$success++;
 		}
 	}
@@ -173,13 +175,34 @@ function rewriteSPP() {
 
 }
 
+function SPPtoCSV($results) {
+	global $CLIENT_ROOT, $SERVER_ROOT;
+	
+	$url = '';
+	if (sizeof($results)) {
+		$url = $CLIENT_ROOT . 'temp/downloads/vendor/' . uniqid() . '.csv';
+		#var_dump($CLIENT_ROOT);exit;
+		$filename = $SERVER_ROOT . $url;
+		$fp = fopen($filename, 'w');
+		if ($fp) {
+			fputcsv($fp,["Your sciname","Result","OF sciname","Feedback"]);
+			foreach ($results as $result) {
+				$temp = [$result['searchSciname'],$result['code'],$result['OFsciname'],join("; ",$result['feedback'])];
+				fputcsv($fp, $temp);
+			}
+			fclose($fp);
+		}
+	}
+	return $url;
+}
+
 function updateSPP() {
 	$result = [];
 	$success = 0;
 	$error = 0;
-	if (array_key_exists("spp", $_GET) && array_key_exists("action", $_GET) ) {
-		if ($_GET['action'] == 'add') {
-			foreach ($_GET['spp'] as $tid) {
+	if (array_key_exists("spp", $_REQUEST) && array_key_exists("action", $_REQUEST) ) {
+		if ($_REQUEST['action'] == 'add') {
+			foreach ($_REQUEST['spp'] as $tid) {
 				try {
 					/*
 						merge will be deprecated in future versions.  
@@ -190,7 +213,7 @@ function updateSPP() {
   				$em = SymbosuEntityManager::getEntityManager();
 					$repo = new Fmchklsttaxalink();
 					$repo->setTid($tid);
-					$repo->setClid($_GET['clid']);
+					$repo->setClid($_REQUEST['clid']);
 					$repo->setInitialtimestamp(new \DateTime());
 					$em->merge($repo);#persist
 					$em->flush();
@@ -200,75 +223,225 @@ function updateSPP() {
 					#SymbosuEntityManager::resetManager();
 				}
 			}
-		}elseif($_GET['action'] == 'delete') {
-			foreach ($_GET['spp'] as $tid) {
+		}elseif($_REQUEST['action'] == 'delete') {
+			foreach ($_REQUEST['spp'] as $tid) {
   			$em = SymbosuEntityManager::getEntityManager();
   			$repo = $em->getRepository("Fmchklsttaxalink");
 				$link = $repo->find([
 					'tid' => $tid,
-					'clid' => $_GET['clid'],
+					'clid' => $_REQUEST['clid'],
 					'morphospecies' => ''
 				]);
 				$em->remove($link);
 				$em->flush();
 				$success++;
 			}
-		}elseif($_GET['action'] == 'edit') {
-			if (!empty($_GET['spp']) && !empty($_GET['notes'])) {
+		}elseif($_REQUEST['action'] == 'edit') {
+			if (!empty($_REQUEST['spp']) && !empty($_REQUEST['notes'])) {
   			$em = SymbosuEntityManager::getEntityManager();
   			$repo = $em->getRepository("Fmchklsttaxalink");
 				$link = $repo->find([
-					'tid' => $_GET['spp'],
-					'clid' => $_GET['clid'],
+					'tid' => $_REQUEST['spp'],
+					'clid' => $_REQUEST['clid'],
 					'morphospecies' => ''
 				]);
-				$link->setNotes($_GET['notes']);
+				$link->setNotes($_REQUEST['notes']);
 				$em->merge($link);#persist
 				$em->flush();
 				$success++;
 			}
 		}
-	}elseif($_GET['action'] == 'rewrite') {
+	}elseif($_REQUEST['action'] == 'rewrite') {
 			$CLID_GARDEN_ALL = 54;
-			$arr = json_decode( preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $_GET['upload']), true );
-			#var_dump($arr);
-			$newArr = [];
+			$RANK_GENUS = 180;
+			
+			
+			$acceptedNativities = [
+				"endemic to Oregon",
+				"native",
+				"native and exotic",
+				"native?"
+			];
+			$arr = json_decode( preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $_REQUEST['upload']), true );
+			#var_dump($arr);exit;
+			$firstArr = [];
 			#compile verified list to update, then delete existing, then add new
 			#more forgiving of empty columns in csv
 			#standardize formatting
 			#join on natives checklist
 			$em = SymbosuEntityManager::getEntityManager();
+			$expr = $em->getExpressionBuilder();
 			$q = $em->createQueryBuilder();
-			foreach ($arr as $obj) {
-				echo $obj['sciname'] . ":<br>";
+			foreach ($arr as $key => $obj) {
+				$temp = [];
+				$temp['sciname'] = $obj['sciname'];
+				$temp['notes'] = [];
+				if (isset($obj['notes'])) {
+					$temp['notes'][] = $obj['notes'];
+				}
+				$searchSciname = $obj['sciname'];
+				$searchSciname = str_replace("subsp.","ssp.",$searchSciname);
+				$temp['searchSciname'] = $searchSciname;
+				#$searchParts = explode(' ',$searchSciname);
+				#$searchTerm = '%' . join('% %',$searchParts) .'%';
+				$searchTerm = '%' . $searchSciname .'%';
 				
-				$sciNameResults = $em->createQueryBuilder()
-					->select("t.sciname as text, t.tid as value")
+				#echo $obj['sciname'] . ":<br>";
+				#echo $searchTerm;
+				
+				$sciNameQuery = $em->createQueryBuilder()
+					->select("t.sciname as text", "t.tid as value","ts.tidaccepted","tl.clid","tl.nativity")
 					->from("Taxa", "t")
+			    ->innerJoin("Taxstatus", "ts", "WITH", "t.tid = ts.tid")
     			->innerJoin("Fmchklsttaxalink", "tl", "WITH", "t.tid = tl.tid")
-			    ->where("tl.clid = $CLID_GARDEN_ALL")
-					->andWhere("t.sciname LIKE :search")
-					#->andWhere("t.rankid > $RANK_GENUS")
+			    ->where("tl.clid = 1")
+					#->andWhere("t.sciname LIKE :search")
+					->andWhere(
+						$expr->orX(
+							$expr->eq("t.sciname",":search"),
+							$expr->like("t.sciname",":search"),
+						)
+					)
+					->andWhere("t.rankid > $RANK_GENUS")
+					->orderBy('LOCATE(:searchTermLocate,t.sciname)')#put exact match first - https://stackoverflow.com/questions/52052712/select-exact-match-first-in-doctrine-query-builder
 					#->groupBy("t.tid")
-					->setParameter("search",  "%" . $obj['sciname'] . '%')
+					->setParameter("search",  $searchTerm)
+					->setParameter("searchTermLocate",$searchSciname)#without %%
 					#->setParameter("omit",$omit)
-					->setMaxResults(3)
-					->getQuery()
-					->getArrayResult();
+					#->setMaxResults(3)
+					->getQuery();
+					
+				$sciNameResults = $sciNameQuery->getArrayResult();
 					
 				#usort($sciNameResults, function ($a, $b) {
 				#	return strcmp($a["text"], $b["text"]);
 				#});
-				var_dump($sciNameResults);
-				echo "<br>";
+							
+				$temp['results'] = $sciNameResults;
+				$temp['query'] = $sciNameQuery;
+				$temp['tid'] = null;
+				$temp['tidaccepted'] = null;
+				$temp['code'] = null;
+				$temp['feedback'] = [];
+				
+				#initially set codes, to be tweaked below
+				if(sizeof($sciNameResults) == 0) {
+					$temp['code'] = 'Unrecognized';
+				}elseif ($sciNameResults[0]['tidaccepted'] === $sciNameResults[0]['value']) {
+					$temp['code'] = 'Accepted';
+					$temp['tid'] = $sciNameResults[0]['value'];
+					$temp['tidaccepted'] = $sciNameResults[0]['value'];
+				}else {
+					$temp['code'] = 'Synonym';
+					$temp['tid'] = $sciNameResults[0]['value'];
+					$temp['tidaccepted'] = $sciNameResults[0]['tidaccepted'];
+					$temp['feedback'][] = 'This is a synonym for another species (see Oregon Flora sciname)';
+				}
+				#check for ambiguous - Mimulus guttatus, Convolvulus sepium
+				if ($temp['tid'] != $temp['tidaccepted']) {
+					$tidaccepteds = [];
+					foreach ($sciNameResults as $res) {
+						$tidaccepteds[$res['tidaccepted']] = null;
+					}
+					if (sizeof($tidaccepteds) > 1) {
+						$temp['code'] = 'Ambiguous';
+					}
+				}						
+				
+				if ($obj['sciname'] !== $searchSciname) {#we changed it
+					$temp['feedback'][] = 'OregonFlora uses ssp. instead of subsp.';
+				}
+				
+				
+				$firstArr[] = $temp;
+				#echo "<br>";
 				#$em->flush();
   			#exit;
 			}
-			exit;
+			
+			#var_dump($firstArr);exit;
+			
+			$tids = [];#uses key from $firstArr
+			foreach ($firstArr as $key => $entry) {
+				if ($entry['code'] == 'Accepted') {#put on list so we can check for dupes
+					if (	($this_key = array_search($entry['tid'],$tids)) != false) {#duplicate tid
+						if (isset($entry['notes'])) {
+							$firstArr[$this_key]['notes'][]  = $entry['notes'];#copy notes to first tid match
+						}
+						$firstArr[$key]['feedback'][]  = 'This is a duplicate entry for ' . $firstArr[$this_key]['sciname'] . ' and will be removed';
+						$firstArr[$key]['code'] = 'Duplicate';
+					}else{
+						$tids[$key] = $entry['tid'];
+					}
+				}
+				
+				if ($entry['code'] == 'Unrecognized') {#do another query to check for x
+					$parts = explode(" ",$entry['sciname']);
+					array_splice($parts,1,0,'x');
+					$secondQuery = $entry['query'];
+					$firstArr[$key]['searchSciname'] = join(' ',$parts);
+					$secondQuery->setParameter("search", $firstArr[$key]['searchSciname']);
+					$secondResults = $secondQuery->getArrayResult();
+					if (sizeof($secondResults) > 0) {
+			
+						$firstArr[$key]['results'] = $secondResults;
+						if ($secondResults[0]['tidaccepted'] === $secondResults[0]['value']) {
+							$firstArr[$key]['code'] = 'Accepted';
+							$firstArr[$key]['tid'] = $secondResults[0]['value'];
+							$firstArr[$key]['tidaccepted'] = $secondResults[0]['value'];
+						}else {
+							$firstArr[$key]['code'] = 'Synonym';
+							$firstArr[$key]['tid'] = $secondResults[0]['value'];
+							$firstArr[$key]['tidaccepted'] = $secondResults[0]['tidaccepted'];
+						}
+					}
+				}
+			}
+			
+			$taxaRepo = $em->getRepository("Taxa");
+			#make another pass now that $tids is fully populated
+			foreach ($firstArr as $key => $entry) {
+				if ($entry['code'] == 'Synonym') {#catch synonym dupes
+					if (	($this_key = array_search($entry['tidaccepted'],$tids)) != false) {#synonym is duplicated elsewhere as perfect match
+						if (isset($entry['notes'])) {
+							$firstArr[$this_key]['notes'][]  = $entry['notes'];#copy notes to first tid match
+						}
+						$firstArr[$key]['feedback'][]  = 'This is a duplicate entry for ' . $firstArr[$this_key]['sciname'] . ' and will be removed';
+						$firstArr[$key]['code'] = 'Duplicate';
+					}
+				}
+				#set vars and check nativity
+				if ($firstArr[$key]['code'] == 'Synonym' || $firstArr[$key]['code'] == 'Accepted') {
+					#$firstArr[$key]['OFsciname'] = $firstArr[$key]['results'][0]['text'];
+  				$taxaModel = $taxaRepo->find($entry['tidaccepted']);
+  				$taxa = TaxaManager::fromModel($taxaModel);
+  				$firstArr[$key]['OFsciname'] = $taxa->getSciname();
+  				
+					if (!in_array($firstArr[$key]['results'][0]['nativity'],$acceptedNativities)) {#check nativity
+						$firstArr[$key]['feedback'][]  = 'This is not a native Oregon plant species';
+						$firstArr[$key]['code'] = 'Non-native';
+					}
+				}		
+			}
+			foreach ($firstArr as $key => $entry) {
+				unset($firstArr[$key]['query']);#removing for debugging
+			}
+			#var_dump($firstArr);
+			#echo "Submitted sciname" . "\t" . "Result" . "\t" . "Oregon flora sciname" . "\t" . "Feedback" . "\n";
+			#foreach ($firstArr as $arr) {
+			#	echo $arr['sciname'] . "\t" . $arr['code'] . "\t" . $arr['OFsciname'] . "\t" . join(", ",$arr['feedback']) . "\n";
+			#}
+			#exit;
 	}
+	
+	$csvURL = SPPtoCSV($firstArr);
+	
 	$result = [
-		"success" => $success
+		"status" => (sizeof($firstArr)? "success" : 'notfound'),
+		"results" => $firstArr,
+		"csvURL"		=> $csvURL
 	];
+	#$result = $firstArr;
 	#var_dump($result);
 	#exit;
 	return $result;
@@ -276,22 +449,22 @@ function updateSPP() {
 
 $result = [];
 
-if (array_key_exists("clid", $_GET) && is_numeric($_GET["clid"])&& array_key_exists("pid", $_GET) && is_numeric($_GET["pid"])) {
+if (array_key_exists("clid", $_REQUEST) && is_numeric($_REQUEST["clid"])&& array_key_exists("pid", $_REQUEST) && is_numeric($_REQUEST["pid"])) {
   $em = SymbosuEntityManager::getEntityManager();
   $repo = $em->getRepository("Fmchecklists");
-  $model = $repo->find($_GET["clid"]);
+  $model = $repo->find($_REQUEST["clid"]);
   $checklist = ExploreManager::fromModel($model);
-  if ($_GET["pid"] > -1) {
-	  $checklist->setPid($_GET["pid"]);
+  if ($_REQUEST["pid"] > -1) {
+	  $checklist->setPid($_REQUEST["pid"]);
 	}
   
-  if (array_key_exists("update", $_GET)) {
+  if (array_key_exists("update", $_REQUEST)) {
   
-		if($IS_ADMIN || (array_key_exists("ClAdmin",$USER_RIGHTS) && in_array($_GET["clid"],$USER_RIGHTS["ClAdmin"]))){
+		if($IS_ADMIN || (array_key_exists("ClAdmin",$USER_RIGHTS) && in_array($_REQUEST["clid"],$USER_RIGHTS["ClAdmin"]))){
 			$isEditor = true;
 		}
 		if ($isEditor) {
-			switch ($_GET['update']) {
+			switch ($_REQUEST['update']) {
 				case 'info':
 					$result = updateInfo($model);
 					break;
@@ -302,21 +475,21 @@ if (array_key_exists("clid", $_GET) && is_numeric($_GET["clid"])&& array_key_exi
 		}
 	}else{
   
-		if ( 	 ( array_key_exists("search", $_GET) && !empty($_GET["search"]) )
-				&& ( array_key_exists("name", $_GET) && in_array($_GET['name'],array('sciname','commonname')) )
+		if ( 	 ( array_key_exists("search", $_REQUEST) && !empty($_REQUEST["search"]) )
+				&& ( array_key_exists("name", $_REQUEST) && in_array($_REQUEST['name'],array('sciname','commonname')) )
 		) {
-			$checklist->setSearchTerm($_GET["search"]);
-			$checklist->setSearchName($_GET['name']);
+			$checklist->setSearchTerm($_REQUEST["search"]);
+			$checklist->setSearchName($_REQUEST['name']);
 		
-			$synonyms = (isset($_GET['synonyms']) && $_GET['synonyms'] == 'on') ? true : false;
+			$synonyms = (isset($_REQUEST['synonyms']) && $_REQUEST['synonyms'] == 'on') ? true : false;
 			$checklist->setSearchSynonyms($synonyms);
 		}
 		#$test = $checklist->getPid();
 		#var_dump($test);
 		$result = buildResult($checklist);
 	}
-}elseif(array_key_exists("dynclid", $_GET) && $_GET["dynclid"] > -1) {
-	$dynclid = $_GET["dynclid"];
+}elseif(array_key_exists("dynclid", $_REQUEST) && $_REQUEST["dynclid"] > -1) {
+	$dynclid = $_REQUEST["dynclid"];
 	$result = buildDynResult($dynclid);
 }else{
 	#todo: generate error or redirect

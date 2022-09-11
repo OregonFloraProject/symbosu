@@ -824,3 +824,164 @@
 	}
 }
 
+.modal-backdrop.vendor-upload-modal {
+	padding: 12 0 0 0;
+	.modal-content {
+		max-width: 1146px;
+		padding: 0;
+		margin-top: 0;
+		.vendor-upload-wrapper {
+			margin-top: 3em;
+			overflow-y: scroll;
+			max-height: 80vh;
+			--scrollbarBG: @med-green;
+			--thumbBG: #1b1b1b;
+			scrollbar-color: @med-green #1b1b1b;
+			h1, h2 {
+				color: white;
+			}
+			.loading-overlay {
+				position: absolute;
+			}
+			.mask {
+				position: absolute;
+				width: 100%;
+				height: 100%; 
+				//background: linear-gradient(to right, #000000 0%, #00000000 100%); 
+				opacity: 1;
+				box-sizing: border-box;
+				background-color: white;
+				z-index: 0;
+			}
+			.vendor-upload-header,
+			.vendor-upload-main {
+				position: relative;
+				z-index: 5;
+				padding: 0 5%;
+			}
+			.vendor-upload-header{
+				display: flex;
+				flex-flow: row wrap;
+				justify-content: space-between;
+				margin-top: 1.5em;
+				margin-bottom: 3rem;
+				width: 100%;
+				.btn-primary {
+					background-image: none!important;
+					background-color: @med-green!important;
+					min-height: 45px;
+					min-width: 178px;
+					font-size: 1.2rem;
+					line-height: 1.4rem;
+					text-align: center;
+				}
+				h1 {
+					flex-basis: 80%;
+					font-size: 60px;
+					font-weight: 700;
+					margin-bottom: 0;
+					color: @med-green;
+				}
+				.close-modal {
+					flex-basis: 20%;
+					color: @med-green;
+					text-align: right;
+				}
+				.file-upload {
+					flex-basis: 100%;
+					padding-top: 2rem;
+					color: @type-primary;
+					display: flex;
+					flex-flow: row nowrap;
+					justify-content: space-between;
+					align-items: flex-end;
+					.file-upload-form {
+						margin: 0 auto;
+					}
+					&.submit {
+						display: flex;
+						flex-flow: row nowrap;
+						justify-content: space-between;						
+						span {
+							display: block;
+						}
+						.download-link {
+							flex-basis: 33%;
+							text-align: center;
+						
+						}
+						.submit-list {
+							flex-basis: 33%;
+							text-align: center;
+						
+						}
+						.cancel {
+							flex-basis: 33%;
+							text-align: center;
+						
+						
+						}
+					}
+				}
+			}
+			.vendor-upload-main {
+				background-color: white;
+				color: black;
+				min-height: 200px;
+				.main-wrapper {
+					padding: 1em 30px;
+					font-size: 22px;
+					line-height: 1.4em;
+					flex-basis: 66%;
+				}
+				.vendor-upload-preview {
+					width: 100%;
+					padding-bottom: 5rem;
+					table, th, td {
+						border: 1px solid @ivory;
+						border-collapse: collapse;
+					}
+					table {
+						width: 100%;
+						tr {
+							width: 100%;
+							&:nth-child(even) {
+								background-color: #efefef;
+							}
+						}
+						td, th {
+							padding: .5rem .8rem;
+							&.search-sciname {
+								width: percentage(237/1015);
+							}
+							&.code {
+								width: percentage(118/1015);
+								&.accepted {
+									color: @med-green;
+								}
+								&.synonym,
+								&.duplicate {
+									color: #945200;
+								}
+								&.unrecognized,
+								&.ambiguous,
+								&.non-native {
+									color: #ff5555;
+								}
+							}
+							&.of-sciname {
+								width: percentage(238/1015);
+							}
+							&.feedback {
+								width: percentage(422/1015);
+								span {
+									display: block;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}

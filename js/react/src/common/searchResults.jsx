@@ -491,7 +491,71 @@ ExploreSearchResult.defaultProps = {
 	section: ''
 	
 };*/
+function VendorUploadContainer(props) {
+	//console.log(props.uploadResponse.length);
+	//if (props.uploadResponse.status == 'success') {
+	
+			return (
+			
+				<div
+					id="search-results"
+					className={ "vendor-upload-preview" }
+				>
+				{
+				<Searching 
+					clientRoot={ props.clientRoot }
+					isSearching={ props.isSearching }
+				/>
+				}
+				{props.uploadResponse.status == 'success' &&
+			
+					<table>
+						<thead>
+							<tr key="header">
+								<th className="search-sciname">Your sciname</th>
+								<th className="code">Result</th>
+								<th className="of-sciname">OF sciname</th>
+								<th className="feedback">Feedback</th>
+							</tr>
+						</thead>
+						<tbody>
+					
+						{
+								Object.entries(props.uploadResponse.results).map(([index,result]) => {
+									//console.log(result);
+									return (
+	
+										<tr key={result.tid}>
+											<td className="search-sciname">{result.searchSciname}</td>
+											<td className={ "code " + result.code.toLowerCase()}>{result.code}</td>
+											<td className="of-sciname">{result.OFsciname}</td>
+											<td className="feedback">{
+														result.feedback && result.feedback
+															.map(t => <span>{t}</span>)
+													}
+											</td>
+										</tr>
+						
+									)
+								})
+						
+						}
+						</tbody>
+					</table>
+					}
+				
+				</div>
+			)
+		
+	//}
+	//return <span style={{ display: "none" }}/>;
+}
+VendorUploadContainer.defaultProps = {
+	uploadResponse: [],
+	clientRoot: '',
+	isSearching: true
+};
 
-export { SearchResultContainer, SearchResult, GardenSearchContainer, GardenSearchResult, ExploreSearchResult, ExploreSearchContainer, IdentifySearchResult, IdentifySearchContainer };
+export { SearchResultContainer, SearchResult, GardenSearchContainer, GardenSearchResult, ExploreSearchResult, ExploreSearchContainer, IdentifySearchResult, IdentifySearchContainer, VendorUploadContainer };
 
 

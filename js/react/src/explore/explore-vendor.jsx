@@ -5,6 +5,7 @@ import ReactDOM from "react-dom";
 import SideBarVendor from "./sidebar-vendor.jsx";
 import ViewOpts from "./viewOpts.jsx";
 import httpGet from "../common/httpGet.js";
+import httpPost from "../common/httpPost.js";
 import {ExploreSearchContainer, SearchResultContainer} from "../common/searchResults.jsx";
 import {addUrlQueryParam, getUrlQueryParams} from "../common/queryParams.js";
 import {getCommonNameStr, getTaxaPage, getIdentifyPage} from "../common/taxaUtils";
@@ -12,6 +13,7 @@ import PageHeader from "../common/pageHeader.jsx";
 import Loading from "../common/loading.jsx";
 import TextField from "../common/formFields.jsx";
 import TextareaField from "../common/textarea.jsx";
+import VendorUploadModal from "../explore/vendorUploadModal.jsx";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -73,7 +75,9 @@ class ExploreApp extends React.Component {
       	genera: 0,
       	species: 0,
       	taxa: 0
-      }
+      },
+      isUploadOpen: false,//vendorUploadModal
+      uploadResponse: {},
     };
     this.getPid = this.getPid.bind(this);
     this.getClid = this.getClid.bind(this);
@@ -152,7 +156,7 @@ class ExploreApp extends React.Component {
     });
 	}
 	handleSPPlist(arr) {
-		console.log(arr);
+		//console.log(arr);
 		let url = `${this.props.clientRoot}/checklists/rpc/api.php`;
 		let mapParams = new URLSearchParams();
 		mapParams.append('update','spp');
@@ -161,7 +165,24 @@ class ExploreApp extends React.Component {
 		mapParams.append('clid',this.props.clid);
 		mapParams.append('upload',JSON.stringify(arr));
 		url += '?' + mapParams.toString();
-		console.log(url);
+		//console.log(url);
+		
+		httpPost(url)
+			.then((res) => {
+				let jres = JSON.parse(res);
+				  	
+				this.setState({
+					uploadResponse: jres,
+				});
+			})
+			.catch((err) => {
+				//window.location = "/";
+				console.error(err);
+			})
+      .finally(() => {
+        //this.getChecklist();
+      }); 
+			
 	}
 	
 	updateSPP(obj) {
@@ -215,7 +236,7 @@ class ExploreApp extends React.Component {
 			///checklists/rpc/api.php?update=spp&action=add&pid=4&clid=14920&spp[]=3549
 			///checklists/rpc/api.php?update=spp&action=edit&pid=4&clid=14920&spp=3277&notes=My+notes
 			
-			httpGet(url)
+			httpPost(url)
 				.then((res) => {
 					let jres = JSON.parse(res);
 					var msg = '';
@@ -301,6 +322,12 @@ class ExploreApp extends React.Component {
 			/*});*/
 		}
 	}
+	
+	toggleUploadModal = () => {
+    this.setState({
+      isUploadOpen: !this.state.isUploadOpen
+    });
+  }
   componentDidMount() {
   	this.getChecklist();
   }
@@ -528,6 +555,18 @@ class ExploreApp extends React.Component {
 				clientRoot={ this.props.clientRoot }
 				isLoading={ this.state.isLoading }
 			/>
+			<VendorUploadModal 
+				//key={this.state.currClid}
+				show={this.state.isUploadOpen}
+				onToggleUploadClick={this.toggleUploadModal}
+				updateSPPlist={this.handleSPPlist}
+				uploadResponse={this.state.uploadResponse}
+				/*
+				clid={this.state.currClid}
+				pid={this.state.currPid}
+				referrer={ 'taxa-garden' } */
+				clientRoot={this.props.clientRoot}
+			></VendorUploadModal>
 			<div className="page-header">
 				<PageHeader bgClass="explore" title={ this.state.projName } />
       </div>
@@ -738,7 +777,7 @@ class ExploreApp extends React.Component {
 							spp={ this.state.updatedData.spp }
 							updateChange={this.updateField } 
 							storeChange={this.updateSPP } 
-							updateSPPlist={this.handleSPPlist}
+							onToggleUploadClick={this.toggleUploadModal}
 						/>
 						
 					}
