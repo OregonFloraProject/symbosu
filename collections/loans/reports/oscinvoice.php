@@ -683,6 +683,10 @@ else{
 						if(strpos($invoiceArr['description'], "* ") !== false) $invoiceArr['description'] =  
 							str_replace(array(" * ", "* "), array("</li><li>", "<ul><li>"), $invoiceArr['description']) . '</li></ul>';
 
+						// Auto-format dashes as bullets
+						if(strpos($invoiceArr['description'], "- ") !== false) $invoiceArr['description'] =  
+							str_replace(array(" - ", "- "), array("</li><li>", "<ul><li>"), $invoiceArr['description']) . '</li></ul>';
+
 						// Add description
 						echo '<div>' . $invoiceArr['description'] . '</div>';
 					}

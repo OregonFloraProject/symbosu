@@ -153,6 +153,13 @@ $specimenTotal = $loanManager->getSpecimenTotal($loanId);
 			});
 			return submitStatus;
 		}
+
+		// Run when the page loads to add linebreaks to asterisks in the description
+		window.onload = function() {
+			$("textarea[name='description']").val(
+				$("textarea[name='description']").val().replace(/ \* /g, '\n* ').replace(/ - /g, '\n- '));
+		};
+
 	</script>
 	<script type="text/javascript" src="../../js/symb/collections.loans.js?ver=2"></script>
 	<div class='navpath'>
