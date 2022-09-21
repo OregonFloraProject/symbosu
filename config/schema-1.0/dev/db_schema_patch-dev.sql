@@ -787,3 +787,21 @@ ALTER TABLE `institutions`
   CHANGE COLUMN `Contact` `Contact` VARCHAR(255) NULL DEFAULT NULL,
   CHANGE COLUMN `Email` `Email` VARCHAR(255) NULL DEFAULT NULL,
   CHANGE COLUMN `Notes` `Notes` VARCHAR(19500) NULL DEFAULT NULL;
+
+# Table for correspondance attachments for loans/exchanges/gifts etc.
+CREATE TABLE `omoccurloansattachment` (
+  `attachmentid` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `loanid` int(10) UNSIGNED DEFAULT NULL,
+  `exchangeid` int(10) UNSIGNED DEFAULT NULL,
+  `title` varchar(80) NOT NULL,
+  `path` varchar(255) NOT NULL,
+  `filename` varchar(255) NOT NULL,
+  `initialTimestamp` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`attachmentid`),
+  KEY `FK_occurloansattachment_loanid_idx` (`loanid`),
+  KEY `FK_occurloansattachment_exchangeid_idx` (`exchangeid`)
+) ;
+
+ALTER TABLE `omoccurloansattachment`
+  ADD CONSTRAINT `FK_occurloansattachment_exchangeid` FOREIGN KEY (`exchangeid`) REFERENCES `omoccurexchange` (`exchangeid`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_occurloansattachment_loanid` FOREIGN KEY (`loanid`) REFERENCES `omoccurloans` (`loanid`) ON DELETE CASCADE ON UPDATE CASCADE;
