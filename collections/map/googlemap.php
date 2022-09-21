@@ -419,7 +419,7 @@ if(array_key_exists('taxa', $taxaArr)){
 			</div>
 		</fieldset>
 	</div>
-	<div style="width:400px;float:left;">
+	<div style="width:560px;float:left;">
 		<fieldset>
 			<legend>Add Point of Reference</legend>
 			<div>
@@ -427,13 +427,11 @@ if(array_key_exists('taxa', $taxaArr)){
 					Marker Name: <input name='title' id='title' size='15' type='text' />
 				</div>
 				<div class="latlongdiv">
-					<div>
-						<div style="float:left;margin-right:5px">Latitude decimal: <input name='lat' id='lat' size='10' type='text' /> </div>
-						<div style="float:left;">eg: 34.57</div>
+					<div style="margin-top:5px;">
+						Latitude decimal: <input name='lat' id='lat' size='10' type='text' /> eg: 34.57
 					</div>
-					<div style="margin-top:5px;clear:both">
-						<div style="float:left;margin-right:5px">Longitude decimal: <input name='lng' id='lng' size='10' type='text' /> </div>
-						<div style="float:left;">eg: -112.38</div>
+					<div style="margin-top:5px;">
+						Longitude decimal: <input name='lng' id='lng' size='10' type='text' /> eg: -112.38
 					</div>
 					<div style='font-size:80%;margin-top:5px;clear:both'>
 						<a href='#' onclick='toggleLatLongDivs();'>Enter in D:M:S format</a>
@@ -470,6 +468,8 @@ if(array_key_exists('taxa', $taxaArr)){
 			</div>
 		</fieldset>
 	</div>
+</div>
+	<div style="clear: both;">&nbsp;</div> <!-- JGM added to fix footer -->
 	<?php
 	include_once($SERVER_ROOT.'/includes/footer.php');
 	?>

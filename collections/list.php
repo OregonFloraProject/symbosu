@@ -230,7 +230,7 @@ $_SESSION['citationvar'] = $searchVar;
 					</div>
 					<div style="clear:both;"></div>
 					<?php
-					$paginationStr = '<div><div style="clear:both;"><hr/></div><div style="float:left;margin:5px;">';
+					$paginationStr = '<div><div style="clear:both;"><hr/></div><div class="pagination" style="float:left;margin:5px;">';
 					$lastPage = (int)($collManager->getRecordCnt() / $cntPerPage) + 1;
 					$startPage = ($pageNumber > 5 ? $pageNumber - 5 : 1);
 					$endPage = ($lastPage > $startPage + 10 ? $startPage + 10 : $lastPage);
