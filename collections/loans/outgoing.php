@@ -371,8 +371,8 @@ $specimenTotal = $loanManager->getSpecimenTotal($loanId);
 								if ($attachments) {
 									echo '<ul>';
 									foreach($attachments as $attachId => $attachArr){
-										echo '<li><div style="float: left;">' . $attachArr['timestamp'] . ' -</div>';
-										echo '<div style="float: left; margin-left: 5px;"><a href="../../' .
+										echo '<li style="clear: both;"><div style="float: left; margin-top: 0px;">' . $attachArr['timestamp'] . ' -</div>';
+										echo '<div style="float: left; margin-top: 0px; margin-left: 5px;"><a href="../../' .
 											$attachArr['path'] . $attachArr['filename']  .'" target="_blank">' .
 											($attachArr['title'] != "" ? $attachArr['title'] : $attachArr['filename']) . '</a></div>';
 										echo '<a href="outgoing.php?collid='.$collid . '&loanid=' . $loanId . '&attachid='. $attachId . '&formsubmit=delAttachment"><img src="../../images/del.png" style="width: 15px; margin-left: 5px;"></a></li>';
