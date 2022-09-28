@@ -539,7 +539,7 @@ if(array_key_exists('taxa', $taxaArr)){
 						<a href='#' onclick='toggleLatLongDivs();'>Enter in D:M:S format</a>
 					</div>
 				</div>
-				<div class='latlongdiv' style='display:none;clear:both'>
+				<div class='latlongdiv' style='margin-top: 5px;display:none;clear:both'>
 					<div>
 						Latitude:
 						<input name='latdeg' id='latdeg' size='2' type='text' />&deg;
