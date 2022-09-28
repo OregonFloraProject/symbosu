@@ -197,13 +197,13 @@ if(array_key_exists('taxa', $taxaArr)){
 						// OSU herbarium specimen
 						$spArr['colltype'] = 'osu';
 						?>
-						var markerIcon = {path:"m0,7l 7,-7l 7,7l -7,7z",fillColor:"#<?php echo $iconColor; ?>",fillOpacity:1,scale:1,strokeColor:"#000000",strokeWeight:1};
+						var markerIcon = {path:"m0,8l 8,-8l 8,8l -8,8z",fillColor:"#<?php echo $iconColor; ?>",fillOpacity:1,scale:1,strokeColor:"#000000",strokeWeight:1};
 						<?php
 					} elseif($spArr['instcode'] == 'OF' && $spArr['collcode'] == 'FP') {
 						// OregonFlora Photo
 						$spArr['colltype'] = 'ofphoto';
 						?>
-						var markerIcon = {path:"m0,0l 14,0l 0,14l -14,0z",fillColor:"#<?php echo $iconColor; ?>",fillOpacity:1,scale:1,strokeColor:"#000000",strokeWeight:1};
+						var markerIcon = {path:"m0,0l 12,0l 0,12l -12,0z",fillColor:"#<?php echo $iconColor; ?>",fillOpacity:1,scale:1,strokeColor:"#000000",strokeWeight:1};
 						<?php
 					}
 					elseif($spArr['colltype'] == 'obs'){
@@ -496,7 +496,7 @@ if(array_key_exists('taxa', $taxaArr)){
 				<div>
 					<svg style="height:14px;width:14px;margin-bottom:-2px;">" xmlns="http://www.w3.org/2000/svg">
 						<g>
-							<path stroke="#000000" d="m0,0l 14,0l 0,14l -14,0z" stroke-width="1px" fill="white"/>
+							<path stroke="#000000" d="m0,0l 12,0l 0,12l -12,0l 0,-12z" stroke-width="1px" fill="white"/>
 						</g>
 					</svg> = OregonFlora Photo
 				</div>
