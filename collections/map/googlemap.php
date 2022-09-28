@@ -6,7 +6,6 @@ header("Content-Type: text/html; charset=".$CHARSET);
 $clid = array_key_exists('clid',$_REQUEST)?$_REQUEST['clid']:0;
 $gridSize = array_key_exists('gridSizeSetting',$_REQUEST)?$_REQUEST['gridSizeSetting']:10;
 $minClusterSize = array_key_exists('minClusterSetting',$_REQUEST)?$_REQUEST['minClusterSetting']:50;
-
 $occurManager = new OccurrenceMapManager();
 $coordArr = $occurManager->getMappingData(0);
 
@@ -60,6 +59,7 @@ if(array_key_exists('taxa', $taxaArr)){
 		var infoWins = new Array();
 		var puWin;
 		var markers = [];
+		var clusters = [];
 
 		function initialize(){
 			<?php
@@ -193,7 +193,20 @@ if(array_key_exists('taxa', $taxaArr)){
 					elseif(isset($spArr['ocatnum']) && $spArr['ocatnum']){
 						$displayStr = $spArr['instcode'].$collCode.'-'.$spArr['ocatnum'];
 					}
-					if($spArr['colltype'] == 'obs'){
+					if($spArr['instcode'] == 'OSU' && $spArr['colltype'] == 'spec') {
+						// OSU herbarium specimen
+						$spArr['colltype'] = 'osu';
+						?>
+						var markerIcon = {path:"m0,7l 7,-7l 7,7l -7,7z",fillColor:"#<?php echo $iconColor; ?>",fillOpacity:1,scale:1,strokeColor:"#000000",strokeWeight:1};
+						<?php
+					} elseif($spArr['instcode'] == 'OF' && $spArr['collcode'] == 'FP') {
+						// OregonFlora Photo
+						$spArr['colltype'] = 'ofphoto';
+						?>
+						var markerIcon = {path:"m0,0l 14,0l 0,14l -14,0z",fillColor:"#<?php echo $iconColor; ?>",fillOpacity:1,scale:1,strokeColor:"#000000",strokeWeight:1};
+						<?php
+					}
+					elseif($spArr['colltype'] == 'obs'){
 						?>
 						var markerIcon = {path:"m6.70496,0.23296l-6.70496,13.48356l13.88754,0.12255l-7.18258,-13.60611z",fillColor:"#<?php echo $iconColor; ?>",fillOpacity:1,scale:1,strokeColor:"#000000",strokeWeight:1};
 						<?php
@@ -203,7 +216,8 @@ if(array_key_exists('taxa', $taxaArr)){
 						var markerIcon = {path:google.maps.SymbolPath.CIRCLE,fillColor:"#<?php echo $iconColor; ?>",fillOpacity:1,scale:7,strokeColor:"#000000",strokeWeight:1};
 						<?php
 					}
-					echo 'var m'.$markerCnt.' = getMarker('.$spArr['lat'].','.$spArr['lng'].',"'.addslashes($displayStr).'",markerIcon,"'.$spArr['colltype'].'","'.(isset($spArr['tid'])?$spArr['tid']:0).'",'.$occid.','.($clid?$clid:'0').');',"\n";
+
+					echo 'var m'.$markerCnt.' = getMarker('.$spArr['lat'].','.$spArr['lng'].',"'.addslashes($displayStr).'",markerIcon,"'.$spArr['colltype'].'","'.(isset($spArr['tid'])?$spArr['tid']:0).'",'.$occid.','.($clid?$clid:'0').','.$spCnt.');',"\n";
 					echo 'oms.addMarker(m'.$markerCnt.');',"\n";
 					$markerCnt++;
 				}
@@ -218,7 +232,7 @@ if(array_key_exists('taxa', $taxaArr)){
 					minimumClusterSize: <?php echo $minClusterSize; ?>
 				}
 				//Initialize clusterer with options
-				var markerCluster<?php echo $spCnt; ?> = new MarkerClusterer(map, markers, mcOptions<?php echo $spCnt; ?>);
+				markerCluster<?php echo $spCnt; ?> = new MarkerClusterer(map, markers, mcOptions<?php echo $spCnt; ?>);
 				<?php
 				$spCnt++;
 			}
@@ -254,7 +268,18 @@ if(array_key_exists('taxa', $taxaArr)){
 			}
 		}
 
-		function getMarker(newLat, newLng, newTitle, newIcon, type, tid, occid, clid){
+		// Set up groups of markers so that different types can be toggled on and off
+		var markerGroups = {
+		  "osu": [],
+		  "ofphoto": [],
+		  "spec": [],
+		  "obs": []
+		};
+
+		// Set up an array of markers belonging to each taxon
+		var taxaGroups = [];
+
+		function getMarker(newLat, newLng, newTitle, newIcon, type, tid, occid, clid, spcnt){
 			var m = new google.maps.Marker({
 				position: new google.maps.LatLng(newLat, newLng),
 				title: newTitle,
@@ -264,6 +289,16 @@ if(array_key_exists('taxa', $taxaArr)){
 				occid: occid,
 				clid: clid
 			});
+
+			// Add markers to marker groups as they are created
+			if (!markerGroups[type]) markerGroups[type] = [];
+			markerGroups[type].push(m);
+
+			// Add markers to taxon groups as they are created
+			if (!taxaGroups[spcnt]) taxaGroups[spcnt] = [];
+			taxaGroups[spcnt].push(m);
+
+			// Add markers to the main marker array
 			markers.push(m);
 			return m;
 		}
@@ -337,6 +372,47 @@ if(array_key_exists('taxa', $taxaArr)){
 				useLLDecimal = true;
 			}
 		}
+	// Function to toggle groups of markers on or off
+	function toggleMarkers(type){
+
+	  for (var i = 0; i < markerGroups[type].length; i++) {
+	    var marker = markerGroups[type][i];
+	    if (!marker.getVisible()) {
+	      marker.setVisible(true);
+	    } else {
+	      marker.setVisible(false);
+	    }
+	  }
+
+		// Update the markerclusters for each taxon
+		for (var i = 0; i < taxaGroups.length; i++){
+
+			// Make an array to save visible markers in
+			var visiblemarkers = [];
+
+			// Get the current taxon cluster
+			cluster = window['markerCluster' + i];
+
+			// Get the list of markers for that taxon
+			markers = taxaGroups[i];
+
+			// Add markers to the visible array if they are still visible
+			for (var j = 0; j < markers.length; j++){
+
+				// Get marker
+				m = markers[j];
+
+				// Check if visible, and if so, add
+				if (m.getVisible()) visiblemarkers.push(m);
+
+			}
+
+			// Clear the markers, and re-add
+			cluster.clearMarkers();
+			cluster.addMarkers(visiblemarkers);
+
+		}
+	}
 
 	</script>
 </head>
@@ -355,6 +431,7 @@ if(array_key_exists('taxa', $taxaArr)){
 		legend {
 			width: auto;
 			padding: 0px 5px;
+			margin: 0px;
 		}
 	</style>
 	<div id="innertext" style="margin-top: 30px;">
@@ -401,13 +478,27 @@ if(array_key_exists('taxa', $taxaArr)){
 				echo $tailItem;
 				?>
 			</div>
-			<div style="float: left;">
+			<div style="float: right;">
+				<div>
+					<svg style="height:14px;width:14px;margin-bottom:-2px;">" xmlns="http://www.w3.org/2000/svg">
+						<g>
+							<path stroke="#000000" d="m0,7 7,-7l 7,7l -7,7z" stroke-width="1px" fill="white"/>
+						</g>
+					</svg> = OSU Herbarium
+				</div>
 				<div>
 					<svg xmlns="http://www.w3.org/2000/svg" style="height:15px;width:15px;margin-bottom:-2px;">">
 						<g>
 							<circle cx="7.5" cy="7.5" r="7" fill="white" stroke="#000000" stroke-width="1px" ></circle>
 						</g>
-					</svg> = Collection
+					</svg> = Other Herbaria
+				</div>
+				<div>
+					<svg style="height:14px;width:14px;margin-bottom:-2px;">" xmlns="http://www.w3.org/2000/svg">
+						<g>
+							<path stroke="#000000" d="m0,0l 14,0l 0,14l -14,0z" stroke-width="1px" fill="white"/>
+						</g>
+					</svg> = OregonFlora Photo
 				</div>
 				<div>
 					<svg style="height:14px;width:14px;margin-bottom:-2px;">" xmlns="http://www.w3.org/2000/svg">
@@ -420,6 +511,17 @@ if(array_key_exists('taxa', $taxaArr)){
 		</fieldset>
 	</div>
 	<div style="width:560px;float:left;">
+		<fieldset>
+			<legend>Points to Display</legend>
+			<div style="float:left;width:240px;">
+				<input type="checkbox" id="osu" checked onClick="toggleMarkers(this.id);"> OSU Herbarium Specimens<br/>
+				<input type="checkbox" id="spec" checked onClick="toggleMarkers(this.id);"> Other Herbarium Specimens
+			</div>
+			<div style="float:right;width:240px;">
+				<input type="checkbox" id="ofphoto" checked onClick="toggleMarkers(this.id);"> OregonFlora Photos<br/>
+				<input type="checkbox" id="obs" checked onClick="toggleMarkers(this.id);"> Unvouchered Observations
+			</div>
+		</fieldset>
 		<fieldset>
 			<legend>Add Point of Reference</legend>
 			<div>
