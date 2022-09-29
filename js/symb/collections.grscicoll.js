@@ -19,6 +19,11 @@ function grscicoll(form) {
 		$("#dialog").dialog({
 			width: 'auto', 
 			title: 'No institution code provided.',
+			position: {
+				my: 'left top',
+				at: 'left top+35',
+				of: $('input[name="institutioncode"]')
+			},
 			buttons: [{
 				text: "Ok",
 				click: function() {
@@ -29,7 +34,6 @@ function grscicoll(form) {
 				}
 			}]
 		});
-
 		// Quit
 		return;
 	}
@@ -42,6 +46,11 @@ function grscicoll(form) {
 		$("#dialog").dialog({
 			width: 'auto', 
 			title: 'Warning:',
+			position: {
+				my: 'left top',
+				at: 'left top+35',
+				of: $('input[name="institutioncode"]')
+			},
 			buttons: [{
 				text: "Ok",
 				click: function() {
@@ -129,6 +138,11 @@ function getData(form, code){
 				$("#dialog").dialog({
 					width: 'auto', 
 					title: 'Multiple results found for code: ' + code + '. Which would you like to use?',
+					position: {
+						my: 'left top',
+						at: 'left top+35',
+						of: $('input[name="institutioncode"]')
+					},
 					buttons: [{
 						text: "Save",
 						click: function() {
