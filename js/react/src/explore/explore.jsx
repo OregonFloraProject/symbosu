@@ -118,7 +118,7 @@ class ExploreApp extends React.Component {
 	    identParams.append("dynclid",this.getDynclid());
 	  }
   	url = url + '?' + identParams.toString();
-    console.log(url);
+    //console.log(url);
     //console.log(this.state.showTaxaDetail);
     httpGet(url)
 			.then((res) => {

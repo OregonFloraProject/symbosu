@@ -14,30 +14,18 @@ library.add(  faTimesCircle );
 export default class vendorUploadModal extends Component {
   constructor(props) {
     super(props);
-/*
-    this.state = {
-      title: '',
-      intro: '',
-      iconUrl: '',
-      authors: '',
-      abstract: '',
-      //taxa: [],
-      totals: {
-      	families: 0,
-      	genera: 0,
-      	species: 0,
-      	taxa: 0
-      },
-    };*/
     this.state = {
     	previewReady: false,
-      isSearching: false,
+      //isSearching: false,
     };
     
 		this.onToggleUploadClick = this.props.onToggleUploadClick.bind(this);
+    this.setUploadUpdating = this.props.setUploadUpdating.bind(this);
     this.handleUpload = this.handleUpload.bind(this);
     this.storeUpload = this.storeUpload.bind(this);
     this.processUpload = this.processUpload.bind(this);
+    this.handleCancel = this.handleCancel.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
   handleUpload = (file) => {
 	  Papa.parse(file, {
@@ -58,11 +46,16 @@ export default class vendorUploadModal extends Component {
   }
   processUpload() {
   	if (this.state.uploadedFile) {
-  		this.setState({ isSearching: true });
-			this.props.updateSPPlist(this.state.uploadedFile);
+			this.props.previewSPPlist(this.state.uploadedFile);
 		}else{
 			console.log('file is null');
 		}
+  }
+  handleCancel() {
+  	this.props.clearUpload('cancel');
+  }
+  handleSubmit() {
+		this.props.updateSPPlist();	
   }
   /*
   componentDidMount() {
@@ -97,28 +90,17 @@ export default class vendorUploadModal extends Component {
     if(!this.props.show) {
       return null;
     }
-    //console.log(this.props.uploadResponse);
     let disabledStatus = (this.state.previewReady? '' : 'disabled');
-    let searchingStatus = this.state.isSearching;
-    if (	this.props.uploadResponse // 👈 null and undefined check
-					&& Object.keys(this.props.uploadResponse).length !== 0
-					&& Object.getPrototypeOf(this.props.uploadResponse) === Object.prototype
-		)  {
-			searchingStatus = false;
-		}
     return (
     
     <div className="modal-backdrop vendor-upload-modal">
       <div className="modal-content container mx-auto">
 			<div className="wrapper vendor-upload-wrapper">
 				<div className="" style={{ position: "relative", minHeight: "45em", maxWidth: "100%", overflowX: "hidden" }}>
-
-				
+		
 					<div className="row" style={{ maxWidth: "100%", overflowX: "hidden"}}>
-							
-							
+										
 							<div className="mask">&nbsp;</div>
-							
 							
 							<div className="vendor-upload-header">
 								<h1>Upload Manager</h1>
@@ -146,7 +128,7 @@ export default class vendorUploadModal extends Component {
 														<span>This looks good.</span>
 														<button 
 															type="button"
-															//onClick={this.processUpload}
+															onClick={this.handleSubmit}
 															className="btn btn-primary"
 														>Submit this list.</button>
 													</div>
@@ -157,7 +139,7 @@ export default class vendorUploadModal extends Component {
 													<button 
 														type="button"
 														className="btn btn-primary"
-														//onClick={this.processUpload}
+														onClick={this.handleCancel} 
 													>Cancel</button>
 												</div>
 											</div>
@@ -189,26 +171,14 @@ export default class vendorUploadModal extends Component {
 						
 							<div className="col-12 vendor-upload-main">
 							
-
-							
 							<VendorUploadContainer
 								uploadResponse={ this.props.uploadResponse }
-								/*viewType={ this.state.viewType }
-								sortBy={ this.state.sortBy }
-								showTaxaDetail={ this.state.showTaxaDetail }
-								isEditable={ true }
-								storeChange={this.updateSPP } */
-								isSearching={searchingStatus}
-								clientRoot={this.props.clientRoot}
-						
+								isSearching={this.props.isUploadUpdating}
+								clientRoot={this.props.clientRoot}					
 							/>
-							
-							
-							</div>
-							
-						</div>
-			
-				
+									
+							</div>							
+						</div>			
 				</div>
 			</div>
 		</div>
@@ -222,6 +192,8 @@ vendorUploadModal.defaultProps = {
   clientRoot: '',
   onToggleUploadClick: () => {},
   updateSPPlist: () => {},
+  previewSPPlist: () => {},
+  clearUpload: () => {},
   uploadResponse: {status: '',results: {}, csvURL: ''},
   show: false
   

@@ -90,6 +90,7 @@ class SideBarVendor extends React.Component {
 					  		
 					  		<button 
 					  			type="button"
+					  			className="btn btn-primary"
 					  			onClick={this.props.onToggleUploadClick}
 					  		>Open Upload Manager</button>
 					  		

@@ -189,132 +189,135 @@ class ExploreSearchResult extends React.Component  {
   render() {
   	const useGrid = this.props.viewType === "grid";
   	//console.log(this.props);
-		return (
-				<div className={ "card search-result " + (useGrid ? "grid-result" : "list-result") }>
-						<div className={useGrid ? "" : "card-body"}>
-							{useGrid &&
-								<img
-									className={useGrid ? "card-img-top grid-image" : "d-inline-block mr-1 list-image"}
-									alt={this.props.title}
-									src={this.props.src}
-								/>
-							}
-							{!useGrid && 
-								<FontAwesomeIcon icon="square" />
-							}
-							<div className={(useGrid ? "card-body" : "d-inline py-1") + " px-0"} style={{overflow: "hidden"}}>
-								<div className={"card-text" + (useGrid ? "" : " d-inline")}>
-									<a href={this.props.href} className="text-decoration-none" style={{ maxWidth: "185px" }} target="_blank">
-										<span className="font-italic sci-name">{this.props.sciName}</span>
+  	if (this.props.display) {
+			return (
+					<div className={ "card search-result " + (useGrid ? "grid-result" : "list-result") }>
+							<div className={useGrid ? "" : "card-body"}>
+								{useGrid &&
+									<img
+										className={useGrid ? "card-img-top grid-image" : "d-inline-block mr-1 list-image"}
+										alt={this.props.title}
+										src={this.props.src}
+									/>
+								}
+								{!useGrid && 
+									<FontAwesomeIcon icon="square" />
+								}
+								<div className={(useGrid ? "card-body" : "d-inline py-1") + " px-0"} style={{overflow: "hidden"}}>
+									<div className={"card-text" + (useGrid ? "" : " d-inline")}>
+										<a href={this.props.href} className="text-decoration-none" style={{ maxWidth: "185px" }} target="_blank">
+											<span className="font-italic sci-name">{this.props.sciName}</span>
+											{
+												this.props.showTaxaDetail === 'on' &&
+												<span className="author"> ({this.props.author})</span>
+											}
+											{ !useGrid && this.props.commonName.length > 0? <span dangerouslySetInnerHTML={{__html: ' &mdash; '}} /> :''}
+											<span className="common-name">{this.props.commonName}</span>
+										</a>
 										{
-											this.props.showTaxaDetail === 'on' &&
-											<span className="author"> ({this.props.author})</span>
-										}
-										{ !useGrid && this.props.commonName.length > 0? <span dangerouslySetInnerHTML={{__html: ' &mdash; '}} /> :''}
-										<span className="common-name">{this.props.commonName}</span>
-									</a>
-									{
-										this.props.showTaxaDetail === 'on' && this.props.vouchers.length && 
+											this.props.showTaxaDetail === 'on' && this.props.vouchers.length && 
 								
-											<div className="vouchers">Vouchers:&nbsp;          		
-											{
-												this.props.vouchers.map((voucher) =>  {
-													return (
-														<a href={ this.props.clientRoot + "/collections/individual/index.php?occid=" + voucher.occid } target="_blank" key={ voucher.occid } className={ "voucher" } >
-															<span className={ "recorded-by" }>{voucher.recordedby} </span>
-															<span className={ "event-date" }>{voucher.eventdate}</span>
-															<span className={ "institution-code" }> [{ voucher.institutioncode }]</span>
-														</a>
-													)
-												})
-												.reduce((prev, curr) => [prev, ', ', curr])
-											}
-											</div>
-									} 
-									{
-										this.props.isEditable == true && 
-										<span>
-											<span className="taxa-edit">
-												<a 
-													type="button"
-													className="btn"
-													name={ this.props.sciName }
-													value={ this.props.sciName }	
-													action={ 'edit' }
-													tid={ this.props.tid } 				
-													title={ 'Edit Notes' }
-													onClick={ () => this.toggleEditingNotes()} 
-												>
-													<FontAwesomeIcon icon="edit" />
-												</a>
-											</span>
-									
-											<span className="taxa-delete">
-												<a 
-													type="button"
-													className="btn"
-													name={ this.props.sciName }
-													value={ this.props.sciName }	
-													action={ 'delete' }
-													tid={ this.props.tid } 				
-													title={ 'Delete from checklist' }
-													onClick={ () => this.props.storeChange({'action': 'delete','name': this.props.sciName, 'value': this.props.tid, 'section': 'spp'})} 
-												>
-													<FontAwesomeIcon icon="minus-circle" />
-												</a>
-											</span>
-										</span>
-									}         
-									
-									{
-										this.props.isEditable == true && this.state.editNotes &&
-										        		
-											<div className="vouchers notes spp">
-										
-												<div>			
-													<textarea
-														aria-label="notes"
-														section="spp" 
-														name="notes" 
-														defaultValue={this.props.checklistNotes}
-														placeholder="Your notes here" 
-														onChange={ this.updateSPPFields}
-													/>
-													<a 
-														type="button"
-														className="btn btn-primary"
-														onClick={ () => this.saveEditSPP({'action': 'edit','name': this.props.sciName, 'value': this.props.tid, 'section': 'spp', 'notes': this.state.updatedData['notes']})} 
-													>Save</a>
-													<a 
-														type="button"
-														className="btn btn-primary"
-														onClick={ () => this.toggleEditingNotes()} 
-													>Cancel</a>
+												<div className="vouchers">Vouchers:&nbsp;          		
+												{
+													this.props.vouchers.map((voucher) =>  {
+														return (
+															<a href={ this.props.clientRoot + "/collections/individual/index.php?occid=" + voucher.occid } target="_blank" key={ voucher.occid } className={ "voucher" } >
+																<span className={ "recorded-by" }>{voucher.recordedby} </span>
+																<span className={ "event-date" }>{voucher.eventdate}</span>
+																<span className={ "institution-code" }> [{ voucher.institutioncode }]</span>
+															</a>
+														)
+													})
+													.reduce((prev, curr) => [prev, ', ', curr])
+												}
 												</div>
+										} 
+										{
+											this.props.isEditable == true && 
+											<span className="editables">
+												<span className="taxa-edit">
+													<a 
+														type="button"
+														className="btn"
+														name={ this.props.sciName }
+														value={ this.props.sciName }	
+														action={ 'edit' }
+														tid={ this.props.tid } 				
+														title={ 'Edit Notes' }
+														onClick={ () => this.toggleEditingNotes()} 
+													>
+														<FontAwesomeIcon icon="edit" />
+													</a>
+												</span>
+									
+												<span className="taxa-delete">
+													<a 
+														type="button"
+														className="btn"
+														name={ this.props.sciName }
+														value={ this.props.sciName }	
+														action={ 'delete' }
+														tid={ this.props.tid } 				
+														title={ 'Delete from checklist' }
+														onClick={ () => this.props.storeChange({'action': 'delete','name': this.props.sciName, 'value': this.props.tid, 'section': 'spp'})} 
+													>
+														<FontAwesomeIcon icon="minus-circle" />
+													</a>
+												</span>
+											</span>
+										}         
+									
+										{
+											this.props.isEditable == true && this.state.editNotes &&
+																
+												<div className="vouchers notes spp">
+										
+													<div>			
+														<textarea
+															aria-label="notes"
+															section="spp" 
+															name="notes" 
+															defaultValue={this.props.checklistNotes}
+															placeholder="Your notes here" 
+															onChange={ this.updateSPPFields}
+														/>
+														<a 
+															type="button"
+															className="btn btn-primary"
+															onClick={ () => this.saveEditSPP({'action': 'edit','name': this.props.sciName, 'value': this.props.tid, 'section': 'spp', 'notes': this.state.updatedData['notes']})} 
+														>Save</a>
+														<a 
+															type="button"
+															className="btn btn-primary"
+															onClick={ () => this.toggleEditingNotes()} 
+														>Cancel</a>
+													</div>
 											
-											</div>
-									}     
-									{
-										this.props.isEditable == true && this.state.editNotes != true &&
+												</div>
+										}     
+										{
+											this.props.isEditable == true && this.state.editNotes != true &&
 											
-											<div className="vouchers notes spp">
-											{
-												this.props.checklistNotes
-											}
-											</div>
-									}    
-									      
+												<div className="vouchers notes spp">
+												{
+													this.props.checklistNotes
+												}
+												</div>
+										}    
+												
+									</div>
 								</div>
 							</div>
-						</div>
-				</div>
-		)
+					</div>
+			)
+		}	
+	  return <span style={{ display: "none" }}/>;
 	}
 }
 function ExploreSearchContainer(props) {
 	//console.log(props);
   const useGrid = props.viewType === "grid";
-	if (props.searchResults) {
+	if (props.currentTids.length) {
 		if (props.sortBy === 'taxon') {		
 			return (
 				<div
@@ -327,8 +330,10 @@ function ExploreSearchContainer(props) {
 				/>
 				{	props.searchResults.taxonSort.map((result) =>  {
 						//console.log(result);
+						let display = (props.currentTids.indexOf(result.tid) > -1);
 						return (
 							<ExploreSearchResult
+								display={ display }
 								key={ result.tid }
 								tid={ result.tid }
 								section={ props.section }
@@ -363,34 +368,42 @@ function ExploreSearchContainer(props) {
 				/>
 				{
 						Object.entries(props.searchResults.familySort).map(([family, results]) => {
-							return (
-								<div key={ family } className="family-group">
-									<h4>{ family }</h4>	
-									<div className={ (props.viewType === "grid" ? " search-result-grid" : "") } >
-									{ results.map((result) =>  {
-											return (
-												<ExploreSearchResult
-													key={ result.tid }
-													tid={ result.tid }
-													viewType={ props.viewType }
-													showTaxaDetail={ props.showTaxaDetail }
-													href={ getTaxaPage(props.clientRoot, result.tid) }
-													src={ result.thumbnail }
-													commonName={ getCommonNameStr(result) }
-													sciName={ result.sciname ? result.sciname : '' }
-													author={ result.author ? result.author : '' }
-													vouchers={  result.vouchers ? result.vouchers : '' }
-													clientRoot={ props.clientRoot }
-													isEditable={ props.isEditable }
-													storeChange={ props.storeChange } 
-													checklistNotes={ result.checklistNotes ? result.checklistNotes : ''}
-												/>
-											)
-										})
-									}
+							let thisTids = results.map((result) =>  {
+					  		return result.tid;
+  						});
+  						let currentTidsInThisFamily = props.currentTids.filter(value => thisTids.includes(value));
+  						if (currentTidsInThisFamily.length > 0) {
+								return (
+									<div key={ family } className="family-group">
+										<h4>{ family }</h4>	
+										<div className={ (props.viewType === "grid" ? " search-result-grid" : "") } >
+										{ results.map((result) =>  {
+												let display = (props.currentTids.indexOf(result.tid) > -1);
+												return (
+													<ExploreSearchResult
+														display={ display }
+														key={ result.tid }
+														tid={ result.tid }
+														viewType={ props.viewType }
+														showTaxaDetail={ props.showTaxaDetail }
+														href={ getTaxaPage(props.clientRoot, result.tid) }
+														src={ result.thumbnail }
+														commonName={ getCommonNameStr(result) }
+														sciName={ result.sciname ? result.sciname : '' }
+														author={ result.author ? result.author : '' }
+														vouchers={  result.vouchers ? result.vouchers : '' }
+														clientRoot={ props.clientRoot }
+														isEditable={ props.isEditable }
+														storeChange={ props.storeChange } 
+														checklistNotes={ result.checklistNotes ? result.checklistNotes : ''}
+													/>
+												)
+											})
+										}
+										</div>
 									</div>
-								</div>
-							)
+								)
+							}
 						})
 				}
 				</div>
@@ -522,16 +535,16 @@ function VendorUploadContainer(props) {
 					
 						{
 								Object.entries(props.uploadResponse.results).map(([index,result]) => {
-									//console.log(result);
+									//console.log(index);
 									return (
 	
-										<tr key={result.tid}>
+										<tr key={index}>
 											<td className="search-sciname">{result.searchSciname}</td>
 											<td className={ "code " + result.code.toLowerCase()}>{result.code}</td>
 											<td className="of-sciname">{result.OFsciname}</td>
 											<td className="feedback">{
 														result.feedback && result.feedback
-															.map(t => <span>{t}</span>)
+															.map(t => <span key={ t }>{t}</span>)
 													}
 											</td>
 										</tr>

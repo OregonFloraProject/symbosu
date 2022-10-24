@@ -32,9 +32,10 @@ class ExploreApp extends React.Component {
       isLoading: true,
       isSearching: false,
       isEditing: {info: false},
-      isUpdating: {info: false},
+      isUpdating: {info: false, sppList: false},
       updatedData: {info: {},spp: []},
       updateMsg: {info: {}, spp: []},
+      currentTids: [],
       clid: null,
       pid: null,
       projName: null,
@@ -85,7 +86,7 @@ class ExploreApp extends React.Component {
     this.getChecklist = this.getChecklist.bind(this);
     this.onSearchTextChanged = this.onSearchTextChanged.bind(this);
     this.onSearch = this.onSearch.bind(this);
-    this.onSearchResults = this.onSearchResults.bind(this);
+   // this.onSearchResults = this.onSearchResults.bind(this);
     this.onSearchNameChanged = this.onSearchNameChanged.bind(this);
     this.onSearchSynonymsChanged = this.onSearchSynonymsChanged.bind(this);
     this.onSortByChanged = this.onSortByChanged.bind(this);
@@ -98,7 +99,9 @@ class ExploreApp extends React.Component {
     this.updateField = this.updateField.bind(this);
     this.updateSPP = this.updateSPP.bind(this);
     this.updateSection = this.updateSection.bind(this);
-    this.handleSPPlist = this.handleSPPlist.bind(this);
+    this.previewSPPlist = this.previewSPPlist.bind(this);
+    this.updateSPPlist = this.updateSPPlist.bind(this);
+    this.clearUpload = this.clearUpload.bind(this);
     
   }
 
@@ -155,19 +158,20 @@ class ExploreApp extends React.Component {
 			//console.log(this.state.updatedData);
     });
 	}
-	handleSPPlist(arr) {
+	previewSPPlist(arr) {
 		//console.log(arr);
-		let url = `${this.props.clientRoot}/checklists/rpc/api.php`;
+		this.setUploadUpdating(true);
+		let url = `${this.props.clientRoot}/checklists/rpc/api-vendor.php`;
 		let mapParams = new URLSearchParams();
 		mapParams.append('update','spp');
-		mapParams.append('action','rewrite');
+		mapParams.append('action','preview');
 		mapParams.append('pid',this.props.pid);
 		mapParams.append('clid',this.props.clid);
 		mapParams.append('upload',JSON.stringify(arr));
-		url += '?' + mapParams.toString();
+		let mapParamString = mapParams.toString();
 		//console.log(url);
 		
-		httpPost(url)
+		httpPost(url,mapParamString)
 			.then((res) => {
 				let jres = JSON.parse(res);
 				  	
@@ -180,14 +184,59 @@ class ExploreApp extends React.Component {
 				console.error(err);
 			})
       .finally(() => {
-        //this.getChecklist();
+        this.setUploadUpdating(false);
       }); 
-			
+	}
+	setUploadUpdating(bool) {		
+		let updatingData = this.state.isUpdating;
+		updatingData['sppList'] = bool;
+		this.setState({ 
+			isUpdating: Object.assign(this.state.isUpdating, updatingData),
+		});
+		
+	}
+	updateSPPlist() {
+		if (this.state.uploadResponse && this.state.uploadResponse.results) {
+			this.setUploadUpdating(true);
+			let url = `${this.props.clientRoot}/checklists/rpc/api-vendor.php`;
+			let mapParams = new URLSearchParams();
+			mapParams.append('update','spp');
+			mapParams.append('action','rewrite');
+			mapParams.append('pid',this.props.pid);
+			mapParams.append('clid',this.props.clid);
+			mapParams.append('upload',JSON.stringify(this.state.uploadResponse.results));
+			mapParams.append('tids',JSON.stringify(this.state.currentTids));
+			let mapParamString = mapParams.toString();
+			//console.log(this.state.uploadResponse.results);
+			//url += '?' + mapParams.toString();
+			//console.log(url);///checklists/rpc/api-vendor.php?update=info&pid=4&clid=14920&locality=alt+locality2&notes=alt+notes2
+			//httpGet(url)
+			httpPost(url,mapParamString)
+				.then((res) => {
+					let jres = JSON.parse(res);
+				})
+				.catch((err) => {
+					//window.location = "/";
+					console.error(err);
+				})
+				.finally(() => {
+					this.clearUpload('finish');
+				});	
+		}
+	}
+	clearUpload(status) {
+		this.setState({
+			uploadResponse: {},
+		});
+		if (status == 'finish') {
+      this.getChecklist();
+		}else{
+			this.setUploadUpdating(false);
+			this.toggleUploadModal();
+		}
 	}
 	
 	updateSPP(obj) {
-		//console.log('updatespp');
-		//console.log(obj);
 		let section = obj.section;
 		let name = obj.name;
 		let value = obj.value;
@@ -209,11 +258,10 @@ class ExploreApp extends React.Component {
 				fields['notes'] = obj.notes;
 				break;
 		}
-		//console.log(this.state.updatedData);
 		let stateData = this.state.updatedData;
 		stateData[section][name] = value;
     if ( Object.keys(stateData[section]).length > 0 ) {
-      let url = `${this.props.clientRoot}/checklists/rpc/api.php`;
+      let url = `${this.props.clientRoot}/checklists/rpc/api-vendor.php`;
 			let mapParams = new URLSearchParams();
 			mapParams.append('update',section);
 			mapParams.append('action',action);
@@ -232,9 +280,9 @@ class ExploreApp extends React.Component {
 			url += '?' + mapParams.toString();
 			//console.log(url);
 			//return;
-			///checklists/rpc/api.php?update=spp&action=delete&pid=4&clid=14920&spp[]=3249
-			///checklists/rpc/api.php?update=spp&action=add&pid=4&clid=14920&spp[]=3549
-			///checklists/rpc/api.php?update=spp&action=edit&pid=4&clid=14920&spp=3277&notes=My+notes
+			///checklists/rpc/api-vendor.php?update=spp&action=delete&pid=4&clid=14920&spp[]=3249
+			///checklists/rpc/api-vendor.php?update=spp&action=add&pid=4&clid=14920&spp[]=3549
+			///checklists/rpc/api-vendor.php?update=spp&action=edit&pid=4&clid=14920&spp=3277&notes=My+notes
 			
 			httpPost(url)
 				.then((res) => {
@@ -276,7 +324,7 @@ class ExploreApp extends React.Component {
     }
 	}
 	updateSection(section) {
-    let url = `${this.props.clientRoot}/checklists/rpc/api.php`;
+    let url = `${this.props.clientRoot}/checklists/rpc/api-vendor.php`;
 		let mapParams = new URLSearchParams();
 		mapParams.append('update',section);
 		mapParams.append('pid',this.props.pid);
@@ -292,7 +340,7 @@ class ExploreApp extends React.Component {
 					mapParams.append(key,value);
 				});
 				url += '?' + mapParams.toString();
-				//console.log(url);///checklists/rpc/api.php?update=info&pid=4&clid=14920&locality=alt+locality2&notes=alt+notes2
+				//console.log(url);///checklists/rpc/api-vendor.php?update=info&pid=4&clid=14920&locality=alt+locality2&notes=alt+notes2
 				httpGet(url)
 					.then((res) => {
 						let jres = JSON.parse(res);
@@ -362,6 +410,12 @@ class ExploreApp extends React.Component {
 				if (this.getPid() == 3) {
 					viewType = 'grid';
 				}
+				let taxa  = [];
+				let tids = [];
+				if (res && res.taxa) {
+					taxa = this.sortResults(res.taxa);
+					tids = res.tids;//unordered
+				}
 							
 				this.setState({
 					clid: this.getClid(),
@@ -379,6 +433,7 @@ class ExploreApp extends React.Component {
 					viewType: viewType,
 					//taxa: res.taxa,
 					searchResults: this.sortResults(res.taxa),
+					currentTids: tids,
 					totals: res.totals,
 					fixedTotals: res.totals,
 					googleMapUrl: googleMapUrl,
@@ -394,7 +449,9 @@ class ExploreApp extends React.Component {
 				console.error(err);
 			})
       .finally(() => {
-        this.setState({ isLoading: false });
+        this.setState({ isLoading: false, isUploadOpen: false });
+        this.setUploadUpdating(false);
+        return;
       });
   
   }
@@ -479,13 +536,14 @@ class ExploreApp extends React.Component {
 	}
 
   // On search end
+  /*
   onSearchResults(results) {
     let newResults;
     newResults = this.sortResults(results);
     this.setState({ searchResults: newResults },function() {
 			this.updateExportUrls();
 		});
-  }
+  }*/
   
   sortResults(results) {//should receive taxa from API
   	let newResults = {};
@@ -548,7 +606,6 @@ class ExploreApp extends React.Component {
   	var infoSubmitValue = 'Update Info';//(this.state.isUpdating['info']? 'Updating' : 'Update Info');
   	var infoSubmitClass = "btn-primary " + (this.state.isUpdating['info']? 'updating' : 'normal');
 		let suggestionUrl = `${this.props.clientRoot}/garden/rpc/autofillsearch.php`;
-		//console.log(this.state.searchResults);
     return (
     <div className="wrapper">
 			<Loading 
@@ -559,12 +616,12 @@ class ExploreApp extends React.Component {
 				//key={this.state.currClid}
 				show={this.state.isUploadOpen}
 				onToggleUploadClick={this.toggleUploadModal}
-				updateSPPlist={this.handleSPPlist}
+				setUploadUpdating={this.setUploadUpdating}
+				isUploadUpdating={this.state.isUpdating['sppList']}
+				previewSPPlist={this.previewSPPlist}
+				updateSPPlist={this.updateSPPlist}
 				uploadResponse={this.state.uploadResponse}
-				/*
-				clid={this.state.currClid}
-				pid={this.state.currPid}
-				referrer={ 'taxa-garden' } */
+				clearUpload={this.clearUpload}
 				clientRoot={this.props.clientRoot}
 			></VendorUploadModal>
 			<div className="page-header">
@@ -815,6 +872,7 @@ class ExploreApp extends React.Component {
 										isSearching={this.state.isSearching}
 										isEditable={ true }
 										storeChange={this.updateSPP } 
+										currentTids={this.state.currentTids}
 								
 									/>
 											
@@ -842,6 +900,7 @@ ExploreApp.defaultProps = {
   clid: -1,
   pid: -1,
   showVouchers: 0,
+  currentTids: []
 };
 
 const headerContainer = document.getElementById("react-header");
