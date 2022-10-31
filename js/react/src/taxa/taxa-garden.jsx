@@ -254,7 +254,6 @@ class TaxaApp extends React.Component {
 							</figure>
 						}
             
-            
             <p className="mt-4">
               {/*
                 Description includes HTML tags & URL-encoded characters in the db.

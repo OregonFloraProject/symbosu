@@ -16,8 +16,9 @@ class Fmchklstchildren
     /**
      * @var int
      *
-     * @ORM\Column(name="clid", type="integer")
      * @ORM\Id
+     * @ORM\Column(name="clid", type="integer")
+     * @ORM\Cache("READ_ONLY")
      */
     private $clid;
 
@@ -26,6 +27,7 @@ class Fmchklstchildren
      *
      * @ORM\Column(name="clidchild", type="integer")
      * @ORM\Id
+     * @ORM\Cache("READ_ONLY")
      */
     private $clidChild;
 
@@ -68,7 +70,7 @@ class Fmchklstchildren
      *
      * @param \DateTime $initialtimestamp
      *
-     * @return Fmchecklists
+     * @return \DateTime
      */
     public function setInitialtimestamp($initialtimestamp)
     {
