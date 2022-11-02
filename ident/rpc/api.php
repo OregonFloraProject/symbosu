@@ -51,8 +51,8 @@ function get_data($params) {
 		$results["iconUrl"] = ($checklist->getIconUrl()? $checklist->getIconUrl() :'') ;
 		$results["authors"] = ($checklist->getAuthors()? $checklist->getAuthors() :'') ;
 		$results["abstract"] = ($checklist->getAbstract()? $checklist->getAbstract() :'') ;
-    $results["lat"] = ($checklist->getLat()? $checklist->getLat() :'') ;
-    $results["lng"] = ($checklist->getLng()? $checklist->getLng() :'') ;
+    $results["lat"] = ($checklist->getLatcentroid()? $checklist->getLatcentroid() :'') ;
+    $results["lng"] = ($checklist->getLongcentroid()? $checklist->getLongcentroid() :'') ;
     $results["locality"] = ($checklist->getLocality()? $checklist->getLocality() :'') ;
     $results["type"] = ($checklist->getType()? $checklist->getType() :'') ;
 

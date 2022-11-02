@@ -1,5 +1,16 @@
 <?php
 include_once("../config/symbini.php");
+
+$isEditor = false;
+$clid = intval($_REQUEST['cl']);
+if($IS_ADMIN || (array_key_exists("ClAdmin",$USER_RIGHTS) && in_array($clid,$USER_RIGHTS["ClAdmin"]))){
+	$isEditor = true;
+}
+if (!$isEditor) {#send them to the login page
+	header("Location: " . $CLIENT_ROOT . "/profile/index.php?refurl=" .  $_SERVER['REQUEST_URI']);
+}
+
+
 ?>
 <html>
   <head>

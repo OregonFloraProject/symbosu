@@ -1,8 +1,7 @@
 import React from "react";
-
 //import HelpButton from "../common/helpButton.jsx";
 import {SearchWidget} from "../common/search.jsx";
-import ViewOpts from "./viewOpts.jsx";
+//import ViewOpts from "./viewOpts.jsx";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -12,12 +11,20 @@ library.add( faFileCsv, faFileWord, faPrint );
 /**
  * Full sidebar
  */
-class SideBar extends React.Component {
+class SideBarVendor extends React.Component {
   constructor(props) {
     super(props);
-		this.onSearchNameClicked = this.props.onSearchNameClicked.bind(this);
-		this.onSearchSynonymsClicked = this.props.onSearchSynonymsClicked.bind(this);
+    this.state = { 
+			section: props.section,
+			uploadedFile: null
+		};
+    this.storeChange = this.props.storeChange.bind(this);
   }
+  handleAddSPP(e) {
+		let obj = {'action': e.target.getAttribute('action'),'name': e.target.name, 'value': e.target.getAttribute("tid"), 'section': e.target.getAttribute("section")};
+		this.storeChange(obj);
+  }
+
 
   render() {
   
@@ -25,6 +32,7 @@ class SideBar extends React.Component {
   	if (this.props.totals['taxa'] < this.props.fixedTotals['taxa']) {
   		showFixedTotals = true;
   	}
+  	//console.log(this.props.spp);
     return (
       <div
         id="sidebar"
@@ -72,106 +80,80 @@ class SideBar extends React.Component {
 					</div>
 				</div>
 		  		<div className="filter-tools">
-				  <h3>Filter Tools</h3>
+				  <h3 className="container">Manage plants</h3>
+				  
+				  
+				  
+				  {
+				  	<div className="open-upload">
+					  	<form>
+					  		
+					  		<button 
+					  			type="button"
+					  			className="btn btn-primary"
+					  			onClick={this.props.onToggleUploadClick}
+					  		>Open Upload Manager</button>
+					  		
+					  	</form>
+					  </div>
+				
+				  }
 
 					{
 					<SearchWidget
-						placeholder="Search this checklist"
+						placeholder="Add a plant"
 						clientRoot={ this.props.clientRoot }
 						isLoading={ this.props.isLoading }
 						textValue={ this.props.searchText }
 						onTextValueChanged={ this.props.onSearchTextChanged }
 						onSearch={ this.props.onSearch }
+						searchResults={ this.props.searchResults }
 						suggestionUrl={ this.props.searchSuggestionUrl }
 						clid={ this.props.clid }
-						dynclid={ this.props.dynclid }
 						searchName={ this.props.searchName }
 						onClearSearch={ this.props.onClearSearch }
 					/>
 					}
-	
-					<div className="view-opts" className="container row">
-						<div className="row">
-							<div className="opt-labels">
-								<p>Search:</p>
-							</div>
-							<div className="opt-settings">
+					<div className="add-buttons">
+					{ 
+						Object.keys(this.props.spp).length > 0 && 
+						<div className="container row">
+						 {Object.keys(this.props.spp).map((label) => {
+								//console.log(label);
+								//let obj = {section:"spp", name:label, value:this.props.spp[label]};
+								return (
 								
-								<div className="view-opt-wrapper">
 									<input 
-										type="radio"
-										name={ "searchname" }
-										value={ "sciname" }
-										onChange={() => {
-											this.onSearchNameClicked("sciname")
-										}}
-										checked={this.props.searchName === 'sciname'? true: false}
-									
-									/> <label className="" htmlFor={ "searchname" }>Scientific Names</label>
-								</div>
-								
-								<div className="view-opt-wrapper">
-									<input 
-										type="radio"
-										name={ "searchname" }
-										value={ "commonname" }
-										onChange={() => {
-											this.onSearchNameClicked("commonname")
-										}}
-										checked={this.props.searchName === 'commonname'? true: false}
-									/> <label className="" htmlFor={ "searchname" }>Common Names</label>
-								</div>
-							</div>
-						</div>
-						
-					
-						<div className="row">
-							<div className="opt-labels">
-								Include:
-							</div>
-							<div className="opt-settings">
+										key={ this.props.spp[label] }
+										type="button"
+										className="btn btn-primary"
+										name={ label }
+										value={ 'Add ' + label + '?' }	
+										action={ 'add' }
+										tid={ this.props.spp[label] } 
+										section={this.state.section}						
+										onClick={ this.handleAddSPP.bind(this)} 
+									></input>
+								)
 
-										<input 
-											type="checkbox" 
-											name={ "searchSynonyms" } 
-											value={ this.props.searchSynonyms == 'on' ? "on" : "off" } 
-											onChange={() => {
-												this.onSearchSynonymsClicked(this.props.searchSynonyms == 'on' ? "off" : "on" )
-											}}
-											checked={this.props.searchSynonyms === 'on'? true: false}
-										/>
-										<label className="ml-2 align-middle" htmlFor={ "searchSynonyms" }>{ "Synonyms" }</label>
-							</div>
+							})}
 						</div>
-					</div>
-
-				<ViewOpts
-					viewType={ this.props.viewType }
-					sortBy={ this.props.sortBy }
-					showTaxaDetail={ this.props.showTaxaDetail }
-					onSortByClicked={ this.props.onSortByClicked }
-					onSearchNameClicked={ this.props.onViewTypeClicked }
-					onSearchSynonymsClicked={ this.props.onSearchSynonymsClicked }
-					onViewTypeClicked={ this.props.onViewTypeClicked }
-					onTaxaDetailClicked={ this.props.onTaxaDetailClicked }
-					filters={
-						Object.keys(this.props.filters).map((filterKey) => {
-							return { key: filterKey, val: this.props.filters[filterKey] }
-						})
 					}
-				/>
+						</div>
+				<div className="msg" id="spp-msg"></div>
 			</div>
 		</div>
     );
   }
 }
 
-SideBar.defaultProps = {
+SideBarVendor.defaultProps = {
   searchText: '',
-  searchSugestionUrl: '',
+  searchSuggestionUrl: '',
+  spp: [],
   //onPlantFeaturesChanged: () => {},
   //onGrowthMaintenanceChanged: () => {},
   //onBeyondGardenChanged: () => {}
 };
 
-export default SideBar;
+export default SideBarVendor;

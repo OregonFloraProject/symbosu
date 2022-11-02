@@ -51,19 +51,21 @@ class ViewOpts extends React.Component {
 							/>
 							<label className="" htmlFor={ "sortBy" }>{ "Alphabetical by taxon" }</label>
           </div>
-					<div className="view-opt-wrapper">
-							<input 
-								type="checkbox" 
-								name={ "showTaxaDetail" } 
-								value={ this.props.showTaxaDetail == 'on' ? "on" : "off" } 
-								onChange={() => {
-									this.onTaxaDetailClicked(this.props.showTaxaDetail == 'on' ? "off" : "on" )
-								}}
-								disabled={ this.props.viewType === 'grid'? true : false }
-								checked={ this.props.showTaxaDetail == 'on' }
-							/>
-							<label className="" htmlFor={ "showTaxaDetail" }>{ "Vouchers & taxon authors" }</label>
-          </div>
+          { this.props.clid != -1 &&
+						<div className="view-opt-wrapper">
+								<input 
+									type="checkbox" 
+									name={ "showTaxaDetail" } 
+									value={ this.props.showTaxaDetail == 'on' ? "on" : "off" } 
+									onChange={() => {
+										this.onTaxaDetailClicked(this.props.showTaxaDetail == 'on' ? "off" : "on" )
+									}}
+									disabled={ this.props.viewType === 'grid'? true : false }
+									checked={ this.props.showTaxaDetail == 'on' }
+								/>
+								<label className="" htmlFor={ "showTaxaDetail" }>{ "Vouchers & taxon authors" }</label>
+						</div>
+					}
         </div>
       </div>
     </div>

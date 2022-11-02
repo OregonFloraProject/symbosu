@@ -108,8 +108,10 @@ class Fmchecklists
     /**
      * @var int|null
      *
-     * @ORM\OneToMany(targetEntity="Fmchecklists", mappedBy="clid")
-     * @ORM\Cache("READ_ONLY")
+   	 * @var ArrayCollection
+     * @ORM\JoinTable(name="Fmchklstchildren")
+     * @ORM\JoinColumn(name="clid", referencedColumnName="clidChild")
+     * 
      */
     private $children;
 
