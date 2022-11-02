@@ -420,6 +420,7 @@ class FeatureSelector extends React.Component {
 FeatureSelector.defaultProps = {
   states: [],
   onAttrClicked: () => {},
+  onGroupFilterClicked: () => {},
   clientRoot: '',
 };
 
