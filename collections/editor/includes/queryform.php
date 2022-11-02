@@ -133,7 +133,7 @@ else{
 			if(!$crowdSourceMode){
 				?>
 				<div class="fieldGroupDiv">
-					<div class="fieldDiv" style="<?php echo ($isGenObs?'display:none':''); ?>">
+					<div class="fieldDiv" style="<?php echo ($isGenObs && !($IS_ADMIN || ($collId && array_key_exists("CollAdmin", $USER_RIGHTS) && in_array($collId,$USER_RIGHTS["CollAdmin"])))?'display:none':''); ?>">
 						<?php echo $LANG['ENTERED_BY']; ?>:
 						<input type="text" name="q_recordenteredby" value="<?php echo $qRecordEnteredBy; ?>" style="width:70px;" onchange="setOrderBy(this)" />
 						<button type="button" onclick="enteredByCurrentUser()" style="font-size:70%; margin: 0 auto;" title="<?php echo $LANG['LIMIT_TO_CURRENT']; ?>"><?php echo $LANG['CU']; ?></button>
@@ -661,7 +661,7 @@ else{
 						<option <?php echo ($recLimit==3000?'selected':''); ?>>3000</option>
 					</select> <?php //echo $LANG['RECORDS']; ?>
 				</span>
-				<div style="margin-left:110px"><input name="dynamictable" type="checkbox" value="1" <?php if(isset($dynamicTable) && $dynamicTable) echo 'checked'; ?> /> <?php echo $LANG['DYNAMIC_TABLE']; ?></div>
+				<div style="/*margin-left:110px*/"><input name="dynamictable" type="checkbox" value="1" <?php if(isset($dynamicTable) && $dynamicTable) echo 'checked'; ?> /> <?php echo $LANG['DYNAMIC_TABLE']; ?></div>
  			</div>
 		</fieldset>
 	</form>

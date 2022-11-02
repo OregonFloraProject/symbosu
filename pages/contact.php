@@ -39,11 +39,11 @@ function obfuscate($email) {
         <div class="inner-content">
             <!-- place static page content here. -->
             <h2>Location:</h2>
-            <p>Rooms 2625, 2627 Cordley Hall<br />Oregon State University<br />2701 SW Campus Way<br />Corvallis, OR 97331</p>
+            <p>2701 SW Campus Way<br />Corvallis, OR 97331</p>
             <h2>Mailing Address:</h2>
-            <p>OSU Dept. Botany &amp; Plant Pathology<br />Attn: OregonFlora<br />2701 SW Campus Way<br />Corvallis, OR 97331</p>
+            <p>OregonFlora<br />OSU Dept. Botany &amp; Plant Pathology<br />2701 SW Campus Way<br />Corvallis, OR 97331</p>
             <h2>Correspondence:</h2>
-            <p>OSU Dept. Botany &amp; Plant Pathology<br/>Attn: Dr. Linda Hardison, Director, OregonFlora<br/>2701 SW Campus Way<br/>Corvallis, OR 97331<br/>
+            <p>OregonFlora<br/>Dr. Linda K. Hardison, Director<br/>OSU Dept. Botany &amp; Plant Pathology<br/>2701 SW Campus Way<br/>Corvallis, OR 97331<br/>541-737-4338</p>
             <h2>Send contributions of species lists, digital images, and other data to:</h2>
             <p><a href="mailto:info@oregonflora.org">info@oregonflora.org</a></p>
             <h2>Staff:</h2>

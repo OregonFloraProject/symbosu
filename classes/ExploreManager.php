@@ -16,8 +16,7 @@ class ExploreManager {
   protected $searchTerm;
   protected $searchName = '';
   protected $searchSynonyms = false;
-  protected $lat = '';
-  protected $lng = '';
+
 	
 
   public function __construct($clid=-1) {
@@ -38,6 +37,9 @@ class ExploreManager {
     return $newChecklist;
   }
   
+
+  
+  
   public function getClid() {
     return $this->model->getClid();
   }
@@ -54,17 +56,26 @@ class ExploreManager {
   public function getAuthors() {
     return $this->model->getAuthors();
   }
+  public function getLocality() {
+    return $this->model->getLocality();
+  }
+  public function getPublication() {
+    return $this->model->getPublication();
+  }
+  public function getNotes() {
+    return $this->model->getNotes();
+  }
+  public function getPointRadius() {
+    return $this->model->getPointradiusmeters();
+	}
   public function getIconUrl() {
     return $this->model->getIconurl();
   }
-  public function getLat() {
+  public function getLatcentroid() {
     return $this->model->getLatcentroid();
   }
-  public function getLng() {
+  public function getLongcentroid() {
     return $this->model->getLongcentroid();
-  }
-  public function getLocality() {
-    return $this->model->getLocality();
   }
   public function getType() {
     return $this->model->getType();
@@ -73,14 +84,14 @@ class ExploreManager {
   	$this->taxa = $this->populateTaxa($this->getClid());
     return $this->taxa;
   }
+  public function setPid($pid) {
+  	$this->pid = $pid;
+  }
   public function getVouchers() {
   	foreach ($this->taxa as $rowArr) {
   		$this->taxaVouchers[$rowArr['tid']] = $this->populateVouchers($rowArr['tid']);
   	}
   	return $this->taxaVouchers;
-  }
-  public function setPid($pid) {
-  	$this->pid = $pid;
   }
   public function getPid() {
   	return $this->pid;
@@ -96,6 +107,7 @@ class ExploreManager {
   public function setSearchSynonyms($bool) {
   	$this->searchSynonyms = ($bool === true? true: false);
   }
+
   
   private function populateTaxa($clid) {
   
@@ -108,7 +120,6 @@ class ExploreManager {
   	$wheres = array(); 
   	$params = array();
   	$orderBy = 't.sciname';
-  	
   	
   	$innerJoins[] = array("Fmchklsttaxalink", "ctl", "WITH", "t.tid = ctl.tid");
   	#$innerJoins[] = array("Fmchecklists", "cl", "WITH", "ctl.clid = cl.clid");
