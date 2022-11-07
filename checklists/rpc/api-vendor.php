@@ -107,7 +107,7 @@ function SPPtoCSV($results) {
 		if ($fp) {
 			fputcsv($fp,["Your sciname","Result","OF sciname","Feedback"]);
 			foreach ($results as $result) {
-				$temp = [$result['searchSciname'],$result['code'],($result['OFsciname']?$result['OFsciname']:''),join("; ",$result['feedback'])];
+				$temp = [$result['searchSciname'],$result['code'],(isset($result['OFsciname'])?$result['OFsciname']:''),join("; ",$result['feedback'])];
 				fputcsv($fp, $temp);
 			}
 			fclose($fp);
