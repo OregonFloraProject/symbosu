@@ -93,11 +93,16 @@ function rewriteSPP() {
 function SPPtoCSV($results) {
 	global $CLIENT_ROOT, $SERVER_ROOT;
 	
+	$filename = '';
 	$url = '';
 	if (sizeof($results)) {
-		$url =  '/temp/downloads/vendor/' . uniqid() . '.csv';
-		#var_dump($CLIENT_ROOT);exit;
-		$filename = $SERVER_ROOT . $url;
+		$dir = $SERVER_ROOT  . '/temp/downloads/vendor';
+		if (!file_exists($dir)) {
+			mkdir($dir, 0777, true);
+		}
+		$file = uniqid() . '.csv';
+		$filename =  $dir . '/' . $file;
+		$url = $CLIENT_ROOT . 'temp/downloads/vendor/' . $file;
 		$fp = fopen($filename, 'w');
 		if ($fp) {
 			fputcsv($fp,["Your sciname","Result","OF sciname","Feedback"]);
