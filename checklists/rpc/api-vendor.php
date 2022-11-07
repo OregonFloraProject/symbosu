@@ -96,13 +96,14 @@ function SPPtoCSV($results) {
 	$filename = '';
 	$url = '';
 	if (sizeof($results)) {
-		$dir = $SERVER_ROOT  . '/temp/downloads/vendor';
+		$path = '/temp/downloads/vendor/';
+		$dir = $SERVER_ROOT  . $path;
 		if (!file_exists($dir)) {
 			mkdir($dir, 0777, true);
 		}
 		$file = uniqid() . '.csv';
-		$filename =  $dir . '/' . $file;
-		$url = $CLIENT_ROOT . 'temp/downloads/vendor/' . $file;
+		$filename =  $dir . $file;
+		$url = $CLIENT_ROOT . $path   . $file;
 		$fp = fopen($filename, 'w');
 		if ($fp) {
 			fputcsv($fp,["Your sciname","Result","OF sciname","Feedback"]);
