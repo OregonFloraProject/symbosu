@@ -1,25 +1,26 @@
 <?php
 include_once('../../../config/symbini.php');
 include_once($SERVER_ROOT.'/classes/OccurrenceEditorMaterialSample.php');
-include_once($SERVER_ROOT.'/collections/editor/includes/config/materialSampleVars.php');
-header("Content-Type: text/html; charset=".$CHARSET);
+include_once($SERVER_ROOT.'/content/lang/fieldterms/materialSampleVars.'.$LANG_TAG.'.php');
+header('Content-Type: text/html; charset='.$CHARSET);
 
 $occid = $_REQUEST['occid'];
-$occIndex = $_REQUEST['occindex'];
 $collid = isset($_REQUEST['collid'])?$_REQUEST['collid']:'';
+$occIndex = $_REQUEST['occindex'];
 
 $materialSampleManager = new OccurrenceEditorMaterialSample();
 
 //Sanitation
 if(!is_numeric($occid)) $occid = 0;
 if(!is_numeric($collid)) $collid = 0;
+if(!is_numeric($occIndex)) $occIndex = 0;
 $materialSampleManager->cleanFormData($_POST);
 
 $materialSampleManager->setOccid($occid);
 
 $isEditor = false;
 if($IS_ADMIN) $isEditor = true;
-elseif($collId && array_key_exists('CollAdmin',$USER_RIGHTS) && in_array($collid,$USER_RIGHTS['CollAdmin'])) $isEditor = true;
+elseif($collid && array_key_exists('CollAdmin',$USER_RIGHTS) && in_array($collid,$USER_RIGHTS['CollAdmin'])) $isEditor = true;
 elseif(array_key_exists('CollEditor',$USER_RIGHTS) && in_array($collid,$USER_RIGHTS['CollEditor'])) $isEditor = true;
 
 $materialSampleArr = $materialSampleManager->getMaterialSampleArr();
@@ -28,25 +29,30 @@ $controlTermArr = $materialSampleManager->getMSTypeControlValues();
 <script src="<?php echo $CLIENT_ROOT; ?>/js/jquery.js" type="text/javascript"></script>
 <script src="<?php echo $CLIENT_ROOT; ?>/js/jquery-ui.js" type="text/javascript"></script>
 <script>
+	var collid = <?php echo $collid; ?>;
 	$(document).ready(function() {
-		$("#ms_preparedBy").autocomplete({
+		$(".ms_preparedBy").autocomplete({
 			source: function( request, response ) {
-				$.getJSON( "rpc/getUsers.php", { term: request.term, collid: $("#collid").val() }, response );
+				$.getJSON( "rpc/getUsers.php", { term: request.term, collid: collid }, response );
 			},
 			minLength: 2,
 			autoFocus: true,
+			change: function( event, ui ) {
+				if(ui.item === null) {
+					$(this.form.ms_preparedByUid).val("");
+					if(this.value != "") alert("You must select a user from the list. If user is not in the system, enter information into preparation detials.");
+				}
+			},
 			select: function( event, ui ) {
-				if(ui.item) $("#ms_preparedByUid").val(ui.item.id);
+				if(ui.item) $(this.form.ms_preparedByUid).val(ui.item.id);
 			}
 		});
 	});
 </script>
 <link href="<?php echo $CLIENT_ROOT; ?>/css/jquery-ui.css" type="text/css" rel="stylesheet" />
-<link href="includes/config/materialsample.css?ver=2" type="text/css" rel="stylesheet" />
+<link href="<?php echo $CLIENT_ROOT; ?>/css/symb/occureditormaterialsample.css?ver=3" type="text/css" rel="stylesheet" />
 <style type="text/css">
 	botton { margin: 10px; }
-	.fieldBlock { height: 35px; }
-	.fieldBlock label{ display: block }
 	.edit-control{ float:right; }
 	.display-div{ margin-bottom: 3px; }
 	.display-div label{ display: inline; text-decoration: underline; }
@@ -55,9 +61,11 @@ $controlTermArr = $materialSampleManager->getMSTypeControlValues();
 	<div class="edit-control">
 		<span><a href="#" onclick="$('#formDiv-0').toggle()"><img src="../../images/add.png" /></a></span>
 	</div>
+	<!--
 	<div style="margin: 20px;">
 		See <a href="https://tools.gbif.org/dwca-validator/extension.do?id=http://data.ggbn.org/schemas/ggbn/terms/MaterialSample" target="_blank">GGBN Material Sample Extension</a> documentation
 	</div>
+	-->
 	<?php
 	if($isEditor){
 		$msCnt = count($materialSampleArr);
@@ -86,7 +94,7 @@ $controlTermArr = $materialSampleManager->getMSTypeControlValues();
 				?>
 				<form name="matSampleForm-<?php echo $matSampleID; ?>" action="occurrenceeditor.php" method="post" >
 					<div style="clear:both">
-						<div class="fieldBlock" id="smSampleTypeDiv">
+						<div class="smSampleTypeDiv">
 							<label><?php echo $MS_LABEL_ARR['sampleType']; ?>: </label>
 							<span class="edit-elem">
 								<?php
@@ -111,19 +119,19 @@ $controlTermArr = $materialSampleManager->getMSTypeControlValues();
 								?>
 							</span>
 						</div>
-						<div class="fieldBlock" id="smCatalogNumberDiv">
+						<div class="smCatalogNumberDiv">
 							<label><?php echo $MS_LABEL_ARR['catalogNumber']; ?>: </label>
 							<span class="edit-elem">
 								<input type="text" name="ms_catalogNumber" value="<?php echo isset($msArr['catalogNumber'])?$msArr['catalogNumber']:''; ?>" />
 							</span>
 						</div>
-						<div class="fieldBlock" id="smGuidDiv">
+						<div class="smGuidDiv">
 							<label><?php echo $MS_LABEL_ARR['guid']; ?>: </label>
 							<span class="edit-elem">
 								<input type="text" name="ms_guid" value="<?php echo isset($msArr['guid'])?$msArr['guid']:''; ?>" />
 							</span>
 						</div>
-						<div class="fieldBlock" id="smSampleConditionDiv">
+						<div class="smSampleConditionDiv">
 							<label><?php echo $MS_LABEL_ARR['sampleCondition']; ?>: </label>
 							<span class="edit-elem">
 								<?php
@@ -148,7 +156,7 @@ $controlTermArr = $materialSampleManager->getMSTypeControlValues();
 								?>
 							</span>
 						</div>
-						<div class="fieldBlock" id="smDispositionDiv">
+						<div class="smDispositionDiv">
 							<label><?php echo $MS_LABEL_ARR['disposition']; ?>: </label>
 							<span class="edit-elem">
 								<?php
@@ -173,7 +181,7 @@ $controlTermArr = $materialSampleManager->getMSTypeControlValues();
 								?>
 							</span>
 						</div>
-						<div class="fieldBlock" id="smPreservationTypeDiv">
+						<div class="smPreservationTypeDiv">
 							<label><?php echo $MS_LABEL_ARR['preservationType']; ?>: </label>
 							<span class="edit-elem">
 								<?php
@@ -198,38 +206,38 @@ $controlTermArr = $materialSampleManager->getMSTypeControlValues();
 								?>
 							</span>
 						</div>
-						<div class="fieldBlock" id="smPreparationDateDiv">
+						<div class="smPreparationDateDiv">
 							<label><?php echo $MS_LABEL_ARR['preparationDate']; ?>: </label>
 							<span class="edit-elem">
 								<input type="date" name="ms_preparationDate" value="<?php echo isset($msArr['preparationDate'])?$msArr['preparationDate']:''; ?>" />
 							</span>
 						</div>
-						<div class="fieldBlock" id="smPreparedByUidDiv">
+						<div class="smPreparedByUidDiv">
 							<label><?php echo $MS_LABEL_ARR['preparedBy']; ?>: </label>
 							<span class="edit-elem">
-								<input id="ms_preparedBy" name="ms_preparedBy" type="text" value="<?php echo isset($msArr['preparedBy'])?$msArr['preparedBy']:''; ?>" />
-								<input id="ms_preparedByUid" name="ms_preparedByUid" type="hidden" value="<?php echo isset($msArr['preparedByUid'])?$msArr['preparedByUid']:''; ?>" />
+								<input class="ms_preparedBy" name="ms_preparedBy" type="text" value="<?php echo isset($msArr['preparedBy'])?$msArr['preparedBy']:''; ?>" />
+								<input name="ms_preparedByUid" type="hidden" value="<?php echo isset($msArr['preparedByUid'])?$msArr['preparedByUid']:''; ?>" />
 							</span>
 						</div>
-						<div class="fieldBlock" id="smPreparationDetailsDiv">
+						<div class="smPreparationDetailsDiv">
 							<label><?php echo $MS_LABEL_ARR['preparationDetails']; ?>: </label>
 							<span class="edit-elem">
 								<input type="text" name="ms_preparationDetails" value="<?php echo isset($msArr['preparationDetails'])?$msArr['preparationDetails']:''; ?>" />
 							</span>
 						</div>
-						<div class="fieldBlock" id="smIndividualCountDiv">
+						<div class="smIndividualCountDiv">
 							<label><?php echo $MS_LABEL_ARR['individualCount']; ?>: </label>
 							<span class="edit-elem">
 								<input type="text" name="ms_individualCount" value="<?php echo isset($msArr['individualCount'])?$msArr['individualCount']:''; ?>" />
 							</span>
 						</div>
-						<div class="fieldBlock" id="smSampleSizeDiv">
+						<div class="smSampleSizeDiv">
 							<label><?php echo $MS_LABEL_ARR['sampleSize']; ?>: </label>
 							<span class="edit-elem">
 								<input type="text" name="ms_sampleSize" value="<?php echo isset($msArr['sampleSize'])?$msArr['sampleSize']:''; ?>" />
 							</span>
 						</div>
-						<div class="fieldBlock" id="smStorageLocationDiv">
+						<div class="smStorageLocationDiv">
 							<label><?php echo $MS_LABEL_ARR['storageLocation']; ?>: </label>
 							<span class="edit-elem">
 								<?php
@@ -254,7 +262,7 @@ $controlTermArr = $materialSampleManager->getMSTypeControlValues();
 								?>
 							</span>
 						</div>
-						<div class="fieldBlock" id="smRemarksDiv">
+						<div class="smRemarksDiv">
 							<label><?php echo $MS_LABEL_ARR['remarks']; ?>: </label>
 							<span class="edit-elem">
 								<input type="text" name="ms_remarks" value="<?php echo isset($msArr['remarks'])?$msArr['remarks']:''; ?>" />
@@ -263,7 +271,7 @@ $controlTermArr = $materialSampleManager->getMSTypeControlValues();
 						<div style="clear:both;">
 							<input name="occid" type="hidden" value="<?php echo $occid; ?>" />
 							<input name="matSampleID" type="hidden" value="<?php echo $matSampleID; ?>" />
-							<input id="collid" name="collid" type="hidden" value="<?php echo $collid; ?>" />
+							<input name="collid" type="hidden" value="<?php echo $collid; ?>" />
 							<input name="occindex" type="hidden" value="<?php echo $occIndex; ?>" />
 							<input name="tabtarget" type="hidden" value="3" />
 							<?php

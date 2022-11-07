@@ -1,29 +1,21 @@
 <?php
-include_once($SERVER_ROOT.'/config/dbconnection.php');
+include_once($SERVER_ROOT.'/classes/Manager.php');
 
-class ChecklistVoucherAdmin {
+class ChecklistVoucherAdmin extends Manager {
 
-	protected $conn;
 	protected $clid;
 	protected $clName;
 	protected $clMetadata;
 	protected $childClidArr = array();
 	private $footprintWkt;
 	private $queryVariablesArr = array();
-	protected $closeConnOnDestroy = true;
 
 	function __construct($con=null) {
-		if($con) {
-			$this->conn = $con;
-			$this->closeConnOnDestroy = false;
-		}
-		else{
-			$this->conn = MySQLiConnectionFactory::getCon("write");
-		}
+		parent::__construct(null, 'write', $con);
 	}
 
 	function __destruct(){
-		if($this->closeConnOnDestroy && !($this->conn === false)) $this->conn->close();
+		parent::__destruct();
 	}
 
 	public function setClid($clid){
@@ -244,12 +236,20 @@ class ChecklistVoucherAdmin {
 	public function getSqlFrag(){
 		$sqlFrag = '';
 		if(isset($this->queryVariablesArr['country']) && $this->queryVariablesArr['country']){
-			$countryStr = str_replace(';',',',$this->cleanInStr($this->queryVariablesArr['country']));
-			$sqlFrag = 'AND (o.country IN("'.$countryStr.'")) ';
+			$countrySql = '';
+			$countryArr = explode(';',str_replace(',',';',$this->queryVariablesArr['country']));
+			foreach($countryArr as $cTerm){
+				$countrySql .= ',"'.$this->cleanInStr(trim($cTerm)).'"';
+			}
+			$sqlFrag .= 'AND (o.country IN('.trim($countrySql,',').')) ';
 		}
 		if(isset($this->queryVariablesArr['state']) && $this->queryVariablesArr['state']){
-			$stateStr = str_replace(';',',',$this->cleanInStr($this->queryVariablesArr['state']));
-			$sqlFrag .= 'AND (o.stateprovince = "'.$stateStr.'") ';
+			$stateSql = '';
+			$stateArr = explode(';',str_replace(',',';',$this->queryVariablesArr['state']));
+			foreach($stateArr as $sTerm){
+				$stateSql .= ',"'.$this->cleanInStr(trim($sTerm)).'"';
+			}
+			$sqlFrag .= 'AND (o.stateprovince IN('.trim($stateSql,',').')) ';
 		}
 		if(isset($this->queryVariablesArr['county']) && $this->queryVariablesArr['county']){
 			$countyStr = str_replace(';',',',$this->queryVariablesArr['county']);
@@ -636,19 +636,6 @@ class ChecklistVoucherAdmin {
 			}
 		}
 		return $retStr;
-	}
-
-	protected function cleanOutStr($str){
-		$str = str_replace('"',"&quot;",$str);
-		$str = str_replace("'","&apos;",$str);
-		return $str;
-	}
-
-	protected function cleanInStr($str){
-		$newStr = trim($str);
-		$newStr = preg_replace('/\s\s+/', ' ',$newStr);
-		$newStr = $this->conn->real_escape_string($newStr);
-		return $newStr;
 	}
 }
 ?>

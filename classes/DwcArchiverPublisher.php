@@ -3,6 +3,8 @@ include_once($SERVER_ROOT.'/classes/DwcArchiverCore.php');
 
 class DwcArchiverPublisher extends DwcArchiverCore{
 
+	private $materialSampleIsActive = false;
+
 	public function __construct(){
 		parent::__construct('write');
 	}
@@ -29,7 +31,7 @@ class DwcArchiverPublisher extends DwcArchiverCore{
 		$rs->free();
 
 		//Get NULL GUID counts
-		$guidTarget = $this->collArr[$collId]['guidtarget'];
+		$guidTarget = ($this->collArr?$this->collArr[$collId]['guidtarget']:'');
 		if($guidTarget){
 			$sql = 'SELECT COUNT(o.occid) AS cnt FROM omoccurrences o ';
 			if($guidTarget == 'symbiotaUUID'){
@@ -97,8 +99,6 @@ class DwcArchiverPublisher extends DwcArchiverCore{
 		$this->setServerDomain();
 		$urlPathPrefix = $this->serverDomain.$GLOBALS['CLIENT_ROOT'].(substr($GLOBALS['CLIENT_ROOT'],-1)=='/'?'':'/');
 
-		$localDomain = $this->serverDomain;
-
 		$linkElem = $newDoc->createElement('link');
 		$linkElem->appendChild($newDoc->createTextNode($urlPathPrefix));
 		$channelElem->appendChild($linkElem);
@@ -129,12 +129,8 @@ class DwcArchiverPublisher extends DwcArchiverCore{
 				//Link is a
 				$imgLink = $urlPathPrefix.$cArr['icon'];
 			}
-			elseif(substr($cArr['icon'],0,1) == '/'){
-				$imgLink = $localDomain.$cArr['icon'];
-			}
-			else{
-				$imgLink = $cArr['icon'];
-			}
+			elseif(substr($cArr['icon'],0,1) == '/') $imgLink = $this->serverDomain.$cArr['icon'];
+			else $imgLink = $cArr['icon'];
 			$iconElem = $newDoc->createElement('image');
 			$iconElem->appendChild($newDoc->createTextNode($imgLink));
 			$itemElem->appendChild($iconElem);
@@ -182,11 +178,14 @@ class DwcArchiverPublisher extends DwcArchiverCore{
 		}
 
 		//Add existing items
-		$rssFile = $GLOBALS['SERVER_ROOT'].(substr($GLOBALS['SERVER_ROOT'],-1)=='/'?'':'/').'webservices/dwc/rss.xml';
-		if(file_exists($rssFile)){
+		$sourcePath = $GLOBALS['SERVER_ROOT'].'/content/dwca/rss.xml';
+		$targetPath = $sourcePath;
+		$deprecatedPath = $GLOBALS['SERVER_ROOT'].'/webservices/dwc/rss.xml';
+		if(!file_exists($sourcePath) && file_exists($deprecatedPath)) $sourcePath = $deprecatedPath;
+		if(file_exists($sourcePath)){
 			//Get other existing DWCAs by reading and parsing current rss.xml
 			$oldDoc = new DOMDocument();
-			$oldDoc->load($rssFile);
+			$oldDoc->load($sourcePath);
 			$items = $oldDoc->getElementsByTagName("item");
 			foreach($items as $i){
 				//Filter out item for active collection
@@ -200,20 +199,25 @@ class DwcArchiverPublisher extends DwcArchiverCore{
 		foreach($itemArr as $i){
 			$channelElem->appendChild($i);
 		}
+		$newDoc->save($targetPath);
 
-		$newDoc->save($rssFile);
+		if($sourcePath != $targetPath){
+			$redirectDoc = new DOMDocument();
+			$redirectDoc->loadXML('<redirect><newLocation>'.$targetPath.'</newLocation></redirect>');
+			$redirectDoc->save($deprecatedPath);
+		}
 
-		$this->logOrEcho("Done!!\n");
+		$this->logOrEcho("Done!\n");
 	}
 
 	//Misc data retrival functions
 	public function getDwcaItems($collid = 0){
 		$retArr = Array();
-		$rssFile = $GLOBALS['SERVER_ROOT'].(substr($GLOBALS['SERVER_ROOT'],-1)=='/'?'':'/').'webservices/dwc/rss.xml';
+		$rssFile = $GLOBALS['SERVER_ROOT'].'/content/dwca/rss.xml';
 		if(file_exists($rssFile)){
 			$xmlDoc = new DOMDocument();
 			$xmlDoc->load($rssFile);
-			$items = $xmlDoc->getElementsByTagName("item");
+			$items = $xmlDoc->getElementsByTagName('item');
 			$cnt = 0;
 			foreach($items as $i ){
 				$id = $i->getAttribute("collid");
@@ -241,7 +245,8 @@ class DwcArchiverPublisher extends DwcArchiverCore{
 
 	public function getCollectionList($catID){
 		$retArr = array();
-		$sql = 'SELECT c.collid, c.collectionname, CONCAT_WS("-",c.institutioncode,c.collectioncode) as instcode, c.guidtarget, c.dwcaurl, c.managementtype '.
+		$serverName = $this->getDomain();
+		$sql = 'SELECT c.collid, c.collectionname, CONCAT_WS("-",c.institutioncode,c.collectioncode) as instcode, c.guidtarget, c.dwcaurl, c.managementtype, c.dynamicProperties '.
 			'FROM omcollections c INNER JOIN omcollectionstats s ON c.collid = s.collid '.
 			'LEFT JOIN omcollcatlink l ON c.collid = l.collid '.
 			'WHERE (c.colltype = "Preserved Specimens") AND (s.recordcnt > 0) ';
@@ -251,7 +256,12 @@ class DwcArchiverPublisher extends DwcArchiverCore{
 		while($r = $rs->fetch_object()){
 			$retArr[$r->collid]['name'] = $r->collectionname.' ('.$r->instcode.')';
 			$retArr[$r->collid]['guid'] = $r->guidtarget;
-			$retArr[$r->collid]['url'] = $r->dwcaurl;
+			$url = $r->dwcaurl;
+			if($url) $url = substr($url,0,strpos($url,'/content')).'/collections/datasets/datapublisher.php';
+			$retArr[$r->collid]['url'] = $url;
+			if(!$r->guidtarget) $retArr[$r->collid]['err'] = 'MISSING_GUID';
+			elseif($r->dwcaurl && !strpos($serverName, 'localhost') && strpos($r->dwcaurl, str_replace('www.', '', $serverName)) === false) $retArr[$r->collid]['err'] = 'ALREADY_PUB_DOMAIN';
+			if($r->dynamicProperties && strpos($r->dynamicProperties,'matSample":{"status":1')) $this->materialSampleIsActive = true;
 		}
 		$rs->free();
 		return $retArr;
@@ -283,17 +293,8 @@ class DwcArchiverPublisher extends DwcArchiverCore{
 		return $retArr;
 	}
 
-	public function getCategoryName($catID){
-		$retArr = array();
-		if($catID && preg_match('/^[,\d]+$/', $catID)){
-			$sql = 'SELECT ccpk, category FROM omcollcategories WHERE (ccpk IN('.$catID.'))';
-			$rs = $this->conn->query($sql);
-			while($r = $rs->fetch_object()){
-				$retArr[] = $r->category;
-			}
-			$rs->free();
-		}
-		return $retArr;
+	public function materialSampleIsActive(){
+		return $this->materialSampleIsActive;
 	}
 
 	//Mics functions

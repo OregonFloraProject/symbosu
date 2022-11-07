@@ -21,7 +21,7 @@ $procStatus = array_key_exists('procstatus',$_REQUEST)?$_REQUEST['procstatus']:'
 $specManager = new SpecProcessorManager();
 $specManager->setCollId($collid);
 // Use ImageMagick, if so configured in symbini.php
-$specManager->setUseImageMagick($USE_IMAGE_MAGICK ? $USE_IMAGE_MAGICK : 0);
+$specManager->setUseImageMagick(isset($USE_IMAGE_MAGICK) && $USE_IMAGE_MAGICK ? $USE_IMAGE_MAGICK : 0);
 
 $isEditor = false;
 if($IS_ADMIN || (array_key_exists("CollAdmin",$USER_RIGHTS) && in_array($collid,$USER_RIGHTS["CollAdmin"]))){
@@ -40,14 +40,7 @@ $statusStr = "";
 		<title>Specimen Processor Control Panel</title>
 		<?php
 		$activateJQuery = true;
-		if(file_exists($SERVER_ROOT.'/includes/head.php')){
-			include_once($SERVER_ROOT.'/includes/head.php');
-		}
-		else{
-			echo '<link href="'.$CLIENT_ROOT.'/css/jquery-ui.css" type="text/css" rel="stylesheet" />';
-			echo '<link href="'.$CLIENT_ROOT.'/css/base.css?ver=1" type="text/css" rel="stylesheet" />';
-			echo '<link href="'.$CLIENT_ROOT.'/css/main.css?ver=1" type="text/css" rel="stylesheet" />';
-		}
+		include_once($SERVER_ROOT.'/includes/head.php');
 		?>
 	</head>
 	<body>
@@ -109,6 +102,7 @@ $statusStr = "";
 						$imageProcessor->setCreateNewRec($_POST['createnewrec']);
 						$imageProcessor->setImgExists($_POST['imgexists']);
 						$imageProcessor->setKeepOrig(0);
+						$imageProcessor->setCustomStoredProcedure($specManager->getCustomStoredProcedure());
 						$imageProcessor->setSkeletalFileProcessing($_POST['skeletalFileProcessing']);
 
 						//Run process
@@ -159,7 +153,7 @@ $statusStr = "";
 			<div style="font-weight:bold;font-size:120%;"><a href="index.php?collid=<?php echo $collid.'&tabindex='.$tabIndex; ?>"><b>Return to Specimen Processor</b></a></div>
 		</div>
 		<?php
-			include($SERVER_ROOT.'/includes/footer.php');
+		include($SERVER_ROOT.'/includes/footer.php');
 		?>
 	</body>
 </html>

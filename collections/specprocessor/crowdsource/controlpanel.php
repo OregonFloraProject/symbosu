@@ -41,7 +41,7 @@ $projArr = $csManager->getProjectDetails();
 		<div style="font-weight:bold;font-size:130%;"><?php echo (($omcsid && $projArr)?$projArr['name']:''); ?></div>
 		<div>
 			This module can be used to submit and manage records for data entry by the
-			general public. For more information, see the <a href="http://symbiota.org/docs/crowdsourcing-within-symbiota-2/">Symbiota documentation on crowdsourcing</a>.
+			general public. For more information, see the <a href="https://symbiota.org/crowdsourcing-within-symbiota-2/">Symbiota documentation on crowdsourcing</a>.
 		</div>
 		<div id="projFormDiv" style="display:none">
 			<fieldset style="margin:15px;">
@@ -271,7 +271,7 @@ $projArr = $csManager->getProjectDetails();
 					</table>
 				</div>
 				<div style="clear:both;margin-top:50px;font-weight:bold;">
-					Visit <a href="crowdsource/index.php">Source Board</a>
+					Visit <a href="crowdsource/index.php">Score Board</a>
 				</div>
 				<?php
 			}

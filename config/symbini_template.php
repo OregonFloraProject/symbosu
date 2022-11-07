@@ -11,16 +11,20 @@ $PORTAL_GUID = '';				//Typically a UUID
 $SECURITY_KEY = '';				//Typically a UUID used to verify access to certain web service
 $IS_DEV = true;         // Is this dev or prod mode?
 
+$SERVER_HOST = '';				//fully qualified domain name or IP address of the server. e.g. 'symbiota.org' or 'localhost'
 $CLIENT_ROOT = '';				//URL path to project root folder (relative path w/o domain, e.g. '/seinet')
 $SERVER_ROOT = '';				//Full path to Symbiota project root folder
-$TEMP_DIR_ROOT = $SERVER_ROOT.'/temp';				//Must be writable by Apache; will use system default if not specified
-$LOG_PATH = $SERVER_ROOT.'/content/logs';					//Must be writable by Apache; will use <SYMBIOTA_ROOT>/temp/logs if not specified
+$TEMP_DIR_ROOT = $SERVER_ROOT . '/temp';				//Must be writable by Apache; will use system default if not specified
+$LOG_PATH = $SERVER_ROOT . '/content/logs';					//Must be writable by Apache; will use <SYMBIOTA_ROOT>/temp/logs if not specified
 
 //Path to CSS files
-$CSS_BASE_PATH = $CLIENT_ROOT.'/css/symb';
+$CSS_BASE_PATH = $CLIENT_ROOT . '/css/symb';
 $CSS_VERSION_LOCAL = '1';		//Changing this variable will force a refresh of main.css styles within users browser cache for all pages
 
-//the root for the image directory
+//Path to user uploaded images files.  Used by tinyMCE. This is NOT for collection images. See section immediatly below for collection image location
+$PUBLIC_IMAGE_UPLOAD_ROOT = '/content/imglib';
+
+//the root for the collection image directory
 $IMAGE_DOMAIN = '';				//Domain path to images, if different from portal
 $IMAGE_ROOT_URL = '';				//URL path to images
 $IMAGE_ROOT_PATH = '';			//Writable path to images, especially needed for downloading images
@@ -66,6 +70,7 @@ $GOOGLE_MAP_KEY = '';				//Needed for Google Map; get from Google
 $MAPBOX_API_KEY = '';
 $MAP_THUMBNAILS = false;				//Display Static Map thumbnails within taxon profile, checklist, etc
 
+$STORE_STATISTICS = 0;
 $MAPPING_BOUNDARIES = '';			//Project bounding box; default map centering; (e.g. 42.3;-100.5;18.0;-127)
 $SPATIAL_INITIAL_CENTER = '';	    //Initial map center for Spatial Module. Default: '[-110.90713, 32.21976]'
 $SPATIAL_INITIAL_ZOOM = '';			//Initial zoom for Spatial Module. Default: 7
@@ -76,7 +81,7 @@ $GOOGLE_ANALYTICS_KEY = '';			//Needed for setting up Google Analytics
 $GOOGLE_ANALYTICS_TAG_ID = '';		//Needed for setting up Google Analytics 4 Tag ID
 $RECAPTCHA_PUBLIC_KEY = '';			//Now called site key
 $RECAPTCHA_PRIVATE_KEY = '';		//Now called secret key
-$TAXONOMIC_AUTHORITIES = array('COL'=>'','WoRMS'=>'');		//List of taxonomic authority APIs to use in data cleaning and thesaurus building tools, concatenated with commas and order by preference; E.g.: array('COL'=>'','WoRMS'=>'','TROPICOS'=>'','EOL'=>''). API keys go inside the quotes (required for Tropicos, not required for EOL, but good to have if you do a lot of mapping)
+$TAXONOMIC_AUTHORITIES = array('COL' => '', 'WoRMS' => '');		//List of taxonomic authority APIs to use in data cleaning and thesaurus building tools, concatenated with commas and order by preference; E.g.: array('COL'=>'','WoRMS'=>'','TROPICOS'=>'','EOL'=>''). API keys go inside the quotes (required for Tropicos, not required for EOL, but good to have if you do a lot of mapping)
 $QUICK_HOST_ENTRY_IS_ACTIVE = 0;   	//Allows quick entry for host taxa in occurrence editor
 $GLOSSARY_EXPORT_BANNER = '';		//Banner image for glossary exports. Place in images/layout folder.
 $DYN_CHECKLIST_RADIUS = 10;			//Controls size of concentric rings that are sampled when building Dynamic Checklist
@@ -88,8 +93,8 @@ $ACTIVATE_FIELDGUIDE = 0;	//Activates FieldGuide Batch Processing module
 $FIELDGUIDE_API_KEY = '';	//API Key for FieldGuide Batch Processing module
 $GENBANK_SUB_TOOL_PATH = '';	//Path to GenBank Submission tool installation
 $ACTIVATE_GEOLOCATE_TOOLKIT = 0;	//Activates GeoLocate Toolkit located within the Processing Toolkit menu items
-$OCCUR_SECURITY_OPTION = 1;			//Occurrence security options supported: value 1-7; 1 = Locality security, 2 = Taxon security, 4 = Full security, 3 = L & T, 5 = L & F, 6 = T & F, 7 = all
 $SEARCH_BY_TRAITS = '0';			//Activates search fields for searching by traits (if trait data have been encoded): 0 = trait search off; any number of non-zeros separated by commas (e.g., '1,6') = trait search on for the traits with these id numbers in table tmtraits.
+$CALENDAR_TRAIT_PLOTS = '0';			//Activates polar plots, in taxon profile, of the trait states listed: 0 = no plot; any number of non-zeros separated by commas (e.g., '1,6') = plots appear for the trait states with these id numbers (in table tmstates).
 
 $IGSN_ACTIVATION = 0;
 
@@ -163,11 +168,11 @@ $EDITOR_PROPERTIES = array(
     array_push($agent_indexCrumbs,"<a href='$CLIENT_ROOT/agents/index.php'>Agents</a>");
 
 $COOKIE_SECURE = false;
-if((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443){
+if ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443) {
 	header("strict-transport-security: max-age=600");
 	$COOKIE_SECURE = true;
 }
 
 //Base code shared by all pages; leave as is
 include_once("symbbase.php");
-/* --DO NOT ADD ANY EXTRA SPACES BELOW THIS LINE-- */?>
+/* --DO NOT ADD ANY EXTRA SPACES BELOW THIS LINE-- */

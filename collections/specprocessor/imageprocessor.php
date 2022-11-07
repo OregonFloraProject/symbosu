@@ -36,7 +36,8 @@ if($spprid) $specManager->setProjVariables($spprid);
 		?>
 		<style type="text/css">.profileDiv{ clear:both; margin:2px 0px } </style>
 		<script src="../../js/jquery-3.2.1.min.js" type="text/javascript"></script>
-		<script src="../../js/jquery-ui-1.12.1/jquery-ui.min.js" type="text/javascript"></script>
+		<script src="../../js/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
+		<link href="../../js/jquery-ui/jquery-ui.min.css" type="text/css" rel="Stylesheet" />
 		<script src="../../js/symb/shared.js" type="text/javascript"></script>
 		<script>
 			$(function() {
@@ -222,7 +223,7 @@ if($spprid) $specManager->setProjVariables($spprid);
 			<div style="padding:15px;">
 				These tools are designed to aid collection managers in batch processing specimen images. Contact portal manager for help in setting up a new workflow.
 				 Once a profile is established, the collection manager can use this form to manually trigger image processing. For more information, see the Symbiota documentation for
-				 <b><a href="http://symbiota.org/docs/batch-loading-specimen-images-2/" target="_blank">recommended practices</a></b> for integrating images.
+				 <b><a href="https://symbiota.org/batch-loading-specimen-images-2/" target="_blank">recommended practices</a></b> for integrating images.
 			</div>
 			<?php
 			if($SYMB_UID){
@@ -760,21 +761,22 @@ if($spprid) $specManager->setProjVariables($spprid);
 						if($logArr){
 							$logPath = '../../content/logs/';
 							foreach($logArr as $logCat => $logList){
-								echo '<div style="font-weight:bold;font-decoration:underline;margin: 10px 0px 5px 0px">';
+								echo '<div style="font-weight:bold;margin: 10px 0px 5px 0px">';
 								if($logCat=='imgProccessing') echo 'General Processing';
 								elseif($logCat=='iplant') echo 'iPlant (pre-CyVerse)';
 								elseif($logCat=='cyverse') echo 'CyVerse';
-								echo '</div>';
+								elseif($logCat=='processing/imgmap') echo 'Image Mapping File';
+								echo '</div><div style="margin:5px 0px 15px 10px">';
 								foreach($logList as $logFile){
 									echo '<div><a href="'.$logPath.$logCat.'/'.$logFile.'" target="_blank">'.$logFile.'</a></div>';
 								}
+								echo '</div>';
 							}
 						}
 						else echo '<div>No logs exist for this collection</div>';
 						?>
 					</fieldset>
 				</div>
-
 				<?php
 			}
 			?>

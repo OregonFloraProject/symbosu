@@ -146,7 +146,6 @@ class SideBar extends React.Component {
 					</div>
 
 				<ViewOpts
-					clid={ this.props.clid }
 					viewType={ this.props.viewType }
 					sortBy={ this.props.sortBy }
 					showTaxaDetail={ this.props.showTaxaDetail }
@@ -170,7 +169,6 @@ class SideBar extends React.Component {
 SideBar.defaultProps = {
   searchText: '',
   searchSugestionUrl: '',
-  clid: -1,
   //onPlantFeaturesChanged: () => {},
   //onGrowthMaintenanceChanged: () => {},
   //onBeyondGardenChanged: () => {}

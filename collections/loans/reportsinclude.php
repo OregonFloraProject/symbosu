@@ -17,7 +17,7 @@
 		<input name="loantype" type="hidden" value="<?php echo $loanType; ?>" />
 		<input name="collid" type="hidden" value="<?php echo $collid; ?>" />
 		<input name="identifier" type="hidden" value="<?php echo $identifier; ?>" />
-		<button name="formsubmit" type="submit" onclick="this.form.action ='reports/defaultinvoice.php'" value="invoice">Invoice</button>
+		<button name="formsubmit" type="submit" onclick="this.form.action ='reports/oscinvoice.php'" value="invoice">Invoice</button>
 		<?php
 		if(isset($specimenTotal) && $specimenTotal){
 			?>
@@ -25,7 +25,7 @@
 			<?php
 		}
 		?>
-		<button name="formsubmit" type="submit" onclick="this.form.action ='reports/defaultmailinglabel.php'" value="label">Mailing Label</button>
+		<button name="formsubmit" type="submit" onclick="this.form.action ='reports/oscmailinglabel.php'" value="label">Mailing Label</button>
 		<button name="formsubmit" type="submit" onclick="this.form.action ='reports/defaultenvelope.php'" value="envelope">Envelope</button>
 	</fieldset>
 </form>

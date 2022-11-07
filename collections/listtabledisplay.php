@@ -31,18 +31,12 @@ $searchVar = $collManager->getQueryTermStr();
 	</style>
 	<?php
 	$activateJQuery = true;
-	if(file_exists($SERVER_ROOT.'/includes/head.php')){
-		include_once($SERVER_ROOT.'/includes/head.php');
-	}
-	else{
-		echo '<link href="'.$CLIENT_ROOT.'/css/jquery-ui.css" type="text/css" rel="stylesheet" />';
-		echo '<link href="'.$CLIENT_ROOT.'/css/base.css?ver=1" type="text/css" rel="stylesheet" />';
-		echo '<link href="'.$CLIENT_ROOT.'/css/main.css?ver=1" type="text/css" rel="stylesheet" />';
-	}
+	include_once($SERVER_ROOT.'/includes/head.php');
 	include_once($SERVER_ROOT.'/includes/googleanalytics.php');
 	?>
 	<script src="../js/jquery-3.2.1.min.js" type="text/javascript"></script>
-	<script src="../js/jquery-ui-1.12.1/jquery-ui.min.js" type="text/javascript"></script>
+	<script src="../js/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
+	<link href="../js/jquery-ui/jquery-ui.min.css" type="text/css" rel="Stylesheet" />
 	<script type="text/javascript">
 		$(document).ready(function() {
 			<?php
@@ -140,13 +134,13 @@ $searchVar = $collManager->getQueryTermStr();
 		$qryCnt = $collManager->getRecordCnt();
 		$navStr = '<div style="float:right;">';
 		if($page > 1){
-			$navStr .= '<a href="listtabledisplay.php?'.$searchVar.'&page='.($page-1).'" title="Previous '.$tableCount.' records">&lt;&lt;</a>';
+			$navStr .= '<a href="listtabledisplay.php?'.$searchVar.'&page='.($page-1).'" title="'.$LANG['PAGINATION_PREVIOUS'].' '.$tableCount.' '.$LANG['PAGINATION_RECORDS'].'">&lt;&lt;</a>';
 		}
 		$navStr .= ' | ';
-		$navStr .= ($page==1?1:(($page-1)*$tableCount)).'-'.($qryCnt<$tableCount*$page?$qryCnt:$tableCount*$page).' of '.$qryCnt.' records';
+		$navStr .= ($page==1?1:(($page-1)*$tableCount)).'-'.($qryCnt<$tableCount*$page?$qryCnt:$tableCount*$page).' '.$LANG['PAGINATION_OF'].' '.$qryCnt.' '.$LANG['PAGINATION_RECORDS'];
 		$navStr .= ' | ';
 		if($qryCnt > ($page*$tableCount)){
-			$navStr .= '<a href="listtabledisplay.php?'.$searchVar.'&page='.($page+1).'" title="Next '.$tableCount.' records">&gt;&gt;</a>';
+			$navStr .= '<a href="listtabledisplay.php?'.$searchVar.'&page='.($page+1).'" title="'.$LANG['PAGINATION_NEXT'].' '.$tableCount.' '.$LANG['PAGINATION_RECORDS'].'">&gt;&gt;</a>';
 		}
 		$navStr .= '</div>';
 		?>
@@ -221,10 +215,10 @@ $searchVar = $collManager->getQueryTermStr();
 								<td><?php echo $collection; ?></td>
 								<td><?php echo $occArr['catnum']; ?></td>
 								<td><?php echo $occArr['family']; ?></td>
-								<td><?php echo $occArr['sciname'].($occArr['author']?" ".$occArr['author']:""); ?></td>
+								<td><?php echo $occArr['sciname'].($occArr['author']?' '.$occArr['author']:''); ?></td>
 								<td><?php echo $occArr['collector']; ?></td>
-								<td><?php echo (array_key_exists("collnum",$occArr)?$occArr['collnum']:""); ?></td>
-								<td><?php echo (array_key_exists("date",$occArr)?$occArr['date']:""); ?></td>
+								<td><?php echo (array_key_exists('collnum',$occArr)?$occArr['collnum']:''); ?></td>
+								<td><?php echo (array_key_exists('date',$occArr)?$occArr['date']:''); ?></td>
 								<td><?php echo $occArr['country']; ?></td>
 								<td><?php echo $occArr['state']; ?></td>
 								<td><?php echo $occArr['county']; ?></td>
@@ -234,11 +228,11 @@ $searchVar = $collManager->getQueryTermStr();
 								if(strlen($locStr)>80) $locStr = substr($locStr,0,80).'...';
 								echo $locStr;
 								?></td>
-								<td><?php if($occArr['declat']) echo $occArr['declat']; ?></td>
-								<td><?php if($occArr['declong']) echo $occArr['declong']; ?></td>
+								<td><?php if(isset($occArr['declat'])) echo $occArr['declat']; ?></td>
+								<td><?php if(isset($occArr['declong'])) echo $occArr['declong']; ?></td>
 								<td><?php if(isset($occArr['habitat'])) echo ((strlen($occArr['habitat'])>80)?substr($occArr['habitat'],0,80).'...':$occArr['habitat']); ?></td>
 								<td><?php if(isset($occArr['substrate'])) echo ((strlen($occArr['substrate'])>80)?substr($occArr['substrate'],0,80).'...':$occArr['substrate']); ?></td>
-								<td><?php echo (array_key_exists("elev",$occArr)?$occArr['elev']:""); ?></td>
+								<td><?php echo (array_key_exists('elev',$occArr)?$occArr['elev']:''); ?></td>
 							</tr>
 							<?php
 							$recCnt++;

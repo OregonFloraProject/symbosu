@@ -1,4 +1,3 @@
-var pauseSubmit = false;
 var imgAssocCleared = false;
 var voucherAssocCleared = false;
 
@@ -318,6 +317,28 @@ function verifyFullFormSciName(){
 	});
 }
 
+function addIdentifierField(clickedObj){
+	$(clickedObj).hide();
+	var identDiv = document.getElementById("identifierBody");
+	var insertHtml = '<div class="divTableRow"><div class="divTableCell"><input name="idkey[]" type="hidden" value="newidentifier" /><input name="idname[]" type="text" value="" onchange="fieldChanged(\'idname\');" autocomplete="off" /></div><div class="divTableCell"><input name="idvalue[]" type="text" value="" onchange="fieldChanged(\'idvalue\');searchOtherCatalogNumbers(this.form);" autocomplete="off" /><a href="#" onclick="addIdentifierField(this);return false"><img src="../../images/plus.png" /></a></div></div>';
+	identDiv.insertAdjacentHTML('beforeend', insertHtml);
+}
+
+function deleteIdentifier(identID, occid){
+	if(identID != ""){
+		//alert("rpc/deleteIdentifier.php?identifierID="+identID+"&occid="+occid);
+		$.ajax({
+			type: "POST",
+			url: "rpc/deleteIdentifier.php",
+			dataType: "json",
+			data: { identifierID: identID, occid: occid }
+		}).done(function( response ) {
+			if(response == 1) $("#idRow-"+identID).remove()
+			//else alert("Error deleting identifier");
+		});
+	}
+}
+
 function localitySecurityCheck(){
 	var tidIn = $( "input[name=tidinterpreted]" ).val();
 	var stateIn = $( "input[name=stateprovince]" ).val();
@@ -377,7 +398,7 @@ function decimalLatitudeChanged(f){
 
 function decimalLongitudeChanged(f){
 	verifyDecimalLongitude(f);
-	verifyCoordinates(f);
+	//verifyCoordinates(f);
 	fieldChanged('decimallongitude');
 }
 
@@ -681,9 +702,6 @@ function parseVerbatimCoordinates(f,verbose){
 
 //Form verification code
 function verifyFullForm(f){
-	f.submitaction.focus();
-
-	if(searchDupesCatalogNumber(f,false)) return false;
 	var validformat1 = /^\d{4}-[0]{1}[0-9]{1}-\d{1,2}$/; //Format: yyyy-mm-dd
 	var validformat2 = /^\d{4}-[1]{1}[0-2]{1}-\d{1,2}$/; //Format: yyyy-mm-dd
 	if(f.eventdate.value && !(validformat1.test(f.eventdate.value) || validformat2.test(f.eventdate.value))){
@@ -711,7 +729,7 @@ function verifyFullForm(f){
 		return false;
 	}
 	if(f.ometid && ((f.ometid.value != "" && f.exsnumber.value == "") || (f.ometid.value == "" && f.exsnumber.value != ""))){
-		alert("You must have both an exsiccati title and exsiccati number or neither");
+		alert("You must have both an exsiccati title and number, or neither. If there is no number, s.n. can be entered.");
 		return false;
 	}
 	if(!verifyDecimalLatitude(f)){
@@ -744,6 +762,7 @@ function verifyFullForm(f){
 		alert("Duplicate Quantity field must be numeric only");
 		return false;
 	}
+	if(searchCatalogNumber(f,false)) return false;
 	return true;
 }
 
@@ -1036,77 +1055,6 @@ function distributeEventDate(y,m,d){
 	}
 }
 
-function endDateChanged(){
-	var dateStr = document.getElementById("endDate").value;
-	if(dateStr != ""){
-		var dateArr = parseDate(dateStr);
-		if(dateArr['y'] == 0){
-			alert("Unable to interpret Date. Please use the following formats: yyyy-mm-dd, mm/dd/yyyy, or dd mmm yyyy");
-			return false;
-		}
-		else{
-			//Check to see if date is in the future
-			try{
-				var testDate = new Date(dateArr['y'],dateArr['m']-1,dateArr['d']);
-				var today = new Date();
-				if(testDate > today){
-					alert("Was this plant really collected in the future? The date you entered has not happened yet. Please revise.");
-					return false;
-				}
-			}
-			catch(e){
-			}
-
-			//Invalid format is month > 12
-			if(dateArr['m'] > 12){
-				alert("Month cannot be greater than 12. Note that the format should be YYYY-MM-DD");
-				return false;
-			}
-
-			//Check to see if day is valid
-			if(dateArr['d'] > 28){
-				if(dateArr['d'] > 31
-					|| (dateArr['d'] == 30 && dateArr['m'] == 2)
-					|| (dateArr['d'] == 31 && (dateArr['m'] == 4 || dateArr['m'] == 6 || dateArr['m'] == 9 || dateArr['m'] == 11))){
-					alert("The Day (" + dateArr['d'] + ") is invalid for that month");
-					return false;
-				}
-			}
-
-			//Enter date into date fields
-			var mStr = dateArr['m'];
-			if(mStr.length == 1){
-				mStr = "0" + mStr;
-			}
-			var dStr = dateArr['d'];
-			if(dStr.length == 1){
-				dStr = "0" + dStr;
-			}
-			document.getElementById("endDate").value = dateArr['y'] + "-" + mStr + "-" + dStr;
-			if(dateArr['y'] > 0){
-				var f = document.fullform;
-				f.enddayofyear.value = "";
-				try{
-					if(dateArr['m'] == 0 || dateArr['d'] == 0){
-						f.enddayofyear.value = "";
-					}
-					else{
-						eDate = new Date(dateArr['y'],dateArr['m']-1,dateArr['d']);
-						if(eDate instanceof Date && eDate != "Invalid Date"){
-							var onejan = new Date(dateArr['y'],0,1);
-							f.enddayofyear.value = Math.ceil((eDate - onejan) / 86400000) + 1;
-							fieldChanged("enddayofyear");
-						}
-					}
-				}
-				catch(e){
-				}
-			}
-		}
-	}
-	return true;
-}
-
 function verbatimEventDateChanged(vedObj){
 	fieldChanged('verbatimeventdate');
 
@@ -1215,7 +1163,6 @@ function initDetAutocomplete(f){
 		minLength: 3,
 		change: function(event, ui) {
 			if(f.sciname.value){
-				pauseSubmit = true;
 				verifyDetSciName(f);
 			}
 			else{
@@ -1286,60 +1233,18 @@ function verifyDetForm(f){
 		alert("Sort Sequence field must be a numeric value only");
 		return false;
 	}
-	//If sciname was changed and submit was clicked immediately afterward, wait 5 seconds so that name can be verified 
-	if(pauseSubmit){
-		var date = new Date();
-		var curDate = null;
-		do{ 
-			curDate = new Date(); 
-		}while(curDate - date < 5000 && pauseSubmit);
-	}
-	return true;
-}
-
-//Image tab form methods 
-function verifyImgAddForm(f){
-	var filePath = f.elements["imgfile"].value;
-	if(filePath == ""){
-		if(f.elements["imgurl"].value == ""){
-			alert("Select an image file or enter a URL to an existing image");
-			return false;
-		}
-		else{
-			filePath = f.elements["imgfile"].value
-		}
-	}
-	filePath = filePath.toLowerCase();
-	if((filePath.indexOf(".tif") > -1) || (filePath.indexOf(".png") > -1) && (filePath.indexOf(".dng") > -1)){
-		alert("Input file must be a web-optimized image (e.g. jpg). File appears to be an archival image (e.g. tif, png, dng, etc).");
-		return false;
-	}
-	return true;
-}
-
-function verifyImgEditForm(f){
-
-	return true;
-}
-
-function verifyImgDelForm(f){
-	if(confirm('Are you sure you want to delete this image? Note that the physical image will be deleted from the server if checkbox is selected.')){
-		return true;
-	}
-	return false;
-}
-
-function verifyImgRemapForm(f){
-	if(f.targetoccid.value == ''){
-		alert("Enter the occurrence record identifier (occid) of the occurrence record you want to transfer to");
-		return false;
-	}
 	return true;
 }
 
 //Misc
 function dwcDoc(dcTag){
-	dwcWindow=open("http://symbiota.org/docs/symbiota-occurrence-data-fields-2/#"+dcTag,"dwcaid","width=1250,height=300,left=20,top=20,scrollbars=1");
+	var language = getCookie("lang");
+	if(language == "es"){
+		dwcWindow=open("https://biokic.github.io/symbiota-docs/es/editor/edit/fields/#"+dcTag,"dwcaid","width=1250,height=300,left=20,top=20,scrollbars=1");
+	}
+	else{
+		dwcWindow=open("https://biokic.github.io/symbiota-docs/editor/edit/fields/#"+dcTag+language,"dwcaid","width=1250,height=300,left=20,top=20,scrollbars=1");
+	}
 	//dwcWindow=open("http://rs.tdwg.org/dwc/terms/index.htm#"+dcTag,"dwcaid","width=1250,height=300,left=20,top=20,scrollbars=1");
 	if(dwcWindow.opener == null) dwcWindow.opener = self;
 	dwcWindow.focus();

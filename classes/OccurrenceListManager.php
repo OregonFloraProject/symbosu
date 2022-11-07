@@ -17,10 +17,10 @@ class OccurrenceListManager extends OccurrenceManager{
 
 	public function getSpecimenMap($pageRequest,$cntPerPage){
 		$retArr = Array();
-		$canReadRareSpp = false;
+		$isSecuredReader = false;
 		if($GLOBALS['USER_RIGHTS']){
-			if($GLOBALS['IS_ADMIN'] || array_key_exists("CollAdmin", $GLOBALS['USER_RIGHTS']) || array_key_exists("RareSppAdmin", $GLOBALS['USER_RIGHTS']) || array_key_exists("RareSppReadAll", $GLOBALS['USER_RIGHTS'])){
-				$canReadRareSpp = true;
+			if($GLOBALS['IS_ADMIN'] || array_key_exists('CollAdmin', $GLOBALS['USER_RIGHTS']) || array_key_exists('RareSppAdmin', $GLOBALS['USER_RIGHTS']) || array_key_exists('RareSppReadAll', $GLOBALS['USER_RIGHTS'])){
+				$isSecuredReader = true;
 			}
 		}
 		$occArr = array();
@@ -45,13 +45,13 @@ class OccurrenceListManager extends OccurrenceManager{
 		//echo "<div>Spec sql: ".$sql."</div>";
 		$result = $this->conn->query($sql);
 		if($result){
+			$securityCollArr = array();
+			if(isset($GLOBALS['USER_RIGHTS']['CollEditor'])) $securityCollArr = $GLOBALS['USER_RIGHTS']['CollEditor'];
+			if(isset($GLOBALS['USER_RIGHTS']['RareSppReader'])) $securityCollArr = array_unique(array_merge($securityCollArr, $GLOBALS['USER_RIGHTS']['RareSppReader']));
 			while($row = $result->fetch_object()){
-				$securityClearance = ($row->localitysecurity?false:true);
-				if(!$securityClearance){
-					if($canReadRareSpp) $securityClearance = true;
-					elseif(array_key_exists("CollEditor", $GLOBALS['USER_RIGHTS']) && in_array($row->collid,$GLOBALS['USER_RIGHTS']["CollEditor"])) $securityClearance = true;
-					elseif(array_key_exists("RareSppReader", $GLOBALS['USER_RIGHTS']) && in_array($row->collid,$GLOBALS['USER_RIGHTS']["RareSppReader"])) $securityClearance = true;
-				}
+				$securityClearance = false;
+				if($isSecuredReader) $securityClearance = true;
+				elseif(in_array($row->collid,$securityCollArr)) $securityClearance = true;
 				$retArr[$row->occid]['collid'] = $row->collid;
 				$retArr[$row->occid]['instcode'] = $this->cleanOutStr($row->institutioncode);
 				if($row->instcodeoverride){
@@ -65,36 +65,46 @@ class OccurrenceListManager extends OccurrenceManager{
 				}
 				$retArr[$row->occid]['collname'] = $this->cleanOutStr($row->collectionname);
 				$retArr[$row->occid]['icon'] = $row->icon;
-				$retArr[$row->occid]["catnum"] = $this->cleanOutStr($row->catalognumber);
-				$retArr[$row->occid]["family"] = $this->cleanOutStr($row->family);
+
+				$retArr[$row->occid]['catnum'] = $this->cleanOutStr($row->catalognumber);
+				$retArr[$row->occid]['family'] = $this->cleanOutStr($row->family);
 				if($securityClearance || $row->localitysecurity == 1){
-					$retArr[$row->occid]["sciname"] = ($row->sciname?$this->cleanOutStr($row->sciname):'undetermined');
-					$retArr[$row->occid]["tid"] = $row->tidinterpreted;
+					$retArr[$row->occid]['sciname'] = ($row->sciname?$this->cleanOutStr($row->sciname):'undetermined');
+					$retArr[$row->occid]['tid'] = $row->tidinterpreted;
 					// Add a field showing whether the taxon is contained in the State of Oregon vascular plant checklist curated by OregonFlora
-					$retArr[$row->occid]["oregon"] = $row->oregon;
-					$retArr[$row->occid]["author"] = $this->cleanOutStr($row->scientificnameauthorship);
+					$retArr[$row->occid]['oregon'] = $row->oregon;
+					$retArr[$row->occid]['author'] = $this->cleanOutStr($row->scientificnameauthorship);
 				}
-				$retArr[$row->occid]["collector"] = $this->cleanOutStr($row->recordedby);
-				$retArr[$row->occid]["country"] = $this->cleanOutStr($row->country);
-				$retArr[$row->occid]["state"] = $this->cleanOutStr($row->stateprovince);
-				$retArr[$row->occid]["county"] = $this->cleanOutStr($row->county);
-				$retArr[$row->occid]["obsuid"] = $row->observeruid;
+				/*
+				if(isset($row->scinameprotected) && $row->scinameprotected && !$securityClearance){
+					$retArr[$row->occid]['taxonsecure'] = 1;
+					$retArr[$row->occid]['sciname'] = $this->cleanOutStr($row->scinameprotected);
+					$retArr[$row->occid]['author'] = '';
+					$retArr[$row->occid]['family'] = $row->familyprotected;
+					$retArr[$row->occid]['tid'] = $row->tidprotected;
+				}
+				*/
+				$retArr[$row->occid]['collector'] = $this->cleanOutStr($row->recordedby);
+				$retArr[$row->occid]['country'] = $this->cleanOutStr($row->country);
+				$retArr[$row->occid]['state'] = $this->cleanOutStr($row->stateprovince);
+				$retArr[$row->occid]['county'] = $this->cleanOutStr($row->county);
+				$retArr[$row->occid]['obsuid'] = $row->observeruid;
 				$retArr[$row->occid]['localitysecurity'] = $row->localitysecurity;
-				if($securityClearance || $row->localitysecurity == 2){
-					$retArr[$row->occid]["locality"] = str_replace('.,',',',$this->cleanOutStr(trim($row->locality,' ,;')));
-					$retArr[$row->occid]["declat"] = $row->decimallatitude;
-					$retArr[$row->occid]["declong"] = $row->decimallongitude;
-					$retArr[$row->occid]["collnum"] = $this->cleanOutStr($row->recordnumber);
-					$retArr[$row->occid]["date"] = $row->eventdate;
-					$retArr[$row->occid]["habitat"] = $this->cleanOutStr($row->habitat);
+				if($securityClearance || $row->localitysecurity != 1){
+					$retArr[$row->occid]['locality'] = str_replace('.,',',',$this->cleanOutStr(trim($row->locality,' ,;')));
+					$retArr[$row->occid]['declat'] = $row->decimallatitude;
+					$retArr[$row->occid]['declong'] = $row->decimallongitude;
+					$retArr[$row->occid]['collnum'] = $this->cleanOutStr($row->recordnumber);
+					$retArr[$row->occid]['date'] = $row->eventdate;
+					$retArr[$row->occid]['habitat'] = $this->cleanOutStr($row->habitat);
 					$retArr[$row->occid]['substrate'] = $this->cleanOutStr($row->substrate);
 					$elevStr = $row->minimumelevationinmeters;
 					if($row->maximumelevationinmeters) $elevStr .= ' - '.$row->maximumelevationinmeters;
-					$retArr[$row->occid]["elev"] = $elevStr;
+					$retArr[$row->occid]['elev'] = $elevStr;
 					$occArr[] = $row->occid;
 				}
 				else{
-					$retArr[$row->occid]["locality"] = 'PROTECTED';
+					$retArr[$row->occid]['locality'] = 'PROTECTED';
 				}
 			}
 			$result->free();
@@ -108,7 +118,7 @@ class OccurrenceListManager extends OccurrenceManager{
 	}
 
 	private function setImages($occArr,&$retArr){
-		$sql = 'SELECT occid, thumbnailurl FROM images WHERE occid IN('.implode(',',$occArr).') ORDER BY occid, sortsequence';
+		$sql = 'SELECT occid, thumbnailurl FROM images WHERE occid IN('.implode(',',$occArr).') ORDER BY occid, sortOccurrence';
 		$rs = $this->conn->query($sql);
 		$previousOccid = 0;
 		while($r = $rs->fetch_object()){

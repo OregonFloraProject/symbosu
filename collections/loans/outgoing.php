@@ -6,19 +6,29 @@ if(!$SYMB_UID) header('Location: '.$CLIENT_ROOT.'/profile/index.php?refurl=../co
 
 $collid = $_REQUEST['collid'];
 $loanId = array_key_exists('loanid',$_REQUEST)?$_REQUEST['loanid']:0;
-$formSubmit = array_key_exists('formsubmit',$_POST)?$_POST['formsubmit']:'';
+$loanIdOwn = array_key_exists('loanidentifierown',$_REQUEST)?$_REQUEST['loanidentifierown']:0;
 $tabIndex = array_key_exists('tabindex',$_REQUEST)?$_REQUEST['tabindex']:0;
+$sortTag = (isset($_REQUEST['sortTag'])?$_REQUEST['sortTag']:'');
+$formSubmit = array_key_exists('formsubmit',$_REQUEST)?$_REQUEST['formsubmit']:'';
+
+//Sanitation
+if(!is_numeric($collid)) $collid = 0;
+if(!is_numeric($loanId)) $loanId = 0;
+if(!is_numeric($loanIdOwn)) $loanIdOwn = 0;
+if(!is_numeric($tabIndex)) $tabIndex = 0;
+$sortTag = filter_var($sortTag, FILTER_SANITIZE_STRING);
 
 $isEditor = 0;
 if($SYMB_UID && $collid){
-	if($IS_ADMIN || (array_key_exists("CollAdmin",$USER_RIGHTS) && in_array($collid,$USER_RIGHTS["CollAdmin"]))
-		|| (array_key_exists("CollEditor",$USER_RIGHTS) && in_array($collid,$USER_RIGHTS["CollEditor"]))){
+	if($IS_ADMIN || (array_key_exists('CollAdmin',$USER_RIGHTS) && in_array($collid,$USER_RIGHTS['CollAdmin']))
+		|| (array_key_exists('CollEditor',$USER_RIGHTS) && in_array($collid,$USER_RIGHTS['CollEditor']))){
 		$isEditor = 1;
 	}
 }
 
 $loanManager = new OccurrenceLoans();
 if($collid) $loanManager->setCollId($collid);
+$loanManager->setServerRoot($SERVER_ROOT . (substr($SERVER_ROOT, -1) == '/' ? '' : '/')); // Include trailing slash
 
 $statusStr = '';
 if($isEditor){
@@ -30,12 +40,13 @@ if($isEditor){
 		elseif($formSubmit == 'Save Outgoing'){
 			$statusStr = $loanManager->editLoanOut($_POST);
 		}
-		elseif($formSubmit == 'performSpecimenAction'){
-			if(!$loanManager->editSpecimen($_REQUEST)){
-				$statusStr = $loanManager->getErrorMessage();
-			}
+		elseif($formSubmit == 'deleteSpecimens'){
+			if(!$loanManager->deleteSpecimens($_POST['occid'], $_POST['loanid'])) $statusStr = $loanManager->getErrorMessage();
 		}
-		elseif($formSubmit == 'Add New Determinations'){
+		elseif($formSubmit == 'checkinSpecimens'){
+			if(!$loanManager->batchCheckinSpecimens($_POST['occid'], $_POST['loanid'])) $statusStr = $loanManager->getErrorMessage();
+		}
+		elseif($formSubmit == 'addDeterminations'){
 			include_once($SERVER_ROOT.'/classes/OccurrenceEditorDeterminations.php');
 			$occManager = new OccurrenceEditorDeterminations();
 			$occidArr = $_REQUEST['occid'];
@@ -44,27 +55,33 @@ if($isEditor){
 				$occManager->addDetermination($_REQUEST,$isEditor);
 			}
 		}
-		elseif($formSubmit == 'batchLinkSpecimens'){
-			$cnt = $loanManager->batchLinkSpecimens($_POST);
+		elseif($formSubmit == 'batchProcessSpecimens'){
+			$cnt = $loanManager->batchProcessSpecimens($_POST);
 			$statusStr = '<ul>';
-			$statusStr .= '<li><b>'.$cnt.'</b> specimens linked successfully</li>';
+			$statusStr .= '<li><b>'.$cnt.'</b> specimens processed successfully</li>';
 			if($warnArr = $loanManager->getWarningArr()){
 				if(isset($warnArr['missing'])){
 					$statusStr .= '<li style="color:red;"><b>Unable to locate following catalog numbers</b></li>';
-					foreach($warnArr['missing'] as $errStr){
-						$statusStr .= '<li style="margin-left:10px;color:black;">'.$errStr.'</li>';
+					foreach($warnArr['missing'] as $catNum){
+						$statusStr .= '<li style="margin-left:10px;color:black;">'.$catNum.'</li>';
 					}
 				}
 				if(isset($warnArr['multiple'])){
 					$statusStr .= '<li style="color:orange;"><b>Catalog numbers with multiple matches</b></li>';
-					foreach($warnArr['multiple'] as $errStr){
-						$statusStr .= '<li style="margin-left:10px;color:black;">'.$errStr.'</li>';
+					foreach($warnArr['multiple'] as $catNum){
+						$statusStr .= '<li style="margin-left:10px;color:black;">'.$catNum.'</li>';
 					}
 				}
 				if(isset($warnArr['dupe'])){
 					$statusStr .= '<li style="color:orange"><b>Specimens already linked to loan</b></li>';
-					foreach($warnArr['dupe'] as $errStr){
-						$statusStr .= '<li style="margin-left:10px;color:black;">'.$errStr.'</li>';
+					foreach($warnArr['dupe'] as $catNum){
+						$statusStr .= '<li style="margin-left:10px;color:black;">'.$catNum.'</li>';
+					}
+				}
+				if(isset($warnArr['zeroMatch'])){
+					$statusStr .= '<li style="color:orange;"><b>Already checked-in or not associated with this loan</b></li>';
+					foreach($warnArr['zeroMatch'] as $catNum){
+						$statusStr .= '<li style="margin-left:10px;color:black;">'.$catNum.'</li>';
 					}
 				}
 				if(isset($warnArr['error'])){
@@ -73,17 +90,27 @@ if($isEditor){
 						$statusStr .= '<li style="margin-left:10px;color:black;">'.$errStr.'</li>';
 					}
 				}
-				$statusStr .= '</ul>';
 			}
+			$statusStr .= '</ul>';
 			$tabIndex = 1;
 		}
 		elseif($formSubmit == 'saveSpecimenDetails'){
 			if($loanManager->editSpecimenDetails($loanId,$_POST['occid'],$_POST['returndate'],$_POST['notes'])) $statusStr = true;
 			echo $statusStr = $loanManager->getErrorMessage();
 		}
-		elseif($formSubmit == "exportSpecimenList"){
+		elseif($formSubmit == 'exportSpecimenList'){
 			$loanManager->exportSpecimenList($loanId);
 			exit;
+		}
+		elseif ($formSubmit == "delAttachment") {
+			// Delete correspondence attachment
+			if (array_key_exists('attachid',$_REQUEST) && is_numeric($_REQUEST['attachid'])) $loanManager->deleteAttachment($_REQUEST['attachid']);
+			$statusStr = $loanManager->getErrorMessage();
+		}
+		elseif ($formSubmit == "saveAttachment") {
+			// Save correspondence attachment
+			if (array_key_exists('uploadfile',$_FILES)) $loanManager->uploadAttachment($collid, 'loan', $loanId, $loanIdOwn, $_POST['uploadtitle'], $_FILES['uploadfile']);
+			$statusStr = $loanManager->getErrorMessage();
 		}
 	}
 }
@@ -95,14 +122,7 @@ $specimenTotal = $loanManager->getSpecimenTotal($loanId);
 	<title><?php echo $DEFAULT_TITLE; ?>: Outgoing Loan Management</title>
 	<?php
 	$activateJQuery = true;
-	if(file_exists($SERVER_ROOT.'/includes/head.php')){
-		include_once($SERVER_ROOT.'/includes/head.php');
-	}
-	else{
-		echo '<link href="'.$CLIENT_ROOT.'/css/jquery-ui.css" type="text/css" rel="stylesheet" />';
-		echo '<link href="'.$CLIENT_ROOT.'/css/base.css?ver=1" type="text/css" rel="stylesheet" />';
-		echo '<link href="'.$CLIENT_ROOT.'/css/main.css?ver=1" type="text/css" rel="stylesheet" />';
-	}
+	include_once($SERVER_ROOT.'/includes/head.php');
 	?>
 	<style>
 		fieldset{ padding:15px; margin:15px }
@@ -118,7 +138,6 @@ $specimenTotal = $loanManager->getSpecimenTotal($loanId);
 	<script type="text/javascript" src="../../js/jquery-ui.js"></script>
 	<script type="text/javascript">
 		var tabIndex = <?php echo $tabIndex; ?>;
-		var skipFormVerification = false;
 
 		function verifyLoanOutEditForm(){
 			var submitStatus = true;
@@ -135,189 +154,14 @@ $specimenTotal = $loanManager->getSpecimenTotal($loanId);
 			return submitStatus;
 		}
 
-		function addSpecimen(f,splist){
-			if(!f.catalognumber.value){
-				alert("Please enter a catalog number!");
-				return false;
-			}
-			else{
-				//alert("rpc/insertLoanSpecimens.php?loanid="+f.loanid.value+"&catalognumber="+f.catalognumber.value+"&collid="+f.collid.value);
-				$.ajax({
-					method: "POST",
-					data: { loanid: f.loanid.value, catalognumber: f.catalognumber.value, collid: f.collid.value },
-					dataType: "text",
-					url: "rpc/insertLoanSpecimens.php"
-				})
-				.done(function(retStr) {
-					if(retStr == "0"){
-						document.getElementById("addspecsuccess").style.display = "none";
-						document.getElementById("addspecerr1").style.display = "block";
-						document.getElementById("addspecerr2").style.display = "none";
-						document.getElementById("addspecerr3").style.display = "none";
-						setTimeout(function () {
-							document.getElementById("addspecerr1").style.display = "none";
-						}, 4000);
-						//alert("ERROR: Specimen record not found in database.");
-					}
-					else if(retStr == "1"){
-						f.catalognumber.value = '';
-						document.getElementById("addspecsuccess").style.display = "block";
-						document.getElementById("addspecerr1").style.display = "none";
-						document.getElementById("addspecerr2").style.display = "none";
-						document.getElementById("addspecerr3").style.display = "none";
-						setTimeout(function () {
-							document.getElementById("addspecsuccess").style.display = "none";
-						}, 4000);
-						//alert("SUCCESS: Specimen record added to loan.");
-						if(splist == 0){
-							document.getElementById("speclistdiv").style.display = "block";
-							document.getElementById("nospecdiv").style.display = "none";
-						}
-					}
-					else if(retStr == "2"){
-						document.getElementById("addspecsuccess").style.display = "none";
-						document.getElementById("addspecerr1").style.display = "none";
-						document.getElementById("addspecerr2").style.display = "block";
-						document.getElementById("addspecerr3").style.display = "none";
-						setTimeout(function () {
-							document.getElementById("addspecerr2").style.display = "none";
-						}, 4000);
-						//alert("ERROR: More than one specimen with that catalog number.");
-					}
-					else if(retStr == "3"){
-						document.getElementById("addspecsuccess").style.display = "none";
-						document.getElementById("addspecerr1").style.display = "none";
-						document.getElementById("addspecerr2").style.display = "none";
-						document.getElementById("addspecerr3").style.display = "block";
-						setTimeout(function () {
-							document.getElementById("addspecerr3").style.display = "none";
-						}, 4000);
-						//alert("ERROR: More than one specimen with that catalog number.");
-					}
-					else{
-						f.catalognumber.value = "";
-						document.refreshspeclist.submit();
-						/*
-						document.getElementById("addspecsuccess").style.display = "block";
-						document.getElementById("addspecerr1").style.display = "none";
-						document.getElementById("addspecerr2").style.display = "none";
-						document.getElementById("addspecerr3").style.display = "none";
-						setTimeout(function () {
-							document.getElementById("addspecsuccess").style.display = "none";
-							}, 5000);
-						alert("SUCCESS: Specimen added to loan.");
-						*/
-					}
-				})
-				.fail(function() {
-					alert("Generation of new ID failed");
-				});
-			}
-			return false;
-		}
-
-		function verifySpecEditForm(f){
-			if(skipFormVerification) return true;
-			skipFormVerification = false;
-			//Make sure at least on specimen checkbox is checked
-			var cbChecked = false;
-			var dbElements = document.getElementsByName("occid[]");
-			for(i = 0; i < dbElements.length; i++){
-				var dbElement = dbElements[i];
-				if(dbElement.checked){
-					cbChecked = true;
-					break;
-				}
-			}
-			if(!cbChecked){
-				alert("Please select specimens to which you wish to apply the action");
-				return false;
-			}
-
-			//If task equals delete, confirm action
-			var applyTaskObj = f.applytask;
-			var l = applyTaskObj.length;
-			var applyTaskValue = "";
-			for(var i = 0; i < l; i++) {
-				if(applyTaskObj[i].checked) {
-					applyTaskValue = applyTaskObj[i].value;
-				}
-			}
-			if(applyTaskValue == "delete"){
-				return confirm("Are you sure you want to remove selected specimens from this loan?");
-			}
-			return true;
-		}
-
-		function verifyLoanDet(){
-			if(document.getElementById('dafsciname').value == ""){
-				alert("Scientific Name field must have a value");
-				return false;
-			}
-			if(document.getElementById('identifiedby').value == ""){
-				alert("Determiner field must have a value (enter 'unknown' if not defined)");
-				return false;
-			}
-			if(document.getElementById('dateidentified').value == ""){
-				alert("Determination Date field must have a value (enter 's.d.' if not defined)");
-				return false;
-			}
-			return true;
-		}
-
-		function initLoanDetAutocomplete(f){
-			$( f.sciname ).autocomplete({
-				source: "../editor/rpc/getspeciessuggest.php",
-				minLength: 3,
-				change: function(event, ui) {
-					if(f.sciname.value){
-						pauseSubmit = true;
-						verifyLoanDetSciName(f);
-					}
-					else{
-						f.scientificnameauthorship.value = "";
-						f.family.value = "";
-						f.tidtoadd.value = "";
-					}
-				}
-			});
-		}
-
-		function verifyLoanDetSciName(f){
-			$.ajax({
-				type: "POST",
-				url: "../editor/rpc/verifysciname.php",
-				dataType: "json",
-				data: { term: f.sciname.value }
-			}).done(function( data ) {
-				if(data){
-					f.scientificnameauthorship.value = data.author;
-					f.family.value = data.family;
-					f.tidtoadd.value = data.tid;
-				}
-				else{
-		            alert("WARNING: Taxon not found. It may be misspelled or needs to be added to taxonomic thesaurus by a taxonomic editor.");
-					f.scientificnameauthorship.value = "";
-					f.family.value = "";
-					f.tidtoadd.value = "";
-				}
-			});
-		}
-
-		function selectAll(cb){
-			boxesChecked = true;
-			if(!cb.checked){
-				boxesChecked = false;
-			}
-			var dbElements = document.getElementsByName("occid[]");
-			for(i = 0; i < dbElements.length; i++){
-				var dbElement = dbElements[i];
-				dbElement.checked = boxesChecked;
-			}
-		}
+		// Run when the page loads to add linebreaks to asterisks in the description
+		window.onload = function() {
+			$("textarea[name='description']").val(
+				$("textarea[name='description']").val().replace(/ \* /g, '\n* ').replace(/ - /g, '\n- '));
+		};
 
 	</script>
-	<script type="text/javascript" src="../../js/symb/collections.loans.js?ver=1"></script>
+	<script type="text/javascript" src="../../js/symb/collections.loans.js?ver=2"></script>
 	<div class='navpath'>
 		<a href='../../index.php'>Home</a> &gt;&gt;
 		<a href="../misc/collprofiles.php?collid=<?php echo $collid; ?>&emode=1">Collection Management Menu</a> &gt;&gt;
@@ -344,7 +188,7 @@ $specimenTotal = $loanManager->getSpecimenTotal($loanId);
 			<div id="tabs" style="margin:0px;">
 			    <ul>
 					<li><a href="#outloandetaildiv"><span>Loan Details</span></a></li>
-					<li><a href="specimentab.php?collid=<?php echo $collid.'&loanid='.$loanId; ?>"><span>Specimens</span></a></li>
+					<li><a href="specimentab.php?collid=<?php echo $collid.'&loanid='.$loanId.'&sortTag='.$sortTag; ?>"><span>Specimens</span></a></li>
 					<li><a href="#outloandeldiv"><span>Admin</span></a></li>
 				</ul>
 				<div id="outloandetaildiv">
@@ -516,6 +360,41 @@ $specimenTotal = $loanManager->getSpecimenTotal($loanId);
 					$identifier = $loanId;
 					include('reportsinclude.php');
 					?>
+					<div>
+						<form id="attachmentform" name="attachmentform" action="outgoing.php" method="post" enctype="multipart/form-data" onsubmit="return verifyFileUploadForm(this)">
+							<fieldset>
+								<legend>Correspondence Attachments</legend>
+								<?php
+
+								// Add any correspondence attachments
+								$attachments = $loanManager->getAttachments('loan', $loanId);
+								if ($attachments) {
+									echo '<ul>';
+									foreach($attachments as $attachId => $attachArr){
+										echo '<li style="clear: both;"><div style="float: left; margin-top: 0px;">' . $attachArr['timestamp'] . ' -</div>';
+										echo '<div style="float: left; margin-top: 0px; margin-left: 5px;"><a href="../../' .
+											$attachArr['path'] . $attachArr['filename']  .'" target="_blank">' .
+											($attachArr['title'] != "" ? $attachArr['title'] : $attachArr['filename']) . '</a></div>';
+										echo '<a href="outgoing.php?collid='.$collid . '&loanid=' . $loanId . '&attachid='. $attachId . '&formsubmit=delAttachment"><img src="../../images/del.png" style="width: 15px; margin-left: 5px;"></a></li>';
+									}
+									echo '</ul>';
+								}
+								?>
+								<input name="collid" type="hidden" value="<?php echo $collid; ?>" />
+								<input name="loanid" type="hidden" value="<?php echo $loanId; ?>" />
+								<input name="loanidentifierown" type="hidden" value="<?php echo $loanArr['loanidentifierown']; ?>" />
+								<label style="font-weight: bold;">Add Correspondence Attachment:<sup>*</sup> </label><br/>
+								<label>Attachment Title: </label>
+								<input name="uploadtitle" type="text" placeholder=" optional, replaces filename" maxlength="80" size="30" />
+								<input id="uploadfile" name="uploadfile" type="file" size="30" onchange="verifyFileSize(this)">
+								<button name="formsubmit" type="submit" value="saveAttachment">Save Attachment</button>
+								<div style="margin-left: 10px"><br/>
+								<sup>*</sup>Supported file types include PDF, Word, Excel, images (.jpg/.jpeg or .png), and text files (.txt or .csv). </br>
+								PDFs, images, and text files are preferred, since they will display in the browser.
+								</div>
+							</fieldset>
+						</form>
+					</div>
 					<div style="margin:20px"><b>&lt;&lt; <a href="index.php?collid=<?php echo $collid; ?>">Return to Loan Index Page</a></b></div>
 				</div>
 				<div id="outloandeldiv">

@@ -1,7 +1,8 @@
 <?php
 include_once('../config/symbini.php');
 include_once($SERVER_ROOT.'/classes/GlossaryManager.php');
-include_once($SERVER_ROOT.'/content/lang/glossary/individual.'.$LANG_TAG.'.php');
+if($LANG_TAG == 'en' || !file_exists($SERVER_ROOT.'/content/lang/glossary/individual.'.$LANG_TAG.'.php')) include_once($SERVER_ROOT.'/content/lang/glossary/individual.en.php');
+else include_once($SERVER_ROOT.'/content/lang/glossary/individual.'.$LANG_TAG.'.php');
 header("Content-Type: text/html; charset=".$CHARSET);
 
 $glossId = array_key_exists('glossid',$_REQUEST)?$_REQUEST['glossid']:0;
@@ -205,15 +206,11 @@ if($glossId){
 						foreach($termImgArr as $imgId => $imgArr){
 							$imgUrl = $imgArr["url"];
 							if(substr($imgUrl,0,1)=="/"){
-								if(array_key_exists("imageDomain",$GLOBALS) && $GLOBALS["imageDomain"]){
-									$imgUrl = $GLOBALS["imageDomain"].$imgUrl;
+								if(array_key_exists('imageDomain',$GLOBALS) && $GLOBALS['imageDomain']){
+									$imgUrl = $GLOBALS['imageDomain'].$imgUrl;
 								}
 								else{
-									$urlPrefix = "http://";
-									if((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443) $urlPrefix = "https://";
-									$urlPrefix .= $_SERVER["SERVER_NAME"];
-									if($_SERVER["SERVER_PORT"] && $_SERVER["SERVER_PORT"] != 80 && $_SERVER['SERVER_PORT'] != 443) $urlPrefix .= ':'.$_SERVER["SERVER_PORT"];
-									$imgUrl = $urlPrefix.$imgUrl;
+									$imgUrl = $glosManager->getDomain() . $imgUrl;
 								}
 							}
 							?>

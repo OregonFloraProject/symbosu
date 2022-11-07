@@ -6,7 +6,8 @@ if(!$SYMB_UID) header('Location: '.$CLIENT_ROOT.'/profile/index.php?refurl=../co
 
 $collid = $_REQUEST['collid'];
 $loanId = array_key_exists('loanid',$_REQUEST)?$_REQUEST['loanid']:0;
-$formSubmit = array_key_exists('formsubmit',$_POST)?$_POST['formsubmit']:'';
+$loanIdborr = array_key_exists('loanidentifierborr',$_REQUEST)?$_REQUEST['loanidentifierborr']:0;
+$formSubmit = array_key_exists('formsubmit',$_REQUEST)?$_REQUEST['formsubmit']:'';
 $tabIndex = array_key_exists('tabindex',$_REQUEST)?$_REQUEST['tabindex']:0;
 
 $isEditor = 0;
@@ -19,6 +20,7 @@ if($SYMB_UID && $collid){
 
 $loanManager = new OccurrenceLoans();
 if($collid) $loanManager->setCollId($collid);
+$loanManager->setServerRoot($SERVER_ROOT . (substr($SERVER_ROOT, -1) == '/' ? '' : '/')); // Include trailing slash
 
 $statusStr = '';
 if($isEditor){
@@ -30,6 +32,16 @@ if($isEditor){
 		elseif($formSubmit == 'Save Incoming'){
 			$statusStr = $loanManager->editLoanIn($_POST);
 		}
+		elseif ($formSubmit == "delAttachment") {
+			// Delete correspondence attachment
+			if (array_key_exists('attachid',$_REQUEST) && is_numeric($_REQUEST['attachid'])) $loanManager->deleteAttachment($_REQUEST['attachid']);
+			 $statusStr = $loanManager->getErrorMessage();
+		}
+		elseif ($formSubmit == "saveAttachment") {
+			// Save correspondence attachment
+			if (array_key_exists('uploadfile',$_FILES)) $loanManager->uploadAttachment($collid, 'loan', $loanId, $loanIdborr, $_POST['uploadtitle'], $_FILES['uploadfile']);
+			$statusStr = $loanManager->getErrorMessage();
+		}
 	}
 }
 ?>
@@ -39,14 +51,7 @@ if($isEditor){
 	<title><?php echo $DEFAULT_TITLE; ?>: Incoming Loan Management</title>
 	<?php
 	$activateJQuery = true;
-	if(file_exists($SERVER_ROOT.'/includes/head.php')){
-		include_once($SERVER_ROOT.'/includes/head.php');
-	}
-	else{
-		echo '<link href="'.$CLIENT_ROOT.'/css/jquery-ui.css" type="text/css" rel="stylesheet" />';
-		echo '<link href="'.$CLIENT_ROOT.'/css/base.css?ver=1" type="text/css" rel="stylesheet" />';
-		echo '<link href="'.$CLIENT_ROOT.'/css/main.css?ver=1" type="text/css" rel="stylesheet" />';
-	}
+	include_once($SERVER_ROOT.'/includes/head.php');
 	?>
 	<style>
 		fieldset{ padding:15px; margin:15px }
@@ -86,8 +91,14 @@ if($isEditor){
 			return submitStatus;
 		}
 
+		// Run when the page loads to add linebreaks to asterisks in the description
+		window.onload = function() {
+			$("textarea[name='description']").val(
+				$("textarea[name='description']").val().replace(/ \* /g, '\n* ').replace(/ - /g, '\n- '));
+		};
+
 	</script>
-	<script type="text/javascript" src="../../js/symb/collections.loans.js?ver=1"></script>
+	<script type="text/javascript" src="../../js/symb/collections.loans.js?ver=2"></script>
 	<div class="navpath">
 		<a href='../../index.php'>Home</a> &gt;&gt;
 		<a href="../misc/collprofiles.php?collid=<?php echo $collid; ?>&emode=1">Collection Management Menu</a> &gt;&gt;
@@ -109,7 +120,7 @@ if($isEditor){
 				<hr/>
 				<?php
 			}
-			$specList = $loanManager->getSpecList($loanId);
+			$specList = $loanManager->getSpecimenList($loanId);
 			?>
 			<div id="tabs" style="margin:0px;">
 			    <ul>
@@ -293,6 +304,43 @@ if($isEditor){
 					$identifier = $loanId;
 					include('reportsinclude.php');
 					?>
+
+					<div>
+						<form id="attachmentform" name="attachmentform" action="incoming.php" method="post" enctype="multipart/form-data" onsubmit="return verifyFileUploadForm(this)">
+							<fieldset>
+								<legend>Correspondence Attachments</legend>
+								<?php
+
+								// Add any correspondence attachments
+								$attachments = $loanManager->getAttachments('loan', $loanId);
+								if ($attachments) {
+									echo '<ul>';
+									foreach($attachments as $attachId => $attachArr){
+										echo '<li style="clear: both;"><div style="float: left; margin-top: 0px;">' . $attachArr['timestamp'] . ' -</div>';
+										echo '<div style="float: left; margin-top: 0px; margin-left: 5px;"><a href="../../' .
+											$attachArr['path'] . $attachArr['filename']  .'" target="_blank">' .
+											($attachArr['title'] != "" ? $attachArr['title'] : $attachArr['filename']) . '</a></div>';
+										echo '<a href="incoming.php?collid='.$collid . '&loanid=' . $loanId . '&attachid='. $attachId . '&formsubmit=delAttachment"><img src="../../images/del.png" style="width: 15px; margin-left: 5px;"></a></li>';
+									}
+									echo '</ul>';
+								}
+								?>
+
+								<input name="collid" type="hidden" value="<?php echo $collid; ?>" />
+								<input name="loanid" type="hidden" value="<?php echo $loanId; ?>" />
+								<input name="loanidentifierborr" type="hidden" value="<?php echo ($loanArr['loanidentifierborr'] ? $loanArr['loanidentifierborr'] : $loanArr['loanidentifierown']); ?>" />
+								<label style="font-weight: bold;">Add Correspondence Attachment:<sup>*</sup> </label><br/>
+								<label>Attachment Title: </label>
+								<input name="uploadtitle" type="text" placeholder=" optional, replaces filename" maxlength="80" size="30" />
+								<input id="uploadfile" name="uploadfile" type="file" size="30" onchange="verifyFileSize(this)">
+								<button name="formsubmit" type="submit" value="saveAttachment">Save Attachment</button>
+								<div style="margin-left: 10px"><br/>
+								<sup>*</sup>Supported file types include PDF, Word, Excel, images (.jpg/.jpeg or png), and text files (.txt). </br>
+								PDFs, images, and text files are preferred, since they will display in the browser.
+								</div>
+							</fieldset>
+						</form>
+					</div>
 					<div style="margin:20px"><b>&lt;&lt; <a href="index.php?collid=<?php echo $collid; ?>">Return to Loan Index Page</a></b></div>
 				</div>
 				<?php
@@ -316,7 +364,7 @@ if($isEditor){
 										</div>
 										<?php
 										if($specArr['catalognumber']) echo '<div>'.$specArr['catalognumber'].'</div>';
-										if($specArr['othercatalognumbers']) echo '<div>'.$specArr['othercatalognumbers'].'</a></div>';
+										if(isset($specArr['othercatalognumbers'])) echo '<div>'.implode('; ',$specArr['othercatalognumbers']).'</a></div>';
 										?>
 									</td>
 									<td>

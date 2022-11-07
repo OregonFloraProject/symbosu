@@ -2,19 +2,21 @@
 include_once('../../config/symbini.php');
 include_once($SERVER_ROOT.'/classes/OccurrenceEditorManager.php');
 include_once($SERVER_ROOT.'/content/lang/collections/editor/occurrencetabledisplay.'.$LANG_TAG.'.php');
-header("Content-Type: text/html; charset=".$CHARSET);
+header('Content-Type: text/html; charset='.$CHARSET);
 
-$collId = array_key_exists('collid',$_REQUEST)?$_REQUEST['collid']:0;
+$collId = array_key_exists('collid',$_REQUEST)?$_REQUEST['collid']:false;
 $recLimit = array_key_exists('reclimit',$_REQUEST)?$_REQUEST['reclimit']:1000;
 $occIndex = array_key_exists('occindex',$_REQUEST)?$_REQUEST['occindex']:0;
 $crowdSourceMode = array_key_exists('csmode',$_REQUEST)?$_REQUEST['csmode']:0;
+$dynamicTable = array_key_exists('dynamictable',$_REQUEST)?$_REQUEST['dynamictable']:0;
 $action = array_key_exists('submitaction',$_REQUEST)?$_REQUEST['submitaction']:'';
 
 //Sanitation
-if(!is_numeric($collId)) $collId = 0;
+if(!is_numeric($collId)) $collId = false;
 if(!is_numeric($recLimit)) $recLimit = 1000;
 if(!is_numeric($occIndex)) $occIndex = false;
 if(!is_numeric($crowdSourceMode)) $crowdSourceMode = 0;
+if(!is_numeric($dynamicTable)) $dynamicTable = 0;
 $action = filter_var($action,FILTER_SANITIZE_STRING);
 
 $occManager = new OccurrenceEditorManager();
@@ -34,14 +36,14 @@ $statusStr = '';
 if($SYMB_UID){
 	$occManager->setCollId($collId);
 	$collMap = $occManager->getCollMap();
-	if($IS_ADMIN || (array_key_exists("CollAdmin",$USER_RIGHTS) && in_array($collId,$USER_RIGHTS["CollAdmin"]))){
+	if($IS_ADMIN || ($collId && array_key_exists('CollAdmin',$USER_RIGHTS) && in_array($collId,$USER_RIGHTS['CollAdmin']))){
 		$isEditor = 1;
 	}
 
 	if($collMap && $collMap['colltype']=='General Observations') $isGenObs = 1;
 	if(!$isEditor){
 		if($isGenObs){
-			if(array_key_exists("CollEditor",$USER_RIGHTS) && in_array($collId,$USER_RIGHTS["CollEditor"])){
+			if($collId && array_key_exists('CollEditor',$USER_RIGHTS) && in_array($collId,$USER_RIGHTS['CollEditor'])){
 				//Approved General Observation editors can add records
 				$isEditor = 2;
 			}
@@ -54,7 +56,7 @@ if($SYMB_UID){
 				$isEditor = 2;
 			}
 		}
-		elseif(array_key_exists("CollEditor",$USER_RIGHTS) && in_array($collId,$USER_RIGHTS["CollEditor"])){
+		elseif($collId && array_key_exists("CollEditor",$USER_RIGHTS) && in_array($collId,$USER_RIGHTS["CollEditor"])){
 			$isEditor = 2;
 		}
 	}
@@ -140,6 +142,7 @@ if($SYMB_UID){
 		'typestatus' => defined('TYPESTATUSLABEL')?TYPESTATUSLABEL:'Type Status',
 		'cultivationstatus' => defined('CULTIVATIONSTATUSLABEL')?CULTIVATIONSTATUSLABEL:'Cultivation Status',
 		'establishmentmeans' => defined('ESTABLISHMENTMEANSLABEL')?ESTABLISHMENTMEANSLABEL:'Establishment Means',
+		'datageneralizations' => defined('DATAGENERALIZATIONSLABEL')?DATAGENERALIZATIONSLABEL:'Data Generalizations',
 		'disposition' => defined('DISPOSITIONLABEL')?DISPOSITIONLABEL:'Disposition',
 		'duplicatequantity' => defined('DUPLICATEQUANTITYCOUNTLABEL')?DUPLICATEQUANTITYCOUNTLABEL:'Duplicate Qty',
 		'datelastmodified' => 'Date Last Modified',
@@ -187,6 +190,7 @@ else{
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=<?php echo $CHARSET; ?>">
 	<title><?php echo $DEFAULT_TITLE.' '.(isset($LANG['TABLE_VIEW'])?$LANG['TABLE_VIEW']:'Occurrence Table View'); ?></title>
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=yes" />
 	<?php
 	$activateJQuery = false;
 	if(file_exists($SERVER_ROOT.'/includes/head.php')){
@@ -198,39 +202,57 @@ else{
 		echo '<link href="'.$CLIENT_ROOT.'/css/main.css?ver=1" type="text/css" rel="stylesheet" />';
 	}
 	?>
+	<link href="<?php echo $CLIENT_ROOT; ?>/js/datatables/datatables.min.css" type="text/css" rel="stylesheet">
 	<script src="../../js/jquery.js" type="text/javascript"></script>
 	<script src="../../js/jquery-ui.js" type="text/javascript"></script>
-	<script src="../../js/symb/collections.editor.table.js?ver=3" type="text/javascript" ></script>
+	<script src="../../js/datatables/datatables.min.js?ver=1" type="text/javascript"></script>
+	<script type="text/javascript">
+		$(document).ready(
+			function () {
+				$('#dynamictable').DataTable( {
+					paging: false,
+					searching: false,
+					fixedColumns: {
+						left: 1
+					}
+				} );
+			}
+		);
+	</script>
+	<script src="../../js/symb/collections.editor.table.js?ver=2" type="text/javascript" ></script>
 	<script src="../../js/symb/collections.editor.query.js?ver=4" type="text/javascript" ></script>
 	<style type="text/css">
+		#titleDiv { font-weight: bold; font-size: 14px; width:790px; margin-bottom: 5px; }
 		table.styledtable td { white-space: nowrap; }
 		fieldset{ padding:15px }
 		fieldset > legend{ font-weight:bold }
 		.fieldGroupDiv{ clear:both; margin-bottom:2px; overflow: auto}
 		.fieldDiv{ float:left; margin-right: 20px}
 		#innertext{ background-color: white; margin: 0px 10px; }
+		.editimg{ width: 15px; }
+		button, input, fieldset, form div {all: revert;} /* revert OregonFlora styles in the queryform */
 	</style>
 </head>
 <body style="margin-left: 0px; margin-right: 0px;background-color:white;">
 	<div id="innertext">
 		<?php
-		if($collMap){
-			echo '<div>';
-			echo '<h2>'.$collMap['collectionname'].' ('.$collMap['institutioncode'].($collMap['collectioncode']?':'.$collMap['collectioncode']:'').')</h2>';
-			echo '</div>';
-		}
 		if(($isEditor || $crowdSourceMode)){
 			?>
-			<div style="text-align:right;width:790px;margin:-30px 15px 5px 0px;">
-				<a href="#" title="<?php echo $LANG['SEARCH_FILTER']; ?>" onclick="toggleQueryForm();"><img src="../../images/find.png" style="width:16px;" /></a>
-				<?php
-				# JGM: Allowing editors to use the batch update tool, at least for now
-				//if($isEditor == 1 || $isGenObs){
-				if($isEditor || $isGenObs){
-					?>
-					<a href="#" title="Batch Update Tool" onclick="toggleBatchUpdate();return false;"><img src="../../images/editplus.png" style="width:14px;" /></a>
+			<div id="titleDiv">
+				<div style="float:right;margin:">
+					<a href="#" title="<?php echo $LANG['SEARCH_FILTER']; ?>" onclick="toggleQueryForm();"><img src="../../images/find.png" style="width:16px;" /></a>
 					<?php
-				}
+					// JGM: Allowing editors to use the batch update tool, at least for now
+					//if($isEditor == 1 || $isGenObs){
+					if($isEditor || $isGenObs){
+						?>
+						<a href="#" title="Batch Update Tool" onclick="toggleBatchUpdate();return false;"><img class="editimg" src="../../images/editplus.png" /></a>
+						<?php
+					}
+					?>
+				</div>
+				<?php
+				if($collMap) echo $collMap['collectionname'].' ('.$collMap['institutioncode'].($collMap['collectioncode']?':'.$collMap['collectioncode']:'').')';
 				?>
 			</div>
 			<?php
@@ -241,8 +263,10 @@ else{
 				$headerArr = array();
 				foreach($recArr as $id => $occArr){
 					foreach($occArr as $k => $v){
-						if(trim($v) && !array_key_exists($k,$headerArr)){
-							$headerArr[$k] = $k;
+						if(!is_array($v)){
+							if(trim($v) && !array_key_exists($k,$headerArr)){
+								$headerArr[$k] = $k;
+							}
 						}
 					}
 				}
@@ -257,7 +281,7 @@ else{
 				}
 				$headerMap = array_intersect_key($headerMapBase, $headerArr);
 			}
-			# JGM: Allowing editors to use the batch update tool, at least for now
+			// JGM: Allowing editors to use the batch update tool, at least for now
 			//if($isEditor == 1 || $isGenObs){
 			if($isEditor || $isGenObs){
 				$buFieldName = (array_key_exists('bufieldname',$_REQUEST)?$_REQUEST['bufieldname']:'');
@@ -355,7 +379,7 @@ else{
 					<?php
 					if($crowdSourceMode){
 						?>
-						<a href="../specprocessor/crowdsource/index.php"><?php echo (isset($LANG['CENTRAL_CROWD'])?$LANG['CENTRAL_CROWD']:'Crowd Sourcing Central'); ?></a> &gt;&gt;
+						<a href="../specprocessor/crowdsource/index.php"><?php echo (isset($LANG['CENTRAL_CROWD'])?$LANG['CENTRAL_CROWD']:'Crowd Source Central'); ?></a> &gt;&gt;
 						<?php
 					}
 					else{
@@ -379,42 +403,56 @@ else{
 			<?php
 			if($recArr){
 				?>
-				<table class="styledtable" style="font-family:Arial;font-size:12px;">
-					<tr>
-						<th><?php echo (isset($LANG['SYMB_ID'])?$LANG['SYMB_ID']:'Symbiota ID'); ?></th>
-						<?php
-						foreach($headerMap as $k => $v){
-							echo '<th>'.$v.'</th>';
-						}
-						?>
-					</tr>
+				<div style="clear: both; padding-top:10px">
 					<?php
-					$recCnt = 0;
-					foreach($recArr as $id => $occArr){
-						if($occArr['sciname']){
-							$occArr['sciname'] = '<i>'.$occArr['sciname'].'</i> ';
-						}
-						echo "<tr ".($recCnt%2?'class="alt"':'').">\n";
-						echo '<td>';
-						$url = 'occurrenceeditor.php?csmode='.$crowdSourceMode.'&occindex='.($recCnt+$recStart).'&occid='.$id.'&collid='.$collId;
-						echo '<a href="'.$url.'" title="open in same window">'.$id.'</a> ';
-						echo '<a href="'.$url.'" target="_blank" title="'.(isset($LANG['NEW_WINDOW'])?$LANG['NEW_WINDOW']:'open in new window').'">';
-						echo '<img src="../../images/newwin.png" style="width:10px;" />';
-						echo '</a>';
-						echo '</td>'."\n";
-						foreach($headerMap as $k => $v){
-							$displayStr = $occArr[$k];
-							if(strlen($displayStr) > 60){
-								$displayStr = substr($displayStr,0,60).'...';
-							}
-							if(!$displayStr) $displayStr = '&nbsp;';
-							echo '<td>'.$displayStr.'</td>'."\n";
-						}
-						echo "</tr>\n";
-						$recCnt++;
+					$tableId = 'defaulttable';
+					$tableClass = 'styledtable';
+					if($dynamicTable){
+						$tableId = 'dynamictable';
+						$tableClass = 'stripe hover order-column compact nowrap cell-border';
 					}
 					?>
-				</table>
+					<table id="<?php echo $tableId; ?>" class="<?php echo $tableClass; ?>" style="font-family:Arial;font-size:12px;">
+						<thead>
+							<tr>
+								<th><?php echo (isset($LANG['SYMB_ID'])?$LANG['SYMB_ID']:'Symbiota ID'); ?></th>
+								<?php
+								foreach($headerMap as $k => $v){
+									echo '<th>'.$v.'</th>';
+								}
+								?>
+							</tr>
+						</thead>
+						<tbody>
+							<?php
+							$recCnt = 0;
+							foreach($recArr as $id => $occArr){
+								if($occArr['sciname']){
+									$occArr['sciname'] = '<i>'.$occArr['sciname'].'</i> ';
+								}
+								echo "<tr ".($recCnt%2?'class="alt"':'').">\n";
+								echo '<td>';
+								$url = 'occurrenceeditor.php?csmode='.$crowdSourceMode.'&occindex='.($recCnt+$recStart).'&occid='.$id.'&collid='.$collId;
+								echo '<a href="'.$url.'" title="open in same window">'.$id.'</a> ';
+								echo '<a href="'.$url.'" target="_blank" title="'.(isset($LANG['NEW_WINDOW'])?$LANG['NEW_WINDOW']:'open in new window').'">';
+								echo '<img src="../../images/newwin.png" style="width:10px;" />';
+								echo '</a>';
+								echo '</td>'."\n";
+								foreach($headerMap as $k => $v){
+									$displayStr = $occArr[$k];
+									if(strlen($displayStr) > 60){
+										$displayStr = substr($displayStr,0,60).'...';
+									}
+									if(!$displayStr) $displayStr = '&nbsp;';
+									echo '<td>'.$displayStr.'</td>'."\n";
+								}
+								echo "</tr>\n";
+								$recCnt++;
+							}
+							?>
+						</tbody>
+					</table>
+				</div>
 				<div style="width:790px;">
 					<?php echo $navStr; ?>
 				</div>

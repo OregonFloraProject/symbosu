@@ -4,6 +4,9 @@ include_once($SERVER_ROOT.'/classes/Manager.php');
 class OccurrenceLoans extends Manager{
 
 	private $collid = 0;
+	private $idTagArr = array();
+	private $specimenSortArr = array();
+	private $serverRoot= '';
 
 	function __construct() {
 		parent::__construct(null,'write');
@@ -15,9 +18,9 @@ class OccurrenceLoans extends Manager{
 
 	public function getLoanOutList($searchTerm,$displayAll){
 		$retArr = array();
+		$extLoanArr = array();
 		//Get loans that are assigned to other collections but have linked occurrences from this collection (NEON Biorepo portal issue)
 		/*
-		$extLoanArr = array();
 		$sql = 'SELECT DISTINCT l.loanid, o.collid '.
 			'FROM omoccurloans l INNER JOIN omoccurloanslink ll ON l.loanid = ll.loanid '.
 			'INNER JOIN omoccurrences o ON ll.occid = o.occid '.
@@ -31,11 +34,11 @@ class OccurrenceLoans extends Manager{
 		*/
 
 		//Get loan details
-		$sql = 'SELECT l.loanid, l.datesent, l.loanidentifierown, l.loanidentifierborr, i.institutioncode AS instcode1, c.institutioncode AS instcode2, l.forwhom, l.dateclosed '.
+		$sql = 'SELECT l.loanid, l.datesent, l.loanidentifierown, l.loanidentifierborr, i.institutioncode AS instcode1, c.institutioncode AS instcode2, i.institutionname, l.forwhom, l.dateclosed, l.datedue '.
 			'FROM omoccurloans l LEFT JOIN institutions i ON l.iidborrower = i.iid '.
 			'LEFT JOIN omcollections c ON l.collidborr = c.collid '.
 			'WHERE (l.collidown = '.$this->collid.' ';
-		//if($extLoanArr) $sql .= 'OR l.loanid IN('.implode(',',$extLoanArr).')';
+		if($extLoanArr) $sql .= 'OR l.loanid IN('.implode(',',$extLoanArr).')';
 		$sql .= ') ';
 		if(!$displayAll) $sql .= 'AND l.dateclosed IS NULL ';
 		$sql .= 'ORDER BY l.loanidentifierown + 1 DESC';
@@ -44,9 +47,11 @@ class OccurrenceLoans extends Manager{
 				if(!$searchTerm || stripos($r->instcode1,$searchTerm) !== false || stripos($r->instcode2,$searchTerm) !== false || stripos($r->forwhom,$searchTerm) !== false){
 					$retArr[$r->loanid]['loanidentifierown'] = $r->loanidentifierown;
 					$retArr[$r->loanid]['institutioncode'] = $r->instcode1;
+					$retArr[$r->loanid]['institutionname'] = $r->institutionname;
 					$retArr[$r->loanid]['forwhom'] = $r->forwhom;
 					$retArr[$r->loanid]['dateclosed'] = $r->dateclosed;
-					//if(array_key_exists($r->loanid, $extLoanArr)) $retArr[$r->loanid]['isexternal'] = $extLoanArr[$r->loanid];
+					$retArr[$r->loanid]['datedue'] = $r->datedue;
+					if(array_key_exists($r->loanid, $extLoanArr)) $retArr[$r->loanid]['isexternal'] = $extLoanArr[$r->loanid];
 				}
 			}
 			$rs->free();
@@ -129,6 +134,17 @@ class OccurrenceLoans extends Manager{
 	public function deleteLoan($loanid){
 		$status = false;
 		if(is_numeric($loanid)){
+
+			// First, delete any file attachments
+			$sql = 'SELECT attachmentid FROM omoccurloansattachment WHERE (loanid = ' . $loanid . ')';
+			if($rs = $this->conn->query($sql)) {
+				while($r = $rs->fetch_object()){
+					$this->deleteAttachment($r->attachmentid);
+				}
+				$rs->free();
+			}
+
+			// Delete loan in database
 			$sql = 'DELETE FROM omoccurloans WHERE (loanid = '.$loanid.')';
 			if($this->conn->query($sql)){
 				$status = true;
@@ -140,7 +156,7 @@ class OccurrenceLoans extends Manager{
 	//Loan in functions
 	public function getLoanInList($searchTerm,$displayAll){
 		$retArr = array();
-		$sql = 'SELECT l.loanid, l.loanidentifierborr, l.dateclosed, i.institutioncode AS instcode1, c.institutioncode AS instcode2, l.forwhom '.
+		$sql = 'SELECT l.loanid, l.loanidentifierborr, l.dateclosed, i.institutioncode AS instcode1, c.institutioncode AS instcode2, i.institutionname, l.forwhom, l.datedue '.
 			'FROM omoccurloans l INNER JOIN institutions i ON l.iidowner = i.iid '.
 			'LEFT JOIN omcollections c ON l.collidown = c.collid '.
 			'WHERE l.collidborr = '.$this->collid.' ';
@@ -151,8 +167,10 @@ class OccurrenceLoans extends Manager{
 				if(!$searchTerm || stripos($r->instcode1,$searchTerm) !== false || stripos($r->instcode2,$searchTerm) !== false || stripos($r->forwhom,$searchTerm) !== false){
 					$retArr[$r->loanid]['loanidentifierborr'] = $r->loanidentifierborr;
 					$retArr[$r->loanid]['institutioncode'] = $r->instcode1;
+					$retArr[$r->loanid]['institutionname'] = $r->institutionname;
 					$retArr[$r->loanid]['forwhom'] = $r->forwhom;
 					$retArr[$r->loanid]['dateclosed'] = $r->dateclosed;
+					$retArr[$r->loanid]['datedue'] = $r->datedue;
 				}
 			}
 			$rs->free();
@@ -386,6 +404,17 @@ class OccurrenceLoans extends Manager{
 	public function deleteExchange($exchangeId){
 		$status = false;
 		if(is_numeric($exchangeId)){
+
+			// First, delete any file attachments
+			$sql = 'SELECT attachmentid FROM omoccurloansattachment WHERE (exchangeid = ' . $exchangeId . ')';
+			if($rs = $this->conn->query($sql)) {
+				while($r = $rs->fetch_object()){
+					$this->deleteAttachment($r->attachmentid);
+				}
+				$rs->free();
+			}
+
+			// Delete exchange in database
 			$sql = 'DELETE FROM omoccurexchange WHERE (exchangeid = '.$exchangeId.')';
 			if($this->conn->query($sql)){
 				$status = true;
@@ -397,13 +426,14 @@ class OccurrenceLoans extends Manager{
 	public function getTransInstList($collid){
 		$iidArr = array();
 		if(is_numeric($collid)){
-			$sql = 'SELECT DISTINCT e.iid, i.institutioncode '.
+			$sql = 'SELECT DISTINCT e.iid, i.institutioncode, i.institutionname '.
 				'FROM omoccurexchange AS e INNER JOIN institutions AS i ON e.iid = i.iid '.
 				'WHERE e.collid = '.$this->collid.' AND e.iid IS NOT NULL '.
 				'ORDER BY i.institutioncode';
 			if($rs = $this->conn->query($sql)){
 				while($r = $rs->fetch_object()){
 					$iidArr[$r->iid]['institutioncode'] = $r->institutioncode;
+					$iidArr[$r->iid]['institutionname'] = $r->institutionname;
 				}
 			}
 			$sql = 'SELECT rt.iid, e.invoicebalance FROM omoccurexchange AS e '.
@@ -449,24 +479,55 @@ class OccurrenceLoans extends Manager{
 	}
 
 	//Specimen listing and edit functions
-	public function getSpecList($loanid){
+	public function getSpecimenList($loanid, $sortTag = ''){
 		$retArr = array();
 		if(is_numeric($loanid)){
 			$sql = 'SELECT o.collid, l.loanid, l.occid, l.returndate, l.notes, o.catalognumber, o.othercatalognumbers, o.sciname, '.
 				'CONCAT_WS(" ",o.recordedby,IFNULL(o.recordnumber,o.eventdate)) AS collector, CONCAT_WS(", ",stateprovince,county,locality) AS locality '.
 				'FROM omoccurloanslink l INNER JOIN omoccurrences o ON l.occid = o.occid '.
 				'WHERE l.loanid = '.$loanid.' '.
-				'ORDER BY o.catalognumber+1,o.othercatalognumbers+1';
+				'ORDER BY o.catalognumber+1, o.othercatalognumbers+1';
 			if($rs = $this->conn->query($sql)){
 				while($r = $rs->fetch_object()){
 					$retArr[$r->occid]['collid'] = $r->collid;
 					$retArr[$r->occid]['catalognumber'] = $r->catalognumber;
-					$retArr[$r->occid]['othercatalognumbers'] = $r->othercatalognumbers;
+					if($r->othercatalognumbers) $retArr[$r->occid]['othercatalognumbers'][] = $r->othercatalognumbers;
+					if($r->catalognumber){
+						$retArr[$r->occid]['catalognumber'] = $r->catalognumber;
+						$this->idTagArr['1-catalognumber'] = 'Catalog Numbers';
+					}
+					if($r->othercatalognumbers){
+						$retArr[$r->occid]['othercatalognumbers'][] = $r->othercatalognumbers;
+						$this->idTagArr['2-othercatalognumbers'] = 'Other Catalog Numbers';
+					}
 					$retArr[$r->occid]['sciname'] = $r->sciname;
 					$retArr[$r->occid]['collector'] = $r->collector;
 					$retArr[$r->occid]['locality'] = $r->locality;
 					$retArr[$r->occid]['returndate'] = $r->returndate;
 					$retArr[$r->occid]['notes'] = $r->notes;
+					if($sortTag){
+						if($sortTag == 'catalognumber') $this->specimenSortArr[$r->occid] = $r->catalognumber;
+						elseif($sortTag == 'othercatalognumbers') $this->specimenSortArr[$r->occid] = $r->othercatalognumbers;
+						else $this->specimenSortArr[$r->occid] = '';
+					}
+					else $this->specimenSortArr[$r->occid] = '';
+				}
+				$rs->free();
+			}
+			//Get additional identifiers
+			$sql = 'SELECT i.occid, i.identifierName, i.identifierValue
+				FROM omoccurloanslink l INNER JOIN omoccuridentifiers i ON l.occid = i.occid
+				WHERE l.loanid = '.$loanid.'
+				ORDER BY i.sortBy, i.identifierValue';
+			if($rs = $this->conn->query($sql)){
+				while($r = $rs->fetch_object()){
+					$retArr[$r->occid]['othercatalognumbers'][] = $r->identifierValue;
+					$idTag = $r->identifierName;
+					if(!$idTag) $idTag = 'otherCatalogNumbers';
+					$this->idTagArr['3-'.strtolower($idTag)] = $idTag;
+					if($sortTag && $sortTag != 'catalognumber'){
+						if($sortTag == strtolower($idTag)) $this->specimenSortArr[$r->occid] = $r->identifierValue;
+					}
 				}
 				$rs->free();
 			}
@@ -489,35 +550,72 @@ class OccurrenceLoans extends Manager{
 	}
 
 	public function exportSpecimenList($loanid){
+		$occurArr = array();
+		$headerArr = array();
+		$sql = 'SELECT o.catalogNumber, o.otherCatalogNumbers, o.occurrenceID, l.returnDate, l.notes, o.family, o.sciname, o.recordedBy, o.recordNumber, o.eventDate, o.country, o.stateProvince, '.
+			'o.county, o.locality, o.decimalLatitude, o.decimalLongitude, o.minimumElevationInMeters, o.dateEntered, o.dateLastModified, l.initialTimestamp as dateTimeAddToLoan, o.occid '.
+			'FROM omoccurrences o INNER JOIN omoccurloanslink l ON o.occid = l.occid '.
+			'WHERE l.loanid = '.$loanid;
+		$rs = $this->conn->query($sql);
+		if($rs->num_rows){
+			$fields = mysqli_fetch_fields($rs);
+			foreach($fields as $val) $headerArr[] = $val->name;
+			while($r = $rs->fetch_assoc()){
+				$occurArr[$r['occid']] = $r;
+			}
+			$rs->free();
+		}
+
+		//Add additional identifiers
+		$identArr = array();
+		$sql = 'SELECT l.occid, i.identifierName, i.identifierValue FROM omoccurloanslink l INNER JOIN omoccuridentifiers i ON l.occid = i.occid WHERE l.loanid = '.$loanid;
+		$rs = $this->conn->query($sql);
+		while($r = $rs->fetch_object()){
+			$idName = $r->identifierName;
+			if(!$idName) $idName = 'OTHERCAT';
+			$identArr[$idName][$r->occid] = $r->identifierValue;
+		}
+		$rs->free();
+		foreach($identArr as $name => $valArr){
+			if($name == 'OTHERCAT'){
+				foreach($valArr as $occid => $idStr){
+					if($occurArr[$occid]['otherCatalogNumbers']) $occurArr[$occid]['otherCatalogNumbers'] .= ', ';
+					$occurArr[$occid]['otherCatalogNumbers'] .= $idStr;
+				}
+			}
+			else{
+				$headerArr[] = $name;
+				foreach($occurArr as $occid => $recArr){
+					if(array_key_exists($occid, $valArr)) $occurArr[$occid][$name] = $valArr[$occid];
+					else $occurArr[$occid][$name] = '';
+				}
+			}
+		}
+
+		//Create output file
 		$fileName = 'loanSpecList_'.date('Ymd').'.csv';
 		header ('Cache-Control: must-revalidate, post-check=0, pre-check=0');
 		header ('Content-Type: text/csv');
 		header ('Content-Disposition: attachment; filename="'.$fileName.'"');
-		$sql = 'SELECT o.catalogNumber, o.otherCatalogNumbers, o.occurrenceID, o.family, o.sciname, o.recordedBy, o.recordNumber, o.eventDate, '.
-			'o.country, o.stateProvince, o.county, o.locality, o.decimalLatitude, o.decimalLongitude, o.minimumElevationInMeters, o.dateEntered, o.dateLastModified '.
-			'FROM omoccurrences o INNER JOIN omoccurloanslink l ON o.occid = l.occid '.
-			'WHERE loanid = '.$loanid;
-		$rs = $this->conn->query($sql);
-		if($rs->num_rows){
-			$headerArr = array();
-			$fields = mysqli_fetch_fields($rs);
-			foreach($fields as $val) $headerArr[] = $val->name;
+		if($occurArr){
 			$out = fopen('php://output', 'w');
 			fputcsv($out, $headerArr);
-			while($r = $rs->fetch_assoc()){
-				fputcsv($out, $r);
+			foreach($occurArr as $recArr){
+				fputcsv($out, $recArr);
 			}
-			$rs->free();
 			fclose($out);
 		}
 		else echo "Specimen recordset is empty.\n";
 	}
 
-	public function linkSpecimen($loanid, $catNum){
-		//This method is used by the ajax script insertLoanSpecimen.php
+	/*
+	 * This method is used by the ajax script processLoanSpecimen.php
+	 * return: 0 = failed due to no records matching catalog number, 1 = success, 2 = failed due to multiple records found with catalog number, 3 = failed to link
+	 */
+	public function linkSpecimen($loanid, $catNum, $target){
+		//This method is used by the ajax script processLoanSpecimen.php
 		if(is_numeric($loanid)){
-			$occArr = $this->getOccid($catNum);
-			if(!$occArr) $occArr = $this->getOccid($catNum,true);
+			$occArr = $this->getOccid($catNum, $target);
 			if(!$occArr) return 0;
 			elseif(count($occArr) > 1) return 2;
 			else{
@@ -528,29 +626,50 @@ class OccurrenceLoans extends Manager{
 		return 0;
 	}
 
-	public function batchLinkSpecimens($postArr){
+	/*
+	 * This method is used by the ajax script processLoanSpecimen.php
+	 * return: 0 = failed due to no records matching catalog number, 1 = success, 2 = success, but multiple records check, 3 = failed to update record (not in loan or already checked-in)
+	 */
+	public function checkinSpecimen($loanid, $catNum, $target){
+		if(is_numeric($loanid)){
+			$occArr = $this->getOccid($catNum, $target);
+			if(!$occArr) return 0;
+			else{
+				if($status = $this->batchCheckinSpecimens($occArr, $loanid)){
+					if($status == 1) return 1;
+					else return 2;
+				}
+				else return 3;
+			}
+		}
+		return 0;
+	}
+
+	public function batchProcessSpecimens($postArr){
 		$cnt = 0;
-		$loanid = $postArr['loanid'];
-		if($this->collid && is_numeric($loanid)){
-			$catNumStr = $postArr['catalogNumbers'];
-			if($catNumStr){
-				$otherCatNum = false;
-				if($postArr['targetidentifier'] == 'other') $otherCatNum = true;
-				$catNumStr = str_replace(array("\n", "\r\n", ";"), ",", $catNumStr);
+		if($this->collid && is_numeric($postArr['loanid'])){
+			if($postArr['catalogNumbers']){
+				$mode = $postArr['processmode'];
+				$catNumStr = str_replace(array("\n", "\r\n", ";"), ",", $postArr['catalogNumbers']);
 				$catArr = array_unique(explode(',',$catNumStr));
 				foreach($catArr as $catStr){
 					$catStr = trim($catStr);
 					if($catStr){
-						$occArr = $this->getOccid($catStr,$otherCatNum);
-						if($occArr){
+						if($occArr = $this->getOccid($catStr, $postArr['targetidentifier'])){
 							if(count($occArr) > 1) $this->warningArr['multiple'][] = $catStr;
-							foreach($occArr as $occid){
-								if($this->addLoanSpecimen($loanid,$occid)) $cnt++;
-								else{
-									if(strpos($this->errorMessage,'Duplicate entry') === 0) $this->warningArr['dupe'][] = $catStr;
-									else $this->warningArr['error'][] = $this->errorMessage;
+							if($mode == 'link'){
+								foreach($occArr as $occid){
+									if($this->addLoanSpecimen($postArr['loanid'], $occid)) $cnt++;
+									else{
+										if(strpos($this->errorMessage,'Duplicate entry') === 0) $this->warningArr['dupe'][] = $catStr;
+										else $this->warningArr['error'][] = $this->errorMessage;
+									}
 								}
-
+							}
+							elseif($mode == 'checkin'){
+								if($status = $this->batchCheckinSpecimens($occArr, $postArr['loanid'])) $cnt++;
+								elseif($status === 0) $this->warningArr['zeroMatch'][] = $catStr;
+								else $this->warningArr['error'][] = $this->errorMessage;
 							}
 						}
 						else $this->warningArr['missing'][] = $catStr;
@@ -561,52 +680,34 @@ class OccurrenceLoans extends Manager{
 		return $cnt;
 	}
 
-	private function getOccid($catNum, $otherCatNum = false){
+	private function getOccid($catNum, $method){
 		$occArr = array();
-		$sql = 'SELECT o.occid FROM omoccurrences o ';
-		if($otherCatNum){
+		if(!$method || !in_array($method,array('allid','catnum','other'))) $method = 'allid';
+		$sql = 'SELECT DISTINCT o.occid FROM omoccurrences o ';
+		$sqlWhere = '';
+		if($method == 'allid' || $method == 'other'){
+			$sql .= 'LEFT JOIN omoccuridentifiers i ON o.occid = i.occid ';
 			$catNum = $this->cleanInStr($catNum);
-			$sql .= 'LEFT JOIN omoccuridentifiers i ON o.occid = i.occid WHERE ((o.othercatalognumbers = "'.$catNum.'") OR (i.identifierValue = "'.$catNum.'")) ';
+			$sqlWhere = 'OR (o.othercatalognumbers = "'.$catNum.'") OR (i.identifierValue = "'.$catNum.'") ';
 		}
-		else $sql .= 'WHERE (o.catalognumber = "'.$this->cleanInStr($catNum).'") ';
-		if($this->collid) $sql .= 'AND (o.collid = '.$this->collid.')';
-		//echo $sql; exit;
-		$rs = $this->conn->query($sql);
-		while($r = $rs->fetch_object()) {
-			$occArr[] = $r->occid;
+		if($method == 'allid' || $method == 'catnum') $sqlWhere .= 'OR (o.catalognumber = "'.$this->cleanInStr($catNum).'") ';
+		if($sqlWhere){
+			$sql .= 'WHERE ('.substr($sqlWhere,2).') ';
+			if($this->collid) $sql .= 'AND (o.collid = '.$this->collid.')';
+			$rs = $this->conn->query($sql);
+			while($r = $rs->fetch_object()) {
+				$occArr[] = $r->occid;
+			}
+			$rs->free();
 		}
-		$rs->free();
 		return $occArr;
 	}
 
 	private function addLoanSpecimen($loanid,$occid){
 		$status = false;
 		$sql = 'INSERT INTO omoccurloanslink(loanid,occid) VALUES ('.$loanid.','.$occid.') ';
-		//echo $sql;
 		if($this->conn->query($sql)) $status = true;
 		else $this->errorMessage = $this->conn->error;
-		return $status;
-	}
-
-	public function editSpecimen($reqArr){
-		$status = false;
-		if(!array_key_exists('occid',$reqArr)) return;
-		$occidArr = $reqArr['occid'];
-		$loanid = $reqArr['loanid'];
-		if(is_numeric($loanid)){
-			if($occidArr){
-				if($reqArr['applytask'] == 'delete'){
-					$sql = 'DELETE FROM omoccurloanslink WHERE loanid = '.$loanid.' AND (occid IN('.implode(',',$occidArr).')) ';
-					if($this->conn->query($sql)) $status = true;
-					else $this->errorMessage = 'ERROR removing specimen from loan: '.$this->conn->error;
-				}
-				else{
-					$sql = 'UPDATE omoccurloanslink SET returndate = "'.date('Y-m-d H:i:s').'" WHERE loanid = '.$loanid.' AND (occid IN('.implode(',',$occidArr).')) ';
-					if($this->conn->query($sql)) $status = true;
-					else $this->errorMessage = 'ERROR checking in specimen: '.$this->conn->error;
-				}
-			}
-		}
 		return $status;
 	}
 
@@ -637,12 +738,36 @@ class OccurrenceLoans extends Manager{
 		return $status;
 	}
 
+	public function batchCheckinSpecimens($occidInput, $loanID){
+		$status = false;
+		$occidStr = '';
+		if(is_numeric($occidInput)) $occidStr = $occidInput;
+		else $occidStr = implode(',',$occidInput);
+		if(is_numeric($loanID) && preg_match('/^[\d,]+$/', $occidStr)){
+			$sql = 'UPDATE omoccurloanslink SET returndate = "'.date('Y-m-d H:i:s').'" WHERE loanid = '.$loanID.' AND (occid IN('.$occidStr.')) AND (returndate IS NULL) ';
+			if($this->conn->query($sql)) $status = $this->conn->affected_rows;
+			else $this->errorMessage = 'ERROR checking in specimens: '.$this->conn->error;
+		}
+		return $status;
+	}
+
+	public function deleteSpecimens($occidArr, $loanID){
+		$status = false;
+		$occidStr = implode(',',$occidArr);
+		if(is_numeric($loanID) && preg_match('/^[\d,]+$/', $occidStr)){
+			$sql = 'DELETE FROM omoccurloanslink WHERE loanid = '.$loanID.' AND (occid IN('.$occidStr.')) ';
+			if($this->conn->query($sql)) $status = true;
+			else $this->errorMessage = 'ERROR removing specimens from loan: '.$this->conn->error;
+		}
+		return $status;
+	}
+
 	//Report functions
 	public function getInvoiceInfo($id,$loanType){
 		$retArr = array();
 		if(is_numeric($id)){
 			if($loanType == 'exchange'){
-				$sql = 'SELECT e.exchangeid, e.identifier, e.iid, '.
+				$sql = 'SELECT e.exchangeid, e.identifier, e.iid, e.datesent, '.
 					'e.totalboxes, e.shippingmethod, e.totalexmounted, e.totalexunmounted, e.totalgift, e.totalgiftdet, '.
 					'e.invoicebalance, e.invoicemessage, e.description, i.contact, i.institutionname, i.institutionname2, '.
 					'i.institutioncode, i.address1, i.address2, i.city, i.stateprovince, i.postalcode, i.country '.
@@ -653,6 +778,7 @@ class OccurrenceLoans extends Manager{
 						$retArr['exchangeid'] = $r->exchangeid;
 						$retArr['identifier'] = $r->identifier;
 						$retArr['iid'] = $r->iid;
+						$retArr['datesent'] = $r->datesent;
 						$retArr['totalboxes'] = $r->totalboxes;
 						$retArr['shippingmethod'] = $r->shippingmethod;
 						$retArr['totalexmounted'] = $r->totalexmounted;
@@ -720,8 +846,8 @@ class OccurrenceLoans extends Manager{
 	public function getFromAddress($collid){
 		$retArr = array();
 		if(is_numeric($collid)){
-			$sql = 'SELECT i.institutionname, i.institutionname2, i.phone, '.
-				'i.institutioncode, i.address1, i.address2, i.city, i.stateprovince, i.postalcode, i.country '.
+			$sql = 'SELECT i.institutionname, i.institutionname2, i.phone, i.url, '.
+				'i.institutioncode, i.address1, i.address2, i.city, i.stateprovince, i.postalcode, i.country, o.icon '.
 				'FROM omcollections o INNER JOIN institutions i ON o.iid = i.iid '.
 				'WHERE o.collid = '.$collid;
 			if($rs = $this->conn->query($sql)){
@@ -729,6 +855,7 @@ class OccurrenceLoans extends Manager{
 					$retArr['institutionname'] = $r->institutionname;
 					$retArr['institutionname2'] = $r->institutionname2;
 					$retArr['phone'] = $r->phone;
+					$retArr['url'] = $r->url;
 					$retArr['institutioncode'] = $r->institutioncode;
 					$retArr['address1'] = $r->address1;
 					$retArr['address2'] = $r->address2;
@@ -736,6 +863,7 @@ class OccurrenceLoans extends Manager{
 					$retArr['stateprovince'] = $r->stateprovince;
 					$retArr['postalcode'] = $r->postalcode;
 					$retArr['country'] = $r->country;
+					$retArr['icon'] = $r->icon;
 				}
 				$rs->free();
 			}
@@ -793,7 +921,7 @@ class OccurrenceLoans extends Manager{
 	}
 
 	public function generateNextID($idType){
-		$retStr = '';
+		$retStr = 1;
 		if($this->collid){
 			$sql = '';
 			if($idType == 'out'){
@@ -810,33 +938,181 @@ class OccurrenceLoans extends Manager{
 			}
 
 			if($rs = $this->conn->query($sql)){
-				$parsedArr = array();
+				$maxnum = 1;
 				while($r = $rs->fetch_object()){
+					$num = '';
+
+					// Replace all non-digits with -
 					$id = preg_replace('/[^\d]+/', '-', $r->id);
 					$id = preg_replace('/-{2,}/','-',$id);
+
+					// Split into an array containing the number(s) in the string
 					$numArr = explode('-',$id);
-					$cnt = 0;
-					foreach($numArr as $n){
-						$parsedArr[$cnt][] = $n;
-						$cnt++;
+
+					// Get the last array element that is a number
+					// Note: NOT the highest number, this could be something like a year, e.g., 2022-5. 
+					// The last number in the string is most likely the right one to increment
+					while (!is_numeric($num)) $num = array_pop($numArr);
+
+					// Check if the number found is the highest so far, if so, use that one to increment. 
+					if ($num > $maxnum) {
+						$maxnum = $num;
+
+						// Rather than using the number itself, replace the old number in the string with the incremented one & return that
+						// This allows for alphanumeric identifiers like loan-102 or OSC-V-1524
+						$retStr = str_replace($num, $num + 1, $r->id);
 					}
 				}
 				$rs->free();
-				foreach($parsedArr as $vArr){
-					$previousValue = '';
-					foreach($vArr as $v){
-						if($v == $previousValue){
-							$retStr = '';
-							break;
-						}
-						if($v++ > $retStr) $retStr = $v++;
-						$previousValue = $v;
-					}
-				}
-				if(!$parsedArr) $retStr = 1;
 			}
 		}
 		return $retStr;
+	}
+
+	// Function to upload correspondence attachments for loans/exchanges
+	public function uploadAttachment($collid, $type, $transid, $identifier, $title, $file) {
+
+		// Permissable mimetypes, see http://svn.apache.org/repos/asf/httpd/httpd/trunk/docs/conf/mime.types
+		$mimetypes = array('text/plain', 'image/jpeg', 'image/png', 'application/pdf', 'application/msword',
+			'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+			'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+
+		// File checking
+		// Check to make sure it is an uploaded file and not spoofed
+		if (!is_uploaded_file($file['tmp_name'])) {
+			$this->errorMessage = 'Error: Not an uploaded file';
+			return false;
+
+		// Check to make sure the filesize is permissable
+		} else if ($file['size'] > 10000000) {
+			$this->errorMessage = 'Error: File size is too large: max size is 10 MB';
+			return false;
+
+		// Check the mimetype of the file, don't rely on the file extension
+		} else if (!in_array(mime_content_type($file['tmp_name']), $mimetypes)) {
+			$this->errorMessage = 'Error: File type does not match extension. File must be a PDF (.pdf), MS Word document (.doc or .docx), MS Excel file (.xls or .xlsx), image (.jpg, .jpeg, or .png). or a text file (.txt, .csv).';
+			return false;
+		}
+
+		// Create the path for the attachment, storing under a subfolder for the particular collection
+		$relPath = 'content/collections/loans/coll' . $collid . '/';
+		$fullPath = $this->serverRoot . $relPath;
+
+		// Check to make sure the save path exists, creating it if permissions are sufficient
+		if (!is_dir($fullPath)) {
+			if (!mkdir($fullPath, 0775, true)) {
+				$this->errorMessage = 'Error: Insufficient permissions to save files in content/collections/loans';
+				return false;
+			}
+		}
+
+		// Recreate the filename, appending the loan identifier and current date stamp to make the filename more unique
+		$filename = pathinfo($file['name'], PATHINFO_FILENAME) . '_' . $type . $identifier .
+			'_' . date('Y-m-d', time()) . '.' . pathinfo($file['name'], PATHINFO_EXTENSION);
+
+		// Replace any invalid filename characters and sanitize filename
+		$filename = $this->cleanInStr(str_replace(array('\\','/',':','*','?','"','<','>','|', '..'),'_',$filename));
+
+		// Keep filename size within 255 bytes
+		if (mb_strlen($filename, "UTF-8") > 255) {
+			$this->errorMessage = 'Error: The filename of the attachment: ' . $file['name'] . 'is too long';
+			return false;
+		}
+
+		// Check to make sure same filename doesn't already exist for this loan/date combo
+		if (file_exists($fullPath . $filename)) {
+				$this->errorMessage = 'Error: A file with the same name has already been uploaded today for this loan.';
+				return false;
+		}
+
+		// Check to make sure this is an uploaded file and that it can be moved successfully
+		if (move_uploaded_file($file['tmp_name'], $fullPath . $filename)) {
+
+			// Moved successfully, save in database
+			if ($this->saveAttachment($type, $transid, $title, $relPath, $filename)) {
+				$this->errorMessage = "SUCCESS: Correspondence attachment saved successfully.";
+				return true;
+			}
+
+			// Attachment failed to be saved in database
+			return false;
+		}
+		else {
+			$this->errorMessage = 'Error: The uploaded file could not be saved successfully.';
+			return false;
+		}
+	}
+
+	// Function to save correspondence attachments for loans/exchanges to the database
+	public function saveAttachment($type, $transid, $title, $path, $filename){
+		$sql = 'INSERT INTO omoccurloansattachment (' . ($type == "loan" ? 'loanid' : 'exchangeid') . ', title, path, filename) '.
+		'VALUES('.$transid . ',"' . $this->cleanInStr($title) . '","' . $path . '","' . $filename .'") ';
+
+		if($this->conn->query($sql)){
+			$attachmentid = $this->conn->insert_id;
+			return $attachmentid;
+		}
+		else{
+			$this->errorMessage = 'ERROR: attachment could not be saved in database: '.$this->conn->error.'<br/>';
+			return false;
+		}
+	}
+
+	// Delete a correspondence attachment associated with a loan/exchange
+	public function deleteAttachment($attachid){
+
+		if(is_numeric($attachid)){
+
+			// First get the file path to delete
+			$sql = 'SELECT path, filename FROM omoccurloansattachment WHERE (attachmentid = ' . $attachid . ')';
+			if($rs = $this->conn->query($sql)) {
+				while($r = $rs->fetch_object()){
+					$path = $this->serverRoot . $r->path . $r->filename;
+				}
+				$rs->free();
+			}
+
+			// Make sure we got a file path
+			if(!isset($path)) {
+				$this->errorMessage = 'Error: Attachment to delete not found in database';
+				return false;
+			}
+
+			// Next delete from the database
+			$sql = 'DELETE FROM omoccurloansattachment WHERE (attachmentid = '.$attachid.')';
+			if(!$this->conn->query($sql)){
+				$this->errorMessage = 'Error: Attachment could not be deleted from database';
+				return false;
+			}
+
+			// Finally, delete the physical file
+			if(!unlink($path)){
+				$this->errorMessage = 'Error: Attachment file could not be deleted from server';
+				return false;
+			}
+			return true;
+		}
+		return false;
+	}
+
+	// Get a list of correspondence attachments for a given loan/exchange
+	public function getAttachments($type, $transid) {
+		$retArr = array();
+		$sql = 'SELECT attachmentid, title, path, filename, initialTimestamp ' .
+			'FROM omoccurloansattachment ' .
+			'WHERE '. ($type == "loan" ? 'loanid' : 'exchangeid') . ' = ' . $transid . ' ' .
+			'ORDER BY initialTimestamp ASC;';
+
+		if($rs = $this->conn->query($sql)){
+			while($r = $rs->fetch_object()){
+				$retArr[$r->attachmentid]['title'] = $r->title;
+				$retArr[$r->attachmentid]['path'] = $r->path;
+				$retArr[$r->attachmentid]['filename'] = $r->filename;
+				$retArr[$r->attachmentid]['timestamp'] = $r->initialTimestamp;
+			}
+			$rs->free();
+		}
+		return $retArr;
 	}
 
 	//General look up functions
@@ -857,6 +1133,19 @@ class OccurrenceLoans extends Manager{
 	//Setters and getter
 	public function setCollId($id){
 		if(is_numeric($id)) $this->collid = $id;
+	}
+
+	public function getIdentifierTagArr(){
+		return $this->idTagArr;
+	}
+
+	public function getSpecimenSortArr(){
+		asort($this->specimenSortArr);
+		return $this->specimenSortArr;
+	}
+	
+	public function setServerRoot($path){
+		$this->serverRoot = $path;
 	}
 }
 ?>

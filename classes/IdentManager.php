@@ -115,9 +115,10 @@ class IdentManager extends Manager {
   	$params = array();
   	$orderBy = array();
   	$results = null;
+		$newResults = array();
+		$em = SymbosuEntityManager::getEntityManager();
   	
   	if ($this->clid || $this->dynClid) {
-			$em = SymbosuEntityManager::getEntityManager();
 			$qb = $em->createQueryBuilder();
 			$selects = ["t.tid"];
 			if ($this->IDsOnly == false) {
@@ -282,7 +283,6 @@ class IdentManager extends Manager {
 			$this->currQuery = $tquery;
 			$results = $tquery->getResult();
 
-			$newResults = array();
 			$currSciName = '';
 			$currIdx = null;
 			#var_dump($results);exit;

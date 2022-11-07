@@ -6,7 +6,7 @@
 //const JSARR = array('example1.js','example2.js'); 
 
 //Custom Processing Status setting
-const PROCESSINGSTATUS = ['unprocessed','label transcription','link duplicate','expert required','pending review','reviewed','unaccessioned','closed','curator','assistant curator','director','quality control','non-oregon','re-image', 'no dupes', 'special request','unprocessed/NLP','stage 1','stage 2','stage 3','pending review-nfn', 'unaccessioned', 'Unprocessed - Fern Project', 'de-accession', 'crowdsource','coge','notes from nature'];
+const PROCESSINGSTATUS = ['unprocessed','label transcription','skeletal entry','link duplicate','expert required','pending review','reviewed','unaccessioned','closed','curator','assistant curator','director','quality control','non-oregon','re-image', 'no dupes', 'special request','unprocessed/NLP','stage 1','stage 2','stage 3','pending review-nfn', 'unaccessioned', 'Unprocessed - Fern Project', 'de-accession', 'crowdsource','coge','notes from nature'];
 
 //Uncomment to turn catalogNumber duplicate search check on/off (on by default)
 //define('CATNUMDUPECHECK',true); 
@@ -227,8 +227,8 @@ define('BASISOFRECORDTIP','Do not edit this for OSU collections.');
 define('LANGUAGETIP','The language of the label information, if other than English. Use RFC 5646 codes (e.g., “en” for English, “es” for Spanish).');
 define('LABELPROJECTTIP','If the heading on a label denotes a specific project other than flora of a specific place (e.g., “Oregon Flora Project”), enter it here.');
 define('DUPLICATEQUANTITYTIP','Not generally used at OSU, but record if the number of duplicates are given.');
-define('INSTITUTIONCODETIP','Should always be "OSU". Do not edit this for OSU collections.');
-define('COLLECTIONCODETIP','Should always be "V". Do not edit this for OSU collections.');
+define('INSTITUTIONCODETIP','Should always be &quot;OSU&quot;. Do not edit this for OSU collections.');
+define('COLLECTIONCODETIP','Should always be &quot;V&quot;. Do not edit this for OSU collections.');
 define('OWNERINSTITUTIONCODETIP','Do not edit this for OSU collections.');
 define('PROCESSINGSTATUSTIP','This field is used to indicate the record’s stage in the workflow. Use ‘Status Auto-set’ below to set the processing status for batches of records. Generally if the specimen record has no issues, set it as “Pending review”, If you there are issues you are unsure about, flag it as “Expert required” and note what the issues are in the Transcription Notes field. The full list of statuses is provided in the protocol.');
 define('DATAGENERALIZATIONSTIP','Information derived from the transcription process which is not stated on the original label. Use this to note an issue with transcription that requires future investigation. Also used to indicate interpretations such as “county interpreted” if the county was derived from an annotation and not stated on the label.');

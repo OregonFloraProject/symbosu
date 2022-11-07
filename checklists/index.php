@@ -6,6 +6,10 @@ header("Content-Type: text/html; charset=".$CHARSET);
 
 $pid = array_key_exists('pid',$_REQUEST)?$_REQUEST['pid']:0;
 
+//Sanitation
+if(!is_numeric($pid)) $pid = 0;
+$pid = filter_var($pid, FILTER_SANITIZE_STRING);
+
 $clManager = new ChecklistManager();
 $clManager->setProj($pid);
 ?>
@@ -14,14 +18,7 @@ $clManager->setProj($pid);
 	<title><?php echo $DEFAULT_TITLE; ?> Species Lists</title>
 	<?php
 	$activateJQuery = false;
-	if(file_exists($SERVER_ROOT.'/includes/head.php')){
-		include_once($SERVER_ROOT.'/includes/head.php');
-	}
-	else{
-		echo '<link href="'.$CLIENT_ROOT.'/css/jquery-ui.css" type="text/css" rel="stylesheet" />';
-		echo '<link href="'.$CLIENT_ROOT.'/css/base.css?ver=1" type="text/css" rel="stylesheet" />';
-		echo '<link href="'.$CLIENT_ROOT.'/css/main.css?ver=1" type="text/css" rel="stylesheet" />';
-	}
+	include_once($SERVER_ROOT.'/includes/head.php');
 	include_once($SERVER_ROOT.'/includes/googleanalytics.php');
 	?>
 </head>
