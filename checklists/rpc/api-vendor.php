@@ -95,7 +95,7 @@ function SPPtoCSV($results) {
 	
 	$url = '';
 	if (sizeof($results)) {
-		$url = $CLIENT_ROOT . 'temp/downloads/vendor/' . uniqid() . '.csv';
+		$url = $CLIENT_ROOT . '/temp/downloads/vendor/' . uniqid() . '.csv';
 		#var_dump($CLIENT_ROOT);exit;
 		$filename = $SERVER_ROOT . $url;
 		$fp = fopen($filename, 'w');
