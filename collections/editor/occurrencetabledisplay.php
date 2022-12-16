@@ -149,6 +149,7 @@ if($SYMB_UID){
 		'labelproject' => defined('LABELPROJECTLABEL')?LABELPROJECTLABEL:'Label Project',
 		'processingstatus' => defined('PROCESSINGSTATUSLABEL')?PROCESSINGSTATUSLABEL:'Processing Status',
 		'recordenteredby' => 'Entered By',
+		'recordmodifiedby' => 'Last Modified By',
 		'dbpk' => 'dbpk',
 		'basisofrecord' => defined('BASISOFRECORDLABEL')?BASISOFRECORDLABEL:'Basis Of Record',
 		'language' => defined('LANGUAGELABEL')?LANGUAGELABEL:'Language');
