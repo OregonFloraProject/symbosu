@@ -138,7 +138,7 @@ else{
 					<div class="fieldDiv" style="<?php echo ($isGenObs && !($IS_ADMIN || ($collId && array_key_exists("CollAdmin", $USER_RIGHTS) && in_array($collId,$USER_RIGHTS["CollAdmin"])))?'display:none':''); ?>">
 						<select name="useraction">
 							<option value='enteredby' <?php echo ($qUserAction=='enteredby'?'SELECTED':''); ?>><?php echo $LANG['ENTERED_BY']; ?></option>
-							<option value='modifiedby'<?php echo ($qUserAction=='modifiedby'?'SELECTED':''); ?>>Modified By</option>
+							<option value='modifiedby'<?php echo ($qUserAction=='modifiedby'?'SELECTED':''); ?>><?php echo $LANG['MODIFIED_BY']; ?></option>
 						</select>
 						<input type="text" name="q_user" value="<?php echo $qUser; ?>" style="width:70px;" onchange="setOrderBy(this)" />
 						<button type="button" onclick="enteredByCurrentUser()" style="font-size:70%; margin: 0 auto;" title="<?php echo $LANG['LIMIT_TO_CURRENT']; ?>"><?php echo $LANG['CU']; ?></button>
@@ -633,7 +633,7 @@ else{
 						<option value="eventdate" <?php echo ($qOrderBy=='eventdate'?'SELECTED':''); ?>><?php echo (defined('EVENTDATELABEL')?EVENTDATELABEL:(isset($LANG['DATE'])?$LANG['DATE']:'Date')); ?></option>
 						<option value="catalognumber" <?php echo ($qOrderBy=='catalognumber'?'SELECTED':''); ?>><?php echo (defined('CATALOGNUMBERLABEL')?CATALOGNUMBERLABEL:(isset($LANG['CAT_NUM'])?$LANG['CAT_NUM']:'Catalog Number')); ?></option>
 						<option value="recordenteredby" <?php echo ($qOrderBy=='recordenteredby'?'SELECTED':''); ?>><?php echo $LANG['ENTERED_BY']; ?></option>
-						<option value="recordmodifiedby" <?php echo ($qOrderBy=='recordmodifiedby'?'SELECTED':''); ?>>Last Modified By</option>
+						<option value="recordmodifiedby" <?php echo ($qOrderBy=='recordmodifiedby'?'SELECTED':''); ?>><?php echo $LANG['LAST_MODIFIED_BY']; ?></option>
 						<option value="dateentered" <?php echo ($qOrderBy=='dateentered'?'SELECTED':''); ?>><?php echo $LANG['DATE_ENTERED']; ?></option>
 						<option value="datelastmodified" <?php echo ($qOrderBy=='datelastmodified'?'SELECTED':''); ?>><?php echo $LANG['DATE_LAST_MODIFIED']; ?></option>
 						<option value="processingstatus" <?php echo ($qOrderBy=='processingstatus'?'SELECTED':''); ?>><?php echo (defined('PROCESSINGSTATUSLABEL')?PROCESSINGSTATUSLABEL:(isset($LANG['PROC_STATUS'])?$LANG['PROC_STATUS']:'Processing Status')); ?></option>
