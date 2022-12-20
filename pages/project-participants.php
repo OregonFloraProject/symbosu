@@ -73,55 +73,55 @@ function obfuscate($email) {
         <!-- .inner-content makes a column max width 1100px, centered in the viewport -->
         <div class="inner-content">
         <!-- place static page content here. -->
-            <h2>Project Partners</h2>
-		<p>The <a href="http://npsoregon.org/"  target="_blank">Native Plant Society of Oregon (NPSO)</a> has been a sponsor of OregonFlora since the project's inception in 1994. The Society and its chapters provide financial support and promote the exchange of plant observation data and photographs.</p>
-		<p>Our close ties with the <a href="https://bpp.oregonstate.edu/herbarium"  target="_blank">OSU Herbarium</a> are mutually beneficial - the Herbarium excels as a dynamic resource with exceptional depth in its Oregon collections, and OregonFlora enhances their value with careful taxonomic analysis and digital presentation within the context of the OregonFlora tools.</p>
-		<p><a href="https://oregonmetro.gov/garden"  target="_blank">Metro</a> and its partners in the Northwest Adult Conservation Educators (NW-ACE) working group have led the development and support of the Grow Natives section of this website. These groups conceived and developed the foundation of this tool and have assisted in its launching.</p>
-		<p>Primary members/contributors of NW-ACE are: <a href="https://backyardhabitats.org/"  target="_blank">Backyard Habitat Certification Program</a>, City of Gresham, City of Portland, <a href="https://www.cleanwaterservices.org/" target="_blank">Clean Water Services</a>, <a href="https://emswcd.org/in-your-yard/" target="_blank">East Multnomah Soil & Water Conservation District</a>, <a href="https://tualatinswcd.org" target="_blank">Tualatin Soil & Water Conservation District</a>, and <a href="https://wmswcd.org"target="_blank">West Multnomah Soil & Water Conservation District</a>.</p>
-		<p>This website uses the Symbiota platform with customized modules. Our website is hosted at the College of Science Information Network (COSINe) at Oregon State University.</p>
-<p>We collaborate and share information with numerous groups: academic institutions, federal agencies (Oregon/Washington Bureau of Land Management, US Forest Service), state organizations (Oregon Biodiversity Information Center), Metro, Native Plant Society of Oregon, and individuals.</p>
-<br>	
-							
-		<h2>Key Supporters</h2>
-			<p>John and Betty Soreng Environmental Fund of the Oregon Community Foundation</p>
-			<p>Oregon/Washington Bureau of Land Management</p>
-			<p>Native Plant Society of Oregon</p>
-			<p>Metro (Portland Oregon)</p>
-			<p>Barbara J. Mendius Administrative Trust</p>
-			<p>USDA&mdash;Natural Resources Conservation Service (Oregon)</p>
-			<p>Department of Botany &amp; Plant Pathology, Oregon State University</p>
-			<br>
 
- 		<h2>Advisory Council</h2>
-			<p>Lynda Boyer</p>
-			<p>Jason Bradford</p>
-			<p>Margaret Conover</p>
-			<p>Daniel Luoma</p>
-			<p>Will McClatchey</p>
-			<p>Joan Seevers</p>
-			<p>Robert Soreng</p>
-			<br>	
+            
+          <h2>Project Partners</h2>
+							<p>The <a href="http://npsoregon.org" target="_blank">Native Plant Society of Oregon (NPSO)</a> has been a sponsor of OregonFlora since the project&rsquo;s inception in 1994. The Society and its chapters provide financial support and promote the exchange of plant observation data and photographs.</p>
+							<p>Our close ties with the <a href="https://bpp.oregonstate.edu/herbarium" target"_blank">OSU Herbarium</a> are mutually beneficial &mdash; the Herbarium excels as a dynamic resource with exceptional depth in its Oregon collections, and OregonFlora enhances their value with careful taxonomic analysis and digital presentation within the context of the OregonFlora tools.</p>
+							<p><a href="https://oregonmetro.gov/garden" target="_blank">Metro</a> and its partners in the Northwest Adult Conservation Educators (NW-ACE) working group have led the development and support of the Grow Natives section of this website. These groups conceived and developed the foundation of this tool and have assisted in its launching.</p>
+							<p>Primary members/contributors of NW-ACE are: <a href="https://backyardhabitats.org/" target="_blank">Backyard Habitat Certification Program</a>, City of Gresham, City of Portland, <a href="https://www.cleanwaterservices.org/" target="_blank">Clean Water Services</a>, <a href="https://emswcd.org/in-your-yard/" target="_blank">East Multnomah Soil & Water Conservation District</a>, <a href="https://tualatinswcd.org" target="_blank">Tualatin Soil & Water Conservation District</a>, and <a href="https://wmswcd.org"target="_blank">West Multnomah Soil & Water Conservation District</a>.</p>
+							<p>This website uses the Symbiota platform with customized modules. Our website is hosted at the College of Science Information Network (COSINe) at Oregon State University.</p>
+							<p>We collaborate and share information with numerous groups: academic institutions, federal agencies (Oregon/Washington Bureau of Land Management, US Forest Service), state organizations (Oregon Biodiversity Information Center), Metro, Native Plant Society of Oregon, and individuals.&nbsp;</p>
+							<br>
 
- 		<h2>Students (2021-22)</h2>
-			<p>Brandy Deliguin</p>
-			<p>Tanya Einhorn</p>
-			<p>Julia Metzler (MS student, Dept. Botany)</p>
-			<p>Amadeo Ramos Jr.</p>
-			<p>Jessica Tuson</p>
-			<br>	
-			
- 		<h2>Affiliates</h2>
-			<p>Dennis Albert</p>
-			<p>Jason Bradford</p>
-			<p>Gerald Carr</p>
-			<p>Kenton Chambers</p>
-			<p>Christian Feuillet</p>
-			<p>Dayne Galash</p>
-			<p>Richard Halse</p>
-			<p>George Kral</p>
-			<p>James Mickley</p>
-			<br>
-						`
+<h2>Key Supporters</h2>
+	<p>Over 1,000 individual donors since our program&rsquo;s founding.							
+	<p>John and Betty Soreng Environmental Fund of the Oregon Community Foundation</p>
+	<p>Oregon/Washington Bureau of Land Management</p>
+	<p>Native Plant Society of Oregon</p>
+	<p>Metro (Portland, Oregon)</p>
+	<p>Barbara J. Mendius Administrative Trust</p>
+	<p>USDA&mdash;Natural Resources Conservation Service (Oregon)</p>
+	<p>Department of Botany &amp; Plant Pathology, Oregon State University</p>`
+
+<h2>Advisory Council</h2>
+	<p>Lynda Boyer</p>
+	<p>Jason Bradford</p>
+	<p>Margaret Conover</p>
+	<p>Daniel Luoma</p>
+	<p>Will McClatchey</p>
+	<p>Joan Seevers</p>
+	<p>Robert Soreng</p>
+	<br>
+
+<h2>Students (2022-23)</h2>
+	<p>Dayne Galash</p>
+	<p>Julia Metzler (MS student, Dept. Botany)</p>
+	<p>Jessica Tuson</p>
+	<br>
+  							
+<h2>Affiliates</h2>
+	<p>Dennis Albert</p>
+	<p>Jason Bradford</p>
+	<p>Gerald Carr</p>
+	<p>Kenton Chambers</p>
+	<p>Christian Feuillet</p>
+	<p>Richard Halse</p>
+	<p>James Mickley</p>
+	<p>George Kral</p>
+	<br>
+            
+
         </div> <!-- .inner-content -->
     </section>
 </div> <!-- .info-page -->
