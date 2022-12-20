@@ -49,13 +49,13 @@ function obfuscate($email) {
             <p><?php echo obfuscate("info@oregonflora.org") ?></p>							
 
 <h2>Staff</h2>
-							<p>Linda Hardison, Director<br /><?php echo obfuscate("linda.hardison@oregonstate.edu") ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 541-737-4338</p>
-							<p>Tanya Harvey, <em>Flora of Oregon</em> graphic designer<br /><?php echo obfuscate("tanya@westerncascades.com") ?></p>							
-							<p>Thea Jaster, Database manager, botanist<br /><?php echo obfuscate("theodora.jaster@oregonstate.edu") ?></p>
-							<p>Stephen Meyers, Taxonomic Director<br /><?php echo obfuscate("stephen.meyers@oregonstate.edu") ?></p>
-							<p>Katie Mitchell, Database manager, botanist<br /><?php echo obfuscate("katie.mitchell@oregonstate.edu") ?></p>
-							<p>John Myers, <em>Flora of Oregon</em> principal illustrator<br /><?php echo obfuscate(" myersj8@oregonstate.edu") ?></p>
-<p> Arthur Parker, software programmer</p>
+	<p>Linda Hardison, Director<br /><?php echo obfuscate("linda.hardison@oregonstate.edu") ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 541-737-4338</p>
+	<p>Tanya Harvey, <em>Flora of Oregon</em> graphic designer<br /><?php echo obfuscate("tanya@westerncascades.com") ?></p>							
+	<p>Thea Jaster, Database manager, botanist<br /><?php echo obfuscate("theodora.jaster@oregonstate.edu") ?></p>
+	<p>Stephen Meyers, Taxonomic Director<br /><?php echo obfuscate("stephen.meyers@oregonstate.edu") ?></p>
+	<p>Katie Mitchell, Database manager, botanist<br /><?php echo obfuscate("katie.mitchell@oregonstate.edu") ?></p>
+	<p>John Myers, <em>Flora of Oregon</em> principal illustrator<br /><?php echo obfuscate(" myersj8@oregonstate.edu") ?></p>
+	<p> Arthur Parker, software programmer</p>
 
 
         </div> <!-- .inner-content -->
