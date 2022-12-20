@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 //error_reporting(E_ALL);
 include_once( "../config/symbini.php" );
 header( "Content-Type: text/html; charset=" . $charset );
@@ -67,7 +67,7 @@ header( "Content-Type: text/html; charset=" . $charset );
                     <p>Supporting OregonFlora doesn’t just support our work providing essential plant information—it builds the kind of appreciation that drives public support for critical land use decisions, environmental and economic policies, and protection of natural areas and parks.</p>
                     <h2>Your donation sets all this in motion. Help us inspire everyone with our state’s plant diversity—and plant the seeds for a smarter, healthier, and happier Oregon.</h2>
                     <p>We accept donations through the <a href="https://agresearchfoundation.oregonstate.edu/">Agricultural Research Foundation</a>, a nonprofit 501c3  corporation affiliated with Oregon State University. Gift contributions and charitable bequests to the Foundation on behalf of OregonFlora are deductible and can help accrue tax benefits. Please <a href="<?php echo $CLIENT_ROOT; ?>/pages/contact.php">contact us</a> to discuss how planned giving can help create your legacy supporting Oregon’s biodiversity.</p>
-										<p>Prefer to mail your contribution directly? Make checks payable to Agricultural Research Foundation with the note “OregonFlora”, and mail to: Agricultural Research Foundation, 1600 SW Western Blvd Suite 320, Oregon State University, Corvallis, OR 97333.</p>
+										<p>Prefer to mail your contribution directly? Make checks payable to Agricultural Research Foundation with the note “for OregonFlora”, and mail to: OregonFlora, OSU Dept. Botany Plant Pathology, 2701 SW Campus Way, Corvallis, OR 97331.</p>
                     <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
                         <input type="hidden" name="cmd" value="_s-xclick">
                         <input type="hidden" name="hosted_button_id" value="ELVFJLHX3T9JU">
