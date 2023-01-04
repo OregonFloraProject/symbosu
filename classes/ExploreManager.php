@@ -179,7 +179,7 @@ class ExploreManager {
   		}
   	}
   
-    $taxa->select(["t.tid","COALESCE(ctl.familyoverride,ts.family) AS family"])
+    $taxa->select(["t.tid","COALESCE(ctl.familyoverride,ts.family) AS family","ctl.notes as checklistNotes"])
       ->from("Taxa", "t"); 
         
 		foreach ($innerJoins as $innerJoin) {
@@ -203,6 +203,7 @@ class ExploreManager {
 		$tquery = $taxa->getQuery();
 		#var_dump($tquery->getSQL());exit;
 		$results = $tquery->execute();
+		#var_dump($results);exit;
     return $results;
 
   }
