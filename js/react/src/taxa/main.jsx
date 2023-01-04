@@ -65,7 +65,7 @@ class SynonymItem extends React.Component {
   
 		return (
 			<div className={ "synonym-items row dashed-border py-1" }>
-				<div className="col font-weight-bold char-label">Synonyms</div>
+				<div className="col font-weight-bold char-label">Synonyms and Misapplied Names</div>
 				<div className={	(this.state.showSynonyms? 'show-full': 'show-short' ) + " col" }>
 				
 				<span className="short-list">
