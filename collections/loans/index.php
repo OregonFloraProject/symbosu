@@ -216,7 +216,7 @@ if($isEditor){
 					<li><a href="#loanoutdiv"><span>Outgoing Loans</span></a></li>
 					<li><a href="#loanindiv"><span>Incoming Loans</span></a></li>
 					<li><a href="exchangetab.php?collid=<?php echo $collid; ?>"><span>Gifts/Exchanges</span></a></li>
-					<li><a href="../misc/institutioneditor.php?view=tab"><span>Institutions</span>
+					<li><a href="../misc/institutioneditor.php?view=tab"><span>Institutions</span></a></li>
 				</ul>
 				<div id="loanoutdiv" style="">
 					<div style="float:right;">
