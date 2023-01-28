@@ -49,7 +49,7 @@ $attribSearch = new OccurrenceAttributeSearch();
 		var clientRoot = "<?php echo $CLIENT_ROOT; ?>";
 		$(document).ready(function() {
 			<?php
-			if($searchVar){
+			if($searchVar || array_key_exists('db',$_REQUEST)){
 				?>
 				sessionStorage.querystr = "<?php echo $searchVar; ?>";
 				<?php
