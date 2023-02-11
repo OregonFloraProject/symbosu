@@ -78,7 +78,14 @@ function cleanWindows($str) {
 function cleanWindowsRecursive(&$str,$key) {
 	$str = mb_convert_encoding($str, "UTF-8", array("Windows-1252"));
 }
-
-
+function getGardenClid() {
+	return 54;
+}
+function getRegionCid() {
+	return 208;
+}
+function getNurseryCid() {
+	return 209;
+}
 
 ?>

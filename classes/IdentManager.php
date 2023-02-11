@@ -220,6 +220,35 @@ class IdentManager extends Manager {
 				#);
 				*/
 			}
+			#ATTRs including vendors						
+			$lookups = $this->getVendorLookups();
+			$clidLookup = $lookups->clidLookup;
+			$childLookup = $lookups->childLookup;
+			$vendor_clids = [];
+			#var_dump($clidLookup);
+			if (sizeof($this->attrs)) {
+        $count = 0;
+				foreach ($this->attrs as $cid => $states) {
+					$count++;
+					$alias = 'D' . $count;#create a unique alias for each join
+					if ($cid == getNurseryCid()) {#vendors to be added below with clids
+						#var_dump($states);
+						foreach ($states as $state) {
+							$vendor_clids[] = $clidLookup[$state];
+						}
+						#var_dump($sclid);
+					}else{
+						$innerJoins[] = array("Kmdescr","{$alias}","WITH","t.tid = {$alias}.tid");
+						$wheres[] = "{$alias}.cid = :{$alias}cid";
+						$wheres[] = "{$alias}.cs IN (" . join(",",$states) . ")";
+						$params[] = array(":{$alias}cid",$cid);
+					}
+				}
+			}
+			
+			#var_dump($this->attrs);
+			#var_dump($vendor_clids);
+			
 			if ($this->dynClid) {
 				$innerJoins[] = array("Fmdyncltaxalink","clk","WITH","t.tid = clk.tid");
 				$wheres[] = "clk.dynclid = :dynclid";
@@ -231,8 +260,12 @@ class IdentManager extends Manager {
 					#wheres[] = $this->dynamicSQL;
 				}else{
 					$innerJoins[] = array("Fmchklsttaxalink","clk","WITH","t.tid = clk.tid");
-					$wheres[] = "clk.clid = :clid";
 					$params[] = array("clid",$this->clid);
+					$wheres[] = "clk.clid = :clid";
+					if ($vendor_clids) { 						
+						$innerJoins[] = array("Fmchklsttaxalink","clk2","WITH","t.tid = clk2.tid");
+						$wheres[] = 'clk2.clid IN(' . join(',',$vendor_clids) . ')';#array_merge($vendor_clids,[$this->clid])
+					}
 				}
 			}
 			if (!empty($this->taxonFilter) && $this->taxonFilter != "All Species") {
@@ -242,19 +275,11 @@ class IdentManager extends Manager {
 										);
 				$params[] = array("taxon",$this->taxonFilter);
 			}
-			#var_dump($this->attrs);
-			if (sizeof($this->attrs)) {
-        $count = 0;
-				foreach ($this->attrs as $cid => $states) {
-					$count++;
-					$alias = 'D' . $count;#create a unique alias for each join
-					$innerJoins[] = array("Kmdescr","{$alias}","WITH","t.tid = {$alias}.tid");
-					$wheres[] = "{$alias}.cid = :{$alias}cid";
-					$wheres[] = "{$alias}.cs IN (" . join(",",$states) . ")";
-					$params[] = array(":{$alias}cid",$cid);
-				}
-			}
-			
+
+			#var_dump($innerJoins);
+			#var_dump($wheres);
+			#var_dump($params);
+			#exit;
 			#set EM
 			$taxa = $em->createQueryBuilder()
 				->select($selects)
@@ -280,6 +305,7 @@ class IdentManager extends Manager {
 			$tquery = $taxa->getQuery();
 			#var_dump($this->searchName);
 			#var_dump($tquery->getSQL());
+			#var_dump($tquery->getParameters());
 			$this->currQuery = $tquery;
 			$results = $tquery->getResult();
 
@@ -476,6 +502,41 @@ class IdentManager extends Manager {
 	}
 	public function getTaxa() {
 		return $this->taxa;
+	}
+	/* This could go elsewhere */
+	public function getVendorLookups() {
+		$em = SymbosuEntityManager::getEntityManager();
+		$vendor = $em->createQueryBuilder()
+			->select(['proj.clid','proj.sortSequence','chil.clidChild'])#
+			->from("Fmchklstprojlink","proj")
+			->leftJoin("Fmchklstchildren","chil","WITH","proj.clid = chil.clid")	
+			->where("proj.pid = :pid")
+			->setParameter(":pid",Fmchecklists::$PID_VENDOR_ALL)
+		;
+
+		$vquery = $vendor->getQuery();
+		$vresults = $vquery->execute();
+	
+		$cisLookup = [];
+		$clidLookup = [];
+		foreach ($vresults as $vres) {
+			if (!isset($cisLookup[$vres['clid']])) {
+				$cisLookup[$vres['clid']] = $vres['sortSequence'];
+			}
+		}
+		//var_dump($cisLookup);
+		foreach ($vresults as $vres) {
+			#var_dump($vres);
+			if (isset($vres['clidChild']) && $vres['clidChild'] != NULL && isset($cisLookup[$vres['clidChild']])) {
+				$childLookup[$vres['sortSequence']][] = $cisLookup[$vres['clidChild']];
+			}else{
+				$clidLookup[$vres['sortSequence']] = $vres['clid'];
+			}
+		}
+		$ret = new StdClass();
+		$ret->childLookup = $childLookup;
+		$ret->clidLookup = $clidLookup;
+		return $ret;
 	}
 }
 
