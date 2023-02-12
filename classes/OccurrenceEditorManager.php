@@ -698,7 +698,7 @@ class OccurrenceEditorManager {
 			$sqlFrag .= 'WHERE (o.occid = '.$this->occid.')';
 		}
 		elseif($this->sqlWhere){
-			$this->addTableJoins($sqlFrag);
+			$this->addTableJoins($sqlFrag, TRUE); // Add table joins, including one for lastmodified
 			$sqlFrag .= $this->sqlWhere;
 			if($limit){
 				$this->setSqlOrderBy($sqlFrag);
@@ -761,16 +761,20 @@ class OccurrenceEditorManager {
 		}
 	}
 
-	private function addTableJoins(&$sql){
+	private function addTableJoins(&$sql, $last_modified = FALSE){
 
 		// Allows the inclusion of a last modified by column
-		// NB: Is this the the most efficient query? Another option, below
-		$sql .=	'LEFT JOIN omoccuredits as lastedit ON o.occid = lastedit.occid AND lastedit.initialtimestamp = (SELECT MAX(initialtimestamp) FROM omoccuredits oe WHERE oe.occid = o.occid)';
-		// This doesn't work, apparently o.datelastmodified is sometimes not modified by users, leading to blank last modified by fields
-		//$sql .=	'LEFT JOIN omoccuredits as lastedit ON o.occid = lastedit.occid AND o.datelastmodified = lastedit.initialtimestamp ';
-		$sql .= 'LEFT JOIN userlogin as lastuser ON lastedit.uid = lastuser.uid ';
-		// A single join alternative
-		//$sql .= 'LEFT JOIN userlogin as lastuser ON (SELECT oe.uid FROM omoccuredits oe WHERE oe.occid = o.occid ORDER BY oe.initialtimestamp DESC LIMIT 1) = lastuser.uid ';
+		// Only add these joins on request, allows for skipping for queries that just count records
+		if ($last_modified) {
+
+			// NB: Is this the the most efficient query? Another option, below
+			$sql .=	'LEFT JOIN omoccuredits as lastedit ON o.occid = lastedit.occid AND lastedit.initialtimestamp = (SELECT MAX(initialtimestamp) FROM omoccuredits oe WHERE oe.occid = o.occid)';
+			// This doesn't work, apparently o.datelastmodified is sometimes not modified by users, leading to blank last modified by fields
+			//$sql .=	'LEFT JOIN omoccuredits as lastedit ON o.occid = lastedit.occid AND o.datelastmodified = lastedit.initialtimestamp ';
+			$sql .= 'LEFT JOIN userlogin as lastuser ON lastedit.uid = lastuser.uid ';
+			// A single join alternative
+			//$sql .= 'LEFT JOIN userlogin as lastuser ON (SELECT oe.uid FROM omoccuredits oe WHERE oe.occid = o.occid ORDER BY oe.initialtimestamp DESC LIMIT 1) = lastuser.uid ';
+		}
 
 		// Allows searching for records modified by a user
 		if(array_key_exists('mb',$this->qryArr)){
