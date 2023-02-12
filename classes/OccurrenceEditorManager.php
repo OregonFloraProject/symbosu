@@ -698,7 +698,7 @@ class OccurrenceEditorManager {
 			$sqlFrag .= 'WHERE (o.occid = '.$this->occid.')';
 		}
 		elseif($this->sqlWhere){
-			$this->addTableJoins($sqlFrag, TRUE); // Add table joins, including one for lastmodified
+			$this->addTableJoins($sqlFrag, TRUE); // Add table joins, including one for recordmodifiedby
 			$sqlFrag .= $this->sqlWhere;
 			if($limit){
 				$this->setSqlOrderBy($sqlFrag);
@@ -717,7 +717,14 @@ class OccurrenceEditorManager {
 			}
 		}
 		if($sqlFrag){
-			$sql = 'SELECT DISTINCT o.occid, o.collid, lastuser.username as recordmodifiedby, o.'.implode(',o.',array_keys($this->fieldArr['occurrence'])).', datelastmodified FROM omoccurrences o '.$sqlFrag;
+
+			// Only add recordmodifiedby if the occurrence ID is not set (table display, not edit view)
+			if(!$this->occid) {
+				$sql = 'SELECT DISTINCT o.occid, o.collid, lastuser.username as recordmodifiedby, o.'.implode(',o.',array_keys($this->fieldArr['occurrence'])).', datelastmodified FROM omoccurrences o '.$sqlFrag;
+			} else {
+				$sql = 'SELECT DISTINCT o.occid, o.collid, o.'.implode(',o.',array_keys($this->fieldArr['occurrence'])).', datelastmodified FROM omoccurrences o '.$sqlFrag;
+			}
+
 			$previousOccid = 0;
 			$rs = $this->conn->query($sql);
 			$rsCnt = 0;
