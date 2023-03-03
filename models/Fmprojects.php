@@ -115,6 +115,9 @@ class Fmprojects
   public function getIsPublic() {
     return $this->ispublic;
   }
+  public function getNotes() {
+    return $this->notes;
+  }
 }
 
 ?>

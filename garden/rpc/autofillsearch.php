@@ -4,7 +4,7 @@ include_once("../../config/symbini.php");
 include_once("$SERVER_ROOT/classes/Functional.php");
 include_once($SERVER_ROOT . "/config/SymbosuEntityManager.php");
 
-$CLID_GARDEN_ALL = 54;
+$CLID_GARDEN_ALL = getGardenClid();
 $RANK_GENUS = 180;
 $results = [];
 

@@ -287,7 +287,7 @@ class GardenPageApp extends React.Component {
 			});	
 		
 			url = url + '?' + identParams.toString();
-			//console.log(decodeURIComponent(url));
+			console.log(decodeURIComponent(url));
 			httpGet(url)
 				.then((res) => {
 					let jres = JSON.parse(res);
