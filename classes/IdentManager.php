@@ -305,7 +305,7 @@ class IdentManager extends Manager {
 			$tquery = $taxa->getQuery();
 			#var_dump($this->searchName);
 			#var_dump($tquery->getSQL());
-			#var_dump($tquery->getParameters());
+			#var_dump($tquery->getParameters());exit;
 			$this->currQuery = $tquery;
 			$results = $tquery->getResult();
 
@@ -524,18 +524,21 @@ class IdentManager extends Manager {
 				$cisLookup[$vres['clid']] = $vres['sortSequence'];
 			}
 		}
-		//var_dump($cisLookup);
+		#var_dump($cisLookup);
 		foreach ($vresults as $vres) {
 			#var_dump($vres);
 			if (isset($vres['clidChild']) && $vres['clidChild'] != NULL && isset($cisLookup[$vres['clidChild']])) {
 				$childLookup[$vres['sortSequence']][] = $cisLookup[$vres['clidChild']];
-			}else{
+			}elseif($vres['clidChild'] == null){#must not be a parent
 				$clidLookup[$vres['sortSequence']] = $vres['clid'];
 			}
 		}
+		#var_dump($childLookup);
+		#var_dump($clidLookup);
 		$ret = new StdClass();
 		$ret->childLookup = $childLookup;
 		$ret->clidLookup = $clidLookup;
+		#exit;
 		return $ret;
 	}
 }
