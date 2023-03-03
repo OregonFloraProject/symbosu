@@ -13,8 +13,8 @@ hence this var to mimic 1) the structure returned by IdentManager.php
 with 2) content custom to Natives.
 States are added in get_garden_characteristics() below
 */
-$CID_NURSERY = 209;
-$CID_REGION = 208;
+#$CID_NURSERY = 209;
+#$CID_REGION = 208;
 
 
 $CUSTOM_GARDEN_CHARACTERISTICS = [
@@ -218,14 +218,14 @@ $CUSTOM_GARDEN_CHARACTERISTICS = [
 		'characters' => [
 			[		
 				'charname' 		=> 'click to auto-select nurseries from a region below',
-				'cid'					=> $CID_REGION,
+				'cid'					=> getRegionCid(),
 				'display'			=> 'groupfilter',
 				'units'				=> '',
 				'states'			=> [],
 			],
 			[		
 				'charname' 		=> 'nursery availability',
-				'cid'					=> $CID_NURSERY,
+				'cid'					=> getNurseryCid(),
 				'display'			=> '',#vendor
 				'units'				=> '',
 				'states'			=> [],
@@ -256,7 +256,7 @@ function getEmpty() {
 }
 
 function get_garden_characteristics($tids) {
-	global $CUSTOM_GARDEN_CHARACTERISTICS, $CID_REGION, $CID_NURSERY;
+	global $CUSTOM_GARDEN_CHARACTERISTICS;
 	
 	#$em = SymbosuEntityManager::getEntityManager();
 	#$charStateRepo = $em->getRepository("Kmcs");
@@ -269,46 +269,12 @@ function get_garden_characteristics($tids) {
 	/*hack: use Fmchklstprojlink|sortSequence to store cs values, 
 					which we use to look up the clid */
 	$em = SymbosuEntityManager::getEntityManager();
-	#$qb = $em->createQueryBuilder();
 	$checklistRepo = $em->getRepository("Fmchecklists");
-	/*$vendor = $em->createQueryBuilder()
-		->select(['proj.sortSequence','chil.clidChild'])
-		->from("Fmchecklists","c")
-		->innerJoin("Fmchklstprojlink","proj","WITH","c.clid = proj.clid")
-		->innerJoin("Fmchklstchildren","chil","WITH","c.clid = chil.clidChild")	
-		->where("proj.pid = :pid")
-		->setParameter(":pid",Fmchecklists::$PID_VENDOR_ALL)
-		->distinct()
-	;*/
-	
-	$vendor = $em->createQueryBuilder()
-		->select(['proj.clid','proj.sortSequence','chil.clidChild'])#
-		->from("Fmchklstprojlink","proj")
-		->leftJoin("Fmchklstchildren","chil","WITH","proj.clid = chil.clid")	
-		->where("proj.pid = :pid")
-		->setParameter(":pid",Fmchecklists::$PID_VENDOR_ALL)
-	;
 
-	$vquery = $vendor->getQuery();
-	$vresults = $vquery->execute();
-	
-	$cisLookup = [];
-	$clidLookup = [];
-	foreach ($vresults as $vres) {
-		if (!isset($cisLookup[$vres['clid']])) {
-			$cisLookup[$vres['clid']] = $vres['sortSequence'];
-		}
-	}
-	//var_dump($cisLookup);
-	foreach ($vresults as $vres) {
-		if (isset($vres['clidChild']) && $vres['clidChild'] != NULL) {
-			$childLookup[$vres['sortSequence']][] = $cisLookup[$vres['clidChild']];
-		}else{
-			$clidLookup[$vres['sortSequence']] = $vres['clid'];
-		}
-	}
+	$lookups = $identManager->getVendorLookups();
+	$clidLookup = $lookups->clidLookup;
+	$childLookup = $lookups->childLookup;
 
-	#$identManager->setAttrs($attrs);
 	$identManager->setTaxa();
 	$cids = [];
 	foreach ($CUSTOM_GARDEN_CHARACTERISTICS as $idx => $group) {
@@ -332,12 +298,12 @@ function get_garden_characteristics($tids) {
 					$tmp['cs'] = $cs['cs'];#$cs->getCs();
 					$tmp['numval'] = floatval(preg_replace("/[^0-9\.]/","",$tmp['charstatename']));
 					
-					if ($CID_REGION == $char['cid']) {
+					if (getRegionCid() == $char['cid']) {
 						if ($childLookup[$cs['cs']]) {
 							$tmp['children'] = $childLookup[$cs['cs']];
 						}
 					}		
-					if ($CID_NURSERY == $char['cid']) {	
+					if (getNurseryCid() == $char['cid']) {	
 						if ($clidLookup[$cs['cs']]) {
 							$tmp['clid'] = $clidLookup[$cs['cs']];
 							$tmp['pid'] = Fmchecklists::$PID_VENDOR_ALL;
@@ -428,7 +394,7 @@ function get_garden_taxa($params) {
 	$identManager = new IdentManager();
 	$identManager->setClid($params['clid']);
 	$identManager->setPid(3);
-	$results["clid"] = 54;
+	$results["clid"] = getGardenClid();
 	$results["pid"] = 3;
 	
 /*
@@ -532,7 +498,7 @@ function get_garden_taxa($params) {
 		}
 		$results['tids'] = $tids;
 		$repo = $em->getRepository("Fmchecklists");
-		$model = $repo->find(54);
+		$model = $repo->find(getGardenClid());
 		$checklist = ExploreManager::fromModel($model);
 		$checklist->setPid(3);
 		$results["clid"] = $checklist->getClid();

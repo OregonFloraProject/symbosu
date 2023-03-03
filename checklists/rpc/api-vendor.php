@@ -201,7 +201,7 @@ function previewSPP() {
 	$error = 0;
 	$csvURL = '';
 
-	$CLID_GARDEN_ALL = 54;
+	$CLID_GARDEN_ALL = getGardenClid();
 	$RANK_GENUS = 180;
 
 	$acceptedNativities = [

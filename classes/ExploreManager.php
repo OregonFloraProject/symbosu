@@ -17,8 +17,6 @@ class ExploreManager {
   protected $searchName = '';
   protected $searchSynonyms = false;
 
-	
-
   public function __construct($clid=-1) {
     if ($clid !== -1) {
       $em = SymbosuEntityManager::getEntityManager();
