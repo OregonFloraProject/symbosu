@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 //error_reporting(E_ALL);
 include_once( "../config/symbini.php" );
 header( "Content-Type: text/html; charset=" . $charset );
@@ -53,12 +53,17 @@ header( "Content-Type: text/html; charset=" . $charset );
 											<li>
 												<div class="title">Volume 1 &amp; 2 taxa not treated in the printed Flora, but present on our website</div>
 												<?php /* <div class="icon pdf"><img src="../images/Adobe_PDF_file_icon_32x32.png"></div> */ ?>
-												<div class="icon csv"><a href="data/Flora_NewSincePub.csv" download>CSV</a></div>
+												<div class="icon csv"><a href="data/AcceptedTaxa_NotTreatedInFlora.csv" download>CSV</a></div>
 											</li>
 											<li>
 												<div class="title">Taxonomic changes since publication of the flora volumes</div>
 												<?php /* <div class="icon pdf"><img src="../images/Adobe_PDF_file_icon_32x32.png"></div> */ ?>
-												<div class="icon csv"><a href="data/Flora_ChangeSincePublication.2.csv" download>CSV</a></div>
+												<div class="icon csv"><a href="data/Flora_ChangeSincePublication.csv" download>CSV</a></div>
+											</li>
+<li>
+												<div class="title">Glossary of terms used</div>
+												<?php /* <div class="icon pdf"><img src="../images/Adobe_PDF_file_icon_32x32.png"></div> */ ?>
+												<div class="icon csv"><a href="data/terms-used-in-oregonflora-org-publications-pages.pdf" download><img src="../images/Adobe_PDF_file_icon_32x32.png"></a></div>
 											</li>
 										
 										</ul>
