@@ -44,6 +44,7 @@ header( "Content-Type: text/html; charset=" . $charset );
 									<li><a href="<?php echo $CLIENT_ROOT?>/pages/data/Checklist_ForWeb.csv" download>Download</a> the current checklist (Version 2.1)</li>
 									<li><a href="<?php echo $CLIENT_ROOT?>/pages/data/CLrevisions.csv" download>Download</a> to view taxonomic changes, additions, and deletions between published versions of the Checklist. </li>
 									<li>Access the <a href="<?php echo $CLIENT_ROOT?>/taxa/taxonomy/taxonomydisplay.php">Interactive Taxon Search</a>.</li>
+									<li><a href="<?php echo $CLIENT_ROOT?>/pages/data/terms-used-in-oregonflora-org-publications-pages.pdf" download>Download</a> to view glossary of terms used. </li>
 								</ul>
 							</div>
 							<h2>The birth of a flora starts with a checklist of names</h2>
@@ -97,7 +98,7 @@ header( "Content-Type: text/html; charset=" . $charset );
 									<li>Citations for each Oregon taxon in several local floras </li>
 									<li>Synonyms for each Oregon taxon and their citations, mostly originating from accepted names in the same local floras mentioned above </li>
 									<li>Excluded names and their synonyms </li>
-									<li>Pertinent references</li>
+									<li>Pertinent <a href="<?php echo $CLIENT_ROOT?>/pages/data/primary-regional-floras.pdf" download>references</a></li>
 								</ul>
 							</div>
 							

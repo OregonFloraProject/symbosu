@@ -60,6 +60,11 @@ header( "Content-Type: text/html; charset=" . $charset );
 												<?php /* <div class="icon pdf"><img src="../images/Adobe_PDF_file_icon_32x32.png"></div> */ ?>
 												<div class="icon csv"><a href="data/Flora_ChangeSincePublication.csv" download>CSV</a></div>
 											</li>
+<li>
+												<div class="title">Glossary of terms used</div>
+												<?php /* <div class="icon pdf"><img src="../images/Adobe_PDF_file_icon_32x32.png"></div> */ ?>
+												<div class="icon csv"><a href="data/terms-used-in-oregonflora-org-publications-pages.pdf" download><img src="../images/Adobe_PDF_file_icon_32x32.png"></a></div>
+											</li>
 										
 										</ul>
 									</div>

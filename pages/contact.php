@@ -54,8 +54,10 @@ function obfuscate($email) {
             </p>
             <h2>Send contributions of species lists, digital images, and other data to:</h2>
             <p>
-            	<a href="mailto:info@oregonflora.org">info@oregonflora.org</a>
-            </p>
+            	<a href="mailto:info@oregonflora.org">info@oregonflora.org</a><br />
+Template for <a href="data/template-observation-submission.xlsx" download>observation data submission</a><br />
+			Template for <a href="data/template-photo-submission.xlsx" download>field photo submission</a><br /></p>            
+</p>
             
             <h2>Staff</h2>
             <p>
