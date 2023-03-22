@@ -46,9 +46,9 @@ function obfuscate($email) {
 	<p>OregonFlora<br />OSU Dept. Botany &amp; Plant Pathology<br />2701 SW Campus Way<br />Corvallis, OR 97331</p>
             
 <h2>Send contributions of species lists, digital images, and other data to:</h2>
-            <p><?php echo obfuscate("info@oregonflora.org") ?><br />
-			Template for <a href="data/template-observation-submission.xlsx">observation data submission</a><br />
-			Template for <a href="data/template-photo-submission.xlsx">field photo submission</a><br /></p>
+            <p>OregonFlora<br /><?php echo obfuscate("info@oregonflora.org") ?><br /></p>
+			Template for <a href="data/template-observation-submission.xlsx" download>observation data submission</a><br />
+			Template for <a href="data/template-photo-submission.xlsx" download>field photo submission</a><br /></p>
 
 <h2>Staff</h2>
 							<p>Linda Hardison, Director<br /><?php echo obfuscate("linda.hardison@oregonstate.edu") ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 541-737-4338</p>
