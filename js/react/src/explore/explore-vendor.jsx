@@ -170,6 +170,7 @@ class ExploreApp extends React.Component {
 		mapParams.append('upload',JSON.stringify(arr));
 		let mapParamString = mapParams.toString();
 		//console.log(url);
+		//console.log(mapParamString);
 		
 		httpPost(url,mapParamString)
 			.then((res) => {
