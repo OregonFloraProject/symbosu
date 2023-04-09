@@ -133,7 +133,6 @@ class IdentManager extends Manager {
 			
 			#$wheres[] = "v.sortsequence = 1";#causes basename to disappear
 			$wheres[] = "ts.taxauthid = 1";
-			$wheres[] = "t.rankid = 220";
 			$groupBy = [
 				"v.vernacularname",
 			];
@@ -224,7 +223,7 @@ class IdentManager extends Manager {
 			$lookups = $this->getVendorLookups();
 			$clidLookup = $lookups->clidLookup;
 			$childLookup = $lookups->childLookup;
-			$vendor_clids = [];
+			$vendorClids = [];
 			#var_dump($clidLookup);
 			if (sizeof($this->attrs)) {
         $count = 0;
@@ -234,7 +233,7 @@ class IdentManager extends Manager {
 					if ($cid == getNurseryCid()) {#vendors to be added below with clids
 						#var_dump($states);
 						foreach ($states as $state) {
-							$vendor_clids[] = $clidLookup[$state];
+							$vendorClids[] = $clidLookup[$state];
 						}
 						#var_dump($sclid);
 					}else{
@@ -247,7 +246,7 @@ class IdentManager extends Manager {
 			}
 			
 			#var_dump($this->attrs);
-			#var_dump($vendor_clids);
+			#var_dump($vendorClids);
 			
 			if ($this->dynClid) {
 				$innerJoins[] = array("Fmdyncltaxalink","clk","WITH","t.tid = clk.tid");
@@ -259,12 +258,38 @@ class IdentManager extends Manager {
 					$innerJoins[] = array("Omoccurrences","o","WITH","t.tid = o.TidInterpreted");
 					#wheres[] = $this->dynamicSQL;
 				}else{
+					/*
+						Vendor checklists can have trinomials, but the Natives checklist (54) doesn't, so we want to catch and display those trinomials' parent binomials
+						Leaving this open to any request that provides nursery attrs for now, which theoretically could include other clids besides 54
+					*/
 					$innerJoins[] = array("Fmchklsttaxalink","clk","WITH","t.tid = clk.tid");
 					$params[] = array("clid",$this->clid);
-					$wheres[] = "clk.clid = :clid";
-					if ($vendor_clids) { 						
+					if ($vendorClids) {//check both 54 and vendor checklist, and also handle trinomials
 						$innerJoins[] = array("Fmchklsttaxalink","clk2","WITH","t.tid = clk2.tid");
-						$wheres[] = 'clk2.clid IN(' . join(',',$vendor_clids) . ')';#array_merge($vendor_clids,[$this->clid])
+						
+						$wheres[] = $qb->expr()->orX(
+													$qb->expr()->andX(//binomials
+														$qb->expr()->eq('t.rankid',"220"),
+				 										$qb->expr()->in('clk2.clid',$vendorClids),
+														$qb->expr()->eq('clk.clid',":clid"),
+													),
+													$qb->expr()->in('t.tid',//trinomials
+														$em->createQueryBuilder()
+															->select('subt.tid')
+															->from("Taxa","subt")
+															->innerJoin("Taxaenumtree","subte1","WITH","subt.tid = subte1.parenttid")
+															->innerJoin("Fmchklsttaxalink","subclk3","WITH","subt.tid = subclk3.tid")
+															->innerJoin("Fmchklsttaxalink","subclk4","WITH","subte1.tid = subclk4.tid")
+															->andWhere('subclk3.clid = :clid')//binomial is in 54
+															->andWhere('subclk4.clid IN (' . join(",",$vendorClids) . ')')//trinomial is in vendor checklist
+															->setParameter(":clid",$this->clid)//NOTE: not literally 54, but the clid value, which right now is only 54
+															->getDQL()													
+													)
+												);
+						
+					}else{//default - just check 54
+						$wheres[] = "t.rankid = 220";
+						$wheres[] = "clk.clid = :clid";
 					}
 				}
 			}
