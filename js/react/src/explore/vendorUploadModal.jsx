@@ -103,7 +103,7 @@ export default class vendorUploadModal extends Component {
 							<div className="mask">&nbsp;</div>
 							
 							<div className="vendor-upload-header">
-								<h1>Upload Manager</h1>
+								<h1>Inventory Manager</h1>
 								<div className="close-modal" onClick={this.props.onToggleUploadClick}>
 									<FontAwesomeIcon icon="times-circle" size="2x"/>
 								</div>

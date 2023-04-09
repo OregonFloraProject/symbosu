@@ -330,7 +330,6 @@ function get_garden_characteristics($tids) {
 					
 				}
 			}
-		
 		}
 	}
 
