@@ -388,9 +388,64 @@ function previewSPP() {
 	return $result;
 }
 
+function getVendorsByTaxa($tid) {
+	//fmchcklsttaxalink, join on tid, join to clid...
+	//fmchklstprojlink, join on clid, pid == 4
+	//fmchklstchildren, join on clid, clidchild exists
+	$em = SymbosuEntityManager::getEntityManager();
+	$expr = $em->getExpressionBuilder();
+	$q = $em->createQueryBuilder();
+
+	$taxaQuery = $em->createQueryBuilder()
+		->select("t.sciname","t.tid","c.clid","c.name","t.rankid")
+		->from("Fmchecklists", "c")
+		->innerJoin("Fmchklsttaxalink", "ct", "WITH", "ct.clid = c.clid")
+		->innerJoin("Taxa", "t", "WITH", "t.tid = ct.tid")
+		->innerJoin("Fmchklstprojlink", "cp", "WITH", "c.clid = cp.clid")
+		->innerJoin("Fmchklstchildren", "cc", "WITH", "c.clid = cc.clidChild")
+		->andWhere("cp.pid = :pid")
+		->andWhere(
+			$expr->orX(
+				$expr->eq("t.tid",":tid"),
+				$expr->in('t.tid',						
+					$em->createQueryBuilder()
+						->select("t2.tid")
+						->from("Taxa","t2")
+						->innerJoin("Taxaenumtree","te2","WITH","t2.tid = te2.tid")
+						->where('te2.parenttid = :tid')
+						->getDQL()
+					)
+				),
+			)
+		->setParameter(":tid", $tid)
+		->setParameter(":pid", getVendorPid())
+		->orderBy('t.rankid, t.sciname, c.name')
+		->getQuery();
+
+		$tresults = $taxaQuery->getResult();
+		$results = [];
+		foreach ($tresults as $t) {
+			if (!isset($results[$t['tid']])) {
+				$results[$t['tid']] = [
+					'tid' => $t['tid'],
+					'sciname' => $t['sciname'],
+					'vendors' => []
+				];
+			}
+			$results[$t['tid']]['vendors'][] = [
+				'clid' => $t['clid'],
+				'name' => $t['name']
+			];
+			
+		}
+		return $results;
+}
+
+
+
 $result = [];
 
-if (array_key_exists("clid", $_REQUEST) && is_numeric($_REQUEST["clid"])&& array_key_exists("pid", $_REQUEST) && is_numeric($_REQUEST["pid"])) {
+if (array_key_exists("clid", $_REQUEST) && is_numeric($_REQUEST["clid"]) && array_key_exists("pid", $_REQUEST) && is_numeric($_REQUEST["pid"])) {
   $em = SymbosuEntityManager::getEntityManager();
   $repo = $em->getRepository("Fmchecklists");
   $model = $repo->find($_REQUEST["clid"]);
@@ -431,6 +486,8 @@ if (array_key_exists("clid", $_REQUEST) && is_numeric($_REQUEST["clid"])&& array
 			}				
 		}
 	}
+}elseif(array_key_exists("tid", $_REQUEST) && is_numeric($_REQUEST["tid"]) && array_key_exists("action", $_REQUEST) && $_REQUEST["action"] === 'taxa_garden') {
+	$result = getVendorsByTaxa($_REQUEST["tid"]);
 }else{
 	#todo: generate error or redirect
 }
