@@ -87,5 +87,8 @@ function getRegionCid() {
 function getNurseryCid() {
 	return 209;
 }
+function getVendorPid() {
+	return 4;
+}
 
 ?>
