@@ -287,8 +287,8 @@ class IdentManager extends Manager {
 													)
 												);
 						
-					}else{//default - just check 54
-						$wheres[] = "t.rankid = 220";
+					}else{//default
+						//$wheres[] = "t.rankid = 220";
 						$wheres[] = "clk.clid = :clid";
 					}
 				}
