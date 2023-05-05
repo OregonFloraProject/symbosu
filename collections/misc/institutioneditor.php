@@ -190,7 +190,7 @@ if (!$view | $view != 'tab') {
 		if($instArr = $instManager->getInstitutionData()){
 			?>
 			<div style="float:right;">
-				<a href="institutioneditor.php">
+				<a href="<?php echo $view == 'tab' ? '../misc/institutioneditor.php' : 'institutioneditor.php'; ?>">
 					<img src="<?php echo $CLIENT_ROOT;?>/images/toparent.png" style="width:15px;border:0px;" title="Return to Institution List" />
 				</a>
 				<?php 
@@ -204,7 +204,7 @@ if (!$view | $view != 'tab') {
 				?>
 			</div>
 			<div style="clear:both;">
-				<form id="insteditform" name="insteditform" action="institutioneditor.php" method="post">
+				<form id="insteditform" name="insteditform" action="<?php echo $view == 'tab' ? '../misc/' : ''; ?>institutioneditor.php" method="post">
 					<fieldset style="padding:20px;">
 						<legend><b>Address Details</b></legend>
 						<div style="position:relative;">
@@ -451,7 +451,7 @@ if (!$view | $view != 'tab') {
 				</a>
 			</div>
 			<div id="instadddiv" style="display:<?php echo ($eMode?'block':'none'); ?>;margin-bottom:8px;">
-				<form id="instaddform" name="instaddform" action="institutioneditor.php" method="post">
+				<form id="instaddform" name="instaddform" action="<?php echo $view == 'tab' ? '../misc/' : ''; ?>institutioneditor.php" method="post">
 					<fieldset style="padding:20px;">
 						<legend><b>Add New Institution</b></legend>
 						<div style="position:relative;">
@@ -603,10 +603,10 @@ if (!$view | $view != 'tab') {
 						$instList = $instManager->getInstitutionList();
 						if($instList){
 							foreach($instList as $iid => $iArr){
-								echo '<li><a href="/collections/misc/institutioneditor.php?iid='.$iid.'">';
+								echo '<li><a href="/collections/misc/institutioneditor.php?' . ($view == 'tab' ? 'view=tab&' : '') . 'iid='.$iid.'">';
 								echo $iArr['institutionname'].' ('.$iArr['institutioncode'].')';
 								if($editorCode == 3 || array_intersect(explode(',',$iArr['collid']),$USER_RIGHTS["CollAdmin"])){
-									echo ' <a href="/collections/misc/institutioneditor.php?emode=1&iid='.$iid.'"><img src="'.$CLIENT_ROOT.'/images/edit.png" style="width:13px;" /></a>';
+									echo ' <a href="/collections/misc/institutioneditor.php?' . ($view == 'tab' ? 'view=tab&' : '') . 'emode=1&iid='.$iid.'"><img src="'.$CLIENT_ROOT.'/images/edit.png" style="width:13px;" /></a>';
 								}
 								echo '</a></li>';
 							}
