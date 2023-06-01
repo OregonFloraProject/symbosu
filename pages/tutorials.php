@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 //error_reporting(E_ALL);
 include_once( "../config/symbini.php" );
 header( "Content-Type: text/html; charset=" . $charset );
@@ -100,7 +100,7 @@ header( "Content-Type: text/html; charset=" . $charset );
 								</div>
 								<div class="info">
 									<h3>Plant profile pages</h3>
-									<p>Comprehensive information—gathered in one location—for each of the ~4,700 vascular plant in the state!</p>
+									<p>Comprehensive information—gathered in one location—for each of the ~4,750 vascular plants in the state!</p>
                   <div class="more-link" data-toggle="collapse" data-target="#collapseProfile" role="button" aria-expanded="false" aria-controls="collapseProfile">
                   	Text-based tutorial 
                     <div class="arrow fa-down"><i class="fas fa-chevron-down 2x"></i></div>
@@ -358,7 +358,7 @@ header( "Content-Type: text/html; charset=" . $charset );
 								</div>
 								<div class="info">
 									<h3>Grow Natives</h3>
-									<p>This section has information on almost 200 species of native plants that are ideal for your garden or landscape conditions. </p>
+									<p>This section has information on almost 300 species of native plants that are ideal for your garden or landscape conditions. </p>
                   <div class="more-link" data-toggle="collapse" data-target="#collapseNatives" role="button" aria-expanded="false" aria-controls="collapseNatives">
                   	Text-based tutorial 
                     <div class="arrow fa-down"><i class="fas fa-chevron-down 2x"></i></div>
