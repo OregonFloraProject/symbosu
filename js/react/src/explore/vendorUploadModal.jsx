@@ -147,8 +147,20 @@ export default class vendorUploadModal extends Component {
 										)
 										:								
 										(
-										<div className="file-upload preview">
+										<div className="file-upload preview">				
+											<div className="download-link">
+												{
+													<div>
+														<div>I want to download my current list.</div>
+														<a href={this.props.exportUrlCsv}
+															download
+															className="btn btn-primary"
+														>Download</a>
+													</div>
+												}
+											</div>
 											<div className="file-upload-form">
+												<span>I want to upload a new list.</span>
 												<form>		
 													<input 
 														name="vendor-upload"

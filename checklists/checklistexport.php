@@ -39,9 +39,51 @@ function exportChecklistToCSV($checklist) {
 	}
 	fclose($out);
 
-	
 }
+function exportChecklistToVendorCSV($checklist) {
+//var_dump($checklist);
+	$taxa = array();
+	$header = array(
+		//"Family",
+		"ScientificName",
+		//"ScientificNameAuthorship",
+		//"CommonName",
+		//"TaxonId",
+		"Notes"
+	);
+	foreach ($checklist['taxa'] as $taxon) {
+		$tmp = array(
+			$taxon['sciname'],
+		);
 
+		$em = SymbosuEntityManager::getEntityManager();
+		$taxalink = $em->getRepository("Fmchklsttaxalink");
+		$link = $taxalink->find([
+			'tid' => $taxon['tid'],
+			'clid' => $checklist['clid'],
+			'morphospecies' => ''
+		]);
+		$tmp[] = $link->getNotes();// $rowArr['checklistNotes'];
+		
+		$taxa[] = $tmp;
+	}
+	sort($taxa);
+	array_unshift($taxa,$header);
+	#return $return;
+	#var_dump($taxa);
+	#exit;
+	
+	$title = str_replace(" ","_",$checklist['title']) . "_" . date("Ymd");
+	header('Content-Description: File Transfer');
+	header('Content-Type: application/octet-stream');
+	header("Content-Disposition: attachment; filename={$title}.csv");
+	$out = fopen('php://output', 'w');
+	foreach ($taxa as $taxon) {
+		fputcsv($out, $taxon, ",","\"");
+	}
+	fclose($out);
+
+}
 
 
 function exportChecklistToWord($checklist) {

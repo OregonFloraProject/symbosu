@@ -75,7 +75,9 @@ function rewriteSPP() {
 				$repo = new Fmchklsttaxalink();
 				$repo->setTid($obj->tidaccepted);
 				$repo->setClid($_REQUEST['clid']);
-				$repo->setNotes(join(', ',$obj->notes));
+				if ($obj->notes) {
+					$repo->setNotes(join(', ',$obj->notes));
+				}
 				$repo->setInitialtimestamp(new \DateTime());
 				$em->merge($repo);#persist
 				$em->flush();
@@ -95,14 +97,15 @@ function SPPtoCSV($results) {
 	
 	$url = '';
 	if (sizeof($results)) {
-		$url = $CLIENT_ROOT . 'temp/downloads/vendor/' . uniqid() . '.csv';
+		$url = $CLIENT_ROOT . 'temp/downloads/vendor/oregonflora_' . uniqid() . '.csv';
 		#var_dump($CLIENT_ROOT);exit;
 		$filename = $SERVER_ROOT . $url;
 		$fp = fopen($filename, 'w');
 		if ($fp) {
-			fputcsv($fp,["Your sciname","Result","OF sciname","Feedback"]);
+			fputcsv($fp,["Your sciname","Your notes","Result","OF sciname","Feedback"]);
 			foreach ($results as $result) {
-				$temp = [$result['searchSciname'],$result['code'],(isset($result['OFsciname'])? $result['OFsciname'] :''),join("; ",$result['feedback'])];
+				$notes = ($result['notes']? $result['notes'] : []);
+				$temp = [$result['searchSciname'],join("; ",$notes),$result['code'],(isset($result['OFsciname'])? $result['OFsciname'] :''),join("; ",$result['feedback'])];
 				fputcsv($fp, $temp);
 			}
 			fclose($fp);
@@ -187,7 +190,22 @@ function editSPP() {
 
 	return $result;
 }
-
+function handleColumnNames($obj,$target) {
+	$acceptable = [];
+	switch ($target) {
+		case 'sciname':
+			$acceptable = ['sciname','scientificname','sci name','scientific name','sci_name','scientific_name','sci-name','scientific-name'];
+			break;
+		case 'notes':
+			$acceptable = ['notes','mynotes','my-notes','my_notes'];
+			break	;
+	}
+	foreach ($obj as $key => $col) {
+		if (in_array(strtolower($key),$acceptable)) {
+			return $col;
+		}
+	}
+}
 
 function previewSPP() {
 	$result = [];
@@ -210,14 +228,14 @@ function previewSPP() {
 	#compile verified list to update, then delete existing, then add new
 	#more forgiving of empty columns in csv
 	#standardize formatting
-	#join on natives checklist
 	$em = SymbosuEntityManager::getEntityManager();
 	$expr = $em->getExpressionBuilder();
 	$q = $em->createQueryBuilder();
 	foreach ($arr as $key => $obj) {
 		$temp = [];
-		$temp['sciname'] = $obj['sciname'];
-		$temp['notes'] = [];
+		
+		$temp['sciname'] = $obj['sciname'] = handleColumnNames($obj,'sciname');#store orig in $obj['sciname']
+		$temp['notes'] = $obj['notes'] = handleColumnNames($obj,'notes');#store orig in $obj['notes'];
 		if (isset($obj['notes'])) {
 			$temp['notes'][] = $obj['notes'];
 		}
@@ -436,7 +454,7 @@ function getVendorsByTaxa($tid) {
 }
 
 
-
+$isEditor = false;
 $result = [];
 
 if (array_key_exists("clid", $_REQUEST) && is_numeric($_REQUEST["clid"]) && array_key_exists("pid", $_REQUEST) && is_numeric($_REQUEST["pid"])) {
@@ -447,12 +465,10 @@ if (array_key_exists("clid", $_REQUEST) && is_numeric($_REQUEST["clid"]) && arra
   if ($_REQUEST["pid"] > -1) {
 	  $checklist->setPid($_REQUEST["pid"]);
 	}
-  
+	if($IS_ADMIN || (array_key_exists("ClAdmin",$USER_RIGHTS) && in_array($_REQUEST["clid"],$USER_RIGHTS["ClAdmin"]))){
+		$isEditor = true;
+	}
   if (array_key_exists("update", $_REQUEST)) {
-  
-		if($IS_ADMIN || (array_key_exists("ClAdmin",$USER_RIGHTS) && in_array($_REQUEST["clid"],$USER_RIGHTS["ClAdmin"]))){
-			$isEditor = true;
-		}
 		if ($isEditor) {
 			switch ($_REQUEST['update']) {
 				case 'info':
