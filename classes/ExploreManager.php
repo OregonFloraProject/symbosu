@@ -177,7 +177,7 @@ class ExploreManager {
   		}
   	}
   
-    $taxa->select(["t.tid","COALESCE(ctl.familyoverride,ts.family) AS family","ctl.notes as checklistNotes"])
+    $taxa->select(["t.tid","COALESCE(ctl.familyoverride,ts.family) AS family","ctl.notes as checklistNotes"])//would like to use STRING_AGG here to concatenate with semicolons
       ->from("Taxa", "t"); 
         
 		foreach ($innerJoins as $innerJoin) {

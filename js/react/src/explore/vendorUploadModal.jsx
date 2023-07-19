@@ -16,9 +16,10 @@ export default class vendorUploadModal extends Component {
     super(props);
     this.state = {
     	previewReady: false,
+    	errorMsg: '',
       //isSearching: false,
     };
-    
+
 		this.onToggleUploadClick = this.props.onToggleUploadClick.bind(this);
     this.setUploadUpdating = this.props.setUploadUpdating.bind(this);
     this.handleUpload = this.handleUpload.bind(this);
@@ -27,21 +28,50 @@ export default class vendorUploadModal extends Component {
     this.handleCancel = this.handleCancel.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
+
   handleUpload = (file) => {
-	  Papa.parse(file, {
-      header: true,
-      skipEmptyLines: true,
-      complete: results => {
-      	this.storeUpload(results);
-	  		this.setState({ previewReady: true });
-    	},
-    });
+  	this.setState({ errorMsg: ''});
+  	let isCSV = true;
+  	let mimeTypes = 'text/csv';//text/csv, .csv, application/vnd.ms-excel
+		if (window.Blob) {
+			if (mimeTypes.indexOf(file.type) == -1) {
+				isCSV = false;
+			}
+		}
+		if (isCSV) {
+			const config = {
+				skipEmptyLines: true,
+				header: true,
+				transformHeader:function(h) {//transformHeader is not well-documented, and only works with this anonymous function, not with a named function
+					let ret = h;
+					let acceptable = {
+						'sciname' : ['sciname','scientificname','sci name','scientific name','sci_name','scientific_name','sci-name','scientific-name'],
+						'notes' : ['notes','mynotes','my-notes','my_notes']
+					};
+
+					Object.keys(acceptable).forEach((columnName) => {
+						if (acceptable[columnName].indexOf(h) > -1) {
+							ret = columnName;
+						}
+					});
+					return ret;
+				},
+				complete: results => {
+					this.storeUpload(results);
+					this.setState({ previewReady: true });
+				},
+			};
+			Papa.parse(file, config);
+		}else{
+  		this.setState({ errorMsg: 'Your file must be a .csv file.'});
+		}
   }
   storeUpload = (res) => {
-		if (res.meta.fields.indexOf('sciname') != -1) {
+  	//console.log(res.meta);
+		if (res.meta.fields.indexOf('sciname') != -1) {//transformed above, so this works
   		this.setState({ uploadedFile: res.data });
 		}else{
-			//msg that first row must contain sciname
+  		this.setState({ errorMsg: 'Your CSV file must contain a header row with column headings "ScientificName" (required) and "Notes" (optional).'});
 		}
   }
   processUpload() {
@@ -147,13 +177,25 @@ export default class vendorUploadModal extends Component {
 										)
 										:								
 										(
-										<div className="file-upload preview">
+										<div className="file-upload preview">				
+											<div className="download-link">
+												{
+													<div>
+														<div>I want to download my current list.</div>
+														<a href={this.props.exportUrlCsv}
+															download
+															className="btn btn-primary"
+														>Download</a>
+													</div>
+												}
+											</div>
 											<div className="file-upload-form">
+												<span>I want to upload a new list.</span>
 												<form>		
 													<input 
 														name="vendor-upload"
 														type="file" 
-														accept=".csv"
+														accept='text/csv, application/vnd.ms-excel'
 														onChange={(e) => {this.handleUpload(e.target.files[0])}}
 													/>
 													<button 
@@ -170,7 +212,12 @@ export default class vendorUploadModal extends Component {
 							</div>
 						
 							<div className="col-12 vendor-upload-main">
-							
+							{
+									this.state.errorMsg && 
+									
+									<div className="error">Error: {this.state.errorMsg}</div>
+									
+							}
 							<VendorUploadContainer
 								uploadResponse={ this.props.uploadResponse }
 								isSearching={this.props.isUploadUpdating}
