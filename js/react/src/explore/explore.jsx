@@ -545,7 +545,7 @@ class ExploreApp extends React.Component {
 										}
 										</div>
 									</div>
-									{ this.getClid() > -1 && this.getPid() > -1 &&
+									{ this.getClid() > -1 && this.getPid() > -1 && this.getPid() != 4 &&
 										<div className="alt-wrapper">
 											<div>Switch to</div>
 											<a href={getIdentifyPage(this.props.clientRoot,this.getClid(),this.getPid())}>

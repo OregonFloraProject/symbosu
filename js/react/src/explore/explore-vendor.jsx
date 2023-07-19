@@ -52,7 +52,6 @@ class ExploreApp extends React.Component {
       googleMapUrl: '',
       exportUrl: '',
       exportUrlCsv: '',
-      exportUrlWord: '',
       //taxa: [],
       filters: {
         searchText: ("search" in queryParams ? queryParams["search"] : ViewOpts.DEFAULT_SEARCH_TEXT),
@@ -87,11 +86,6 @@ class ExploreApp extends React.Component {
     this.onSearchTextChanged = this.onSearchTextChanged.bind(this);
     this.onSearch = this.onSearch.bind(this);
    // this.onSearchResults = this.onSearchResults.bind(this);
-    this.onSearchNameChanged = this.onSearchNameChanged.bind(this);
-    this.onSearchSynonymsChanged = this.onSearchSynonymsChanged.bind(this);
-    this.onSortByChanged = this.onSortByChanged.bind(this);
-    this.onViewTypeChanged = this.onViewTypeChanged.bind(this);
-    this.onTaxaDetailChanged = this.onTaxaDetailChanged.bind(this);
     this.onFilterRemoved = this.onFilterRemoved.bind(this);
     this.sortResults = this.sortResults.bind(this);
     this.clearTextSearch = this.clearTextSearch.bind(this);
@@ -170,12 +164,11 @@ class ExploreApp extends React.Component {
 		mapParams.append('upload',JSON.stringify(arr));
 		let mapParamString = mapParams.toString();
 		//console.log(url);
-		//console.log(mapParamString);
+		//console.log(mapParams);
 		
 		httpPost(url,mapParamString)
 			.then((res) => {
 				let jres = JSON.parse(res);
-				  	
 				this.setState({
 					uploadResponse: jres,
 				});
@@ -439,8 +432,8 @@ class ExploreApp extends React.Component {
 					fixedTotals: res.totals,
 					googleMapUrl: googleMapUrl,
 					exportUrl: exportUrl,
-					exportUrlCsv: exportUrl + `?export=csv&clid=` + this.getClid() + `&pid=` + this.getPid(),// + `&dynclid=` + this.getDynclid(),
-					exportUrlWord: exportUrl + `?export=word&clid=` + this.getClid() + `&pid=` + this.getPid(),// + `&dynclid=` + this.getDynclid()
+					exportUrlCsv: exportUrl + `?export=vendorcsv&clid=` + this.getClid() + `&pid=` + this.getPid(),// + `&dynclid=` + this.getDynclid(),
+					//exportUrlWord: exportUrl + `?export=word&clid=` + this.getClid() + `&pid=` + this.getPid(),// + `&dynclid=` + this.getDynclid()
 				});
 				const pageTitle = document.getElementsByTagName("title")[0];
 				pageTitle.innerHTML = `${pageTitle.innerHTML} ${res.title}`;
@@ -458,7 +451,6 @@ class ExploreApp extends React.Component {
   }
   updateExportUrls() {
   	this.updateExportUrlCsv();
-    this.updateExportUrlWord();
   }
   updateExportUrlCsv() {
 
@@ -466,7 +458,7 @@ class ExploreApp extends React.Component {
   	let url = this.state.exportUrl;
   	let exportParams = new URLSearchParams();
   	
-		exportParams.append("export",'csv');
+		exportParams.append("export",'vendorcsv');
 		exportParams.append("clid",this.getClid());
 		exportParams.append("pid",this.getPid());
 		//exportParams.append("dynclid",this.getDynclid());
@@ -477,25 +469,7 @@ class ExploreApp extends React.Component {
       exportUrlCsv: url,
     });
   }
-  updateExportUrlWord() {
-  	//let url = `${this.props.clientRoot}/checklists/defaultchecklistexport.php`;
-  	let url = this.state.exportUrl;
-  	let exportParams = new URLSearchParams();
-  	
-		exportParams.append("export",'word');
-		exportParams.append("clid",this.getClid());
-		exportParams.append("pid",this.getPid());
-		//exportParams.append("dynclid",this.getDynclid());
-		exportParams.append("showcommon",1);
-		if (this.state.filters.searchText) {
-			exportParams.append("taxonfilter",this.state.filters.searchText);
-		}
-		
-  	url += '?' + exportParams.toString();
-	  this.setState({
-      exportUrlWord: url,
-    });
-  }
+
 	clearTextSearch() {
 		this.onFilterRemoved("searchText");
 	}
@@ -509,7 +483,6 @@ class ExploreApp extends React.Component {
           searchText: ViewOpts.DEFAULT_SEARCH_TEXT },
           () => this.onSearch({ text: ViewOpts.DEFAULT_SEARCH_TEXT, value: -1 })
         );
-        this.updateExportUrls();
         break;
       default:
         break;
@@ -535,16 +508,6 @@ class ExploreApp extends React.Component {
       totals: totals,
     });
 	}
-
-  // On search end
-  /*
-  onSearchResults(results) {
-    let newResults;
-    newResults = this.sortResults(results);
-    this.setState({ searchResults: newResults },function() {
-			this.updateExportUrls();
-		});
-  }*/
   
   sortResults(results) {//should receive taxa from API
   	let newResults = {};
@@ -569,39 +532,6 @@ class ExploreApp extends React.Component {
     
   	return newResults;
   }
-
-  onSortByChanged(sortBy) {
-    this.setState({ sortBy: sortBy },function() {
-    	this.updateExportUrls();
-    });
-  }
-  onSearchNameChanged(name) {
-    this.setState({ searchName: name },function() {
-    	this.updateExportUrls();
-    });
-  }
-  onSearchSynonymsChanged(synonyms) {
-    this.setState({ searchSynonyms: synonyms },function() {
-    	this.updateExportUrls();
-    });
-  }
-  onViewTypeChanged(type) {
-    this.setState({ viewType: type },function() {
-			if (type === 'grid') {
-				this.setState({showTaxaDetail: "off"},function() {
-   			 	this.updateExportUrls();
-		    });
-			}else{
-   			 this.updateExportUrls();
-			}
-    });
-  }
-  onTaxaDetailChanged(taxaDetail) {
-  	this.setState({showTaxaDetail: taxaDetail},function() {
-    	this.updateExportUrls();
-    });
-  }
-
   render() {
   
   	var infoSubmitValue = 'Update Info';//(this.state.isUpdating['info']? 'Updating' : 'Update Info');
@@ -624,6 +554,7 @@ class ExploreApp extends React.Component {
 				uploadResponse={this.state.uploadResponse}
 				clearUpload={this.clearUpload}
 				clientRoot={this.props.clientRoot}
+				exportUrlCsv={this.state.exportUrlCsv}
 			></VendorUploadModal>
 			<div className="page-header">
 				<PageHeader bgClass="explore" title={ this.state.projName } />
@@ -778,12 +709,12 @@ class ExploreApp extends React.Component {
 								<div className="col-3">
 									{this.state.displayDescription == 'expanded' && this.state.isEditing['info'] == true &&
 											<div className="less more-less editing" onClick={() => this.toggleEditing('info')}>
-												<FontAwesomeIcon icon="edit" />Toggle Editing
+												<FontAwesomeIcon icon="edit" />Stop Editing
 											</div>
 									}
 									{this.state.displayDescription == 'expanded' && this.state.isEditing['info'] == false &&
 										<div className="more more-less" onClick={() => this.toggleEditing('info')}>
-												<FontAwesomeIcon icon="edit" />Toggle Editing
+												<FontAwesomeIcon icon="edit" />Start Editing
 										</div>
 									}		
 								</div>
@@ -828,10 +759,8 @@ class ExploreApp extends React.Component {
 							searchName={ this.state.searchName }
 							sortBy={ this.state.sortBy }
 							section={ 'spp' }
-							onSearchNameClicked={ this.onSearchNameChanged }
 							onClearSearch={ this.clearTextSearch }
 							exportUrlCsv={ this.state.exportUrlCsv }
-							exportUrlWord={ this.state.exportUrlWord }
 							spp={ this.state.updatedData.spp }
 							updateChange={this.updateField } 
 							storeChange={this.updateSPP } 

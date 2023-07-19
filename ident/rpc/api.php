@@ -177,7 +177,7 @@ if (
 
 array_walk_recursive($result,'cleanWindowsRecursive');#replace Windows characters
 
-if (array_key_exists("export", $_GET) && in_array($_GET["export"],array('word','csv'))) {
+if (array_key_exists("export", $_GET) && in_array($_GET["export"],array('word','csv','vendorcsv'))) {
 	include_once($SERVER_ROOT . "/checklists/checklistexport.php");
 	switch($_GET['export']) {
 		case 'word':
@@ -185,6 +185,9 @@ if (array_key_exists("export", $_GET) && in_array($_GET["export"],array('word','
 			break;
 		case 'csv':
 			exportChecklistToCSV($result);
+			break;
+		case 'vendorcsv':
+			exportChecklistToVendorCSV($result);
 			break;
 	
 	}
