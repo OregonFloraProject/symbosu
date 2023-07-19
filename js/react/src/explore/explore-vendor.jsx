@@ -164,12 +164,11 @@ class ExploreApp extends React.Component {
 		mapParams.append('upload',JSON.stringify(arr));
 		let mapParamString = mapParams.toString();
 		//console.log(url);
-		//console.log(mapParamString);
+		//console.log(mapParams);
 		
 		httpPost(url,mapParamString)
 			.then((res) => {
 				let jres = JSON.parse(res);
-				  	
 				this.setState({
 					uploadResponse: jres,
 				});
@@ -710,12 +709,12 @@ class ExploreApp extends React.Component {
 								<div className="col-3">
 									{this.state.displayDescription == 'expanded' && this.state.isEditing['info'] == true &&
 											<div className="less more-less editing" onClick={() => this.toggleEditing('info')}>
-												<FontAwesomeIcon icon="edit" />Toggle Editing
+												<FontAwesomeIcon icon="edit" />Stop Editing
 											</div>
 									}
 									{this.state.displayDescription == 'expanded' && this.state.isEditing['info'] == false &&
 										<div className="more more-less" onClick={() => this.toggleEditing('info')}>
-												<FontAwesomeIcon icon="edit" />Toggle Editing
+												<FontAwesomeIcon icon="edit" />Start Editing
 										</div>
 									}		
 								</div>

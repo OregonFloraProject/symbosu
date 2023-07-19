@@ -303,7 +303,8 @@ class InventoryChooser extends React.Component {
   }
   componentDidMount() {
 
-		httpGet(`./rpc/api.php`)
+		let url = `${this.props.clientRoot}/projects/rpc/api.php`;
+		httpGet(url)
 			.then((res) => {
 				// /projects/rpc/api.php
 				res = JSON.parse(res);

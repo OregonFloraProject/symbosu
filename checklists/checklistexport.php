@@ -63,7 +63,7 @@ function exportChecklistToVendorCSV($checklist) {
 			'clid' => $checklist['clid'],
 			'morphospecies' => ''
 		]);
-		$tmp[] = $link->getNotes();// $rowArr['checklistNotes'];
+		$tmp[] = ($link->getNotes()? str_replace(",",";",$link->getNotes()) : '');// $rowArr['checklistNotes'];
 		
 		$taxa[] = $tmp;
 	}

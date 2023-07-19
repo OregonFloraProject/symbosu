@@ -76,7 +76,7 @@ function rewriteSPP() {
 				$repo->setTid($obj->tidaccepted);
 				$repo->setClid($_REQUEST['clid']);
 				if ($obj->notes) {
-					$repo->setNotes(join(', ',$obj->notes));
+					$repo->setNotes(join('; ',$obj->notes));
 				}
 				$repo->setInitialtimestamp(new \DateTime());
 				$em->merge($repo);#persist
@@ -92,6 +92,7 @@ function rewriteSPP() {
 	return $result;
 }
 
+/*
 function SPPtoCSV($results) {
 	global $CLIENT_ROOT, $SERVER_ROOT;
 	
@@ -104,7 +105,8 @@ function SPPtoCSV($results) {
 		if ($fp) {
 			fputcsv($fp,["Your sciname","Your notes","Result","OF sciname","Feedback"]);
 			foreach ($results as $result) {
-				$notes = ($result['notes']? $result['notes'] : []);
+				//var_dump($result);
+				$notes = [];//($result['notes']? $result['notes'] : []);
 				$temp = [$result['searchSciname'],join("; ",$notes),$result['code'],(isset($result['OFsciname'])? $result['OFsciname'] :''),join("; ",$result['feedback'])];
 				fputcsv($fp, $temp);
 			}
@@ -112,7 +114,7 @@ function SPPtoCSV($results) {
 		}
 	}
 	return $url;
-}
+}*/
 
 function addOneSPP() {
 	$result = [];
@@ -179,7 +181,7 @@ function editSPP() {
 			'clid' => $_REQUEST['clid'],
 			'morphospecies' => ''
 		]);
-		$link->setNotes($_REQUEST['notes']);
+		$link->setNotes(str_replace(';',',',$_REQUEST['notes']));//semicolons are used to concatenate notes, so disallow semicolons within a note
 		$em->merge($link);#persist
 		$em->flush();
 		$success++;
@@ -190,6 +192,8 @@ function editSPP() {
 
 	return $result;
 }
+/*
+//vetting in vendorUploadModal.jsx so as to avoid another api call
 function handleColumnNames($obj,$target) {
 	$acceptable = [];
 	switch ($target) {
@@ -206,6 +210,7 @@ function handleColumnNames($obj,$target) {
 		}
 	}
 }
+*/
 
 function previewSPP() {
 	$result = [];
@@ -234,10 +239,14 @@ function previewSPP() {
 	foreach ($arr as $key => $obj) {
 		$temp = [];
 		
-		$temp['sciname'] = $obj['sciname'] = handleColumnNames($obj,'sciname');#store orig in $obj['sciname']
-		$temp['notes'] = $obj['notes'] = handleColumnNames($obj,'notes');#store orig in $obj['notes'];
+		$temp['sciname'] = $obj['sciname'];// = handleColumnNames($obj,'sciname');#store orig in $obj['sciname']
+		$temp['notes'] = [];//$obj['notes'] = handleColumnNames($obj,'notes');#store orig in $obj['notes'];
 		if (isset($obj['notes'])) {
-			$temp['notes'][] = $obj['notes'];
+			if (is_array($obj['notes'])) {
+				$temp['notes'] = $obj['notes'];
+			}else{
+				$temp['notes'][] = $obj['notes'];
+			}
 		}
 		$searchSciname = $obj['sciname'];
 		$searchSciname = str_replace("subsp.","ssp.",$searchSciname);
@@ -295,7 +304,6 @@ function previewSPP() {
 			$temp['code'] = 'Synonym';
 			$temp['tid'] = $sciNameResults[0]['value'];
 			$temp['tidaccepted'] = $sciNameResults[0]['tidaccepted'];
-			$temp['feedback'][] = 'This is a synonym for another species (see Oregon Flora sciname)';
 		}
 		#check for ambiguous - Mimulus guttatus, Convolvulus sepium
 		if ($temp['tid'] != $temp['tidaccepted']) {
@@ -306,8 +314,15 @@ function previewSPP() {
 			if (sizeof($tidaccepteds) > 1) {
 				$temp['code'] = 'Ambiguous';
 			}
-		}						
-	
+		}				
+		switch ($temp['code']) {
+			case 'Synonym':
+				$temp['feedback'][] = 'This is a synonym for another species and will be translated (see OF sciname column).';
+				break;
+			case 'Ambiguous':
+				$temp['feedback'][] = 'This is a synonym for more than one species and cannot be automatically translated. Look up the name in the Search all plants box for possible translations.';
+				break;
+		}		
 		if ($obj['sciname'] !== $searchSciname) {#we changed it
 			$temp['feedback'][] = 'OregonFlora uses ssp. instead of subsp.';
 		}
@@ -326,7 +341,7 @@ function previewSPP() {
 		if ($entry['code'] == 'Accepted') {#put on list so we can check for dupes
 			if (	($this_key = array_search($entry['tid'],$tids)) != false) {#duplicate tid
 				if (isset($entry['notes'])) {
-					$firstArr[$this_key]['notes'][]  = $entry['notes'];#copy notes to first tid match
+					$firstArr[$this_key]['notes'] = array_merge($firstArr[$this_key]['notes'],$entry['notes']);#copy notes to first tid match
 				}
 				$firstArr[$key]['feedback'][]  = 'This is a duplicate entry for ' . $firstArr[$this_key]['sciname'] . ' and will be removed';
 				$firstArr[$key]['code'] = 'Duplicate';
@@ -339,11 +354,12 @@ function previewSPP() {
 			$parts = explode(" ",$entry['sciname']);
 			array_splice($parts,1,0,'x');
 			$secondQuery = $entry['query'];
-			$firstArr[$key]['searchSciname'] = join(' ',$parts);
-			$secondQuery->setParameter("search", $firstArr[$key]['searchSciname']);
+			$tempSciname = join(' ',$parts);
+			$secondQuery->setParameter("search", $tempSciname);
 			$secondResults = $secondQuery->getArrayResult();
 			if (sizeof($secondResults) > 0) {
 
+				$firstArr[$key]['searchSciname'] = $tempSciname;
 				$firstArr[$key]['results'] = $secondResults;
 				if ($secondResults[0]['tidaccepted'] === $secondResults[0]['value']) {
 					$firstArr[$key]['code'] = 'Accepted';
@@ -364,7 +380,7 @@ function previewSPP() {
 		if ($entry['code'] == 'Synonym') {#catch synonym dupes
 			if (	($this_key = array_search($entry['tidaccepted'],$tids)) != false) {#synonym is duplicated elsewhere as perfect match
 				if (isset($entry['notes'])) {
-					$firstArr[$this_key]['notes'][]  = $entry['notes'];#copy notes to first tid match
+					$firstArr[$this_key]['notes'] = array_merge($firstArr[$this_key]['notes'],$entry['notes']);#copy notes to first tid match
 				}
 				$firstArr[$key]['feedback'][]  = 'This is a duplicate entry for ' . $firstArr[$this_key]['sciname'] . ' and will be removed';
 				$firstArr[$key]['code'] = 'Duplicate';
@@ -378,7 +394,7 @@ function previewSPP() {
 			$firstArr[$key]['OFsciname'] = $taxa->getSciname();
 		
 			if (!in_array($firstArr[$key]['results'][0]['nativity'],$acceptedNativities)) {#check nativity
-				$firstArr[$key]['feedback'][]  = 'This is not a native Oregon plant species';
+				$firstArr[$key]['feedback'][]  = 'This is not a native Oregon plant species and will not be included.';
 				$firstArr[$key]['code'] = 'Non-native';
 			}
 		}		
@@ -386,8 +402,8 @@ function previewSPP() {
 	foreach ($firstArr as $key => $entry) {
 		unset($firstArr[$key]['query']);#removing for debugging
 	}
-	
-	$csvURL = SPPtoCSV($firstArr);
+	#var_dump($firstArr);
+	#$csvURL = SPPtoCSV($firstArr);
 	
 	$result = [
 		"status" => (sizeof($firstArr)? "success" : 'notfound'),

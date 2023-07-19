@@ -177,10 +177,14 @@ export default function Table({ columns, data, pid, clientRoot }) {
 										<a href={ exploreUrl }>
 											<FontAwesomeIcon icon="list-ul" />
 										</a>
-										<span className="verticalSeparator" />
-										<a href={ identifyUrl }>
-											<FontAwesomeIcon icon="search-plus" />
-										</a>
+										{ pid !== 4 && /* Don't link to identify pages for vendors */
+											<span>
+											<span className="verticalSeparator" />
+											<a href={ identifyUrl }>
+												<FontAwesomeIcon icon="search-plus" />
+											</a>
+											</span>
+										}
 									</td>
 						
 							</tr>
