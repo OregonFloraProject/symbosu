@@ -1,5 +1,6 @@
 
+Options +FollowSymlinks
 RewriteEngine on
 RewriteBase /
 RewriteCond %{REQUEST_URI} !/maintenance.php$
-RewriteRule .* /maintenance.php [R=302,L] 
+RewriteRule .* /maintenance.php [L] 
