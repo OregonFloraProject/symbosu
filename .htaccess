@@ -1,4 +1,4 @@
 
 RewriteEngine on
 RewriteCond %{REQUEST_URI} !maintenance.php$ [NC]
-RewriteRule $ /maintenance.php [R=302,L] 
+RewriteRule .* /maintenance.php [R=302,L] 
