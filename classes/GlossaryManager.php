@@ -29,6 +29,7 @@ class GlossaryManager extends Manager {
 	private $mapLargeImg = false;
 	private $targetUrl;
 	private $fileName;
+	private $processUsingImageMagick = 0;
 
 	private $errorStr;
 
@@ -919,37 +920,49 @@ class GlossaryManager extends Manager {
 						$targetWidth = $this->sourceWidth;
 						$newHeight = $this->sourceHeight;
 					}
-					if(!$this->sourceGdImg){
-						if($this->imgExt == '.gif'){
-							$this->sourceGdImg = imagecreatefromgif($this->sourcePath);
-						}
-						elseif($this->imgExt == '.png'){
-							$this->sourceGdImg = imagecreatefrompng($this->sourcePath);
-						}
-						else{
-							//JPG assumed
-							$this->sourceGdImg = imagecreatefromjpeg($this->sourcePath);
-						}
-					}
-
-					$tmpImg = imagecreatetruecolor($targetWidth,$newHeight);
-					//imagecopyresampled($tmpImg,$sourceImg,0,0,0,0,$newWidth,$newHeight,$sourceWidth,$sourceHeight);
-					imagecopyresized($tmpImg,$this->sourceGdImg,0,0,0,0,$targetWidth,$newHeight,$this->sourceWidth,$this->sourceHeight);
 
 					//Irrelevant of import image, output JPG
 					$targetPath = $this->targetPath.$this->imgName.$subExt.'.jpg';
-					if($qualityRating){
-						$status = imagejpeg($tmpImg, $targetPath, $qualityRating);
+
+					// Use ImageMagick to resize images if it's available
+					if ($this->processUsingImageMagick) {
+
+						$status = $this->createNewImageImagick($this->sourcePath,$targetPath,$targetWidth,$newHeight);
 					}
-					else{
-						$status = imagejpeg($tmpImg, $targetPath);
+
+					// Fall back to using GD
+					else {
+						if(!$this->sourceGdImg){
+							if($this->imgExt == '.gif'){
+								$this->sourceGdImg = imagecreatefromgif($this->sourcePath);
+							}
+							elseif($this->imgExt == '.png'){
+								$this->sourceGdImg = imagecreatefrompng($this->sourcePath);
+							}
+							else{
+								//JPG assumed
+								$this->sourceGdImg = imagecreatefromjpeg($this->sourcePath);
+							}
+						}
+
+						$tmpImg = imagecreatetruecolor($targetWidth,$newHeight);
+						//imagecopyresampled($tmpImg,$sourceImg,0,0,0,0,$newWidth,$newHeight,$sourceWidth,$sourceHeight);
+						imagecopyresized($tmpImg,$this->sourceGdImg,0,0,0,0,$targetWidth,$newHeight,$this->sourceWidth,$this->sourceHeight);
+
+						if($qualityRating){
+							$status = imagejpeg($tmpImg, $targetPath, $qualityRating);
+						}
+						else {
+							$status = imagejpeg($tmpImg, $targetPath);
+						}
+
+						imagedestroy($tmpImg);
 					}
 
 					if(!$status){
 						$this->errArr[] = 'ERROR: failed to create images in target path ('.$targetPath.')';
 					}
 
-					imagedestroy($tmpImg);
 				}
 				else{
 					$this->errArr[] = 'ERROR: unable to get source image width ('.$this->sourcePath.')';
@@ -959,6 +972,32 @@ class GlossaryManager extends Manager {
 				// Neither ImageMagick nor GD are installed
 				$this->errArr[] = 'ERROR: No appropriate image handler for image conversions';
 			}
+		}
+		return $status;
+	}
+
+	private function createNewImageImagick($sourceImg,$targetPath,$newWidth,$newHeight){
+		$status = false;
+		$ct = null;
+		$retval = null;
+
+		if(!$newWidth || !$newHeight){
+			$this->logOrEcho("ERROR: Unable to create image because new width or height is not set (w:".$newWidth.' h:'.$newHeight.')');
+			return $status;
+		}
+
+		if($newWidth < 300){
+			$ct = system('convert '.$sourceImg.' -thumbnail '.$newWidth.'x'.$newHeight.' '.$targetPath, $retval);
+		}
+		else{
+			$ct = system('convert '.$sourceImg.' -resize '.$newWidth.'x'.$newHeight.($this->jpgQuality?' -quality '.$this->jpgQuality:'').' '.$targetPath, $retval);
+		}
+		if(file_exists($targetPath)){
+			$status = true;
+		}
+		else{
+			echo $ct;
+			echo $retval;
 		}
 		return $status;
 	}
@@ -1496,6 +1535,9 @@ class GlossaryManager extends Manager {
 
 	public function getErrorStr(){
 		return $this->errorStr;
+	}
+	public function setUseImageMagick($useIM){
+		$this->processUsingImageMagick = $useIM;
 	}
 }
 ?>

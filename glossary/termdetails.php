@@ -22,6 +22,7 @@ if($IS_ADMIN || array_key_exists('GlossaryEditor',$USER_RIGHTS)) $isEditor = tru
 
 $glosManager = new GlossaryManager();
 $glosManager->setGlossId($glossId);
+$glosManager->setUseImageMagick(isset($USE_IMAGE_MAGICK) && $USE_IMAGE_MAGICK ? $USE_IMAGE_MAGICK : 0);
 
 $hasImages = false;
 $closeWindow = false;
