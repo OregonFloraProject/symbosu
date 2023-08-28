@@ -15,13 +15,13 @@
                 "className": "",
                 "style": "background-image: url(\u0027..\/..\/images\/icons\/portal-label.png\u0027); background-repeat: no-repeat; background-position: left center;"
             },
-            "customStyles": ".associatedtaxaPrefix{font-style: normal; font-variant: small-caps;}",
+            "customStyles": ".associatedtaxaPrefix{font-style: normal; font-variant: small-caps;} .row{margin-bottom: 20px;} .label{margin: 0 5px;}",
             "defaultCss": "..\/..\/css\/symb\/labelhelpers.css",
             "customCss": "",
-            "customJS": "",
+            "customJS": "..\/..\/content\/collections\/reports\/general.js",
             "labelType": "2",
             "pageSize": "letter",
-            "displaySpeciesAuthor": 0,
+            "displaySpeciesAuthor": 1,
             "displayBarcode": 0,
             "labelBlocks": [
                 {
@@ -42,12 +42,24 @@
                             {
                                 "fieldBlock": [
                                     {
-                                        "field": "scientificname",
-                                        "className": "font-family-times font-bold italic"
+                                        "field": "speciesname",
+                                        "className": "font-family-times font-bold italic text-base"
+                                    },
+                                    {
+                                        "field": "parentauthor",
+                                        "className": "font-family-times text-base"
+                                    },
+                                    {
+                                        "field": "taxonrank",
+                                        "className": "font-bold text-base font-family-times"
+                                    },
+                                    {
+                                        "field": "infraspecificepithet",
+                                        "className": "font-family-times text-base font-bold italic"
                                     },
                                     {
                                         "field": "scientificnameauthorship",
-                                        "className": "font-family-times"
+                                        "className": "font-family-times text-base"
                                     }
                                 ],
                                 "delimiter": " ",
@@ -186,13 +198,13 @@
                 "className": "",
                 "style": "font-variant: small-caps; font-size: 0.9em; transform: scaleY(1.1); text-align: center; margin-top: 0.5em; background-image: url(\u0027..\/..\/images\/icons\/portal-label.png\u0027); background-repeat: no-repeat; background-position: left center;"
             },
-            "customStyles": ".field-block{clear: both;} .family{font-variant: small-caps;} .associatedtaxaPrefix{font-style: normal; font-variant: small-caps;} .text-base{font-size: 0.95em;} .text-sm{font-size: 0.8em;} .cn-barcode{text-align: center;} .label{box-shadow: inset 0 0 0 5px white, inset 0 0 0 6px black;}",
+            "customStyles": ".field-block{clear: both;} .family{font-variant: small-caps;} .associatedtaxaPrefix{font-style: normal; font-variant: small-caps;} .text-base{font-size: 0.95em;} .text-sm{font-size: 0.8em;} .cn-barcode{text-align: center;} .label{box-shadow: inset 0 0 0 5px white, inset 0 0 0 6px black;} .row{margin-bottom: 10px;} .label{margin: 0 5px;}",
             "defaultCss": "..\/..\/css\/symb\/labelhelpers.css",
             "customCss": "",
-            "customJS": "",
+            "customJS": "..\/..\/content\/collections\/reports\/general.js",
             "labelType": "2",
             "pageSize": "letter",
-            "displaySpeciesAuthor": 0,
+            "displaySpeciesAuthor": 1,
             "displayBarcode": 0,
             "labelBlocks": [
                 {
@@ -213,8 +225,20 @@
                             {
                                 "fieldBlock": [
                                     {
-                                        "field": "scientificname",
-                                        "className": "font-bold font-family-arial italic text-base"
+                                        "field": "speciesname",
+                                        "className": "font-bold italic font-family-arial text-base"
+                                    },
+                                    {
+                                        "field": "parentauthor",
+                                        "className": "text-base font-family-arial"
+                                    },
+                                    {
+                                        "field": "taxonrank",
+                                        "className": "font-bold text-base font-family-arial"
+                                    },
+                                    {
+                                        "field": "infraspecificepithet",
+                                        "className": "font-family-arial text-base font-bold italic"
                                     },
                                     {
                                         "field": "scientificnameauthorship",
@@ -837,6 +861,171 @@
                                         }
                                     ]
                                 }
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "title": "FIA Label",
+            "labelHeader": {
+                "prefix": "",
+                "midText": "0",
+                "suffix": "",
+                "className": "font-family-times",
+                "style": ""
+            },
+            "labelFooter": {
+                "textValue": "U.S. Forest Service, Forest Inventory and Analysis Program",
+                "className": "font-family-arial",
+                "style": "font-size: 0.7em; padding-top: 5px;"
+            },
+            "customStyles": ".field-block{clear: both;} .text-base{font-size: 0.8em;} .text-sm{font-size: 0.7em;} .label{box-shadow: inset 0 0 0 5px white, inset 0 0 0 6px black; margin: 0 5px; width: 40%;} .row{margin-bottom: 10px;} .other-catalog-numbers{display: none;} .cn-barcode{padding: 10px; float: right; width: 40px; height: 149px;} .cn-barcode img {height: 40px; border: 1px solid black; padding: 5px; transform: rotate(270deg); transform-origin: top left;}",
+            "defaultCss": "..\/..\/css\/symb\/labelhelpers.css",
+            "customCss": "",
+            "customJS": "",
+            "labelType": "2",
+            "pageSize": "letter",
+            "displaySpeciesAuthor": 1,
+            "displayBarcode": 0,
+            "labelBlocks": [
+                {
+                    "divBlock": {
+                        "className": "label-blocks",
+                        "style": "",
+                        "blocks": [
+                            {
+                                "fieldBlock": [
+                                    {
+                                        "field": "speciesname",
+                                        "className": "font-bold italic font-family-arial text-base"
+                                    },
+                                    {
+                                        "field": "parentauthor",
+                                        "className": "font-family-arial text-base"
+                                    },
+                                    {
+                                        "field": "taxonrank",
+                                        "className": "font-bold font-family-arial text-base"
+                                    },
+                                    {
+                                        "field": "infraspecificepithet",
+                                        "className": "font-family-arial font-bold italic text-base"
+                                    },
+                                    {
+                                        "field": "scientificnameauthorship",
+                                        "className": "font-family-arial text-base"
+                                    }
+                                ],
+                                "delimiter": " ",
+                                "className": "mb-0"
+                            },
+                            {
+                                "fieldBlock": [
+                                    {
+                                        "field": "identifiedby",
+                                        "className": "text-sm font-family-arial",
+                                        "prefix": "Det. by "
+                                    },
+                                    {
+                                        "field": "dateidentified",
+                                        "className": "text-sm font-family-arial"
+                                    }
+                                ],
+                                "delimiter": " ",
+                                "className": "text-align-left ml-0 mb-1"
+                            },
+                            {
+                                "fieldBlock": [
+                                    {
+                                        "field": "stateprovince",
+                                        "className": "font-bold font-family-arial text-base",
+                                        "prefix": "U.S.A., ",
+                                        "suffix": ","
+                                    },
+                                    {
+                                        "field": "county",
+                                        "className": "font-bold font-family-arial text-base",
+                                        "suffix": " County"
+                                    }
+                                ],
+                                "delimiter": " "
+                            },
+                            {
+                                "fieldBlock": [
+                                    {
+                                        "field": "locality",
+                                        "className": "font-family-arial text-base"
+                                    }
+                                ],
+                                "delimiter": " ",
+                                "className": "ml-0 mb-1"
+                            },
+                            {
+                                "fieldBlock": [
+                                    {
+                                        "field": "decimallatitude",
+                                        "className": "font-family-arial text-base",
+                                        "suffix": "\u00b0 N,"
+                                    },
+                                    {
+                                        "field": "decimallongitude",
+                                        "className": "font-family-arial text-base",
+                                        "suffix": "\u00b0 W, "
+                                    },
+                                    {
+                                        "field": "elevationinmeters",
+                                        "className": "font-family-arial text-base",
+                                        "prefix": "Elev. ",
+                                        "suffix": "m."
+                                    }
+                                ],
+                                "delimiter": " ",
+                                "className": "mb-1"
+                            },
+                            {
+                                "fieldBlock": [
+                                    {
+                                        "field": "habitat",
+                                        "className": "font-family-arial text-base",
+                                        "suffix": "."
+                                    },
+                                    {
+                                        "field": "substrate",
+                                        "className": "font-family-arial text-base",
+                                        "suffix": "."
+                                    },
+                                    {
+                                        "field": "verbatimattributes",
+                                        "className": "font-family-arial text-base",
+                                        "suffix": "."
+                                    },
+                                    {
+                                        "field": "occurrenceremarks",
+                                        "className": "font-family-arial text-base",
+                                        "suffix": "."
+                                    }
+                                ],
+                                "delimiter": " ",
+                                "className": "mb-1"
+                            },
+                            {
+                                "fieldBlock": [
+                                    {
+                                        "field": "recordedby",
+                                        "className": "font-bold font-family-arial text-base"
+                                    },
+                                    {
+                                        "field": "recordnumber",
+                                        "className": "font-family-arial font-bold text-base"
+                                    },
+                                    {
+                                        "field": "eventdate",
+                                        "className": "font-family-arial float-right font-bold text-base"
+                                    }
+                                ],
+                                "delimiter": " "
                             }
                         ]
                     }
