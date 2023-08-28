@@ -1,0 +1,26 @@
+/* Glossary words styling */
+
+/* Set the box shadow for glossary tooltips */
+.ui-tooltip {
+  -webkit-box-shadow: 3px 3px 10px 0px rgba(0,0,0,0.5);
+  -moz-box-shadow: 3px 3px 10px 0px rgba(0,0,0,0.5);
+  box-shadow: 3px 3px 10px 0px rgba(0,0,0,0.5);
+}
+
+/* Tighter spacing for hr, used to set images and redirect apart from glossary tooltip definition */
+.ui-tooltip hr {
+  margin: 3px;
+}
+
+/* Glossary image */
+.ui-tooltip div.img {
+  vertical-align: top;
+  display: inline-block;
+  text-align: center;
+}
+
+/* Glossary image credit */
+.credit {
+  display: block;
+  font-size: 0.75em;
+}
