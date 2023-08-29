@@ -1377,8 +1377,8 @@ else{
 													<?php echo (defined('LABELPROJECTLABEL')?LABELPROJECTLABEL:'Label Project'); ?><br/>
 													<input type="text" name="labelproject" maxlength="45" value="<?php echo array_key_exists('labelproject',$occArr)?$occArr['labelproject']:''; ?>" onchange="fieldChanged('labelproject');" />
 												</div>
-												<div id="duplicateQuantityDiv" title="<?php echo (defined('DUPLICATEQUANTITYCOUNTTIP') ? DUPLICATEQUANTITYCOUNTTIP : 'aka label quantity'); ?>">
-													<?php echo (defined('DUPLICATEQUALITYCOUNTLABEL')?DUPLICATEQUALITYCOUNTLABEL:'Dupe Count'); ?><br/>
+												<div id="duplicateQuantityDiv" title="<?php echo (defined('DUPLICATEQUANTITYTIP') ? DUPLICATEQUANTITYTIP : 'aka label quantity'); ?>">
+													<?php echo (defined('DUPLICATEQUALITYLABEL')?DUPLICATEQUALITYLABEL:'Dupe Count'); ?><br/>
 													<input type="text" name="duplicatequantity" value="<?php echo array_key_exists('duplicatequantity',$occArr)?$occArr['duplicatequantity']:''; ?>" onchange="fieldChanged('duplicatequantity');" />
 												</div>
 											</div>
