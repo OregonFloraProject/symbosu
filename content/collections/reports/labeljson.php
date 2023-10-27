@@ -13,9 +13,9 @@
             "labelFooter": {
                 "textValue": "Oregon State University",
                 "className": "",
-                "style": "background-image: url(\u0027..\/..\/images\/icons\/portal-label.png\u0027); background-repeat: no-repeat; background-position: left center;"
+                "style": ""
             },
-            "customStyles": ".associatedtaxaPrefix{font-style: normal; font-variant: small-caps;} .row{margin-bottom: 20px;} .label{margin: 0 5px;}",
+            "customStyles": ".associatedtaxaPrefix{font-style: normal; font-variant: small-caps;} .row{margin-bottom: 20px;} .label{margin: 0 5px;} .label-databased{text-align: right; font-size: 0.6em;}",
             "defaultCss": "..\/..\/css\/symb\/labelhelpers.css",
             "customCss": "",
             "customJS": "..\/..\/content\/collections\/reports\/general.js",
@@ -196,9 +196,9 @@
             "labelFooter": {
                 "textValue": "OSC Herbarium \u2013 Oregon State University",
                 "className": "",
-                "style": "font-variant: small-caps; font-size: 0.9em; transform: scaleY(1.1); text-align: center; margin-top: 0.5em; background-image: url(\u0027..\/..\/images\/icons\/portal-label.png\u0027); background-repeat: no-repeat; background-position: left center;"
+                "style": "font-variant: small-caps; font-size: 0.9em; transform: scaleY(1.1); text-align: center; margin-top: 0.5em; "
             },
-            "customStyles": ".field-block{clear: both;} .family{font-variant: small-caps;} .associatedtaxaPrefix{font-style: normal; font-variant: small-caps;} .text-base{font-size: 0.95em;} .text-sm{font-size: 0.8em;} .cn-barcode{text-align: center;} .label{box-shadow: inset 0 0 0 5px white, inset 0 0 0 6px black;} .row{margin-bottom: 10px;} .label{margin: 0 5px;}",
+            "customStyles": ".field-block{clear: both;} .family{font-variant: small-caps;} .associatedtaxaPrefix{font-style: normal; font-variant: small-caps;} .text-base{font-size: 0.95em;} .text-sm{font-size: 0.8em;} .cn-barcode{text-align: center;} .label{box-shadow: inset 0 0 0 5px white, inset 0 0 0 6px black;} .row{margin-bottom: 10px;} .label{margin: 0 5px;} .label-databased{text-align: right; font-size: 0.6em;}",
             "defaultCss": "..\/..\/css\/symb\/labelhelpers.css",
             "customCss": "",
             "customJS": "..\/..\/content\/collections\/reports\/general.js",
