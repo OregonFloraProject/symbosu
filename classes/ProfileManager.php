@@ -47,7 +47,7 @@ class ProfileManager extends Manager{
 				if($pwdStr) $this->authSql .= 'AND (l.password = PASSWORD("'.$this->cleanInStr($pwdStr).'")) ';
 			}
 			$result = $this->conn->query($this->authSql);
-			if($row = $result->fetch_object()){
+			if($result && $row = $result->fetch_object()){
 				$this->uid = $row->uid;
 				$this->displayName = $row->firstname;
 				if(strlen($this->displayName) > 15) $this->displayName = $this->userName;
