@@ -119,6 +119,10 @@ if($isEditor){
 	<link href="<?php echo $CSS_BASE_PATH; ?>/jquery-ui.css" type="text/css" rel="stylesheet">
 	<?php
 	include_once($SERVER_ROOT.'/includes/head.php');
+	?>
+	<script type="text/javascript">
+		var tabIndex = <?php echo $tabIndex; ?>;
+	</script>
 	<style type="text/css">
 		fieldset{ padding:15px;margin:15px; }
 		legend{ font-weight: bold; }

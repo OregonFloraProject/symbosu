@@ -10,6 +10,7 @@ class TaxonSearchSupport{
 	private $taxonType;
 	private $rankLow = 0;
 	private $rankHigh;
+	private $oregonTaxa;
 
  	public function __construct(){
 		$this->conn = MySQLiConnectionFactory::getCon('readonly');
@@ -81,11 +82,16 @@ class TaxonSearchSupport{
 	private function getTaxaSuggestByRank(){
 		$retArr = Array();
 		if($this->queryString){
-			$sql = 'SELECT sciname FROM taxa WHERE (sciname LIKE "'.$this->queryString.'%") ';
+			$sql = 'SELECT sciname FROM taxa ';
+			// Add whether each taxon belongs to any checklists
+			if ($this->oregonTaxa) $sql .= 'LEFT JOIN `fmchklsttaxalink` as cl ON taxa.tid = cl.tid ';
+			$sql .= ' WHERE (sciname LIKE "'.$this->queryString.'%") ';
 			if(is_numeric($this->rankLow)){
 				if($this->rankHigh) $sql .= 'AND (rankid BETWEEN '.$this->rankLow.' AND '.$this->rankHigh.') ';
 				else $sql .= 'AND (rankid = '.$this->rankLow.') ';
 			}
+			// Restrict to taxa contained in the State of Oregon vascular plant checklist (clid=1)
+			if ($this->oregonTaxa) $sql .= 'AND (cl.clid = 1) ';
 			$sql .= 'LIMIT 30';
 			$rs = $this->conn->query($sql);
 			while ($r = $rs->fetch_object()) {
@@ -120,6 +126,11 @@ class TaxonSearchSupport{
 
 	public function setRankHigh($rank){
 		if(is_numeric($rank)) $this->rankHigh = $rank;
+	}
+
+	// Restrict to Oregon vascular plant taxa
+	public function setOregonTaxa($or){
+		if(is_numeric($or)) $this->oregonTaxa = $or;
 	}
 
 	//Misc functions

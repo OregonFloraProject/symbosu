@@ -372,7 +372,7 @@ $taxonName = ($tid?$taxaArr[$tid]:'');
 						</div>
 						<?php
 					}
-					echo '<div style="padding:10px;"><ul>';
+					echo '<div style="clear: both; padding:10px;"><ul>';
 					foreach($termList as $glossId => $termName){
 						echo '<li>';
 						echo '<a href="#" onclick="openTermPopup('.$glossId.'); return false;"><b>'.$termName.'</b></a>';

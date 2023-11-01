@@ -28,68 +28,71 @@ if (isset($_POST['formsubmit'])) {
 		include_once($SERVER_ROOT.'/includes/head.php');
 		include_once($SERVER_ROOT.'/includes/googleanalytics.php');
 		?>
-		<script type="text/javascript" src="../js/jquery.js"></script>
-		<script type="text/javascript" src="../js/jquery-ui.js"></script>
-        <!--  Supporting visualsearch search box widget -->
-        <script type="text/javascript" src="../js/underscore-1.4.3.js"></script>
-        <script type="text/javascript" src="../js/backbone-0.9.10.js"></script>
-
-        <script src="../js/visualsearch.js" type="text/javascript"></script>
-        <!--[if (!IE)|(gte IE 8)]><!-->
-           <link href="../css/visualsearch-datauri.css" media="screen" rel="stylesheet" type="text/css"/>
-        <!--<![endif]-->
-        <!--[if lte IE 7]><!-->
-           <link href="../css/visualsearch.css" media="screen" rel="stylesheet" type="text/css"/>
-        <!--<![endif]-->
-
-        		<script language="javascript" type="text/javascript">
-        			$('html').hide();
-        			$(document).ready(function() {
-        				$('html').show();
-        			});
-
-
-        	    	$(document).ready(function() {
-        				if(!navigator.cookieEnabled){
-        					alert("Your browser cookies are disabled. To be able to login and access your profile, they must be enabled for this domain.");
-				}
-
-				$("#tabs").tabs();
-			});
-
-			function toggle(target){
-				var ele = document.getElementById(target);
-				if(ele){
-					if(ele.style.display=="none"){
-						ele.style.display="block";
-			  		}
-				 	else {
-				 		ele.style.display="none";
-				 	}
-				}
-				else{
-					var divObjs = document.getElementsByTagName("div");
-				  	for (i = 0; i < divObjs.length; i++) {
-				  		var divObj = divObjs[i];
-				  		if(divObj.getAttribute("class") == target || divObj.getAttribute("className") == target){
-							if(divObj.style.display=="none"){
-								divObj.style.display="block";
-							}
-						 	else {
-						 		divObj.style.display="none";
-						 	}
-						}
-					}
-				}
-			}
-
-		</script>
 	</head>
 	<body>
 
 	<?php
 	$displayLeftMenu = (isset($collections_indexMenu)?$collections_indexMenu:false);
 	include($SERVER_ROOT.'/includes/header.php');
+    ?>
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui.js"></script>
+    <!--  Supporting visualsearch search box widget -->
+    <script type="text/javascript" src="../js/underscore-1.4.3.js"></script>
+    <script type="text/javascript" src="../js/backbone-0.9.10.js"></script>
+
+    <script src="../js/visualsearch.js" type="text/javascript"></script>
+
+    <!--[if (!IE)|(gte IE 8)]><!-->
+       <link href="../css/visualsearch-datauri.css" media="screen" rel="stylesheet" type="text/css"/>
+    <!--<![endif]-->
+    <!--[if lte IE 7]><!-->
+       <link href="../css/visualsearch.css" media="screen" rel="stylesheet" type="text/css"/>
+    <!--<![endif]-->
+
+            <script language="javascript" type="text/javascript">
+                $('html').hide();
+                $(document).ready(function() {
+                    $('html').show();
+                });
+
+
+                $(document).ready(function() {
+                    if(!navigator.cookieEnabled){
+                        alert("Your browser cookies are disabled. To be able to login and access your profile, they must be enabled for this domain.");
+            }
+
+            $("#tabs").tabs();
+        });
+
+        function toggle(target){
+            var ele = document.getElementById(target);
+            if(ele){
+                if(ele.style.display=="none"){
+                    ele.style.display="block";
+                }
+                else {
+                    ele.style.display="none";
+                }
+            }
+            else{
+                var divObjs = document.getElementsByTagName("div");
+                for (i = 0; i < divObjs.length; i++) {
+                    var divObj = divObjs[i];
+                    if(divObj.getAttribute("class") == target || divObj.getAttribute("className") == target){
+                        if(divObj.style.display=="none"){
+                            divObj.style.display="block";
+                        }
+                        else {
+                            divObj.style.display="none";
+                        }
+                    }
+                }
+            }
+        }
+
+    </script>
+    <?php
 	if(isset($collections_indexCrumbs)){
 		if($collections_indexCrumbs){
 			echo "<div class='navpath'>";

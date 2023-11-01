@@ -102,7 +102,7 @@ $clArray = $clManager->getMetaData();
 	<link href="<?php echo $CSS_BASE_PATH; ?>/jquery-ui.css" type="text/css" rel="stylesheet">
 	<?php
 	include_once($SERVER_ROOT.'/includes/head.php');
-
+	?>
 	<style type="text/css">
 		.tox-dialog { min-height: 400px }
 		fieldset{ padding:15px; margin:40px 10px; }

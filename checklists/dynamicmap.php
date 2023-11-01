@@ -61,7 +61,7 @@ if(!$zoomInt){
 		$(document).ready(function() {
 			$( "#taxa" ).autocomplete({
 				source: function( request, response ) {
-					$.getJSON( "../rpc/taxasuggest.php", { term: request.term, rankhigh: 180 }, response );
+					$.getJSON( "../rpc/taxasuggest.php", { term: request.term, rankhigh: 180, oregontaxa: 1}, response );
 				},
 				minLength: 2,
 				autoFocus: true,

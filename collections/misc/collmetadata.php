@@ -70,6 +70,7 @@ $collManager->cleanOutArr($collData);
 	<link href="<?php echo $CSS_BASE_PATH; ?>/jquery-ui.css" type="text/css" rel="stylesheet">
 	<?php
 	include_once($SERVER_ROOT . '/includes/head.php');
+	?>
 	<style type="text/css">
 		fieldset {
 			background-color: #f9f9f9;

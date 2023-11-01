@@ -231,138 +231,6 @@ if($action != "Update Statistics"){
 			include_once($SERVER_ROOT.'/includes/head.php');
 			?>
 			<link href="<?php echo $CSS_BASE_PATH; ?>/symbiota/collections/listdisplay.css" type="text/css" rel="stylesheet" />
-            <script src="../../js/jquery.js" type="text/javascript"></script>
-			<script src="../../js/jquery-ui.js" type="text/javascript"></script>
-			<script src="../../js/symb/collections.index.js" type="text/javascript"></script>
-			<script type="text/javascript">
-				$(document).ready(function() {
-					if(!navigator.cookieEnabled){
-						alert("<?php echo (isset($LANG['NEED_COOKIES'])?$LANG['NEED_COOKIES']:'Your browser cookies are disabled. To be able to login and access your profile, they must be enabled for this domain.'); ?>");
-					}
-					$("#tabs").tabs({<?php echo ($action == "Run Statistics"?'active: 1':''); ?>});
-
-                    function split( val ) {
-                        return val.split( /,\s*/ );
-                    }
-                    function extractLast( term ) {
-                        return split( term ).pop();
-                    }
-
-                    $( "#taxon" )
-                    // don't navigate away from the field on tab when selecting an item
-                        .bind( "keydown", function( event ) {
-                            if ( event.keyCode === $.ui.keyCode.TAB &&
-                                $( this ).data( "autocomplete" ).menu.active ) {
-                                event.preventDefault();
-                            }
-                        })
-                        .autocomplete({
-                            source: function( request, response ) {
-                                $.getJSON( "rpc/speciessuggest.php", {
-                                    term: extractLast( request.term )
-                                }, response );
-                            },
-                            search: function() {
-                                // custom minLength
-                                var term = extractLast( this.value );
-                                if ( term.length < 4 ) {
-                                    return false;
-                                }
-                            },
-                            focus: function() {
-                                // prevent value inserted on focus
-                                return false;
-                            },
-                            select: function( event, ui ) {
-                                var terms = split( this.value );
-                                // remove the current input
-                                terms.pop();
-                                // add the selected item
-                                terms.push( ui.item.value );
-                                this.value = terms.join( ", " );
-                                return false;
-                            }
-                        },{});
-				});
-
-				function toggleStatsPerColl(){
-					toggleById("statspercollbox");
-					toggleById("showstatspercoll");
-					toggleById("hidestatspercoll");
-
-					document.getElementById("geodistbox").style.display="none";
-					document.getElementById("showgeodist").style.display="block";
-					document.getElementById("hidegeodist").style.display="none";
-					document.getElementById("famdistbox").style.display="none";
-					document.getElementById("showfamdist").style.display="block";
-					document.getElementById("hidefamdist").style.display="none";
-					return false;
-				}
-
-				function toggleFamilyDist(){
-					toggleById("famdistbox");
-					toggleById("showfamdist");
-					toggleById("hidefamdist");
-
-					document.getElementById("geodistbox").style.display="none";
-					document.getElementById("showgeodist").style.display="block";
-					document.getElementById("hidegeodist").style.display="none";
-					document.getElementById("statspercollbox").style.display="none";
-					document.getElementById("showstatspercoll").style.display="block";
-					document.getElementById("hidestatspercoll").style.display="none";
-					return false;
-				}
-
-				function toggleGeoDist(){
-					toggleById("geodistbox");
-					toggleById("showgeodist");
-					toggleById("hidegeodist");
-
-					document.getElementById("famdistbox").style.display="none";
-					document.getElementById("showfamdist").style.display="block";
-					document.getElementById("hidefamdist").style.display="none";
-					document.getElementById("statspercollbox").style.display="none";
-					document.getElementById("showstatspercoll").style.display="block";
-					document.getElementById("hidestatspercoll").style.display="none";
-					return false;
-				}
-
-				function toggleById(target){
-					if(target != null){
-						var obj = document.getElementById(target);
-						if(obj.style.display=="none" || obj.style.display==""){
-							obj.style.display="block";
-						}
-						else {
-							obj.style.display="none";
-						}
-					}
-					return false;
-				}
-
-				function changeCollForm(f){
-					var dbElements = document.getElementsByName("db[]");
-					var c = false;
-					var collid = "";
-					for(i = 0; i < dbElements.length; i++){
-						var dbElement = dbElements[i];
-						if(dbElement.checked && !isNaN(dbElement.value)){
-							if(c == true) collid = collid+",";
-							collid = collid + dbElement.value;
-							c = true;
-						}
-					}
-					if(c == true){
-						var collobj = document.getElementById("colltxt");
-						collobj.value = collid;
-						document.getElementById("collform").submit();
-					}
-					else{
-						alert("<?php echo (isset($LANG['CHOOSE_ONE'])?$LANG['CHOOSE_ONE']:'Please choose at least one collection!'); ?>");
-						return false;
-					}
-				}
-			</script>
 		</head>
 		<body>
 			<?php
@@ -379,6 +247,138 @@ if($action != "Update Statistics"){
 			}
 			else{
 				?>
+				<script src="../../js/jquery.js" type="text/javascript"></script>
+				<script src="../../js/jquery-ui.js" type="text/javascript"></script>
+				<script src="../../js/symb/collections.index.js" type="text/javascript"></script>
+				<script type="text/javascript">
+					$(document).ready(function() {
+						if(!navigator.cookieEnabled){
+							alert("<?php echo (isset($LANG['NEED_COOKIES'])?$LANG['NEED_COOKIES']:'Your browser cookies are disabled. To be able to login and access your profile, they must be enabled for this domain.'); ?>");
+						}
+						$("#tabs").tabs({<?php echo ($action == "Run Statistics"?'active: 1':''); ?>});
+
+	                    function split( val ) {
+	                        return val.split( /,\s*/ );
+	                    }
+	                    function extractLast( term ) {
+	                        return split( term ).pop();
+	                    }
+
+	                    $( "#taxon" )
+	                    // don't navigate away from the field on tab when selecting an item
+	                        .bind( "keydown", function( event ) {
+	                            if ( event.keyCode === $.ui.keyCode.TAB &&
+	                                $( this ).data( "autocomplete" ).menu.active ) {
+	                                event.preventDefault();
+	                            }
+	                        })
+	                        .autocomplete({
+	                            source: function( request, response ) {
+	                                $.getJSON( "rpc/speciessuggest.php", {
+	                                    term: extractLast( request.term )
+	                                }, response );
+	                            },
+	                            search: function() {
+	                                // custom minLength
+	                                var term = extractLast( this.value );
+	                                if ( term.length < 4 ) {
+	                                    return false;
+	                                }
+	                            },
+	                            focus: function() {
+	                                // prevent value inserted on focus
+	                                return false;
+	                            },
+	                            select: function( event, ui ) {
+	                                var terms = split( this.value );
+	                                // remove the current input
+	                                terms.pop();
+	                                // add the selected item
+	                                terms.push( ui.item.value );
+	                                this.value = terms.join( ", " );
+	                                return false;
+	                            }
+	                        },{});
+					});
+
+					function toggleStatsPerColl(){
+						toggleById("statspercollbox");
+						toggleById("showstatspercoll");
+						toggleById("hidestatspercoll");
+
+						document.getElementById("geodistbox").style.display="none";
+						document.getElementById("showgeodist").style.display="block";
+						document.getElementById("hidegeodist").style.display="none";
+						document.getElementById("famdistbox").style.display="none";
+						document.getElementById("showfamdist").style.display="block";
+						document.getElementById("hidefamdist").style.display="none";
+						return false;
+					}
+
+					function toggleFamilyDist(){
+						toggleById("famdistbox");
+						toggleById("showfamdist");
+						toggleById("hidefamdist");
+
+						document.getElementById("geodistbox").style.display="none";
+						document.getElementById("showgeodist").style.display="block";
+						document.getElementById("hidegeodist").style.display="none";
+						document.getElementById("statspercollbox").style.display="none";
+						document.getElementById("showstatspercoll").style.display="block";
+						document.getElementById("hidestatspercoll").style.display="none";
+						return false;
+					}
+
+					function toggleGeoDist(){
+						toggleById("geodistbox");
+						toggleById("showgeodist");
+						toggleById("hidegeodist");
+
+						document.getElementById("famdistbox").style.display="none";
+						document.getElementById("showfamdist").style.display="block";
+						document.getElementById("hidefamdist").style.display="none";
+						document.getElementById("statspercollbox").style.display="none";
+						document.getElementById("showstatspercoll").style.display="block";
+						document.getElementById("hidestatspercoll").style.display="none";
+						return false;
+					}
+
+					function toggleById(target){
+						if(target != null){
+							var obj = document.getElementById(target);
+							if(obj.style.display=="none" || obj.style.display==""){
+								obj.style.display="block";
+							}
+							else {
+								obj.style.display="none";
+							}
+						}
+						return false;
+					}
+
+					function changeCollForm(f){
+						var dbElements = document.getElementsByName("db[]");
+						var c = false;
+						var collid = "";
+						for(i = 0; i < dbElements.length; i++){
+							var dbElement = dbElements[i];
+							if(dbElement.checked && !isNaN(dbElement.value)){
+								if(c == true) collid = collid+",";
+								collid = collid + dbElement.value;
+								c = true;
+							}
+						}
+						if(c == true){
+							var collobj = document.getElementById("colltxt");
+							collobj.value = collid;
+							document.getElementById("collform").submit();
+						}
+						else{
+							alert("<?php echo (isset($LANG['CHOOSE_ONE'])?$LANG['CHOOSE_ONE']:'Please choose at least one collection!'); ?>");
+							return false;
+						}
+					}
+				</script>
 				<div class='navpath'>
 					<a href='../../index.php'><?php echo (isset($LANG['HOME'])?$LANG['HOME']:'Home'); ?></a> &gt;&gt;
 					<a href='collprofiles.php'><?php echo (isset($LANG['COLLECTIONS'])?$LANG['COLLECTIONS']:'Collections'); ?></a> &gt;&gt;

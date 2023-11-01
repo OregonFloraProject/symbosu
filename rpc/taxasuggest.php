@@ -11,6 +11,7 @@ $term = (array_key_exists('term',$_REQUEST)?$_REQUEST['term']:'');
 $taxonType = (array_key_exists('t',$_REQUEST)?$_REQUEST['t']:0);
 $rankLow = (array_key_exists('ranklow',$_REQUEST)?$_REQUEST['ranklow']:0);
 $rankHigh = (array_key_exists('rankhigh',$_REQUEST)?$_REQUEST['rankhigh']:0);
+$oregonTaxa = (array_key_exists('oregontaxa',$_REQUEST)?$_REQUEST['oregontaxa']:0);
 
 $nameArr = array();
 if($term){
@@ -20,6 +21,8 @@ if($term){
 	$searchManager->setTaxonType($taxonType);
 	$searchManager->setRankLow($rankLow);
 	$searchManager->setRankHigh($rankHigh);
+	// Restrict to Oregon vascular plant taxa
+	$searchManager->setOregonTaxa($oregonTaxa);
 
 	$nameArr = $searchManager->getTaxaSuggest();
 }

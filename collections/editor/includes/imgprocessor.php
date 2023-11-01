@@ -96,7 +96,7 @@ else include_once($SERVER_ROOT.'/content/lang/collections/editor/includes/imgpro
 								<input type="checkbox" id="ocrfull-tess" value="1" /> <?php echo (defined('OCRWHOLEIMAGELABEL') ? OCRWHOLEIMAGELABEL : $LANG['OCR_WHOLE_IMG']); ?><br/>
 							</div>
 							<div title="<?php echo (defined('OCRANALYSISTIP') ? OCRANALYSISTIP : ''); ?>">
-								<input type="checkbox" id="ocrbest" value="1" /> <?php echo (defined('OCRANALYSISLABEL') ? OCRANALYSISLABEL : $LANG['OCRANALYSISLABEL']); ?>
+								<input type="checkbox" id="ocrbest" value="1" /> <?php echo (defined('OCRANALYSISLABEL') ? OCRANALYSISLABEL : $LANG['OCR_ANALYSIS']); ?>
 							</div>
 							<div>
 								<button value="OCR Image" onclick="ocrImage(this,'tess', <?php echo $imgId.','.$imgCnt; ?>);" ><?php echo $LANG['OCR_IMAGE']; ?></button>
