@@ -130,8 +130,9 @@ class OccurrenceDataset {
 		return true;
 	}
 
-	public function createDataset($name,$notes,$description,$ispublic,$uid){
-		$sql = 'INSERT INTO omoccurdatasets (name,notes,description,ispublic,uid) VALUES("'.$this->cleanInStr($name).'",'.($notes?'"'.$this->cleanInStr($notes).'"':'NULL').','.($description?'"'.$this->cleanInStr($description).'"':'NULL').','.($ispublic?'"'.$this->cleanInStr($ispublic).'"':'"0"').','.$uid.') ';
+	public function createDataset($name, $notes, $description, $ispublic, $uid){
+		$sql = 'INSERT INTO omoccurdatasets (name,notes,description,ispublic,uid)
+			VALUES("'.$this->cleanInStr($name).'",'.($notes?'"'.$this->cleanInStr($notes).'"':'NULL').','.($description?'"'.$this->cleanInStr($description).'"':'NULL').','.($ispublic?'"'.$this->cleanInStr($ispublic).'"':'"0"').','.$uid.') ';
 		if($this->conn->query($sql)){
 			$this->datasetId = $this->conn->insert_id;
 		}
@@ -333,10 +334,9 @@ class OccurrenceDataset {
 	//General setters and getters
 	public function getUserList($term){
 		$retArr = array();
-		$sql = 'SELECT u.uid, CONCAT(CONCAT_WS(", ",u.lastname, u.firstname)," - ",l.username," [#",u.uid,"]") AS username '.
-			'FROM users u INNER JOIN userlogin l ON u.uid = l.uid '.
-			'WHERE u.lastname LIKE "%'.$this->cleanInStr($term).'%" OR l.username LIKE "%'.$this->cleanInStr($term).'%" '.
-			'ORDER BY u.lastname,u.firstname';
+		$sql = 'SELECT uid, CONCAT(CONCAT_WS(", ", lastname, firstname)," - ", username," [#", uid,"]") AS username '.
+			'FROM users WHERE lastname LIKE "%'.$this->cleanInStr($term).'%" OR username LIKE "%'.$this->cleanInStr($term).'%" '.
+			'ORDER BY lastname, firstname';
 		$rs = $this->conn->query($sql);
 		while($r = $rs->fetch_object()) {
 			$retArr[] = array('id'=>$r->uid,'label'=>$r->username);

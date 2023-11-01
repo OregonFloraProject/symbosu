@@ -176,9 +176,16 @@ class OccurrenceTaxaManager {
 						$accArr[] = $tid;
 						if($rankid >= 180 && $rankid <= 220){
 							//Get accepted children
+							$sql1 = 'SELECT DISTINCT t.tid, t.sciname, t.rankid
+								FROM taxa t INNER JOIN taxstatus ts ON t.tid = ts.tid
+								INNER JOIN taxaenumtree e ON t.tid = e.tid
+								WHERE (e.parenttid IN('.$tid.')) AND (ts.TidAccepted = ts.tid) AND (ts.taxauthid = ' . $this->taxAuthId . ') AND (e.taxauthid = ' . $this->taxAuthId . ')' ;
+							/*
 							$sql1 = 'SELECT DISTINCT t.tid, t.sciname, t.rankid '.
 								'FROM taxa t INNER JOIN taxstatus ts ON t.tid = ts.tid '.
 								'WHERE (ts.parenttid IN('.$tid.')) AND (ts.TidAccepted = ts.tid) AND (ts.taxauthid = ' . $this->taxAuthId . ') ' ;
+							*/
+							//echo 'sql1: '.$sql1.'<br>';
 							$rs1 = $this->conn->query($sql1);
 							while($r1 = $rs1->fetch_object()){
 								$accArr[] = $r1->tid;
@@ -260,7 +267,7 @@ class OccurrenceTaxaManager {
 							}
 							$rs->free();
 							//$sqlWhereTaxa .= 'OR (o.tidinterpreted IN('.implode(',',$tidArr).')) ';
-							$tidInArr = array_merge($tidInArr,$tidArr);
+							$tidInArr = array_merge($tidInArr, $tidArr);
 						}
 						if($famArr){
 							$famArr = array_unique($famArr);
@@ -269,6 +276,7 @@ class OccurrenceTaxaManager {
 					}
 					elseif(isset($searchArr['TID_BATCH'])){
 						$tidInArr = array_merge($tidInArr, array_keys($searchArr['TID_BATCH']));
+						if(isset($searchArr['tid'])) $tidInArr = array_merge($tidInArr, array_keys($searchArr['tid']));
 					}
 					else{
 						$term = $this->cleanInStr(trim($searchTaxon,'%'));
@@ -278,7 +286,7 @@ class OccurrenceTaxaManager {
 							$rankid = current($searchArr['tid']);
 							$tidArr = array_keys($searchArr['tid']);
 							//$sqlWhereTaxa .= "OR (o.tidinterpreted IN(".implode(',',$tidArr).")) ";
-							$tidInArr = array_merge($tidInArr,$tidArr);
+							$tidInArr = array_merge($tidInArr, $tidArr);
 							//Return matches that are not linked to thesaurus
 							if($rankid > 179) $sqlWhereTaxa .= 'OR (o.sciname LIKE "'.$term.'%") ';
 						}
@@ -322,7 +330,7 @@ class OccurrenceTaxaManager {
 			if(strpos($sqlWhereTaxa,'e.parenttid')) $sqlWhereTaxa .= 'AND (e.taxauthid = '.$this->taxAuthId.') ';
 			if(strpos($sqlWhereTaxa,'ts.family')) $sqlWhereTaxa .= 'AND (ts.taxauthid = '.$this->taxAuthId.') ';
 		}
-		//echo $sqlWhereTaxa; exit;
+		//echo $sqlWhereTaxa;
 		if($sqlWhereTaxa) return $sqlWhereTaxa;
 		else return false;
 	}
@@ -368,7 +376,7 @@ class OccurrenceTaxaManager {
 		$str = trim($str,' ,;');
 		if($str == '%') $str = '';
 		$str = strip_tags($str);
-		$str = filter_var($str, FILTER_SANITIZE_STRING);
+		$str = htmlspecialchars($str, ENT_NOQUOTES | ENT_SUBSTITUTE | ENT_HTML401);
 		return $str;
 	}
 
