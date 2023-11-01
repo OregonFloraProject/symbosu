@@ -36,6 +36,21 @@ class Manager  {
 		}
 	}
 
+	protected function getConfigAttribute($attrName){
+		$attrValue = '';
+		if($attrName){
+			$sql = 'SELECT attributeValue FROM adminconfig WHERE attributeName = ?';
+			if($stmt = $this->conn->prepare($sql)){
+				$stmt->bind_param('s', $attrName);
+				$stmt->execute();
+				$stmt->bind_result($attrValue);
+				$stmt->fetch();
+				$stmt->close();
+			}
+		}
+		return $attrValue;
+	}
+
 	protected function setLogFH($logPath){
 		$this->logFH = fopen($logPath, 'a');
 	}
@@ -50,20 +65,13 @@ class Manager  {
 			}
 			if($this->verboseMode == 3 || $this->verboseMode == 2){
 				echo '<'.$tag.' style="'.($indexLevel?'margin-left:'.($indexLevel*15).'px':'').'">'.$str.'</'.$tag.'>';
-				ob_flush();
+				if (ob_get_level() > 0) {
+					ob_flush();
+				}
 				flush();
 			}
 		}
 	}
-
-    public function checkFieldExists($table, $field){
-        $exists = false;
-        $sql = 'SHOW COLUMNS FROM '.$table.' WHERE field = "'.$field.'"';
-        //echo "<div>SQL: ".$sql."</div>";
-        $result = $this->conn->query($sql);
-        if($result->num_rows) $exists = true;
-        return $exists;
-    }
 
 	public function setVerboseMode($c){
 		if(is_numeric($c)) $this->verboseMode = $c;
@@ -81,18 +89,24 @@ class Manager  {
 		return $this->warningArr;
 	}
 
-	protected function getDomainPath(){
-		$urlDomain = "http://";
-		if((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443) $urlDomain = "https://";
-		$urlDomain .= $_SERVER["SERVER_NAME"];
-		if($_SERVER["SERVER_PORT"] && $_SERVER["SERVER_PORT"] != 80 && $_SERVER['SERVER_PORT'] != 443) $urlDomain .= ':'.$_SERVER["SERVER_PORT"];
-		return $urlDomain;
+	public function getDomain(){
+		$domain = 'http://';
+		if((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443) $domain = 'https://';
+		if(!empty($GLOBALS['SERVER_HOST'])){
+			if(substr($GLOBALS['SERVER_HOST'], 0, 4) == 'http') $domain = $GLOBALS['SERVER_HOST'];
+			else $domain .= $GLOBALS['SERVER_HOST'];
+		}
+		else $domain .= $_SERVER['SERVER_NAME'];
+		if($_SERVER['SERVER_PORT'] && $_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 443 && !strpos($domain, ':'.$_SERVER['SERVER_PORT'])){
+			$domain .= ':'.$_SERVER['SERVER_PORT'];
+		}
+		$domain = filter_var($domain, FILTER_SANITIZE_URL);
+		return $domain;
 	}
 
 	protected function cleanOutStr($str){
-		$newStr = str_replace('"',"&quot;",$str);
-		$newStr = str_replace("'","&apos;",$newStr);
-		return $newStr;
+		$str = htmlspecialchars($str);
+		return $str;
 	}
 
 	protected function cleanInStr($str){

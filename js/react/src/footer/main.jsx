@@ -56,7 +56,7 @@ class FooterApp extends React.Component {
               <p className="my-2">
                 <strong>OregonFlora</strong><br/>
                 <a href={ "https://bpp.oregonstate.edu/" } target="_blank">Dept. Botany & Plant Pathology</a>, OSU<br/>
-                4575 SW Research Way Corvallis, OR 97333<br/>
+                2701 SW Campus Way, Corvallis, OR 97331<br/>
                 <a href="mailto:info@oregonflora.org" target="_blank">info@oregonflora.org</a>
               </p>
             </div> 

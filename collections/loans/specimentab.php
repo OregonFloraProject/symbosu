@@ -6,10 +6,16 @@ if(!$SYMB_UID) header('Location: '.$CLIENT_ROOT.'/profile/index.php?refurl=../co
 
 $collid = $_REQUEST['collid'];
 $loanId = $_REQUEST['loanid'];
+$sortTag = (isset($_REQUEST['sortTag'])?$_REQUEST['sortTag']:'');
+
+//Sanitation
+if(!is_numeric($collid)) $collid = 0;
+if(!is_numeric($loanId)) $loanId = 0;
+$sortTag = filter_var($sortTag, FILTER_SANITIZE_STRING);
 
 $loanManager = new OccurrenceLoans();
 if($collid) $loanManager->setCollId($collid);
-$specList = $loanManager->getSpecimenList($loanId);
+$specList = $loanManager->getSpecimenList($loanId, $sortTag);
 
 // Add collection customization variables
 if($collid && file_exists('../editor/includes/config/occurVarColl'.$collid.'.php')){
@@ -93,7 +99,6 @@ elseif(file_exists('../editor/includes/config/occurVarDefault.php')){
 			alert("Please select specimens to which you wish to apply the action");
 			return false;
 		}
-
 		return true;
 	}
 
@@ -405,12 +410,27 @@ elseif(file_exists('../editor/includes/config/occurVarDefault.php')){
 				<tr>
 					<th class="form-checkbox"><input type="checkbox" onclick="selectAll(this);" title="Select/Deselect All" /></th>
 					<th>&nbsp;</th>
-					<th>Catalog Number</th>
+					<th>Catalog Number
+					<?php
+					$tagArr = $loanManager->getIdentifierTagArr();
+					ksort($tagArr);
+					if(count($tagArr) > 1){
+						echo '<div style="font-weight:normal">Sort by: <select name="sortTag" onchange="this.form.submit()">';
+						foreach($tagArr as $tagKey => $tagValue){
+							$tagKey = substr($tagKey,2);
+							echo '<option value="'.$tagKey.'" '.($sortTag==$tagKey?'selected':'').'>'.$tagValue.'</option>';
+						}
+						echo '</select></div>';
+					}
+					?>
+					</th>
 					<th>Details</th>
 					<th>Date Returned</th>
 				</tr>
 				<?php
-				foreach($specList as $occid => $specArr){
+				$specSortArr = $loanManager->getSpecimenSortArr();
+				foreach($specSortArr as $occid => $identifier){
+					$specArr = $specList[$occid];
 					?>
 					<tr>
 						<td class="form-checkbox">

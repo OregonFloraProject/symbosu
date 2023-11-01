@@ -37,7 +37,7 @@ $dbArr = Array();
     <link href="<?php echo $CLIENT_ROOT; ?>/css/jquery.mobile-1.4.0.min.css" type="text/css" rel="stylesheet" />
     <link href="<?php echo $CLIENT_ROOT; ?>/css/jquery.symbiota.css" type="text/css" rel="stylesheet" />
     <link href="<?php echo $CLIENT_ROOT; ?>/css/jquery-ui_accordian.css" type="text/css" rel="stylesheet" />
-    <link href="<?php echo $CLIENT_ROOT; ?>/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+    <link href="<?php echo $CSS_BASE_PATH; ?>/jquery-ui.css" type="text/css" rel="stylesheet">
     <link href="<?php echo $CLIENT_ROOT; ?>/css/ol.css" type="text/css" rel="stylesheet" />
     <link href="<?php echo $CLIENT_ROOT; ?>/css/spatialbase.css?ver=15" type="text/css" rel="stylesheet" />
     	

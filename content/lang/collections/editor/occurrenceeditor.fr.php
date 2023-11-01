@@ -5,7 +5,7 @@ Language: Français (French)
 ------------------
 */
 
-include_once('fieldterms.fr.php');
+include_once($SERVER_ROOT.'/content/lang/collections/editor/editorterms.fr.php');
 
 $LANG['HOME'] = 'Accueil';
 $LANG['CLONES_CREATED'] = 'Succès! Les nouveaux enregistrements clones suivants ont été créés';
@@ -37,9 +37,7 @@ $LANG['ACTION_STATUS'] = 'Statut de l\'Action';
 $LANG['RETURN_TO_SEARCH'] = 'Retour à Page de Recherche';
 $LANG['NONE_FOUND'] = 'Aucun enregistrement trouvé correspondant à requête';
 $LANG['REC_LOCKED'] = 'Enregistrement verrouillé!';
-$LANG['LOCK_EXPLAIN'] = "Cet enregistrement est verrouillé pour modification par un autre utilisateur.
-					Une fois que l'utilisateur a terminé avec l'enregistrement, le verrou sera supprimé.
-					Les enregistrements sont verrouillés pour un maximum de 15 minutes";
+$LANG['LOCK_EXPLAIN'] = "Cet enregistrement est verrouillé pour modification par un autre utilisateur. Une fois que l'utilisateur a terminé avec l'enregistrement, le verrou sera supprimé. Les enregistrements sont verrouillés pour un maximum de 15 minutes";
 $LANG['READ_ONLY'] = 'Affichage en Lecture Seule';
 $LANG['OCC_DATA'] = "Données d'Occurrence";
 $LANG['NEW_OCC_RECORD'] = "Nouveau record d'Occurrence";
@@ -68,7 +66,6 @@ $LANG['END_DOY'] = 'Jour de fin Année';
 $LANG['EXS_TITLE'] = 'Titre de Exsiccati';
 $LANG['NUMBER'] = 'Nombre';
 $LANG['LATEST_ID'] = 'Dernière Identification';
-$LANG['SCINAME'] = 'Nom Scientifique';
 $LANG['LIMITED_EDITING'] = 'Droits de modification limités: utilisez onglet de détermination pour modifier identification';
 $LANG['NEED_FULL'] = "Remarque: Des autorisations d'édition complètes sont nécessaires pour modifier une identification";
 $LANG['UNDEFINED'] = 'Indéfini';
@@ -83,7 +80,6 @@ $LANG['UNDEFINED'] = 'Indéfini';
 ///$LANG['LOW'] = 'Low';
 ///$LANG['LOW_ID'] = 'Low - ID Requested';
 ///$LANG['ID_REQUESTED'] = 'ID Requested';
-$LANG['LOCALITY'] = 'Localité';
 $LANG['DEACTIVATE_LOOKUP'] = 'Désactiver Recherche de Localité';
 $LANG['LOCALITY_SECURITY'] = 'Sécurité de Localité';
 $LANG['TAXONOMIC_SECURITY'] = 'Sécurité Taxonomique';
@@ -129,6 +125,7 @@ $LANG['CARRY_OVER_IMAGES'] = 'Transférer des images';
 $LANG['COLL_EVENT_FIELDS'] = "Champs d'événement de collection";
 $LANG['ALL_FIELDS'] = 'Tous Champs';
 $LANG['RELATIONSHIP'] = 'Relations';
+$LANG['UNDEFINED'] = 'Undefined';
 $LANG['TARGET_COLL'] = 'Collection Cible';
 $LANG['CURRENT_COLL'] = 'Collection Actuelle';
 $LANG['NUMBER_RECORDS'] = "Nombre d'Enregistrements";
@@ -141,6 +138,7 @@ $LANG['GO_NEW_CARRYOVER'] = 'Accédez aux Unformations sur Nouvel Enregistrement
 $LANG['REMAIN_ON_PAGE'] = "Rester sur la page d'Édition (ajouter des images, des déterminations, etc.)";
 $LANG['ERROR_ID_NULL'] = "ERREUR:</b> identifiants d'enregistrement sont NULL";
 $LANG['ERROR_NO_CROWDSOURCING'] = "ERREUR:</b> Désolé, cet événement semble avoir été retiré de file d'attente de crowdsourcing et n'est plus modifiable. Contactez administrateur de collection si vous pensez que cela est incorrect";
+$LANG['RETURN_TO_CROWDSOURCING'] = 'Return to Crowdsource Central';
 $LANG['ERROR_NOT_AUTHORIZED'] = "ERREUR:</b> Désolé, vous n'êtes pas autorisé à modifier occurrences dans cette collection. Contactez administrateur de collection si vous pensez que cela est incorrect";
 $LANG['ERROR_CANT_ADD'] = "ERREUR:</b> ne sont pas autorisés à ajouter des enregistrements d'occurrence";
 
@@ -155,7 +153,6 @@ $LANG['FAILED_TO_EDIT_OCC'] = "ERREUR: échec de la modification de l'enregistre
 $LANG['EDIT_SUBMITTED_NOT_ACTIVATED'] = 'Modifications soumises, mais non activées.<br/>Une fois les modifications examinées et approuvées par un gestionnaire de données, elles seront activées.<br/>Merci de nous aider à améliorer les données.';
 $LANG['ERROR_EDITS_EMPTY'] = 'ERREUR: éditions vides pour occid';
 $LANG['SUCCESS_NEW_OCC_SUBMITTED'] = "SUCCÈS: nouvel enregistrement d'événement soumis avec succès";
-$LANG['GUID_FAILED'] = 'AVERTISSEMENT: le mappage du GUID Symbiota a échoué';
 $LANG['WARNING_ADD_EXS_NO'] = 'ATTENTION ajout du numéro exsiccati';
 $LANG['WARNING_ADD_EXS'] = "ATTENTION ajout d'exsiccati";
 $LANG['FAILED_ADD_OCC'] = "ERREUR - échec de l'ajout de l'enregistrement d'occurrence";
@@ -198,6 +195,5 @@ $LANG['GEN_RES_ADD_SUCCESS'] = 'Ressource génétique ajoutée avec succès!';
 $LANG['ERROR_UNABLE_INSERT'] = "ERREUR: impossible d'INSÉRER un fragment de texte";
 $LANG['ERROR_UNABLE_UPDATE'] = 'ERREUR: impossible de mettre à jour le fragment de texte';
 $LANG['ERROR_UNABLE_DELETE'] = 'ERREUR: impossible de supprimer le fragment de texte';
-$LANG['UNABLE_GET_EDITS'] = "Impossible d'obtenir les modifications";
 
 ?>

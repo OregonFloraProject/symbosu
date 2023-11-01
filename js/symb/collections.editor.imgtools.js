@@ -128,23 +128,23 @@ function rotateImage(rotationAngle){
 	$(imgObj).imagetool("reset");
 }
 
-function ocrImage(ocrButton,imgidVar,imgCnt){
+function ocrImage(ocrButton, target, imgidVar, imgCnt){
 	ocrButton.disabled = true;
-	document.getElementById("workingcircle-"+imgCnt).style.display = "inline";
+	let wcElem = document.getElementById("workingcircle-"+target+"-"+imgCnt);
+	wcElem.style.display = "inline";
 	
-	var imgObj = document.getElementById("activeimg-"+imgCnt);
+	let imgObj = document.getElementById("activeimg-"+imgCnt);
+	let xVar = 0;
+	let yVar = 0;
+	let wVar = 1;
+	let hVar = 1;
+	let ocrBestVar = 0;
 
-	var xVar = 0;
-	var yVar = 0;
-	var wVar = 1;
-	var hVar = 1;
-	var ocrBestVar = 0;
-	
-	if(document.getElementById("ocrfull").checked == false){
-		xVar = $(imgObj).imagetool('properties').x;
-		yVar = $(imgObj).imagetool('properties').y;
-		wVar = $(imgObj).imagetool('properties').w;
-		hVar = $(imgObj).imagetool('properties').h;
+	if(document.getElementById("ocrfull-"+target).checked == false){
+		xVar = $(imgObj).imagetool("properties").x;
+		yVar = $(imgObj).imagetool("properties").y;
+		wVar = $(imgObj).imagetool("properties").w;
+		hVar = $(imgObj).imagetool("properties").h;
 	}
 	if(document.getElementById("ocrbest").checked == true){
 		ocrBestVar = 1;
@@ -153,24 +153,26 @@ function ocrImage(ocrButton,imgidVar,imgCnt){
 	$.ajax({
 		type: "POST",
 		url: "rpc/ocrimage.php",
-		data: { imgid: imgidVar, ocrbest: ocrBestVar, x: xVar, y: yVar, w: wVar, h: hVar }
+		data: { imgid: imgidVar, target: target, ocrbest: ocrBestVar, x: xVar, y: yVar, w: wVar, h: hVar }
 	}).done(function( msg ) {
-		var rawStr = msg;
+		let rawStr = msg;
 		document.getElementById("tfeditdiv-"+imgCnt).style.display = "none";
 		document.getElementById("tfadddiv-"+imgCnt).style.display = "block";
-		var addform = document.getElementById("ocraddform-"+imgCnt);
+		let addform = document.getElementById("ocraddform-"+imgCnt);
 		addform.rawtext.innerText = rawStr;
 		addform.rawtext.textContent = rawStr;
 		//Add OCR source with date
-		var today = new Date();
-		var dd = today.getDate();
-		var mm = today.getMonth()+1; //January is 0!
-		var yyyy = today.getFullYear();
+		let today = new Date();
+		let dd = today.getDate();
+		let mm = today.getMonth()+1; //January is 0!
+		let yyyy = today.getFullYear();
 		if(dd<10) dd='0'+dd;
 		if(mm<10) mm='0'+mm;
-		addform.rawsource.value = "Tesseract: "+yyyy+"-"+mm+"-"+dd;
+		if(target == "tess") target = "Tesseract";
+		else target = "Digi-Leap";
+		addform.rawsource.value = target+": "+yyyy+"-"+mm+"-"+dd;
 		
-		document.getElementById("workingcircle-"+imgCnt).style.display = "none";
+		wcElem.style.display = "none";
 		ocrButton.disabled = false;
 	});
 }
@@ -183,17 +185,16 @@ function nlpLbcc(nlpButton,prlid){
 	if(!rawOcr) rawOcr = f.rawtext.textContent;
 	var cnumber = f.cnumber.value;
 	var collid = f.collid.value;
-
+	//alert("rpc/nlplbcc.php?collid="+collid+"&catnum="+cnumber+"&rawocr="+rawOcr);
 	$.ajax({
 		type: "POST",
 		url: "rpc/nlplbcc.php",
 		data: { rawocr: rawOcr, collid: collid, catnum: cnumber }
 	}).done(function( msg ) {
-		pushDwcArrToForm(msg,"lightgreen");
+		pushDwcArrToForm(msg, "#ebbb7f");
+		nlpButton.disabled = false;
+		document.getElementById("workingcircle_lbcc-"+prlid).style.display = "none";
 	});
-
-	nlpButton.disabled = false;
-	document.getElementById("workingcircle_lbcc-"+prlid).style.display = "none";
 }
 
 function nlpSalix(nlpButton,prlid){
@@ -202,52 +203,60 @@ function nlpSalix(nlpButton,prlid){
 	var f = nlpButton.form;
 	var rawOcr = f.rawtext.innerText;
 	if(!rawOcr) rawOcr = f.rawtext.textContent;
+	//alert("rpc/nlpsalix.php?rawocr="+rawOcr);
 	$.ajax({
 		type: "POST",
 		url: "rpc/nlpsalix.php",
 		data: { rawocr: rawOcr }
 	}).done(function( msg ) {
-		pushDwcArrToForm(msg,"lightgreen");
+		pushDwcArrToForm(msg,"#77dd77");
+		nlpButton.disabled = false;
+		document.getElementById("workingcircle_salix-"+prlid).style.display = "none";
 	});
-
-	nlpButton.disabled = false;
-	document.getElementById("workingcircle_salix-"+prlid).style.display = "none";
 }
 
 function pushDwcArrToForm(msg,bgColor){
-	var dwcArr = $.parseJSON(msg);
-	var f = document.fullform;
-	//var fieldsTransfer = "";
-	//var fieldsSkip = "";
-	var scinameTransferred = false;
-	var verbatimElevTransferred = false;
-	for(var k in dwcArr){
-		try{
-			if(k != 'family' && k != 'scientificnameauthorship'){
-				var elem = f.elements[k];
-				var inVal = dwcArr[k];
-				if(inVal && elem && elem.value == "" && elem.disabled == false && elem.type != "hidden"){
-					if(k == "sciname") scinameTransferred = true;
-					if(k == "verbatimelevation") verbatimElevTransferred = true;
-					elem.value = inVal;
-					elem.style.backgroundColor = bgColor;
-					//fieldsTransfer = fieldsTransfer + ", " + k;
-					fieldChanged(k);
-				}
-				else{
-					//fieldsSkip = fieldsSkip + ", " + k;
+	try{
+		var dwcArr = $.parseJSON(msg);
+		var f = document.fullform;
+		//var fieldsTransfer = "";
+		//var fieldsSkip = "";
+		var scinameTransferred = false;
+		var verbatimElevTransferred = false;
+		for(var k in dwcArr){
+			try{
+				if(k != 'family' && k != 'scientificnameauthorship'){
+					var elem = f.elements[k];
+					var inVal = dwcArr[k];
+					if(inVal && elem && elem.value == "" && elem.disabled == false && elem.type != "hidden"){
+						if(k == "sciname") scinameTransferred = true;
+						if(k == "verbatimelevation") verbatimElevTransferred = true;
+						elem.value = inVal;
+						elem.style.backgroundColor = bgColor;
+						//fieldsTransfer = fieldsTransfer + ", " + k;
+						fieldChanged(k);
+					}
+					else{
+						//fieldsSkip = fieldsSkip + ", " + k;
+					}
 				}
 			}
+			catch(err){
+				//alert(err);
+			}
 		}
-		catch(err){
-			//alert(err);
-		}
+		if(scinameTransferred) verifyFullFormSciName();
+		if(verbatimElevTransferred) parseVerbatimElevation(f);
+		//if(fieldsTransfer == "") fieldsTransfer = "none";
+		//if(fieldsSkip == "") fieldsSkip = "none";
+		//alert("Field parsed: " + fieldsTransfer + "\nFields skipped: " + fieldsSkip);
 	}
-	if(scinameTransferred) verifyFullFormSciName();
-	if(verbatimElevTransferred) parseVerbatimElevation(f);
-	//if(fieldsTransfer == "") fieldsTransfer = "none";
-	//if(fieldsSkip == "") fieldsSkip = "none";
-	//alert("Field parsed: " + fieldsTransfer + "\nFields skipped: " + fieldsSkip);
+	catch(err){
+		//JSON parsing error
+		//alert(msg);
+		alert(err);
+	}
+	
 }
 
 function nextLabelProcessingImage(imgCnt){

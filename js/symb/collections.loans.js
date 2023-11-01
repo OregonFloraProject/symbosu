@@ -2,7 +2,25 @@ $(document).ready(function() {
 	if(!navigator.cookieEnabled){
 		alert("Your browser cookies are disabled. To be able to login and access your profile, they must be enabled for this domain.");
 	}
-	$('#tabs').tabs({ active: tabIndex }).css({
+	$('#tabs').tabs({ 
+		active: tabIndex, 
+		load: function(event, ui) {
+
+			// If a link is clicked in the institution editor tab, we need to load it in the same tab
+            $('a', '#ui-tabs-2').click(function() {
+
+            	// If the link is to the institution editor, then load it in the current tab
+            	if (this.href.search("institutioneditor.php") > 0) {
+
+            		// Load the link
+                	$(ui.panel).load(this.href);
+
+                	// Disable the default response
+                	return false;
+            	}
+            });
+        },
+	}).css({
 		'min-height': '500px',
 		'overflow': 'auto'
 	});
@@ -50,4 +68,50 @@ function toggle(target){
 			}
 		}
 	}
+}
+
+// For use with correspondance attachments
+function verifyFileSize(inputObj){
+	if (!window.FileReader) {
+		//alert("The file API isn't supported on this browser yet.");
+		return;
+	}
+	var maxUpload = 10000000; // 10 MB
+	var file = inputObj.files[0];
+	if(file.size > maxUpload){
+		var msg = "Attachment "+file.name+" ("+Math.round(file.size/100000)/10+"MB) is larger than is allowed (current limit: "+(maxUpload/1000000)+"MB).";
+		alert(msg);
+	}
+}
+
+// For use with correspondance attachments
+function verifyFileUploadForm(f){
+	var fileName = "";
+	if(f.uploadfile){
+		if(f.uploadfile && f.uploadfile.value){
+			 fileName = f.uploadfile.value;
+		}
+		if(fileName == ""){
+			alert("File path is empty. Please select the file to attach.");
+			return false;
+		}
+		else{
+			var ext = fileName.split('.').pop();
+			if(ext == 'pdf' || ext == 'PDF') return true;
+			else if(ext == 'doc' || ext == 'DOC') return true;
+			else if(ext == 'docx' || ext == 'DOCX') return true;
+			else if(ext == 'xls' || ext == 'XLS') return true;
+			else if(ext == 'xlsx' || ext == 'XLSX') return true;
+			else if(ext == 'txt' || ext == 'TXT') return true;
+			else if(ext == 'csv' || ext == 'CSV') return true;
+			else if(ext == 'jpg' || ext == 'JPG') return true;
+			else if(ext == 'jpeg' || ext == 'JPEG') return true;
+			else if(ext == 'png' || ext == 'PNG') return true;
+			else{
+				alert("File must be a PDF (.pdf), MS Word document (.doc or .docx), MS Excel file (.xls or .xlsx), image (.jpg, .jpeg, or .png). or a text file (.txt, .csv).");
+				return false;
+			}
+		}
+	}
+	return true;
 }

@@ -1,7 +1,8 @@
 <?php 
 // Lane Community College 
+
 //Enter one to many custom cascading style sheet files 
-//const CSSARR = array('example1.css','example2.css');
+const CSSARR = array('occurVarDefault.css');
 
 //Enter one to many custom java script files 
 //const JSARR = array('example1.js','example2.js'); 
@@ -95,7 +96,7 @@ define('DISPOSITIONLABEL','Specimen Location (Disposition)');
 //define('BASISOFRECORDLABEL','');
 //define('LANGUAGELABEL','');
 define('LABELPROJECTLABEL','Label Project');
-//define('DUPLICATEQUANTITYCOUNTLABEL','');
+//define('DUPLICATEQUANTITYLABEL','');
 //define('INSTITUTIONCODELABEL','');
 //define('COLLECTIONCODELABEL','');
 //define('OWNERINSTITUTIONCODELABEL','');

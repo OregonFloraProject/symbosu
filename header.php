@@ -47,14 +47,23 @@
 	type="text/javascript">
 </script>
 
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-179416436-1"></script>
+<div class="urgent-banner">
+	<p>
+	Through the support of many individuals, NPSO, and OSU Extension, we now have funding to operate at half-capacity through June 2024. 
+	We'll continue to seek support to fully fund our program, so we can keep providing our resources. 
+	Thank you &mdash; your <a href="https://www.paypal.com/donate/?hosted_button_id=ELVFJLHX3T9JU" target="_blank">donations</a> are greatly appreciated! 
+
+	</p>
+</div>
+
+<!-- Global site tag (gtag.js) - Google Analytics 4-->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-98WFW6HYV2"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
 
-  gtag('config', 'UA-179416436-1');
+  gtag('config', 'G-98WFW6HYV2');
 </script>
 
 <div id="site-content">

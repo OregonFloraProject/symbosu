@@ -340,17 +340,18 @@ class TaxonProfile extends Manager {
 		$retArr = Array();
 		if($this->tid){
 			$rsArr = array();
-			$sql = 'SELECT d.tid, d.tdbid, d.caption, d.source, d.sourceurl, s.tdsid, s.heading, s.statement, s.displayheader, d.language, d.langid ';
+			$sql = 'SELECT p.tdProfileID, IFNULL(d.caption, p.caption) as caption, IFNULL(d.source, p.publication) AS source, IFNULL(d.sourceurl, p.urlTemplate) AS sourceurl,
+				IFNULL(d.displaylevel, p.defaultDisplayLevel) AS displaylevel, d.tid, d.tdbid, s.tdsid, s.heading, s.statement, s.displayheader, d.language, p.langid
+				FROM taxadescrprofile p INNER JOIN taxadescrblock d ON p.tdProfileID = d.tdProfileID
+				INNER JOIN taxadescrstmts s ON d.tdbid = s.tdbid
+				LEFT JOIN adminlanguages l ON p.langid = l.langid ';
 			if($this->acceptance){
-				$sql .= 'FROM taxstatus ts INNER JOIN taxadescrblock d ON ts.tid = d.tid '.
-					'INNER JOIN taxadescrstmts s ON d.tdbid = s.tdbid '.
-					'WHERE (ts.tidaccepted = '.$this->tid.') AND (ts.taxauthid = '.$this->taxAuthId.') ';
+				$sql .= 'INNER JOIN taxstatus ts ON ts.tid = d.tid WHERE (ts.tidaccepted = '.$this->tid.') AND (ts.taxauthid = '.$this->taxAuthId.') ';
 			}
 			else{
-				$sql .= 'FROM taxadescrblock d INNER JOIN taxadescrstmts s ON d.tdbid = s.tdbid WHERE (d.tid = '.$this->tid.') ';
+				$sql .= 'WHERE (d.tid = '.$this->tid.') ';
 			}
-			$sql .= 'ORDER BY d.displaylevel, s.sortsequence';
-			//echo $sql; exit;
+			$sql .= 'ORDER BY p.defaultDisplayLevel, d.displayLevel, s.sortsequence';
 			$rs = $this->conn->query($sql);
 			while($r = $rs->fetch_assoc()){
 				$rsArr[] = $r;
@@ -479,6 +480,23 @@ class TaxonProfile extends Manager {
 	public function getLinkArr(){
 		if($this->linkArr === false) $this->setLinkArr();
 		return $this->linkArr;
+	}
+
+	public function getResourceLinkArr(){
+		$retArr = array();
+		if($this->tid){
+			$sql = 'SELECT taxaResourceID, sourceName, sourceIdentifier, sourceGuid, url, notes FROM taxaresourcelinks WHERE tid = '.$this->tid.' ORDER BY ranking, sourceName';
+			$rs = $this->conn->query($sql);
+			while($r = $rs->fetch_object()){
+				$retArr[$r->taxaResourceID]['name'] = $r->sourceName;
+				$retArr[$r->taxaResourceID]['id'] = $r->sourceIdentifier;
+				$retArr[$r->taxaResourceID]['guid'] = $r->sourceGuid;
+				$retArr[$r->taxaResourceID]['url'] = $r->url;
+				$retArr[$r->taxaResourceID]['notes'] = $r->notes;
+			}
+			$rs->free();
+		}
+		return $retArr;
 	}
 
 	//Set children data for taxon higher than species level
@@ -622,6 +640,12 @@ class TaxonProfile extends Manager {
 			$stmt->bind_param('is', $this->taxAuthId, $searchStr);
 		}
 		$stmt->execute();
+		$tid = 0;
+		$family = '';
+		$sciname = '';
+		$author = '';
+		$rankid = 0;
+		$parentTid = 0;
 		$stmt->bind_result($tid, $family, $sciname, $author, $rankid, $parentTid);
 		while($stmt->fetch()){
 			$retArr[$tid]['sciname'] = $sciname;
@@ -640,7 +664,7 @@ class TaxonProfile extends Manager {
 				'WHERE (e.taxauthid = '.$this->taxAuthId.') AND (ts.taxauthid = '.$this->taxAuthId.') AND (e.tid IN('.implode(array_keys($retArr),',').'))';
 			$rs2 = $this->conn->query($sql2);
 			while($r2 = $rs2->fetch_object()){
-				$retArr[$tid]['parent'][$parenttid] = array('sciname' => $r2->sciname, 'rankid' => $r2->rankid, 'directparenttid' => $r2->directparenttid);
+				$retArr[$tid]['parent'][$parentTid] = array('sciname' => $r2->sciname, 'rankid' => $r2->rankid, 'directparenttid' => $r2->directparenttid);
 			}
 			$rs2->free();
 		}
@@ -654,6 +678,8 @@ class TaxonProfile extends Manager {
 		$stmt = $this->conn->prepare($sql);
 		$stmt->bind_param('s', $testValue);
 		$stmt->execute();
+		$tid = 0;
+		$sciname = '';
 		$stmt->bind_result($tid, $sciname);
 		while($stmt->fetch()){
 			if($testValue != $sciname) $retArr[$tid] = $sciname;
@@ -662,58 +688,56 @@ class TaxonProfile extends Manager {
 		return $retArr;
 	}
 
-  /**
-   * Gets occurrence counts of taxon in portal, to use in taxon profile
-   * Searches for taxon and all its children
-   * Checks taxon rank; counts turned off by default for anything above genus
-   * $tid INTEGER taxon id
-   * $taxonRank INTEGER taxon rank according to taxonunits table
-   * $limitRank INTEGER
-   * $collids ARRAY of collids to include in search
-   */
-	public function getOccTaxonInDbCnt($limitRank = 170, $collidStr = 'all')
-  {
-    $count = -1;
-    if ($this->rankId >= $limitRank) {
-      //$sql = 'SELECT COUNT(o.occid) as cnt FROM omoccurrences o JOIN (SELECT DISTINCT e.tid, t.sciname FROM taxaenumtree e JOIN taxa t ON e.tid = t.tid WHERE parenttid = '.$this->tid.' OR e.tid = '.$this->tid.') AS parentAndChildren ON o.tidinterpreted = parentAndChildren.tid ';
-      $sql = 'SELECT COUNT(o.occid) as cnt
-		FROM omoccurrences o JOIN (SELECT DISTINCT ts.tid FROM taxaenumtree e JOIN taxa t ON e.tid = t.tid INNER JOIN taxstatus ts ON e.tid = ts.tidaccepted
-		WHERE e.parenttid = '.$this->tid.' OR e.tid = '.$this->tid.') AS taxa ON o.tidinterpreted = taxa.tid ';
-      if (preg_match('/^[,\d]+$/',$collidStr)) $sql .= 'AND o.collid IN('.$collidStr.')';
-      $result = $this->conn->query($sql);
-      while ($row = $result->fetch_object()){
-        $count = $row->cnt;
-      }
-      $result->free();
-    }
-    return $count;
-  }
+	/**
+	* Gets occurrence counts of taxon in portal, to use in taxon profile
+	* Searches for taxon and all its children
+	* Checks taxon rank; counts turned off by default for anything above genus
+	* $tid INTEGER taxon id
+	* $taxonRank INTEGER taxon rank according to taxonunits table
+	* $limitRank INTEGER
+	* $collids ARRAY of collids to include in search
+	*/
+	public function getOccTaxonInDbCnt($limitRank = 170, $collidStr = 'all'){
+		$count = -1;
+		if ($this->rankId >= $limitRank) {
+			//$sql = 'SELECT COUNT(o.occid) as cnt FROM omoccurrences o JOIN (SELECT DISTINCT e.tid, t.sciname FROM taxaenumtree e JOIN taxa t ON e.tid = t.tid WHERE parenttid = '.$this->tid.' OR e.tid = '.$this->tid.') AS parentAndChildren ON o.tidinterpreted = parentAndChildren.tid ';
+			$sql = 'SELECT COUNT(o.occid) as cnt
+				FROM omoccurrences o JOIN (SELECT DISTINCT ts.tid FROM taxaenumtree e JOIN taxa t ON e.tid = t.tid INNER JOIN taxstatus ts ON e.tid = ts.tidaccepted
+				WHERE e.parenttid = '.$this->tid.' OR e.tid = '.$this->tid.') AS taxa ON o.tidinterpreted = taxa.tid ';
+			if (preg_match('/^[,\d]+$/',$collidStr)) $sql .= 'AND o.collid IN('.$collidStr.')';
+			$result = $this->conn->query($sql);
+			while ($row = $result->fetch_object()){
+				$count = $row->cnt;
+			}
+			$result->free();
+		}
+		return $count;
+	}
 
-  /**
-   * Returns link for specimen search (by taxon) if number of occurrences
-   * is within declared limit
-   * $tid INTEGER taxon id
-   * $searchUrl STRING customizable in taxon profile page
-   * $limitOccs INTEGER max number of occurrences in a search
-   */
-  public function getSearchByTaxon($limitRank = 170, $collidStr = 'all', $limitOccs = 2000000)
-  {
-  	if($collidStr == 'neon') $collidStr = $this->getNeonCollidArr();
-  	$numOccs = $this->getOccTaxonInDbCnt($limitRank, $collidStr);
-  	$occMsg = '';
-    if ((1 <= $numOccs) && ($numOccs <= $limitOccs)) {
-      $occSrcUrl = '../collections/list.php?usethes=1&taxa='.$this->tid;
-      if($collidStr != 'all') $occSrcUrl .= '&db='.$collidStr;
-      $occMsg = '<a class="btn" href="'.$occSrcUrl.'" target="_blank">Explore '.number_format($numOccs).' occurrences</a>';
-    } elseif ($numOccs > $limitOccs) {
-      $occMsg = number_format($numOccs).' occurrences';
-    } elseif ($numOccs == 0) {
-      $occMsg = 'No occurrences found';
-    } elseif ($numOccs == -1) {
-      $occMsg = '';
-    }
-    return $occMsg;
-  }
+	/**
+	 * Returns link for specimen search (by taxon) if number of occurrences
+	 * is within declared limit
+	 * $tid INTEGER taxon id
+	 * $searchUrl STRING customizable in taxon profile page
+	 * $limitOccs INTEGER max number of occurrences in a search
+	 */
+	public function getSearchByTaxon($limitRank = 170, $collidStr = 'all', $limitOccs = 2000000){
+		if($collidStr == 'neon') $collidStr = $this->getNeonCollidArr();
+		$numOccs = $this->getOccTaxonInDbCnt($limitRank, $collidStr);
+		$occMsg = '';
+		if ((1 <= $numOccs) && ($numOccs <= $limitOccs)) {
+			$occSrcUrl = '../collections/list.php?usethes=1&taxa='.$this->tid;
+			if($collidStr != 'all') $occSrcUrl .= '&db='.$collidStr;
+			$occMsg = '<a class="btn" href="'.$occSrcUrl.'" target="_blank">Explore '.number_format($numOccs).' occurrences</a>';
+		} elseif ($numOccs > $limitOccs) {
+			$occMsg = number_format($numOccs).' occurrences';
+		} elseif ($numOccs == 0) {
+			$occMsg = 'No occurrences found';
+		} elseif ($numOccs == -1) {
+			$occMsg = '';
+		}
+		return $occMsg;
+	}
 
 	private function getNeonCollidArr(){
 		$retStr = array();

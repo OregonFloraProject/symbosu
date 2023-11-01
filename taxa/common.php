@@ -17,13 +17,12 @@ if(!empty($commonValue)){
 <head>
 	<title><?php echo $DEFAULT_TITLE." - ".$spDisplay; ?></title>
 	<meta http-equiv="Content-Type" content="text/html; charset=<?php echo $CHARSET; ?>"/>
-	<link href="../css/base.css?ver=<?php echo $CSS_VERSION; ?>" type="text/css" rel="stylesheet" />
-	<link href="../css/main.css<?php echo (isset($CSS_VERSION_LOCAL)?'?ver='.$CSS_VERSION_LOCAL:''); ?>" type="text/css" rel="stylesheet" />
+    <link href="<?php echo $CSS_BASE_PATH; ?>/jquery-ui.css" type="text/css" rel="stylesheet">
+    <?php
+    include_once($SERVER_ROOT.'/includes/head.php');
+    ?>
 	<link href="../css/speciesprofilebase.css?ver=<?php echo $CSS_VERSION; ?>" type="text/css" rel="stylesheet" />
 	<link href="../css/speciesprofile.css<?php echo (isset($CSS_VERSION_LOCAL)?'?ver='.$CSS_VERSION_LOCAL:''); ?>" type="text/css" rel="stylesheet" />
-	<link href="../css/jquery-ui.css" type="text/css" rel="Stylesheet" />
-	<script type="text/javascript" src="../js/jquery.js"></script>
-	<script type="text/javascript" src="../js/jquery-ui.js"></script>
 	<script type="text/javascript">
 		<?php include_once($SERVER_ROOT.'/config/googleanalytics.php'); ?>
 	</script>
@@ -32,6 +31,8 @@ if(!empty($commonValue)){
 <?php
 include($SERVER_ROOT.'/header.php');
 ?>
+<script type="text/javascript" src="../js/jquery.js"></script>
+<script type="text/javascript" src="../js/jquery-ui.js"></script>
 <div class="inner-content">
     <h1>Search Results for "<?php echo htmlentities($commonValue); ?>"</h1>
     <h2><?php echo count($results); ?> results</h2>

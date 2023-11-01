@@ -5,7 +5,7 @@ Language: Español
 ------------------
 */
 
-include_once('fieldterms.es.php');
+include_once($SERVER_ROOT.'/content/lang/collections/editor/editorterms.es.php');
 
 $LANG['HOME'] = 'Inicio';
 $LANG['CLONES_CREATED'] = '¡Éxito! Los siguientes registros clonados ha sido creados';
@@ -37,13 +37,13 @@ $LANG['ACTION_STATUS'] = 'Estado de Acción';
 $LANG['RETURN_TO_SEARCH'] = 'Regresar a Página de Búsqueda';
 $LANG['NONE_FOUND'] = 'No se encontraron registros que coincidan con la búsqueda';
 $LANG['REC_LOCKED'] = '¡Registro Bloqueado!';
-$LANG['LOCK_EXPLAIN'] = 'Este registro está bloqueado para edición por otro usuario. Una vez el usuario finalice de editar el registro,
-							el candado será removido. Los registros se bloquean por un máximo de 15 mins.';
+$LANG['LOCK_EXPLAIN'] = 'Este registro está bloqueado para edición por otro usuario. Una vez el usuario finalice de editar el registro, el candado será removido. Los registros se bloquean por un máximo de 15 mins.';
 $LANG['READ_ONLY'] = 'Vista de Lectura Únicamente';
 $LANG['OCC_DATA'] = 'Datos de Ocurrencia';
 $LANG['NEW_OCC_RECORD'] = 'Nuevo Registro de Ocurrencia';
 $LANG['DET_HISTORY'] = 'Historia de Determinación';
 $LANG['IMAGES'] = 'Imágenes';
+$LANG['MATERIAL_SAMPLE'] = 'Material Sample';
 $LANG['LINKED_RES'] = 'Recursos Enlazados';
 $LANG['TRAITS'] = 'Características';
 $LANG['ADMIN'] = 'Admin';
@@ -66,7 +66,6 @@ $LANG['END_DOY'] = 'Día Final del Año';
 $LANG['EXS_TITLE'] = 'Título de Exsiccati';
 $LANG['NUMBER'] = 'Número';
 $LANG['LATEST_ID'] = 'Última Identificación';
-$LANG['SCINAME'] = 'Nombre Científico';
 $LANG['LIMITED_EDITING'] = 'Derechos de edición limitados: use la pestaña de determinación para editar identificación';
 $LANG['NEED_FULL'] = 'Nota: Se necesitan permisos completos de edición para editar una identificación';
 $LANG['UNDEFINED'] = 'No Identificado';
@@ -81,7 +80,6 @@ $LANG['UNDEFINED'] = 'No Identificado';
 ///$LANG['LOW'] = 'Baja';
 ///$LANG['LOW_ID'] = 'Baja - identificación requerida';
 ///$LANG['ID_REQUESTED'] = 'Identificación Requerida';
-$LANG['LOCALITY'] = 'Localidad';
 $LANG['DEACTIVATE_LOOKUP'] = 'Desactivar Búsqueda de Localidad';
 $LANG['LOCALITY_SECURITY'] = 'Seguridad de Localidad';
 $LANG['TAXONOMIC_SECURITY'] = 'Seguridad Taxonómica';
@@ -140,6 +138,7 @@ $LANG['GO_NEW_CARRYOVER'] = 'Ir a Nuevo Registro y Conservar Información de Loc
 $LANG['REMAIN_ON_PAGE'] = 'Permanecer en la Página de Edición (añadir imágenes, determinaciones, etc)';
 $LANG['ERROR_ID_NULL'] = 'ERROR:</b> los indentificadores del registro son NULOS';
 $LANG['ERROR_NO_CROWDSOURCING'] = 'ERROR:</b> Disculpe, parece que esta ocurrencia ha sido eliminada del listado de Colaboración Abierta y ya no es editable. Contacte al administrador de la colección si piensa que esto es incorrecto';
+$LANG['RETURN_TO_CROWDSOURCING'] = 'Return to Crowdsource Central';
 $LANG['ERROR_NOT_AUTHORIZED'] = 'ERROR:</b> Disculpe, no está autorizado para editar ocurrencias dentro de esta colección. Contactacte al administrador de la colección si piensa que esto es incorrecto';
 $LANG['ERROR_CANT_ADD'] = 'ERROR:</b> no está autorizado para añadir registros de ocurrencia';
 
@@ -154,7 +153,6 @@ $LANG['FAILED_TO_EDIT_OCC'] = 'ERROR: failed to edit occurrence record';
 $LANG['EDIT_SUBMITTED_NOT_ACTIVATED'] = 'Edits submitted, but not activated.<br/>Once edits are reviewed and approved by a data manager, they will be activated.<br/>Thank you for aiding us in improving the data.';
 $LANG['ERROR_EDITS_EMPTY'] = 'ERROR: edits empty for occid';
 $LANG['SUCCESS_NEW_OCC_SUBMITTED'] = 'SUCCESS: new occurrence record submitted successfully';
-$LANG['GUID_FAILED'] = 'WARNING: Symbiota GUID mapping failed';
 $LANG['WARNING_ADD_EXS_NO'] = 'WARNING adding exsiccati number';
 $LANG['WARNING_ADD_EXS'] = 'WARNING adding exsiccati';
 $LANG['FAILED_ADD_OCC'] = "ERROR - failed to add occurrence record";
@@ -197,6 +195,5 @@ $LANG['GEN_RES_ADD_SUCCESS'] = 'Genetic resource added successfully!';
 $LANG['ERROR_UNABLE_INSERT'] = 'ERROR: unable to INSERT text fragment';
 $LANG['ERROR_UNABLE_UPDATE'] = 'ERROR: unable to UPDATE text fragment';
 $LANG['ERROR_UNABLE_DELETE'] = 'ERROR: unable DELETE text fragment';
-$LANG['UNABLE_GET_EDITS'] = 'Unable to get edits';
 
 ?>

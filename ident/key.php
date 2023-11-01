@@ -31,6 +31,12 @@ include_once("../config/symbini.php");
     <link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/css/compiled/theme.css?<?php echo filemtime($SERVER_ROOT . '/css/compiled/theme.css'); ?>">    
     <link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/css/compiled/inventory.css?<?php echo filemtime($SERVER_ROOT . '/css/compiled/inventory.css'); ?>">    
 
+    <!-- Enable Glossary Tooltips -->
+    <script src="../js/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
+    <link href="../js/jquery-ui/jquery-ui.min.css" type="text/css" rel="Stylesheet" />
+    <link rel="stylesheet" type="text/css" href="../css/tooltip.css?<?php echo $CSS_VERSION; ?>" />
+    <script type="text/javascript" src="../js/symb/glossary.tooltip.js"></script>
+
     <!-- This is inner text! -->
     <div id="innertext">
       <div id="react-identify-app"></div>

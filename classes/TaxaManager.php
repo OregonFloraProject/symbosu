@@ -432,9 +432,11 @@ class TaxaManager {
       ->select(["t.sciname", "t.author", "t.tid"])
       ->from("taxstatus", "ts")
       ->innerJoin("taxa", "t", "WITH", "ts.tid = t.tid")
+      ->innerJoin("fmchklsttaxalink", "f", "WITH", "f.tid = ts.tid")
       ->where("ts.tidaccepted = :tid")
       ->andWhere("t.tid != :tid")
       ->andWhere("ts.taxauthid = 1")
+      ->andWhere("f.clid = 1")
       ->andWhere("ts.sortsequence < 90")
       ->setParameter("tid", $tid)
       ->orderBy("ts.sortsequence, t.sciname")->getQuery()->execute();

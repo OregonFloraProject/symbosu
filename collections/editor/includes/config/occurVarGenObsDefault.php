@@ -4,6 +4,7 @@
 
 //Enter one to many custom java script files 
 //const JSARR = array('example1.js','example2.js'); 
+const JSARR = array('OregonFloraGenObs.js');
 
 //Custom Processing Status setting
 const PROCESSINGSTATUS = array('unprocessed','needs label','label printed','expert required','needs research','pending review','reviewed','sent to herbarium','stage 1','stage 2','stage 3');
@@ -94,7 +95,7 @@ define('DISPOSITIONLABEL','Specimen Location (Disposition)');
 //define('BASISOFRECORDLABEL','');
 //define('LANGUAGELABEL','');
 define('LABELPROJECTLABEL','Label Project');
-//define('DUPLICATEQUANTITYCOUNTLABEL','');
+//define('DUPLICATEQUANTITYLABEL','');
 //define('INSTITUTIONCODELABEL','');
 //define('COLLECTIONCODELABEL','');
 //define('OWNERINSTITUTIONCODELABEL','');
@@ -113,7 +114,7 @@ define('RECORDNUMBERTIP','Collector number. Include any letters or symbols in th
 define('EVENTDATETIP','Date of specimen collection. Enter in the format YYYY-MM-DD. If year, month, or day is unknown, replace missing information with zeros (e.g. 2004-00-00).');
 define('DUPLICATESTIP','Search for duplicate specimen information from other herbaria. Turn this off if you do not expect other herbaria to have your duplicates yet');
 define('ASSOCIATEDCOLLECTORSTIP','Any associated collectors names. Each name should be in order of “First name Last name.”, separated by commas. Exclude other words (e.g., “and”, “with”, “&”). Remove preceding titles (see also Collector).');
-define('VERBATIMEVENTDATETIP','Date as it appears on the label if substantially different from the Date field. Leave blank if the same.');
+define('VERBATIMEVENTDATETIP','Leave blank. Only used for old specimens in the herbarium.');
 //define('YYYYMMDDTIP','');
 //define('NUMERICYEARTIP','');
 //define('NUMERICMONTHTIP','');
@@ -205,23 +206,24 @@ define('PREPARATIONSTIP','Not generally used at OSU');
 define('REPRODUCTIVECONDITIONTIP','Enter phenology here, if you have it.');
 define('ESTABLISHMENTMEANSTIP','Default value is “wild collection” to indicate the collection is naturally occurring (this includes self-propagating garden weeds). 
 Other options are:
-  * “filed as cultivated” if the specimen was planted.
+  * “cultivated” if the specimen was planted.
   * “wild seed” if the specimen was planted using seed from a natural occurrence.
+  * “greenhouse weed” if the specimen was growing wild inside of a greenhouse.
   * “uncertain” if whether it was wild or cultivated is unclear.');
-define('CULTIVATIONSTATUSTIP','This should be checked if the collection was from a cultivated plant. Also put “filed as cultivated” in establishment means.');
+define('CULTIVATIONSTATUSTIP','This should be checked if the collection was from a cultivated plant. Also put “cultivated” in establishment means.');
 
 // Curation
 define('TYPESTATUSTIP','The type status (e.g., holotype, isotype) of the specimen. This field should only contain data if the specimen is a type, noted on the specimen.');
 define('DISPOSITIONTIP','Leave this field blank, it will be filled in at the herbarium.');
-define('OCCURRENCEIDTIP','Do not edit this field.');
+define('OCCURRENCEIDTIP','Leave this field blank, it will be filled in at the herbarium.');
 define('FIELDNUMBERTIP','Not generally used at OSU.');
 define('BASISOFRECORDTIP','Do not edit this field. It will be set to Human Observation, until accessioned into an herbarium.');
 define('LANGUAGETIP','The language of the label information, if other than English. Use RFC 5646 codes (e.g., “en” for English, “es” for Spanish).');
 define('LABELPROJECTTIP','If the heading on a label denotes a specific project other than flora of a specific place (e.g., “Oregon Flora Project”), enter it here.');
 define('DUPLICATEQUANTITYTIP','Record if the number of duplicates if you collected multiple specimens.');
-define('INSTITUTIONCODETIP','Do not edit this field.');
-define('COLLECTIONCODETIP','Do not edit this field.');
-define('OWNERINSTITUTIONCODETIP','Do not edit this field.');
+define('INSTITUTIONCODETIP','Leave this blank. The herbarium will add it, if needed.');
+define('COLLECTIONCODETIP','Leave this blank. The herbarium will add it, if needed.');
+define('OWNERINSTITUTIONCODETIP','Leave this blank. The herbarium will add it, if needed.');
 define('PROCESSINGSTATUSTIP','This field is used to indicate the record’s stage in the workflow. Use ‘Status Auto-set’ below to set the processing status for batches of records. You can decide how to use each of the processing statuses.');
 define('DATAGENERALIZATIONSTIP','Information derived from the transcription process which is not stated on the original label. Use this to note an issue with transcription that requires future investigation. Also used to indicate interpretations such as “county interpreted” if the county was derived from an annotation and not stated on the label.');
 define('STATUSAUTOSETTIP','Set this status once, and it sets all subsequent records to the same processing status. Note that this will OVERRIDE the processing status set in the processing status field itself.');

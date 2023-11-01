@@ -380,23 +380,25 @@ class OccurrenceUtilities {
 		}
 		//Date cleaning
 		if(isset($recMap['eventdate']) && $recMap['eventdate']){
-			if(is_numeric($recMap['eventdate'])){
-				$recMap['eventdate'] = self::dateCheck($recMap['eventdate']);
-			}
-			else{
-				//Make sure event date is a valid format or drop into verbatimEventDate
-				$dateStr = self::formatDate($recMap['eventdate']);
-				if($dateStr){
-					if($recMap['eventdate'] != $dateStr && (!array_key_exists('verbatimeventdate',$recMap) || !$recMap['verbatimeventdate'])){
-						$recMap['verbatimeventdate'] = $recMap['eventdate'];
-					}
-					$recMap['eventdate'] = $dateStr;
+			if(!preg_match('/\d{4}-\d{2}-\d{2}/', $recMap['eventdate'])){
+				if(is_numeric($recMap['eventdate'])){
+					$recMap['eventdate'] = self::dateCheck($recMap['eventdate']);
 				}
 				else{
-					if(!array_key_exists('verbatimeventdate',$recMap) || !$recMap['verbatimeventdate']){
-						$recMap['verbatimeventdate'] = $recMap['eventdate'];
+					//Make sure event date is a valid format or drop into verbatimEventDate
+					$dateStr = self::formatDate($recMap['eventdate']);
+					if($dateStr){
+						if($recMap['eventdate'] != $dateStr && (!array_key_exists('verbatimeventdate',$recMap) || !$recMap['verbatimeventdate'])){
+							$recMap['verbatimeventdate'] = $recMap['eventdate'];
+						}
+						$recMap['eventdate'] = $dateStr;
 					}
-					unset($recMap['eventdate']);
+					else{
+						if(!array_key_exists('verbatimeventdate',$recMap) || !$recMap['verbatimeventdate']){
+							$recMap['verbatimeventdate'] = $recMap['eventdate'];
+						}
+						unset($recMap['eventdate']);
+					}
 				}
 			}
 		}
@@ -404,11 +406,6 @@ class OccurrenceUtilities {
 			$recMap['eventdate2'] = self::dateCheck($recMap['eventdate2']);
 			if($recMap['eventdate2'] == $recMap['eventdate']) unset($recMap['eventdate2']);
 			else $recMap['verbatimeventdate'] .= ' - '.$recMap['eventdate2'];
-		}
-		if(array_key_exists('latestdatecollected',$recMap) && $recMap['latestdatecollected'] && is_numeric($recMap['latestdatecollected'])){
-			$recMap['latestdatecollected'] = self::dateCheck($recMap['latestdatecollected']);
-			if($recMap['latestdatecollected'] == $recMap['eventdate']) unset($recMap['latestdatecollected']);
-			else $recMap['verbatimeventdate'] .= ' - '.$recMap['latestdatecollected'];
 		}
 		if(array_key_exists('verbatimeventdate',$recMap) && $recMap['verbatimeventdate'] && is_numeric($recMap['verbatimeventdate'])
 				&& $recMap['verbatimeventdate'] > 2100 && $recMap['verbatimeventdate'] < 45000){
@@ -530,7 +527,7 @@ class OccurrenceUtilities {
 		//Transfer DMS to verbatim coords
 		if(isset($recMap['latdeg']) && $recMap['latdeg'] && isset($recMap['lngdeg']) && $recMap['lngdeg']){
 			//Attempt to create decimal lat/long
-			if(is_numeric($recMap['latdeg']) && is_numeric($recMap['lngdeg']) && (!isset($recMap['decimallatitude']) || !isset($recMap['decimallongitude']))){
+			if(is_numeric($recMap['latdeg']) && is_numeric($recMap['lngdeg']) && (!isset($recMap['decimallatitude']) || !$recMap['decimallatitude'] || !isset($recMap['decimallongitude']) || $recMap['decimallongitude'])){
 				$latDec = abs($recMap['latdeg']);
 				if(isset($recMap['latmin']) && $recMap['latmin'] && is_numeric($recMap['latmin'])) $latDec += $recMap['latmin']/60;
 				if(isset($recMap['latsec']) && $recMap['latsec'] && is_numeric($recMap['latsec'])) $latDec += $recMap['latsec']/3600;
@@ -707,12 +704,13 @@ class OccurrenceUtilities {
 			}
 		}
 		else{
-			if(array_key_exists("genus",$recMap)){
+			if(array_key_exists('genus',$recMap) && array_key_exists('specificepithet',$recMap)){
 				//Build sciname from individual units supplied by source
-				$sciName = $recMap["genus"];
-				if(array_key_exists("specificepithet",$recMap)) $sciName .= " ".$recMap["specificepithet"];
-				if(array_key_exists("taxonrank",$recMap)) $sciName .= " ".$recMap["taxonrank"];
-				if(array_key_exists("infraspecificepithet",$recMap)) $sciName .= " ".$recMap["infraspecificepithet"];
+				$sciName = trim($recMap['genus'].' '.$recMap['specificepithet']);
+				if(array_key_exists('infraspecificepithet',$recMap)){
+					if(array_key_exists('taxonrank',$recMap)) $sciName .= ' '.$recMap['taxonrank'];
+					$sciName .= ' '.$recMap['infraspecificepithet'];
+				}
 				$recMap['sciname'] = trim($sciName);
 			}
 			elseif(array_key_exists('scientificname',$recMap)){

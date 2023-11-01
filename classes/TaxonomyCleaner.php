@@ -3,6 +3,7 @@ include_once($SERVER_ROOT.'/config/dbconnection.php');
 include_once($SERVER_ROOT.'/classes/Manager.php');
 include_once($SERVER_ROOT.'/classes/TaxonomyUtilities.php');
 include_once($SERVER_ROOT.'/classes/TaxonomyHarvester.php');
+include_once($SERVER_ROOT.'/classes/OccurrenceMaintenance.php');
 
 class TaxonomyCleaner extends Manager{
 
@@ -69,7 +70,7 @@ class TaxonomyCleaner extends Manager{
 		$endIndex = 0;
 		$this->logOrEcho("Starting taxa check ");
 		$sql = 'SELECT sciname, family, scientificnameauthorship, count(*) as cnt '.$this->getSqlFragment();
-		if($startIndex) $sql .= 'AND (sciname > "'.$this->cleanInStr($startIndex).'") ';
+		if($startIndex) $sql .= 'AND (sciname >= "'.$this->cleanInStr($startIndex).'") ';
 		$sql .= 'GROUP BY sciname, family, scientificnameauthorship LIMIT '.$limit;
 		//echo $sql; exit;
 		if($rs = $this->conn->query($sql)){
@@ -93,27 +94,27 @@ class TaxonomyCleaner extends Manager{
 				$sciname = $r->sciname;
 				$tid = 0;
 				$manualCheck = true;
-				$taxonArr = TaxonomyUtilities::parseScientificName($r->sciname,$this->conn,0,$this->targetKingdomName);
-				if($taxonArr && $taxonArr['sciname']){
-					$sciname = $taxonArr['sciname'];
-					if($sciname != $r->sciname){
-						$this->logOrEcho('Interpreted base name: <b>'.$sciname.'</b>',1);
-					}
-					$tid = $taxonHarvester->getTid($taxonArr);
-					if($tid && $this->autoClean){
-						$this->remapOccurrenceTaxon($this->collid, $r->sciname, $tid, (isset($taxonArr['identificationqualifier'])?$taxonArr['identificationqualifier']:''));
-						$this->logOrEcho('Taxon remapped to <b>'.$sciname.'</b>',1);
+				if($tid = $taxonHarvester->processSciname($sciname)){
+					$taxaAdded= true;
+					if($taxonHarvester->isFullyResolved()){
 						$manualCheck = false;
 					}
+					else{
+						$this->logOrEcho('Taxon not fully resolved...',1);
+					}
 				}
-				if(!$tid){
-					if($taxonHarvester->processSciname($sciname)){
-						$taxaAdded= true;
-						if($taxonHarvester->isFullyResolved()){
-							$manualCheck = false;
+				$taxonArr = TaxonomyUtilities::parseScientificName($r->sciname,$this->conn,0,$this->targetKingdomName);
+				if(!$tid && $this->autoClean){
+					if(isset($taxonArr['sciname']) && $taxonArr['sciname']){
+						$sciname = $taxonArr['sciname'];
+						if($sciname != $r->sciname){
+							$this->logOrEcho('Interpreted base name: <b>'.$sciname.'</b>',1);
 						}
-						else{
-							$this->logOrEcho('Taxon not fully resolved...',1);
+						$tid = $taxonHarvester->getTid($taxonArr);
+						if($tid){
+							$this->remapOccurrenceTaxon($this->collid, $r->sciname, $tid, (isset($taxonArr['identificationqualifier'])?$taxonArr['identificationqualifier']:''));
+							$this->logOrEcho('Taxon remapped to <b>'.$sciname.'</b>',1);
+							$manualCheck = false;
 						}
 					}
 				}
@@ -128,14 +129,14 @@ class TaxonomyCleaner extends Manager{
 						for($x=1; $x <= 3; $x++){
 							if(isset($taxonArr['unitname'.$x]) && $taxonArr['unitname'.$x]) $strTestArr[] = $taxonArr['unitname'.$x];
 						}
-						foreach($matchArr as $tid => $scinameMatch){
+						foreach($matchArr as $tidMatch => $scinameMatch){
 							$snTokens = explode(' ',$scinameMatch);
 							foreach($snTokens as $k => $v){
 								if(in_array($v, $strTestArr)) $snTokens[$k] = '<b>'.$v.'</b>';
 							}
 							$idQual = (isset($taxonArr['identificationqualifier'])?str_replace("'", '', $taxonArr['identificationqualifier']):'');
 							$echoStr = '<i>'.implode(' ',$snTokens).'</i> =&gt; <span class="hideOnLoad">wait for page to finish loading...</span><span class="displayOnLoad" style="display:none">'.
-								'<a href="#" onclick="return remappTaxon(\''.urlencode($r->sciname).'\','.$tid.',\''.$idQual.'\','.$itemCnt.')" style="color:blue"> remap to this taxon</a>'.
+								'<a href="#" onclick="return remappTaxon(\''.urlencode($r->sciname).'\','.$tidMatch.',\''.$idQual.'\','.$itemCnt.')" style="color:blue"> remap to this taxon</a>'.
 								'<span id="remapSpan-'.$itemCnt.'"></span></span>';
 							$this->logOrEcho($echoStr,2);
 							$itemCnt++;
@@ -278,48 +279,38 @@ class TaxonomyCleaner extends Manager{
 	}
 
 	private function indexOccurrenceTaxa(){
-		$this->logOrEcho('Populating null kingdom name tags...');
+		$this->logOrEcho('Data cleaning...');
 		$sql = 'UPDATE taxa t INNER JOIN taxaenumtree e ON t.tid = e.tid '.
 			'INNER JOIN taxa t2 ON e.parenttid = t2.tid '.
 			'SET t.kingdomname = t2.sciname '.
 			'WHERE (e.taxauthid = '.$this->taxAuthId.') AND (t2.rankid = 10) AND (t.kingdomName IS NULL)';
 		if($this->conn->query($sql)){
-			$this->logOrEcho($this->conn->affected_rows.' taxon records updated',1);
+			$this->logOrEcho('Populating null kingdom name tags... '.$this->conn->affected_rows.' taxon records updated', 1);
 		}
 		else{
-			$this->logOrEcho('ERROR updating kingdoms: '.$this->conn->error);
+			$this->logOrEcho('ERROR updating kingdoms: '.$this->conn->error, 1);
 		}
 		flush();
 		ob_flush();
 
-		$this->logOrEcho('Populating null family tags...');
 		$sql = 'UPDATE taxa t INNER JOIN taxaenumtree e ON t.tid = e.tid '.
 			'INNER JOIN taxa t2 ON e.parenttid = t2.tid '.
 			'INNER JOIN taxstatus ts ON t.tid = ts.tid '.
 			'SET ts.family = t2.sciname '.
 			'WHERE (e.taxauthid = '.$this->taxAuthId.') AND (ts.taxauthid = '.$this->taxAuthId.') AND (t2.rankid = 140) AND (ts.family IS NULL)';
 		if($this->conn->query($sql)){
-			$this->logOrEcho($this->conn->affected_rows.' taxon records updated',1);
+			$this->logOrEcho('Populating null family lookup tags within thesaurus... '.$this->conn->affected_rows.' taxon records updated', 1);
 		}
 		else{
-			$this->logOrEcho('ERROR family tags: '.$this->conn->error);
+			$this->logOrEcho('ERROR updating family lookup field: '.$this->conn->error, 1);
 		}
 		flush();
 		ob_flush();
 
-		$this->logOrEcho('Indexing names based on exact matches...');
-		$sql = 'UPDATE omoccurrences o INNER JOIN taxa t ON o.sciname = t.sciname '.
-			'SET o.tidinterpreted = t.tid '.
-			'WHERE (o.collid IN('.$this->collid.')) AND (o.tidinterpreted IS NULL) ';
-		//echo $sql;
-		if($this->conn->query($sql)){
-			$this->logOrEcho($this->conn->affected_rows.' occurrence records mapped',1);
-		}
-		else{
-			$this->logOrEcho('ERROR linking new data to occurrences: '.$this->conn->error);
-		}
-		flush();
-		ob_flush();
+		$occurMaintenance = new OccurrenceMaintenance($this->conn);
+		$occurMaintenance->setCollidStr($this->collid);
+		$occurMaintenance->setVerbose(true);
+		$occurMaintenance->generalOccurrenceCleaning();
 	}
 
 	public function remapOccurrenceTaxon($collid, $oldSciname, $tid, $idQualifier = ''){
@@ -333,34 +324,34 @@ class TaxonomyCleaner extends Manager{
 
 			//Get new name and author
 			$newSciname = '';
-			$newAuthor= '';
-			$sql = 'SELECT sciname, author FROM taxa WHERE (tid = '.$tid.')';
+			$newAuthor = '';
+			$newFamily = '';
+			$sql = 'SELECT t.sciname, t.author, ts.family FROM taxa t INNER JOIN taxstatus ts ON t.tid = ts.tid WHERE (t.tid = '.$tid.') AND (ts.taxauthid = 1)';
 			$rs = $this->conn->query($sql);
 			while($r = $rs->fetch_object()){
 				$newSciname = $r->sciname;
 				$newAuthor = $r->author;
+				$newFamily = $r->family;
 			}
 			$rs->free();
 
 			//Add edits to edit versioning table
-			$oldSciname = $this->cleanInStr($oldSciname);
-			if($idQualifier) $idQualifier = $this->cleanInStr($idQualifier);
-			$sqlWhere = 'WHERE (collid IN('.$collid.')) AND (sciname = "'.$oldSciname.'") AND (tidinterpreted IS NULL) ';
+			$sqlWhere = 'WHERE (collid IN('.$collid.')) AND (sciname = "'.$this->cleanInStr($oldSciname).'") AND (tidinterpreted IS NULL) ';
 			//Version edit in edits table
 			$sql1 = 'INSERT INTO omoccuredits(occid, FieldName, FieldValueNew, FieldValueOld, uid, ReviewStatus, AppliedStatus'.($hasEditType?',editType ':'').') '.
-				'SELECT occid, "sciname", "'.$newSciname.'", sciname, '.$GLOBALS['SYMB_UID'].', 1, 1'.($hasEditType?',1':'').' FROM omoccurrences '.$sqlWhere;
+				'SELECT occid, "sciname", "'.$this->cleanInStr($newSciname).'", sciname, '.$GLOBALS['SYMB_UID'].', 1, 1'.($hasEditType?',1':'').' FROM omoccurrences '.$sqlWhere;
 			if($this->conn->query($sql1)){
 				if($newAuthor){
 					$sql2 = 'INSERT INTO omoccuredits(occid, FieldName, FieldValueNew, FieldValueOld, uid, ReviewStatus, AppliedStatus'.($hasEditType?',editType ':'').') '.
-						'SELECT occid, "scientificNameAuthorship" AS fieldname, "'.$newAuthor.'", IFNULL(scientificNameAuthorship,""), '.$GLOBALS['SYMB_UID'].', 1, 1 '.($hasEditType?',1 ':'').
-						'FROM omoccurrences '.$sqlWhere.'AND (scientificNameAuthorship != "'.$newAuthor.'")';
+						'SELECT occid, "scientificNameAuthorship" AS fieldname, "'.$this->cleanInStr($newAuthor).'", IFNULL(scientificNameAuthorship,""), '.$GLOBALS['SYMB_UID'].', 1, 1 '.($hasEditType?',1 ':'').
+						'FROM omoccurrences '.$sqlWhere.'AND (scientificNameAuthorship IS NULL || scientificNameAuthorship != "'.$this->cleanInStr($newAuthor).'")';
 					if(!$this->conn->query($sql2)){
 						$this->logOrEcho('ERROR thrown versioning of remapping of occurrence taxon (author): '.$this->conn->error,1);
 					}
 				}
 				if($idQualifier){
 					$sql3 = 'INSERT INTO omoccuredits(occid, FieldName, FieldValueNew, FieldValueOld, uid, ReviewStatus, AppliedStatus'.($hasEditType?',editType ':'').') '.
-						'SELECT occid, "identificationQualifier" AS fieldname, CONCAT_WS("; ",identificationQualifier,"'.$idQualifier.'") AS idqual, '.
+						'SELECT occid, "identificationQualifier" AS fieldname, CONCAT_WS("; ",identificationQualifier,"'.$this->cleanInStr($idQualifier).'") AS idqual, '.
 						'IFNULL(identificationQualifier,""), '.$GLOBALS['SYMB_UID'].', 1, 1 '.($hasEditType?',1 ':'').
 						'FROM omoccurrences '.$sqlWhere;
 					if(!$this->conn->query($sql3)){
@@ -368,14 +359,10 @@ class TaxonomyCleaner extends Manager{
 					}
 				}
 				//Update occurrence table
-				$sqlFinal = 'UPDATE omoccurrences '.
-					'SET tidinterpreted = '.$tid.', sciname = "'.$newSciname.'" ';
-				if($newAuthor){
-					$sqlFinal .= ', scientificNameAuthorship = "'.$newAuthor.'" ';
-				}
-				if($idQualifier){
-					$sqlFinal .= ', identificationQualifier = CONCAT_WS("; ",identificationQualifier,"'.$idQualifier.'") ';
-				}
+				$sqlFinal = 'UPDATE omoccurrences SET tidinterpreted = '.$tid.', sciname = "'.$this->cleanInStr($newSciname).'" ';
+				if($newAuthor) $sqlFinal .= ', scientificNameAuthorship = "'.$this->cleanInStr($newAuthor).'" ';
+				if($newFamily) $sqlFinal .= ', family = IFNULL(family, "'.$this->cleanInStr($newFamily).'") ';
+				if($idQualifier) $sqlFinal .= ', identificationQualifier = CONCAT_WS("; ",identificationQualifier,"'.$this->cleanInStr($idQualifier).'") ';
 				$sqlFinal .= $sqlWhere;
 				if($this->conn->query($sqlFinal)){
 					$affectedRows = $this->conn->affected_rows;
@@ -704,8 +691,8 @@ class TaxonomyCleaner extends Manager{
 	}
 
 	public function getTaxonomicResourceList(){
-		$taArr = array('col'=>'Catalog of Life','worms'=>'World Register of Marine Species','tropicos'=>'TROPICOS','eol'=>'Encyclopedia of Life');
-		//$taArr = array('col'=>'Catalog of Life','worms'=>'World Register of Marine Species','tropicos'=>'TROPICOS','eol'=>'Encyclopedia of Life','IndexFungorum'=>'Index Fungorum');
+		//$taArr = array('col'=>'Catalog of Life', 'worms'=>'World Register of Marine Species', 'tropicos'=>'TROPICOS', 'eol'=>'Encyclopedia of Life');
+		$taArr = array('col'=>'Catalog of Life', 'worms'=>'World Register of Marine Species', 'bryonames' => 'The Bryophyte Nomenclator', 'fdex'=>'Index Fungorum via F-Dex', 'tropicos'=>'TROPICOS', 'eol'=>'Encyclopedia of Life');
 		if(!isset($GLOBALS['TAXONOMIC_AUTHORITIES'])) return array('col'=>'Catalog of Life','worms'=>'World Register of Marine Species');
 		return array_intersect_key($taArr,array_change_key_case($GLOBALS['TAXONOMIC_AUTHORITIES']));
 	}

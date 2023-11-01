@@ -391,6 +391,7 @@ class HeaderApp extends React.Component {
           </div>
         </div>
       </nav>
+
     </div>
     );
   }

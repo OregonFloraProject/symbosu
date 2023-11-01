@@ -41,16 +41,9 @@ if($glossId){
 <html>
 <head>
 	<title><?php echo $DEFAULT_TITLE.(isset($LANG['GLOSS_TERM_INFO'])?$LANG['GLOSS_TERM_INFO']:'Glossary Term Information'); ?></title>
+	<link href="<?php echo $CSS_BASE_PATH; ?>/jquery-ui.css" type="text/css" rel="stylesheet">
 	<?php
-	$activateJQuery = true;
-	if(file_exists($SERVER_ROOT.'/includes/head.php')){
-		include_once($SERVER_ROOT.'/includes/head.php');
-	}
-	else{
-		echo '<link href="'.$CLIENT_ROOT.'/css/jquery-ui.css" type="text/css" rel="stylesheet" />';
-		echo '<link href="'.$CLIENT_ROOT.'/css/base.css?ver=1" type="text/css" rel="stylesheet" />';
-		echo '<link href="'.$CLIENT_ROOT.'/css/main.css?ver=1" type="text/css" rel="stylesheet" />';
-	}
+	include_once($SERVER_ROOT.'/includes/head.php');
 	include_once($SERVER_ROOT.'/includes/googleanalytics.php');
 	?>
 	<script type="text/javascript" src="../js/jquery.js"></script>
@@ -206,15 +199,11 @@ if($glossId){
 						foreach($termImgArr as $imgId => $imgArr){
 							$imgUrl = $imgArr["url"];
 							if(substr($imgUrl,0,1)=="/"){
-								if(array_key_exists("imageDomain",$GLOBALS) && $GLOBALS["imageDomain"]){
-									$imgUrl = $GLOBALS["imageDomain"].$imgUrl;
+								if(array_key_exists('imageDomain',$GLOBALS) && $GLOBALS['imageDomain']){
+									$imgUrl = $GLOBALS['imageDomain'].$imgUrl;
 								}
 								else{
-									$urlPrefix = "http://";
-									if((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443) $urlPrefix = "https://";
-									$urlPrefix .= $_SERVER["SERVER_NAME"];
-									if($_SERVER["SERVER_PORT"] && $_SERVER["SERVER_PORT"] != 80 && $_SERVER['SERVER_PORT'] != 443) $urlPrefix .= ':'.$_SERVER["SERVER_PORT"];
-									$imgUrl = $urlPrefix.$imgUrl;
+									$imgUrl = $glosManager->getDomain() . $imgUrl;
 								}
 							}
 							?>
@@ -223,14 +212,15 @@ if($glossId){
 									<?php
 									$imgWidth = 0;
 									$imgHeight = 0;
-									$size = getimagesize(str_replace(' ', '%20', $imgUrl));
-									if($size[0] > 240){
-										$imgWidth = 240;
-										$imgHeight = 0;
-									}
-									if($size[0] < 245 && $size[1] > 500){
-										$imgWidth = 0;
-										$imgHeight = 500;
+									if($size = getimagesize(str_replace(' ', '%20', $imgUrl))){
+										if($size[0] > 240){
+											$imgWidth = 240;
+											$imgHeight = 0;
+										}
+										if($size[0] < 245 && $size[1] > 500){
+											$imgWidth = 0;
+											$imgHeight = 500;
+										}
 									}
 									?>
 									<img src='<?php echo $imgUrl; ?>' style="margin:auto;display:block;border:1px;<?php echo ($imgWidth?'width:'.$imgWidth.'px;':'').($imgHeight?'height:'.$imgHeight.'px;':''); ?>" title='<?php echo $imgArr['structures']; ?>'/>

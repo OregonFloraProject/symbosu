@@ -8,8 +8,9 @@ class TaxonSearchSupport{
 	private $conn;
 	private $queryString;
 	private $taxonType;
-	private $rankLow;
+	private $rankLow = 0;
 	private $rankHigh;
+	private $oregonTaxa;
 
  	public function __construct(){
 		$this->conn = MySQLiConnectionFactory::getCon('readonly');
@@ -31,47 +32,47 @@ class TaxonSearchSupport{
 			if($this->taxonType == TaxaSearchType::ANY_NAME){
 			    global $LANG;
 			    $sql =
-			    "SELECT DISTINCT CONCAT('".$LANG['SELECT_1-5'].": ',v.vernacularname) AS sciname ".
+			    "SELECT DISTINCT tid, CONCAT('".$LANG['SELECT_1-5'].": ',v.vernacularname) AS sciname ".
 			    "FROM taxavernaculars v ".
 			    "WHERE v.vernacularname LIKE '%".$this->queryString."%' ".
 
 			    "UNION ".
 
-			    "SELECT DISTINCT CONCAT('".$LANG['SELECT_1-2'].": ',sciname         ) AS sciname ".
+			    "SELECT DISTINCT tid, CONCAT('".$LANG['SELECT_1-2'].": ', sciname) AS sciname ".
 			    "FROM taxa ".
 			    "WHERE sciname LIKE '%".$this->queryString."%' AND rankid > 179 ".
 
 			    "UNION ".
 
-			    "SELECT DISTINCT CONCAT('".$LANG['SELECT_1-3'].": ',sciname         ) AS sciname ".
+			    "SELECT DISTINCT tid, CONCAT('".$LANG['SELECT_1-3'].": ', sciname) AS sciname ".
 			    "FROM taxa ".
 			    "WHERE sciname LIKE '".$this->queryString."%' AND rankid = 140 ".
 
 			    "UNION ".
 
-			    "SELECT          CONCAT('".$LANG['SELECT_1-4'].": ',sciname         ) AS sciname ".
+			    "SELECT tid, CONCAT('".$LANG['SELECT_1-4'].": ',sciname) AS sciname ".
 			    "FROM taxa ".
 			    "WHERE sciname LIKE '".$this->queryString."%' AND rankid > 20 AND rankid < 180 AND rankid != 140 ";
 
 			}
 			elseif($this->taxonType == TaxaSearchType::SCIENTIFIC_NAME){
-				$sql = 'SELECT sciname FROM taxa WHERE sciname LIKE "'.$this->queryString.'%" LIMIT 30';
+				$sql = 'SELECT tid, sciname FROM taxa WHERE sciname LIKE "'.$this->queryString.'%" LIMIT 30';
 			}
 			elseif($this->taxonType == TaxaSearchType::FAMILY_ONLY){
-				$sql = 'SELECT sciname FROM taxa WHERE rankid = 140 AND sciname LIKE "'.$this->queryString.'%" LIMIT 30';
+				$sql = 'SELECT tid, sciname FROM taxa WHERE rankid = 140 AND sciname LIKE "'.$this->queryString.'%" LIMIT 30';
 			}
 			elseif($this->taxonType == TaxaSearchType::TAXONOMIC_GROUP){
-				$sql = 'SELECT sciname FROM taxa WHERE rankid > 20 AND rankid < 180 AND sciname LIKE "'.$this->queryString.'%" LIMIT 30';
+				$sql = 'SELECT tid, sciname FROM taxa WHERE rankid > 20 AND rankid < 180 AND sciname LIKE "'.$this->queryString.'%" LIMIT 30';
 			}
 			elseif($this->taxonType == TaxaSearchType::COMMON_NAME){
-				$sql = 'SELECT DISTINCT v.vernacularname AS sciname FROM taxavernaculars v WHERE v.vernacularname LIKE "%'.$this->queryString.'%" LIMIT 50 ';
+				$sql = 'SELECT DISTINCT tid, vernacularname AS sciname FROM taxavernaculars WHERE vernacularname LIKE "%'.$this->queryString.'%" LIMIT 50 ';
 			}
 			else{
-				$sql = 'SELECT sciname FROM taxa WHERE sciname LIKE "'.$this->queryString.'%" LIMIT 20';
+				$sql = 'SELECT tid, sciname FROM taxa WHERE sciname LIKE "'.$this->queryString.'%" LIMIT 20';
 			}
 			$rs = $this->conn->query($sql);
 			while ($r = $rs->fetch_object()) {
-				$retArr[] = $r->sciname;
+				$retArr[] = array('id' => $r->tid, 'value' => $r->sciname);
 			}
 			$rs->free();
 		}
@@ -81,11 +82,16 @@ class TaxonSearchSupport{
 	private function getTaxaSuggestByRank(){
 		$retArr = Array();
 		if($this->queryString){
-			$sql = 'SELECT sciname FROM taxa WHERE (sciname LIKE "'.$this->queryString.'%") ';
-			if($this->rankLow){
+			$sql = 'SELECT sciname FROM taxa ';
+			// Add whether each taxon belongs to any checklists
+			if ($this->oregonTaxa) $sql .= 'LEFT JOIN `fmchklsttaxalink` as cl ON taxa.tid = cl.tid ';
+			$sql .= ' WHERE (sciname LIKE "'.$this->queryString.'%") ';
+			if(is_numeric($this->rankLow)){
 				if($this->rankHigh) $sql .= 'AND (rankid BETWEEN '.$this->rankLow.' AND '.$this->rankHigh.') ';
 				else $sql .= 'AND (rankid = '.$this->rankLow.') ';
 			}
+			// Restrict to taxa contained in the State of Oregon vascular plant checklist (clid=1)
+			if ($this->oregonTaxa) $sql .= 'AND (cl.clid = 1) ';
 			$sql .= 'LIMIT 30';
 			$rs = $this->conn->query($sql);
 			while ($r = $rs->fetch_object()) {
@@ -99,12 +105,13 @@ class TaxonSearchSupport{
 	//Setters and getters
 	public function setQueryString($queryString){
 		//$queryString = $this->cleanInStr($queryString);
-		$queryString = preg_replace('/[\'"+\-=@$%]+/i', '', $queryString);
+		$queryString = preg_replace('/[\+\=@$%]+/i', '', $queryString);
 		if(strpos($queryString, ' ')){
+			$queryString = str_ireplace(array('"', "'"), '_', $queryString);
 			$queryString = preg_replace('/\s{1}x{1}$/i', ' _', $queryString);
 			$queryString = preg_replace('/\s{1}x{1}\s{1}/i', ' _ ', $queryString);
-			$queryString = str_ireplace(' x', ' _', $queryString);
 			$queryString = str_ireplace(' x ', ' _ ', $queryString);
+			$queryString = str_ireplace(' x', ' _', $queryString);
 		}
 		$this->queryString = $queryString;
 	}
@@ -119,6 +126,11 @@ class TaxonSearchSupport{
 
 	public function setRankHigh($rank){
 		if(is_numeric($rank)) $this->rankHigh = $rank;
+	}
+
+	// Restrict to Oregon vascular plant taxa
+	public function setOregonTaxa($or){
+		if(is_numeric($or)) $this->oregonTaxa = $or;
 	}
 
 	//Misc functions

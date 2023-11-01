@@ -65,6 +65,7 @@ class IdentifyApp extends React.Component {
       exportUrlCsv: '',
       exportUrlWord: '',
       googleMapUrl: '',
+      glossary: [],
     };
 
     this.getPid = this.getPid.bind(this);
@@ -111,6 +112,20 @@ class IdentifyApp extends React.Component {
   }  
 
   componentDidMount() {
+
+    // Get a list of glossary terms
+    httpGet('../glossary/rpc/getterms.php')
+      .then((res) => {
+          res = JSON.parse(res);
+        this.setState({
+          glossary: res,
+        });
+      })
+      .catch((err) => {
+        // TODO: Something's wrong
+        console.error(err);
+      })
+
     // Load search results
     let apiUrl = `${this.props.clientRoot}/ident/rpc/api.php`;
     let url = apiUrl;
@@ -619,6 +634,7 @@ class IdentifyApp extends React.Component {
 							exportUrlWord={ this.state.exportUrlWord }
 							getFilterCount={ this.getFilterCount } 
 							isMobile={ this.state.isMobile }
+							glossary={ this.state.glossary }
 						/>
 					}
 

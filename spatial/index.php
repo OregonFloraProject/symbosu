@@ -37,7 +37,7 @@ $dbArr = Array();
     <link href="<?php echo $CLIENT_ROOT; ?>/css/jquery.mobile-1.4.0.min.css" type="text/css" rel="stylesheet" />
     <link href="<?php echo $CLIENT_ROOT; ?>/css/jquery.symbiota.css" type="text/css" rel="stylesheet" />
     <link href="<?php echo $CLIENT_ROOT; ?>/css/jquery-ui_accordian.css" type="text/css" rel="stylesheet" />
-    <link href="<?php echo $CLIENT_ROOT; ?>/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+    <link href="<?php echo $CSS_BASE_PATH; ?>/jquery-ui.css" type="text/css" rel="stylesheet">
     <link href="<?php echo $CLIENT_ROOT; ?>/css/ol.css" type="text/css" rel="stylesheet" />
     <link href="<?php echo $CLIENT_ROOT; ?>/css/spatialbase.css?ver=15" type="text/css" rel="stylesheet" />
     	
@@ -176,14 +176,14 @@ $dbArr = Array();
 	type="text/javascript">
 </script>
 
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-179416436-1"></script>
+<!-- Global site tag (gtag.js) - Google Analytics 4-->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-98WFW6HYV2"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
 
-  gtag('config', 'UA-179416436-1');
+  gtag('config', 'G-98WFW6HYV2');
 </script>
 
 <?php /*<div id="site-content"> */
