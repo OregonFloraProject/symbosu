@@ -39,7 +39,6 @@ $statusStr = "";
 	<head>
 		<title>Specimen Processor Control Panel</title>
 		<?php
-		$activateJQuery = true;
 		include_once($SERVER_ROOT.'/includes/head.php');
 		?>
 	</head>
@@ -62,7 +61,7 @@ $statusStr = "";
 				$specManager->setProjVariables($spprid);
 				if($action == 'Process Images'){
 					if($specManager->getProjectType() == 'iplant'){
-						$imageProcessor = new ImageProcessor($specManager->getConn());
+						$imageProcessor = new ImageProcessor();
 						echo '<ul>';
 						$imageProcessor->setLogMode(3);
 						$imageProcessor->setCollid($collid);
@@ -96,9 +95,9 @@ $statusStr = "";
 						if($specManager->getLgMaxFileSize()) $imageProcessor->setLgFileSizeLimit($specManager->getLgMaxFileSize());
 						if($specManager->getJpgQuality()) $imageProcessor->setJpgQuality($specManager->getJpgQuality());
 						$imageProcessor->setUseImageMagick($specManager->getUseImageMagick());
-						$imageProcessor->setWebImg($_POST['webimg']);
-						$imageProcessor->setTnImg($_POST['createtnimg']);
-						$imageProcessor->setLgImg($_POST['createlgimg']);
+						$imageProcessor->setMedProcessingCode($_POST['webimg']);
+						$imageProcessor->setTnProcessingCode($_POST['createtnimg']);
+						$imageProcessor->setLgProcessingCode($_POST['createlgimg']);
 						$imageProcessor->setCreateNewRec($_POST['createnewrec']);
 						$imageProcessor->setImgExists($_POST['imgexists']);
 						$imageProcessor->setKeepOrig(0);
@@ -112,7 +111,7 @@ $statusStr = "";
 				}
 				elseif($action == 'mapImageFile'){
 					//Process csv file with remote image urls
-					$imageProcessor = new ImageProcessor($specManager->getConn());
+					$imageProcessor = new ImageProcessor();
 					echo '<ul>';
 					$imageProcessor->setLogMode(3);
 					$imageProcessor->setCollid($collid);

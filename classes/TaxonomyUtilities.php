@@ -46,8 +46,13 @@ class TaxonomyUtilities {
 			$okToCloseConn = true;
 			if($conn !== null) $okToCloseConn = false;
 			if(count($sciNameArr)){
-				if(strtolower($sciNameArr[0]) == 'x' || $sciNameArr[0] == '×' || mb_ord($sciNameArr[0]) == 215){
+				if(strtolower($sciNameArr[0]) == 'x' || $sciNameArr[0] == '×'){
 					$retArr['unitind1'] = array_shift($sciNameArr);
+				}
+				elseif(mb_ord($sciNameArr[0]) == 215){
+					$retArr['unitind1'] = '×';
+					$unitStr = substr(array_shift($sciNameArr), 2);
+					if($unitStr) array_unshift($sciNameArr, $unitStr);
 				}
 				elseif($sciNameArr[0] == '†' || mb_ord($sciNameArr[0]) == 8224){
 					$retArr['unitind1'] = array_shift($sciNameArr);
@@ -59,10 +64,15 @@ class TaxonomyUtilities {
 				//Genus
 				$retArr['unitname1'] = ucfirst(strtolower(array_shift($sciNameArr)));
 				if(count($sciNameArr)){
-					if(strtolower($sciNameArr[0]) == 'x' || mb_ord($sciNameArr[0]) == 215){
-						//Species level hybrid
+					if(strtolower($sciNameArr[0]) == 'x' || $sciNameArr[0] == '×'){
 						$retArr['unitind2'] = array_shift($sciNameArr);
 						$retArr['unitname2'] = array_shift($sciNameArr);
+					}
+					elseif(mb_ord($sciNameArr[0]) == 215){
+						$retArr['unitind2'] = '×';
+						$unitStr = substr(array_shift($sciNameArr), 2);
+						if($unitStr) $retArr['unitname2'] = $unitStr;
+						else $retArr['unitname2'] = array_shift($sciNameArr);
 					}
 					elseif(strpos($sciNameArr[0],'.') !== false){
 						//It is assumed that Author has been reached, thus stop process
@@ -237,8 +247,9 @@ class TaxonomyUtilities {
 	}
 
 	//Taxonomic indexing functions
-	public static function rebuildHierarchyEnumTree($conn){
+	public static function rebuildHierarchyEnumTree($conn = null){
 		$status = true;
+		if(!$conn) $conn = MySQLiConnectionFactory::getCon('write');
 		if($conn){
 			if($conn->query('DELETE FROM taxaenumtree')){
 				self::buildHierarchyEnumTree($conn);
@@ -251,32 +262,30 @@ class TaxonomyUtilities {
 		return $status;
 	}
 
-	public static function buildHierarchyEnumTree($conn, $taxAuthId = 1){
+	public static function buildHierarchyEnumTree($conn = null, $taxAuthId = 1){
 		set_time_limit(600);
 		$status = true;
+		if(!$conn) $conn = MySQLiConnectionFactory::getCon('write');
 		if($conn){
 			//Seed taxaenumtree table
-			$sql = 'INSERT INTO taxaenumtree(tid,parenttid,taxauthid) '.
-				'SELECT DISTINCT ts.tid, ts.parenttid, ts.taxauthid '.
-				'FROM taxstatus ts '.
-				'WHERE (ts.taxauthid = '.$taxAuthId.') AND ts.tid NOT IN(SELECT tid FROM taxaenumtree WHERE taxauthid = '.$taxAuthId.')';
-			if(!$conn->query($sql)){
-				$status = 'ERROR seeding taxaenumtree: '.$conn->error;
-			}
-			if($status === true){
+			$sql = 'INSERT INTO taxaenumtree(tid,parenttid,taxauthid)
+				SELECT DISTINCT ts.tid, ts.parenttid, ts.taxauthid
+				FROM taxstatus ts
+				WHERE (ts.taxauthid = '.$taxAuthId.') AND ts.tid NOT IN(SELECT tid FROM taxaenumtree WHERE taxauthid = '.$taxAuthId.')';
+			if($conn->query($sql)){
 				//Set direct parents for all taxa
-				$sql2 = 'INSERT INTO taxaenumtree(tid,parenttid,taxauthid) '.
-					'SELECT DISTINCT ts.tid, ts.parenttid, ts.taxauthid '.
-					'FROM taxstatus ts LEFT JOIN taxaenumtree e ON ts.tid = e.tid AND ts.parenttid = e.parenttid AND ts.taxauthid = e.taxauthid '.
-					'WHERE (ts.taxauthid = '.$taxAuthId.') AND (e.tid IS NULL)';
+				$sql2 = 'INSERT INTO taxaenumtree(tid,parenttid,taxauthid)
+					SELECT DISTINCT ts.tid, ts.parenttid, ts.taxauthid
+					FROM taxstatus ts LEFT JOIN taxaenumtree e ON ts.tid = e.tid AND ts.parenttid = e.parenttid AND ts.taxauthid = e.taxauthid
+					WHERE (ts.taxauthid = '.$taxAuthId.') AND (e.tid IS NULL)';
 				if(!$conn->query($sql2)) $status = 'ERROR setting direct parents within taxaenumtree: '.$conn->error;
 
 				//Continue adding more distint parents
-				$sql3 = 'INSERT INTO taxaenumtree(tid,parenttid,taxauthid) '.
-					'SELECT DISTINCT e.tid, ts.parenttid, ts.taxauthid '.
-					'FROM taxaenumtree e INNER JOIN taxstatus ts ON e.parenttid = ts.tid AND e.taxauthid = ts.taxauthid '.
-					'LEFT JOIN taxaenumtree e2 ON e.tid = e2.tid AND ts.parenttid = e2.parenttid AND e.taxauthid = e2.taxauthid '.
-					'WHERE (ts.taxauthid = '.$taxAuthId.') AND (e2.tid IS NULL)';
+				$sql3 = 'INSERT INTO taxaenumtree(tid,parenttid,taxauthid)
+					SELECT DISTINCT e.tid, ts.parenttid, ts.taxauthid
+					FROM taxaenumtree e INNER JOIN taxstatus ts ON e.parenttid = ts.tid AND e.taxauthid = ts.taxauthid
+					LEFT JOIN taxaenumtree e2 ON e.tid = e2.tid AND ts.parenttid = e2.parenttid AND e.taxauthid = e2.taxauthid
+					WHERE (ts.taxauthid = '.$taxAuthId.') AND (e2.tid IS NULL)';
 				$cnt = 0;
 				do{
 					if(!$conn->query($sql3)){
@@ -287,11 +296,15 @@ class TaxonomyUtilities {
 					$cnt++;
 				}while($cnt < 30);
 			}
+			else{
+				$status = 'ERROR seeding taxaenumtree: '.$conn->error;
+			}
 		}
 		else $status = 'ERROR re-populating taxaenumtree: NULL connection object';
 		return $status;
 	}
 
+	/*
 	public static function buildHierarchyNestedTree($conn, $taxAuthId = 1){
 		if($conn){
 			set_time_limit(1200);
@@ -335,28 +348,6 @@ class TaxonomyUtilities {
 		$endIndex++;
 		return $endIndex;
 	}
-
-	public static function linkOccurrenceTaxa($conn = null){
-		if(!$conn) $conn = MySQLiConnectionFactory::getCon("write");
-
-		$sql1 = 'UPDATE omoccurrences o INNER JOIN taxa t ON o.sciname = t.sciname AND o.scientificnameauthorship = t.author SET o.TidInterpreted = t.tid WHERE (o.TidInterpreted IS NULL)';
-		if(!$conn->query($sql1)){
-			echo '<div>ERROR indexing occurrences by matching sciname and author</div>';
-		}
-
-		$sql2 = 'UPDATE omoccurrences o INNER JOIN taxa t ON o.sciname = t.sciname '.
-			'INNER JOIN taxaenumtree e ON t.tid = e.tid '.
-			'INNER JOIN taxa t2 ON e.parenttid = t2.tid '.
-			'SET o.TidInterpreted = t.tid '.
-			'WHERE (o.TidInterpreted IS NULL) AND (t2.rankid = 140) AND (t.sciname = o.family)';
-		if(!$conn->query($sql2)){
-			echo '<div>ERROR indexing occurrences by matching sciname and family</div>';
-		}
-
-		$sql3 = 'UPDATE omoccurrences o INNER JOIN taxa t ON o.sciname = t.sciname SET o.TidInterpreted = t.tid WHERE (o.TidInterpreted IS NULL)';
-		if(!$conn->query($sql3)){
-			echo '<div>ERROR indexing occurrences by matching just sciname</div>';
-		}
-	}
+	*/
 }
 ?>

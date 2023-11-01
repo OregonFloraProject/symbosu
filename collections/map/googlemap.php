@@ -6,6 +6,7 @@ header("Content-Type: text/html; charset=".$CHARSET);
 $clid = array_key_exists('clid',$_REQUEST)?$_REQUEST['clid']:0;
 $gridSize = array_key_exists('gridSizeSetting',$_REQUEST)?$_REQUEST['gridSizeSetting']:10;
 $minClusterSize = array_key_exists('minClusterSetting',$_REQUEST)?$_REQUEST['minClusterSetting']:50;
+
 $occurManager = new OccurrenceMapManager();
 $coordArr = $occurManager->getMappingData(0);
 
@@ -35,18 +36,10 @@ if(array_key_exists('taxa', $taxaArr)){
 <html>
 <head>
 	<title><?php echo $DEFAULT_TITLE; ?> - Google Map</title>
-  <?php
-    $activateJQuery = false;
-    if(file_exists($SERVER_ROOT.'/includes/head.php')){
-      include_once($SERVER_ROOT.'/includes/head.php');
-    }
-    else{
-      echo '<link href="'.$CLIENT_ROOT.'/css/jquery-ui.css" type="text/css" rel="stylesheet" />';
-      echo '<link href="'.$CLIENT_ROOT.'/css/base.css?ver=1" type="text/css" rel="stylesheet" />';
-      echo '<link href="'.$CLIENT_ROOT.'/css/main.css?ver=1" type="text/css" rel="stylesheet" />';
-    }
-  ?>
-  	<meta name="google" content="notranslate">
+	<?php
+
+	include_once($SERVER_ROOT.'/includes/head.php');
+	?>
 	<script src="//www.google.com/jsapi"></script>
 	<script src="//maps.googleapis.com/maps/api/js?<?php echo (isset($GOOGLE_MAP_KEY) && $GOOGLE_MAP_KEY?'key='.$GOOGLE_MAP_KEY:''); ?>"></script>
 	<script type="text/javascript" src="../../js/symb/markerclusterer.js?ver=260913"></script>

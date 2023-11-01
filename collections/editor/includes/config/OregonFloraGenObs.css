@@ -1,0 +1,12 @@
+#catalogNumberDiv input{
+	pointer-events:none;
+
+	background-color: #EEE;
+}
+
+#verbatimEventDateDiv input{
+	pointer-events:none;
+	border: 1px solid gray;
+	height:  21px;
+	background-color: #EEE;
+}

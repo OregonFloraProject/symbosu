@@ -104,6 +104,47 @@ class SideBar extends React.Component {
 		this.onFilterClicked = this.props.onFilterClicked.bind(this);
 		this.getFilterCount = this.props.getFilterCount.bind(this);
   }
+
+	// Function to add glossary tooltips to any glossary words passed to it
+	addGlossary(text) {
+
+		// Don't try to add glossary entries to numbers
+		if(typeof text === "number") return text;
+
+		// https://stackoverflow.com/questions/57951816/javascript-replace-word-from-string-with-matching-array-key
+		let glossary = this.props.glossary;
+
+		// Design a regular expression to search for all glossary words
+		// Makes sure that these are full words by searching for word boundaries
+		// Includes plurals and -ly ending (e.g. culms matches culm, calluses matches callus, pinnately matches pinnate)
+		// Avoids matching words that are within html tags (e.g., style in <p style="">)
+		// Avoids matching words that already have a glossary tooltip
+		// Negative lookbehind is better for HTML, but doesn't work on IOS yet: (?<!<[^>]*)
+		const re = new RegExp('(?:<.*?<\\/\\w+>)|(\\b(' + Object.keys(glossary)
+			.map(key => `${key}`)
+			.join('|') + ')(es|s|ly)?\\b)', "gi");
+
+		// Search the description for glossary matches, and add tooltips to each one
+		text = text.replace(re, function(match, group1, group2, group3) {
+
+			// If no groups are captured, it's a word in an HTML (non-capturing group), so just return it as-is
+			if(!group1) return match;
+
+			// Get the glossary term ID from the singular version of the term matched
+			let id = glossary[group2.toLowerCase()];
+
+			// Make a 3-digit random number, this helps make unique ids for glossary words that are repeated
+			let rand = Math.floor(100 + Math.random() * 900);
+
+			// Return the modified html for the glossary word
+			return '<span class="glossary" onClick="showTooltip(this, ' + id + ')" id="glossary' + rand + id +
+				'">' + match + '</span>'
+		});
+
+		// Return text with any glossary tooltip html
+		return text;
+	}
+
   componentDidMount() {
   	let displayFilters = true;
 		let isMobile = false;
@@ -152,6 +193,37 @@ class SideBar extends React.Component {
   	}
   	
   	let filterCount = this.getFilterCount();
+
+		// Add Glossary tooltips
+		if(Object.keys(this.props.characteristics).length > 0) {
+
+			// Map the characteristic headings
+			this.props.characteristics.map(function(characteristic) {
+
+				// Attach glossary tooltips to characteristic heading names
+				//characteristic.headingname = this.addGossary(characteristic.headingname);
+
+				// Map the characters
+				characteristic.characters.map(function(character) {
+
+					// Attach glossary tooltips to character names
+					character.charname = this.addGlossary(character.charname);
+
+					// Only attach glossary names to characters that have text character state options (e.g., not numeric sliders)
+					if(!character.display) {
+
+						// Map the character states
+						character.states.map(function(state) {
+
+							// Attach glossary tooltips to character state names
+							state.charstatename = this.addGlossary(state.charstatename);
+
+						}.bind(this));
+					}
+				}.bind(this));
+			}.bind(this));
+		}
+
     return (
       <div
         id="sidebar"

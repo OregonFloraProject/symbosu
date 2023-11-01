@@ -6,7 +6,6 @@ class OccurrenceLoans extends Manager{
 	private $collid = 0;
 	private $idTagArr = array();
 	private $specimenSortArr = array();
-	private $serverRoot= '';
 
 	function __construct() {
 		parent::__construct(null,'write');
@@ -950,11 +949,11 @@ class OccurrenceLoans extends Manager{
 					$numArr = explode('-',$id);
 
 					// Get the last array element that is a number
-					// Note: NOT the highest number, this could be something like a year, e.g., 2022-5. 
+					// Note: NOT the highest number, this could be something like a year, e.g., 2022-5.
 					// The last number in the string is most likely the right one to increment
 					while (!is_numeric($num)) $num = array_pop($numArr);
 
-					// Check if the number found is the highest so far, if so, use that one to increment. 
+					// Check if the number found is the highest so far, if so, use that one to increment.
 					if ($num > $maxnum) {
 						$maxnum = $num;
 
@@ -996,7 +995,7 @@ class OccurrenceLoans extends Manager{
 
 		// Create the path for the attachment, storing under a subfolder for the particular collection
 		$relPath = 'content/collections/loans/coll' . $collid . '/';
-		$fullPath = $this->serverRoot . $relPath;
+		$fullPath = $GLOBALS['SERVER_ROOT'] . '/' . $relPath;
 
 		// Check to make sure the save path exists, creating it if permissions are sufficient
 		if (!is_dir($fullPath)) {
@@ -1067,7 +1066,7 @@ class OccurrenceLoans extends Manager{
 			$sql = 'SELECT path, filename FROM omoccurloansattachment WHERE (attachmentid = ' . $attachid . ')';
 			if($rs = $this->conn->query($sql)) {
 				while($r = $rs->fetch_object()){
-					$path = $this->serverRoot . $r->path . $r->filename;
+					$path = $GLOBALS['SERVER_ROOT'] . '/' . $r->path . $r->filename;
 				}
 				$rs->free();
 			}
@@ -1097,13 +1096,14 @@ class OccurrenceLoans extends Manager{
 
 	// Get a list of correspondence attachments for a given loan/exchange
 	public function getAttachments($type, $transid) {
-		$retArr = array();
+		$retArr = false;
 		$sql = 'SELECT attachmentid, title, path, filename, initialTimestamp ' .
 			'FROM omoccurloansattachment ' .
 			'WHERE '. ($type == "loan" ? 'loanid' : 'exchangeid') . ' = ' . $transid . ' ' .
 			'ORDER BY initialTimestamp ASC;';
 
 		if($rs = $this->conn->query($sql)){
+			$retArr = array();
 			while($r = $rs->fetch_object()){
 				$retArr[$r->attachmentid]['title'] = $r->title;
 				$retArr[$r->attachmentid]['path'] = $r->path;
@@ -1142,10 +1142,6 @@ class OccurrenceLoans extends Manager{
 	public function getSpecimenSortArr(){
 		asort($this->specimenSortArr);
 		return $this->specimenSortArr;
-	}
-	
-	public function setServerRoot($path){
-		$this->serverRoot = $path;
 	}
 }
 ?>

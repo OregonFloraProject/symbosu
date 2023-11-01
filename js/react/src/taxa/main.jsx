@@ -65,7 +65,7 @@ class SynonymItem extends React.Component {
   
 		return (
 			<div className={ "synonym-items row dashed-border py-1" }>
-				<div className="col font-weight-bold char-label">Synonyms</div>
+				<div className="col font-weight-bold char-label">Synonyms and Misapplied Names</div>
 				<div className={	(this.state.showSynonyms? 'show-full': 'show-short' ) + " col" }>
 				
 				<span className="short-list">
@@ -353,6 +353,36 @@ class TaxaTabs extends React.Component {
 						Object.entries(descriptions).map(([dkey, dvalue]) => {
 							description += dvalue;
 						})
+
+						// https://stackoverflow.com/questions/57951816/javascript-replace-word-from-string-with-matching-array-key
+						let glossary = this.props.glossary;
+
+						// Design a regular expression to search for all glossary words
+						// Makes sure that these are full words by searching for word boundaries
+						// Includes plurals and -ly ending (e.g. culms matches culm, calluses matches callus, pinnately matches pinnate)
+						// Avoids matching words that are encased within html tags (e.g., style in <p style="">)
+						// NB: Negative lookbehind is better for HTML, but doesn't work on IOS yet: (?<!<[^>]*)
+						const re = new RegExp('(?:<.*?>)|(\\b(' + Object.keys(glossary)
+							.map(key => `${key}`)
+							.join('|') + ')(es|s|ly)?\\b)', "gi");
+
+						// Search the description for glossary matches, and add tooltips to each one
+						description = description.replace(re, function(match, group1, group2, group3) {
+
+							// If no groups are captured, it's a HTML tag (non-capturing group), so just return it as-is
+							if(!group1) return match;
+
+							// Get the glossary term ID from the singular version of the term matched
+							let id = glossary[group2.toLowerCase()];
+
+							// Make a 3-digit random number, this helps make unique ids for glossary words that are repeated
+							let rand = Math.floor(100 + Math.random() * 900);
+
+							// Return the modified html for the glossary word
+							return '<span class="glossary" onClick="showTooltip(this, ' + id + ')" id="glossary' + rand + id +
+								'">' + match + '</span>'
+						});
+
 						var display = source + ' ' + description;
 						return (
 							<TabPanel key={key} forceRender={ true }>
@@ -418,7 +448,7 @@ class TaxaChooser extends React.Component {
 						</p>
 						{ 
 							res.descriptions.length > 0 &&
-							<TaxaTabs descriptions={ res.descriptions } />
+							<TaxaTabs descriptions={ res.descriptions } glossary={ res.glossary } />
 						}
 					
 					
@@ -471,7 +501,6 @@ class TaxaDetail extends React.Component {
     });
   }
 	render() {
-	
 		const res = this.props.res;
     const pageTitle = this.props.defaultTitle + " " + res.sciName;
     const titleElement = document.getElementsByTagName("title")[0];
@@ -550,7 +579,7 @@ class TaxaDetail extends React.Component {
 							*/}
 							{ /*this.state.descriptions.replace(/(<\/?[^>]+>)|(&[^;]+;)/g, "") */}
 						{ showDescriptions &&
-							<TaxaTabs descriptions={ res.descriptions } />
+							<TaxaTabs descriptions={ res.descriptions } glossary={ res.glossary } />
 						}
 					
 					
@@ -693,6 +722,7 @@ class TaxaApp extends React.Component {
       rankId: null,
       currImage: 0,
       related: [],
+      glossary: [],
       slideshowCount: 5 
     };
     this.getTid = this.getTid.bind(this);
@@ -716,6 +746,20 @@ class TaxaApp extends React.Component {
     if (this.getTid() === -1) {
       window.location = "/";
     } else {
+
+		// Get a list of glossary terms
+		httpGet('../glossary/rpc/getterms.php')
+			.then((res) => {
+				res = JSON.parse(res);
+				this.setState({
+					glossary: res,
+				});
+			})
+			.catch((err) => {
+				// TODO: Something's wrong
+				console.error(err);
+			});
+
     	let api = `./rpc/api.php?taxon=${this.props.tid}`;
     	//console.log(api);
       httpGet(api)

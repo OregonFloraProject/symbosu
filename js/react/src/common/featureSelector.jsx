@@ -1,4 +1,6 @@
+
 import React from "react";
+import { renderToString } from 'react-dom/server';
 import { RangeSlider } from "@blueprintjs/core";//
 import CheckboxItem from "../common/checkboxItem.jsx";
 
@@ -13,6 +15,17 @@ class CheckboxList extends React.Component {
     //this.getDropdownId = this.getDropdownId.bind(this);
     this.onAttrClicked = this.props.onAttrClicked.bind(this);
   }
+
+  // JGM: added this for compatibility with glossary tooltips in identify view, in lieu of adding it in the label below
+  setLabel(charstatename, href) {
+  	let output = '';
+  	if (href) {
+  		output = charstatename + '<a href="' + href + '" class="external-link" title="List of all native species this nursery carries">' + renderToString(<FontAwesomeIcon icon="external-link-alt" />) + '</a>';
+  	} else {
+  		output = charstatename;
+  	}
+ 		return { __html: output}
+	}
 
 	render() {
 	
@@ -42,18 +55,7 @@ class CheckboxList extends React.Component {
 											this.onAttrClicked(attr,itemVal.charstatename,(checked? 'off':'on'))
 										}}
 									/>
-									<label htmlFor={ attr }>{ itemVal.charstatename }
-									{ href && 
-										<a 
-											href={ href }
-											className="external-link"
-											title="List of all native species this nursery carries"
-										>
-											<FontAwesomeIcon icon="external-link-alt" />
-										</a>		
-									}							
-									</label>
-					
+									<label htmlFor={ attr } dangerouslySetInnerHTML={this.setLabel( itemVal.charstatename, href )}></label>					
 							</li>
 						)
 					})
@@ -400,7 +402,7 @@ class FeatureSelector extends React.Component {
           	className="feature-selector-header"
             onClick={this.toggleFeature}
           >
-            <span>{ this.props.title.replace(/_/g, ' ') }</span>
+            <span dangerouslySetInnerHTML={{__html: this.props.title.replace(/_/g, ' ')}}></span>
             
             <img
               className={ "will-v-flip" }
