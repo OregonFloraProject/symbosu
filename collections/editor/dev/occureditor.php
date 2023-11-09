@@ -378,7 +378,7 @@ else{
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=<?php echo $CHARSET; ?>">
 	<title><?php echo $DEFAULT_TITLE; ?> Occurrence Editor</title>
-	<link href="../../css/jquery-ui.css" type="text/css" rel="stylesheet" />
+	<link href="<?php echo $CSS_BASE_PATH; ?>/jquery-ui.css" type="text/css" rel="stylesheet">
 	<?php
 	foreach($CSS_ARR as $cssKey => $cssFile){
 		echo '<link href="'.$CLIENT_ROOT.'/content/collections/occureditor/'.$cssFile.'?ver='.$CACHE_VERSION.'" type="text/css" rel="stylesheet" />'."\n";

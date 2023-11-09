@@ -52,9 +52,10 @@ if($isEditor){
 <html>
 <head>
     <title><?php echo $collMetadata['collectionname']; ?> Fieldguide Results Viewer</title>
-    <link href="../../css/base.css?ver=<?php echo $CSS_VERSION; ?>" type="text/css" rel="stylesheet" />
-    <link href="../../css/main.css<?php echo (isset($CSS_VERSION_LOCAL)?'?ver='.$CSS_VERSION_LOCAL:''); ?>" type="text/css" rel="stylesheet" />
-    <link rel="stylesheet" href="../../css/jquery-ui.css" type="text/css" />
+    <link href="<?php echo $CSS_BASE_PATH; ?>/jquery-ui.css" type="text/css" rel="stylesheet">
+    <?php
+    include_once($SERVER_ROOT.'/includes/head.php');
+    ?>
     <script type="text/javascript" src="../../js/jquery.js"></script>
     <script type="text/javascript" src="../../js/jquery-ui.js"></script>
     <script type="text/javascript" src="../../js/symb/shared.js"></script>

@@ -2,7 +2,7 @@
 header('X-Frame-Options: DENY');
 header('Cache-control: private'); // IE 6 FIX
 date_default_timezone_set('America/Phoenix');
-$CODE_VERSION = '1.2.1.202206';
+$CODE_VERSION = '3.0.15';
 
 if(!isset($CLIENT_ROOT) && isset($clientRoot)) $CLIENT_ROOT = $clientRoot; 
 if(substr($CLIENT_ROOT,-1) == '/') $CLIENT_ROOT = substr($CLIENT_ROOT,0,strlen($CLIENT_ROOT)-1);
@@ -15,7 +15,7 @@ session_start(array('gc_maxlifetime'=>3600,'cookie_path'=>$CLIENT_ROOT,'cookie_s
 include_once($SERVER_ROOT.'/classes/Encryption.php');
 include_once($SERVER_ROOT.'/classes/ProfileManager.php');
 
-//Check cookie to see if signed in
+//Check session data to see if signed in
 $PARAMS_ARR = Array();				//params => 'un=egbot&dn=Edward&uid=301'
 $USER_RIGHTS = Array();
 if(isset($_SESSION['userparams'])) $PARAMS_ARR = $_SESSION['userparams'];
@@ -41,14 +41,14 @@ if(isset($_COOKIE['SymbiotaCrumb']) && !$PARAMS_ARR){
     }
     }
 
-if(!isset($CSS_BASE_PATH)) $CSS_BASE_PATH = $CLIENT_ROOT.'/css/symb';
+if(!isset($CSS_BASE_PATH) || $CSS_BASE_PATH == $CLIENT_ROOT . '/css/symb') $CSS_BASE_PATH = $CLIENT_ROOT . '/css/';
+if(!isset($CSS_VERSION_RELEASE)) $CSS_BASE_PATH .= 'v202209';
+
 $CSS_VERSION = '13';
-if(!isset($CSS_VERSION_LOCAL)) $CSS_VERSION_LOCAL = $CSS_VERSION;
-if(!isset($EML_PROJECT_ADDITIONS)) $EML_PROJECT_ADDITIONS = array();
-$USER_DISPLAY_NAME = (array_key_exists("dn",$PARAMS_ARR)?$PARAMS_ARR["dn"]:"");
-$USERNAME = (array_key_exists("un",$PARAMS_ARR)?$PARAMS_ARR["un"]:0);
-$SYMB_UID = (array_key_exists("uid",$PARAMS_ARR)?$PARAMS_ARR["uid"]:0);
-$IS_ADMIN = (array_key_exists("SuperAdmin",$USER_RIGHTS)?1:0);
+$USER_DISPLAY_NAME = (array_key_exists('dn',$PARAMS_ARR)?$PARAMS_ARR['dn']:'');
+$USERNAME = (array_key_exists('un',$PARAMS_ARR)?$PARAMS_ARR['un']:0);
+$SYMB_UID = (array_key_exists('uid',$PARAMS_ARR)?$PARAMS_ARR['uid']:0);
+$IS_ADMIN = (array_key_exists('SuperAdmin',$USER_RIGHTS)?1:0);
 
 // OregonFlora Compatibility block
 $SOLR_MODE = ((isset($SOLR_URL) && $SOLR_URL)?true:false);
@@ -136,7 +136,7 @@ $AVAILABLE_LANGS = array('en','es','fr','pt');
 $LANG_TAG = 'en';
 if(isset($_REQUEST['lang']) && $_REQUEST['lang']){
 	$LANG_TAG = $_REQUEST['lang'];
-	setcookie('lang', $LANG_TAG, time() + (3600 * 24 * 30),$CLIENT_ROOT);
+	setcookie('lang', $LANG_TAG, time() + (3600 * 24 * 30),'/');
 }
 else if(isset($_COOKIE['lang']) && $_COOKIE['lang']){
 	$LANG_TAG = $_COOKIE['lang'];
@@ -147,7 +147,7 @@ else{
 //if(!$LANG_TAG || strlen($LANG_TAG) != 2) $LANG_TAG = 'en';
 
 //Sanitization
-if($LANG_TAG != 'en' && !in_array($LANG_TAG, $AVAILABLE_LANGS)) $LANG_TAG = 'en';
+const HTML_SPECIAL_CHARS_FLAGS = ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE;
 
 $RIGHTS_TERMS_DEFS = array(
     'http://creativecommons.org/publicdomain/zero/1.0/' => array(
@@ -181,4 +181,7 @@ $RIGHTS_TERMS_DEFS = array(
         'def' => 'Users can copy and redistribute the material in any medium or format. The licensor cannot revoke these freedoms as long as you follow the license terms.'
     )
 );
+
+if($LANG_TAG != 'en' && !in_array($LANG_TAG, $AVAILABLE_LANGS)) $LANG_TAG = 'en';
+
 ?>

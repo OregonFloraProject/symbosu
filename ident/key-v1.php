@@ -59,15 +59,7 @@ if($chars){
 <head>
 	<title><?php echo $DEFAULT_TITLE.$LANG['WEBKEY'].preg_replace('/\<[^\>]+\>/','',$dataManager->getClName()); ?></title>
 	<?php
-	$activateJQuery = false;
-	if(file_exists($SERVER_ROOT.'/includes/head.php')){
-		include_once($SERVER_ROOT.'/includes/head.php');
-	}
-	else{
-		echo '<link href="'.$CLIENT_ROOT.'/css/jquery-ui.css" type="text/css" rel="stylesheet" />';
-		echo '<link href="'.$CLIENT_ROOT.'/css/base.css?ver=1" type="text/css" rel="stylesheet" />';
-		echo '<link href="'.$CLIENT_ROOT.'/css/main.css?ver=1" type="text/css" rel="stylesheet" />';
-	}
+	include_once($SERVER_ROOT.'/includes/head.php');
 	include_once($SERVER_ROOT.'/includes/googleanalytics.php');
 	?>
 	<script type="text/javascript" src="../js/symb/ident.key.js"></script>
@@ -157,7 +149,7 @@ if($chars){
 						<input type="hidden" id="dynclid" name="dynclid" value="<?php echo $dynClid; ?>" />
 						<input type="hidden" id="pid" name="pid" value="<?php echo $pid; ?>" />
 						<input type="hidden" id="rv" name="rv" value="<?php echo $dataManager->getRelevanceValue(); ?>" />
-						<input type="submit" name="submitbutton" id="submitbutton" value="<?php echo $LANG['DISPRESSPEC'];?>"/>
+						<button type="submit" name="submitbutton" id="submitbutton" value="displaySpeciesList"><?php echo $LANG['DISPRESSPEC'];?></button>
 					</div>
 					<hr size="2" />
 

@@ -36,15 +36,7 @@ if($isEditor){
 <head>
 	<title><?php echo $DEFAULT_TITLE; ?> Character Mass Updater</title>
 	<?php
-	$activateJQuery = false;
-		if(file_exists($SERVER_ROOT.'/includes/head.php')){
-		include_once($SERVER_ROOT.'/includes/head.php');
-	}
-	else{
-		echo '<link href="'.$CLIENT_ROOT.'/css/jquery-ui.css" type="text/css" rel="stylesheet" />';
-		echo '<link href="'.$CLIENT_ROOT.'/css/base.css?ver=1" type="text/css" rel="stylesheet" />';
-		echo '<link href="'.$CLIENT_ROOT.'/css/main.css?ver=1" type="text/css" rel="stylesheet" />';
-	}
+	include_once($SERVER_ROOT.'/includes/head.php');
 	?>
 	<script>
 		var addAttrArr = [];
@@ -158,9 +150,6 @@ include($SERVER_ROOT.'/includes/header.php');
 				  			}
 					  		?>
 						</select>
-						<?php
-						count($selectList);
-						?>
 					</div>
 					<div style="margin: 10px 0px;">
 						<input type="checkbox" name="generaonly" value="1" <?php if($generaOnly) echo "checked"; ?> />
@@ -172,7 +161,7 @@ include($SERVER_ROOT.'/includes/header.php');
 						echo "<div style='margin-top:1em;font-size:125%;font-weight:bold;'>$h</div>\n";
 						ksort($charData);
 						foreach($charData as $cidKey => $charValue){
-							echo '<div> <input name="cid" type="radio" value="'.$cidKey.'" onclick="this.form.submit()">'.$charValue.'</div>'."\n";
+							echo '<div> <input name="cid" type="radio" value="'.$cidKey.'" onclick="this.form.submit()"> '.$charValue.'</div>'."\n";
 						}
 					}
 			 		?>
