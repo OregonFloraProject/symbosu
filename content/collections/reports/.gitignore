@@ -1,5 +1,6 @@
+# JGM: don't ignore anything here
 # Ignore everything in this directory
-*
+#*
 # Except this file and labeljson_template.php
 !.gitignore
 !labeljson.php
