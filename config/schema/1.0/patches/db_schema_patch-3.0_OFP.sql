@@ -676,7 +676,9 @@ SELECT occid, IFNULL(identifiedBy, "unknown"), IFNULL(dateIdentified, "s.d."), f
 genus, specificEpithet, taxonRank, infraSpecificEpithet, 1 as isCurrent, identificationReferences, identificationRemarks, taxonRemarks
 FROM omoccurrences;
 
+# Delete duplicates
 #SELECT occid, dateIdentified, identifiedBy, sciname, count(*) as cnt FROM `omoccurdeterminations` GROUP BY occid, dateIdentified, identifiedBy, sciname ORDER BY cnt DESC
+DELETE t1 FROM omoccurdeterminations t1 INNER JOIN omoccurdeterminations t2 WHERE t1.detid > t2.detid AND t1.occid = t2.occid AND t1.dateIdentified = t2.dateIdentified AND t1.identifiedBy = t2.identifiedBy AND t1.sciname = t2.sciname; 
 
 INSERT IGNORE INTO omoccurdeterminations(occid, identifiedBy, dateIdentified, family, sciname, verbatimIdentification, scientificNameAuthorship, tidInterpreted, 
 identificationQualifier, genus, specificEpithet, verbatimTaxonRank, infraSpecificEpithet, isCurrent, identificationReferences, identificationRemarks, 

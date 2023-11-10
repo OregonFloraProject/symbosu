@@ -54,6 +54,11 @@
 	Thank you &mdash; your <a href="https://www.paypal.com/donate/?hosted_button_id=ELVFJLHX3T9JU" target="_blank">donations</a> are greatly appreciated! 
 
 	</p>
+  <!--
+  <p style="color: black; text-align: center; background-color: yellow; font-weight: bold;">
+    Currently undergoing site maintainence. Expect some disruptions, things will be fixed soon. 
+  </p>
+  -->
 </div>
 
 <!-- Global site tag (gtag.js) - Google Analytics 4-->
