@@ -6,9 +6,15 @@ const CSSARR = array('occurVarDefault.css');
 
 //Enter one to many custom java script files 
 //const JSARR = array('example1.js','example2.js'); 
+const JSARR = array('occurVarOSUColls.js'); 
 
 //Custom Processing Status setting
-const PROCESSINGSTATUS = ['unprocessed','label transcription','skeletal entry','merge duplicate','wagner data','expert required','pending review','reviewed','unaccessioned','closed','curator','assistant curator','director','quality control','non-oregon','re-image', 'no dupes', 'special request','unprocessed/NLP','stage 1','stage 2','stage 3','pending review-nfn','de-accession','crowdsource','coge','notes from nature'];
+const PROCESSINGSTATUS = [
+'merge duplicate', 'skeletal entry', 'transfer data', 'reviewed', "vouchervision qc", // Main workflow
+'expert required', 'curator', // Quality Control
+'pull specimen', 're-image', 'foreign language', 'de-accession', // Problems
+'special request', 'unprocessed', 'label transcription', 'coge', 'quality control', 'wagner data', 'unaccessioned', // Admin
+'pending review', 'closed', 'unprocessed/NLP', 'stage 1', 'stage 2', 'stage 3']; // Unused Symbiota defaults
 
 //Uncomment to turn catalogNumber duplicate search check on/off (on by default)
 //define('CATNUMDUPECHECK',true); 
@@ -109,15 +115,15 @@ define('DATAGENERALIZATIONSLABEL','Transcription Notes (Data Generalizations)');
 // Field Tooltip text: uncomment variables and add a value to modify field tooltips that popup on hover
 
 // Collection and Collector info
-define('CATALOGNUMBERTIP','Usually OSC-B- followed by 5 digits. Herbarium sheets with more than one collection label or taxon on the sheet at any time in its determination history, should have a barcode for each, with clear indication to show which barcode represents which collection.');
-define('OTHERCATALOGNUMBERSTIP','Original accession number of the specimen, usually stamped or written on, preceded by the herbarium code, e.g., OSC24228. Newer collections do not have a stamped accession number; leave this blank for those.
+define('CATALOGNUMBERTIP','Usually OSC-B- followed by 5 digits. Packets with more than one collection label or taxon present at any time in its determination history, should have a barcode for each, with clear indication to show which barcode represents which collection.');
+define('OTHERCATALOGNUMBERSTIP','Original accession number of the specimen, usually stamped on, preceded by the herbarium code, e.g., OSC24228. Newer collections do not have a stamped accession number; leave this blank for those.
 Use the following for different collections: 
   * OSC for Oregon State University or College
   * ORE for University of Oregon');
 define('RECORDEDBYTIP','Primary or only collector name. This is often the name that follows “col.”, “leg.”, and “legit.” Omit preceding titles (e.g., Dr., Mr., Mrs., Miss) unless Mrs. is followed by husband’s name. If no collector is present, enter “none”.');
 define('RECORDNUMBERTIP','If no number is present, enter “s.n.” (sine numero is Latin for “without number”). Include any letters or symbols in the collector number (e.g., KP-004b)');
 define('EVENTDATETIP','Date of specimen collection. Enter in the format YYYY-MM-DD. If year, month, or day is unknown, replace missing information with zeros (e.g. 2004-00-00). Roman numerals always indicate the month. If there is no collection date enter “0000-00-00”.');
-define('DUPLICATESTIP','DUPLICATESTIP');
+define('DUPLICATESTIP','Search for duplicate specimens in other herbarium collections to import data from.');
 define('ASSOCIATEDCOLLECTORSTIP','Collectors following the primary collector. Each name should be in order of “First name Last name.”, separated by commas. Exclude other words (e.g., “and”, “with”, “&”). Remove preceding titles (see also Collector).');
 define('VERBATIMEVENTDATETIP','Date as it appears on the label (e.g., 7-3 ‘82, date in another language, a range of dates)');
 define('YYYYMMDDTIP','YYYYMMDDTIP');
@@ -137,20 +143,19 @@ define('ENDDATETIP','ENDDATETIP');
 define('SCIENTIFICNAMETIP','The scientific name on the original label (often not the latest identification!), even if this name is a genus or family. Use “ssp.” for subspecies and “var.” for variety.
   * Select an option from the dropdown list rather than typing out the name when possible. 
   * If there are notes or references, click the pencil beside Date Identified to add them. 
-  * If this name is the current determination, and the specimen is filed under a different name than the name on the specimen, this information should be noted in the Dispositions field.
-  * If there is no scientific name on the original label, leave it blank.');
-define('SCIENTIFICNAMEAUTHORSHIPTIP','Enter authorities (authors of the scientific name) that appear after the scientific name. This field autofills after entering the scientific name if the name is already in our database.
-  * If the name is a variety or subspecies, only enter the author(s) that follow the var. or ssp., not those after the species.
-  * Authors are usually abbreviated (e.g., “(L.) L.F. Hend.” indicates initial publication of the taxonomic concept by Linnaeus and a later taxonomic change to the original name made by Louis Henderson). 
-');
+  * If this name is the current determination, and the specimen is filed under a different name than the name on the specimen, this information should be noted in the Specimen Location (Disposition) field.
+  * If there is no scientific name on the original label, leave it blank.
+  * Do not enter authors in the Scientific name field. For example, Poa bulbosa L. var. concinna Beck” should be transcribed as “Poa bulbosa var. concinna”.
+  * See Appendices 5 and 6 of Transcription Guide for further explanations with examples.');
+define('SCIENTIFICNAMEAUTHORSHIPTIP','Not in use for transcription; this field will autofill if the taxon is in the dictionary of scientific names.');
 define('IDCONFIDENCETIP','Not used during label transcription at OSU.');
 define('IDENTIFICATIONQUALIFIERTIP','The determiner’s expression of uncertainty in their identification, if listed on the label along with the scientific name. Examples are “?”, “aff.”, “cf.”, “possibly”, “probably”, etc.).');
-define('FAMILYTIP','The plant family that this specimen is in, if noted on the label. Plant families end in “ae”. This field autofills after entering the scientific name if the name is already in our database.');
-define('IDENTIFIEDBYTIP','The name of the person who originally identified the specimen on the original label, if other than the collector. The name is often preceded by “Det.” or “Determined by”.');
+define('FAMILYTIP','Not in use for transcription; this field will autofill if the taxon is in the dictionary of scientific names.');
+define('IDENTIFIEDBYTIP','The name of the person who identified the collection, according to the original label. Default to the collector unless “Determined”, “Det.”, or “Det. By” signifies a different person.');
 define('DATEIDENTIFIEDTIP','The date of original identification on the original label, if identified by someone other than the collector. Enter as YYYY-MM-DD (see collection date).');
 define('IDENTIFICATIONREFERENCETIP','Publication reference(s) used in the identification. If multiple references are given, separate them with “ | “.');
 define('IDENTIFICATIONREMARKSTIP','Comments or notes about the identification (e.g., identifying traits, reasons for this ID)');
-define('TAXONREMARKSTIP','Not used during label transcription at OSU.');
+define('TAXONREMARKSTIP','Field disabled. Not used during label transcription at OSU.');
 
 // Locality & Georeferencing
 define('COUNTRYTIP','The country where the specimen was collected. Spell out in full (“United States”, not “U.S.”). If country is not listed, enter “none”.');
@@ -160,11 +165,11 @@ define('COUNTYTIP','The county (parish in Louisiana) in which the specimen was c
   * Select from dropdown list for USA & Canada specimens. 
   * If no county is listed, enter “none”. 
   * If county was added as an annotation, enter the county here, and enter “county interpreted” in the Transcription Notes field.');
-define('MUNICIPALITYTIP','Not generally used at OSU.');
-define('LOCATIONIDTIP','Not generally used at OSU.');
-define('LOCALITYTIP','The geographic description of where the specimen was collected. This should not include country, state, or county information, unless it is necessary for context of the locality (e.g., “southwest corner of Jefferson county” or “northeast Oregon”). Only capitalize pronouns. End phrase with a period.');
+define('MUNICIPALITYTIP','Not generally used at OSU, but record for specimens from Mexico.');
+define('LOCATIONIDTIP','Field disabled. Not in use for OSU collections.');
+define('LOCALITYTIP','The geographic description of where the specimen was collected. This should not include country, state, or county information, unless it is necessary for context of the locality (e.g., “southwest corner of Jefferson county” or “northeast Oregon”). Only capitalize pronouns.');
 define('LOCATIONREMARKS','Not generally used at OSU.');
-define('LOCALITYAUTOLOOKUP','Unless deactivated, when you type in a locality, it will try to autocomplete with previously entered localities that also match the collector, collector number and date. If you select one of those matches, it will fill in any associated data (lat/long, elevation, habitat, etc.)');
+define('LOCALITYAUTOLOOKUP','Unless deactivated, when you type in a locality, it will try to autocomplete with previously entered localities that also match the collector and date. If you select one of those matches, it will fill in any associated data (lat/long, elevation, habitat, etc.)');
 define('LOCALITYSECURITYTIP','Not used during label transcription at OSU.');
 define('LOCALITYSECURITYREASONTIP','Not used during label transcription at OSU.');
 define('DECIMALLATITUDETIP','If Latitude is stated on the label in decimal format, enter here. If on the label as degrees/minutes/seconds, TRS or UTM, click the F (format) button, enter in the respective fields and click the Insert Values button. This auto-populates the Verbatim Coordinates and Lat/Long fields.');
@@ -198,46 +203,45 @@ define('GOOGLEMAPSPOLYGONTIP','Tool to georeference a location as a polygon. Not
 define('FOOTPRINTWKTTIP','Not used during label transcription at OSU.');
 
 // Misc
-define('HABITATTIP','Environmental conditions in which the plant was found (e.g., marsh, grassy field). Include community types (e.g., “Douglas fir forest”). Sometimes it is necessary to repeat a part of the location phrase to provide needed context. End phrase with a period.');
+define('HABITATTIP','Environmental conditions in which the plant was found (e.g., marsh, grassy field). Include community types (e.g., “Douglas fir forest”). Sometimes it is necessary to repeat a part of the location phrase to provide needed context.');
 define('SUBSTRATETIP','The substrate that the specimen was growing on, if noted.');
 //define('HOSTTIP','');
 define('ASSOCIATEDTAXATIP','Other plant taxa listed as growing with the specimen (species associated with community types belong in Habitat e.g., “Douglas fir forest”). Include common names if given on the label. Enter all names separated by a comma, excluding additional words (and, with, &). For quick entry, enter the first three letters of the genus, followed by a space, and the first three letters of the species.');
 define('ASSOCIATEDTAXAAIDTIP','This pops up a helper box to add associated taxa names.');
 define('VERBATIMATTRIBUTESTIP','Information specific to the individual plant(s) as noted on the label (e.g., size, condition, color)');
-define('OCCURRENCEREMARKSTIP','Add any additional data on the label that does not fit into the other data fields. Separate disparate information with a semicolon and end phrase with a period. ');
+define('OCCURRENCEREMARKSTIP','Add any additional data on the label that does not fit into the other data fields, including frequency (common, scattered, rare). Separate disparate information with a semicolon.');
 define('DYNAMICPROPERTIESTIP','Not generally used at OSU.');
-define('LIFESTAGETIP','Not generally used at OSU');
+define('LIFESTAGETIP','Enter the life stage if present on the label (e.g., sporophyte or gametophyte).');
 define('SEXTIP','Enter the gender of the specimen if noted on the original label (e.g., “male” or “female”).');
-define('INDIVIDUALCOUNTTIP','Not generally used at OSU , but record if given.');
+
+define('INDIVIDUALCOUNTTIP','Not generally used at OSU, but record if given.');
 define('SAMPLINGPROTOCOLTIP','Not generally used at OSU, but record if given.');
 define('PREPARATIONSTIP','Not generally used at OSU, but record if given.');
 define('REPRODUCTIVECONDITIONTIP','If the phenology (life stage of the specimen such as “flowering” or “fruiting”) is stated on the label, enter it here.');
 define('ESTABLISHMENTMEANSTIP','Default value is “wild collection” to indicate the collection is naturally occurring (this includes self-propagating garden weeds). 
 Other options are:
   * “cultivated” if the specimen was planted.
-  * “wild seed” if the specimen was planted using seed from a natural occurrence.
-  * “greenhouse weed” if the specimen was growing wild inside of a greenhouse.
   * “uncertain” if whether it was wild or cultivated is unclear.');
 define('CULTIVATIONSTATUSTIP','This should be checked if the label indicates that the collection was from a cultivated plant. Also put “filed as cultivated” in establishment means');
 
 // Curation
 define('TYPESTATUSTIP','The type status (e.g., holotype, isotype) of the specimen. This field should only contain data if the specimen is a type, noted on the specimen.');
-define('DISPOSITIONTIP','The location of the specimen in the herbarium or on loan, normally left blank. Other entries are “missing” and, “filed under” (used when the sheet has multiple taxa, “filed under” is followed by the taxon where it is filed). If the specimen is stored with boxed collections, enter “boxed”. Other locations can also be noted.');
-define('OCCURRENCEIDTIP','Do not edit this for OSU collections.');
-define('FIELDNUMBERTIP','Not generally used at OSU.');
-define('BASISOFRECORDTIP','Do not edit this for OSU collections.');
+define('DISPOSITIONTIP','The location of the specimen in the herbarium, normally left blank. Other entries are “missing” and, “filed under” (used when the sheet has multiple taxa, “filed under” is followed by the taxon where it is filed). If the specimen is stored with boxed collections, enter “boxed”. Other locations can also be noted.');
+define('OCCURRENCEIDTIP','Field disabled. Not in use for OSU collections.');
+define('FIELDNUMBERTIP','Field disabled. Not in use for OSU collections.');
+define('BASISOFRECORDTIP','Field disabled and autofilled. Should always be &quot;PreservedSpecimen&quot; for OSU collections.');
 define('LANGUAGETIP','The language of the label information, if other than English. Use RFC 5646 codes (e.g., “en” for English, “es” for Spanish).');
 define('LABELPROJECTTIP','If the heading on a label denotes a specific project other than flora of a specific place (e.g., “Oregon Flora Project”), enter it here.');
 define('DUPLICATEQUANTITYTIP','Not generally used at OSU, but record if the number of duplicates are given.');
-define('INSTITUTIONCODETIP','Should always be &quot;OSU&quot;. Do not edit this for OSU collections.');
-define('COLLECTIONCODETIP','Should always be &quot;V&quot;. Do not edit this for OSU collections.');
+define('INSTITUTIONCODETIP','Field disabled and autofilled. Should always be &quot;OSU&quot;.');
+define('COLLECTIONCODETIP','Field disabled and autofilled. Should always be &quot;B&quot;.');
 define('OWNERINSTITUTIONCODETIP','Do not edit this for OSU collections.');
 define('PROCESSINGSTATUSTIP','This field is used to indicate the record’s stage in the workflow. Use ‘Status Auto-set’ below to set the processing status for batches of records. Generally if the specimen record has no issues, set it as “Pending review”, If you there are issues you are unsure about, flag it as “Expert required” and note what the issues are in the Transcription Notes field. The full list of statuses is provided in the protocol.');
-define('DATAGENERALIZATIONSTIP','Information derived from the transcription process which is not stated on the original label. Use this to note an issue with transcription that requires future investigation. Also used to indicate interpretations such as “county interpreted” if the county was derived from an annotation and not stated on the label.');
+define('DATAGENERALIZATIONSTIP','Information derived from the transcription process which is not stated on the original label. Use this to report an issue with transcription that requires future investigation. Also used to indicate interpretations such as “county interpreted” if the county was derived from an annotation and not stated on the label or to show information from the original label that was later corrected by an annotation (such as original latitude: 78.823°).');
 define('STATUSAUTOSETTIP','Set this status once, and it sets all subsequent records to the same processing status. Note that this will OVERRIDE the processing status set in the processing status field itself. Options are:
   * Quality Control: The first 10-15 records for new transcribers in training
   * Pending Review: Once training is completed, all records are set to this status, unless there is an issue (see next)
-  * Assistant Curator: If there is an outstanding issue with transcription of the record, use this status (remember to reset the next record back to "Pending Review")');
+  * Expert Required or Curator: If there is an outstanding issue with transcription of the record, use this status (remember to reset the next record back to "Pending Review")');
 
 // Record Cloning
 define('CARRYOVERTIP','CARRYOVERTIP');
