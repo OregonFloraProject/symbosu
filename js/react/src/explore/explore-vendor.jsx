@@ -536,7 +536,7 @@ class ExploreApp extends React.Component {
   
   	var infoSubmitValue = 'Update Info';//(this.state.isUpdating['info']? 'Updating' : 'Update Info');
   	var infoSubmitClass = "btn-primary " + (this.state.isUpdating['info']? 'updating' : 'normal');
-		let suggestionUrl = `${this.props.clientRoot}/garden/rpc/autofillsearch.php`;
+		let suggestionUrl = `${this.props.clientRoot}/webservices/autofillsearch.php`;
     return (
     <div className="wrapper">
 			<Loading 
