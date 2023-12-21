@@ -50,7 +50,7 @@ export default class vendorUploadModal extends Component {
 					};
 
 					Object.keys(acceptable).forEach((columnName) => {
-						if (acceptable[columnName].indexOf(h) > -1) {
+						if (acceptable[columnName].indexOf(h.toLowerCase()) > -1) {
 							ret = columnName;
 						}
 					});
