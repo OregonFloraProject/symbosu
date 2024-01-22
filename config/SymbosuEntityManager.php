@@ -52,7 +52,7 @@ $cache = null;
   }
 
   private static function getDbConfig() {
-    $dbParams = MySQLiConnectionFactory::getConParams("readonly");
+    $dbParams = MySQLiConnectionFactory::getConParams("write");
     return array(
       "dbname" => $dbParams["database"],
       "user" => $dbParams["username"],

@@ -84,6 +84,7 @@ class SideBar extends React.Component {
 						onSearch={ this.props.onSearch }
 						suggestionUrl={ this.props.searchSuggestionUrl }
 						clid={ this.props.clid }
+						dynclid={ this.props.dynclid }
 						searchName={ this.props.searchName }
 						onClearSearch={ this.props.onClearSearch }
 					/>

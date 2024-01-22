@@ -33,6 +33,31 @@ function BorderedItem(props) {
   );
 }
 
+function BorderedItemVendor(props) {
+  let value = props.value;
+  const isArray = Array.isArray(value);
+
+  if (isArray) {
+    value = (
+      <ul className="list-unstyled p-0 m-0">
+        { props.value.map((v) => {
+        		return (
+        			<li key={ v.clid }><a href={ props.clientRoot + '/checklists/checklist.php?cl=' + v.clid + '&pid=4' }>{ v.name }</a></li>
+        		)	 
+        	})
+      	}
+        
+      </ul>
+    );
+  }
+  return (
+    <div className={ "row dashed-border" }>
+      <div className="col px-0 font-weight-bold char-label">{ props.keyName }</div>
+      <div className="col px-0 char-value">{ value }</div>
+    </div>
+  );
+}
+
 function SideBarSection(props) {
   let itemKeys = Object.keys(props.items);
   itemKeys = itemKeys.filter((k) => {
@@ -54,6 +79,27 @@ function SideBarSection(props) {
   );
 }
 
+function SideBarSectionVendor(props) {
+  let itemKeys = Object.keys(props.items);
+  itemKeys = itemKeys.filter((k) => {
+    const v = props.items[k];
+    return showItem(v);
+  });
+
+  return (
+      <div className={ "sidebar-section mb-4 " + (itemKeys.length > 0 ? "" : "d-none") }>
+        <h3 className="text-light-green font-weight-bold mb-3">{ props.title }</h3>
+        {
+          itemKeys.map((key) => {
+            const val = props.items[key];
+            return <BorderedItemVendor key={ key } keyName={ key } value={ val } clientRoot={ props.clientRoot } />
+          })
+        }
+        <span className="row dashed-border"/>
+    </div>
+  );
+} 
+
 class TaxaApp extends React.Component {
   constructor(props) {
     super(props);
@@ -67,6 +113,7 @@ class TaxaApp extends React.Component {
       highlights: {},
       plantFacts: {},
       growthMaintenance: {},
+      commercialAvailability: {},
       isOpen: false,//imagemodal
       isPreviewOpen: false,//explorePreviewModal
       currClid: -1,//explorePreviewModal
@@ -186,7 +233,6 @@ class TaxaApp extends React.Component {
               "Landscape uses": res.characteristics.growth_maintenance.landscape_uses
             }
           });
-          
           const nativeGroups = [];
 					httpGet(`${this.props.clientRoot}/garden/rpc/api.php?canned=true`)
 					.then((res) => {
@@ -199,6 +245,28 @@ class TaxaApp extends React.Component {
 						})
 						this.setState({nativeGroups: nativeGroups	});
 					});
+					
+					const commercialAvailability = {};
+					var vendorURL = `${this.props.clientRoot}/checklists/rpc/api-vendor.php?action=taxa_garden&tid=${this.props.tid}`;
+					//console.log(vendorURL);
+					httpGet(vendorURL)
+					.then((res) => {
+          	res = JSON.parse(res);
+						//console.log(res);
+						Object.entries(res).map(([key, taxon]) => {
+							//console.log(taxon.sciname);
+							let vendors = [];
+							Object.entries(taxon.vendors).map(([key,vendor]) => {
+								vendors.push({'clid':vendor.clid,'name':vendor.name});
+							});
+							//console.log(vendors);
+							commercialAvailability[taxon.sciname] = vendors;
+						})
+						//console.log(commercialAvailability);
+						this.setState({commercialAvailability: commercialAvailability	});
+					});
+					
+					
           
         })
         .catch((err) => {
@@ -253,7 +321,6 @@ class TaxaApp extends React.Component {
 							<figcaption>{ this.state.images[0].photographer}</figcaption>
 							</figure>
 						}
-            
             
             <p className="mt-4">
               {/*
@@ -374,6 +441,7 @@ class TaxaApp extends React.Component {
 
             <SideBarSection title="Plant Facts" items={ this.state.plantFacts } />
             <SideBarSection title="Growth and Maintenance" items={ this.state.growthMaintenance } />
+            <SideBarSectionVendor title="Commercial Availability" items={ this.state.commercialAvailability } clientRoot={this.props.clientRoot}/>
             <div className="taxa-link">
             	<a href={ getTaxaPage(this.props.clientRoot, this.getTid()) }><button className="d-block my-2 btn-primary">Core profile page</button></a>
             </div>

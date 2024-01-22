@@ -13,6 +13,10 @@ hence this var to mimic 1) the structure returned by IdentManager.php
 with 2) content custom to Natives.
 States are added in get_garden_characteristics() below
 */
+#$CID_NURSERY = 209;
+#$CID_REGION = 208;
+
+
 $CUSTOM_GARDEN_CHARACTERISTICS = [
 	[
 		'hid' => 1,
@@ -206,6 +210,27 @@ $CUSTOM_GARDEN_CHARACTERISTICS = [
 				'states'			=> [],
 			],
 		]
+	],
+	[
+		'hid' => 5,
+		'headingname' => 'Commercial Availability',
+		'subheading'	=> '',//'<a href="' . $CLIENT_ROOT . '/projects/index.php?pid=4">View all participating nurseries and the native species they carry</a>',
+		'characters' => [
+			[		
+				'charname' 		=> 'click to auto-select nurseries from a region below',
+				'cid'					=> getRegionCid(),
+				'display'			=> 'groupfilter',
+				'units'				=> '',
+				'states'			=> [],
+			],
+			[		
+				'charname' 		=> 'nursery availability',
+				'cid'					=> getNurseryCid(),
+				'display'			=> '',#vendor
+				'units'				=> '',
+				'states'			=> [],
+			],
+		]
 	]
 ];
 
@@ -230,42 +255,112 @@ function getEmpty() {
   ];
 }
 
-
-function get_garden_characteristics() {
+function get_garden_characteristics($tids) {
 	global $CUSTOM_GARDEN_CHARACTERISTICS;
-	$em = SymbosuEntityManager::getEntityManager();
-	$charStateRepo = $em->getRepository("Kmcs");
 	
+	#$em = SymbosuEntityManager::getEntityManager();
+	#$charStateRepo = $em->getRepository("Kmcs");
+	
+	$identManager = new IdentManager();
+
+	$identManager->setClid(Fmchecklists::$CLID_GARDEN_ALL);
+	$identManager->setPid(Fmchecklists::$PID_GARDEN_ALL);
+	
+	/*hack: use Fmchklstprojlink|sortSequence to store cs values, 
+					which we use to look up the clid */
+	$em = SymbosuEntityManager::getEntityManager();
+	$checklistRepo = $em->getRepository("Fmchecklists");
+
+	$lookups = $identManager->getVendorLookups();
+	$clidLookup = $lookups->clidLookup;
+	$childLookup = $lookups->childLookup;
+
+	$identManager->setTaxa();
+	$cids = [];
 	foreach ($CUSTOM_GARDEN_CHARACTERISTICS as $idx => $group) {
 		foreach ($group['characters'] as $gidx => $char) {
-			if (empty($CUSTOM_GARDEN_CHARACTERISTICS[$idx]['characters'][$gidx]['states'])) {#skip if we hardcoded them above
-				$csQuery = $charStateRepo->findBy([ "cid" => $char['cid'] ], ["sortsequence" => "ASC"]);
-				foreach ($csQuery as $cs) {
+			if (empty($CUSTOM_GARDEN_CHARACTERISTICS[$idx]['characters'][$gidx]['states'])) {
+				$cids[] = $char['cid'];
+			}
+		}
+	}
+	$cresults = $identManager->getCharQuery($tids,$cids);
+	#var_dump($cresults);
+	
+	foreach ($cresults as $cs) {
+		foreach ($CUSTOM_GARDEN_CHARACTERISTICS as $idx => $group) {
+			foreach ($group['characters'] as $gidx => $char) {
+				if ($char['cid'] == $cs['cid']) {
+					
 					$tmp = [];
 					$tmp['cid'] = $char['cid'];
-					$tmp['charstatename'] = $cs->getCharstatename();
-					$tmp['cs'] = $cs->getCs();
+					$tmp['charstatename'] = $cs['charstatename'];#$cs->getCharstatename();
+					$tmp['cs'] = $cs['cs'];#$cs->getCs();
 					$tmp['numval'] = floatval(preg_replace("/[^0-9\.]/","",$tmp['charstatename']));
-				
+					
+					if (getRegionCid() == $char['cid']) {
+						if ($childLookup[$cs['cs']]) {
+							$tmp['children'] = $childLookup[$cs['cs']];
+						}
+					}		
+					if (getNurseryCid() == $char['cid']) {	
+						if ($clidLookup[$cs['cs']]) {
+							$tmp['clid'] = $clidLookup[$cs['cs']];
+							$tmp['pid'] = Fmchecklists::$PID_VENDOR_ALL;
+						}
+					}
+					/*
+						switch ($cs['cs']) {
+							#$CUSTOM_GARDEN_CHARACTERISTICS[$idx]['characters'][$gidx]['children'][] = [];
+							case 1:#14928 Portland Metro
+								$tmp['children'] = [2,4];#14921 Aurora Nursery,14923 BeaverLake Nursery
+								break;
+							case 2:#14929 W Valley
+								$tmp['children'] = [3,30];#14922 Balance Restoration,14924 Bloom River Gardens,14927 Katie's Native
+								break;
+							case 3:#14930 Eastern
+								$tmp['children'] = [8];#14925 Clearwater
+								break;
+							case 4:#14931 Sisk
+								$tmp['children'] = [1];#14920 Althouse
+								break;
+						}
+						*/			
 					$CUSTOM_GARDEN_CHARACTERISTICS[$idx]['characters'][$gidx]['states'][] = $tmp;
+					
 				}
 			}
 		}
 	}
+
 	return $CUSTOM_GARDEN_CHARACTERISTICS;
 }
 
-
+	
 /**
  * Returns canned searches for the react page
  */
+
 function get_canned_searches() {
 	$em = SymbosuEntityManager::getEntityManager();
 	$checklistRepo = $em->getRepository("Fmchecklists");
-	$gardenChecklists = $checklistRepo->findBy([ "parentclid" => Fmchecklists::$CLID_GARDEN_ALL ]);
+	#$gardenChecklists = $checklistRepo->findBy([ "parentclid" => Fmchecklists::$CLID_GARDEN_ALL ]);
+	$canned = $em->createQueryBuilder()
+		->select(['c.clid'])
+		->from("Fmchecklists","c")
+		->innerJoin("Fmchklstprojlink","proj","WITH","c.clid = proj.clid")
+		->where("proj.pid = :pid")
+		->andWhere("c.parentclid = " . Fmchecklists::$CLID_GARDEN_ALL)
+		->setParameter(":pid",3)
+		->distinct()
+	;
+	$cquery = $canned->getQuery();
+	$cresults = $cquery->execute();
+	
 	$results = [];
 
-	foreach ($gardenChecklists as $cl) {
+	foreach ($cresults as $cresult) {
+		$cl = $checklistRepo->findBy([ "clid" => $cresult['clid']])[0];
 		array_push($results, [
 			"clid" => $cl->getClid(),
 			"name" => $cl->getName(),
@@ -277,81 +372,12 @@ function get_canned_searches() {
 	return $results;
 }
 
-/*
-function get_garden_characteristics($cid) {
-	$em = SymbosuEntityManager::getEntityManager();
-	$charStateRepo = $em->getRepository("Kmcs");
-	$csQuery = $charStateRepo->findBy([ "cid" => $cid ], ["sortsequence" => "ASC"]);
-	$return = array_map(function($cs) { return $cs->getCharstatename(); }, $csQuery);
-	return $return;
-}
-*/
-
 
 
 /**
  * Returns all unique taxa with thumbnail urls
  * @params $_GET
  */
- /*
-function get_garden_taxa($params) {
-	$memory_limit = ini_get("memory_limit");
-	ini_set("memory_limit", "1G");
-	set_time_limit(0);
-
-	$search = null;
-	$results = [];
-
-	if (key_exists("search", $params) && $params["search"] !== "" && $params["search"] !== null) {
-		$search = strtolower(preg_replace("/[;()-]/", '', $params["search"]));
-	}
-
-	$em = SymbosuEntityManager::getEntityManager();
-	$taxaRepo = $em->getRepository("Taxa");
-
-	// All tids that belong to Garden checklist
-	$gardenTaxaQuery = $taxaRepo->createQueryBuilder("t")
-		->innerJoin("Fmchklsttaxalink", "tl", "WITH", "t.tid = tl.tid")
-		#->innerJoin("Fmchecklists", "cl", "WITH", "tl.clid = cl.clid")
-		->where("tl.clid = " . Fmchecklists::$CLID_GARDEN_ALL);
-
-	if ($search !== null) {
-		$gardenTaxaQuery
-			->innerJoin("Taxavernaculars", "tv", "WITH", "t.tid = tv.tid")
-			->andWhere($gardenTaxaQuery->expr()->orX(
-				$gardenTaxaQuery->expr()->like("t.sciname", ":search"),
-				$gardenTaxaQuery->expr()->like("tv.vernacularname", ":search")
-			))
-			->groupBy("t.tid")
-			->setParameter("search", "$search%");
-	}
-
-	$gardenTaxaModels = $gardenTaxaQuery->getQuery()->execute();
-
-	foreach ($gardenTaxaModels as $taxaModel) {
-		$taxa = TaxaManager::fromModel($taxaModel);
-
-		array_push($results, array_merge(
-				$taxa->getCharacteristics(),
-				[
-					"tid" => $taxa->getTid(),
-					"sciName" => $taxa->getSciname(),
-					"vernacular" => [
-						"basename" => $taxa->getBasename(),
-						"names" => $taxa->getVernacularNames(),
-					],
-					"image" => $taxa->getThumbnail(),
-					"checklists" => $taxa->getChecklists()
-				]
-			)
-		);
-	}
-
-	ini_set("memory_limit", $memory_limit);
-	set_time_limit(30);
-	return $results;
-}
-*/
 
 function get_garden_taxa($params) {
 
@@ -367,7 +393,7 @@ function get_garden_taxa($params) {
 	$identManager = new IdentManager();
 	$identManager->setClid($params['clid']);
 	$identManager->setPid(3);
-	$results["clid"] = 54;
+	$results["clid"] = getGardenClid();
 	$results["pid"] = 3;
 	
 /*
@@ -440,6 +466,7 @@ function get_garden_taxa($params) {
 		foreach ($taxa as $taxon) {#flatten tids into an array
 			$results['tids'][] = $taxon['tid'];
 		}
+		$results["characteristics"] = get_garden_characteristics($results['tids']);
 		
 	}else{#get full default checklist
 	
@@ -470,12 +497,13 @@ function get_garden_taxa($params) {
 		}
 		$results['tids'] = $tids;
 		$repo = $em->getRepository("Fmchecklists");
-		$model = $repo->find(54);
+		$model = $repo->find(getGardenClid());
 		$checklist = ExploreManager::fromModel($model);
 		$checklist->setPid(3);
 		$results["clid"] = $checklist->getClid();
 		$results["pid"] = $checklist->getPid();
 		$results["title"] = $checklist->getTitle();
+		$results["characteristics"] = get_garden_characteristics($results['tids']);
 
 	}
 	ini_set("memory_limit", $memory_limit);
@@ -487,13 +515,10 @@ function get_garden_taxa($params) {
 $searchResults = [];
 if (key_exists("canned", $_GET) && $_GET["canned"] === "true") {
 	$searchResults = get_canned_searches();
-} else if (key_exists("chars", $_GET) && $_GET['chars'] == 'true') {
+}/* else if (key_exists("chars", $_GET) && $_GET['chars'] == 'true') {
 	$searchResults = get_garden_characteristics();
 	#var_dump($searchResults);
-} /*else if (key_exists("attr", $_GET) && is_numeric($_GET['attr'])) {
-	$searchResults = get_garden_characteristics(intval($_GET['attr']));
-	#var_dump($searchResults);
-} */ else {
+}*/ else {
 	$searchResults = get_garden_taxa($_GET);
 
 }

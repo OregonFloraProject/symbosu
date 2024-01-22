@@ -115,9 +115,10 @@ class IdentManager extends Manager {
   	$params = array();
   	$orderBy = array();
   	$results = null;
+		$newResults = array();
+		$em = SymbosuEntityManager::getEntityManager();
   	
   	if ($this->clid || $this->dynClid) {
-			$em = SymbosuEntityManager::getEntityManager();
 			$qb = $em->createQueryBuilder();
 			$selects = ["t.tid"];
 			if ($this->IDsOnly == false) {
@@ -132,7 +133,6 @@ class IdentManager extends Manager {
 			
 			#$wheres[] = "v.sortsequence = 1";#causes basename to disappear
 			$wheres[] = "ts.taxauthid = 1";
-			$wheres[] = "t.rankid = 220";
 			$groupBy = [
 				"v.vernacularname",
 			];
@@ -219,6 +219,35 @@ class IdentManager extends Manager {
 				#);
 				*/
 			}
+			#ATTRs including vendors						
+			$lookups = $this->getVendorLookups();
+			$clidLookup = $lookups->clidLookup;
+			$childLookup = $lookups->childLookup;
+			$vendorClids = [];
+			#var_dump($clidLookup);
+			if (sizeof($this->attrs)) {
+        $count = 0;
+				foreach ($this->attrs as $cid => $states) {
+					$count++;
+					$alias = 'D' . $count;#create a unique alias for each join
+					if ($cid == getNurseryCid()) {#vendors to be added below with clids
+						#var_dump($states);
+						foreach ($states as $state) {
+							$vendorClids[] = $clidLookup[$state];
+						}
+						#var_dump($sclid);
+					}else{
+						$innerJoins[] = array("Kmdescr","{$alias}","WITH","t.tid = {$alias}.tid");
+						$wheres[] = "{$alias}.cid = :{$alias}cid";
+						$wheres[] = "{$alias}.cs IN (" . join(",",$states) . ")";
+						$params[] = array(":{$alias}cid",$cid);
+					}
+				}
+			}
+			
+			#var_dump($this->attrs);
+			#var_dump($vendorClids);
+			
 			if ($this->dynClid) {
 				$innerJoins[] = array("Fmdyncltaxalink","clk","WITH","t.tid = clk.tid");
 				$wheres[] = "clk.dynclid = :dynclid";
@@ -229,9 +258,39 @@ class IdentManager extends Manager {
 					$innerJoins[] = array("Omoccurrences","o","WITH","t.tid = o.TidInterpreted");
 					#wheres[] = $this->dynamicSQL;
 				}else{
+					/*
+						Vendor checklists can have trinomials, but the Natives checklist (54) doesn't, so we want to catch and display those trinomials' parent binomials
+						Leaving this open to any request that provides nursery attrs for now, which theoretically could include other clids besides 54
+					*/
 					$innerJoins[] = array("Fmchklsttaxalink","clk","WITH","t.tid = clk.tid");
-					$wheres[] = "clk.clid = :clid";
 					$params[] = array("clid",$this->clid);
+					if ($vendorClids) {//check both 54 and vendor checklist, and also handle trinomials
+						$innerJoins[] = array("Fmchklsttaxalink","clk2","WITH","t.tid = clk2.tid");
+						
+						$wheres[] = $qb->expr()->orX(
+													$qb->expr()->andX(//binomials
+														$qb->expr()->eq('t.rankid',"220"),
+				 										$qb->expr()->in('clk2.clid',$vendorClids),
+														$qb->expr()->eq('clk.clid',":clid"),
+													),
+													$qb->expr()->in('t.tid',//trinomials
+														$em->createQueryBuilder()
+															->select('subt.tid')
+															->from("Taxa","subt")
+															->innerJoin("Taxaenumtree","subte1","WITH","subt.tid = subte1.parenttid")
+															->innerJoin("Fmchklsttaxalink","subclk3","WITH","subt.tid = subclk3.tid")
+															->innerJoin("Fmchklsttaxalink","subclk4","WITH","subte1.tid = subclk4.tid")
+															->andWhere('subclk3.clid = :clid')//binomial is in 54
+															->andWhere('subclk4.clid IN (' . join(",",$vendorClids) . ')')//trinomial is in vendor checklist
+															->setParameter(":clid",$this->clid)//NOTE: not literally 54, but the clid value, which right now is only 54
+															->getDQL()													
+													)
+												);
+						
+					}else{//default
+						//$wheres[] = "t.rankid = 220";
+						$wheres[] = "clk.clid = :clid";
+					}
 				}
 			}
 			if (!empty($this->taxonFilter) && $this->taxonFilter != "All Species") {
@@ -241,19 +300,11 @@ class IdentManager extends Manager {
 										);
 				$params[] = array("taxon",$this->taxonFilter);
 			}
-			#var_dump($this->attrs);
-			if (sizeof($this->attrs)) {
-        $count = 0;
-				foreach ($this->attrs as $cid => $states) {
-					$count++;
-					$alias = 'D' . $count;#create a unique alias for each join
-					$innerJoins[] = array("Kmdescr","{$alias}","WITH","t.tid = {$alias}.tid");
-					$wheres[] = "{$alias}.cid = :{$alias}cid";
-					$wheres[] = "{$alias}.cs IN (" . join(",",$states) . ")";
-					$params[] = array(":{$alias}cid",$cid);
-				}
-			}
-			
+
+			#var_dump($innerJoins);
+			#var_dump($wheres);
+			#var_dump($params);
+			#exit;
 			#set EM
 			$taxa = $em->createQueryBuilder()
 				->select($selects)
@@ -277,11 +328,12 @@ class IdentManager extends Manager {
 			#$taxa->groupBy(join(", ",$groupBy));
 			$taxa->orderBy(join(",",$orderBy));
 			$tquery = $taxa->getQuery();
+			#var_dump($this->searchName);
 			#var_dump($tquery->getSQL());
+			#var_dump($tquery->getParameters());exit;
 			$this->currQuery = $tquery;
 			$results = $tquery->getResult();
 
-			$newResults = array();
 			$currSciName = '';
 			$currIdx = null;
 			#var_dump($results);exit;
@@ -311,7 +363,7 @@ class IdentManager extends Manager {
 						$currIdx = $idx;
 					}
 				}
-			}	
+			}#end foreach $results	
 		}
 		$this->taxa = array_values($newResults);
 		$em->flush();
@@ -323,7 +375,7 @@ class IdentManager extends Manager {
 			$charList = array();
 			$em = SymbosuEntityManager::getEntityManager();
 			$qb = $em->createQueryBuilder();
-			$em3 = $em->createQueryBuilder();
+			#$em3 = $em->createQueryBuilder();
 			$chars = $em->createQueryBuilder()
 				->select(['t.tid, descr.cid'])
 				->from("Taxa","t")
@@ -357,73 +409,7 @@ class IdentManager extends Manager {
 			}
 			$cids = array_unique(array_merge($cids,array_keys($this->attrs)));
 			
-			$selects = [
-				"descr.tid",
-				"chars.cid",
-				"cs.cs",
-				"cs.charstatename",
-				"cs.description as csdescr",
-				"chars.charname",
-				"chars.description as chardescr",
-				"chars.helpurl",
-				"chars.difficultyrank",
-				"chars.display",
-				"chars.units",
-				"chars.defaultlang",
-				"Count(cs.cs) as ct",
-				"chead.hid",
-				"chead.headingname"
-			];
-			$groupBy = [
-				"chead.language", 
-				"cs.cid", 
-				"cs.cs", 
-				"cs.charstatename", 
-				"chars.charname", 
-				"chead.headingname", 
-				"chars.helpurl",
-				"chars.difficultyrank", 
-				"chars.defaultlang", 
-				"chars.chartype"
-			];
-			$having = [
-				$qb->expr()->andX(
-					$qb->expr()->eq('chead.language',':lang'),
-					$qb->expr()->in('cs.cid',":cids"),
-					$qb->expr()->neq('cs.cs',":cs"), 
-					$qb->expr()->orX(
-						$qb->expr()->eq('chars.chartype',":UM"),
-						$qb->expr()->eq('chars.chartype',":OM")
-					),
-					$qb->expr()->lt('chars.difficultyrank',":difficultyrank")
-				)
-			];
-			$chars = $em->createQueryBuilder()
-				->select($selects)
-				->from("Kmdescr","descr")
-				->innerJoin("Kmcs","cs","WITH",$qb->expr()->andX(
-											$qb->expr()->eq('descr.cs','cs.cs'),
-											$qb->expr()->eq('descr.cid','cs.cid')
-										))
-				->innerJoin("Kmcharacters","chars","WITH","chars.cid = cs.cid")
-				->innerJoin("Kmcharheading","chead","WITH","chars.hid = chead.hid")
-				->andWhere($qb->expr()->in('descr.tid',':tids'))
-				->setParameter(":tids",$taxa_tids)
-				->setParameter(":cids",$cids)
-				->setParameter(":lang","English")
-				->setParameter(":difficultyrank",3)
-				->setParameter(":cs",'-')
-				->setParameter(":UM",'UM')
-				->setParameter(":OM",'OM')
-				->groupBy(join(", ",$groupBy))
-				->having(join(", ",$having))
-				->orderBy("chead.sortsequence, chars.sortsequence, chars.charname, cs.sortsequence, cs.charstatename")
-				->distinct()
-			;
-			$cquery = $chars->getQuery();
-			#var_dump($cquery->getSQL());
-			#var_dump($cquery->getParameters());
-			$cresults = $cquery->execute();
+			$cresults = $this->getCharQuery($taxa_tids,$cids);
 			$results = [];
 
 			foreach ($cresults as $cres) {
@@ -464,12 +450,121 @@ class IdentManager extends Manager {
 			#IN(4835,5242,5665,6117)
 		}
 	}
-
+	public function getCharQuery($tids,$cids) {
+		$em = SymbosuEntityManager::getEntityManager();
+		$qb = $em->createQueryBuilder();
+		$selects = [
+			"descr.tid",
+			"chars.cid",
+			"cs.cs",
+			"cs.charstatename",
+			"cs.description as csdescr",
+			"chars.charname",
+			"chars.description as chardescr",
+			"chars.helpurl",
+			"chars.difficultyrank",
+			"chars.display",
+			"chars.units",
+			"chars.defaultlang",
+			"Count(cs.cs) as ct",
+			"chead.hid",
+			"chead.headingname"
+		];
+		$groupBy = [
+			"chead.language", 
+			"cs.cid", 
+			"cs.cs", 
+			"cs.charstatename", 
+			"chars.charname", 
+			"chead.headingname", 
+			"chars.helpurl",
+			"chars.difficultyrank", 
+			"chars.defaultlang", 
+			"chars.chartype"
+		];
+		$having = [
+			$qb->expr()->andX(
+				$qb->expr()->eq('chead.language',':lang'),
+				$qb->expr()->in('cs.cid',":cids"),
+				$qb->expr()->neq('cs.cs',":cs"), 
+				$qb->expr()->orX(
+					$qb->expr()->eq('chars.chartype',":UM"),
+					$qb->expr()->eq('chars.chartype',":OM")
+				),
+				$qb->expr()->lt('chars.difficultyrank',":difficultyrank")
+			)
+		];
+		$chars = $em->createQueryBuilder()
+			->select($selects)
+			->from("Kmdescr","descr")
+			->innerJoin("Kmcs","cs","WITH",$qb->expr()->andX(
+										$qb->expr()->eq('descr.cs','cs.cs'),
+										$qb->expr()->eq('descr.cid','cs.cid')
+									))
+			->innerJoin("Kmcharacters","chars","WITH","chars.cid = cs.cid")
+			->innerJoin("Kmcharheading","chead","WITH","chars.hid = chead.hid")
+			->andWhere($qb->expr()->in('descr.tid',':tids'))
+			->setParameter(":tids",$tids)
+			->setParameter(":cids",$cids)
+			->setParameter(":lang","English")
+			->setParameter(":difficultyrank",3)
+			->setParameter(":cs",'-')
+			->setParameter(":UM",'UM')
+			->setParameter(":OM",'OM')
+			->groupBy(join(", ",$groupBy))
+			->having(join(", ",$having))
+			->orderBy("chead.sortsequence, chars.sortsequence, chars.charname, cs.sortsequence, cs.charstatename")
+			->distinct()
+		;
+		$cquery = $chars->getQuery();
+		#var_dump($cquery->getSQL());
+		#var_dump($cquery->getParameters());
+		$cresults = $cquery->execute();
+		return $cresults;
+	}
 	public function getAttrs() {
 		return $this->attrs;
 	}
 	public function getTaxa() {
 		return $this->taxa;
+	}
+	/* This could go elsewhere */
+	public function getVendorLookups() {
+		$em = SymbosuEntityManager::getEntityManager();
+		$vendor = $em->createQueryBuilder()
+			->select(['proj.clid','proj.sortSequence','chil.clidChild'])#
+			->from("Fmchklstprojlink","proj")
+			->leftJoin("Fmchklstchildren","chil","WITH","proj.clid = chil.clid")	
+			->where("proj.pid = :pid")
+			->setParameter(":pid",Fmchecklists::$PID_VENDOR_ALL)
+		;
+
+		$vquery = $vendor->getQuery();
+		$vresults = $vquery->execute();
+	
+		$cisLookup = [];
+		$clidLookup = [];
+		foreach ($vresults as $vres) {
+			if (!isset($cisLookup[$vres['clid']])) {
+				$cisLookup[$vres['clid']] = $vres['sortSequence'];
+			}
+		}
+		#var_dump($cisLookup);
+		foreach ($vresults as $vres) {
+			#var_dump($vres);
+			if (isset($vres['clidChild']) && $vres['clidChild'] != NULL && isset($cisLookup[$vres['clidChild']])) {
+				$childLookup[$vres['sortSequence']][] = $cisLookup[$vres['clidChild']];
+			}elseif($vres['clidChild'] == null){#must not be a parent
+				$clidLookup[$vres['sortSequence']] = $vres['clid'];
+			}
+		}
+		#var_dump($childLookup);
+		#var_dump($clidLookup);
+		$ret = new StdClass();
+		$ret->childLookup = $childLookup;
+		$ret->clidLookup = $clidLookup;
+		#exit;
+		return $ret;
 	}
 }
 

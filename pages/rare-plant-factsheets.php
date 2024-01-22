@@ -56,6 +56,9 @@ header( "Content-Type: text/html; charset=" . $charset );
         <!-- .inner-content makes a column max width 1100px, centered in the viewport -->
         <div class="inner-content">
 					<!-- place static page content here. -->
+					<?php
+					echo '<h2 class="temp">Coming soon to oregonflora.org: an <a href="' . $CLIENT_ROOT . '/pages/rare-plant-guide.php">interactive Rare Plant Guide</a>!</h2>';
+					?>
 					<h2>Here are printable factsheets to help identify 100 rare taxa in Oregon. Each has features such as ‘look-alike’ species, best survey times, and illustrations highlighting important characters.</h2>
 					<div class="inset index">
 						<?php /* <h3>Index</h3> */ ?>
@@ -69,7 +72,8 @@ header( "Content-Type: text/html; charset=" . $charset );
 							
 						</ul>
 					</div>
-					<p>To download a rare plant fact sheet, click on the taxon name or its PDF icon. We’ve also included a link to each taxon’s profile page.</p>
+					<p>To download a rare plant fact sheet, click on the taxon name or its PDF icon. We’ve also included a link to each taxon’s profile page. </p>
+
 					
 					<div class="row columns">
 						<div id="column-main" class="col-lg-12">

@@ -310,6 +310,7 @@ img {
 		margin: 5% auto 0;
 	}
 	&.searching {
+		min-height: 200px;
 		display: block;
 	}
 }
@@ -490,6 +491,9 @@ img {
     }
     &.title-publications {
       background-image: url("@{subdir}/images/header/h1publications.jpg");
+    }
+    &.title-rare {
+      background-image: url("@{subdir}/images/header/h1casrub2.jpg");
     }
   }
 
@@ -986,7 +990,18 @@ img {
 			}
 		}
 	}
+	&.rare-plant-guide {
+		hr {
+			border-top: 1.5px solid rgba(0,0,0,.1);
+			margin-block: 1rem 3rem;
+		}
+	}
 	&.rare-plant-factsheets {
+		h2.temp {
+			text-align: center;
+			font-style: italic;
+			color: #844244;
+		}
 		#column-main {
 			ul.factsheets {
 				list-style: none;

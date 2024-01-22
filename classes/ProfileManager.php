@@ -50,6 +50,7 @@ class ProfileManager extends Manager{
 				else return false;
 			}
 			if($status){
+
 				if(strlen($this->displayName) > 15) $this->displayName = $this->userName;
 				if(strlen($this->displayName) > 15) $this->displayName = substr($this->displayName,0,10).'...';
 				$this->reset();

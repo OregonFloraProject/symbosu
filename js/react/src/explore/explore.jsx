@@ -20,19 +20,23 @@ class ExploreApp extends React.Component {
   constructor(props) {
     super(props);
     const queryParams = getUrlQueryParams(window.location.search);
-
+    
+    
     // TODO: searchText is both a core state value and a state.filters value; How can we make the filtering system more efficient?
     this.state = {
       isLoading: true,
       isSearching: false,
-      clid: null,
-      pid: null,
+      currentTids: [],
+      clid: -1,
+      pid: -1,
+      dynclid: -1,
       projName: null,
       title: '',
       authors: '',
       abstract: '',
       displayAbstract: 'default',
       googleMapUrl: '',
+      exportUrl: '',
       exportUrlCsv: '',
       exportUrlWord: '',
       //taxa: [],
@@ -62,6 +66,7 @@ class ExploreApp extends React.Component {
     };
     this.getPid = this.getPid.bind(this);
     this.getClid = this.getClid.bind(this);
+    this.getDynclid = this.getDynclid.bind(this);
 
     this.onSearchTextChanged = this.onSearchTextChanged.bind(this);
     this.onSearch = this.onSearch.bind(this);
@@ -83,6 +88,9 @@ class ExploreApp extends React.Component {
   getPid() {
     return parseInt(this.props.pid);
   }
+  getDynclid() {
+    return parseInt(this.props.dynclid);
+  }
   toggleDisplay = () => {
 		let newVal = 'default';
 		if (this.state.displayAbstract == 'default') {
@@ -97,9 +105,21 @@ class ExploreApp extends React.Component {
   componentDidMount() {
     // Load search results
     //this.onSearch({ text: this.state.searchText });
-    let url = `${this.props.clientRoot}/checklists/rpc/api.php?clid=${this.props.clid}&pid=${this.props.pid}`;
-    console.log(url);
-    console.log(this.state.showTaxaDetail);
+    let exportUrl = `${this.props.clientRoot}/ident/rpc/api.php`;//use identify api for export
+    let url = `${this.props.clientRoot}/checklists/rpc/api.php`;//?clid=${this.props.clid}&pid=${this.props.pid}`;
+    let identParams = new URLSearchParams();
+    if (this.getClid() > -1) {
+	    identParams.append("clid",this.getClid());
+	  }
+	  if (this.getPid() > -1) {
+	    identParams.append("pid",this.getPid());
+	  }
+    if (this.getDynclid() > -1) {
+	    identParams.append("dynclid",this.getDynclid());
+	  }
+  	url = url + '?' + identParams.toString();
+    //console.log(url);
+    //console.log(this.state.showTaxaDetail);
     httpGet(url)
 			.then((res) => {
 				// /checklists/rpc/api.php?clid=3
@@ -126,23 +146,33 @@ class ExploreApp extends React.Component {
 				if (this.getPid() == 3) {
 					viewType = 'grid';
 				}
-							
+				let taxa  = [];
+				let tids = [];
+				if (res && res.taxa) {
+					taxa = this.sortResults(res.taxa);
+					tids = res.tids;//unordered
+				}
+				
 				this.setState({
 					clid: this.getClid(),
 					pid: this.getPid(),
+					dynclid: this.getDynclid(),
 					projName: res.projName,
 					title: res.title,
 					authors: res.authors,
 					abstract: res.abstract,
 					viewType: viewType,
 					//taxa: res.taxa,
-					searchResults: this.sortResults(res.taxa),
+					searchResults: taxa,
+					currentTids: tids,
 					totals: res.totals,
 					fixedTotals: res.totals,
 					googleMapUrl: googleMapUrl,
-					exportUrlCsv: `${this.props.clientRoot}/checklists/rpc/export.php?clid=` + this.getClid() + `&pid=` + this.getPid(),
-					//exportUrlCsv: `${this.props.clientRoot}/checklists/reports/voucherreporthandler.php?clid=` + this.getClid(),
-					exportUrlWord: `${this.props.clientRoot}/checklists/defaultchecklistexport.php?cl=` + this.getClid() + `&pid=` + this.getPid()
+					//exportUrlCsv: `${this.props.clientRoot}/checklists/rpc/export.php?clid=` + this.getClid() + `&pid=` + this.getPid(),
+					//exportUrlWord: `${this.props.clientRoot}/checklists/defaultchecklistexport.php?cl=` + this.getClid() + `&pid=` + this.getPid()
+					exportUrl: exportUrl,
+					exportUrlCsv: exportUrl + `?export=csv&clid=` + this.getClid() + `&pid=` + this.getPid() + `&dynclid=` + this.getDynclid(),
+					exportUrlWord: exportUrl + `?export=word&clid=` + this.getClid() + `&pid=` + this.getPid() + `&dynclid=` + this.getDynclid()
 				});
 				const pageTitle = document.getElementsByTagName("title")[0];
 				pageTitle.innerHTML = `${pageTitle.innerHTML} ${res.title}`;
@@ -160,13 +190,17 @@ class ExploreApp extends React.Component {
     this.updateExportUrlWord();
   }
   updateExportUrlCsv() {
-  
-  	//test this
-  	let url = `${this.props.clientRoot}/checklists/rpc/export.php`;
+
+  	//let url = `${this.props.clientRoot}/checklists/rpc/export.php`;
+  	let url = this.state.exportUrl;
   	let exportParams = new URLSearchParams();
   	
+		exportParams.append("export",'csv');
 		exportParams.append("clid",this.getClid());
 		exportParams.append("pid",this.getPid());
+		exportParams.append("dynclid",this.getDynclid());
+		
+		/*TBD
 		if (this.state.searchName) {
 			exportParams.append("name",this.state.searchName);
 		}
@@ -175,36 +209,28 @@ class ExploreApp extends React.Component {
 		}
 		if (this.state.filters.searchText) {
 			exportParams.append("search",this.state.filters.searchText);
-		}
+		}*/
   	url += '?' + exportParams.toString();
   	
-  	/*
-  	let url = `${this.props.clientRoot}/checklists/reports/voucherreporthandler.php`;
-  	let exportParams = new URLSearchParams();
-  	//params here match /checklists/reports/voucherreporthandler.php
-		exportParams.append("clid",this.getClid());
-		if (this.state.showTaxaDetail === 'on') {
-			exportParams.append("rtype",'fullvoucherscsv');
-		} else {
-			exportParams.append("rtype",'fullcsv');
-		}
-  	url += '?' + exportParams.toString();
-  	console.log(url);
-  	*/
 	  this.setState({
       exportUrlCsv: url,
     });
   }
   updateExportUrlWord() {
-  	let url = `${this.props.clientRoot}/checklists/defaultchecklistexport.php`;
+  	//let url = `${this.props.clientRoot}/checklists/defaultchecklistexport.php`;
+  	let url = this.state.exportUrl;
   	let exportParams = new URLSearchParams();
-  	//params here match /checklists/defaultchecklistexport.php
-		exportParams.append("cl",this.getClid());
+  	
+		exportParams.append("export",'word');
+		exportParams.append("clid",this.getClid());
 		exportParams.append("pid",this.getPid());
+		exportParams.append("dynclid",this.getDynclid());
 		exportParams.append("showcommon",1);
 		if (this.state.filters.searchText) {
 			exportParams.append("taxonfilter",this.state.filters.searchText);
 		}
+		/*TBD
+  	//params here match /checklists/defaultchecklistexport.php - this is old - ap
 		if (this.state.searchName === 'commonname') {
 			exportParams.append("searchcommon",1);
 		}
@@ -220,7 +246,7 @@ class ExploreApp extends React.Component {
 		if (this.state.showTaxaDetail === 'on') {
 			exportParams.append("showauthors",1);
 			exportParams.append("showvouchers",1);
-		}
+		}*/
 		
   	url += '?' + exportParams.toString();
 	  this.setState({
@@ -253,42 +279,45 @@ class ExploreApp extends React.Component {
 
   // On search start
   onSearch(searchObj) {
-    //const newQueryStr = addUrlQueryParam("search", searchObj.text);
-    
-    /*window.history.replaceState(
-      { query: newQueryStr },
-      '',
-      window.location.pathname + newQueryStr
-    );*/
 
-    
     this.setState({
       isSearching: true,
       searchText: searchObj.text,
       filters: Object.assign({}, this.state.filters, { searchText: searchObj.text })
     },function() {
-      let url = `${this.props.clientRoot}/checklists/rpc/api.php?search=${searchObj.text}`;
-			url += '&name=' + this.state.searchName;
-			url += '&clid=' + this.state.clid;
-			url += '&pid=' + this.state.pid;
-			url += '&synonyms=' + this.state.searchSynonyms;
-			httpGet(url)
-				.then((res) => {
-					let jres = JSON.parse(res);
-					this.onSearchResults(jres.taxa);
-					this.updateTotals(jres.totals);
-					this.updateExportUrls();
-				})
-				.catch((err) => {
-					console.error(err);
-				})
-				.finally(() => {
-					this.setState({ isSearching: false });
-				}); 
-    });
+			if (searchObj.text.length) {    	
+				let url = `${this.props.clientRoot}/checklists/rpc/api.php`;
+				let identParams = new URLSearchParams();
+				if (searchObj.text.length) {	identParams.append("search",searchObj.text);}
+				if (this.state.searchName.length) {	identParams.append("name",this.state.searchName);}
+				if (this.getDynclid() > -1) {	identParams.append("dynclid",this.state.dynclid);}
+				if (this.getClid() > -1) {	identParams.append("clid",this.state.clid);	}
+				if (this.getPid() > -1) {	identParams.append("pid",this.state.pid);}
+				if (this.state.searchSynonyms.length) {	identParams.append("synonyms",this.state.searchSynonyms);}
 
-      
+				url = url + '?' + identParams.toString();
+
+				httpGet(url)
+					.then((res) => {
+						let jres = JSON.parse(res);
+						this.onSearchResults(jres.tids);
+						this.updateTotals(jres.totals);
+						this.updateExportUrls();
+					})
+					.catch((err) => {
+						console.error(err);
+					})
+					.finally(() => {
+						this.setState({ isSearching: false });
+					});
+				}else{//reset		
+					this.setDefaultTids();
+					this.setState({ isSearching: false });
+					this.updateTotals(this.state.fixedTotals);
+				}
+    });    
   }
+  
 	updateTotals(totals) {
 	  this.setState({
       totals: totals,
@@ -296,12 +325,22 @@ class ExploreApp extends React.Component {
 	}
 
   // On search end
-  onSearchResults(results) {
+ /* onSearchResults(results) {
     let newResults;
     newResults = this.sortResults(results);
     this.setState({ searchResults: newResults },function() {
 			this.updateExportUrls();
 		});
+  }*/
+  setDefaultTids() {
+		let tids = Object.entries(this.state.searchResults.taxonSort).map(([idx,taxon]) => {
+  		return taxon['tid'];
+  	});
+  	this.onSearchResults(tids);
+	}
+  // On search end
+  onSearchResults(tids) {
+    this.setState({ currentTids: tids });
   }
   
   sortResults(results) {//should receive taxa from API
@@ -460,6 +499,7 @@ class ExploreApp extends React.Component {
 						<SideBar
 							//ref={ this.sideBarRef }
 							clid={ this.state.clid }
+							dynclid={ this.state.dynclid }
 							style={{ background: "#DFEFD3" }}
 							isLoading={ this.state.isLoading }
 							clientRoot={this.props.clientRoot}
@@ -505,14 +545,16 @@ class ExploreApp extends React.Component {
 										}
 										</div>
 									</div>
-									<div className="alt-wrapper">
-										<div>Switch to</div>
-										<a href={getIdentifyPage(this.props.clientRoot,this.getClid(),this.getPid())}>
-											<div className="btn btn-primary alt-button" role="button">
-												<FontAwesomeIcon icon="search-plus" /> Identify
-											</div>
-										</a>
-									</div>
+									{ this.getClid() > -1 && this.getPid() > -1 && this.getPid() != 4 &&
+										<div className="alt-wrapper">
+											<div>Switch to</div>
+											<a href={getIdentifyPage(this.props.clientRoot,this.getClid(),this.getPid())}>
+												<div className="btn btn-primary alt-button" role="button">
+													<FontAwesomeIcon icon="search-plus" /> Identify
+												</div>
+											</a>
+										</div>
+									}
 								</div>
 									<ExploreSearchContainer
 										searchResults={ this.state.searchResults }
@@ -521,6 +563,7 @@ class ExploreApp extends React.Component {
 										showTaxaDetail={ this.state.showTaxaDetail }
 										clientRoot={this.props.clientRoot}
 										isSearching={this.state.isSearching}
+										currentTids={this.state.currentTids}
 									/>
 											
 							</div>
@@ -546,7 +589,12 @@ class ExploreApp extends React.Component {
 ExploreApp.defaultProps = {
   clid: -1,
   pid: -1,
+  dynclid: -1,
   showVouchers: 0,
+  currentTids: []
+  //abstract: '',
+  //authors: '',
+  //googleMapUrl: '',
 };
 
 const headerContainer = document.getElementById("react-header");
@@ -559,9 +607,16 @@ if (queryParams.clid) {
   queryParams.cl = queryParams.clid;
 }
 
-if (queryParams.cl) {
+if (queryParams.cl || queryParams.dynclid) {
   ReactDOM.render(
-    <ExploreApp clid={queryParams.cl } pid={queryParams.pid } showVouchers={ queryParams.showvouchers } clientRoot={ dataProps["clientRoot"] } googleMapKey={ dataProps["googleMapKey"] }/>,
+    <ExploreApp 
+    	clid={queryParams.cl? queryParams.cl : -1 } 
+    	pid={queryParams.pid? queryParams.pid : -1 } 
+    	dynclid={queryParams.dynclid ? queryParams.dynclid : -1 } 
+    	showVouchers={ queryParams.showvouchers } 
+    	clientRoot={ dataProps["clientRoot"] } 
+    	googleMapKey={ dataProps["googleMapKey"] }
+    />,
     domContainer
   );
 } else {

@@ -3,6 +3,11 @@ import React from "react";
 import { RangeSlider } from "@blueprintjs/core";//
 import CheckboxItem from "../common/checkboxItem.jsx";
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons'
+library.add( faExternalLinkAlt)
+
 class CheckboxList extends React.Component {
   constructor(props) {
     super(props);
@@ -11,6 +16,8 @@ class CheckboxList extends React.Component {
   }
 
 	render() {
+	
+	
 		return (
 	 		<ul
 				className="list-unstyled"
@@ -20,6 +27,10 @@ class CheckboxList extends React.Component {
 						let itemVal = this.props.states[itemKey];
 						let attr = itemVal.cid + '-' + itemVal.cs;
 						let checked = (this.props.attrs[attr] ? true: false );
+						let href = '';
+						if (itemVal.clid && itemVal.pid) {
+							href= `${this.props.clientRoot}/checklists/checklist.php?cl=` + itemVal.clid + `&pid=` + itemVal.pid;
+						}
 						return (
 							<li key={ attr }>
 								
@@ -99,7 +110,47 @@ class SelectDropdown extends React.Component {
 		);
 	}
 }
+class GroupFilter extends React.Component {
+  constructor(props) {
+    super(props);
+    //this.getDropdownId = this.getDropdownId.bind(this);
+    //this.onAttrClicked = this.props.onAttrClicked.bind(this);
+  }
 
+	render() {
+		//console.log(this.props.states);
+		return (
+	 		<div
+				className="group-filter"
+				style={{ overflow: "hidden", whiteSpace: "nowrap" }}>
+				{
+					Object.keys(this.props.states).map((itemKey) => {
+						let itemVal = this.props.states[itemKey];
+						let attr = itemVal.cid + '-' + itemVal.cs;
+						let title = itemVal.charstatename;
+						let checked = (this.props.attrs[attr] ? true: false );
+						return (
+							<div
+									key={ attr }>
+								<span 
+									className="btn btn-primary alt-button region" 
+									role="button" 
+									name={ attr } 
+									onClick={() => {
+										this.props.onGroupFilterClicked(itemVal.children)
+									}}
+								>
+								{ title }
+								</span>
+							</div>
+						)
+					})
+				}
+			</div>
+	
+		);
+	}
+}
 /**
  * Slider from 0, 50+ with minimum and maximum value handles
  */
@@ -187,7 +238,6 @@ class PlantSlider extends React.Component {
   }
   
   /**
-	* DUPLICATED IN garden/sidebar.jsx
 	* @param valueArray {number[]} An array in the form [min, max]
 	* @returns {string} An English description of the [min, max] values
 	*/
@@ -271,6 +321,7 @@ class FeatureSelector extends React.Component {
     this.getDropdownId = this.getDropdownId.bind(this);
     this.toggleFeature = this.toggleFeature.bind(this);
     this.onAttrClicked = this.props.onAttrClicked.bind(this);
+    this.onGroupFilterClicked = this.props.onGroupFilterClicked.bind(this);
     this.onSliderChanged = this.props.onSliderChanged.bind(this);
   }
 
@@ -303,6 +354,15 @@ class FeatureSelector extends React.Component {
 						onAttrClicked={ this.onAttrClicked }
 					/>
 			 	)
+  		case 'groupfilter':
+  			return (
+  				<GroupFilter 
+						states={ this.props.states }
+						attrs={ this.props.attrs }
+						cid={ this.props.cid }
+						onGroupFilterClicked={ this.onGroupFilterClicked }
+					/>
+			 	)
   	
   		default:
   			return (
@@ -310,6 +370,7 @@ class FeatureSelector extends React.Component {
 						states={ this.props.states }
 						attrs={ this.props.attrs }
 						onAttrClicked={ this.onAttrClicked }
+						clientRoot={ this.props.clientRoot }
 					/>
 			 	)
 
@@ -349,7 +410,9 @@ class FeatureSelector extends React.Component {
 
 FeatureSelector.defaultProps = {
   states: [],
-  onAttrClicked: () => {}
+  onAttrClicked: () => {},
+  onGroupFilterClicked: () => {},
+  clientRoot: '',
 };
 
 export default FeatureSelector;
