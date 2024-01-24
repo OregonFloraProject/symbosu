@@ -141,7 +141,7 @@ class ExploreApp extends React.Component {
 		let section = obj.section;
 		let name = obj.name;
 		let value = obj.value;
-		if (section == 'spp' && value < 1) {
+		if (section == 'spp' && (value < 1 || name == '')) {
 			return;
 		}
 		let stateData = this.state.updatedData;
@@ -498,7 +498,7 @@ class ExploreApp extends React.Component {
   	let newObj = {};
   	newObj.section = 'spp';
   	newObj.name = searchObj.text;
-  	newObj.value = searchObj.value;
+  	newObj.value = searchObj.tidaccepted;
   
 		this.updateField(newObj);
 		  
