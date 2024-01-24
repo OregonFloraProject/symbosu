@@ -100,6 +100,7 @@ class SideBarVendor extends React.Component {
 						 {Object.keys(this.props.spp).map((label) => {
 								//console.log(label);
 								//let obj = {section:"spp", name:label, value:this.props.spp[label]};
+								//console.log(this.props.spp[label] );
 								return (
 								
 									<input 
