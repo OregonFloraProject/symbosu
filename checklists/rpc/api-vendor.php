@@ -244,7 +244,7 @@ function previewSPP() {
 	$q = $em->createQueryBuilder();
 	foreach ($arr as $key => $obj) {
 		$temp = [];
-		
+		$obj['sciname'] = trim($obj['sciname']);
 		$temp['sciname'] = $obj['sciname'];// = handleColumnNames($obj,'sciname');#store orig in $obj['sciname']
 		$temp['notes'] = [];//$obj['notes'] = handleColumnNames($obj,'notes');#store orig in $obj['notes'];
 		if (isset($obj['notes'])) {
@@ -314,6 +314,7 @@ function previewSPP() {
 		}*/
 		if(sizeof($sciNameResults) == 0) {
 			$temp['code'] = 'Unrecognized';
+			$temp['feedback'][] = 'This name is not found in our database of Oregon plants. Please check the spelling.';
 		}else {
 			$tidaccepteds = [];
 			foreach ($sciNameResults as $snr) {
