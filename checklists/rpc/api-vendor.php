@@ -294,6 +294,7 @@ function previewSPP() {
 		$temp['feedback'] = [];
 	
 		#initially set codes, to be tweaked below
+		/*
 		if(sizeof($sciNameResults) == 0) {
 			$temp['code'] = 'Unrecognized';
 		}elseif ($sciNameResults[0]['tidaccepted'] === $sciNameResults[0]['value']) {
@@ -304,9 +305,32 @@ function previewSPP() {
 			$temp['code'] = 'Synonym';
 			$temp['tid'] = $sciNameResults[0]['value'];
 			$temp['tidaccepted'] = $sciNameResults[0]['tidaccepted'];
+		}*/
+		if(sizeof($sciNameResults) == 0) {
+			$temp['code'] = 'Unrecognized';
+		}else {
+			$tidaccepteds = [];
+			foreach ($sciNameResults as $snr) {
+				if ($snr['tidaccepted'] === $snr['value']) {
+					$temp['code'] = 'Accepted';
+					$temp['tid'] = $snr['value'];
+					$temp['tidaccepted'] = $snr['value'];
+				}else{
+					$tidaccepteds[$snr['tidaccepted']] = null;
+				}
+			}
+			if ($temp['code'] === null) {
+				if (sizeof($tidaccepteds) > 1) {
+					$temp['code'] = 'Ambiguous';
+				}else {
+					$temp['code'] = 'Synonym';
+				}
+				$temp['tid'] = $sciNameResults[0]['value'];//arbitrarily assign the first value, b/c this won't be used
+				$temp['tidaccepted'] = $sciNameResults[0]['tidaccepted'];//arbitrarily assign the first value, b/c this won't be used
+			}
 		}
 		#check for ambiguous - Mimulus guttatus, Convolvulus sepium
-		if ($temp['tid'] != $temp['tidaccepted']) {
+		/*if ($temp['tid'] != $temp['tidaccepted']) {
 			$tidaccepteds = [];
 			foreach ($sciNameResults as $res) {
 				$tidaccepteds[$res['tidaccepted']] = null;
@@ -314,7 +338,7 @@ function previewSPP() {
 			if (sizeof($tidaccepteds) > 1) {
 				$temp['code'] = 'Ambiguous';
 			}
-		}				
+		}	*/			
 		switch ($temp['code']) {
 			case 'Synonym':
 				$temp['feedback'][] = 'This is a synonym for another species and will be translated (see OF sciname column).';
