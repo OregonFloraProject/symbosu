@@ -96,11 +96,17 @@ function rewriteSPP() {
 function SPPtoCSV($results) {
 	global $CLIENT_ROOT, $SERVER_ROOT;
 	
+	$filename = '';
 	$url = '';
 	if (sizeof($results)) {
-		$url = $CLIENT_ROOT . 'temp/downloads/vendor/oregonflora_' . uniqid() . '.csv';
-		#var_dump($CLIENT_ROOT);exit;
-		$filename = $SERVER_ROOT . $url;
+		$path = '/temp/downloads/vendor/';
+		$dir = $SERVER_ROOT  . $path;
+		if (!file_exists($dir)) {
+			mkdir($dir, 0777, true);
+		}
+		$file = uniqid() . '.csv';
+		$filename =  $dir . $file;
+		$url = $CLIENT_ROOT . $path   . $file;
 		$fp = fopen($filename, 'w');
 		if ($fp) {
 			fputcsv($fp,["Your sciname","Your notes","Result","OF sciname","Feedback"]);
@@ -238,7 +244,7 @@ function previewSPP() {
 	$q = $em->createQueryBuilder();
 	foreach ($arr as $key => $obj) {
 		$temp = [];
-		
+		$obj['sciname'] = trim($obj['sciname']);
 		$temp['sciname'] = $obj['sciname'];// = handleColumnNames($obj,'sciname');#store orig in $obj['sciname']
 		$temp['notes'] = [];//$obj['notes'] = handleColumnNames($obj,'notes');#store orig in $obj['notes'];
 		if (isset($obj['notes'])) {
@@ -308,6 +314,7 @@ function previewSPP() {
 		}*/
 		if(sizeof($sciNameResults) == 0) {
 			$temp['code'] = 'Unrecognized';
+			$temp['feedback'][] = 'This name is not found in our database of Oregon plants. Please check the spelling.';
 		}else {
 			$tidaccepteds = [];
 			foreach ($sciNameResults as $snr) {
