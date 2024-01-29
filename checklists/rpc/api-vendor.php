@@ -317,14 +317,38 @@ function previewSPP() {
 			$temp['feedback'][] = 'This name is not found in our database of Oregon plants. Please check the spelling.';
 		}else {
 			$tidaccepteds = [];
+			$provisional = [];
 			foreach ($sciNameResults as $snr) {
 				if ($snr['tidaccepted'] === $snr['value']) {
-					$temp['code'] = 'Accepted';
-					$temp['tid'] = $snr['value'];
-					$temp['tidaccepted'] = $snr['value'];
+					$provisional[$snr['text']] = [
+						'name' => $snr['text'],
+						'code' => 'Accepted',
+						'tid' => $snr['value'],
+						'tidaccepted' => $snr['value']
+					];
 				}else{
 					$tidaccepteds[$snr['tidaccepted']] = null;
 				}
+			}
+			if ($provisional) {//check best name match of the accepteds
+				$bestMatch = null;
+				if (sizeof($provisional) == 1) {//only one to choose from
+					$bestMatch = array_shift($provisional);
+				}else{
+					foreach ($provisional as $p) {
+						if ($temp['searchSciname'] == $p['name']) {//exact name match
+							$bestMatch = $p;
+						}
+					}
+					if (!$bestMatch) {//fallback ?
+						$bestMatch = array_shift($provisional);
+					}
+				}
+				if ($bestMatch) {
+					$temp['code'] = $bestMatch['code'];
+					$temp['tid'] = $bestMatch['tid'];
+					$temp['tidaccepted'] = $bestMatch['tidaccepted'];
+				}					
 			}
 			if ($temp['code'] === null) {
 				if (sizeof($tidaccepteds) > 1) {
