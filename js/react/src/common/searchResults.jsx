@@ -329,7 +329,7 @@ function ExploreSearchContainer(props) {
 					isSearching={ props.isSearching }
 				/>
 				{	props.searchResults.taxonSort.map((result) =>  {
-						console.log(result);
+						//console.log(result);
 						let display = (props.currentTids.indexOf(result.tid) > -1);
 						return (
 							<ExploreSearchResult
@@ -379,7 +379,6 @@ function ExploreSearchContainer(props) {
 										<div className={ (props.viewType === "grid" ? " search-result-grid" : "") } >
 										{ results.map((result) =>  {
 												let display = (props.currentTids.indexOf(result.tid) > -1);
-						console.log(result);
 												return (
 													<ExploreSearchResult
 														display={ display }
