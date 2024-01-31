@@ -244,7 +244,7 @@ function previewSPP() {
 	$q = $em->createQueryBuilder();
 	foreach ($arr as $key => $obj) {
 		$temp = [];
-		
+		$obj['sciname'] = trim($obj['sciname']);
 		$temp['sciname'] = $obj['sciname'];// = handleColumnNames($obj,'sciname');#store orig in $obj['sciname']
 		$temp['notes'] = [];//$obj['notes'] = handleColumnNames($obj,'notes');#store orig in $obj['notes'];
 		if (isset($obj['notes'])) {
@@ -302,17 +302,54 @@ function previewSPP() {
 		#initially set codes, to be tweaked below
 		if(sizeof($sciNameResults) == 0) {
 			$temp['code'] = 'Unrecognized';
-		}elseif ($sciNameResults[0]['tidaccepted'] === $sciNameResults[0]['value']) {
-			$temp['code'] = 'Accepted';
-			$temp['tid'] = $sciNameResults[0]['value'];
-			$temp['tidaccepted'] = $sciNameResults[0]['value'];
+			$temp['feedback'][] = 'This name is not found in our database of Oregon plants. Please check the spelling.';
 		}else {
-			$temp['code'] = 'Synonym';
-			$temp['tid'] = $sciNameResults[0]['value'];
-			$temp['tidaccepted'] = $sciNameResults[0]['tidaccepted'];
+			$tidaccepteds = [];
+			$provisional = [];
+			foreach ($sciNameResults as $snr) {
+				if ($snr['tidaccepted'] === $snr['value']) {
+					$provisional[$snr['text']] = [
+						'name' => $snr['text'],
+						'code' => 'Accepted',
+						'tid' => $snr['value'],
+						'tidaccepted' => $snr['value']
+					];
+				}else{
+					$tidaccepteds[$snr['tidaccepted']] = null;
+				}
+			}
+			if ($provisional) {//check best name match of the accepteds
+				$bestMatch = null;
+				if (sizeof($provisional) == 1) {//only one to choose from
+					$bestMatch = array_shift($provisional);
+				}else{
+					foreach ($provisional as $p) {
+						if ($temp['searchSciname'] == $p['name']) {//exact name match
+							$bestMatch = $p;
+						}
+					}
+					if (!$bestMatch) {//fallback ?
+						$bestMatch = array_shift($provisional);
+					}
+				}
+				if ($bestMatch) {
+					$temp['code'] = $bestMatch['code'];
+					$temp['tid'] = $bestMatch['tid'];
+					$temp['tidaccepted'] = $bestMatch['tidaccepted'];
+				}					
+			}
+			if ($temp['code'] === null) {
+				if (sizeof($tidaccepteds) > 1) {
+					$temp['code'] = 'Ambiguous';
+				}else {
+					$temp['code'] = 'Synonym';
+				}
+				$temp['tid'] = $sciNameResults[0]['value'];//arbitrarily assign the first value, b/c this won't be used
+				$temp['tidaccepted'] = $sciNameResults[0]['tidaccepted'];//arbitrarily assign the first value, b/c this won't be used
+			}
 		}
 		#check for ambiguous - Mimulus guttatus, Convolvulus sepium
-		if ($temp['tid'] != $temp['tidaccepted']) {
+		/*if ($temp['tid'] != $temp['tidaccepted']) {
 			$tidaccepteds = [];
 			foreach ($sciNameResults as $res) {
 				$tidaccepteds[$res['tidaccepted']] = null;
@@ -320,7 +357,7 @@ function previewSPP() {
 			if (sizeof($tidaccepteds) > 1) {
 				$temp['code'] = 'Ambiguous';
 			}
-		}				
+		}	*/			
 		switch ($temp['code']) {
 			case 'Synonym':
 				$temp['feedback'][] = 'This is a synonym for another species and will be translated (see OF sciname column).';
@@ -402,6 +439,10 @@ function previewSPP() {
 			if (!in_array($firstArr[$key]['results'][0]['nativity'],$acceptedNativities)) {#check nativity
 				$firstArr[$key]['feedback'][]  = 'This is not a native Oregon plant species and will not be included.';
 				$firstArr[$key]['code'] = 'Non-native';
+			}else{
+				if ($firstArr[$key]['results'][0]['nativity'] == 'native and exotic') {
+					$firstArr[$key]['feedback'][]  = 'This taxon has both native and exotic populations in Oregon.';
+				}
 			}
 		}		
 	}

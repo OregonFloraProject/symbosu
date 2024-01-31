@@ -32,7 +32,7 @@ export default class vendorUploadModal extends Component {
   handleUpload = (file) => {
   	this.setState({ errorMsg: ''});
   	let isCSV = true;
-  	let mimeTypes = 'text/csv';//text/csv, .csv, application/vnd.ms-excel
+  	let mimeTypes = 'text/csv, application/vnd.ms-excel';//text/csv, .csv, application/vnd.ms-excel
 		if (window.Blob) {
 			if (mimeTypes.indexOf(file.type) == -1) {
 				isCSV = false;
