@@ -300,18 +300,6 @@ function previewSPP() {
 		$temp['feedback'] = [];
 	
 		#initially set codes, to be tweaked below
-		/*
-		if(sizeof($sciNameResults) == 0) {
-			$temp['code'] = 'Unrecognized';
-		}elseif ($sciNameResults[0]['tidaccepted'] === $sciNameResults[0]['value']) {
-			$temp['code'] = 'Accepted';
-			$temp['tid'] = $sciNameResults[0]['value'];
-			$temp['tidaccepted'] = $sciNameResults[0]['value'];
-		}else {
-			$temp['code'] = 'Synonym';
-			$temp['tid'] = $sciNameResults[0]['value'];
-			$temp['tidaccepted'] = $sciNameResults[0]['tidaccepted'];
-		}*/
 		if(sizeof($sciNameResults) == 0) {
 			$temp['code'] = 'Unrecognized';
 			$temp['feedback'][] = 'This name is not found in our database of Oregon plants. Please check the spelling.';
@@ -451,6 +439,10 @@ function previewSPP() {
 			if (!in_array($firstArr[$key]['results'][0]['nativity'],$acceptedNativities)) {#check nativity
 				$firstArr[$key]['feedback'][]  = 'This is not a native Oregon plant species and will not be included.';
 				$firstArr[$key]['code'] = 'Non-native';
+			}else{
+				if ($firstArr[$key]['results'][0]['nativity'] == 'native and exotic') {
+					$firstArr[$key]['feedback'][]  = 'This taxon has both native and exotic populations in Oregon.';
+				}
 			}
 		}		
 	}
