@@ -568,7 +568,7 @@ class IdentManager extends Manager {
 		$ret = new StdClass();
 		$ret->childLookup = $childLookup;
 		$ret->clidLookup = $clidLookup;
-		exit;
+		#exit;
 		return $ret;
 	}
 }
