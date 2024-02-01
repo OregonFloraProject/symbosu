@@ -291,7 +291,6 @@ function get_garden_characteristics($tids) {
 		foreach ($CUSTOM_GARDEN_CHARACTERISTICS as $idx => $group) {
 			foreach ($group['characters'] as $gidx => $char) {
 				if ($char['cid'] == $cs['cid']) {
-					
 					$tmp = [];
 					$tmp['cid'] = $char['cid'];
 					$tmp['charstatename'] = $cs['charstatename'];#$cs->getCharstatename();
@@ -299,7 +298,9 @@ function get_garden_characteristics($tids) {
 					$tmp['numval'] = floatval(preg_replace("/[^0-9\.]/","",$tmp['charstatename']));
 					
 					if (getRegionCid() == $char['cid']) {
+					var_dump($char);
 						if ($childLookup[$cs['cs']]) {
+					var_dump('found child lookup');
 							$tmp['children'] = $childLookup[$cs['cs']];
 						}
 					}		

@@ -342,8 +342,6 @@ class FeatureSelector extends React.Component {
     return `feature-selector-${this.props.cid}`;
   }
   showFeature(featureType) {
-  console.log(featureType);
-  console.log(this.props);
   	switch(featureType) {
   		case 'slider':
   			return (
