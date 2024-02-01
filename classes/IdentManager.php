@@ -552,9 +552,9 @@ class IdentManager extends Manager {
 			}
 		}
 		#echo 'cisLookup' . "\n";
-		#var_dump($cisLookup);
+		var_dump($cisLookup);
 		foreach ($vresults as $vres) {
-			#var_dump($vres);
+			var_dump($vres);
 			if (isset($vres['clidChild']) && $vres['clidChild'] != NULL && isset($cisLookup[$vres['clidChild']])) {
 				$childLookup[$vres['sortSequence']][] = $cisLookup[$vres['clidChild']];
 			}elseif($vres['clidChild'] == null){#must not be a parent
@@ -568,7 +568,7 @@ class IdentManager extends Manager {
 		$ret = new StdClass();
 		$ret->childLookup = $childLookup;
 		$ret->clidLookup = $clidLookup;
-		#exit;
+		exit;
 		return $ret;
 	}
 }
