@@ -558,12 +558,12 @@ class IdentManager extends Manager {
 				$clidLookup[$vres['sortSequence']] = $vres['clid'];
 			}
 		}
-		var_dump($childLookup);
+		#var_dump($childLookup);
 		#var_dump($clidLookup);
 		$ret = new StdClass();
 		$ret->childLookup = $childLookup;
 		$ret->clidLookup = $clidLookup;
-		exit;
+		#exit;
 		return $ret;
 	}
 }
