@@ -298,9 +298,9 @@ function get_garden_characteristics($tids) {
 					$tmp['numval'] = floatval(preg_replace("/[^0-9\.]/","",$tmp['charstatename']));
 					
 					if (getRegionCid() == $char['cid']) {
-					var_dump($char);
+					#var_dump($char);//pass
 						if ($childLookup[$cs['cs']]) {
-					var_dump('found child lookup');
+					#var_dump('found child lookup');//fail
 							$tmp['children'] = $childLookup[$cs['cs']];
 						}
 					}		
