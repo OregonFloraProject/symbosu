@@ -365,6 +365,7 @@ class FeatureSelector extends React.Component {
 					/>
 			 	)
   		case 'groupfilter':
+  			console.log(this.props);
   			return (
   				<GroupFilter 
 						states={ this.props.states }

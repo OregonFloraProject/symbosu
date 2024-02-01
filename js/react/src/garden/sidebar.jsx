@@ -249,11 +249,6 @@ class SideBar extends React.Component {
 									)
 								})
 							}
-							{
-							/*
-							<SidebarAccordion title="Commercial Availability (Coming soon)" disabled={ true } />
-							*/
-							}
 							
 							<div className="p-3 natives-credits">
 								<p><a href="https://www.oregonmetro.gov/" target="_blank"><img 
