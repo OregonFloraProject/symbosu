@@ -495,6 +495,7 @@ function getVendorsByTaxa($tid) {
 		->setParameter(":tid", $tid)
 		->setParameter(":pid", getVendorPid())
 		->orderBy('t.rankid, t.sciname, c.name')
+		->distinct()
 		->getQuery();
 
 		$tresults = $taxaQuery->getResult();
