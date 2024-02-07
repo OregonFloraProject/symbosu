@@ -39,9 +39,12 @@ header( "Content-Type: text/html; charset=" . $charset );
 					<div class="row columns">
 						<div id="column-main" class="col-lg-8">
 							<div class="inset access">
-								<h3>Access the information of the Oregon Vascular Plant Checklist in three ways:</h3>
+								<h3>Access the information of the Oregon Vascular Plant Checklist in these ways:</h3>
 								<ul>
 									<li><a href="<?php echo $CLIENT_ROOT?>/pages/data/Checklist_ForWeb.csv" download>Download</a> the current checklist (Version 2.2)</li>
+									
+
+									<li><a href="<?php echo $CLIENT_ROOT?>/pages/data/Natives_OregonFlora.csv" download>Download</a> the checklist including only plants native to Oregon.</li>
 									<li><a href="<?php echo $CLIENT_ROOT?>/pages/data/CLrevisions.csv" download>Download</a> to view taxonomic changes, additions, and deletions between published versions of the Checklist. </li>
 									<li>Access the <a href="<?php echo $CLIENT_ROOT?>/taxa/taxonomy/taxonomydisplay.php">Interactive Taxon Search</a>.</li>
 									<li><a href="<?php echo $CLIENT_ROOT?>/pages/data/terms-used-in-oregonflora-org-publications-pages.pdf" download>Download</a> to view glossary of terms used. </li>
