@@ -36,6 +36,21 @@ class Manager  {
 		}
 	}
 
+	protected function getConfigAttribute($attrName){
+		$attrValue = '';
+		if($attrName){
+			$sql = 'SELECT attributeValue FROM adminconfig WHERE attributeName = ?';
+			if($stmt = $this->conn->prepare($sql)){
+				$stmt->bind_param('s', $attrName);
+				$stmt->execute();
+				$stmt->bind_result($attrValue);
+				$stmt->fetch();
+				$stmt->close();
+			}
+		}
+		return $attrValue;
+	}
+
 	protected function setLogFH($logPath){
 		$this->logFH = fopen($logPath, 'a');
 	}
@@ -89,10 +104,15 @@ class Manager  {
 		return $domain;
 	}
 
-	protected function cleanOutStr($str){
-		$newStr = str_replace('"',"&quot;",$str);
-		$newStr = str_replace("'","&apos;",$newStr);
-		return $newStr;
+	public function sanitizeInt($int){
+		return filter_var($int, FILTER_SANITIZE_NUMBER_INT);
+	}
+
+	public function cleanOutStr($str){
+		//Sanitize output
+		if(!is_string($str)) $str = '';
+		$str = htmlspecialchars($str, HTML_SPECIAL_CHARS_FLAGS);
+		return $str;
 	}
 
 	protected function cleanInStr($str){

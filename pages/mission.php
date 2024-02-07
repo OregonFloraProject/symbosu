@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 //error_reporting(E_ALL);
 include_once( "../config/symbini.php" );
 header( "Content-Type: text/html; charset=" . $charset );
@@ -32,11 +32,11 @@ header( "Content-Type: text/html; charset=" . $charset );
         <!-- place static page content here. -->
             <h2 class="subhead">Our mission is to increase awareness and knowledge of the plants of Oregon through publication of technically sound, accessible information for diverse audiences.</h2>
             <p>
-            OregonFlora has assembled a comprehensive guide to the ~4,700 vascular plants of Oregon that is shared through this website, the Flora of Oregon books,
+            OregonFlora has assembled a comprehensive guide to the ~4,750 vascular plants of Oregon that is shared through this website, the Flora of Oregon books,
              and our wildflower identification app. 
              Our foundational research supports diverse audiences &mdash; citizen scientists, students and gardeners, ecologists and land managers, 
              policy makers, university researchers and leaders &mdash; in the critical work of protecting biodiversity, managing natural resources, promoting sustainability, 
-             and furthering understanding of our botanical treasures .
+             and furthering understanding of our botanical treasures.
             </p>
             <div class="row two-col-row">
                 <div class="column-right col-md-4 order-1 order-md-2 pt-5">
@@ -51,7 +51,7 @@ header( "Content-Type: text/html; charset=" . $charset );
                 </div>
                 <div class="column-main col-md-8 order-2 order-md-1 pr-md-5">
                     <h2>&nbsp;Scope of Project</h2>
-                    <p>OregonFlora addresses the ~4,700 vascular plant species, subspecies, and varieties (taxa) of Oregon that grow in the wild without cultivation. These include:</p>
+                    <p>OregonFlora addresses the ~4,750 vascular plant species, subspecies, and varieties (taxa) of Oregon that grow in the wild without cultivation. These include:</p>
                     <ul>
                         <li>all extant native taxa</li>
                         <li>native taxa thought to have gone extinct in Oregon in historical times</li>
@@ -62,7 +62,7 @@ header( "Content-Type: text/html; charset=" . $charset );
                     </ul>
                     <p>We define <strong>“native”</strong> as a plant taxon which has established in the landscape independently from direct or indirect human intervention. Native species include those found in Oregon that are new to science and recently described, are disjunct in Oregon if it is considered native in a nearby state, and/or are—to the best of our knowledge—considered an element of Oregon plant life prior to European settlement.</p>
                     
-                    <p>A non-native, or exotic plant is one from distant parts of North America or from other 
+                    <p>A non-native, or exotic plant, is one from distant parts of North America or from other 
                     continents that established in Oregon post-European settlement. 
                     Examples include weeds, naturalized escapes, waifs, and ballast plants.
                     </p>
@@ -106,7 +106,7 @@ header( "Content-Type: text/html; charset=" . $charset );
                             alt="Volunteer 2">
                         <figcaption class="figure-caption">Oxalis oregana, or Oregon wood sorrel (Gerald D. Carr).</figcaption>
                     </figure>
-                    <p>Collaboration with the Northwest Alliance for Computational Science and Engineering at OSU resulted in the award of a grant (2001-2004) from the National Science Foundation to design and develop software for presenting Oregon Flora Project data online. A Photo Gallery was also added featuring field photos contributed by plant enthusiasts; the plant identification for each was confirmed by OFP staff prior to posting online. Digitized images of herbarium specimens were added as a component of the Photo Gallery.</p>
+                    <p>Collaboration with the Northwest Alliance for Computational Science and Engineering at OSU resulted in the award of a grant (2001-2004) from the National Science Foundation to design and develop software for presenting Oregon Flora Project data online. A Photo Gallery was also added featuring field photos contributed by plant enthusiasts; the plant identification for each was confirmed by OFP staff or skilled volunteers prior to posting online. Digitized images of herbarium specimens were added as a component of the Photo Gallery.</p>
                     <p>The Oregon State University Herbarium and the Oregon Flora Project collaborated on a National Science Foundation proposal (2003-2006) to database and georeference label data from all Oregon herbarium specimens not yet included in the Oregon Plant Atlas. OregonFlora maintains this dataset and serves as the public face to the OSU Herbarium by providing images of herbarium specimens, searchable label data, and the ability to map plant occurrences through the OregonFlora website.</p>
                 </div>
             </div>
@@ -124,7 +124,7 @@ header( "Content-Type: text/html; charset=" . $charset );
                 <div class="column-main col-md-8 order-2 order-md-1 pr-md-5">
                     <h3>2004-2010</h3>
                     <p>In December 2004, the Oregon Flora Project suffered a great loss with the death of its director and founder, Scott Sundberg. The program continued, however, following a path to its completion that was Scott’s vision. Linda Hardison assumed the position of director, and existing staff members maintained their essential roles.</p>
-                    <p>In early 2008 the Project was halted indefinitely due to a lack of funds. Through the timely and generous support of the John and Betty Soreng Environmental Fund of the Oregon Community Foundation, all staff members were rehired, and the operations of the Project resumed in Autumn 2008. The sustained support of this fund has allowed OFP to bring to fruition public access to every facet of the Project through its “digital flora” website: the Photo Gallery (2009), version 2.0 of the Oregon Plant Atlas (2010), and the Vascular Plant Checklist (2011). It has also enabled the production of the Flora volumes.</p>
+                    <p>In early 2008 the Project was halted indefinitely due to a lack of funds. Through the timely and generous support of the John and Betty Soreng Environmental Fund of the Oregon Community Foundation, all staff members were rehired, and the operations of the Project resumed in Autumn 2008. The sustained support of this fund has allowed OFP to bring to fruition public access to every facet of the Project through its “digital flora” website: the Photo Gallery (2009), version 2.0 of the Oregon Plant Atlas (2010), and the Vascular Plant Checklist (2011). It also enabled initiation of the production of the Flora volumes.</p>
                 </div>
 
             </div>
@@ -144,13 +144,18 @@ header( "Content-Type: text/html; charset=" . $charset );
                     </figure>
                 </div>
                 <div class="column-main col-md-8 order-2 order-md-1 pr-md-5">
-                    <h3>2010-present</h3>
+                    <h3>2010-2020</h3>
                     <p>With the Checklist serving as a robust foundation, OFP efforts focused on the production of the printed Flora of Oregon. Stephen Meyers was hired in 2010 as the taxonomic director to oversee the writing of the floristic treatments and identification keys. In 2012 artist John Myers joined the staff to contribute artwork for the first ever illustrated flora for the state of Oregon. That same year, an eleven-member advisory board was established, with members representing the diversity of stakeholders that are informed by the work of the OFP. BRIT Press was selected to publish the flora, and with the design and layout expertise of Tanya Harvey, Volume 1 of the Flora of Oregon was published in September 2015. </p>
-										<p>As the body of knowledge for the nearly 4,700 plant taxa grew, so did the capacity to apply it. An OFP strategic plan, first drafted in 2015, identified three strategic initiatives:  using native species in gardens and planted environments, increasing biodiversity in working agricultural lands, and science education. </p>
+										<p>As the body of knowledge for the nearly 4,750 plant taxa grew, so did the capacity to apply it. An OFP strategic plan, first drafted in 2015, identified three strategic initiatives:  using native species in gardens and planted environments, increasing biodiversity in working agricultural lands, and science education. </p>
 										<p>Through a partnership with Metro (Portland) and the Adult Conservation Educators Northwest, OFP assumed oversight of their dataset of native plants used for gardening and landscaping in western Oregon. Funding from the Oregon Dept. of Agriculture’s Specialty Crop Block Grant program (2014-2016) helped OFP develop information promoting use of natives in gardening and, with Metro, design an interactive portal to share the data on the OFP’s redesigned website.</p>
 										<p>In 2016, the OFP initiated a redesign of its website using the Symbiota software platform. This has allowed adoption of more versatile ways to analyze and communicate information, and the linking of OFP plant data to other datasets. The program also changed its name to OregonFlora. </p>
 										<p>As part of Oregon State University, the state’s land grant institution, OregonFlora is researching effective ways to return plant diversity and natural habitats to working agricultural lands. Grants from the Oregon Watershed Enhancement Board (2017) and the Oregon Natural Resources Conservation Service (2018) have helped to launch studies on OSU lands to restore native habitat in wet pastures and oak woodlands using grazers, fire, and beaver. </p>
-										<p>Publication of Volumes 2 and 3 of the Flora of Oregon remain the priority for OregonFlora. The knowledge gained from this floristic project will drive far-reaching research initiatives, land management practices and activities by people and organizations nationwide.</p>
+
+                    <h3>2020-present</h3>
+										<p>Two milestones were reached in 2020: publication of Volume 2 of the <i>Flora of Oregon</i>, and the launching of OregonFlora's new website based on the Symbiota platform. This introduced the Grow Natives tool - specialized content for gardeners and landscapers using native species. </p>
+<p> Development of a new interactive rare plant guide began in late 2022; it will function similar to the Grow Natives tool when launched on the OregonFlora website.</p>
+<p> OregonFlora became a charter member (2022) of The Oregon Native Plant Conservation Coalition (ONPCC), a diverse, regional coalition composed of federal and state agencies, academic institutions, and nonprofits with a history of plant conservation, restoration, and ecological research in Oregon.</p>
+<p>Publication of Volume 3 of the <i>Flora of Oregon</i> remains the priority for OregonFlora. The knowledge gained from this floristic project will drive far-reaching research initiatives, land management practices and activities by people and organizations nationwide.</p>
                 </div>
 
               

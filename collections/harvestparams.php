@@ -7,21 +7,12 @@ header("Content-Type: text/html; charset=".$CHARSET);
 
 $collManager = new OccurrenceManager();
 $searchVar = $collManager->getQueryTermStr();
-$attribSearch = new OccurrenceAttributeSearch();
 ?>
 <html>
 <head>
 	<title><?php echo $DEFAULT_TITLE.' '.$LANG['PAGE_TITLE']; ?></title>
 	<?php
-	$activateJQuery = true;
-	if(file_exists($SERVER_ROOT.'/includes/head.php')){
-		include_once($SERVER_ROOT.'/includes/head.php');
-	}
-	else{
-		echo '<link href="'.$CLIENT_ROOT.'/css/jquery-ui.css" type="text/css" rel="stylesheet" />';
-		echo '<link href="'.$CLIENT_ROOT.'/css/base.css?ver=1" type="text/css" rel="stylesheet" />';
-		echo '<link href="'.$CLIENT_ROOT.'/css/main.css?ver=1" type="text/css" rel="stylesheet" />';
-	}
+	include_once($SERVER_ROOT.'/includes/head.php');
     include_once($SERVER_ROOT.'/includes/googleanalytics.php');
     ?>
 	<style type="text/css">
@@ -42,14 +33,14 @@ $attribSearch = new OccurrenceAttributeSearch();
 	<script src="../js/jquery-3.2.1.min.js?ver=3" type="text/javascript"></script>
 	<script src="../js/jquery-ui/jquery-ui.min.js?ver=3" type="text/javascript"></script>
 	<link href="../js/jquery-ui/jquery-ui.min.css" type="text/css" rel="Stylesheet" />
-	<script src="../js/symb/collections.harvestparams.js?ver=1" type="text/javascript"></script>
+	<script src="../js/symb/collections.harvestparams.js?ver=2" type="text/javascript"></script>
 	<script src="../js/symb/collections.traitsearch.js?ver=8" type="text/javascript"></script> <!-- Contains search-by-trait modifications -->
 	<script src="../js/symb/wktpolygontools.js?ver=1c" type="text/javascript"></script>
 	<script type="text/javascript">
 		var clientRoot = "<?php echo $CLIENT_ROOT; ?>";
 		$(document).ready(function() {
 			<?php
-			if($searchVar){
+			if($searchVar || array_key_exists('db',$_REQUEST)){
 				?>
 				sessionStorage.querystr = "<?php echo $searchVar; ?>";
 				<?php
@@ -256,7 +247,8 @@ $attribSearch = new OccurrenceAttributeSearch();
 				</div>
 			</div>
 			<?php
-			if(isset($SEARCH_BY_TRAITS) && $SEARCH_BY_TRAITS) {
+			if(!empty($SEARCH_BY_TRAITS)) {
+				$attribSearch = new OccurrenceAttributeSearch();
 				$traitArr = $attribSearch->getTraitSearchArr($SEARCH_BY_TRAITS);
 				if($traitArr){
 					?>

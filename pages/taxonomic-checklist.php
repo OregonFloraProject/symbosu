@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 //error_reporting(E_ALL);
 include_once( "../config/symbini.php" );
 header( "Content-Type: text/html; charset=" . $charset );
@@ -39,11 +39,15 @@ header( "Content-Type: text/html; charset=" . $charset );
 					<div class="row columns">
 						<div id="column-main" class="col-lg-8">
 							<div class="inset access">
-								<h3>Access the information of the Oregon Vascular Plant Checklist in three ways:</h3>
+								<h3>Access the information of the Oregon Vascular Plant Checklist in these ways:</h3>
 								<ul>
-									<li><a href="<?php echo $CLIENT_ROOT?>/pages/data/Checklist_ForWeb_April2022.csv" download>Download</a> the current checklist (Version 2.0)</li>
-									<li><a href="<?php echo $CLIENT_ROOT?>/pages/data/CLrevisions_v2-0.csv" download>Download</a> to view taxonomic changes, additions, and deletions between published versions of the Checklist. </li>
+									<li><a href="<?php echo $CLIENT_ROOT?>/pages/data/Checklist_ForWeb.csv" download>Download</a> the current checklist (Version 2.2)</li>
+									
+
+									<li><a href="<?php echo $CLIENT_ROOT?>/pages/data/Natives_OregonFlora.csv" download>Download</a> the checklist including only plants native to Oregon.</li>
+									<li><a href="<?php echo $CLIENT_ROOT?>/pages/data/CLrevisions.csv" download>Download</a> to view taxonomic changes, additions, and deletions between published versions of the Checklist. </li>
 									<li>Access the <a href="<?php echo $CLIENT_ROOT?>/taxa/taxonomy/taxonomydisplay.php">Interactive Taxon Search</a>.</li>
+									<li><a href="<?php echo $CLIENT_ROOT?>/pages/data/terms-used-in-oregonflora-org-publications-pages.pdf" download>Download</a> to view glossary of terms used. </li>
 								</ul>
 							</div>
 							<h2>The birth of a flora starts with a checklist of names</h2>
@@ -64,11 +68,11 @@ header( "Content-Type: text/html; charset=" . $charset );
 								<div>All Oregon taxa from the Checklist that are native or naturalized</div>
 							</figcaption>
 							</figure>
-							<p>The <em>Flora of Oregon</em> recognizes 4,710 taxa (distinct vascular plants) that grow in our state in the wild and without cultivation. 
+							<p>The <em>Flora of Oregon</em> recognizes 4,778 taxa (distinct vascular plants) that grow in our state in the wild and without cultivation. 
 							We estimate 4,380 taxa will have detailed descriptions once <em>Flora of Oregon</em> is completed.
 							</p>
 							<p>
-							The Oregon Vascular Plant Checklist presents 10,487 scientific names that are reflected throughout our website tools. 
+							The Oregon Vascular Plant Checklist presents 10,655 scientific names that are reflected throughout our website tools. 
 							These include accepted native and naturalized taxa and their synonyms, as well as non-naturalized (exotic), and sporadic taxa having a confirmed voucher that documents its occurrence in our state.
 							</p>
 							<h2>What are confirmed vouchers?</h2>
@@ -97,7 +101,7 @@ header( "Content-Type: text/html; charset=" . $charset );
 									<li>Citations for each Oregon taxon in several local floras </li>
 									<li>Synonyms for each Oregon taxon and their citations, mostly originating from accepted names in the same local floras mentioned above </li>
 									<li>Excluded names and their synonyms </li>
-									<li>Pertinent references</li>
+									<li>Pertinent <a href="<?php echo $CLIENT_ROOT?>/pages/data/primary-regional-floras.pdf" download>references</a></li>
 								</ul>
 							</div>
 							

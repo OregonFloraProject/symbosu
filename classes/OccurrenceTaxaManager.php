@@ -94,51 +94,46 @@ class OccurrenceTaxaManager {
 						$taxaType = TaxaSearchType::SCIENTIFIC_NAME;
 					}
 				}
-				if($taxaType == TaxaSearchType::COMMON_NAME){
-					$searchTerm = ucfirst($searchTerm);
-					$this->setSciNamesByVerns($searchTerm);
+				$this->setSciNamesByVerns($searchTerm);
+				$sql = 'SELECT t.sciname, t.tid, t.rankid FROM taxa t ';
+				if(is_numeric($searchTerm)){
+					if($this->taxaArr['usethes']){
+						$sql .= 'INNER JOIN taxstatus ts ON t.tid = ts.tidaccepted WHERE (ts.taxauthid = '.$this->taxAuthId.') AND (ts.tid = '.$searchTerm.')';
+					}
+					else{
+						$sql .= 'WHERE (t.tid = '.$searchTerm.')';
+					}
 				}
 				else{
-					$sql = 'SELECT t.sciname, t.tid, t.rankid FROM taxa t ';
-					if(is_numeric($searchTerm)){
-						if($this->taxaArr['usethes']){
-							$sql .= 'INNER JOIN taxstatus ts ON t.tid = ts.tidaccepted WHERE (ts.taxauthid = '.$this->taxAuthId.') AND (ts.tid = '.$searchTerm.')';
-						}
-						else{
-							$sql .= 'WHERE (t.tid = '.$searchTerm.')';
-						}
+					if($this->taxaArr['usethes']){
+						$sql .= 'INNER JOIN taxstatus ts ON t.tid = ts.tidaccepted
+							INNER JOIN taxa t2 ON ts.tid = t2.tid
+							WHERE (ts.taxauthid = '.$this->taxAuthId.') AND (t2.sciname IN("'.$this->cleanInStr($searchTerm).'"))';
 					}
 					else{
-						if($this->taxaArr['usethes']){
-							$sql .= 'INNER JOIN taxstatus ts ON t.tid = ts.tidaccepted '.
-								'INNER JOIN taxa t2 ON ts.tid = t2.tid '.
-								'WHERE (ts.taxauthid = '.$this->taxAuthId.') AND (t2.sciname IN("'.$this->cleanInStr($searchTerm).'"))';
-						}
-						else{
-							$sql .= 'WHERE t.sciname IN("'.$this->cleanInStr($searchTerm).'")';
-						}
+						$sql .= 'WHERE t.sciname IN("'.$this->cleanInStr($searchTerm).'")';
 					}
-					$rs = $this->conn->query($sql);
-					if($rs->num_rows){
-						while($r = $rs->fetch_object()){
-							$this->taxaArr['taxa'][$r->sciname]['tid'][$r->tid] = $r->rankid;
-							if($r->rankid == 140){
-								$taxaType = TaxaSearchType::FAMILY_ONLY;
-							}
-							elseif($r->rankid < 180){
-								$taxaType = TaxaSearchType::TAXONOMIC_GROUP;
-							}
-							else{
-								$taxaType = TaxaSearchType::SCIENTIFIC_NAME;
-							}
-							$this->taxaArr['taxa'][$r->sciname]['taxontype'] = $taxaType;
-						}
-					}
-					else{
-						$this->taxaArr['taxa'][$searchTerm]['taxontype'] = $taxaType;
-					}
-					$rs->free();
 				}
+				$rs = $this->conn->query($sql);
+				if($rs->num_rows){
+					while($r = $rs->fetch_object()){
+						$this->taxaArr['taxa'][$r->sciname]['tid'][$r->tid] = $r->rankid;
+						if($r->rankid == 140){
+							$taxaType = TaxaSearchType::FAMILY_ONLY;
+						}
+						elseif($r->rankid < 180){
+							$taxaType = TaxaSearchType::TAXONOMIC_GROUP;
+						}
+						else{
+							$taxaType = TaxaSearchType::SCIENTIFIC_NAME;
+						}
+						$this->taxaArr['taxa'][$r->sciname]['taxontype'] = $taxaType;
+					}
+				}
+				else{
+					$this->taxaArr['taxa'][$searchTerm]['taxontype'] = $taxaType;
+				}
+				$rs->free();
 			}
 			if($this->taxaArr['usethes']){
 				$this->setSynonyms();
@@ -146,25 +141,30 @@ class OccurrenceTaxaManager {
 		}
 	}
 
-	private function setSciNamesByVerns($termStr) {
-		$sql = 'SELECT DISTINCT v.VernacularName, t.tid, t.sciname, t.rankid '.
-			'FROM taxstatus ts INNER JOIN taxavernaculars v ON ts.TID = v.TID '.
-			'INNER JOIN taxa t ON t.TID = ts.tidaccepted '.
-			'WHERE (ts.taxauthid = '.$this->taxAuthId.') AND (v.VernacularName IN("'.$termStr.'")) ORDER BY t.rankid LIMIT 20';
-		//echo "<div>sql: ".$sql."</div>";
-		$rs = $this->conn->query($sql);
-		while($row = $rs->fetch_object()){
-			//$vernName = strtolower($row->VernacularName);
-			$vernName = $row->VernacularName;
-			if($row->rankid == 140){
-				$this->taxaArr['taxa'][$vernName]['families'][] = $row->sciname;
-			}
-			else{
-				$this->taxaArr['taxa'][$vernName]['scinames'][] = $row->sciname;
-			}
-			$this->taxaArr['taxa'][$vernName]['tid'][$row->tid] = $row->rankid;
+	private function setSciNamesByVerns(&$searchTerm) {
+		if(preg_match('/^(.+)\s{1}\((.+)\)$/', $searchTerm, $m)){
+			$searchTerm = $m[2];
 		}
-		$rs->free();
+		else{
+			$sql = 'SELECT DISTINCT v.VernacularName, t.tid, t.sciname, t.rankid
+				FROM taxstatus ts INNER JOIN taxavernaculars v ON ts.TID = v.TID
+				INNER JOIN taxa t ON t.TID = ts.tidaccepted
+				WHERE (ts.taxauthid = '.$this->taxAuthId.') AND (v.VernacularName IN("'.$searchTerm.'"))
+				ORDER BY t.rankid LIMIT 10';
+			$rs = $this->conn->query($sql);
+			while($row = $rs->fetch_object()){
+				//$vernName = strtolower($row->VernacularName);
+				$vernName = $row->VernacularName;
+				if($row->rankid == 140){
+					$this->taxaArr['taxa'][$vernName]['families'][] = $row->sciname;
+				}
+				else{
+					$this->taxaArr['taxa'][$vernName]['scinames'][] = $row->sciname;
+				}
+				$this->taxaArr['taxa'][$vernName]['tid'][$row->tid] = $row->rankid;
+			}
+			$rs->free();
+		}
 	}
 
 	private function setSynonyms(){
@@ -176,9 +176,16 @@ class OccurrenceTaxaManager {
 						$accArr[] = $tid;
 						if($rankid >= 180 && $rankid <= 220){
 							//Get accepted children
+							$sql1 = 'SELECT DISTINCT t.tid, t.sciname, t.rankid
+								FROM taxa t INNER JOIN taxstatus ts ON t.tid = ts.tid
+								INNER JOIN taxaenumtree e ON t.tid = e.tid
+								WHERE (e.parenttid IN('.$tid.')) AND (ts.TidAccepted = ts.tid) AND (ts.taxauthid = ' . $this->taxAuthId . ') AND (e.taxauthid = ' . $this->taxAuthId . ')' ;
+							/*
 							$sql1 = 'SELECT DISTINCT t.tid, t.sciname, t.rankid '.
 								'FROM taxa t INNER JOIN taxstatus ts ON t.tid = ts.tid '.
 								'WHERE (ts.parenttid IN('.$tid.')) AND (ts.TidAccepted = ts.tid) AND (ts.taxauthid = ' . $this->taxAuthId . ') ' ;
+							*/
+							//echo 'sql1: '.$sql1.'<br>';
 							$rs1 = $this->conn->query($sql1);
 							while($r1 = $rs1->fetch_object()){
 								$accArr[] = $r1->tid;
@@ -210,8 +217,8 @@ class OccurrenceTaxaManager {
 		$sqlWhereTaxa = '';
 		if(isset($this->taxaArr['taxa'])){
 			$tidInArr = array();
+			$taxonType = $this->taxaArr['taxontype'];
 			foreach($this->taxaArr['taxa'] as $searchTaxon => $searchArr){
-				$taxonType = $this->taxaArr['taxontype'];
 				if(isset($searchArr['taxontype'])) $taxonType = $searchArr['taxontype'];
 				if($taxonType == TaxaSearchType::TAXONOMIC_GROUP){
 					//Class, order, or other higher rank
@@ -244,31 +251,12 @@ class OccurrenceTaxaManager {
 				}
 				else{
 					if($taxonType == TaxaSearchType::COMMON_NAME){
-						//Common name search
-						$famArr = array();
-						if(array_key_exists('families',$searchArr)){
-							$famArr = $searchArr['families'];
-						}
-						if(array_key_exists('tid',$searchArr)){
-							$tidArr = array_keys($searchArr['tid']);
-							$sql = 'SELECT DISTINCT t.sciname '.
-	   							'FROM taxa t INNER JOIN taxaenumtree e ON t.tid = e.tid '.
-	   							'WHERE (t.rankid = 140) AND (e.taxauthid = '.$this->taxAuthId.') AND (e.parenttid IN('.implode(',',$tidArr).'))';
-							$rs = $this->conn->query($sql);
-							while($r = $rs->fetch_object()){
-								$famArr[] = $r->sciname;
-							}
-							$rs->free();
-							//$sqlWhereTaxa .= 'OR (o.tidinterpreted IN('.implode(',',$tidArr).')) ';
-							$tidInArr = array_merge($tidInArr,$tidArr);
-						}
-						if($famArr){
-							$famArr = array_unique($famArr);
-							$sqlWhereTaxa .= 'OR (o.family IN("'.implode('","',$famArr).'")) ';
-						}
+						$famArr = $this->setCommonNameWhereTerms($searchArr, $tidInArr);
+						if($famArr) $sqlWhereTaxa .= 'OR (o.family IN("'.implode('","',$famArr).'")) ';
 					}
-					elseif(isset($searchArr['TID_BATCH'])){
+					if(isset($searchArr['TID_BATCH'])){
 						$tidInArr = array_merge($tidInArr, array_keys($searchArr['TID_BATCH']));
+						if(isset($searchArr['tid'])) $tidInArr = array_merge($tidInArr, array_keys($searchArr['tid']));
 					}
 					else{
 						$term = $this->cleanInStr(trim($searchTaxon,'%'));
@@ -278,7 +266,7 @@ class OccurrenceTaxaManager {
 							$rankid = current($searchArr['tid']);
 							$tidArr = array_keys($searchArr['tid']);
 							//$sqlWhereTaxa .= "OR (o.tidinterpreted IN(".implode(',',$tidArr).")) ";
-							$tidInArr = array_merge($tidInArr,$tidArr);
+							$tidInArr = array_merge($tidInArr, $tidArr);
 							//Return matches that are not linked to thesaurus
 							if($rankid > 179) $sqlWhereTaxa .= 'OR (o.sciname LIKE "'.$term.'%") ';
 						}
@@ -322,9 +310,34 @@ class OccurrenceTaxaManager {
 			if(strpos($sqlWhereTaxa,'e.parenttid')) $sqlWhereTaxa .= 'AND (e.taxauthid = '.$this->taxAuthId.') ';
 			if(strpos($sqlWhereTaxa,'ts.family')) $sqlWhereTaxa .= 'AND (ts.taxauthid = '.$this->taxAuthId.') ';
 		}
-		//echo $sqlWhereTaxa; exit;
 		if($sqlWhereTaxa) return $sqlWhereTaxa;
 		else return false;
+	}
+
+	private function setCommonNameWhereTerms($searchArr, &$tidInArr){
+		$famArr = array();
+		if(array_key_exists('families',$searchArr)){
+			$famArr = $searchArr['families'];
+		}
+		if(array_key_exists('tid',$searchArr)){
+			$tidArr = array();
+			foreach($searchArr['tid'] as $tid => $rankid){
+				$tidInArr[] = $tid;  //add tid to search records at that rank
+				if($rankid <= 140) $tidArr[] = $tid;
+			}
+			if($tidArr){
+				$tidStr = implode(',', $tidArr);
+				$sql = 'SELECT DISTINCT t.sciname '.
+					'FROM taxa t INNER JOIN taxaenumtree e ON t.tid = e.tid '.
+					'WHERE (t.rankid = 140) AND (t.tid IN('.$tidStr.')) OR ((e.taxauthid = '.$this->taxAuthId.') AND (e.parenttid IN('.$tidStr.')))';
+				$rs = $this->conn->query($sql);
+				while($r = $rs->fetch_object()){
+					$famArr[] = $r->sciname;
+				}
+				$rs->free();
+			}
+		}
+		return array_unique($famArr);
 	}
 
 	//setters and getters
@@ -353,22 +366,25 @@ class OccurrenceTaxaManager {
 	}
 
 	public function getTaxaSearchTerm(){
-		if(isset($this->taxaArr['search'])) return $this->taxaArr['search'];
+		if(isset($this->taxaArr['search'])) return $this->cleanOutStr($this->taxaArr['search']);
 		return '';
 	}
 
-	protected function cleanOutStr($str){
+	public function cleanOutStr($str){
+		if(!is_string($str) && !is_numeric($str) && !is_bool($str)) $str = '';
+		if(strpos($str, '=') !== false) $str = '';
 		return htmlspecialchars($str);
 	}
 
 	protected function cleanInputStr($str){
 		if(stripos($str, 'sleep(') !== false) return '';
+		if(strpos($str, '=') !== false) return '';
 		$str = preg_replace('/%%+/', '%',$str);
 		$str = preg_replace('/^[\s%]+/', '',$str);
 		$str = trim($str,' ,;');
 		if($str == '%') $str = '';
 		$str = strip_tags($str);
-		$str = filter_var($str, FILTER_SANITIZE_STRING);
+		$str = htmlspecialchars($str, ENT_NOQUOTES | ENT_SUBSTITUTE | ENT_HTML401);
 		return $str;
 	}
 

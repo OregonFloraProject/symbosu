@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 //error_reporting(E_ALL);
 include_once( "../config/symbini.php" );
 header( "Content-Type: text/html; charset=" . $charset );
@@ -70,8 +70,8 @@ header( "Content-Type: text/html; charset=" . $charset );
 
             <h2>Photo Collections</h2>
             <p><a target="_blank" href="http://www.botany.hawaii.edu/faculty/carr/ofp/ofp_index.htm">Dr. Gerald Carr’s Oregon plant images</a></p>
-            <p><a target="_blank" href="http://biology.burke.washington.edu/herbarium/imagecollection.php">University of Washington Herbarium Image Collection</a>
-                <span class="link-details">Burke Museum</span></p>
+            <p><a target="_blank" href="https://burkeherbarium.org/imagecollection/">Burke Herbarium Image Collection</a>
+                <span class="link-details">University of Washington</span></p>
             <p><a target="_blank" href="https://calphotos.berkeley.edu/flora/">CalPhotos: Plants</a></p>
 			<p><a target="_blank" href="http://science.halleyhosting.com/">Paul Slichter's Flora Northwest images</a></p>
 

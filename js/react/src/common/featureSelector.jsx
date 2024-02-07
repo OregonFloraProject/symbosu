@@ -1,3 +1,4 @@
+
 import React from "react";
 import { RangeSlider } from "@blueprintjs/core";//
 import CheckboxItem from "../common/checkboxItem.jsx";
@@ -42,17 +43,20 @@ class CheckboxList extends React.Component {
 											this.onAttrClicked(attr,itemVal.charstatename,(checked? 'off':'on'))
 										}}
 									/>
-									<label htmlFor={ attr }>{ itemVal.charstatename }
-									{ href && 
-										<a 
-											href={ href }
-											className="external-link"
-											title="List of all native species this nursery carries"
-										>
-											<FontAwesomeIcon icon="external-link-alt" />
-										</a>		
-									}							
-									</label>
+									{ href ? (
+										<label htmlFor={ attr }>
+											<a 
+												href={ href }
+												className="external-link"
+												title="List of all native species this nursery carries"
+											>
+												{itemVal.charstatename} <FontAwesomeIcon icon="external-link-alt" />
+											</a>				
+										</label>	
+										) : (
+											<label htmlFor={ attr } dangerouslySetInnerHTML={{__html: itemVal.charstatename }}></label>
+										)
+									}				
 					
 							</li>
 						)
@@ -400,7 +404,7 @@ class FeatureSelector extends React.Component {
           	className="feature-selector-header"
             onClick={this.toggleFeature}
           >
-            <span>{ this.props.title.replace(/_/g, ' ') }</span>
+            <span dangerouslySetInnerHTML={{__html: this.props.title.replace(/_/g, ' ')}}></span>
             
             <img
               className={ "will-v-flip" }

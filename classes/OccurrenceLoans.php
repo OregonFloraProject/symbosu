@@ -6,7 +6,6 @@ class OccurrenceLoans extends Manager{
 	private $collid = 0;
 	private $idTagArr = array();
 	private $specimenSortArr = array();
-	private $serverRoot= '';
 
 	function __construct() {
 		parent::__construct(null,'write');
@@ -482,16 +481,15 @@ class OccurrenceLoans extends Manager{
 	public function getSpecimenList($loanid, $sortTag = ''){
 		$retArr = array();
 		if(is_numeric($loanid)){
-			$sql = 'SELECT o.collid, l.loanid, l.occid, l.returndate, l.notes, o.catalognumber, o.othercatalognumbers, o.sciname, '.
-				'CONCAT_WS(" ",o.recordedby,IFNULL(o.recordnumber,o.eventdate)) AS collector, CONCAT_WS(", ",stateprovince,county,locality) AS locality '.
-				'FROM omoccurloanslink l INNER JOIN omoccurrences o ON l.occid = o.occid '.
-				'WHERE l.loanid = '.$loanid.' '.
-				'ORDER BY o.catalognumber+1, o.othercatalognumbers+1';
+			$sql = 'SELECT o.collid, l.loanid, l.occid, l.returndate, l.notes, o.catalognumber, o.othercatalognumbers, o.sciname,
+				CONCAT_WS(" ",o.recordedby,IFNULL(o.recordnumber,o.eventdate)) AS collector, CONCAT_WS(", ",stateprovince,county,locality) AS locality
+				FROM omoccurloanslink l INNER JOIN omoccurrences o ON l.occid = o.occid
+				WHERE l.loanid = '.$loanid.'
+				ORDER BY o.catalognumber+1, o.othercatalognumbers+1';
 			if($rs = $this->conn->query($sql)){
 				while($r = $rs->fetch_object()){
 					$retArr[$r->occid]['collid'] = $r->collid;
 					$retArr[$r->occid]['catalognumber'] = $r->catalognumber;
-					if($r->othercatalognumbers) $retArr[$r->occid]['othercatalognumbers'][] = $r->othercatalognumbers;
 					if($r->catalognumber){
 						$retArr[$r->occid]['catalognumber'] = $r->catalognumber;
 						$this->idTagArr['1-catalognumber'] = 'Catalog Numbers';
@@ -521,8 +519,14 @@ class OccurrenceLoans extends Manager{
 				ORDER BY i.sortBy, i.identifierValue';
 			if($rs = $this->conn->query($sql)){
 				while($r = $rs->fetch_object()){
-					$retArr[$r->occid]['othercatalognumbers'][] = $r->identifierValue;
 					$idTag = $r->identifierName;
+					$idValue = ($idTag ? $idTag.': ' : '').$r->identifierValue;
+					if(isset($retArr[$r->occid]['othercatalognumbers'])){
+						foreach($retArr[$r->occid]['othercatalognumbers'] as $k => $v){
+							if($v == $r->identifierValue || $v == $idValue) unset($retArr[$r->occid]['othercatalognumbers'][$k]);
+						}
+					}
+					$retArr[$r->occid]['othercatalognumbers'][] = $idValue;
 					if(!$idTag) $idTag = 'otherCatalogNumbers';
 					$this->idTagArr['3-'.strtolower($idTag)] = $idTag;
 					if($sortTag && $sortTag != 'catalognumber'){
@@ -950,11 +954,11 @@ class OccurrenceLoans extends Manager{
 					$numArr = explode('-',$id);
 
 					// Get the last array element that is a number
-					// Note: NOT the highest number, this could be something like a year, e.g., 2022-5. 
+					// Note: NOT the highest number, this could be something like a year, e.g., 2022-5.
 					// The last number in the string is most likely the right one to increment
 					while (!is_numeric($num)) $num = array_pop($numArr);
 
-					// Check if the number found is the highest so far, if so, use that one to increment. 
+					// Check if the number found is the highest so far, if so, use that one to increment.
 					if ($num > $maxnum) {
 						$maxnum = $num;
 
@@ -996,7 +1000,7 @@ class OccurrenceLoans extends Manager{
 
 		// Create the path for the attachment, storing under a subfolder for the particular collection
 		$relPath = 'content/collections/loans/coll' . $collid . '/';
-		$fullPath = $this->serverRoot . $relPath;
+		$fullPath = $GLOBALS['SERVER_ROOT'] . '/' . $relPath;
 
 		// Check to make sure the save path exists, creating it if permissions are sufficient
 		if (!is_dir($fullPath)) {
@@ -1067,7 +1071,7 @@ class OccurrenceLoans extends Manager{
 			$sql = 'SELECT path, filename FROM omoccurloansattachment WHERE (attachmentid = ' . $attachid . ')';
 			if($rs = $this->conn->query($sql)) {
 				while($r = $rs->fetch_object()){
-					$path = $this->serverRoot . $r->path . $r->filename;
+					$path = $GLOBALS['SERVER_ROOT'] . '/' . $r->path . $r->filename;
 				}
 				$rs->free();
 			}
@@ -1097,13 +1101,14 @@ class OccurrenceLoans extends Manager{
 
 	// Get a list of correspondence attachments for a given loan/exchange
 	public function getAttachments($type, $transid) {
-		$retArr = array();
+		$retArr = false;
 		$sql = 'SELECT attachmentid, title, path, filename, initialTimestamp ' .
 			'FROM omoccurloansattachment ' .
 			'WHERE '. ($type == "loan" ? 'loanid' : 'exchangeid') . ' = ' . $transid . ' ' .
 			'ORDER BY initialTimestamp ASC;';
 
 		if($rs = $this->conn->query($sql)){
+			$retArr = array();
 			while($r = $rs->fetch_object()){
 				$retArr[$r->attachmentid]['title'] = $r->title;
 				$retArr[$r->attachmentid]['path'] = $r->path;
@@ -1142,10 +1147,6 @@ class OccurrenceLoans extends Manager{
 	public function getSpecimenSortArr(){
 		asort($this->specimenSortArr);
 		return $this->specimenSortArr;
-	}
-	
-	public function setServerRoot($path){
-		$this->serverRoot = $path;
 	}
 }
 ?>

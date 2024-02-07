@@ -6,17 +6,14 @@ include_once($SERVER_ROOT . '/classes/OccurrenceCollectionProfile.php');
 header('Content-Type: text/html; charset=' . $CHARSET);
 unset($_SESSION['editorquery']);
 
-$collid = isset($_REQUEST['collid']) ? $_REQUEST['collid'] : 0;
-$action = array_key_exists('action', $_REQUEST) ? $_REQUEST['action'] : '';
-$eMode = array_key_exists('emode', $_REQUEST) ? $_REQUEST['emode'] : 0;
+$collManager = new OccurrenceCollectionProfile();
 
-//Sanitation
-if (!is_numeric($collid)) $collid = 0;
-if (!is_numeric($eMode)) $eMode = 0;
+$collid = isset($_REQUEST['collid']) ? $collManager->sanitizeInt($_REQUEST['collid']) : 0;
+$action = array_key_exists('action', $_REQUEST) ? $_REQUEST['action'] : '';
+$eMode = array_key_exists('emode', $_REQUEST) ? $collManager->sanitizeInt($_REQUEST['emode']) : 0;
 
 if ($eMode && !$SYMB_UID) header('Location: ../../profile/index.php?refurl=../collections/misc/collprofiles.php?' . htmlspecialchars($_SERVER['QUERY_STRING'], ENT_QUOTES));
 
-$collManager = new OccurrenceCollectionProfile();
 $collManager->setCollid($collid);
 if($SOLR_MODE) $solrManager = new SOLRManager();
 
@@ -27,7 +24,8 @@ $editCode = 0;		//0 = no permissions; 1 = CollEditor; 2 = CollAdmin; 3 = SuperAd
 if ($SYMB_UID) {
 	if ($IS_ADMIN) {
 		$editCode = 3;
-	} else if ($collid) {
+	}
+	else if ($collid) {
 		if (array_key_exists('CollAdmin', $USER_RIGHTS) && in_array($collid, $USER_RIGHTS['CollAdmin'])) $editCode = 2;
 		elseif (array_key_exists('CollEditor', $USER_RIGHTS) && in_array($collid, $USER_RIGHTS['CollEditor'])) $editCode = 1;
 	}
@@ -49,17 +47,9 @@ elseif(file_exists('../editor/includes/config/occurVarDefault.php')){
 	<meta name="keywords" content="Natural history collections,<?php echo ($collid ? $collData[$collid]['collectionname'] : ''); ?>" />
 	<meta http-equiv="Cache-control" content="no-cache, no-store, must-revalidate">
 	<meta http-equiv="Pragma" content="no-cache">
+	<link href="<?php echo $CSS_BASE_PATH; ?>/jquery-ui.css" type="text/css" rel="stylesheet">
 	<?php
-	$activateJQuery = true;
-	include_once($SERVER_ROOT.'/includes/head.php');
-	if(file_exists($SERVER_ROOT.'/includes/head.php')){
-		include_once($SERVER_ROOT.'/includes/head.php');
-    }
-	else{
-		echo '<link href="'.$CLIENT_ROOT.'/css/jquery-ui.css" type="text/css" rel="stylesheet" />';
-		echo '<link href="'.$CLIENT_ROOT.'/css/base.css?ver=1" type="text/css" rel="stylesheet" />';
-		echo '<link href="'.$CLIENT_ROOT.'/css/main.css?ver=1" type="text/css" rel="stylesheet" />';
-	}
+	include_once($SERVER_ROOT . '/includes/head.php');
 	?>
 	<script src="../../js/jquery.js?ver=20130917" type="text/javascript"></script>
 	<script src="../../js/jquery-ui.js?ver=20130917" type="text/javascript"></script>
@@ -249,7 +239,6 @@ elseif(file_exists('../editor/includes/config/occurVarDefault.php')){
 						<fieldset style="padding:10px;padding-left:25px;">
 							<legend><b><?php echo (isset($LANG['ADMIN_CONTROL']) ? $LANG['ADMIN_CONTROL'] : 'Administration Control Panel'); ?></b></legend>
 							<ul>
-
 								<li>
 									<a href="commentlist.php?collid=<?php echo $collid; ?>">
 										<?php echo (isset($LANG['VIEW_COMMENTS']) ? $LANG['VIEW_COMMENTS'] : 'View Posted Comments'); ?>
@@ -359,7 +348,7 @@ elseif(file_exists('../editor/includes/config/occurVarDefault.php')){
 									 -->
 									<?php
 								}
-								if (!isset($ACTIVATE_DUPLICATES) || $ACTIVATE_DUPLICATES) {
+								if (!empty($ACTIVATE_DUPLICATES)) {
 									?>
 									<li>
 										<a href="../datasets/duplicatemanager.php?collid=<?php echo $collid; ?>">

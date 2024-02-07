@@ -2,7 +2,25 @@ $(document).ready(function() {
 	if(!navigator.cookieEnabled){
 		alert("Your browser cookies are disabled. To be able to login and access your profile, they must be enabled for this domain.");
 	}
-	$('#tabs').tabs({ active: tabIndex }).css({
+	$('#tabs').tabs({ 
+		active: tabIndex, 
+		load: function(event, ui) {
+
+			// If a link is clicked in the institution editor tab, we need to load it in the same tab
+            $('a', '#ui-tabs-2').click(function() {
+
+            	// If the link is to the institution editor, then load it in the current tab
+            	if (this.href.search("institutioneditor.php") > 0) {
+
+            		// Load the link
+                	$(ui.panel).load(this.href);
+
+                	// Disable the default response
+                	return false;
+            	}
+            });
+        },
+	}).css({
 		'min-height': '500px',
 		'overflow': 'auto'
 	});
