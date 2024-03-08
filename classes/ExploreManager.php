@@ -2,7 +2,7 @@
 
 include_once("../../config/symbini.php");
 include_once("$SERVER_ROOT/classes/Functional.php");
-include_once("$SERVER_ROOT/classes/TaxaManager.php");
+//include_once("$SERVER_ROOT/classes/TaxaManager.php");
 include_once("$SERVER_ROOT/config/SymbosuEntityManager.php");
 
 class ExploreManager {
@@ -179,7 +179,7 @@ class ExploreManager {
   		}
   	}
   
-    $taxa->select(["t.tid","COALESCE(ctl.familyoverride,ts.family) AS family","ctl.notes as checklistNotes"])//would like to use STRING_AGG here to concatenate with semicolons
+    $taxa->select(["t.tid","COALESCE(ctl.familyoverride,ts.family) AS family","ctl.notes as checklistNotes",'t.author','t.sciname'])//would like to use STRING_AGG here to concatenate with semicolons
       ->from("Taxa", "t"); 
         
 		foreach ($innerJoins as $innerJoin) {

@@ -21,7 +21,7 @@ header( "Content-Type: text/html; charset=" . $charset );
       include("$SERVER_ROOT/header.php");
 ?>
 
-<div class="info-page tutorials">
+<div class="info-page rare-plant-guide">
     <section id="titlebackground" class="title-rare">
         <div class="inner-content">
             <h1>Rare Plant Guide &mdash; coming soon</h1>
@@ -34,13 +34,14 @@ header( "Content-Type: text/html; charset=" . $charset );
             <!-- place static page content here. -->
             <h2>Oregon’s rare plants are precious natural resources. Knowledge about them helps us better
 conserve and appreciate these botanical treasures. </h2>
-            <p>Many dedicated plant enthusiasts, organizations, and government agencies are committed to monitoring and protecting Oregon’s rare plants in their unique habitats. The Rare Plant Guide is a collaboration among several of these groups to present rare plant information in the context of Oregon’s full plant diversity. </p>
             <p>OregonFlora is developing an interactive tool to explore rare species. Similar to the <a href="<?php echo $CLIENT_ROOT; ?>/garden/index.php">Grow Natives</a> tool, users will be able to filter on characters, scroll through field photos, and view a distribution map. Information for each species is summarized in a printable profile page; three examples are shown below.</p>
 						<p>The Rare Plant Guide will launch with the presentation of <a href="https://inr.oregonstate.edu/orbic/rare-species/rare-species-oregon-publications" target="_blank">ORBIC</a> List 1 taxa—plant species at greatest risk and threatened with extinction or presumed to be extinct throughout their entire range. With continued support, OregonFlora will expand this resource to include List 2 species—those threatened with extirpation in Oregon. </p>
 						<p>Thanks to the <a href="https://npsoregon.org/" target="_blank">Native Plant Society of Oregon</a>, <a href="https://inr.oregonstate.edu/orbic/rare-species/rare-species-oregon-publications" target="_blank">Oregon Biodiversity Information Center</a>, <a href="https://www.blm.gov/oregon-washington" target="_blank">OR/WA Bureau of Land Management</a>, <a href="https://www.fs.usda.gov/r6" target="_blank">US Forest Service Region 6</a>, and <a href="https://www.oregon.gov/oda/programs/PlantConservation/Pages/Default.aspx" target="_blank">Oregon Dept. Agriculture Plant Conservation</a> program for their partnership and sharing of data as we develop this public resource.</p>
 					<h2>Example Rare Plant Profile Pages</h2>
             <p><img src="<?php echo $CLIENT_ROOT; ?>/pages/images/DELLEU.jpg"/></p>
+            <hr/>
             <p><img src="<?php echo $CLIENT_ROOT; ?>/pages/images/CAMHOW.jpg"/></p>
+            <hr/>
             <p><img src="<?php echo $CLIENT_ROOT; ?>/pages/images/CASRUB.jpg"/></p>
             
         </div> <!-- .inner-content -->

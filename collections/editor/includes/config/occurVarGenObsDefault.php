@@ -107,14 +107,14 @@ define('DATAGENERALIZATIONSLABEL','Transcription Notes (Data Generalizations)');
 // Field Tooltip text: uncomment variables and add a value to modify field tooltips that popup on hover
 
 // Collection and Collector info
-define('CATALOGNUMBERTIP','Leave this blank. The herbarium will add a barcode number.');
-define('OTHERCATALOGNUMBERSTIP','Leave this blank. The herbarium will add an accession number.');
+define('CATALOGNUMBERTIP','Field disabled. Leave this blank. The herbarium will add a barcode number.');
+define('OTHERCATALOGNUMBERSTIP','Field disabled. Leave this blank. The herbarium will add an accession number.');
 define('RECORDEDBYTIP','Primary or only collector name. Omit preceding titles (e.g., Dr., Mr., Mrs., Miss) unless Mrs. is followed by husband’s name.');
 define('RECORDNUMBERTIP','Collector number. Include any letters or symbols in the collector number (e.g., KP-004b)');
 define('EVENTDATETIP','Date of specimen collection. Enter in the format YYYY-MM-DD. If year, month, or day is unknown, replace missing information with zeros (e.g. 2004-00-00).');
-define('DUPLICATESTIP','Search for duplicate specimen information from other herbaria. Turn this off if you do not expect other herbaria to have your duplicates yet');
+define('DUPLICATESTIP','Search for duplicate specimen information from other herbaria. Turn this off if you do not expect other herbaria to have your duplicates yet.');
 define('ASSOCIATEDCOLLECTORSTIP','Any associated collectors names. Each name should be in order of “First name Last name.”, separated by commas. Exclude other words (e.g., “and”, “with”, “&”). Remove preceding titles (see also Collector).');
-define('VERBATIMEVENTDATETIP','Leave blank. Only used for old specimens in the herbarium.');
+define('VERBATIMEVENTDATETIP','Field disabled. Leave blank. Only used for old specimens in the herbarium.');
 //define('YYYYMMDDTIP','');
 //define('NUMERICYEARTIP','');
 //define('NUMERICMONTHTIP','');
@@ -133,7 +133,8 @@ define('SCIENTIFICNAMETIP','The scientific name on the original label (often not
   * Select an option from the dropdown list rather than typing out the name when possible. 
   * If there are notes or references, click the pencil beside Date Identified to add them. 
   * If this name is the current determination, and the specimen is filed under a different name than the name on the specimen, this information should be noted in the Dispositions field.
-  * If there is no scientific name on the original label, leave it blank.');
+  * If there is no scientific name on the original label, leave it blank.
+  * Do not enter authors in the Scientific name field. For example, Poa bulbosa L. var. concinna Beck” should be transcribed as “Poa bulbosa var. concinna”.');
 define('SCIENTIFICNAMEAUTHORSHIPTIP','Enter authorities (authors of the scientific name) that appear after the scientific name. This field autofills after entering the scientific name if the name is already in our database.
   * If the name is a variety or subspecies, only enter the intraspecific author(s) that follow the var. or ssp., not those after the species.
 ');
@@ -144,7 +145,7 @@ define('IDENTIFIEDBYTIP','The name of the person who originally identified the s
 define('DATEIDENTIFIEDTIP','The date of original identification on the original label, if identified by someone other than the collector. Enter as YYYY-MM-DD (see collection date).');
 define('IDENTIFICATIONREFERENCETIP','Publication reference(s) used in the identification. If multiple references are given, separate them with “ | “.');
 define('IDENTIFICATIONREMARKSTIP','Comments or notes about the identification (e.g., identifying traits, reasons for this ID)');
-//define('TAXONREMARKSTIP','');
+define('TAXONREMARKSTIP','Field disabled. Not used at OSU.');
 
 // Locality & Georeferencing
 define('COUNTRYTIP','The country where the specimen was collected. Spell out in full (“United States”, not “U.S.”).');
@@ -152,11 +153,11 @@ define('STATEPROVINCETIP','The state (USA) or province (Canada) where the specim
 define('COUNTYTIP','The county (parish in Louisiana) in which the specimen was collected. 
   * Don’t include things like “Co.” or “County”.
   * Select from dropdown list for USA & Canada specimens.');
-define('MUNICIPALITYTIP','Not generally used at OSU.');
-define('LOCATIONIDTIP','Not generally used at OSU.');
+define('MUNICIPALITYTIP','Not generally used at OSU, but record for specimens from Mexico.');
+define('LOCATIONIDTIP','Field disabled. Not used at OSU.');
 define('LOCALITYTIP','The geographic description of where the specimen was collected. This should not include country, state, or county information, unless it is necessary for context of the locality (e.g., “southwest corner of Jefferson county” or “northeast Oregon”). Only capitalize pronouns.');
 //define('LOCATIONREMARKS','');
-define('LOCALITYAUTOLOOKUP','Unless deactivated, when you type in a locality, it will try to autocomplete with previously entered localities that also match the collector, collector number and date. If you select one of those matches, it will fill in any associated data (lat/long, elevation, habitat, etc.)');
+define('LOCALITYAUTOLOOKUP','Unless deactivated, when you type in a locality, it will try to autocomplete with previously entered localities that also match the collector and date. If you select one of those matches, it will fill in any associated data (lat/long, elevation, habitat, associated species, etc.)');
 //define('LOCALITYSECURITYTIP','');
 //define('LOCALITYSECURITYREASONTIP','');
 define('DECIMALLATITUDETIP','If Latitude is stated on the label in decimal format, enter here. If on the label as degrees/minutes/seconds, TRS or UTM, click the F (format) button, enter in the respective fields and click the Insert Values button. This auto-populates the Verbatim Coordinates and Lat/Long fields.');
@@ -169,7 +170,7 @@ define('GEOTOOLSTIP','Click to view additional coordinate fields of these types:
   * Latitude/Longitude if given in degrees, minutes, seconds
   * UTM
   * TRS ');
-define('GEODETICDATUMTIP','If the coordinate datum is stated on the label (e.g., WGS84, NAD83) enter here. Otherwise, leave it blank.');
+define('GEODETICDATUMTIP','If the coordinate datum is available (e.g., WGS84, NAD83) enter here. Otherwise, leave it blank.');
 define('VERBATIMCOORDINATESTIP','Do not enter data directly into this field. If the label uses degrees/minutes/seconds, UTM’s or TRS coordinate systems, click the F (format) button to show fields specialized for capturing these data. Once entered click the respective “Insert values” button below the entered coordinates. This autopopulates the Verbatim Coordinates field.');
 define('RECALCULATECOORDSTIP','Do not use this to convert verbatim coordinates. It is better to use the conversion provided by clicking the F button.');
 define('ELEVATIONINMETERSTIP','Enter elevation under Verbatim Elevation field. This field will autopopulate.');
@@ -191,12 +192,12 @@ define('FOOTPRINTWKTTIP','A georeferenced location as a polygon. Do not fill in 
 
 // Misc
 define('HABITATTIP','Environmental conditions in which the specimen was found (e.g., marsh, grassy field). Include community types (e.g., “Douglas fir forest”). Sometimes it is necessary to repeat a part of the location phrase to provide needed context. End phrase with a period.');
-define('SUBSTRATETIP','Not generally used at OSU');
+define('SUBSTRATETIP','Enter the substrate, especially for bryophytes, algae, lichens, etc. Not generally used for OSU vascular plants except for epiphytes or parasitic plants.');
 //define('HOSTTIP','');
 define('ASSOCIATEDTAXATIP','Other taxa listed as growing with the specimen (species associated with community types belong in Habitat e.g., “Douglas fir forest”). Include common names if given on the label. Enter all names separated by a comma, excluding additional words (and, with, &). For quick entry, enter the first three letters of the genus, followed by a space, and the first three letters of the species.');
 define('ASSOCIATEDTAXAAIDTIP','This pops up a helper box to add associated taxa names.');
 define('VERBATIMATTRIBUTESTIP','Information specific to the individual specimen(s) (e.g., size, condition, color)');
-define('OCCURRENCEREMARKSTIP','Add any additional data on the label that does not fit into the other data fields. Separate disparate information with a semicolon and end phrase with a period.');
+define('OCCURRENCEREMARKSTIP','Add any additional data on the label that does not fit into the other data fields, including frequency (common, scattered, rare). Separate disparate information with a semicolon and end phrase with a period.');
 define('DYNAMICPROPERTIESTIP','Not generally used at OSU.');
 define('LIFESTAGETIP','Not generally used at OSU');
 define('SEXTIP','Enter the gender of the specimen if noted on the original label (e.g., “male” or “female”).');
@@ -214,18 +215,18 @@ define('CULTIVATIONSTATUSTIP','This should be checked if the collection was from
 
 // Curation
 define('TYPESTATUSTIP','The type status (e.g., holotype, isotype) of the specimen. This field should only contain data if the specimen is a type, noted on the specimen.');
-define('DISPOSITIONTIP','Leave this field blank, it will be filled in at the herbarium.');
-define('OCCURRENCEIDTIP','Leave this field blank, it will be filled in at the herbarium.');
+define('DISPOSITIONTIP','Field disabled. Leave this field blank, it will be filled in at the herbarium.');
+define('OCCURRENCEIDTIP','Field disabled. Leave this field blank, it will be filled in at the herbarium.');
 define('FIELDNUMBERTIP','Not generally used at OSU.');
 define('BASISOFRECORDTIP','Do not edit this field. It will be set to Human Observation, until accessioned into an herbarium.');
 define('LANGUAGETIP','The language of the label information, if other than English. Use RFC 5646 codes (e.g., “en” for English, “es” for Spanish).');
-define('LABELPROJECTTIP','If the heading on a label denotes a specific project other than flora of a specific place (e.g., “Oregon Flora Project”), enter it here.');
-define('DUPLICATEQUANTITYTIP','Record if the number of duplicates if you collected multiple specimens.');
-define('INSTITUTIONCODETIP','Leave this blank. The herbarium will add it, if needed.');
-define('COLLECTIONCODETIP','Leave this blank. The herbarium will add it, if needed.');
-define('OWNERINSTITUTIONCODETIP','Leave this blank. The herbarium will add it, if needed.');
+define('LABELPROJECTTIP','Use this field to create headings or label projects (e.g., “OSU 2023 Foray”) that you can search on.');
+define('DUPLICATEQUANTITYTIP','Record the number of duplicates if you collected multiple specimens; this will then populate when you print your labels.');
+define('INSTITUTIONCODETIP','Field disabled. Leave this blank. The herbarium will add it, if needed.');
+define('COLLECTIONCODETIP','Field disabled. Leave this blank. The herbarium will add it, if needed.');
+define('OWNERINSTITUTIONCODETIP','Field disabled. Leave this blank. The herbarium will add it, if needed.');
 define('PROCESSINGSTATUSTIP','This field is used to indicate the record’s stage in the workflow. Use ‘Status Auto-set’ below to set the processing status for batches of records. You can decide how to use each of the processing statuses.');
-define('DATAGENERALIZATIONSTIP','Information derived from the transcription process which is not stated on the original label. Use this to note an issue with transcription that requires future investigation. Also used to indicate interpretations such as “county interpreted” if the county was derived from an annotation and not stated on the label.');
+define('DATAGENERALIZATIONSTIP','Field disabled. The herbarium will add it, if needed.');
 define('STATUSAUTOSETTIP','Set this status once, and it sets all subsequent records to the same processing status. Note that this will OVERRIDE the processing status set in the processing status field itself.');
 
 // Record Cloning

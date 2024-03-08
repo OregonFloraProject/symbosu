@@ -55,7 +55,21 @@ class CheckboxList extends React.Component {
 											this.onAttrClicked(attr,itemVal.charstatename,(checked? 'off':'on'))
 										}}
 									/>
-									<label htmlFor={ attr } dangerouslySetInnerHTML={this.setLabel( itemVal.charstatename, href )}></label>					
+									{ href ? (
+										<label htmlFor={ attr }>
+											<a 
+												href={ href }
+												className="external-link"
+												title="List of all native species this nursery carries"
+											>
+												{itemVal.charstatename} <FontAwesomeIcon icon="external-link-alt" />
+											</a>				
+										</label>	
+										) : (
+											<label htmlFor={ attr } dangerouslySetInnerHTML={{__html: itemVal.charstatename }}></label>
+										)
+									}				
+					
 							</li>
 						)
 					})

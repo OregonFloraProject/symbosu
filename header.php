@@ -46,7 +46,8 @@
 	src="<?php echo $CLIENT_ROOT?>/js/react/dist/header.js?<?php echo filemtime($SERVER_ROOT . '/js/react/dist/header.js'); ?>"
 	type="text/javascript">
 </script>
-
+<?php
+/*
 <div class="urgent-banner">
 	<p>
 	Through the support of many individuals, NPSO, and OSU Extension, we now have funding to operate at half-capacity through June 2024. 
@@ -56,11 +57,12 @@
 	</p>
   <!--
   <p style="color: black; text-align: center; background-color: yellow; font-weight: bold;">
-    Currently undergoing site maintainence. Expect some disruptions, things will be fixed soon. 
+    Currently undergoing site maintainance. Expect some disruptions, things will be fixed soon. 
   </p>
   -->
 </div>
-
+*/
+?>
 <!-- Global site tag (gtag.js) - Google Analytics 4-->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-98WFW6HYV2"></script>
 <script>
