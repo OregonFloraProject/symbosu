@@ -360,8 +360,15 @@ class TaxaManager {
       $clQuery->getQuery()->execute()
     );
   }
+<<<<<<< HEAD
   public function setChecklists() {
   	$this->checklists = TaxaManager::populateChecklists($this->getTid());
+=======
+  
+
+  public function setChecklists() {
+    $this->checklists = self::populateChecklists($this->getTid());
+>>>>>>> garden
   }
 
   private static function getEmptyCharacteristics() {
