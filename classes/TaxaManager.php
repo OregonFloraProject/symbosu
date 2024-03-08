@@ -63,7 +63,7 @@ class TaxaManager {
       $taxaRepo = $em->getRepository("Taxa");
       $this->model = $taxaRepo->find($tid);
       $this->basename = $this->populateBasename();
-      $this->images = TaxaManager::populateImages($this->getTid());
+      //$this->images = TaxaManager::populateImages($this->getTid());
       //$this->checklists = TaxaManager::populateChecklists($this->getTid());
     } else {
       $this->model = null;
@@ -83,8 +83,8 @@ class TaxaManager {
     $newTaxa = new TaxaManager();
     $newTaxa->model = $model;
     $newTaxa->basename = $newTaxa->populateBasename();
-    $newTaxa->images = TaxaManager::populateImages($model->getTid());
-    $newTaxa->checklists = TaxaManager::populateChecklists($model->getTid());
+    //$newTaxa->images = TaxaManager::populateImages($model->getTid());
+    //$newTaxa->checklists = TaxaManager::populateChecklists($model->getTid());
     return $newTaxa;
   }
   
