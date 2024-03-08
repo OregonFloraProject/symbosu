@@ -305,7 +305,7 @@ function get_garden_characteristics($tids) {
 						}
 					}		
 					if (getNurseryCid() == $char['cid']) {	
-						if ($clidLookup[$cs['cs']]) {
+						if (isset($clidLookup[$cs['cs']])) {
 							$tmp['clid'] = $clidLookup[$cs['cs']];
 							$tmp['pid'] = Fmchecklists::$PID_VENDOR_ALL;
 						}
