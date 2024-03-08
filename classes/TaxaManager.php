@@ -63,8 +63,8 @@ class TaxaManager {
       $taxaRepo = $em->getRepository("Taxa");
       $this->model = $taxaRepo->find($tid);
       $this->basename = $this->populateBasename();
-      $this->images = TaxaManager::populateImages($this->getTid());
-      $this->checklists = TaxaManager::populateChecklists($this->getTid());
+      //$this->images = TaxaManager::populateImages($this->getTid());
+      //$this->checklists = TaxaManager::populateChecklists($this->getTid());
     } else {
       $this->model = null;
       $this->basename = '';
@@ -83,8 +83,8 @@ class TaxaManager {
     $newTaxa = new TaxaManager();
     $newTaxa->model = $model;
     $newTaxa->basename = $newTaxa->populateBasename();
-    $newTaxa->images = TaxaManager::populateImages($model->getTid());
-    $newTaxa->checklists = TaxaManager::populateChecklists($model->getTid());
+    //$newTaxa->images = TaxaManager::populateImages($model->getTid());
+    //$newTaxa->checklists = TaxaManager::populateChecklists($model->getTid());
     return $newTaxa;
   }
   
@@ -360,8 +360,9 @@ class TaxaManager {
       $clQuery->getQuery()->execute()
     );
   }
-  
-
+  public function setChecklists() {
+  	$this->checklists = TaxaManager::populateChecklists($this->getTid());
+  }
 
   private static function getEmptyCharacteristics() {
     return [
@@ -652,6 +653,7 @@ class TaxaManager {
       ->execute();
     
     $images = array_map("TaxaManager::processImageData",$images);
+    //var_dump($images);exit;
     /*
     #getimagesize is too slow here
     foreach ($images as $key => $image) {
@@ -661,8 +663,12 @@ class TaxaManager {
     $return = $images;
     return $return;
   }
+  public function setImages() {
+  	$this->images = self::populateImages($this->getTid());
+  }
   
   private static function processImageData($img) {
+  //var_dump($img);
   		foreach ($img as $field => $value) {
   			if ($field == 'thumbnailurl' || $field == 'url') {
   				$img[$field] = resolve_img_path($value);
