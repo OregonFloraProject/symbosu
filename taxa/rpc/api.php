@@ -128,6 +128,7 @@ function taxaManagerToJSON($taxaObj,$recursive = false,$taxaRankId = null) {
 			$result["family"] = $taxaObj->getFamily();
 			$result["rarePlantFactSheet"] = $taxaObj->getRarePlantFactSheet();
 			$result["characteristics"] = $taxaObj->getCharacteristics();
+			$taxaObj->setChecklists();
 			$result["checklists"] = $taxaObj->getChecklists();
 			$result["descriptions"] = $taxaObj->getDescriptions();
 			$result["gardenDescription"] = $taxaObj->getGardenDescription();
@@ -136,7 +137,7 @@ function taxaManagerToJSON($taxaObj,$recursive = false,$taxaRankId = null) {
 			foreach ($result["taxalinks"] as $idx => $taxalink) {
 				$result["taxalinks"][$idx]['url'] = str_replace("--SCINAME--",$result["sciname"],$taxalink['url']);
 			}	
-			
+			$taxaObj->setImages();
 			$allImages = $taxaObj->getImagesByBasisOfRecord();
 			$result["imagesBasis"]['HumanObservation'] = (isset($allImages['HumanObservation']) ? $allImages['HumanObservation'] : []);
 			$result["imagesBasis"]['PreservedSpecimen'] = (isset($allImages['PreservedSpecimen']) ? $allImages['PreservedSpecimen'] : []);
