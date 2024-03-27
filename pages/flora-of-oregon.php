@@ -47,7 +47,7 @@ header( "Content-Type: text/html; charset=" . $charset );
 										<ul class="downloads">
 											<li>
 												<div class="title">Errata for volumes 1&amp;2</div>
-												<div class="icon pdf"><a href="pdfs/Errata_Web_April2022.pdf" download><img src="../images/Adobe_PDF_file_icon_32x32.png"></a></div>
+												<div class="icon pdf"><a href="pdfs/FloraOfOregon_Errata.pdf" download><img src="../images/Adobe_PDF_file_icon_32x32.png"></a></div>
 												<?php /* <div class="icon csv"></div> */ ?>
 											</li>
 											<li>
