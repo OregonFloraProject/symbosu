@@ -86,9 +86,45 @@ class ExploreManager {
   	$this->pid = $pid;
   }
   public function getVouchers() {
-  	foreach ($this->taxa as $rowArr) {
-  		$this->taxaVouchers[$rowArr['tid']] = $this->populateVouchers($rowArr['tid']);
-  	}
+
+    // JGM 2024-04-19: The original code commented out below runs a separate query for each taxon
+    // in a checklist to get its vouchers.
+    // To greatly improve efficiency, I've rewritten it to do this all in one query
+
+    // foreach ($this->taxa as $rowArr) {
+    //  $this->taxaVouchers[$rowArr['tid']] = $this->populateVouchers($rowArr['tid']);
+    // }
+
+    // More efficient code
+    // Get all the vouchers associated with a checklist
+    $em = SymbosuEntityManager::getEntityManager();
+    $vouchers = $em->createQueryBuilder()
+      ->select(["v.tid","v.occid","v.notes","c.institutioncode","o.catalognumber","o.recordedby","o.recordnumber","o.eventdate"])
+      ->from("Fmvouchers", "v")
+      ->innerJoin("Omoccurrences", "o", "WITH", "v.occid = o.occid")
+      ->innerJoin("Omcollections", "c", "WITH", "o.collid = c.collid")
+      ->where("v.clid = :clid")
+      ->setParameter(":clid", $this->getClid())
+      ->distinct()
+      ->getQuery()
+      ->execute();
+
+    // Iterate over the vouchers
+    foreach ($vouchers as $idx => $voucher) {
+
+      // Fix dates
+      if ($voucher['eventdate']) {
+        $vouchers[$idx]['eventdate'] = $voucher['eventdate']->format('Y-m-d');
+      }
+
+      // Check if there is already an array for the TID. If not, create one
+      if(!isset($this->taxaVouchers[$voucher['tid']])) $this->taxaVouchers[$voucher['tid']] = array();
+
+      // Add the voucher to the array for that TID
+      array_push($this->taxaVouchers[$voucher['tid']], $voucher);
+
+    }
+
   	return $this->taxaVouchers;
   }
   public function getPid() {
@@ -205,6 +241,9 @@ class ExploreManager {
     return $results;
 
   }
+
+  // JGM 2024-04-19: This code is deprecated in favor of a more efficient solution.
+  // Maintaining for now, just in case it's needed
   private function populateVouchers($tid) {
     $em = SymbosuEntityManager::getEntityManager();
     $vouchers = $em->createQueryBuilder()

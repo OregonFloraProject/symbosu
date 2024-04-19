@@ -169,8 +169,9 @@ ALTER TABLE `fmchecklists`
 ALTER TABLE `fmvouchers` 
   DROP FOREIGN KEY `FK_vouchers_cl`;
 
-ALTER TABLE `fmvouchers` 
-  DROP INDEX `chklst_taxavouchers` ;
+# JGM: This index is needed by OregonFlora checklist code, otherwise it's very slow
+#ALTER TABLE `fmvouchers` 
+#  DROP INDEX `chklst_taxavouchers` ;
 
 ALTER TABLE `fmvouchers` 
   DROP FOREIGN KEY `FK_fmvouchers_occ`;
