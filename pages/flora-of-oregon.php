@@ -39,7 +39,7 @@ header( "Content-Type: text/html; charset=" . $charset );
 									<p>
 									The Flora of Oregon is a three-volume reference that will be the state’s only flora published in the past half century and the first illustrated floristic work that exclusively addresses Oregon. 
 									Volumes 1 and 2 were published in 2015 and 2020, respectively, and can be purchased directly from the publisher, the <a href="https://shopbritpress.org/collections/all" target="_blank">Botanical Research Institute of Texas Press</a>, or from other vendors. 
-									Volume 3 has a projected publication date of 2023. Upon completion, we estimate detailed descriptions of 4,380 native and naturalized taxa will be published in the three volumes.
+									Volume 3 has a projected publication date of 2025. Upon completion, we estimate detailed descriptions of 4,380 native and naturalized taxa will be published in the three volumes.
 									</p>
 									<div class="inset updates">
 										<h3>Stay informed and keep your Flora up-to-date</h3>
