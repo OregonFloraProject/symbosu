@@ -1654,8 +1654,8 @@ class SpecUploadBase extends SpecUpload{
 						if(array_key_exists('infraspecificepithet',$recMap) && $recMap['infraspecificepithet']){
 							if(array_key_exists('taxonrank',$recMap) && $recMap['taxonrank']){
 								$infraStr = $recMap['taxonrank'];
-								if($infraStr == 'subspecies') $infraStr = 'subsp.';
-								elseif($infraStr == 'ssp.') $infraStr = 'subsp.';
+								if($infraStr == 'subspecies') $infraStr = 'ssp.';
+								elseif($infraStr == 'ssp.') $infraStr = 'ssp.';
 								elseif($infraStr == 'variety') $infraStr = 'var.';
 								$sciName .= ' '.$infraStr;
 							}
