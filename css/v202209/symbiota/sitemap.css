@@ -40,7 +40,7 @@ div#symbiotaschema{
 div#symbiotaschema img{
         display: block;
         clear:left;
-        float:left;
+        /*float:left;*/
         margin: 0 0 .5rem 0;
         padding: 0;
 }

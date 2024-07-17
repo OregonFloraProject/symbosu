@@ -114,7 +114,7 @@ class ExploreManager {
 
       // Fix dates
       if ($voucher['eventdate']) {
-        $vouchers[$idx]['eventdate'] = $voucher['eventdate']->format('Y-m-d');
+        $voucher['eventdate'] = $voucher['eventdate']->format('Y-m-d');
       }
 
       // Check if there is already an array for the TID. If not, create one
