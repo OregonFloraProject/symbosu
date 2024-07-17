@@ -1,50 +1,4 @@
 "Taxon","Origin","Field Photos","Group","Family","Also_known_as","Ecoregions"
-"Eriocoma webberi","native",0,"Monocotyledons","Poaceae","Achnatherum webberi","Basin and Range, Blue and Wallowa Mountains, Owyhee Uplands"
-"Eriogonum brachyanthum","native",1,"Dicotyledons","Polygonaceae",,"Basin and Range"
-"Eriogonum cernuum","native",0,"Dicotyledons","Polygonaceae","Eriogonum cernuum var. cernuum","Basin and Range"
-"Eriogonum collinum","native",0,"Dicotyledons","Polygonaceae",,"Basin and Range"
-"Eriogonum compositum var. leianthum","native",4,"Dicotyledons","Polygonaceae","Eriogonum tolmieanum","Blue and Wallowa Mountains, Columbia Basin, Owyhee Uplands"
-"Eriogonum douglasii var. meridionale","native",1,"Dicotyledons","Polygonaceae",,"Eastern Cascade Slopes and Foothills, Siskiyou Mountains"
-"Eriogonum elatum var. villosum","native",0,"Dicotyledons","Polygonaceae",,"Eastern Cascade Slopes and Foothills, Siskiyou Mountains"
-"Eriogonum hookeri","native",0,"Dicotyledons","Polygonaceae",,"Owyhee Uplands"
-"Eriogonum luteolum var. luteolum","native",0,"Dicotyledons","Polygonaceae",,"Siskiyou Mountains"
-"Eriogonum maculatum","native",0,"Dicotyledons","Polygonaceae",,"Basin and Range, Owyhee Uplands"
-"Eriogonum microtheca var. ambiguum","native",0,"Dicotyledons","Polygonaceae",,"Basin and Range, Blue and Wallowa Mountains, Owyhee Uplands"
-"Eriogonum nudum var. paralinum","native",0,"Dicotyledons","Polygonaceae",,"Estuarine Coast"
-"Eriogonum nutans var. nutans","native",0,"Dicotyledons","Polygonaceae",,"Basin and Range"
-"Eriogonum prociduum","native",3,"Dicotyledons","Polygonaceae","Eriogonum prociduum var. prociduum","Basin and Range, Eastern Cascade Slopes and Foothills"
-"Eriogonum pyrolifolium var. pyrolifolium","native",0,"Dicotyledons","Polygonaceae",,"Cascades"
-"Eriogonum roseum","native",0,"Dicotyledons","Polygonaceae","Eriogonum virgatum","Siskiyou Mountains"
-"Eriogonum salicornioides","native",0,"Dicotyledons","Polygonaceae",,"Owyhee Uplands"
-"Eriogonum scopulorum","native",0,"Dicotyledons","Polygonaceae",,"Blue and Wallowa Mountains"
-"Eriogonum umbellatum var. aureum","native",0,"Dicotyledons","Polygonaceae","Eriogonum umbellatum var. intectum","Eastern Cascade Slopes and Foothills, Owyhee Uplands"
-"Eriogonum umbellatum var. devestivum","native",0,"Dicotyledons","Polygonaceae",,"Blue and Wallowa Mountains"
-"Eriogonum umbellatum var. glaberrimum","native",0,"Dicotyledons","Polygonaceae",,"Eastern Cascade Slopes and Foothills"
-"Eriogonum umbellatum var. nelsoniorum","native",0,"Dicotyledons","Polygonaceae",,"Siskiyou Mountains"
-"Iris tenuissima","not naturalized",0,"Monocotyledons","Iridaceae","Iris tenuissima ssp. tenuissima",
-"Isoetes bolanderi","native",1,"Pteridophytes","Isoetaceae",,"Basin and Range, Blue and Wallowa Mountains, Cascades, Coast Range"
-"Isoetes orcuttii","native",1,"Pteridophytes","Isoetaceae",,"Siskiyou Mountains"
-"Isoetes tenella","native",1,"Pteridophytes","Isoetaceae","Isoetes echinospora","Blue and Wallowa Mountains, Cascades, Estuarine Coast, Siskiyou Mountains"
-"Isolepis setacea","naturalized",0,"Monocotyledons","Cyperaceae","Scirpus setaceus","Cascades, Coast Range, Estuarine Coast, Siskiyou Mountains"
-"Jacobaea maritima","not naturalized",0,"Dicotyledons","Asteraceae","Senecio cineraria","Willamette Valley"
-"Juglans regia","not naturalized",1,"Dicotyledons","Juglandaceae",,"Siskiyou Mountains, Willamette Valley"
-"Juncus anthelatus","naturalized",3,"Monocotyledons","Juncaceae",,"Willamette Valley"
-"Juncus bryoides","native",0,"Monocotyledons","Juncaceae",,"Basin and Range"
-"Juncus bufonius var. congestus","not naturalized",0,"Monocotyledons","Juncaceae",,"Basin and Range, Eastern Cascade Slopes and Foothills, Estuarine Coast"
-"Juncus bufonius var. occidentalis","native",1,"Monocotyledons","Juncaceae",,"Basin and Range, Blue and Wallowa Mountains, Cascades, Owyhee Uplands"
-"Juncus bulbosus","not naturalized",1,"Monocotyledons","Juncaceae","Juncus supinus","Estuarine Coast"
-"Juncus canadensis","naturalized",0,"Monocotyledons","Juncaceae",,"Estuarine Coast"
-"Juncus capillaris","native",0,"Monocotyledons","Juncaceae",,"Basin and Range"
-"Juncus capitatus","not naturalized",0,"Monocotyledons","Juncaceae",,"Estuarine Coast"
-"Juncus compressus","not naturalized",0,"Monocotyledons","Juncaceae",,"Columbia Basin, Willamette Valley"
-"Juncus confusus","native",0,"Monocotyledons","Juncaceae",,"Basin and Range, Blue and Wallowa Mountains, Eastern Cascade Slopes and Foothills, Owyhee Uplands, Siskiyou Mountains"
-"Juncus conglomeratus","not naturalized",0,"Monocotyledons","Juncaceae","Juncus effusus var. conglomeratus","Willamette Valley"
-"Juncus diffusissimus","naturalized",0,"Monocotyledons","Juncaceae",,"Estuarine Coast"
-"Juncus effusus ssp. solutus","naturalized",0,"Monocotyledons","Juncaceae",,"Cascades, Willamette Valley"
-"Juncus exiguus","native",0,"Monocotyledons","Juncaceae","Juncus effusus var. exiguus","Cascades, Coast Range, Siskiyou Mountains"
-"Juncus gerardi ssp. gerardi","naturalized",1,"Monocotyledons","Juncaceae","Juncus gerardi var. pedicellatus","Estuarine Coast"
-"Juncus hemiendytus var. hemiendytus","native",4,"Monocotyledons","Juncaceae",,"Basin and Range, Blue and Wallowa Mountains, Cascades, Eastern Cascade Slopes and Foothills, Owyhee Uplands, Siskiyou Mountains, Willamette Valley"
-"Juncus hesperius","native",2,"Monocotyledons","Juncaceae","Juncus effusus var. bruneus","Coast Range, Estuarine Coast, Willamette Valley"
 "× Aegilotriticum sancti-andreae","not naturalized",0,"Monocotyledons","Poaceae","Aegilops cylindrica × Triticum aestivum","Blue and Wallowa Mountains, Columbia Basin"
 "× Agropogon lutosus","not naturalized",0,"Monocotyledons","Poaceae","× Agropogon littoralis","Blue and Wallowa Mountains"
 "× Amelasorbus jackii","not naturalized",0,"Dicotyledons","Rosaceae",,"Blue and Wallowa Mountains"
@@ -54,10 +8,6 @@
 "× Pseudelymus saxicola","native",0,"Monocotyledons","Poaceae","× Agrositanion saxicola","Basin and Range, Blue and Wallowa Mountains, Eastern Cascade Slopes and Foothills, Lava Plains, Owyhee Uplands"
 "× Schedololium holmbergii","not naturalized",0,"Monocotyledons","Poaceae",,"Willamette Valley"
 "Abdra brachycarpa","naturalized",0,"Dicotyledons","Brassicaceae","Draba brachycarpa","Willamette Valley"
-"Abies amabilis","native",2,"Gymnosperms","Pinaceae",,"Cascades, Coast Range, Eastern Cascade Slopes and Foothills, Willamette Valley"
-"Abies lasiocarpa var. lasiocarpa","native",3,"Gymnosperms","Pinaceae","Abies lasiocarpa ssp. bifolia","Blue and Wallowa Mountains, Cascades, Eastern Cascade Slopes and Foothills, Siskiyou Mountains"
-"Abies magnifica × Abies procera","native",0,"Gymnosperms","Pinaceae","Abies magnifica var. magnifica","Cascades, Eastern Cascade Slopes and Foothills, Siskiyou Mountains"
-"Abies procera","native",3,"Gymnosperms","Pinaceae",,"Cascades, Coast Range"
 "Acanthospermum hispidum","not naturalized",0,"Dicotyledons","Asteraceae",,
 "Acer ginnala","not naturalized",0,"Dicotyledons","Sapindaceae",,"Willamette Valley"
 "Acer glabrum var. glabrum","native",0,"Dicotyledons","Sapindaceae",,"Cascades, Coast Range, Owyhee Uplands, Siskiyou Mountains"
@@ -66,6 +16,7 @@
 "Acorus americanus","not naturalized",0,"Monocotyledons","Acoraceae",,"Blue and Wallowa Mountains, Willamette Valley"
 "Actaea elata var. alpestris","native",0,"Dicotyledons","Ranunculaceae","Cimicifuga elata var. alpestris","Cascades, Siskiyou Mountains"
 "Adenostoma fasciculatum var. fasciculatum","not naturalized",0,"Dicotyledons","Rosaceae",,
+"Adiantum shastense","not naturalized",0,"Pteridophytes","Pteridaceae",,
 "Adonis aestivalis","naturalized",2,"Dicotyledons","Ranunculaceae",,"Basin and Range, Blue and Wallowa Mountains, Eastern Cascade Slopes and Foothills, Willamette Valley"
 "Aegilops triuncialis var. triuncialis","naturalized",1,"Monocotyledons","Poaceae",,
 "Aegopodium podagraria","not naturalized",3,"Dicotyledons","Apiaceae","Aegopodium podagraria var. variegatum","Cascades, Willamette Valley"
@@ -80,10 +31,11 @@
 "Agrostis densiflora","native",3,"Monocotyledons","Poaceae",,"Estuarine Coast"
 "Agrostis gigantea","naturalized",2,"Monocotyledons","Poaceae",,"Basin and Range, Blue and Wallowa Mountains, Cascades, Coast Range, Columbia Basin, Estuarine Coast, Lava Plains, Owyhee Uplands, Siskiyou Mountains, Willamette Valley"
 "Agrostis hendersonii","native",0,"Monocotyledons","Poaceae",,"Siskiyou Mountains"
-"Agrostis howellii","native",0,"Monocotyledons","Poaceae",,"Cascades, Eastern Cascade Slopes and Foothills"
+"Agrostis howellii","native",3,"Monocotyledons","Poaceae",,"Cascades, Eastern Cascade Slopes and Foothills"
 "Agrostis idahoensis","native",0,"Monocotyledons","Poaceae",,"Basin and Range, Blue and Wallowa Mountains, Cascades, Siskiyou Mountains"
 "Agrostis oregonensis","native",3,"Monocotyledons","Poaceae",,"Cascades, Eastern Cascade Slopes and Foothills, Estuarine Coast, Siskiyou Mountains, Willamette Valley"
 "Agrostis pallens","native",2,"Monocotyledons","Poaceae","Agrostis foliosa","Blue and Wallowa Mountains, Cascades, Coast Range, Eastern Cascade Slopes and Foothills, Estuarine Coast, Lava Plains, Siskiyou Mountains, Willamette Valley"
+"Agrostis swalalahos","native",0,"Monocotyledons","Poaceae",,
 "Agrostis variabilis","native",0,"Monocotyledons","Poaceae",,"Basin and Range, Blue and Wallowa Mountains, Cascades, Eastern Cascade Slopes and Foothills"
 "Aira elegantissima","naturalized",1,"Monocotyledons","Poaceae","Aira elegans","Estuarine Coast, Siskiyou Mountains, Willamette Valley"
 "Alcea rosea","not naturalized",3,"Dicotyledons","Malvaceae",,"Eastern Cascade Slopes and Foothills"
@@ -91,11 +43,11 @@
 "Allium ampeloprasum","not naturalized",2,"Monocotyledons","Amaryllidaceae",,"Estuarine Coast"
 "Allium bolanderi var. bolanderi","native",2,"Monocotyledons","Amaryllidaceae",,"Siskiyou Mountains"
 "Allium brandegeei","native",1,"Monocotyledons","Amaryllidaceae",,"Blue and Wallowa Mountains, Owyhee Uplands"
-"Allium dictuon","native",2,"Monocotyledons","Amaryllidaceae",,
+"Allium dictuon","native",0,"Monocotyledons","Amaryllidaceae",,"Blue and Wallowa Mountains"
 "Allium membranaceum","not naturalized",0,"Monocotyledons","Amaryllidaceae",,"Siskiyou Mountains"
 "Allium nigrum","not naturalized",0,"Monocotyledons","Amaryllidaceae",,"Willamette Valley"
 "Allium peninsulare var. peninsulare","native",1,"Monocotyledons","Amaryllidaceae",,
-"Allium unifolium","native",3,"Monocotyledons","Amaryllidaceae",,"Estuarine Coast"
+"Allium unifolium","native",4,"Monocotyledons","Amaryllidaceae",,"Estuarine Coast"
 "Allophyllum gilioides","native",0,"Dicotyledons","Polemoniaceae","Allophyllum gilioides ssp. gilioides","Siskiyou Mountains"
 "Alnus glutinosa","not naturalized",0,"Dicotyledons","Betulaceae",,"Estuarine Coast, Willamette Valley"
 "Alopecurus arundinaceus","naturalized",2,"Monocotyledons","Poaceae",,
@@ -103,8 +55,8 @@
 "Amaranthus deflexus","not naturalized",0,"Dicotyledons","Amaranthaceae",,"Willamette Valley"
 "Amaranthus hybridus","native",0,"Dicotyledons","Amaranthaceae",,"Cascades, Owyhee Uplands, Siskiyou Mountains, Willamette Valley"
 "Amaranthus hypochondriacus","not naturalized",2,"Dicotyledons","Amaranthaceae",,"Blue and Wallowa Mountains"
+"Amaranthus palmeri","not naturalized",0,"Dicotyledons","Amaranthaceae",,
 "Amaranthus viridis","not naturalized",0,"Dicotyledons","Amaranthaceae",,
-"Amaryllis belladonna","not naturalized",2,"Monocotyledons","Amaryllidaceae",,
 "Ambrosia grayi","not naturalized",0,"Dicotyledons","Asteraceae",,
 "Amelanchier alnifolia var. pumila","native",2,"Dicotyledons","Rosaceae","Amelanchier pumila","Blue and Wallowa Mountains, Owyhee Uplands"
 "Amelanchier pallida","native",0,"Dicotyledons","Rosaceae",,"Basin and Range, Cascades, Eastern Cascade Slopes and Foothills, Siskiyou Mountains"
@@ -113,9 +65,10 @@
 "Amphiscirpus nevadensis","native",2,"Monocotyledons","Cyperaceae","Scirpus nevadensis","Basin and Range"
 "Amsinckia spectabilis var. spectabilis","native",2,"Dicotyledons","Boraginaceae","Amsinckia scouleri","Estuarine Coast"
 "Amsinckiopsis kingii var. kingii","native",0,"Dicotyledons","Boraginaceae","Plagiobothrys kingii var. kingii","Basin and Range, Owyhee Uplands"
-"Anchusa capensis","not naturalized",0,"Dicotyledons","Boraginaceae",,
+"Anchusa capensis","not naturalized",0,"Dicotyledons","Boraginaceae",,"Willamette Valley"
 "Androsace elongata ssp. acuta","native",0,"Dicotyledons","Primulaceae",,"Siskiyou Mountains"
 "Androsace septentrionalis","native",3,"Dicotyledons","Primulaceae","Androsace septentrionalis ssp. subumbellata","Blue and Wallowa Mountains"
+"Anemone blanda","not naturalized",0,"Dicotyledons","Ranunculaceae",,
 "Anemone multifida var. saxicola","native",4,"Dicotyledons","Ranunculaceae","Anemone multifida var. hirsuta","Blue and Wallowa Mountains, Coast Range"
 "Anemone oregana var. felix","native",3,"Dicotyledons","Ranunculaceae","Anemone felix","Cascades, Coast Range, Estuarine Coast"
 "Anemopsis californica","native",1,"Dicotyledons","Saururaceae",,"Columbia Basin, Eastern Cascade Slopes and Foothills"
@@ -132,17 +85,9 @@
 "Anthyllis vulneraria","not naturalized",0,"Dicotyledons","Fabaceae",,"Willamette Valley"
 "Apera spica-venti","naturalized",0,"Monocotyledons","Poaceae","Agrostis spica-venti","Willamette Valley"
 "Aphyllon epigalium ssp. epigalium","native",0,"Dicotyledons","Orobanchaceae",,"Cascades, Siskiyou Mountains"
-"Aphyllon franciscanum","native",0,"Dicotyledons","Orobanchaceae",,
 "Apium graveolens","not naturalized",2,"Dicotyledons","Apiaceae",,"Willamette Valley"
 "Arabis crucisetosa","native",0,"Dicotyledons","Brassicaceae",,"Blue and Wallowa Mountains"
-"Arceuthobium abietinum ssp. wiensii","native",0,"Dicotyledons","Viscaceae",,"Siskiyou Mountains"
-"Arceuthobium cyanocarpum","native",0,"Dicotyledons","Viscaceae","Arceuthobium campylopodum f. cyanocarpum","Cascades"
 "Arceuthobium douglasii","native",2,"Dicotyledons","Viscaceae",,"Blue and Wallowa Mountains, Cascades, Eastern Cascade Slopes and Foothills, Lava Plains, Siskiyou Mountains"
-"Arceuthobium laricis","native",0,"Dicotyledons","Viscaceae","Arceuthobium campylopodum f. laricis","Blue and Wallowa Mountains, Cascades, Eastern Cascade Slopes and Foothills"
-"Arceuthobium monticola","native",1,"Dicotyledons","Viscaceae",,"Siskiyou Mountains"
-"Arceuthobium siskiyouense","native",0,"Dicotyledons","Viscaceae","Arceuthobium campylopodum ssp. siskiyouense","Coast Range, Siskiyou Mountains"
-"Arceuthobium tsugense ssp. amabilae","native",0,"Dicotyledons","Viscaceae",,"Cascades, Coast Range"
-"Arceuthobium tsugense ssp. tsugense","native",0,"Dicotyledons","Viscaceae","Arceuthobium campylopodum f. tsugensis","Cascades, Coast Range, Estuarine Coast, Siskiyou Mountains"
 "Arctium lappa","naturalized",0,"Dicotyledons","Asteraceae",,"Willamette Valley"
 "Arctium tomentosum","naturalized",0,"Dicotyledons","Asteraceae",,"Lava Plains, Willamette Valley"
 "Arctostaphylos × oblongifolia","native",4,"Dicotyledons","Ericaceae","Arctostaphylos bracteata","Siskiyou Mountains"
@@ -151,8 +96,10 @@
 "Arctostaphylos mewukka ssp. mewukka","not naturalized",0,"Dicotyledons","Ericaceae",,
 "Arenaria montana","not naturalized",0,"Dicotyledons","Caryophyllaceae",,"Willamette Valley"
 "Aristida adscensionis","not naturalized",0,"Monocotyledons","Poaceae","Aristida interrupta","Lava Plains"
-"Aristida oligantha","native",3,"Monocotyledons","Poaceae",,"Siskiyou Mountains, Willamette Valley"
+"Aristida oligantha","native",4,"Monocotyledons","Poaceae",,"Siskiyou Mountains, Willamette Valley"
 "Aristolochia macrophylla","not naturalized",0,"Dicotyledons","Aristolochiaceae",,"Siskiyou Mountains"
+"Armeria maritima ssp. californica","native",4,"Dicotyledons","Plumbaginaceae","Armeria maritima ssp. purpurea","Estuarine Coast"
+"Armeria maritima ssp. maritima","naturalized",0,"Dicotyledons","Plumbaginaceae",,
 "Arnica viscosa","native",3,"Dicotyledons","Asteraceae",,"Cascades"
 "Arrhenatherum elatius ssp. bulbosum","naturalized",0,"Monocotyledons","Poaceae",,"Coast Range, Willamette Valley"
 "Artemisia abrotanum","not naturalized",0,"Dicotyledons","Asteraceae",,"Columbia Basin"
@@ -165,10 +112,9 @@
 "Artemisia tilesii ssp. unalaschcensis","native",0,"Dicotyledons","Asteraceae",,"Cascades"
 "Artemisia tridentata ssp. wyomingensis","native",0,"Dicotyledons","Asteraceae",,"Lava Plains"
 "Arthraxon hispidus","not naturalized",0,"Monocotyledons","Poaceae",,
-"Arundo donax","not naturalized",4,"Monocotyledons","Poaceae",,
-"Asarum hartwegii","not naturalized",2,"Dicotyledons","Aristolochiaceae",,"Eastern Cascade Slopes and Foothills"
+"Arundo donax","not naturalized",4,"Monocotyledons","Poaceae",,"Willamette Valley"
+"Asarum hartwegii","not naturalized",2,"Dicotyledons","Aristolochiaceae",,
 "Asclepias solanoana","not naturalized",3,"Dicotyledons","Apocynaceae",,"Siskiyou Mountains"
-"Askellia pygmaea ssp. ramosa","native",2,"Dicotyledons","Asteraceae","Crepis nana ssp. ramosa","Blue and Wallowa Mountains"
 "Asperula orientalis","not naturalized",0,"Dicotyledons","Rubiaceae",,"Siskiyou Mountains"
 "Asplenium bulbiferum","not naturalized",0,"Pteridophytes","Aspleniaceae",,
 "Asplenium trichomanes ssp. quadrivalens","native",0,"Pteridophytes","Aspleniaceae",,
@@ -180,8 +126,6 @@
 "Astragalus lentiginosus var. floribundus","native",0,"Dicotyledons","Fabaceae",,"Basin and Range, Lava Plains"
 "Astragalus lentiginosus var. lentiginosus","native",0,"Dicotyledons","Fabaceae","Astragalus lentiginosus var. carinatus","Basin and Range, Columbia Basin, Eastern Cascade Slopes and Foothills, Owyhee Uplands"
 "Athysanus unilateralis","native",0,"Dicotyledons","Brassicaceae","Heterodraba unilateralis","Siskiyou Mountains"
-"Atriplex dioica","native",0,"Dicotyledons","Amaranthaceae",,"Columbia Basin, Estuarine Coast, Owyhee Uplands"
-"Atriplex gmelinii var. gmelinii","native",0,"Dicotyledons","Amaranthaceae","Atriplex patula var. obtusa","Estuarine Coast"
 "Atriplex hortensis","not naturalized",0,"Dicotyledons","Amaranthaceae",,"Basin and Range, Columbia Basin, Eastern Cascade Slopes and Foothills, Estuarine Coast, Willamette Valley"
 "Atriplex hymenelytra","not naturalized",0,"Dicotyledons","Amaranthaceae",,
 "Atriplex pusilla","native",0,"Dicotyledons","Amaranthaceae",,"Basin and Range"
@@ -191,12 +135,12 @@
 "Ballota nigra ssp. foetida","not naturalized",0,"Dicotyledons","Lamiaceae","Ballota nigra var. nigra","Willamette Valley"
 "Balsamorhiza hispidula","native",1,"Dicotyledons","Asteraceae","Balsamorhiza hookeri var. hispidula","Basin and Range, Blue and Wallowa Mountains, Owyhee Uplands"
 "Balsamorhiza lanata","not naturalized",2,"Dicotyledons","Asteraceae","Balsamorhiza hookeri var. lanata",
-"Balsamorhiza macrophylla","native",0,"Dicotyledons","Asteraceae","Balsamorhiza hookeri var. idahoensis","Blue and Wallowa Mountains"
+"Balsamorhiza macrophylla","native",4,"Dicotyledons","Asteraceae","Balsamorhiza hookeri var. idahoensis","Blue and Wallowa Mountains"
 "Barbarea verna","naturalized",0,"Dicotyledons","Brassicaceae",,"Willamette Valley"
 "Berberis julianae","not naturalized",1,"Dicotyledons","Berberidaceae",,"Willamette Valley"
 "Bergia texana","native",0,"Dicotyledons","Elatinaceae",,"Willamette Valley"
 "Betula × utahensis","not naturalized",0,"Dicotyledons","Betulaceae",,"Blue and Wallowa Mountains"
-"Bistorta vivipara","native",1,"Dicotyledons","Polygonaceae","Polygonum viviparum","Basin and Range, Blue and Wallowa Mountains"
+"Bistorta vivipara","native",3,"Dicotyledons","Polygonaceae","Polygonum viviparum","Basin and Range, Blue and Wallowa Mountains"
 "Blitum spathulatum","native",0,"Dicotyledons","Amaranthaceae","Monolepis spathulata","Eastern Cascade Slopes and Foothills"
 "Boechera acutina","native",0,"Dicotyledons","Brassicaceae","Arabis × divaricarpa var. interposita","Blue and Wallowa Mountains, Cascades, Eastern Cascade Slopes and Foothills, Siskiyou Mountains"
 "Boechera breweri ssp. shastaensis","native",0,"Dicotyledons","Brassicaceae",,"Siskiyou Mountains"
@@ -207,7 +151,7 @@
 "Boechera davidsonii","native",0,"Dicotyledons","Brassicaceae","Arabis davidsonii","Blue and Wallowa Mountains"
 "Boechera divaricarpa","native",1,"Dicotyledons","Brassicaceae","Arabis drummondii var. interposita","Basin and Range, Blue and Wallowa Mountains, Cascades, Siskiyou Mountains"
 "Boechera hastatula","native",3,"Dicotyledons","Brassicaceae","Arabis hastatula","Blue and Wallowa Mountains, Cascades"
-"Boechera horizontalis","native",0,"Dicotyledons","Brassicaceae","Arabis suffrutescens var. horizontalis","Cascades"
+"Boechera horizontalis","native",0,"Dicotyledons","Brassicaceae","Arabis suffrutescens var. horizontalis","Blue and Wallowa Mountains, Cascades, Eastern Cascade Slopes and Foothills, Siskiyou Mountains"
 "Boechera paupercula","native",0,"Dicotyledons","Brassicaceae","Arabis lyallii var. nubigena","Basin and Range, Blue and Wallowa Mountains"
 "Boechera platysperma","native",3,"Dicotyledons","Brassicaceae","Arabis platysperma var. platysperma","Cascades, Siskiyou Mountains"
 "Boechera rectissima","native",0,"Dicotyledons","Brassicaceae","Arabis rectissima var. rectissima","Eastern Cascade Slopes and Foothills, Siskiyou Mountains"
@@ -237,7 +181,6 @@
 "Brodiaea nana","native",4,"Monocotyledons","Asparagaceae",,"Siskiyou Mountains"
 "Bromus catharticus var. catharticus","not naturalized",1,"Monocotyledons","Poaceae",,"Siskiyou Mountains, Willamette Valley"
 "Bromus ciliatus","native",1,"Monocotyledons","Poaceae","Bromus richardsonii var. pallidus","Basin and Range, Blue and Wallowa Mountains, Cascades, Eastern Cascade Slopes and Foothills"
-"Bromus laevipes","native",3,"Monocotyledons","Poaceae",,"Eastern Cascade Slopes and Foothills, Siskiyou Mountains"
 "Bromus madritensis","not naturalized",0,"Monocotyledons","Poaceae","Bromus madritensis ssp. madritensis",
 "Bromus orcuttianus","native",0,"Monocotyledons","Poaceae","Bromus orcuttianus var. orcuttianus","Blue and Wallowa Mountains, Cascades, Eastern Cascade Slopes and Foothills, Estuarine Coast, Lava Plains, Siskiyou Mountains"
 "Bromus pacificus","native",0,"Monocotyledons","Poaceae",,"Estuarine Coast"
@@ -245,37 +188,33 @@
 "Bromus secalinus","naturalized",0,"Monocotyledons","Poaceae","Bromus grossus","Blue and Wallowa Mountains, Coast Range, Eastern Cascade Slopes and Foothills, Estuarine Coast, Siskiyou Mountains, Willamette Valley"
 "Bromus sitchensis var. maritimus","native",2,"Monocotyledons","Poaceae","Bromus maritimus","Estuarine Coast"
 "Bromus sitchensis var. sitchensis","native",0,"Monocotyledons","Poaceae",,
-"Bromus suksdorfii","native",1,"Monocotyledons","Poaceae",,"Cascades, Siskiyou Mountains"
+"Bromus suksdorfii","native",1,"Monocotyledons","Poaceae",,"Blue and Wallowa Mountains, Cascades, Siskiyou Mountains"
 "Bulbostylis capillaris","native",0,"Monocotyledons","Cyperaceae","Stenophyllus capillaris","Siskiyou Mountains"
 "Bupleurum americanum","native",0,"Dicotyledons","Apiaceae",,"Blue and Wallowa Mountains"
 "Bupleurum odontites","not naturalized",0,"Dicotyledons","Apiaceae","Bupleurum fontanesii",
-"Bupleurum rotundifolium","not naturalized",0,"Dicotyledons","Apiaceae",,
-"Butomus umbellatus","not naturalized",0,"Monocotyledons","Butomaceae",,
-"Cabomba caroliniana","naturalized",0,"Dicotyledons","Cabombaceae","Cabomba caroliniana var. caroliniana",
+"Bupleurum rotundifolium","not naturalized",0,"Dicotyledons","Apiaceae",,"Lava Plains"
 "Calamagrostis breviligulata ssp. breviligulata","naturalized",0,"Monocotyledons","Poaceae","Ammophila breviligulata ssp. breviligulata","Estuarine Coast"
 "Calamagrostis breweri","native",4,"Monocotyledons","Poaceae",,"Cascades"
-"Calamagrostis howellii","native",0,"Monocotyledons","Poaceae",,"Cascades, Eastern Cascade Slopes and Foothills"
+"Calamagrostis howellii","native",1,"Monocotyledons","Poaceae",,"Cascades, Eastern Cascade Slopes and Foothills"
 "Calamagrostis koelerioides","native",0,"Monocotyledons","Poaceae","Calamagrostis densa","Siskiyou Mountains"
 "Calamagrostis nutkaensis","native",3,"Monocotyledons","Poaceae","Calamagrostis aleutica","Coast Range, Estuarine Coast, Siskiyou Mountains"
-"Calamagrostis purpurascens","native",0,"Monocotyledons","Poaceae","Calamagrostis purpurascens var. purpurascens","Blue and Wallowa Mountains"
+"Calamagrostis purpurascens","native",0,"Monocotyledons","Poaceae","Calamagrostis purpurascens var. purpurascens",
 "Calamagrostis stricta ssp. inexpansa","native",0,"Monocotyledons","Poaceae","Calamagrostis californica","Basin and Range, Blue and Wallowa Mountains, Cascades, Eastern Cascade Slopes and Foothills, Estuarine Coast, Owyhee Uplands"
-"Calamagrostis tacomensis","native",0,"Monocotyledons","Poaceae","Calamagrostis vaseyi",
-"Calamagrostis utsutsuensis","native",1,"Monocotyledons","Poaceae",,
+"Calamagrostis tacomensis","native",0,"Monocotyledons","Poaceae","Calamagrostis vaseyi","Blue and Wallowa Mountains"
+"Calamagrostis utsutsuensis","native",1,"Monocotyledons","Poaceae",,"Basin and Range"
+"Calendula officinalis","not naturalized",0,"Dicotyledons","Asteraceae",,
 "Calibrachoa parviflora","not naturalized",0,"Dicotyledons","Solanaceae","Petunia parviflora","Willamette Valley"
 "Callirhoe involucrata","not naturalized",4,"Dicotyledons","Malvaceae","Callirhoe involucrata var. involucrata","Siskiyou Mountains"
 "Callitriche fassettii","native",0,"Dicotyledons","Plantaginaceae",,"Basin and Range, Eastern Cascade Slopes and Foothills, Lava Plains, Owyhee Uplands, Willamette Valley"
-"Callitriche heterophylla var. heterophylla","native",0,"Dicotyledons","Plantaginaceae","Callitriche anceps","Blue and Wallowa Mountains, Siskiyou Mountains, Willamette Valley"
+"Callitriche heterophylla var. heterophylla","native",0,"Dicotyledons","Plantaginaceae","Callitriche anceps","Siskiyou Mountains, Willamette Valley"
 "Callitriche stenoptera","native",0,"Dicotyledons","Plantaginaceae",,"Columbia Basin"
 "Calochortus coeruleus","native",2,"Monocotyledons","Liliaceae",,"Eastern Cascade Slopes and Foothills"
 "Calochortus indecorus","native",0,"Monocotyledons","Liliaceae",,"Siskiyou Mountains"
 "Calochortus luteus","native",3,"Monocotyledons","Liliaceae",,
-"Calochortus nitidus","native",0,"Monocotyledons","Liliaceae",,"Cascades"
+"Calochortus nitidus","native",0,"Monocotyledons","Liliaceae",,
 "Calochortus nudus","native",2,"Monocotyledons","Liliaceae",,"Cascades, Siskiyou Mountains"
 "Calochortus persistens","native",3,"Monocotyledons","Liliaceae",,"Siskiyou Mountains"
-"Calochortus umpquaensis ssp. confertus","native",0,"Monocotyledons","Liliaceae",,"Siskiyou Mountains"
-"Calochortus umpquaensis ssp. flavicomus","native",1,"Monocotyledons","Liliaceae",,"Siskiyou Mountains"
 "Caltha chionophila","native",0,"Dicotyledons","Ranunculaceae",,"Basin and Range"
-"Caltha leptosepala","native",1,"Dicotyledons","Ranunculaceae","Caltha leptosepala var. rotundifolia","Blue and Wallowa Mountains, Cascades, Eastern Cascade Slopes and Foothills, Siskiyou Mountains"
 "Calystegia sepium ssp. erratica","not naturalized",0,"Dicotyledons","Convolvulaceae",,"Willamette Valley"
 "Camassia quamash ssp. intermedia","native",4,"Monocotyledons","Asparagaceae",,"Siskiyou Mountains, Willamette Valley"
 "Camassia quamash ssp. utahensis","native",0,"Monocotyledons","Asparagaceae",,"Basin and Range, Blue and Wallowa Mountains, Owyhee Uplands"
@@ -285,7 +224,7 @@
 "Cannabis sativa","not naturalized",2,"Dicotyledons","Cannabaceae",,"Coast Range, Estuarine Coast, Owyhee Uplands, Willamette Valley"
 "Cardamine flexuosa","not naturalized",0,"Dicotyledons","Brassicaceae",,"Coast Range, Willamette Valley"
 "Cardamine holmgrenii","native",4,"Dicotyledons","Brassicaceae",,"Blue and Wallowa Mountains"
-"Cardamine occidentalis","native",3,"Dicotyledons","Brassicaceae",,"Blue and Wallowa Mountains, Coast Range, Willamette Valley"
+"Cardamine occulta","not naturalized",0,"Dicotyledons","Brassicaceae",,
 "Cardamine parviflora","native",0,"Dicotyledons","Brassicaceae","Cardamine parviflora var. arenicola","Blue and Wallowa Mountains"
 "Carduus tenuiflorus","naturalized",1,"Dicotyledons","Asteraceae",,"Coast Range, Estuarine Coast, Siskiyou Mountains, Willamette Valley"
 "Carex abrupta","native",3,"Monocotyledons","Cyperaceae",,"Basin and Range, Blue and Wallowa Mountains, Cascades, Owyhee Uplands, Siskiyou Mountains"
@@ -312,9 +251,8 @@
 "Carex interrupta","native",4,"Monocotyledons","Cyperaceae",,"Cascades, Coast Range, Siskiyou Mountains, Willamette Valley"
 "Carex jonesii","native",4,"Monocotyledons","Cyperaceae",,"Basin and Range, Blue and Wallowa Mountains, Cascades, Eastern Cascade Slopes and Foothills, Siskiyou Mountains"
 "Carex kelloggii var. limnophila","native",0,"Monocotyledons","Cyperaceae","Carex lenticularis var. limnophila","Coast Range, Estuarine Coast"
-"Carex klamathensis","native",0,"Monocotyledons","Cyperaceae",,"Siskiyou Mountains"
 "Carex kobomugi","not naturalized",4,"Monocotyledons","Cyperaceae",,"Willamette Valley"
-"Carex leporina","native",3,"Monocotyledons","Cyperaceae","Carex ovalis","Cascades, Coast Range, Siskiyou Mountains, Willamette Valley"
+"Carex leporina","native",3,"Monocotyledons","Cyperaceae","Carex ovalis","Coast Range, Siskiyou Mountains, Willamette Valley"
 "Carex longii","not naturalized",0,"Monocotyledons","Cyperaceae",,"Estuarine Coast"
 "Carex macrochaeta","native",0,"Monocotyledons","Cyperaceae",,"Cascades, Coast Range"
 "Carex media","native",0,"Monocotyledons","Cyperaceae","Carex vahlii","Blue and Wallowa Mountains"
@@ -335,8 +273,8 @@
 "Carex subnigricans","native",2,"Monocotyledons","Cyperaceae",,"Basin and Range, Blue and Wallowa Mountains"
 "Carex tiogana","native",0,"Monocotyledons","Cyperaceae",,"Basin and Range"
 "Carex tribuloides var. tribuloides","not naturalized",0,"Monocotyledons","Cyperaceae",,"Willamette Valley"
-"Carex tumulicola","native",0,"Monocotyledons","Cyperaceae",,"Coast Range, Estuarine Coast, Siskiyou Mountains, Willamette Valley"
-"Carex vallicola","native",2,"Monocotyledons","Cyperaceae",,"Basin and Range, Blue and Wallowa Mountains, Estuarine Coast, Lava Plains, Owyhee Uplands"
+"Carex tumulicola","native",3,"Monocotyledons","Cyperaceae",,"Coast Range, Estuarine Coast, Siskiyou Mountains, Willamette Valley"
+"Carex vallicola","native",2,"Monocotyledons","Cyperaceae",,"Basin and Range, Blue and Wallowa Mountains, Eastern Cascade Slopes and Foothills, Estuarine Coast, Lava Plains, Owyhee Uplands"
 "Carex vesicaria","native",3,"Monocotyledons","Cyperaceae","Carex vesicaria var. vesicaria","Basin and Range, Blue and Wallowa Mountains, Cascades, Eastern Cascade Slopes and Foothills, Siskiyou Mountains"
 "Carpobrotus edulis","not naturalized",0,"Dicotyledons","Aizoaceae",,"Estuarine Coast"
 "Carthamus lanatus","naturalized",0,"Dicotyledons","Asteraceae",,"Siskiyou Mountains"
@@ -347,17 +285,15 @@
 "Castilleja exserta ssp. exserta","not naturalized",0,"Dicotyledons","Orobanchaceae",,
 "Castilleja flava var. rustica","native",1,"Dicotyledons","Orobanchaceae","Castilleja rustica","Blue and Wallowa Mountains"
 "Castilleja fraterna","native",0,"Dicotyledons","Orobanchaceae",,"Blue and Wallowa Mountains"
-"Castilleja gracillima","native",2,"Dicotyledons","Orobanchaceae",,"Blue and Wallowa Mountains"
 "Castilleja miniata var. dixonii","native",0,"Dicotyledons","Orobanchaceae","Castilleja dixonii",
-"Castilleja rubida","native",3,"Dicotyledons","Orobanchaceae",,"Blue and Wallowa Mountains"
 "Catabrosa aquatica","native",0,"Monocotyledons","Poaceae",,"Basin and Range, Owyhee Uplands"
-"Catalpa bignonioides","naturalized",3,"Dicotyledons","Bignoniaceae",,"Coast Range, Siskiyou Mountains, Willamette Valley"
+"Catalpa bignonioides","naturalized",4,"Dicotyledons","Bignoniaceae",,"Coast Range, Siskiyou Mountains, Willamette Valley"
 "Caulanthus major","native",0,"Dicotyledons","Brassicaceae","Caulanthus crassicaulis var. major","Basin and Range, Owyhee Uplands"
 "Caulanthus pilosus","native",2,"Dicotyledons","Brassicaceae","Streptanthus pilosus","Basin and Range, Blue and Wallowa Mountains, Owyhee Uplands"
-"Ceanothus gloriosus","not naturalized",4,"Dicotyledons","Rhamnaceae",,"Estuarine Coast, Willamette Valley"
 "Ceanothus lemmonii","not naturalized",1,"Dicotyledons","Rhamnaceae",,
 "Ceanothus palmeri","not naturalized",0,"Dicotyledons","Rhamnaceae",,"Cascades, Siskiyou Mountains"
 "Ceanothus parryi","naturalized",0,"Dicotyledons","Rhamnaceae",,"Coast Range"
+"Celastrus orbiculatus","not naturalized",0,"Dicotyledons","Celastraceae",,
 "Centaurea × kleinii","not naturalized",0,"Dicotyledons","Asteraceae",,"Coast Range, Siskiyou Mountains"
 "Centaurea × psammogena","not naturalized",0,"Dicotyledons","Asteraceae","Centaurea varnensis","Siskiyou Mountains, Willamette Valley"
 "Centaurea benedicta","naturalized",1,"Dicotyledons","Asteraceae","Cnicus benedictus","Blue and Wallowa Mountains, Coast Range, Siskiyou Mountains, Willamette Valley"
@@ -411,7 +347,7 @@
 "Cicer arietinum","not naturalized",0,"Dicotyledons","Fabaceae",,
 "Cicuta maculata var. angustifolia","native",0,"Dicotyledons","Apiaceae",,
 "Cirsium cymosum var. cymosum","native",0,"Dicotyledons","Asteraceae",,"Basin and Range, Blue and Wallowa Mountains, Eastern Cascade Slopes and Foothills"
-"Cirsium douglasii var. breweri","native",0,"Dicotyledons","Asteraceae","Cirsium breweri",
+"Cirsium douglasii var. breweri","native",0,"Dicotyledons","Asteraceae","Cirsium breweri","Siskiyou Mountains"
 "Cirsium occidentale var. venustum","native",2,"Dicotyledons","Asteraceae",,"Siskiyou Mountains"
 "Cirsium ochrocentrum var. ochrocentrum","not naturalized",0,"Dicotyledons","Asteraceae",,"Owyhee Uplands"
 "Cladoraphis cyperoides","not naturalized",0,"Monocotyledons","Poaceae","Eragrostis cyperoides","Willamette Valley"
@@ -420,17 +356,18 @@
 "Clarkia heterandra","native",0,"Dicotyledons","Onagraceae","Gaura heterantha","Siskiyou Mountains"
 "Clarkia lassenensis","native",3,"Dicotyledons","Onagraceae","Godetia lassenensis","Eastern Cascade Slopes and Foothills, Lava Plains, Siskiyou Mountains"
 "Clarkia purpurea ssp. purpurea","native",1,"Dicotyledons","Onagraceae","Godetia purpurea ssp. purpurea","Cascades, Siskiyou Mountains, Willamette Valley"
-"Clematis lasiantha","not naturalized",0,"Dicotyledons","Ranunculaceae",,
+"Claytonia rubra ssp. depressa","native",0,"Dicotyledons","Montiaceae","Claytonia perfoliata var. depressa","Basin and Range, Blue and Wallowa Mountains, Columbia Basin, Eastern Cascade Slopes and Foothills, Estuarine Coast, Lava Plains, Owyhee Uplands, Siskiyou Mountains"
+"Claytonia rubra ssp. rubra","native",0,"Dicotyledons","Montiaceae",,"Basin and Range, Blue and Wallowa Mountains, Cascades, Coast Range, Columbia Basin, Eastern Cascade Slopes and Foothills, Estuarine Coast, Lava Plains, Owyhee Uplands, Siskiyou Mountains, Willamette Valley"
+"Clematis lasiantha","not naturalized",0,"Dicotyledons","Ranunculaceae",,"Siskiyou Mountains"
 "Clematis orientalis","not naturalized",0,"Dicotyledons","Ranunculaceae",,
 "Cnidium monnieri","not naturalized",0,"Dicotyledons","Apiaceae","Selinum monnieri",
 "Cochlearia groenlandica","native",0,"Dicotyledons","Brassicaceae","Cochlearia officinalis","Estuarine Coast"
 "Coleanthus subtilis","native",0,"Monocotyledons","Poaceae",,"Willamette Valley"
 "Collinsia greenei","native",0,"Dicotyledons","Plantaginaceae",,
-"Collinsia sparsiflora var. sparsiflora","native",4,"Dicotyledons","Plantaginaceae",,
 "Collinsia tinctoria","native",0,"Dicotyledons","Plantaginaceae",,
-"Collomia debilis","native",3,"Dicotyledons","Polemoniaceae","Collomia debilis var. debilis","Blue and Wallowa Mountains"
+"Collomia debilis var. debilis","native",3,"Dicotyledons","Polemoniaceae","Collomia debilis var. trifida","Blue and Wallowa Mountains"
 "Collomia renacta","native",0,"Dicotyledons","Polemoniaceae",,"Owyhee Uplands"
-"Comastoma tenellum","native",0,"Dicotyledons","Gentianaceae","Gentianella tenella ssp. tenella",
+"Comastoma tenellum","native",0,"Dicotyledons","Gentianaceae","Gentianella tenella ssp. tenella","Basin and Range"
 "Conioselinum scopulorum","native",0,"Dicotyledons","Apiaceae",,"Blue and Wallowa Mountains"
 "Conyza bonariensis","naturalized",0,"Dicotyledons","Asteraceae","Conyza floribunda","Siskiyou Mountains, Willamette Valley"
 "Coptis trifolia","native",0,"Dicotyledons","Ranunculaceae",,"Cascades"
@@ -453,15 +390,20 @@
 "Cotoneaster integrifolius","naturalized",2,"Dicotyledons","Rosaceae",,"Estuarine Coast, Willamette Valley"
 "Cotoneaster nitens","naturalized",0,"Dicotyledons","Rosaceae",,"Willamette Valley"
 "Cotoneaster pannosus","naturalized",0,"Dicotyledons","Rosaceae",,"Estuarine Coast"
+"Cotoneaster rehderi","not naturalized",0,"Dicotyledons","Rosaceae",,
 "Cotoneaster sternianus","naturalized",0,"Dicotyledons","Rosaceae",,"Willamette Valley"
 "Cotula mexicana","not naturalized",0,"Dicotyledons","Asteraceae",,"Columbia Basin"
 "Crassula solieri","native",0,"Dicotyledons","Crassulaceae",,"Basin and Range, Owyhee Uplands"
-"Crataegus heterophylla","not naturalized",0,"Dicotyledons","Rosaceae",,
+"Crataegus × suksdorfii","native",0,"Dicotyledons","Rosaceae","Crataegus douglasii var. suksdorfii",
+"Crataegus heterophylla","not naturalized",0,"Dicotyledons","Rosaceae",,"Willamette Valley"
+"Crataegus rhodamae-loveae","native",0,"Dicotyledons","Rosaceae",,
 "Crepis monticola","native",4,"Dicotyledons","Asteraceae",,"Eastern Cascade Slopes and Foothills, Siskiyou Mountains"
 "Crepis nicaeensis","naturalized",0,"Dicotyledons","Asteraceae",,"Cascades"
 "Crepis tectorum","not naturalized",0,"Dicotyledons","Asteraceae",,"Eastern Cascade Slopes and Foothills"
 "Crepis vesicaria ssp. taraxacifolia","naturalized",0,"Dicotyledons","Asteraceae",,"Cascades, Siskiyou Mountains, Willamette Valley"
 "Cressa truxillensis","native",4,"Dicotyledons","Convolvulaceae","Cressa depressa","Eastern Cascade Slopes and Foothills"
+"Crocus kotschyanus","not naturalized",0,"Monocotyledons","Iridaceae",,
+"Crocus tommasinianus","not naturalized",0,"Monocotyledons","Iridaceae",,
 "Crucianella angustifolia","not naturalized",0,"Dicotyledons","Rubiaceae",,"Siskiyou Mountains"
 "Cryptantha echinella","native",0,"Dicotyledons","Boraginaceae",,"Basin and Range"
 "Cryptantha gracilis","native",0,"Dicotyledons","Boraginaceae",,"Basin and Range, Owyhee Uplands"
@@ -477,7 +419,6 @@
 "Cuscuta epithymum var. epithymum","naturalized",0,"Dicotyledons","Convolvulaceae",,
 "Cuscuta indecora var. indecora","native",0,"Dicotyledons","Convolvulaceae","Cuscuta indecora var. neuropetala","Eastern Cascade Slopes and Foothills, Siskiyou Mountains, Willamette Valley"
 "Cycladenia humilis var. humilis","not naturalized",0,"Dicotyledons","Apocynaceae",,"Cascades"
-"Cyclamen hederifolium","not naturalized",1,"Dicotyledons","Primulaceae",,"Willamette Valley"
 "Cyclamen purpurascens","not naturalized",2,"Dicotyledons","Primulaceae",,
 "Cyclospermum leptophyllum","not naturalized",0,"Dicotyledons","Apiaceae","Apium leptophyllum",
 "Cymopterus glomeratus","native",2,"Dicotyledons","Apiaceae","Cymopterus acaulis","Owyhee Uplands"
@@ -490,7 +431,6 @@
 "Cyperus odoratus","not naturalized",0,"Monocotyledons","Cyperaceae",,"Willamette Valley"
 "Cyperus schweinitzii","not naturalized",0,"Monocotyledons","Cyperaceae",,"Blue and Wallowa Mountains"
 "Cytisus multiflorus","not naturalized",0,"Dicotyledons","Fabaceae",,"Willamette Valley"
-"Danthonia intermedia","native",4,"Monocotyledons","Poaceae","Danthonia intermedia ssp. intermedia","Basin and Range, Blue and Wallowa Mountains, Cascades, Eastern Cascade Slopes and Foothills, Estuarine Coast, Siskiyou Mountains"
 "Danthonia spicata","native",0,"Monocotyledons","Poaceae",,"Cascades, Willamette Valley"
 "Datura quercifolia","not naturalized",0,"Dicotyledons","Solanaceae","Datura ferox","Willamette Valley"
 "Delosperma cooperi","not naturalized",2,"Dicotyledons","Aizoaceae",,"Estuarine Coast"
@@ -500,7 +440,7 @@
 "Descurainia incana","native",0,"Dicotyledons","Brassicaceae",,"Basin and Range, Blue and Wallowa Mountains"
 "Desmazeria rigida","not naturalized",0,"Monocotyledons","Poaceae","Catapodium rigidum","Willamette Valley"
 "Dianthus barbatus ssp. barbatus","not naturalized",0,"Dicotyledons","Caryophyllaceae",,"Willamette Valley"
-"Dichanthelium commutatum var. commutatum","not naturalized",0,"Monocotyledons","Poaceae",,
+"Dichanthelium commutatum var. commutatum","not naturalized",0,"Monocotyledons","Poaceae",,"Willamette Valley"
 "Dichelostemma volubile","not naturalized",0,"Monocotyledons","Asparagaceae",,"Siskiyou Mountains"
 "Dichodon viscidus","naturalized",0,"Dicotyledons","Caryophyllaceae","Cerastium dubium","Willamette Valley"
 "Dichondra donelliana","native",0,"Dicotyledons","Convolvulaceae",,"Estuarine Coast"
@@ -509,17 +449,18 @@
 "Diphasiastrum alpinum × Diphasiastrum sitchense","native",0,"Pteridophytes","Lycopodiaceae",,
 "Diplachne fusca ssp. fascicularis","native",0,"Monocotyledons","Poaceae","Leptochloa fusca ssp. fascicularis","Blue and Wallowa Mountains, Owyhee Uplands, Siskiyou Mountains"
 "Diplachne fusca ssp. uninervia","not naturalized",0,"Monocotyledons","Poaceae","Leptochloa fusca ssp. uninervia","Willamette Valley"
-"Diplacus cascadensis","native",0,"Dicotyledons","Phrymaceae","Mimulus nanus ssp. cascadensis","Basin and Range, Cascades, Eastern Cascade Slopes and Foothills, Lava Plains"
+"Diplacus cascadensis","native",0,"Dicotyledons","Phrymaceae","Mimulus nanus ssp. cascadensis","Basin and Range, Blue and Wallowa Mountains, Cascades, Eastern Cascade Slopes and Foothills, Lava Plains, Owyhee Uplands"
 "Diplacus clivicola","native",1,"Dicotyledons","Phrymaceae","Mimulus clivicola","Blue and Wallowa Mountains, Owyhee Uplands"
 "Diplacus jepsonii","native",4,"Dicotyledons","Phrymaceae","Mimulus nanus var. jepsonii","Cascades, Eastern Cascade Slopes and Foothills, Siskiyou Mountains"
 "Diplotaxis muralis","not naturalized",0,"Dicotyledons","Brassicaceae",,"Willamette Valley"
 "Diplotaxis tenuifolia","not naturalized",0,"Dicotyledons","Brassicaceae",,"Estuarine Coast, Willamette Valley"
 "Dipsacus laciniatus","not naturalized",0,"Dicotyledons","Dipsacaceae",,"Siskiyou Mountains"
+"Doellingeria breweri","native",0,"Dicotyledons","Asteraceae","Eucephalus breweri","Siskiyou Mountains"
 "Doronicum plantagineum","not naturalized",0,"Dicotyledons","Asteraceae",,"Willamette Valley"
 "Downingia insignis","native",2,"Dicotyledons","Campanulaceae",,"Basin and Range, Owyhee Uplands"
 "Draba albertina","native",0,"Dicotyledons","Brassicaceae","Draba nitida","Blue and Wallowa Mountains"
 "Draba crassifolia","native",2,"Dicotyledons","Brassicaceae",,"Basin and Range"
-"Draba incerta","native",0,"Dicotyledons","Brassicaceae","Draba incerta var. incerta","Blue and Wallowa Mountains"
+"Draba incerta","native",2,"Dicotyledons","Brassicaceae","Draba incerta var. incerta","Blue and Wallowa Mountains"
 "Draba oligosperma","native",2,"Dicotyledons","Brassicaceae","Draba oligosperma var. andina","Blue and Wallowa Mountains"
 "Dracunculus vulgaris","not naturalized",4,"Monocotyledons","Araceae",,"Siskiyou Mountains"
 "Drymocallis arguta","not naturalized",0,"Dicotyledons","Rosaceae",,
@@ -538,11 +479,11 @@
 "Eleocharis decumbens","native",0,"Monocotyledons","Cyperaceae",,"Cascades"
 "Eleocharis engelmannii","native",0,"Monocotyledons","Cyperaceae","Eleocharis obtusa var. engelmannii","Willamette Valley"
 "Eleocharis erythropoda","native",0,"Monocotyledons","Cyperaceae",,"Basin and Range"
-"Eleocharis ovata","native",0,"Monocotyledons","Cyperaceae",,"Eastern Cascade Slopes and Foothills, Siskiyou Mountains, Willamette Valley"
+"Eleocharis ovata","native",0,"Monocotyledons","Cyperaceae",,
 "Eleocharis parishii","native",4,"Monocotyledons","Cyperaceae",,"Siskiyou Mountains"
-"Eleocharis parvula","native",0,"Monocotyledons","Cyperaceae","Eleocharis parvula var. parvula","Blue and Wallowa Mountains, Estuarine Coast"
+"Eleocharis parvula","native",0,"Monocotyledons","Cyperaceae","Eleocharis parvula var. parvula",
 "Eleocharis quadrangulata","not naturalized",0,"Monocotyledons","Cyperaceae",,"Willamette Valley"
-"Eleocharis quinqueflora","native",0,"Monocotyledons","Cyperaceae","Eleocharis pauciflora var. suksdorfiana","Basin and Range, Blue and Wallowa Mountains, Cascades, Eastern Cascade Slopes and Foothills, Owyhee Uplands, Siskiyou Mountains"
+"Eleocharis quinqueflora","native",0,"Monocotyledons","Cyperaceae","Eleocharis pauciflora var. suksdorfiana",
 "Eleocharis rostellata","native",0,"Monocotyledons","Cyperaceae",,"Basin and Range, Columbia Basin, Eastern Cascade Slopes and Foothills, Owyhee Uplands"
 "Eleusine indica","not naturalized",3,"Monocotyledons","Poaceae",,"Willamette Valley"
 "Eleusine tristachya","not naturalized",0,"Monocotyledons","Poaceae",,"Willamette Valley"
@@ -559,8 +500,8 @@
 "Elymus multisetus","native",3,"Monocotyledons","Poaceae","Sitanion jubatum","Basin and Range, Blue and Wallowa Mountains, Columbia Basin, Eastern Cascade Slopes and Foothills, Lava Plains, Siskiyou Mountains, Willamette Valley"
 "Elymus trachycaulus ssp. trachycaulus","native",4,"Monocotyledons","Poaceae","Agropyron pauciflorum","Basin and Range, Blue and Wallowa Mountains, Cascades, Columbia Basin, Eastern Cascade Slopes and Foothills, Lava Plains, Owyhee Uplands, Siskiyou Mountains, Willamette Valley"
 "Elymus tsukushiensis","not naturalized",0,"Monocotyledons","Poaceae",,"Willamette Valley"
-"Elymus violaceus","native",0,"Monocotyledons","Poaceae","Agropyron violaceum","Blue and Wallowa Mountains"
-"Emmenanthe penduliflora var. penduliflora","not naturalized",0,"Dicotyledons","Hydrophyllaceae",,
+"Elymus violaceus","native",0,"Monocotyledons","Poaceae","Agropyron violaceum","Blue and Wallowa Mountains, Siskiyou Mountains"
+"Emmenanthe penduliflora var. penduliflora","not naturalized",0,"Dicotyledons","Hydrophyllaceae",,"Siskiyou Mountains"
 "Enemion occidentale","native",0,"Dicotyledons","Ranunculaceae",,"Siskiyou Mountains"
 "Epilobium anagallidifolium","native",0,"Dicotyledons","Onagraceae","Epilobium alpinum var. alpinum","Blue and Wallowa Mountains, Cascades, Eastern Cascade Slopes and Foothills"
 "Epilobium foliosum","native",0,"Dicotyledons","Onagraceae",,"Cascades, Coast Range, Eastern Cascade Slopes and Foothills, Siskiyou Mountains, Willamette Valley"
@@ -585,14 +526,10 @@
 "Ericameria nauseosa var. oreophila","native",4,"Dicotyledons","Asteraceae","Chrysothamnus nauseosus var. artus","Basin and Range, Blue and Wallowa Mountains, Columbia Basin, Eastern Cascade Slopes and Foothills, Lava Plains, Owyhee Uplands, Siskiyou Mountains"
 "Ericameria parryi var. nevadensis","native",0,"Dicotyledons","Asteraceae","Chrysothamnus parryi","Basin and Range"
 "Erigeron acris var. kamtschaticus","native",1,"Dicotyledons","Asteraceae",,"Blue and Wallowa Mountains, Cascades"
-"Erigeron bloomeri var. nudatus","native",4,"Dicotyledons","Asteraceae",,"Siskiyou Mountains"
 "Erigeron cervinus","native",3,"Dicotyledons","Asteraceae","Erigeron delicatus","Siskiyou Mountains"
-"Erigeron disparipilus","native",1,"Dicotyledons","Asteraceae","Erigeron davisii","Blue and Wallowa Mountains"
 "Erigeron elegantulus","native",1,"Dicotyledons","Asteraceae",,"Basin and Range, Blue and Wallowa Mountains, Cascades, Owyhee Uplands"
 "Erigeron karvinskianus","not naturalized",0,"Dicotyledons","Asteraceae",,
-"Erigeron klamathensis","native",3,"Dicotyledons","Asteraceae","Erigeron breweri","Siskiyou Mountains"
-"Erigeron lonchophyllus","native",2,"Dicotyledons","Asteraceae","Trimorpha lonchophylla","Basin and Range, Blue and Wallowa Mountains, Cascades, Eastern Cascade Slopes and Foothills, Lava Plains, Owyhee Uplands"
-"Erigeron peregrinus var. peregrinus","native",2,"Dicotyledons","Asteraceae",,"Coast Range"
+"Erigeron lonchophyllus","native",4,"Dicotyledons","Asteraceae","Trimorpha lonchophylla","Basin and Range, Blue and Wallowa Mountains, Cascades, Eastern Cascade Slopes and Foothills, Lava Plains, Owyhee Uplands"
 "Erigeron simplex","native",1,"Dicotyledons","Asteraceae","Erigeron grandiflorus","Blue and Wallowa Mountains"
 "Erigeron tener","native",1,"Dicotyledons","Asteraceae",,"Basin and Range"
 "Eriocoma hendersonii","native",0,"Monocotyledons","Poaceae","Achnatherum hendersonii","Columbia Basin, Lava Plains"
@@ -601,77 +538,31 @@
 "Eriocoma occidentalis ssp. californica","native",0,"Monocotyledons","Poaceae","Stipa nelsonii var. longiaristata","Basin and Range, Blue and Wallowa Mountains, Cascades, Eastern Cascade Slopes and Foothills"
 "Eriocoma occidentalis ssp. pubescens","native",2,"Monocotyledons","Poaceae","Achnatherum occidentale ssp. pubescens","Basin and Range, Blue and Wallowa Mountains, Cascades, Columbia Basin, Eastern Cascade Slopes and Foothills, Lava Plains, Owyhee Uplands"
 "Eriocoma wallowaensis","native",0,"Monocotyledons","Poaceae","Achnatherum wallowaense","Blue and Wallowa Mountains"
-"Prunus americana","native",0,"Dicotyledons","Rosaceae",,"Blue and Wallowa Mountains"
-"Prunus armeniaca","not naturalized",0,"Dicotyledons","Rosaceae",,"Blue and Wallowa Mountains"
-"Prunus cerasus","not naturalized",0,"Dicotyledons","Rosaceae",,"Cascades, Willamette Valley"
-"Prunus dulcis","not naturalized",0,"Dicotyledons","Rosaceae",,
-"Prunus persica","not naturalized",0,"Dicotyledons","Rosaceae","Prunus persica var. persica","Columbia Basin"
-"Prunus pumila var. besseyi","not naturalized",0,"Dicotyledons","Rosaceae",,"Columbia Basin, Eastern Cascade Slopes and Foothills"
-"Prunus serotina var. serotina","not naturalized",0,"Dicotyledons","Rosaceae",,
-"Pseudosasa japonica","not naturalized",0,"Monocotyledons","Poaceae",,
-"Ptelea crenulata","not naturalized",0,"Dicotyledons","Rutaceae",,"Siskiyou Mountains"
-"Puccinellia lemmonii","native",0,"Monocotyledons","Poaceae",,"Basin and Range, Blue and Wallowa Mountains, Columbia Basin, Eastern Cascade Slopes and Foothills, Owyhee Uplands"
-"Puccinellia nutkaensis","native",0,"Monocotyledons","Poaceae","Puccinellia lucida","Estuarine Coast"
-"Puccinellia nuttalliana","native",0,"Monocotyledons","Poaceae","Puccinellia cusickii","Basin and Range, Blue and Wallowa Mountains, Eastern Cascade Slopes and Foothills, Estuarine Coast, Lava Plains, Owyhee Uplands"
-"Puccinellia pumila","native",0,"Monocotyledons","Poaceae","Puccinellia paupercula var. alaskana","Estuarine Coast"
-"Puccinellia simplex","not naturalized",4,"Monocotyledons","Poaceae",,
-"Pycnanthemum californicum","not naturalized",0,"Dicotyledons","Lamiaceae",,
-"Pyracantha koidzumii","not naturalized",0,"Dicotyledons","Rosaceae",,
-"Pyrrocoma racemosa var. paniculata","native",0,"Dicotyledons","Asteraceae","Haplopappus racemosus var. glomerellus","Basin and Range, Blue and Wallowa Mountains, Eastern Cascade Slopes and Foothills"
-"Pyrrocoma scaberula","native",0,"Dicotyledons","Asteraceae",,"Blue and Wallowa Mountains"
-"Pyrus calleryana","naturalized",3,"Dicotyledons","Rosaceae",,"Willamette Valley"
-"Pyrus communis","naturalized",2,"Dicotyledons","Rosaceae",,"Blue and Wallowa Mountains, Eastern Cascade Slopes and Foothills, Willamette Valley"
-"Pyrus nivalis","naturalized",0,"Dicotyledons","Rosaceae",,"Willamette Valley"
-"Pyrus pashia","not naturalized",0,"Dicotyledons","Rosaceae",,
-"Quercus × morehus","native",0,"Dicotyledons","Fagaceae",,"Siskiyou Mountains"
-"Quercus garryana var. semota","native",0,"Dicotyledons","Fagaceae",,"Eastern Cascade Slopes and Foothills"
-"Quercus palustris","not naturalized",0,"Dicotyledons","Fagaceae",,"Willamette Valley"
-"Ranunculus alismifolius var. davisii","native",0,"Dicotyledons","Ranunculaceae",,"Eastern Cascade Slopes and Foothills"
-"Ranunculus bulbosus","not naturalized",0,"Dicotyledons","Ranunculaceae",,"Willamette Valley"
-"Ranunculus eschscholtzii var. eschscholtzii","native",1,"Dicotyledons","Ranunculaceae","Ranunculus eschscholtzii var. helleri","Blue and Wallowa Mountains, Cascades"
-"Ranunculus eschscholtzii var. suksdorfii","native",2,"Dicotyledons","Ranunculaceae",,"Blue and Wallowa Mountains, Cascades"
-"Ranunculus gmelinii","native",0,"Dicotyledons","Ranunculaceae","Ranunculus gmelinii var. hookeri","Eastern Cascade Slopes and Foothills"
-"Ranunculus oresterus","native",1,"Dicotyledons","Ranunculaceae",,"Blue and Wallowa Mountains"
-"Ranunculus orthorhynchus var. bloomeri","native",0,"Dicotyledons","Ranunculaceae","Ranunculus bloomeri","Eastern Cascade Slopes and Foothills"
-"Rapistrum rugosum","not naturalized",0,"Dicotyledons","Brassicaceae",,"Willamette Valley"
-"Reseda lutea","not naturalized",3,"Dicotyledons","Resedaceae",,"Willamette Valley"
-"Reseda luteola","not naturalized",0,"Dicotyledons","Resedaceae",,"Willamette Valley"
-"Rhamnus californica ssp. tomentella","not naturalized",0,"Dicotyledons","Rhamnaceae",,"Siskiyou Mountains"
-"Rhamnus rubra","native",0,"Dicotyledons","Rhamnaceae","Frangula rubra","Cascades"
-"Rhynchospora capitellata","native",0,"Monocotyledons","Cyperaceae",,"Estuarine Coast"
-"Ribes acerifolium","native",4,"Dicotyledons","Grossulariaceae","Ribes howellii","Cascades, Eastern Cascade Slopes and Foothills"
-"Ribes inerme var. klamathense","native",1,"Dicotyledons","Grossulariaceae","Ribes klamathense","Cascades, Coast Range, Eastern Cascade Slopes and Foothills, Siskiyou Mountains"
-"Romulea rosea var. australis","not naturalized",0,"Monocotyledons","Iridaceae",,"Siskiyou Mountains"
-"Rorippa austriaca","not naturalized",0,"Dicotyledons","Brassicaceae",,"Blue and Wallowa Mountains"
-"Rorippa indica","not naturalized",0,"Dicotyledons","Brassicaceae",,"Willamette Valley"
-"Rorippa palustris ssp. hispida","native",0,"Dicotyledons","Brassicaceae","Rorippa islandica var. hispida","Basin and Range, Cascades, Eastern Cascade Slopes and Foothills, Estuarine Coast, Lava Plains, Owyhee Uplands, Willamette Valley"
-"Rorippa tenerrima","native",0,"Dicotyledons","Brassicaceae",,"Cascades, Owyhee Uplands"
-"Rosa gymnocarpa ssp. helleri","native",0,"Dicotyledons","Rosaceae",,"Blue and Wallowa Mountains, Cascades, Eastern Cascade Slopes and Foothills"
-"Rosa pisocarpa ssp. ahartii","native",0,"Dicotyledons","Rosaceae",,"Siskiyou Mountains"
-"Rosa spithamea","native",4,"Dicotyledons","Rosaceae","Rosa spithamea var. solitaria","Cascades, Siskiyou Mountains"
-"Rosa yainacensis","native",0,"Dicotyledons","Rosaceae","Rosa bridgesii","Cascades, Siskiyou Mountains"
-"Rosmarinus officinalis","not naturalized",0,"Dicotyledons","Lamiaceae",,"Coast Range"
-"Rubia tinctorum","not naturalized",0,"Dicotyledons","Rubiaceae","Rubia tinctoria","Willamette Valley"
-"Rubus bartonianus","native",2,"Dicotyledons","Rosaceae",,"Blue and Wallowa Mountains"
-"Rubus glaucifolius","native",0,"Dicotyledons","Rosaceae","Rubus glaucifolius var. glaucifolius","Siskiyou Mountains"
-"Rubus ulmifolius","naturalized",0,"Dicotyledons","Rosaceae","Rubus ulmifolius var. inermis",
-"Rudbeckia alpicola","native",0,"Dicotyledons","Asteraceae",,"Blue and Wallowa Mountains, Lava Plains"
-"Rudbeckia hirta var. pulcherrima","not naturalized",0,"Dicotyledons","Asteraceae",,"Willamette Valley"
-"Rumex californicus","not naturalized",0,"Dicotyledons","Polygonaceae","Rumex salicifolius var. denticulatus","Willamette Valley"
-"Rumex crassus","native",0,"Dicotyledons","Polygonaceae","Rumex salicifolius var. crassus","Estuarine Coast"
-"Rumex cuneifolius","naturalized",0,"Dicotyledons","Polygonaceae",,"Basin and Range, Eastern Cascade Slopes and Foothills, Owyhee Uplands"
-"Rumex dentatus","not naturalized",0,"Dicotyledons","Polygonaceae",,
-"Rumex pulcher","naturalized",0,"Dicotyledons","Polygonaceae",,"Coast Range, Columbia Basin, Estuarine Coast, Siskiyou Mountains, Willamette Valley"
-"Rumex transitorius","native",0,"Dicotyledons","Polygonaceae","Rumex salicifolius var. transitorius","Estuarine Coast, Willamette Valley"
-"Rumex utahensis","native",0,"Dicotyledons","Polygonaceae","Rumex salicifolius var. montigenitus","Blue and Wallowa Mountains, Owyhee Uplands"
-"Ruppia maritima","native",4,"Monocotyledons","Ruppiaceae","Ruppia maritima var. intermedia","Basin and Range, Estuarine Coast"
-"Rytidosperma biannulare","not naturalized",0,"Monocotyledons","Poaceae","Rytidosperma semiannulare",
-"Sabulina austromontana","native",0,"Dicotyledons","Caryophyllaceae","Minuartia austromontana","Blue and Wallowa Mountains"
-"Sabulina nuttallii var. gracilis","native",0,"Dicotyledons","Caryophyllaceae","Arenaria nuttallii var. gracilis","Basin and Range, Cascades, Owyhee Uplands"
-"Sagina alexandrae","not naturalized",0,"Dicotyledons","Caryophyllaceae","Sagina subulata","Basin and Range"
+"Eriocoma webberi","native",0,"Monocotyledons","Poaceae","Achnatherum webberi","Basin and Range, Blue and Wallowa Mountains, Owyhee Uplands"
+"Eriogonum brachyanthum","native",1,"Dicotyledons","Polygonaceae",,"Basin and Range"
+"Eriogonum cernuum","native",0,"Dicotyledons","Polygonaceae","Eriogonum cernuum var. cernuum","Basin and Range"
+"Eriogonum collinum","native",0,"Dicotyledons","Polygonaceae",,
+"Eriogonum compositum var. leianthum","native",4,"Dicotyledons","Polygonaceae","Eriogonum tolmieanum","Blue and Wallowa Mountains, Columbia Basin, Owyhee Uplands"
+"Eriogonum douglasii var. meridionale","native",1,"Dicotyledons","Polygonaceae",,"Eastern Cascade Slopes and Foothills, Siskiyou Mountains"
+"Eriogonum elatum var. villosum","native",0,"Dicotyledons","Polygonaceae",,"Eastern Cascade Slopes and Foothills, Siskiyou Mountains"
+"Eriogonum fasciculatum var. foliolosum","not naturalized",0,"Dicotyledons","Polygonaceae",,
+"Eriogonum hookeri","native",0,"Dicotyledons","Polygonaceae",,"Owyhee Uplands"
+"Eriogonum luteolum var. luteolum","native",0,"Dicotyledons","Polygonaceae",,"Siskiyou Mountains"
+"Eriogonum maculatum","native",0,"Dicotyledons","Polygonaceae",,"Basin and Range, Owyhee Uplands"
+"Eriogonum microtheca var. ambiguum","native",0,"Dicotyledons","Polygonaceae",,"Basin and Range, Blue and Wallowa Mountains, Owyhee Uplands"
+"Eriogonum nudum var. paralinum","native",3,"Dicotyledons","Polygonaceae",,"Estuarine Coast"
+"Eriogonum nutans var. nutans","native",0,"Dicotyledons","Polygonaceae",,"Basin and Range"
+"Eriogonum prociduum","native",3,"Dicotyledons","Polygonaceae","Eriogonum prociduum var. prociduum","Basin and Range, Eastern Cascade Slopes and Foothills"
+"Eriogonum pyrolifolium var. pyrolifolium","native",0,"Dicotyledons","Polygonaceae",,"Cascades"
+"Eriogonum roseum","native",0,"Dicotyledons","Polygonaceae","Eriogonum virgatum","Siskiyou Mountains"
+"Eriogonum salicornioides","native",0,"Dicotyledons","Polygonaceae",,"Owyhee Uplands"
+"Eriogonum scopulorum","native",0,"Dicotyledons","Polygonaceae",,"Blue and Wallowa Mountains"
+"Eriogonum umbellatum var. aureum","native",0,"Dicotyledons","Polygonaceae","Eriogonum umbellatum var. intectum","Eastern Cascade Slopes and Foothills, Owyhee Uplands"
+"Eriogonum umbellatum var. devestivum","native",0,"Dicotyledons","Polygonaceae",,"Blue and Wallowa Mountains"
+"Eriogonum umbellatum var. nelsoniorum","native",0,"Dicotyledons","Polygonaceae",,"Siskiyou Mountains"
 "Eriogonum umbellatum var. sandbergii","native",0,"Dicotyledons","Polygonaceae",,"Cascades"
 "Eriophyllum lanatum var. grandiflorum","native",0,"Dicotyledons","Asteraceae",,"Coast Range, Siskiyou Mountains"
-"Eriophyllum lanatum var. lanatum","native",1,"Dicotyledons","Asteraceae",,"Blue and Wallowa Mountains, Coast Range, Lava Plains"
+"Eriophyllum lanatum var. lanatum","native",1,"Dicotyledons","Asteraceae",,"Blue and Wallowa Mountains, Coast Range, Columbia Basin, Eastern Cascade Slopes and Foothills, Lava Plains"
 "Eritrichium nanum var. elongatum","native",1,"Dicotyledons","Boraginaceae","Eritrichium elongatum","Blue and Wallowa Mountains"
 "Erodium brachycarpum","naturalized",2,"Dicotyledons","Geraniaceae",,"Siskiyou Mountains"
 "Eruca vesicaria ssp. sativa","not naturalized",0,"Dicotyledons","Brassicaceae","Eruca sativa","Siskiyou Mountains, Willamette Valley"
@@ -680,18 +571,10 @@
 "Erysimum perenne","native",3,"Dicotyledons","Brassicaceae","Erysimum capitatum var. perenne","Cascades, Siskiyou Mountains"
 "Erythraea minima","not naturalized",0,"Dicotyledons","Gentianaceae",,"Willamette Valley"
 "Erythranthe decora","native",0,"Dicotyledons","Phrymaceae","Mimulus decorus","Cascades, Coast Range, Siskiyou Mountains, Willamette Valley"
-"Erythranthe grandis","native",0,"Dicotyledons","Phrymaceae","Mimulus guttatus var. gracilis","Coast Range, Estuarine Coast, Willamette Valley"
 "Erythranthe hymenophylla","native",0,"Dicotyledons","Phrymaceae","Mimulus hymenophyllus","Blue and Wallowa Mountains"
-"Erythranthe inodora","native",0,"Dicotyledons","Phrymaceae","Mimulus inodorus",
 "Erythranthe latidens","native",0,"Dicotyledons","Phrymaceae","Mimulus latidens","Basin and Range"
-"Erythranthe moniliformis","native",0,"Dicotyledons","Phrymaceae","Mimulus moschatus var. moniliformis","Cascades"
-"Erythranthe nasuta","native",1,"Dicotyledons","Phrymaceae","Mimulus guttatus var. nasutus","Basin and Range, Blue and Wallowa Mountains, Cascades, Coast Range, Columbia Basin, Eastern Cascade Slopes and Foothills, Owyhee Uplands, Siskiyou Mountains, Willamette Valley"
-"Erythranthe patula","native",0,"Dicotyledons","Phrymaceae","Mimulus patulus ssp. patulus","Blue and Wallowa Mountains"
 "Erythranthe scouleri","native",0,"Dicotyledons","Phrymaceae","Mimulus guttatus ssp. scouleri","Coast Range"
-"Erythranthe washingtonensis","native",3,"Dicotyledons","Phrymaceae","Mimulus patulus ssp. montanus","Lava Plains, Willamette Valley"
 "Erythronium multiscapideum","native",0,"Monocotyledons","Liliaceae",,"Siskiyou Mountains"
-"Eucephalus breweri","native",0,"Dicotyledons","Asteraceae","Aster breweri","Siskiyou Mountains"
-"Eucephalus elegans","native",1,"Dicotyledons","Asteraceae","Aster perelegans","Blue and Wallowa Mountains, Owyhee Uplands"
 "Euchiton gymnocephalus","naturalized",0,"Dicotyledons","Asteraceae","Gnaphalium collinum","Estuarine Coast, Siskiyou Mountains"
 "Euclidium syriacum","naturalized",0,"Dicotyledons","Brassicaceae",,"Blue and Wallowa Mountains, Columbia Basin, Owyhee Uplands"
 "Euonymus europaeus","not naturalized",1,"Dicotyledons","Celastraceae",,"Willamette Valley"
@@ -709,14 +592,13 @@
 "Festuca elmeri","native",0,"Monocotyledons","Poaceae",,"Siskiyou Mountains"
 "Festuca filiformis","not naturalized",2,"Monocotyledons","Poaceae","Festuca ovina var. capillata","Cascades, Estuarine Coast"
 "Festuca lemanii","naturalized",0,"Monocotyledons","Poaceae",,"Blue and Wallowa Mountains, Cascades, Siskiyou Mountains, Willamette Valley"
-"Festuca occidentalis","native",4,"Monocotyledons","Poaceae",,"Blue and Wallowa Mountains, Cascades, Coast Range, Eastern Cascade Slopes and Foothills, Estuarine Coast, Lava Plains, Siskiyou Mountains, Willamette Valley"
 "Festuca roemeri var. klamathensis","native",2,"Monocotyledons","Poaceae",,"Eastern Cascade Slopes and Foothills, Siskiyou Mountains"
 "Festuca rubra ssp. commutata","naturalized",1,"Monocotyledons","Poaceae",,"Blue and Wallowa Mountains, Cascades, Coast Range, Eastern Cascade Slopes and Foothills, Estuarine Coast, Lava Plains, Siskiyou Mountains, Willamette Valley"
 "Festuca rubra ssp. fallax","not naturalized",0,"Monocotyledons","Poaceae","Festuca rubra var. megastachys","Coast Range, Willamette Valley"
 "Festuca rubra ssp. mediana","native",0,"Monocotyledons","Poaceae",,"Estuarine Coast"
 "Festuca rubra ssp. rubra","naturalized",2,"Monocotyledons","Poaceae",,"Cascades, Coast Range, Eastern Cascade Slopes and Foothills, Estuarine Coast, Lava Plains, Siskiyou Mountains, Willamette Valley"
 "Festuca rubra ssp. secunda","native",0,"Monocotyledons","Poaceae",,"Estuarine Coast"
-"Festuca saximontana ssp. purpusiana","native",2,"Monocotyledons","Poaceae",,"Basin and Range, Blue and Wallowa Mountains, Cascades, Eastern Cascade Slopes and Foothills"
+"Festuca saximontana ssp. purpusiana","native",2,"Monocotyledons","Poaceae","Festuca ovina var. rydbergii","Basin and Range, Blue and Wallowa Mountains, Cascades, Eastern Cascade Slopes and Foothills"
 "Festuca subulata","native",2,"Monocotyledons","Poaceae",,"Blue and Wallowa Mountains, Cascades, Coast Range, Eastern Cascade Slopes and Foothills, Estuarine Coast, Siskiyou Mountains, Willamette Valley"
 "Festuca subuliflora","native",1,"Monocotyledons","Poaceae",,"Cascades, Coast Range, Siskiyou Mountains, Willamette Valley"
 "Festuca trachyphylla","naturalized",2,"Monocotyledons","Poaceae","Festuca brevipila","Basin and Range, Cascades, Lava Plains, Siskiyou Mountains, Willamette Valley"
@@ -725,17 +607,17 @@
 "Fragaria chiloensis ssp. lucida","native",0,"Dicotyledons","Rosaceae",,"Estuarine Coast"
 "Fragaria vesca ssp. californica","native",0,"Dicotyledons","Rosaceae","Fragaria californica","Blue and Wallowa Mountains, Cascades, Coast Range, Estuarine Coast"
 "Frankenia pulverulenta","not naturalized",0,"Dicotyledons","Frankeniaceae",,"Willamette Valley"
-"Frasera albicaulis var. idahoensis","native",3,"Dicotyledons","Gentianaceae",,"Basin and Range, Blue and Wallowa Mountains, Owyhee Uplands"
 "Fremontodendron californicum","not naturalized",3,"Dicotyledons","Malvaceae",,
 "Fritillaria eastwoodiae","not naturalized",3,"Monocotyledons","Liliaceae",,"Siskiyou Mountains"
 "Fritillaria purdyi","not naturalized",3,"Monocotyledons","Liliaceae",,"Siskiyou Mountains"
 "Fumaria vaillantii","not naturalized",0,"Dicotyledons","Papaveraceae",,"Blue and Wallowa Mountains"
 "Gaillardia pulchella","not naturalized",0,"Dicotyledons","Asteraceae",,"Cascades"
+"Galanthus nivalis","not naturalized",0,"Monocotyledons","Amaryllidaceae",,
 "Galeopsis tetrahit var. tetrahit","not naturalized",0,"Dicotyledons","Lamiaceae",,
 "Galinsoga parviflora","not naturalized",0,"Dicotyledons","Asteraceae","Galinsoga parviflora var. parviflora","Willamette Valley"
 "Galinsoga quadriradiata","naturalized",1,"Dicotyledons","Asteraceae","Galinsoga ciliata","Estuarine Coast, Willamette Valley"
 "Galium glabrescens ssp. josephinense","native",0,"Dicotyledons","Rubiaceae",,"Siskiyou Mountains"
-"Galium murale","not naturalized",0,"Dicotyledons","Rubiaceae",,
+"Galium murale","not naturalized",0,"Dicotyledons","Rubiaceae",,"Estuarine Coast"
 "Galium muricatum","native",0,"Dicotyledons","Rubiaceae",,"Coast Range, Siskiyou Mountains"
 "Galium odoratum","naturalized",4,"Dicotyledons","Rubiaceae","Asperula odorata","Willamette Valley"
 "Galium palustre","not naturalized",0,"Dicotyledons","Rubiaceae",,"Willamette Valley"
@@ -747,8 +629,8 @@
 "Gentiana affinis var. affinis","native",0,"Dicotyledons","Gentianaceae","Gentiana interrupta","Blue and Wallowa Mountains, Coast Range, Eastern Cascade Slopes and Foothills, Lava Plains, Siskiyou Mountains"
 "Gentiana affinis var. ovata","native",0,"Dicotyledons","Gentianaceae","Gentiana affinis var. oregana","Basin and Range, Blue and Wallowa Mountains, Cascades, Eastern Cascade Slopes and Foothills, Estuarine Coast, Siskiyou Mountains"
 "Geum rossii","native",2,"Dicotyledons","Rosaceae","Acomastylis gracilipes","Blue and Wallowa Mountains"
-"Gilia capitata ssp. chamissonis","native",1,"Dicotyledons","Polemoniaceae","Gilia achilleifolia var. chamissonis","Estuarine Coast"
 "Gilia capitata ssp. pacifica","native",0,"Dicotyledons","Polemoniaceae",,"Estuarine Coast"
+"Gilia tricolor","not naturalized",0,"Dicotyledons","Polemoniaceae",,
 "Gilia tweedyi","native",0,"Dicotyledons","Polemoniaceae","Gilia sinuata var. tweedyi","Basin and Range, Blue and Wallowa Mountains, Owyhee Uplands"
 "Gladiolus communis","not naturalized",0,"Monocotyledons","Iridaceae",,
 "Glebionis segetum","not naturalized",0,"Dicotyledons","Asteraceae","Chrysanthemum segetum","Estuarine Coast"
@@ -760,21 +642,87 @@
 "Grindelia integrifolia × Grindelia nana var. nana","native",2,"Dicotyledons","Asteraceae",,"Siskiyou Mountains, Willamette Valley"
 "Guillenia lasiophylla","native",0,"Dicotyledons","Brassicaceae","Caulanthus lasiophyllus","Estuarine Coast"
 "Gunnera tinctoria","not naturalized",0,"Dicotyledons","Gunneraceae",,"Estuarine Coast"
-"Gymnosteris parvula","native",4,"Dicotyledons","Polemoniaceae",,"Basin and Range, Blue and Wallowa Mountains"
 "Gypsophila pilosa","not naturalized",0,"Dicotyledons","Caryophyllaceae",,
 "Hackelia bella","native",1,"Dicotyledons","Boraginaceae",,"Cascades"
-"Hackelia mundula","not naturalized",0,"Dicotyledons","Boraginaceae",,"Eastern Cascade Slopes and Foothills"
+"Hackelia mundula","not naturalized",2,"Dicotyledons","Boraginaceae",,"Eastern Cascade Slopes and Foothills"
 "Hackelia patens","native",0,"Dicotyledons","Boraginaceae","Hackelia patens var. patens","Basin and Range"
 "Hackelia setosa","native",3,"Dicotyledons","Boraginaceae",,"Siskiyou Mountains"
 "Hedeoma pulegioides","not naturalized",0,"Dicotyledons","Lamiaceae",,
+"Senecio sphaerocephalus","native",0,"Dicotyledons","Asteraceae",,"Blue and Wallowa Mountains"
+"Senecio viscosus","not naturalized",0,"Dicotyledons","Asteraceae",,
+"Setaria faberi","not naturalized",4,"Monocotyledons","Poaceae",,"Columbia Basin"
+"Setaria parviflora","not naturalized",0,"Monocotyledons","Poaceae","Setaria geniculata","Willamette Valley"
+"Setaria pumila ssp. pallidefusca","not naturalized",0,"Monocotyledons","Poaceae",,
+"Setaria verticillata","naturalized",0,"Monocotyledons","Poaceae",,"Columbia Basin"
+"Setaria viridis var. major","not naturalized",0,"Monocotyledons","Poaceae",,"Willamette Valley"
+"Shepherdia argentea","native",2,"Dicotyledons","Elaeagnaceae","Elaeagnus utilis","Basin and Range"
+"Sidalcea asprella ssp. elegans","native",0,"Dicotyledons","Malvaceae","Sidalcea malviflora ssp. elegans","Coast Range, Siskiyou Mountains"
+"Sidalcea asprella ssp. nana","native",0,"Dicotyledons","Malvaceae","Sidalcea malviflora ssp. nana","Siskiyou Mountains"
+"Sidalcea diploscypha","not naturalized",4,"Dicotyledons","Malvaceae",,"Estuarine Coast"
+"Sidalcea hirsuta","not naturalized",4,"Dicotyledons","Malvaceae",,"Siskiyou Mountains"
+"Sidalcea malachroides","native",1,"Dicotyledons","Malvaceae",,"Siskiyou Mountains"
+"Sidalcea neomexicana","native",3,"Dicotyledons","Malvaceae","Sidalcea neomexicana var. crenulata","Blue and Wallowa Mountains, Owyhee Uplands"
+"Silene bridgesii","native",0,"Dicotyledons","Caryophyllaceae",,"Siskiyou Mountains"
+"Silene conoidea","not naturalized",0,"Dicotyledons","Caryophyllaceae",,"Columbia Basin, Lava Plains, Owyhee Uplands"
+"Silene dichotoma","not naturalized",1,"Dicotyledons","Caryophyllaceae","Silene dichotoma ssp. dichotoma",
+"Silene douglasii var. oraria","native",3,"Dicotyledons","Caryophyllaceae","Silene oraria","Coast Range, Estuarine Coast"
+"Silene lemmonii","native",3,"Dicotyledons","Caryophyllaceae",,"Siskiyou Mountains"
+"Silene noctiflora","naturalized",1,"Dicotyledons","Caryophyllaceae",,"Blue and Wallowa Mountains, Cascades, Columbia Basin, Lava Plains"
+"Silene nuda","native",0,"Dicotyledons","Caryophyllaceae","Silene scaposa var. lobata","Basin and Range, Eastern Cascade Slopes and Foothills, Owyhee Uplands, Siskiyou Mountains"
+"Silene pendula","not naturalized",0,"Dicotyledons","Caryophyllaceae",,"Willamette Valley"
+"Silene scouleri ssp. scouleri","native",1,"Dicotyledons","Caryophyllaceae","Silene scouleri var. pacifica","Blue and Wallowa Mountains, Columbia Basin, Eastern Cascade Slopes and Foothills, Estuarine Coast, Siskiyou Mountains, Willamette Valley"
+"Sinapis arvensis","naturalized",2,"Dicotyledons","Brassicaceae","Sinapis arvensis ssp. arvensis","Blue and Wallowa Mountains, Siskiyou Mountains, Willamette Valley"
+"Sisymbrium orientale","not naturalized",0,"Dicotyledons","Brassicaceae",,
+"Sisyrinchium halophilum","native",0,"Monocotyledons","Iridaceae",,"Basin and Range"
+"Solanum aviculare","not naturalized",0,"Dicotyledons","Solanaceae",,
+"Solanum carolinense","not naturalized",3,"Dicotyledons","Solanaceae",,"Blue and Wallowa Mountains, Columbia Basin, Owyhee Uplands"
+"Solanum elaeagnifolium","not naturalized",3,"Dicotyledons","Solanaceae",,"Columbia Basin"
+"Solanum furcatum","naturalized",3,"Dicotyledons","Solanaceae",,"Estuarine Coast"
+"Solanum sisymbriifolium","not naturalized",0,"Dicotyledons","Solanaceae",,"Willamette Valley"
+"Solanum tuberosum","not naturalized",0,"Dicotyledons","Solanaceae",,"Estuarine Coast"
+"Solidago simplex var. nana","native",4,"Dicotyledons","Asteraceae","Solidago spathulata var. nana","Cascades, Eastern Cascade Slopes and Foothills"
+"Solidago spectabilis","native",0,"Dicotyledons","Asteraceae","Solidago spectabilis var. spectabilis","Basin and Range, Eastern Cascade Slopes and Foothills, Owyhee Uplands"
+"Sonchus arvensis ssp. arvensis","not naturalized",0,"Dicotyledons","Asteraceae",,"Lava Plains"
+"Sonnea hispida","native",0,"Dicotyledons","Boraginaceae","Plagiobothrys hispidus","Basin and Range, Eastern Cascade Slopes and Foothills"
+"Sorbus californica","native",0,"Dicotyledons","Rosaceae","Sorbus sitchensis ssp. californica","Cascades"
+"Sorbus sitchensis var. sitchensis","native",3,"Dicotyledons","Rosaceae",,"Cascades, Coast Range, Siskiyou Mountains"
+"Sorghum bicolor","naturalized",2,"Monocotyledons","Poaceae","Sorghum bicolor ssp. bicolor","Cascades, Columbia Basin, Siskiyou Mountains, Willamette Valley"
+"Spartina alterniflora","naturalized",3,"Monocotyledons","Poaceae",,"Estuarine Coast"
+"Spartina densiflora","not naturalized",0,"Monocotyledons","Poaceae",,
+"Spartina patens","naturalized",4,"Monocotyledons","Poaceae",,"Estuarine Coast"
+"Spartium junceum","naturalized",4,"Dicotyledons","Fabaceae",,"Cascades, Siskiyou Mountains, Willamette Valley"
+"Spergularia bocconi","not naturalized",0,"Dicotyledons","Caryophyllaceae","Spergularia bocconii","Willamette Valley"
+"Spergularia diandra","not naturalized",0,"Dicotyledons","Caryophyllaceae",,"Eastern Cascade Slopes and Foothills, Owyhee Uplands, Willamette Valley"
+"Spergularia media var. media","not naturalized",0,"Dicotyledons","Caryophyllaceae",,
+"Spergularia villosa","not naturalized",0,"Dicotyledons","Caryophyllaceae",,"Willamette Valley"
+"Sphaeromeria cana","native",0,"Dicotyledons","Asteraceae","Tanacetum canum","Basin and Range"
+"Sphaeropteris cooperi","not naturalized",2,"Pteridophytes","Cyatheaceae",,"Estuarine Coast"
+"Sphenopholis obtusata","native",0,"Monocotyledons","Poaceae","Eatonia annua","Basin and Range, Blue and Wallowa Mountains, Columbia Basin, Eastern Cascade Slopes and Foothills"
+"Spiraea douglasii var. menziesii","native",4,"Dicotyledons","Rosaceae",,"Blue and Wallowa Mountains, Cascades, Columbia Basin, Eastern Cascade Slopes and Foothills, Willamette Valley"
+"Spiraea tomentosa","not naturalized",0,"Dicotyledons","Rosaceae","Spiraea tomentosa var. rosea","Estuarine Coast"
+"Sporobolus airoides","native",0,"Monocotyledons","Poaceae","Sporobolus airoides var. airoides","Basin and Range, Owyhee Uplands"
+"Sporobolus indicus","not naturalized",3,"Monocotyledons","Poaceae","Sporobolus elongatus",
+"Stachys arvensis","not naturalized",0,"Dicotyledons","Lamiaceae",,
+"Stachys byzantina","not naturalized",4,"Dicotyledons","Lamiaceae",,"Cascades, Eastern Cascade Slopes and Foothills"
+"Stellaria borealis ssp. borealis","native",0,"Dicotyledons","Caryophyllaceae","Stellaria calycantha var. floribunda","Blue and Wallowa Mountains"
+"Stephanomeria pauciflora","native",0,"Dicotyledons","Asteraceae",,
+"Stephanomeria virgata ssp. pleurocarpa","native",0,"Dicotyledons","Asteraceae",,"Siskiyou Mountains"
+"Streptanthus howellii","native",4,"Dicotyledons","Brassicaceae",,"Siskiyou Mountains"
+"Streptopus streptopoides var. brevipes","native",1,"Monocotyledons","Liliaceae",,"Cascades"
+"Stuckenia filiformis ssp. alpina","native",4,"Monocotyledons","Potamogetonaceae","Potamogeton filiformis var. alpinus","Eastern Cascade Slopes and Foothills, Owyhee Uplands"
+"Stuckenia filiformis ssp. occidentalis","native",0,"Monocotyledons","Potamogetonaceae","Potamogeton filiformis var. occidentalis","Eastern Cascade Slopes and Foothills"
+"Stuckenia striata","native",0,"Monocotyledons","Potamogetonaceae","Potamogeton striatus","Basin and Range"
+"Stylocline psilocarphoides","native",0,"Dicotyledons","Asteraceae",,"Owyhee Uplands"
+"Styrax officinalis var. redivivus","not naturalized",2,"Dicotyledons","Styracaceae","Styrax redivivus","Siskiyou Mountains"
+"Subularia aquatica ssp. americana","native",0,"Dicotyledons","Brassicaceae",,
+"Symphoricarpos longiflorus","native",2,"Dicotyledons","Caprifoliaceae",,"Basin and Range, Owyhee Uplands"
 "Hedera colchica","not naturalized",0,"Dicotyledons","Araliaceae",,"Siskiyou Mountains"
 "Helenium puberulum","not naturalized",0,"Dicotyledons","Asteraceae",,"Willamette Valley"
 "Helianthella californica var. nevadensis","native",1,"Dicotyledons","Asteraceae",,"Cascades"
 "Helianthella uniflora var. uniflora","native",0,"Dicotyledons","Asteraceae",,"Basin and Range, Owyhee Uplands"
-"Helianthus bolanderi","native",0,"Dicotyledons","Asteraceae",,"Siskiyou Mountains"
+"Helianthus bolanderi","native",1,"Dicotyledons","Asteraceae",,"Siskiyou Mountains"
 "Helianthus nuttallii ssp. nuttallii","native",2,"Dicotyledons","Asteraceae",,"Basin and Range, Blue and Wallowa Mountains, Owyhee Uplands"
 "Helianthus petiolaris","not naturalized",2,"Dicotyledons","Asteraceae","Helianthus petiolaris var. petiolaris","Willamette Valley"
-"Helianthus tuberosus","not naturalized",3,"Dicotyledons","Asteraceae",,"Columbia Basin, Willamette Valley"
 "Heliotropium curassavicum var. oculatum","native",0,"Dicotyledons","Heliotropiaceae",,"Owyhee Uplands"
 "Heliotropium europaeum","not naturalized",0,"Dicotyledons","Heliotropiaceae",,"Willamette Valley"
 "Hemerocallis fulva","not naturalized",2,"Monocotyledons","Xanthorrhoeaceae",,"Cascades"
@@ -802,38 +750,53 @@
 "Hordeum depressum","native",0,"Monocotyledons","Poaceae",,"Eastern Cascade Slopes and Foothills"
 "Hordeum murinum ssp. leporinum","naturalized",0,"Monocotyledons","Poaceae","Hordeum leporinum","Coast Range, Columbia Basin, Willamette Valley"
 "Hordeum vulgare ssp. vulgare","not naturalized",1,"Monocotyledons","Poaceae","Hordeum vulgare var. trifurcatum",
-"Horkelia fusca ssp. filicoides","native",4,"Dicotyledons","Rosaceae",,"Cascades, Eastern Cascade Slopes and Foothills"
-"Horkelia fusca ssp. pseudocapitata","native",0,"Dicotyledons","Rosaceae","Potentilla douglasii var. pseudocapitata",
-"Horkelia sericata","native",2,"Dicotyledons","Rosaceae","Potentilla sericata","Siskiyou Mountains"
+"Horkelia fusca var. filicoides","native",4,"Dicotyledons","Rosaceae","Potentilla douglasii var. filicoides","Cascades, Eastern Cascade Slopes and Foothills"
+"Horkelia sericata","native",2,"Dicotyledons","Rosaceae","Potentilla sericata",
 "Horkelia tridentata var. flavescens","native",0,"Dicotyledons","Rosaceae",,"Siskiyou Mountains"
 "Hosackia stipularis var. ottleyi","native",2,"Dicotyledons","Fabaceae","Lotus stipularis var. ottleyi","Siskiyou Mountains"
 "Hulsea algida","native",3,"Dicotyledons","Asteraceae",,"Blue and Wallowa Mountains"
 "Huperzia miyoshiana","native",3,"Pteridophytes","Lycopodiaceae",,"Coast Range"
 "Hyacinthoides × massartiana","not naturalized",0,"Monocotyledons","Asparagaceae","Hyacinthoides × variabilis","Estuarine Coast, Willamette Valley"
 "Hydrangea macrophylla","not naturalized",0,"Dicotyledons","Hydrangeaceae",,"Estuarine Coast"
-"Hydrophyllum capitatum var. capitatum","native",4,"Dicotyledons","Hydrophyllaceae",,"Blue and Wallowa Mountains, Columbia Basin, Owyhee Uplands"
 "Hydrophyllum fendleri var. fendleri","native",1,"Dicotyledons","Hydrophyllaceae",,"Blue and Wallowa Mountains"
 "Hypericum × moserianum","not naturalized",1,"Dicotyledons","Hypericaceae",,"Estuarine Coast"
 "Hypericum androsaemum","naturalized",2,"Dicotyledons","Hypericaceae",,"Estuarine Coast, Willamette Valley"
 "Hypericum canadense","not naturalized",0,"Dicotyledons","Hypericaceae",,"Estuarine Coast"
-"Hypericum concinnum","not naturalized",0,"Dicotyledons","Hypericaceae",,
+"Hypericum concinnum","not naturalized",0,"Dicotyledons","Hypericaceae",,"Siskiyou Mountains"
 "Hypericum humifusum","naturalized",0,"Dicotyledons","Hypericaceae",,"Willamette Valley"
 "Impatiens balfourii","naturalized",0,"Dicotyledons","Balsaminaceae",,"Columbia Basin, Willamette Valley"
 "Impatiens bicolor","not naturalized",0,"Dicotyledons","Balsaminaceae",,"Willamette Valley"
 "Impatiens parviflora","naturalized",0,"Dicotyledons","Balsaminaceae",,"Willamette Valley"
 "Inula britannica","not naturalized",0,"Dicotyledons","Asteraceae",,
 "Ipomopsis congesta ssp. viridis","native",0,"Dicotyledons","Polemoniaceae","Gilia congesta var. viridis","Blue and Wallowa Mountains"
-"Ipomopsis tenuituba","native",3,"Dicotyledons","Polemoniaceae","Ipomopsis tenuituba ssp. tenuituba","Blue and Wallowa Mountains"
 "Iris germanica","not naturalized",0,"Monocotyledons","Iridaceae",,"Eastern Cascade Slopes and Foothills, Willamette Valley"
 "Iris orientalis","not naturalized",0,"Monocotyledons","Iridaceae",,
 "Iris tenax var. gormanii","native",0,"Monocotyledons","Iridaceae",,"Coast Range, Willamette Valley"
+"Iris tenuissima","not naturalized",0,"Monocotyledons","Iridaceae","Iris tenuissima ssp. tenuissima",
+"Isoetes orcuttii","native",1,"Pteridophytes","Isoetaceae",,"Siskiyou Mountains"
+"Isolepis setacea","naturalized",0,"Monocotyledons","Cyperaceae","Scirpus setaceus","Cascades, Coast Range, Estuarine Coast, Siskiyou Mountains"
+"Juglans regia","not naturalized",1,"Dicotyledons","Juglandaceae",,"Siskiyou Mountains, Willamette Valley"
+"Juncus anthelatus","naturalized",3,"Monocotyledons","Juncaceae",,"Willamette Valley"
+"Juncus bufonius var. congestus","not naturalized",0,"Monocotyledons","Juncaceae",,"Basin and Range, Eastern Cascade Slopes and Foothills, Estuarine Coast"
+"Juncus bufonius var. occidentalis","native",1,"Monocotyledons","Juncaceae",,"Basin and Range, Blue and Wallowa Mountains, Cascades, Owyhee Uplands"
+"Juncus bulbosus","not naturalized",1,"Monocotyledons","Juncaceae","Juncus supinus","Estuarine Coast"
+"Juncus canadensis","naturalized",0,"Monocotyledons","Juncaceae",,"Estuarine Coast"
+"Juncus capitatus","not naturalized",0,"Monocotyledons","Juncaceae",,"Estuarine Coast"
+"Juncus compressus","not naturalized",0,"Monocotyledons","Juncaceae",,"Columbia Basin, Willamette Valley"
+"Juncus confusus","native",0,"Monocotyledons","Juncaceae",,"Basin and Range, Blue and Wallowa Mountains, Eastern Cascade Slopes and Foothills, Owyhee Uplands, Siskiyou Mountains"
+"Juncus conglomeratus","not naturalized",0,"Monocotyledons","Juncaceae","Juncus effusus var. conglomeratus","Willamette Valley"
+"Juncus diffusissimus","naturalized",0,"Monocotyledons","Juncaceae",,"Estuarine Coast"
+"Juncus effusus ssp. solutus","naturalized",0,"Monocotyledons","Juncaceae",,"Cascades, Willamette Valley"
+"Juncus exiguus","native",0,"Monocotyledons","Juncaceae","Juncus effusus var. exiguus","Cascades, Coast Range, Siskiyou Mountains"
+"Juncus gerardi ssp. gerardi","naturalized",1,"Monocotyledons","Juncaceae","Juncus gerardi var. pedicellatus","Estuarine Coast"
+"Juncus hesperius","native",2,"Monocotyledons","Juncaceae","Juncus effusus var. bruneus","Coast Range, Estuarine Coast, Willamette Valley"
 "Juncus howellii","native",0,"Monocotyledons","Juncaceae",,"Blue and Wallowa Mountains, Cascades"
 "Juncus inflexus ssp. inflexus","naturalized",0,"Monocotyledons","Juncaceae",,"Columbia Basin"
-"Juncus kelloggii","native",0,"Monocotyledons","Juncaceae",,"Basin and Range, Eastern Cascade Slopes and Foothills, Siskiyou Mountains, Willamette Valley"
 "Juncus laccatus","native",1,"Monocotyledons","Juncaceae","Juncus effusus var. gracilis","Cascades, Coast Range, Estuarine Coast, Willamette Valley"
 "Juncus mexicanus","native",0,"Monocotyledons","Juncaceae","Juncus balticus ssp. mexicanus","Columbia Basin"
-"Juncus nevadensis var. inventus","native",0,"Monocotyledons","Juncaceae",,"Estuarine Coast, Siskiyou Mountains"
+"Juncus nevadensis var. inventus","native",2,"Monocotyledons","Juncaceae",,"Estuarine Coast, Siskiyou Mountains"
 "Juncus pelocarpus","naturalized",0,"Monocotyledons","Juncaceae",,"Estuarine Coast"
+"Juncus pylaei","not naturalized",0,"Monocotyledons","Juncaceae",,
 "Juncus ranarius","not naturalized",0,"Monocotyledons","Juncaceae",,
 "Juncus tiehmii","native",0,"Monocotyledons","Juncaceae",,"Basin and Range, Eastern Cascade Slopes and Foothills"
 "Juncus triglumis var. albescens","native",0,"Monocotyledons","Juncaceae",,"Blue and Wallowa Mountains"
@@ -848,28 +811,24 @@
 "Laburnum anagyroides","not naturalized",0,"Dicotyledons","Fabaceae",,"Eastern Cascade Slopes and Foothills, Willamette Valley"
 "Lactuca canadensis","not naturalized",1,"Dicotyledons","Asteraceae",,"Cascades"
 "Lactuca ludoviciana","not naturalized",2,"Dicotyledons","Asteraceae",,"Blue and Wallowa Mountains"
-"Lagurus ovatus","not naturalized",0,"Monocotyledons","Poaceae",,
+"Lagurus ovatus","not naturalized",0,"Monocotyledons","Poaceae",,"Willamette Valley"
 "Lallemantia peltata","not naturalized",0,"Dicotyledons","Lamiaceae",,"Blue and Wallowa Mountains"
 "Lamium maculatum","not naturalized",1,"Dicotyledons","Lamiaceae",,
 "Landoltia punctata","naturalized",0,"Monocotyledons","Araceae","Spirodela punctata","Eastern Cascade Slopes and Foothills, Estuarine Coast, Siskiyou Mountains, Willamette Valley"
 "Langloisia setosissima ssp. punctata","native",2,"Dicotyledons","Polemoniaceae","Langloisia punctata","Owyhee Uplands"
 "Lapsanastrum apogonoides","not naturalized",0,"Dicotyledons","Asteraceae","Lapsana apogonoides",
 "Lathyrus brownii","native",1,"Dicotyledons","Fabaceae","Lathyrus schaffneri","Blue and Wallowa Mountains, Eastern Cascade Slopes and Foothills, Siskiyou Mountains"
-"Lathyrus lanszwertii var. aridus","native",2,"Dicotyledons","Fabaceae",,"Blue and Wallowa Mountains, Cascades, Eastern Cascade Slopes and Foothills, Siskiyou Mountains"
-"Lathyrus nevadensis var. cusickii","native",1,"Dicotyledons","Fabaceae",,"Blue and Wallowa Mountains, Lava Plains"
 "Lathyrus nissolia","not naturalized",0,"Dicotyledons","Fabaceae",,"Coast Range, Willamette Valley"
 "Lathyrus odoratus","not naturalized",0,"Dicotyledons","Fabaceae",,
-"Lathyrus palustris","native",0,"Dicotyledons","Fabaceae","Lathyrus palustris var. myrtifolius","Coast Range, Estuarine Coast"
-"Lathyrus pauciflorus var. utahensis","native",1,"Dicotyledons","Fabaceae",,"Basin and Range, Blue and Wallowa Mountains, Lava Plains"
 "Lathyrus sativus","not naturalized",0,"Dicotyledons","Fabaceae",,
 "Lathyrus torreyi","native",2,"Dicotyledons","Fabaceae",,"Cascades, Coast Range, Estuarine Coast, Siskiyou Mountains, Willamette Valley"
 "Lathyrus tracyi","native",0,"Dicotyledons","Fabaceae","Lathyrus lanszwertii var. tracyi",
 "Lathyrus vernus","not naturalized",0,"Dicotyledons","Fabaceae",,"Willamette Valley"
 "Lathyrus vestitus var. vestitus","native",0,"Dicotyledons","Fabaceae","Lathyrus vestitus ssp. puberulus","Siskiyou Mountains"
-"Lavandula angustifolia","not naturalized",0,"Dicotyledons","Lamiaceae",,
+"Lavandula angustifolia","not naturalized",0,"Dicotyledons","Lamiaceae",,"Siskiyou Mountains"
 "Layia chrysanthemoides","not naturalized",4,"Dicotyledons","Asteraceae",,
 "Layia fremontii","not naturalized",3,"Dicotyledons","Asteraceae",,"Siskiyou Mountains"
-"Layia platyglossa","not naturalized",0,"Dicotyledons","Asteraceae",,
+"Layia platyglossa","not naturalized",1,"Dicotyledons","Asteraceae",,
 "Layia septentrionalis","not naturalized",0,"Dicotyledons","Asteraceae",,
 "Lemna gibba","native",0,"Monocotyledons","Araceae",,"Eastern Cascade Slopes and Foothills"
 "Lemna minuta","native",0,"Monocotyledons","Araceae",,"Basin and Range, Cascades, Coast Range, Owyhee Uplands, Willamette Valley"
@@ -885,21 +844,23 @@
 "Lepidium pinnatifidum","not naturalized",0,"Dicotyledons","Brassicaceae",,
 "Lepidium ruderale","not naturalized",0,"Dicotyledons","Brassicaceae",,
 "Lepidium sativum","not naturalized",0,"Dicotyledons","Brassicaceae",,"Willamette Valley"
+"Leptosiphon minimus","native",0,"Dicotyledons","Polemoniaceae","Linanthus bicolor var. minimus","Coast Range, Estuarine Coast, Siskiyou Mountains, Willamette Valley"
 "Leucanthemum × superbum","not naturalized",0,"Dicotyledons","Asteraceae",,"Estuarine Coast"
 "Leucanthemum maximum","not naturalized",1,"Dicotyledons","Asteraceae","Chrysanthemum maximum","Willamette Valley"
 "Leucopoa kingii","native",3,"Monocotyledons","Poaceae","Hesperochloa kingii","Basin and Range"
 "Leucothoë davisiae","native",3,"Dicotyledons","Ericaceae",,"Siskiyou Mountains"
 "Lewisia × whiteae","native",0,"Dicotyledons","Montiaceae",,"Siskiyou Mountains"
 "Lewisia cotyledon var. cotyledon","native",4,"Dicotyledons","Montiaceae",,"Cascades, Siskiyou Mountains"
-"Leymus × multiflorus","not naturalized",0,"Monocotyledons","Poaceae","Elymus × gouldii",
+"Leymus × multiflorus","not naturalized",0,"Monocotyledons","Poaceae","Elymus × gouldii","Siskiyou Mountains"
 "Leymus × vancouverensis","native",0,"Monocotyledons","Poaceae","Elymus vancouverensis","Estuarine Coast"
 "Leymus condensatus","not naturalized",2,"Monocotyledons","Poaceae","Elymus condensatus","Basin and Range, Eastern Cascade Slopes and Foothills, Lava Plains, Owyhee Uplands"
 "Leymus flavescens","native",0,"Monocotyledons","Poaceae","Elymus flavescens","Columbia Basin, Eastern Cascade Slopes and Foothills, Estuarine Coast, Owyhee Uplands"
 "Leymus triticoides","native",0,"Monocotyledons","Poaceae","Elymus triticoides","Basin and Range, Blue and Wallowa Mountains, Cascades, Coast Range, Columbia Basin, Eastern Cascade Slopes and Foothills, Lava Plains, Owyhee Uplands, Siskiyou Mountains, Willamette Valley"
 "Ligusticum filicinum","native",0,"Dicotyledons","Apiaceae",,"Blue and Wallowa Mountains"
-"Ligusticum tenuifolium","native",0,"Dicotyledons","Apiaceae","Ligusticum oreganum","Blue and Wallowa Mountains"
+"Ligusticum tenuifolium","native",1,"Dicotyledons","Apiaceae","Ligusticum oreganum","Blue and Wallowa Mountains"
 "Ligustrum sinense","not naturalized",0,"Dicotyledons","Oleaceae",,"Willamette Valley"
 "Lilium pardalinum ssp. shastense","native",3,"Monocotyledons","Liliaceae",,"Cascades, Eastern Cascade Slopes and Foothills"
+"Lilium rubescens","native",0,"Monocotyledons","Liliaceae",,
 "Limnanthes floccosa ssp. floccosa","native",4,"Dicotyledons","Limnanthaceae",,"Siskiyou Mountains"
 "Linaria grandiflora","not naturalized",0,"Dicotyledons","Plantaginaceae",,
 "Linaria purpurea","not naturalized",1,"Dicotyledons","Plantaginaceae",,"Estuarine Coast, Willamette Valley"
@@ -907,11 +868,13 @@
 "Lipocarpha aristulata","native",0,"Monocotyledons","Cyperaceae","Hemicarpha aristulata","Columbia Basin"
 "Lipocarpha micrantha","native",0,"Monocotyledons","Cyperaceae","Hemicarpha micrantha","Willamette Valley"
 "Lipocarpha occidentalis","native",0,"Monocotyledons","Cyperaceae","Hemicarpha occidentalis","Eastern Cascade Slopes and Foothills"
-"Lithodora diffusa ssp. diffusa","not naturalized",0,"Dicotyledons","Boraginaceae",,
+"Lithodora diffusa ssp. diffusa","not naturalized",0,"Dicotyledons","Boraginaceae",,"Estuarine Coast"
+"Lobelia cardinalis","not naturalized",0,"Dicotyledons","Campanulaceae",,
 "Lobelia dortmanna","native",1,"Dicotyledons","Campanulaceae",,"Eastern Cascade Slopes and Foothills"
+"Lobelia erinus","not naturalized",0,"Dicotyledons","Campanulaceae",,
 "Loeflingia squarrosa","native",0,"Dicotyledons","Caryophyllaceae","Loeflingia squarrosa var. artemisiarum","Basin and Range"
 "Lolium × hybridum","not naturalized",0,"Monocotyledons","Poaceae","Lolium multiflorum × Lolium perenne",
-"Lolium rigidum","not naturalized",0,"Monocotyledons","Poaceae","Lolium subulatum",
+"Lolium rigidum","not naturalized",0,"Monocotyledons","Poaceae","Lolium subulatum","Coast Range"
 "Lolium temulentum ssp. temulentum","not naturalized",0,"Monocotyledons","Poaceae","Festuca temulenta","Basin and Range, Cascades, Coast Range, Estuarine Coast, Siskiyou Mountains, Willamette Valley"
 "Lomatium engelmannii","native",3,"Dicotyledons","Apiaceae",,"Siskiyou Mountains"
 "Lomatium erythrocarpum","native",2,"Dicotyledons","Apiaceae",,"Blue and Wallowa Mountains"
@@ -920,7 +883,6 @@
 "Lomatium pastorale","native",4,"Dicotyledons","Apiaceae","Lomatium tarantuloides","Blue and Wallowa Mountains"
 "Lonicera × bella","naturalized",0,"Dicotyledons","Caprifoliaceae",,"Blue and Wallowa Mountains, Lava Plains"
 "Lonicera interrupta","native",0,"Dicotyledons","Caprifoliaceae",,"Siskiyou Mountains"
-"Lonicera involucrata var. ledebourii","native",4,"Dicotyledons","Caprifoliaceae",,"Estuarine Coast"
 "Lonicera maackii","not naturalized",0,"Dicotyledons","Caprifoliaceae",,"Willamette Valley"
 "Lonicera periclymenum","naturalized",1,"Dicotyledons","Caprifoliaceae",,"Coast Range, Estuarine Coast"
 "Lonicera subspicata var. denudata","not naturalized",3,"Dicotyledons","Caprifoliaceae",,
@@ -928,12 +890,11 @@
 "Lupinus arbustus × Lupinus sericeus","native",0,"Dicotyledons","Fabaceae","Lupinus × inyoensis var. demissus","Blue and Wallowa Mountains"
 "Lupinus argenteus var. holosericeus","native",2,"Dicotyledons","Fabaceae","Lupinus holosericeus","Basin and Range, Eastern Cascade Slopes and Foothills"
 "Lupinus argenteus var. utahensis","native",0,"Dicotyledons","Fabaceae","Lupinus caudatus var. rubricaulis","Basin and Range, Blue and Wallowa Mountains, Eastern Cascade Slopes and Foothills, Owyhee Uplands"
-"Lupinus latifolius × Lupinus sericeus","native",0,"Dicotyledons","Fabaceae","Lupinus latifolius var. latifolius × Lupinus sericeus",
+"Lupinus latifolius × Lupinus sericeus","native",0,"Dicotyledons","Fabaceae","Lupinus latifolius var. latifolius × Lupinus sericeus","Cascades, Columbia Basin, Eastern Cascade Slopes and Foothills"
 "Lupinus lepidus var. cusickii","native",2,"Dicotyledons","Fabaceae","Lupinus aridus var. cusickii","Blue and Wallowa Mountains, Lava Plains"
 "Lupinus lepidus var. utahensis","native",0,"Dicotyledons","Fabaceae","Lupinus caespitosus","Basin and Range, Blue and Wallowa Mountains"
 "Lupinus polyphyllus var. burkei","native",4,"Dicotyledons","Fabaceae","Lupinus polyphyllus ssp. bernardinus","Blue and Wallowa Mountains, Columbia Basin, Eastern Cascade Slopes and Foothills, Owyhee Uplands"
-"Luzula cascadensis","native",3,"Monocotyledons","Juncaceae",,"Basin and Range, Blue and Wallowa Mountains, Cascades, Eastern Cascade Slopes and Foothills, Estuarine Coast, Siskiyou Mountains"
-"Luzula comosa var. comosa","native",0,"Monocotyledons","Juncaceae","Luzula multiflora var. comosa","Cascades, Coast Range, Estuarine Coast"
+"Luzula comosa var. comosa","native",0,"Monocotyledons","Juncaceae","Luzula multiflora var. comosa","Cascades, Coast Range, Estuarine Coast, Siskiyou Mountains"
 "Luzula orestera","native",0,"Monocotyledons","Juncaceae",,"Blue and Wallowa Mountains"
 "Luzula subsessilis","native",2,"Monocotyledons","Juncaceae",,"Coast Range, Estuarine Coast, Siskiyou Mountains, Willamette Valley"
 "Lycium chinense","not naturalized",0,"Dicotyledons","Solanaceae",,"Lava Plains"
@@ -946,13 +907,13 @@
 "Malacothrix torreyi","native",1,"Dicotyledons","Asteraceae",,"Basin and Range, Owyhee Uplands"
 "Malus × dawsoniana","native",0,"Dicotyledons","Rosaceae",,"Estuarine Coast, Willamette Valley"
 "Malus hupehensis","not naturalized",0,"Dicotyledons","Rosaceae",,
-"Malus prunifolia","not naturalized",0,"Dicotyledons","Rosaceae",,
+"Malus prunifolia","not naturalized",0,"Dicotyledons","Rosaceae",,"Columbia Basin"
+"Malva arborea","not naturalized",0,"Dicotyledons","Malvaceae",,
 "Malva parviflora","not naturalized",3,"Dicotyledons","Malvaceae","Malva borealis",
 "Malva pusilla","not naturalized",1,"Dicotyledons","Malvaceae","Malva rotundifolia","Willamette Valley"
 "Malvella leprosa","native",0,"Dicotyledons","Malvaceae","Sida hederacea","Basin and Range, Columbia Basin, Lava Plains, Owyhee Uplands"
 "Marah fabacea","not naturalized",0,"Dicotyledons","Cucurbitaceae",,"Siskiyou Mountains"
 "Marah watsonii","not naturalized",0,"Dicotyledons","Cucurbitaceae",,"Siskiyou Mountains"
-"Marsilea oligospora","native",4,"Pteridophytes","Marsileaceae",,"Basin and Range, Lava Plains, Owyhee Uplands"
 "Matricaria chamomilla","not naturalized",1,"Dicotyledons","Asteraceae","Matricaria recutita","Columbia Basin, Willamette Valley"
 "Matricaria occidentalis","native",0,"Dicotyledons","Asteraceae","Chamomilla occidentalis","Basin and Range"
 "Matthiola incana","not naturalized",0,"Dicotyledons","Brassicaceae",,"Estuarine Coast"
@@ -967,18 +928,16 @@
 "Mentha × villosa var. alopecuroides","not naturalized",0,"Dicotyledons","Lamiaceae","Mentha alopecuroides","Willamette Valley"
 "Mentha longifolia","not naturalized",0,"Dicotyledons","Lamiaceae",,"Willamette Valley"
 "Mercurialis annua","not naturalized",0,"Dicotyledons","Euphorbiaceae",,
-"Mertensia brachycalyx","native",3,"Dicotyledons","Boraginaceae",,"Blue and Wallowa Mountains"
-"Mertensia cusickii","native",4,"Dicotyledons","Boraginaceae",,"Basin and Range, Blue and Wallowa Mountains, Eastern Cascade Slopes and Foothills"
-"Mertensia foliosa","native",2,"Dicotyledons","Boraginaceae",,"Basin and Range, Blue and Wallowa Mountains, Eastern Cascade Slopes and Foothills, Lava Plains, Owyhee Uplands"
 "Mertensia paniculata var. paniculata","native",0,"Dicotyledons","Boraginaceae",,"Blue and Wallowa Mountains, Cascades, Eastern Cascade Slopes and Foothills"
 "Micranthes aprica","native",0,"Dicotyledons","Saxifragaceae","Saxifraga aprica","Siskiyou Mountains"
 "Microseris acuminata","native",0,"Dicotyledons","Asteraceae",,"Siskiyou Mountains"
 "Microseris douglasii ssp. douglasii","native",1,"Dicotyledons","Asteraceae",,"Siskiyou Mountains"
 "Microseris laciniata ssp. siskiyouensis","native",0,"Dicotyledons","Asteraceae",,"Siskiyou Mountains"
 "Mimetanthe pilosa","native",2,"Dicotyledons","Phrymaceae","Mimulus pilosus","Basin and Range, Columbia Basin, Owyhee Uplands, Siskiyou Mountains, Willamette Valley"
-"Mirabilis greenei","not naturalized",0,"Dicotyledons","Nyctaginaceae",,
+"Mirabilis alipes","exotic?",0,"Dicotyledons","Nyctaginaceae",,
+"Mirabilis greenei","not naturalized",0,"Dicotyledons","Nyctaginaceae",,"Siskiyou Mountains"
 "Mirabilis jalapa","not naturalized",2,"Dicotyledons","Nyctaginaceae",,"Coast Range"
-"Miscanthus sinensis","not naturalized",0,"Monocotyledons","Poaceae",,
+"Miscanthus sinensis","not naturalized",0,"Monocotyledons","Poaceae",,"Willamette Valley"
 "Molinia caerulea","naturalized",0,"Monocotyledons","Poaceae",,"Estuarine Coast, Willamette Valley"
 "Moluccella laevis","not naturalized",0,"Dicotyledons","Lamiaceae",,
 "Muhlenbergia andina","native",3,"Monocotyledons","Poaceae",,"Blue and Wallowa Mountains, Cascades, Siskiyou Mountains"
@@ -989,13 +948,14 @@
 "Muilla transmontana","not naturalized",0,"Monocotyledons","Asparagaceae",,"Siskiyou Mountains"
 "Munroa squarrosa","native",0,"Monocotyledons","Poaceae",,
 "Murdannia keisak","not naturalized",0,"Monocotyledons","Commelinaceae",,"Coast Range"
+"Muscari armeniacum","not naturalized",0,"Monocotyledons","Asparagaceae",,
 "Muscari comosum","not naturalized",0,"Monocotyledons","Asparagaceae","Hyacinthus comosus","Willamette Valley"
 "Myosotis ramosissima","not naturalized",0,"Dicotyledons","Boraginaceae",,
 "Myosotis sylvatica","not naturalized",0,"Dicotyledons","Boraginaceae",,"Coast Range"
 "Myosotis verna","native",0,"Dicotyledons","Boraginaceae","Myosotis verna var. macrosperma","Cascades, Siskiyou Mountains, Willamette Valley"
 "Myosoton aquaticum","not naturalized",0,"Dicotyledons","Caryophyllaceae","Stellaria aquatica","Willamette Valley"
 "Myosurus apetalus var. montanus","native",0,"Dicotyledons","Ranunculaceae",,"Basin and Range, Blue and Wallowa Mountains, Eastern Cascade Slopes and Foothills"
-"Myosurus sessilis","native",3,"Dicotyledons","Ranunculaceae",,
+"Myosurus sessilis","native",3,"Dicotyledons","Ranunculaceae",,"Columbia Basin"
 "Myrica hartwegii","not naturalized",3,"Dicotyledons","Myricaceae",,"Eastern Cascade Slopes and Foothills"
 "Myriophyllum pinnatum","not naturalized",0,"Dicotyledons","Haloragaceae",,
 "Myriophyllum quitense","naturalized",2,"Dicotyledons","Haloragaceae","Myriophyllum elatinoides","Columbia Basin, Eastern Cascade Slopes and Foothills, Lava Plains"
@@ -1006,8 +966,7 @@
 "Myrrhis odorata","not naturalized",0,"Dicotyledons","Apiaceae",,"Coast Range, Willamette Valley"
 "Najas guadalupensis var. guadalupensis","native",0,"Monocotyledons","Hydrocharitaceae",,"Owyhee Uplands"
 "Narcissus × incomparabilis","not naturalized",0,"Monocotyledons","Amaryllidaceae",,"Willamette Valley"
-"Narcissus × odorus","not naturalized",0,"Monocotyledons","Amaryllidaceae",,
-"Narcissus pseudonarcissus","naturalized",4,"Monocotyledons","Amaryllidaceae",,"Estuarine Coast, Willamette Valley"
+"Narcissus × odorus","not naturalized",0,"Monocotyledons","Amaryllidaceae",,"Willamette Valley"
 "Narcissus tazetta","not naturalized",1,"Monocotyledons","Amaryllidaceae",,
 "Nasturtium × sterile","not naturalized",0,"Dicotyledons","Brassicaceae",,"Willamette Valley"
 "Navarretia atractyloides","native",4,"Dicotyledons","Polemoniaceae",,"Siskiyou Mountains"
@@ -1020,14 +979,13 @@
 "Navarretia subuligera","native",0,"Dicotyledons","Polemoniaceae",,
 "Nemacladus capillaris","native",0,"Dicotyledons","Campanulaceae",,"Cascades, Siskiyou Mountains"
 "Nemophila maculata","not naturalized",4,"Dicotyledons","Hydrophyllaceae",,"Siskiyou Mountains"
-"Nemophila parviflora var. austiniae","native",0,"Dicotyledons","Hydrophyllaceae",,"Basin and Range, Blue and Wallowa Mountains, Eastern Cascade Slopes and Foothills, Siskiyou Mountains, Willamette Valley"
 "Neottia borealis","native",1,"Monocotyledons","Orchidaceae","Listera borealis","Blue and Wallowa Mountains"
 "Nephrophyllidium crista-galli ssp. crista-galli","native",4,"Dicotyledons","Menyanthaceae","Fauria crista-galli","Cascades"
 "Neslia paniculata","not naturalized",0,"Dicotyledons","Brassicaceae",,
 "Nicotiana acuminata var. multiflora","naturalized",0,"Dicotyledons","Solanaceae",,"Columbia Basin, Eastern Cascade Slopes and Foothills, Lava Plains"
 "Nicotiana quadrivalvis","native",0,"Dicotyledons","Solanaceae","Nicotiana quadrivalvis var. quadrivalvis","Coast Range, Siskiyou Mountains"
 "Nicotiana rustica","not naturalized",0,"Dicotyledons","Solanaceae",,"Willamette Valley"
-"Nuttallanthus canadensis","not naturalized",0,"Dicotyledons","Plantaginaceae",,
+"Nuttallanthus canadensis","not naturalized",0,"Dicotyledons","Plantaginaceae",,"Estuarine Coast"
 "Odontarrhena muralis","naturalized",3,"Dicotyledons","Brassicaceae","Alyssum murale","Siskiyou Mountains"
 "Odontostomum hartwegii","native",0,"Monocotyledons","Tecophilaeaceae",,"Siskiyou Mountains"
 "Oenothera biennis","naturalized",2,"Dicotyledons","Onagraceae",,"Basin and Range, Cascades, Eastern Cascade Slopes and Foothills, Estuarine Coast, Willamette Valley"
@@ -1044,9 +1002,11 @@
 "Ornithogalum umbellatum","not naturalized",4,"Monocotyledons","Asparagaceae",,"Owyhee Uplands, Siskiyou Mountains, Willamette Valley"
 "Ornithopus perpusillus","naturalized",3,"Dicotyledons","Fabaceae",,"Estuarine Coast"
 "Osmorhiza depauperata","native",0,"Dicotyledons","Apiaceae","Osmorhiza obtusa","Blue and Wallowa Mountains, Cascades, Eastern Cascade Slopes and Foothills"
-"Oxalis albicans","not naturalized",0,"Dicotyledons","Oxalidaceae",,
+"Oxalis albicans","not naturalized",0,"Dicotyledons","Oxalidaceae",,"Blue and Wallowa Mountains"
 "Oxalis debilis var. corymbosa","not naturalized",4,"Dicotyledons","Oxalidaceae",,"Willamette Valley"
 "Oxalis incarnata","not naturalized",3,"Dicotyledons","Oxalidaceae",,
+"Oxalis oregana var. oregana","native",0,"Dicotyledons","Oxalidaceae",,"Cascades, Coast Range, Estuarine Coast, Siskiyou Mountains, Willamette Valley"
+"Oxalis oregana var. smalliana","native",0,"Dicotyledons","Oxalidaceae",,
 "Oxalis pes-caprae","not naturalized",3,"Dicotyledons","Oxalidaceae",,
 "Oxytropis campestris var. cusickii","native",2,"Dicotyledons","Fabaceae","Oxytropis campestris var. spicata","Blue and Wallowa Mountains"
 "Oxytropis deflexa var. sericea","native",1,"Dicotyledons","Fabaceae",,"Blue and Wallowa Mountains"
@@ -1058,8 +1018,8 @@
 "Papaver somniferum","not naturalized",4,"Dicotyledons","Papaveraceae",,"Coast Range, Willamette Valley"
 "Pappostipa speciosa","native",0,"Monocotyledons","Poaceae","Jarava speciosa","Basin and Range"
 "Parapholis incurva","not naturalized",0,"Monocotyledons","Poaceae","Lepturus incurvatus","Estuarine Coast, Willamette Valley"
+"Parietaria judaica","not naturalized",0,"Dicotyledons","Urticaceae",,
 "Paronychia franciscana","not naturalized",0,"Dicotyledons","Caryophyllaceae",,
-"Pascopyrum smithii","native",1,"Monocotyledons","Poaceae","Elymus smithii","Basin and Range, Blue and Wallowa Mountains, Columbia Basin, Eastern Cascade Slopes and Foothills, Owyhee Uplands, Siskiyou Mountains"
 "Paspalum dilatatum","naturalized",4,"Monocotyledons","Poaceae",,"Coast Range, Estuarine Coast, Siskiyou Mountains, Willamette Valley"
 "Pedicularis howellii","native",3,"Dicotyledons","Orobanchaceae",,"Siskiyou Mountains"
 "Pedicularis semibarbata","native",2,"Dicotyledons","Orobanchaceae",,"Cascades"
@@ -1070,26 +1030,23 @@
 "Pennisetum villosum","not naturalized",0,"Monocotyledons","Poaceae",,"Willamette Valley"
 "Penstemon attenuatus var. palustris","native",2,"Dicotyledons","Plantaginaceae",,"Blue and Wallowa Mountains"
 "Penstemon cusickii","native",2,"Dicotyledons","Plantaginaceae",,"Basin and Range, Blue and Wallowa Mountains, Owyhee Uplands"
-"Penstemon davidsonii var. menziesii","native",3,"Dicotyledons","Plantaginaceae",,
 "Penstemon deustus var. suffrutescens","native",3,"Dicotyledons","Plantaginaceae",,"Cascades, Estuarine Coast, Siskiyou Mountains"
 "Penstemon elegantulus","native",1,"Dicotyledons","Plantaginaceae",,"Blue and Wallowa Mountains"
 "Penstemon eriantherus var. redactus","native",4,"Dicotyledons","Plantaginaceae","Penstemon whitedii ssp. tristis","Blue and Wallowa Mountains"
 "Penstemon glaucinus","native",3,"Dicotyledons","Plantaginaceae",,"Basin and Range, Eastern Cascade Slopes and Foothills"
-"Penstemon gracilentus","native",1,"Dicotyledons","Plantaginaceae",,"Eastern Cascade Slopes and Foothills"
-"Penstemon hesperius","native",1,"Dicotyledons","Plantaginaceae",,
 "Penstemon kingii","native",2,"Dicotyledons","Plantaginaceae",,"Basin and Range"
 "Penstemon newberryi var. berryi","native",3,"Dicotyledons","Plantaginaceae",,"Coast Range, Siskiyou Mountains"
 "Penstemon pratensis","native",1,"Dicotyledons","Plantaginaceae",,"Basin and Range, Owyhee Uplands"
 "Penstemon procerus var. formosus","native",4,"Dicotyledons","Plantaginaceae","Penstemon tolmiei ssp. formosus","Basin and Range, Blue and Wallowa Mountains"
 "Penstemon rydbergii var. rydbergii","native",2,"Dicotyledons","Plantaginaceae","Penstemon rydbergii var. varians","Basin and Range, Blue and Wallowa Mountains, Cascades, Eastern Cascade Slopes and Foothills, Owyhee Uplands"
 "Penstemon triphyllus var. infernalis","native",0,"Dicotyledons","Plantaginaceae",,
-"Penstemon triphyllus var. triphyllus","native",0,"Dicotyledons","Plantaginaceae",,"Blue and Wallowa Mountains"
 "Penthorum sedoides","naturalized",0,"Dicotyledons","Penthoraceae",,"Coast Range"
 "Peritoma serrulata","native",4,"Dicotyledons","Cleomaceae","Cleome serrulata","Basin and Range, Blue and Wallowa Mountains, Lava Plains, Owyhee Uplands"
 "Persicaria orientalis","not naturalized",0,"Dicotyledons","Polygonaceae","Polygonum orientale","Willamette Valley"
 "Persicaria pensylvanica","naturalized",1,"Dicotyledons","Polygonaceae","Polygonum pensylvanicum","Eastern Cascade Slopes and Foothills, Willamette Valley"
 "Persicaria perfoliata","not naturalized",0,"Dicotyledons","Polygonaceae","Polygonum perfoliatum",
 "Petasites japonicus","not naturalized",0,"Dicotyledons","Asteraceae",,"Willamette Valley"
+"Petunia × atkinsiana","not naturalized",0,"Dicotyledons","Solanaceae",,
 "Phacelia adenophora","native",0,"Dicotyledons","Hydrophyllaceae","Miltitzia glandulifera","Basin and Range"
 "Phacelia bicolor var. bicolor","native",3,"Dicotyledons","Hydrophyllaceae",,"Basin and Range"
 "Phacelia ciliata","not naturalized",0,"Dicotyledons","Hydrophyllaceae",,
@@ -1110,10 +1067,9 @@
 "Phleum arenarium","not naturalized",0,"Monocotyledons","Poaceae",,"Willamette Valley"
 "Phleum paniculatum","not naturalized",0,"Monocotyledons","Poaceae",,
 "Phleum subulatum","not naturalized",0,"Monocotyledons","Poaceae","Phleum bellardi",
-"Phlox douglasii","native",0,"Dicotyledons","Polemoniaceae","Phlox rigida","Basin and Range, Blue and Wallowa Mountains, Columbia Basin, Eastern Cascade Slopes and Foothills, Lava Plains"
 "Pholistoma membranaceum","not naturalized",1,"Dicotyledons","Hydrophyllaceae",,
 "Phoradendron juniperinum ssp. juniperinum","native",0,"Dicotyledons","Viscaceae","Phoradendron juniperinum var. ligatum","Lava Plains"
-"Phoradendron juniperinum ssp. libocedri","native",0,"Dicotyledons","Viscaceae","Phoradendron libocedri","Eastern Cascade Slopes and Foothills, Siskiyou Mountains, Willamette Valley"
+"Phoradendron juniperinum ssp. libocedri","native",4,"Dicotyledons","Viscaceae","Phoradendron libocedri","Eastern Cascade Slopes and Foothills, Siskiyou Mountains, Willamette Valley"
 "Photinia × fraseri","not naturalized",0,"Dicotyledons","Rosaceae",,
 "Phyla nodiflora","not naturalized",2,"Dicotyledons","Verbenaceae","Phyla nodiflora var. nodiflora","Siskiyou Mountains"
 "Phyllodoce breweri","not naturalized",4,"Dicotyledons","Ericaceae",,
@@ -1127,24 +1083,23 @@
 "Pinus flexilis","native",3,"Gymnosperms","Pinaceae",,"Blue and Wallowa Mountains, Willamette Valley"
 "Pinus monophylla","not naturalized",1,"Gymnosperms","Pinaceae",,
 "Pinus muricata","native",2,"Gymnosperms","Pinaceae",,"Estuarine Coast"
-"Pinus ponderosa var. benthamiana","native",0,"Gymnosperms","Pinaceae","Pinus ponderosa var. pacifica","Siskiyou Mountains, Willamette Valley"
 "Piptatheropsis exigua","native",2,"Monocotyledons","Poaceae","Piptatherum exiguum","Blue and Wallowa Mountains"
 "Pistia stratiotes","not naturalized",4,"Monocotyledons","Araceae",,"Willamette Valley"
-"Plagiobothrys cognatus","native",1,"Dicotyledons","Boraginaceae","Allocarya cognata","Basin and Range, Blue and Wallowa Mountains, Cascades, Eastern Cascade Slopes and Foothills, Owyhee Uplands"
+"Plagiobothrys cognatus","native",1,"Dicotyledons","Boraginaceae","Allocarya cognata","Basin and Range, Blue and Wallowa Mountains, Cascades, Columbia Basin, Eastern Cascade Slopes and Foothills, Lava Plains, Owyhee Uplands, Siskiyou Mountains, Willamette Valley"
 "Plagiobothrys glyptocarpus var. glyptocarpus","native",0,"Dicotyledons","Boraginaceae",,
 "Plagiobothrys greenei","native",0,"Dicotyledons","Boraginaceae",,"Cascades, Siskiyou Mountains"
-"Plagiobothrys hispidulus","native",0,"Dicotyledons","Boraginaceae","Allocarya hispidula","Blue and Wallowa Mountains"
 "Plagiobothrys lamprocarpus","native",0,"Dicotyledons","Boraginaceae",,"Siskiyou Mountains"
 "Plagiobothrys reticulatus var. reticulatus","native",2,"Dicotyledons","Boraginaceae",,"Coast Range, Estuarine Coast, Siskiyou Mountains"
 "Plagiobothrys shastensis","native",0,"Dicotyledons","Boraginaceae",,"Siskiyou Mountains"
-"Plagiobothrys stipitatus var. micranthus","native",4,"Dicotyledons","Boraginaceae",,"Basin and Range, Cascades, Lava Plains, Siskiyou Mountains"
+"Plagiobothrys stipitatus var. micranthus","native",4,"Dicotyledons","Boraginaceae",,"Basin and Range, Cascades, Lava Plains, Owyhee Uplands, Siskiyou Mountains"
 "Plagiobothrys stipitatus var. stipitatus","native",0,"Dicotyledons","Boraginaceae","Allocarya stipitata","Siskiyou Mountains"
+"Planodes virginicum","not naturalized",0,"Dicotyledons","Brassicaceae",,
 "Plantago aristata","not naturalized",0,"Dicotyledons","Plantaginaceae",,"Siskiyou Mountains, Willamette Valley"
 "Plantago macrocarpa","native",0,"Dicotyledons","Plantaginaceae",,"Estuarine Coast"
 "Plantago pusilla","not naturalized",0,"Dicotyledons","Plantaginaceae",,"Willamette Valley"
-"Plantago virginica","not naturalized",0,"Dicotyledons","Plantaginaceae",,"Coast Range, Siskiyou Mountains, Willamette Valley"
+"Plantago virginica","not naturalized",0,"Dicotyledons","Plantaginaceae",,"Coast Range, Siskiyou Mountains"
 "Platanthera aquilonis","native",0,"Monocotyledons","Orchidaceae",,"Blue and Wallowa Mountains"
-"Platanthera obtusata","native",1,"Monocotyledons","Orchidaceae","Platanthera obtusata ssp. obtusata","Blue and Wallowa Mountains"
+"Platanthera obtusata","native",4,"Monocotyledons","Orchidaceae","Platanthera obtusata ssp. obtusata","Blue and Wallowa Mountains"
 "Platanus × hispanica","not naturalized",0,"Dicotyledons","Platanaceae",,
 "Poa × limosa","native",0,"Monocotyledons","Poaceae",,"Basin and Range, Blue and Wallowa Mountains"
 "Poa alpina ssp. alpina","native",0,"Monocotyledons","Poaceae",,"Blue and Wallowa Mountains"
@@ -1167,8 +1122,8 @@
 "Poa mansfieldii","native",0,"Monocotyledons","Poaceae",,"Basin and Range"
 "Poa marcida","native",2,"Monocotyledons","Poaceae",,"Cascades, Coast Range, Estuarine Coast"
 "Poa nemoralis","naturalized",0,"Monocotyledons","Poaceae","Poa nemoralis ssp. nemoralis","Blue and Wallowa Mountains, Cascades, Eastern Cascade Slopes and Foothills, Owyhee Uplands, Willamette Valley"
-"Poa nervosa","native",0,"Monocotyledons","Poaceae","Poa vaseyana","Cascades, Willamette Valley"
-"Poa piperi","native",2,"Monocotyledons","Poaceae",,"Coast Range, Siskiyou Mountains"
+"Poa nervosa","native",0,"Monocotyledons","Poaceae","Poa vaseyana",
+"Poa piperi","native",3,"Monocotyledons","Poaceae",,"Coast Range, Siskiyou Mountains"
 "Poa pratensis ssp. agassizensis","native",0,"Monocotyledons","Poaceae","Poa agassizensis","Owyhee Uplands"
 "Poa pratensis ssp. alpigena","native",2,"Monocotyledons","Poaceae",,"Basin and Range"
 "Poa pratensis ssp. angustifolia","naturalized",0,"Monocotyledons","Poaceae",,
@@ -1182,31 +1137,28 @@
 "Poa unilateralis ssp. pachypholis","native",0,"Monocotyledons","Poaceae",,"Estuarine Coast"
 "Poa unilateralis ssp. unilateralis","native",0,"Monocotyledons","Poaceae",,"Estuarine Coast"
 "Poa wallowensis","native",0,"Monocotyledons","Poaceae",,"Blue and Wallowa Mountains"
-"Podagrostis humilis","native",0,"Monocotyledons","Poaceae","Agrostis humilis","Cascades"
+"Podagrostis humilis","native",0,"Monocotyledons","Poaceae","Agrostis humilis",
 "Pogogyne serpylloides","native",0,"Dicotyledons","Lamiaceae",,"Owyhee Uplands"
 "Pogogyne zizyphoroides","native",0,"Dicotyledons","Lamiaceae",,"Siskiyou Mountains"
 "Polanisia dodecandra ssp. dodecandra","native",0,"Dicotyledons","Cleomaceae",,"Owyhee Uplands"
 "Polanisia dodecandra ssp. trachysperma","native",2,"Dicotyledons","Cleomaceae","Polanisia trachysperma","Owyhee Uplands"
 "Polygonum achoreum","native",0,"Dicotyledons","Polygonaceae",,"Basin and Range, Blue and Wallowa Mountains"
-"Polygonum aviculare ssp. aviculare","naturalized",0,"Dicotyledons","Polygonaceae","Polygonum aviculare var. vegetum","Basin and Range, Blue and Wallowa Mountains, Columbia Basin, Estuarine Coast, Owyhee Uplands, Siskiyou Mountains, Willamette Valley"
-"Polygonum aviculare ssp. neglectum","naturalized",0,"Dicotyledons","Polygonaceae","Polygonum aviculare var. angustissimum","Basin and Range, Cascades, Coast Range, Lava Plains, Owyhee Uplands, Siskiyou Mountains, Willamette Valley"
 "Polygonum californicum","native",1,"Dicotyledons","Polygonaceae",,"Columbia Basin, Siskiyou Mountains"
 "Polygonum erectum","native",0,"Dicotyledons","Polygonaceae",,"Basin and Range"
-"Polygonum fowleri ssp. fowleri","native",0,"Dicotyledons","Polygonaceae",,"Estuarine Coast"
 "Polygonum gabrielae","native",0,"Dicotyledons","Polygonaceae",,"Blue and Wallowa Mountains"
 "Polygonum parryi","native",0,"Dicotyledons","Polygonaceae",,"Siskiyou Mountains"
 "Polygonum polygaloides ssp. esotericum","native",0,"Dicotyledons","Polygonaceae","Polygonum esotericum","Basin and Range, Cascades, Columbia Basin, Owyhee Uplands"
 "Polygonum ramosissimum ssp. ramosissimum","naturalized",0,"Dicotyledons","Polygonaceae",,"Basin and Range, Blue and Wallowa Mountains, Eastern Cascade Slopes and Foothills, Lava Plains, Owyhee Uplands"
 "Polygonum sawatchense ssp. sawatchense","native",0,"Dicotyledons","Polygonaceae",,"Basin and Range, Blue and Wallowa Mountains, Eastern Cascade Slopes and Foothills, Owyhee Uplands"
-"Polygonum shastense","native",2,"Dicotyledons","Polygonaceae",,"Cascades"
+"Polygonum shastense","native",3,"Dicotyledons","Polygonaceae",,"Cascades"
 "Polypogon australis","not naturalized",0,"Monocotyledons","Poaceae",,
 "Polypogon fugax","not naturalized",0,"Monocotyledons","Poaceae",,"Willamette Valley"
 "Polypogon interruptus","native",0,"Monocotyledons","Poaceae",,"Estuarine Coast, Siskiyou Mountains, Willamette Valley"
 "Polypogon maritimus","not naturalized",0,"Monocotyledons","Poaceae",,"Siskiyou Mountains"
 "Polypogon viridis","not naturalized",0,"Monocotyledons","Poaceae","Agrostis semiverticillata","Columbia Basin"
-"Polystichum californicum","native",4,"Pteridophytes","Dryopteridaceae",,"Cascades, Coast Range"
+"Polystichum californicum","native",4,"Pteridophytes","Dryopteridaceae",,"Cascades, Coast Range, Siskiyou Mountains"
 "Polystichum kruckebergii","native",3,"Pteridophytes","Dryopteridaceae",,"Basin and Range, Blue and Wallowa Mountains, Eastern Cascade Slopes and Foothills"
-"Polystichum scopulinum","native",1,"Pteridophytes","Dryopteridaceae","Polystichum mohrioides var. scopulinum","Basin and Range, Blue and Wallowa Mountains, Cascades, Eastern Cascade Slopes and Foothills, Owyhee Uplands, Siskiyou Mountains"
+"Polystichum scopulinum","native",2,"Pteridophytes","Dryopteridaceae","Polystichum mohrioides var. scopulinum","Basin and Range, Blue and Wallowa Mountains, Cascades, Eastern Cascade Slopes and Foothills, Owyhee Uplands, Siskiyou Mountains"
 "Populus fremontii ssp. fremontii","not naturalized",0,"Dicotyledons","Salicaceae",,"Siskiyou Mountains"
 "Potamogeton berchtoldii","native",0,"Monocotyledons","Potamogetonaceae","Potamogeton pusillus ssp. tenuissimus","Basin and Range, Blue and Wallowa Mountains, Cascades, Coast Range, Eastern Cascade Slopes and Foothills, Estuarine Coast"
 "Potamogeton diversifolius","native",1,"Monocotyledons","Potamogetonaceae",,"Basin and Range, Owyhee Uplands"
@@ -1217,7 +1169,6 @@
 "Potamogeton zosteriformis","native",3,"Monocotyledons","Potamogetonaceae",,"Estuarine Coast, Siskiyou Mountains, Willamette Valley"
 "Potentilla anglica","not naturalized",0,"Dicotyledons","Rosaceae",,"Willamette Valley"
 "Potentilla brevifolia","native",4,"Dicotyledons","Rosaceae",,"Basin and Range, Blue and Wallowa Mountains"
-"Potentilla bruceae","native",0,"Dicotyledons","Rosaceae","Potentilla drummondii ssp. bruceae","Cascades, Eastern Cascade Slopes and Foothills, Siskiyou Mountains"
 "Potentilla brunnescens","native",1,"Dicotyledons","Rosaceae","Potentilla gracilis var. brunnescens",
 "Potentilla gracilis var. owyheensis","native",0,"Dicotyledons","Rosaceae","Potentilla quinquefolia","Basin and Range, Blue and Wallowa Mountains, Eastern Cascade Slopes and Foothills, Owyhee Uplands"
 "Potentilla hookeriana","native",3,"Dicotyledons","Rosaceae",,
@@ -1225,20 +1176,87 @@
 "Potentilla millefolia","native",0,"Dicotyledons","Rosaceae","Potentilla plattensis var. millefolia",
 "Potentilla ovina var. ovina","native",0,"Dicotyledons","Rosaceae",,"Blue and Wallowa Mountains"
 "Potentilla reptans","not naturalized",0,"Dicotyledons","Rosaceae",,"Willamette Valley"
-"Potentilla versicolor var. darrachii","native",0,"Dicotyledons","Rosaceae",,"Blue and Wallowa Mountains"
 "Prenanthella exigua","native",0,"Dicotyledons","Asteraceae","Lygodesmia exigua","Owyhee Uplands"
 "Proboscidea louisianica","not naturalized",3,"Dicotyledons","Martyniaceae","Proboscidea louisianica ssp. louisianica","Blue and Wallowa Mountains, Columbia Basin, Siskiyou Mountains, Willamette Valley"
 "Prosartes parvifolia","native",0,"Monocotyledons","Liliaceae",,
 "Prunus × pugetensis","native",0,"Dicotyledons","Rosaceae",,"Willamette Valley"
+"Prunus americana","native",0,"Dicotyledons","Rosaceae",,"Blue and Wallowa Mountains"
+"Prunus armeniaca","not naturalized",0,"Dicotyledons","Rosaceae",,"Blue and Wallowa Mountains"
+"Prunus cerasus","not naturalized",0,"Dicotyledons","Rosaceae",,"Cascades, Willamette Valley"
+"Prunus persica","not naturalized",0,"Dicotyledons","Rosaceae","Prunus persica var. persica","Columbia Basin"
+"Prunus pumila var. besseyi","not naturalized",0,"Dicotyledons","Rosaceae",,"Columbia Basin, Eastern Cascade Slopes and Foothills"
+"Prunus serotina var. serotina","not naturalized",0,"Dicotyledons","Rosaceae",,"Willamette Valley"
+"Pseudosasa japonica","not naturalized",0,"Monocotyledons","Poaceae",,
+"Psorothamnus polydenius","native",0,"Dicotyledons","Fabaceae",,
+"Ptelea crenulata","not naturalized",0,"Dicotyledons","Rutaceae",,"Siskiyou Mountains"
+"Puccinellia lemmonii","native",0,"Monocotyledons","Poaceae",,"Basin and Range, Blue and Wallowa Mountains, Columbia Basin, Eastern Cascade Slopes and Foothills, Owyhee Uplands"
+"Puccinellia nutkaensis","native",0,"Monocotyledons","Poaceae","Puccinellia lucida","Estuarine Coast"
+"Puccinellia nuttalliana","native",0,"Monocotyledons","Poaceae","Puccinellia cusickii","Basin and Range, Blue and Wallowa Mountains, Eastern Cascade Slopes and Foothills, Estuarine Coast, Lava Plains, Owyhee Uplands"
+"Puccinellia pumila","native",0,"Monocotyledons","Poaceae","Puccinellia paupercula var. alaskana","Estuarine Coast"
+"Puccinellia simplex","not naturalized",4,"Monocotyledons","Poaceae",,
+"Pycnanthemum californicum","not naturalized",0,"Dicotyledons","Lamiaceae",,"Siskiyou Mountains"
+"Pyracantha koidzumii","not naturalized",0,"Dicotyledons","Rosaceae",,
+"Pyrrocoma racemosa var. paniculata","native",0,"Dicotyledons","Asteraceae","Haplopappus racemosus var. glomerellus","Basin and Range, Blue and Wallowa Mountains, Eastern Cascade Slopes and Foothills"
+"Pyrrocoma scaberula","native",0,"Dicotyledons","Asteraceae",,"Blue and Wallowa Mountains"
+"Pyrus calleryana","naturalized",3,"Dicotyledons","Rosaceae",,"Willamette Valley"
+"Pyrus communis","naturalized",3,"Dicotyledons","Rosaceae",,"Blue and Wallowa Mountains, Eastern Cascade Slopes and Foothills, Willamette Valley"
+"Pyrus nivalis","naturalized",0,"Dicotyledons","Rosaceae",,"Willamette Valley"
+"Pyrus pashia","not naturalized",0,"Dicotyledons","Rosaceae",,"Willamette Valley"
+"Quercus × morehus","native",0,"Dicotyledons","Fagaceae",,"Siskiyou Mountains"
+"Quercus garryana var. semota","native",0,"Dicotyledons","Fagaceae",,"Eastern Cascade Slopes and Foothills"
+"Quercus palustris","not naturalized",0,"Dicotyledons","Fagaceae",,"Willamette Valley"
+"Ranunculus alismifolius var. davisii","native",0,"Dicotyledons","Ranunculaceae",,"Eastern Cascade Slopes and Foothills"
+"Ranunculus bulbosus","not naturalized",0,"Dicotyledons","Ranunculaceae",,"Willamette Valley"
+"Ranunculus gmelinii","native",0,"Dicotyledons","Ranunculaceae","Ranunculus gmelinii var. hookeri","Eastern Cascade Slopes and Foothills"
+"Ranunculus grayi","native",0,"Dicotyledons","Ranunculaceae",,
+"Ranunculus oresterus","native",1,"Dicotyledons","Ranunculaceae",,"Blue and Wallowa Mountains"
+"Ranunculus orthorhynchus var. bloomeri","native",0,"Dicotyledons","Ranunculaceae","Ranunculus bloomeri","Eastern Cascade Slopes and Foothills"
+"Rapistrum rugosum","not naturalized",0,"Dicotyledons","Brassicaceae",,"Willamette Valley"
+"Reseda lutea","not naturalized",3,"Dicotyledons","Resedaceae",,"Willamette Valley"
+"Reseda luteola","not naturalized",0,"Dicotyledons","Resedaceae",,"Willamette Valley"
+"Rhamnus californica ssp. tomentella","not naturalized",0,"Dicotyledons","Rhamnaceae",,"Siskiyou Mountains"
+"Rhamnus rubra","native",0,"Dicotyledons","Rhamnaceae","Frangula rubra","Cascades, Eastern Cascade Slopes and Foothills"
+"Rhynchospora capitellata","native",0,"Monocotyledons","Cyperaceae",,"Estuarine Coast"
+"Ribes acerifolium","native",4,"Dicotyledons","Grossulariaceae","Ribes howellii","Cascades, Eastern Cascade Slopes and Foothills"
+"Ribes inerme var. klamathense","native",1,"Dicotyledons","Grossulariaceae","Ribes klamathense","Cascades, Coast Range, Eastern Cascade Slopes and Foothills, Siskiyou Mountains"
+"Ribes rubrum","not naturalized",0,"Dicotyledons","Grossulariaceae","Ribes sativum",
+"Romulea rosea var. australis","not naturalized",0,"Monocotyledons","Iridaceae",,"Siskiyou Mountains"
+"Rorippa austriaca","not naturalized",0,"Dicotyledons","Brassicaceae",,"Blue and Wallowa Mountains"
+"Rorippa indica","not naturalized",0,"Dicotyledons","Brassicaceae",,"Willamette Valley"
+"Rorippa palustris ssp. hispida","native",0,"Dicotyledons","Brassicaceae","Rorippa islandica var. hispida","Basin and Range, Cascades, Eastern Cascade Slopes and Foothills, Estuarine Coast, Lava Plains, Owyhee Uplands, Willamette Valley"
+"Rorippa tenerrima","native",0,"Dicotyledons","Brassicaceae",,"Cascades, Owyhee Uplands"
+"Rosa gymnocarpa ssp. helleri","native",0,"Dicotyledons","Rosaceae",,"Blue and Wallowa Mountains, Cascades, Eastern Cascade Slopes and Foothills"
+"Rosa pisocarpa ssp. ahartii","native",0,"Dicotyledons","Rosaceae",,"Siskiyou Mountains"
+"Rosa spithamea","native",4,"Dicotyledons","Rosaceae","Rosa spithamea var. solitaria","Cascades, Siskiyou Mountains"
+"Rosa yainacensis","native",0,"Dicotyledons","Rosaceae","Rosa bridgesii","Cascades, Siskiyou Mountains"
+"Rosmarinus officinalis","not naturalized",0,"Dicotyledons","Lamiaceae",,"Coast Range"
+"Rubia tinctorum","not naturalized",0,"Dicotyledons","Rubiaceae","Rubia tinctoria","Willamette Valley"
+"Rubus bartonianus","native",2,"Dicotyledons","Rosaceae",,"Blue and Wallowa Mountains"
+"Rubus glaucifolius","native",0,"Dicotyledons","Rosaceae","Rubus glaucifolius var. glaucifolius","Siskiyou Mountains"
+"Rubus pensilvanicus","native",0,"Dicotyledons","Rosaceae",,
+"Rubus ulmifolius","naturalized",0,"Dicotyledons","Rosaceae","Rubus ulmifolius var. inermis","Willamette Valley"
+"Rudbeckia hirta var. pulcherrima","not naturalized",0,"Dicotyledons","Asteraceae",,"Willamette Valley"
+"Rumex californicus","not naturalized",0,"Dicotyledons","Polygonaceae","Rumex salicifolius var. denticulatus","Willamette Valley"
+"Rumex crassus","native",0,"Dicotyledons","Polygonaceae","Rumex salicifolius var. crassus","Basin and Range, Estuarine Coast, Willamette Valley"
+"Rumex cuneifolius","naturalized",0,"Dicotyledons","Polygonaceae",,"Basin and Range, Eastern Cascade Slopes and Foothills, Owyhee Uplands"
+"Rumex dentatus","not naturalized",0,"Dicotyledons","Polygonaceae",,
+"Rumex pulcher","naturalized",0,"Dicotyledons","Polygonaceae",,"Coast Range, Columbia Basin, Estuarine Coast, Siskiyou Mountains, Willamette Valley"
+"Rumex transitorius","native",0,"Dicotyledons","Polygonaceae","Rumex salicifolius var. transitorius","Estuarine Coast, Willamette Valley"
+"Rumex utahensis","native",0,"Dicotyledons","Polygonaceae","Rumex salicifolius var. montigenitus","Blue and Wallowa Mountains, Owyhee Uplands"
+"Ruppia maritima","native",4,"Monocotyledons","Ruppiaceae","Ruppia maritima var. intermedia","Basin and Range, Estuarine Coast"
+"Rytidosperma biannulare","not naturalized",0,"Monocotyledons","Poaceae","Rytidosperma semiannulare",
+"Sabulina austromontana","native",0,"Dicotyledons","Caryophyllaceae","Minuartia austromontana","Blue and Wallowa Mountains"
+"Sabulina nuttallii var. gracilis","native",0,"Dicotyledons","Caryophyllaceae","Arenaria nuttallii var. gracilis","Basin and Range, Cascades, Owyhee Uplands"
+"Sagina alexandrae","not naturalized",0,"Dicotyledons","Caryophyllaceae","Sagina subulata","Basin and Range"
 "Sagina japonica","not naturalized",0,"Dicotyledons","Caryophyllaceae",,"Willamette Valley"
 "Sagittaria graminea ssp. graminea","not naturalized",0,"Monocotyledons","Alismataceae",,
 "Sagittaria montevidensis ssp. calycina","native",0,"Monocotyledons","Alismataceae","Lophotocarpus californicus","Eastern Cascade Slopes and Foothills"
 "Sagittaria platyphylla","not naturalized",0,"Monocotyledons","Alismataceae",,"Willamette Valley"
-"Sairocarpus kingii","native",0,"Dicotyledons","Plantaginaceae","Antirrhinum kingii",
+"Sairocarpus kingii","native",0,"Dicotyledons","Plantaginaceae","Antirrhinum kingii","Basin and Range, Blue and Wallowa Mountains, Owyhee Uplands"
 "Salicornia rubra","native",1,"Dicotyledons","Amaranthaceae",,"Basin and Range, Eastern Cascade Slopes and Foothills"
-"Salix × fragilis","naturalized",0,"Dicotyledons","Salicaceae","Salix × rubens","Basin and Range, Blue and Wallowa Mountains, Columbia Basin, Owyhee Uplands, Willamette Valley"
 "Salix brachycarpa var. brachycarpa","native",2,"Dicotyledons","Salicaceae","Salix brachycarpa var. sansonii","Basin and Range, Blue and Wallowa Mountains"
 "Salix drummondiana","native",1,"Dicotyledons","Salicaceae","Salix bella","Basin and Range, Blue and Wallowa Mountains"
+"Salix euxina","naturalized",0,"Dicotyledons","Salicaceae","Salix × fragilis","Basin and Range, Blue and Wallowa Mountains, Columbia Basin, Owyhee Uplands, Willamette Valley"
 "Salix exigua var. hindsiana","native",3,"Dicotyledons","Salicaceae","Salix hindsiana","Eastern Cascade Slopes and Foothills, Estuarine Coast, Siskiyou Mountains"
 "Salix farriae","native",0,"Dicotyledons","Salicaceae",,"Blue and Wallowa Mountains"
 "Salix glauca var. villosa","native",2,"Dicotyledons","Salicaceae","Salix glauca ssp. glabrescens","Basin and Range"
@@ -1280,81 +1298,13 @@
 "Sedum radiatum ssp. depauperatum","native",4,"Dicotyledons","Crassulaceae",,"Siskiyou Mountains"
 "Sedum rupicola","native",0,"Dicotyledons","Crassulaceae",,
 "Sedum thartii","not naturalized",0,"Dicotyledons","Crassulaceae",,"Siskiyou Mountains, Willamette Valley"
-"Senecio albescens","not naturalized",0,"Dicotyledons","Asteraceae",,
+"Senecio × albescens","not naturalized",0,"Dicotyledons","Asteraceae",,
 "Senecio aronicoides","native",4,"Dicotyledons","Asteraceae",,
+"Senecio cineraria","not naturalized",0,"Dicotyledons","Asteraceae","Jacobaea maritima","Willamette Valley"
 "Senecio integerrimus var. major","native",0,"Dicotyledons","Asteraceae",,"Blue and Wallowa Mountains, Cascades, Siskiyou Mountains"
-"Senecio sphaerocephalus","native",0,"Dicotyledons","Asteraceae",,"Blue and Wallowa Mountains"
-"Senecio viscosus","not naturalized",0,"Dicotyledons","Asteraceae",,
-"Setaria faberi","not naturalized",4,"Monocotyledons","Poaceae",,"Columbia Basin"
-"Setaria parviflora","not naturalized",0,"Monocotyledons","Poaceae","Setaria geniculata","Willamette Valley"
-"Setaria pumila ssp. pallidefusca","not naturalized",0,"Monocotyledons","Poaceae",,"Siskiyou Mountains"
-"Setaria verticillata","naturalized",0,"Monocotyledons","Poaceae",,"Columbia Basin"
-"Setaria viridis var. major","not naturalized",0,"Monocotyledons","Poaceae",,"Willamette Valley"
-"Shepherdia argentea","native",2,"Dicotyledons","Elaeagnaceae","Elaeagnus utilis","Basin and Range"
-"Sidalcea asprella ssp. elegans","native",0,"Dicotyledons","Malvaceae","Sidalcea malviflora ssp. elegans","Coast Range, Siskiyou Mountains"
-"Sidalcea asprella ssp. nana","native",0,"Dicotyledons","Malvaceae","Sidalcea malviflora ssp. nana","Siskiyou Mountains"
-"Sidalcea diploscypha","not naturalized",4,"Dicotyledons","Malvaceae",,"Estuarine Coast"
-"Sidalcea hirsuta","not naturalized",4,"Dicotyledons","Malvaceae",,
-"Sidalcea malachroides","native",1,"Dicotyledons","Malvaceae",,"Siskiyou Mountains"
-"Sidalcea malviflora ssp. patula","native",4,"Dicotyledons","Malvaceae",,"Coast Range, Estuarine Coast, Siskiyou Mountains"
-"Sidalcea neomexicana","native",3,"Dicotyledons","Malvaceae","Sidalcea neomexicana var. crenulata","Blue and Wallowa Mountains, Owyhee Uplands"
-"Silene bridgesii","native",0,"Dicotyledons","Caryophyllaceae",,"Siskiyou Mountains"
-"Silene conoidea","not naturalized",0,"Dicotyledons","Caryophyllaceae",,"Columbia Basin, Lava Plains, Owyhee Uplands"
-"Silene dichotoma","not naturalized",1,"Dicotyledons","Caryophyllaceae","Silene dichotoma ssp. dichotoma",
-"Silene douglasii var. oraria","native",3,"Dicotyledons","Caryophyllaceae","Silene oraria","Coast Range, Estuarine Coast"
-"Silene lemmonii","native",3,"Dicotyledons","Caryophyllaceae",,"Siskiyou Mountains"
-"Silene noctiflora","naturalized",1,"Dicotyledons","Caryophyllaceae",,"Blue and Wallowa Mountains, Cascades, Columbia Basin, Lava Plains"
-"Silene pectinata","native",3,"Dicotyledons","Caryophyllaceae","Silene insectivora","Basin and Range, Eastern Cascade Slopes and Foothills"
-"Silene pendula","not naturalized",0,"Dicotyledons","Caryophyllaceae",,"Willamette Valley"
-"Silene scouleri ssp. scouleri","native",1,"Dicotyledons","Caryophyllaceae","Silene scouleri var. pacifica","Blue and Wallowa Mountains, Columbia Basin, Eastern Cascade Slopes and Foothills, Estuarine Coast, Siskiyou Mountains, Willamette Valley"
-"Sinapis arvensis","naturalized",2,"Dicotyledons","Brassicaceae","Sinapis arvensis ssp. arvensis","Blue and Wallowa Mountains, Siskiyou Mountains, Willamette Valley"
-"Sisymbrium orientale","not naturalized",0,"Dicotyledons","Brassicaceae",,
-"Sisyrinchium halophilum","native",0,"Monocotyledons","Iridaceae",,"Basin and Range"
-"Solanum aviculare","not naturalized",0,"Dicotyledons","Solanaceae",,
-"Solanum carolinense","not naturalized",3,"Dicotyledons","Solanaceae",,"Blue and Wallowa Mountains, Columbia Basin, Owyhee Uplands"
-"Solanum elaeagnifolium","not naturalized",3,"Dicotyledons","Solanaceae",,"Columbia Basin"
-"Solanum furcatum","naturalized",3,"Dicotyledons","Solanaceae",,"Estuarine Coast"
-"Solanum sisymbriifolium","not naturalized",0,"Dicotyledons","Solanaceae",,"Willamette Valley"
-"Solanum tuberosum","not naturalized",0,"Dicotyledons","Solanaceae",,"Estuarine Coast"
-"Solidago simplex var. nana","native",4,"Dicotyledons","Asteraceae","Solidago spathulata var. nana","Cascades, Eastern Cascade Slopes and Foothills"
-"Solidago spectabilis","native",0,"Dicotyledons","Asteraceae","Solidago spectabilis var. spectabilis","Basin and Range, Eastern Cascade Slopes and Foothills, Owyhee Uplands"
-"Sonchus arvensis ssp. arvensis","not naturalized",0,"Dicotyledons","Asteraceae",,"Lava Plains"
-"Sonnea hispida","native",0,"Dicotyledons","Boraginaceae","Plagiobothrys hispidus","Basin and Range, Eastern Cascade Slopes and Foothills"
-"Sorbus californica","native",0,"Dicotyledons","Rosaceae","Sorbus sitchensis ssp. californica","Cascades"
-"Sorbus sitchensis var. sitchensis","native",3,"Dicotyledons","Rosaceae",,"Cascades, Coast Range, Siskiyou Mountains"
-"Sorghum bicolor","naturalized",2,"Monocotyledons","Poaceae","Sorghum bicolor ssp. bicolor","Cascades, Columbia Basin, Siskiyou Mountains, Willamette Valley"
-"Spartina alterniflora","naturalized",3,"Monocotyledons","Poaceae",,"Estuarine Coast"
-"Spartina densiflora","not naturalized",0,"Monocotyledons","Poaceae",,
-"Spartina patens","naturalized",4,"Monocotyledons","Poaceae",,"Estuarine Coast"
-"Spartium junceum","naturalized",4,"Dicotyledons","Fabaceae",,"Cascades, Siskiyou Mountains, Willamette Valley"
-"Spergularia bocconi","not naturalized",0,"Dicotyledons","Caryophyllaceae","Spergularia bocconii","Willamette Valley"
-"Spergularia diandra","not naturalized",0,"Dicotyledons","Caryophyllaceae",,"Eastern Cascade Slopes and Foothills, Owyhee Uplands, Willamette Valley"
-"Spergularia media var. media","not naturalized",0,"Dicotyledons","Caryophyllaceae",,
-"Spergularia villosa","not naturalized",0,"Dicotyledons","Caryophyllaceae",,"Willamette Valley"
-"Sphaeromeria cana","native",0,"Dicotyledons","Asteraceae","Tanacetum canum","Basin and Range"
-"Sphaeropteris cooperi","not naturalized",2,"Pteridophytes","Cyatheaceae",,"Estuarine Coast"
-"Sphenopholis obtusata","native",0,"Monocotyledons","Poaceae","Eatonia annua","Basin and Range, Blue and Wallowa Mountains, Columbia Basin, Eastern Cascade Slopes and Foothills"
-"Spiraea douglasii var. menziesii","native",4,"Dicotyledons","Rosaceae",,"Blue and Wallowa Mountains, Cascades, Columbia Basin, Eastern Cascade Slopes and Foothills, Willamette Valley"
-"Spiraea tomentosa","not naturalized",0,"Dicotyledons","Rosaceae","Spiraea tomentosa var. rosea","Estuarine Coast"
-"Sporobolus airoides","native",0,"Monocotyledons","Poaceae","Sporobolus airoides var. airoides","Basin and Range, Owyhee Uplands"
-"Sporobolus indicus","not naturalized",3,"Monocotyledons","Poaceae","Sporobolus elongatus",
-"Stachys arvensis","not naturalized",0,"Dicotyledons","Lamiaceae",,
-"Stachys byzantina","not naturalized",4,"Dicotyledons","Lamiaceae",,"Cascades, Eastern Cascade Slopes and Foothills"
-"Stellaria borealis ssp. borealis","native",0,"Dicotyledons","Caryophyllaceae","Stellaria calycantha var. floribunda","Blue and Wallowa Mountains"
-"Stephanomeria virgata ssp. pleurocarpa","native",0,"Dicotyledons","Asteraceae",,"Siskiyou Mountains"
-"Streptanthus howellii","native",4,"Dicotyledons","Brassicaceae",,"Siskiyou Mountains"
-"Streptopus streptopoides var. brevipes","native",1,"Monocotyledons","Liliaceae",,"Cascades"
-"Stuckenia filiformis ssp. alpina","native",4,"Monocotyledons","Potamogetonaceae","Potamogeton filiformis var. alpinus","Eastern Cascade Slopes and Foothills, Owyhee Uplands"
-"Stuckenia filiformis ssp. occidentalis","native",0,"Monocotyledons","Potamogetonaceae","Potamogeton filiformis var. occidentalis","Eastern Cascade Slopes and Foothills"
-"Stuckenia striata","native",0,"Monocotyledons","Potamogetonaceae","Potamogeton striatus","Basin and Range"
-"Stylocline psilocarphoides","native",0,"Dicotyledons","Asteraceae",,"Owyhee Uplands"
-"Styrax officinalis var. redivivus","not naturalized",2,"Dicotyledons","Styracaceae","Styrax redivivus","Siskiyou Mountains"
-"Subularia aquatica ssp. americana","native",0,"Dicotyledons","Brassicaceae",,
-"Symphoricarpos longiflorus","native",2,"Dicotyledons","Caprifoliaceae",,"Basin and Range, Owyhee Uplands"
-"Symphyotrichum foliaceum var. apricum","native",2,"Dicotyledons","Asteraceae","Aster foliaceus var. apricus","Basin and Range, Blue and Wallowa Mountains, Cascades"
 "Symphyotrichum spathulatum var. intermedium","native",0,"Dicotyledons","Asteraceae","Aster occidentalis ssp. intermedius","Basin and Range, Blue and Wallowa Mountains, Cascades, Eastern Cascade Slopes and Foothills, Lava Plains"
 "Symphyotrichum spathulatum var. yosemitanum","native",0,"Dicotyledons","Asteraceae","Aster occidentalis var. yosemitanus","Cascades, Siskiyou Mountains"
-"Syringa vulgaris","not naturalized",3,"Dicotyledons","Oleaceae",,
+"Syringa vulgaris","not naturalized",3,"Dicotyledons","Oleaceae",,"Willamette Valley"
 "Tagetes patula","not naturalized",0,"Dicotyledons","Asteraceae",,
 "Tanacetum balsamita","not naturalized",0,"Dicotyledons","Asteraceae","Chrysanthemum balsamita","Columbia Basin, Willamette Valley"
 "Taraxacum ceratophorum","native",0,"Dicotyledons","Asteraceae","Taraxacum paucisquamosum","Blue and Wallowa Mountains"
@@ -1379,13 +1329,14 @@
 "Tomostima reptans","native",0,"Dicotyledons","Brassicaceae","Draba caroliniana","Columbia Basin, Lava Plains, Owyhee Uplands"
 "Torilis henryi","not naturalized",0,"Dicotyledons","Apiaceae","Torilis scabra","Willamette Valley"
 "Torilis nodosa","not naturalized",0,"Dicotyledons","Apiaceae",,"Estuarine Coast, Willamette Valley"
-"Torreyochloa erecta","native",0,"Monocotyledons","Poaceae","Glyceria pauciflora","Cascades, Siskiyou Mountains"
+"Torreyochloa erecta","native",0,"Monocotyledons","Poaceae","Glyceria erecta","Cascades, Siskiyou Mountains"
 "Tournefortia sibirica","not naturalized",0,"Dicotyledons","Heliotropiaceae","Argusia sibirica",
 "Townsendia montana","native",1,"Dicotyledons","Asteraceae","Townsendia montana var. montana","Blue and Wallowa Mountains"
 "Townsendia parryi","native",0,"Dicotyledons","Asteraceae",,"Blue and Wallowa Mountains"
 "Townsendia scapigera","native",4,"Dicotyledons","Asteraceae",,"Owyhee Uplands"
 "Toxicodendron diversilobum × Toxicodendron rydbergii","native",0,"Dicotyledons","Anacardiaceae",,"Columbia Basin"
 "Toxicoscordion exaltatum","native",0,"Monocotyledons","Melanthiaceae","Zigadenus exaltatus","Siskiyou Mountains"
+"Triadenum fraseri","not naturalized",0,"Dicotyledons","Hypericaceae",,
 "Triantha glutinosa","naturalized",1,"Monocotyledons","Tofieldiaceae",,"Estuarine Coast"
 "Trichophorum cespitosum","native",1,"Monocotyledons","Cyperaceae","Scirpus cespitosus","Cascades"
 "Trichostema lanatum","not naturalized",0,"Dicotyledons","Lamiaceae",,
@@ -1408,13 +1359,14 @@
 "Trifolium siskiyouense","native",0,"Dicotyledons","Fabaceae",,"Cascades, Siskiyou Mountains"
 "Trifolium tomentosum","not naturalized",0,"Dicotyledons","Fabaceae",,
 "Triglochin palustris","not naturalized",0,"Monocotyledons","Juncaginaceae",,"Blue and Wallowa Mountains"
+"Trillium chloropetalum","naturalized",0,"Monocotyledons","Melanthiaceae",,
 "Trillium cuneatum","not naturalized",0,"Monocotyledons","Melanthiaceae",,
 "Triodanis biflora","native",4,"Dicotyledons","Campanulaceae","Specularia biflora","Cascades, Estuarine Coast, Siskiyou Mountains, Willamette Valley"
 "Triplasis purpurea","naturalized",3,"Monocotyledons","Poaceae","Triplasis purpurea var. purpurea","Willamette Valley"
 "Triteleia peduncularis","native",0,"Monocotyledons","Asparagaceae",,"Siskiyou Mountains"
 "Trollius albiflorus","native",1,"Dicotyledons","Ranunculaceae","Trollius laxus var. albiflorus","Blue and Wallowa Mountains"
 "Tropaeolum majus","not naturalized",0,"Dicotyledons","Tropaeolaceae",,"Estuarine Coast, Willamette Valley"
-"Ulmus × hollandica","not naturalized",0,"Dicotyledons","Ulmaceae",,
+"Ulmus × hollandica","not naturalized",0,"Dicotyledons","Ulmaceae",,"Willamette Valley"
 "Ulmus minor","not naturalized",4,"Dicotyledons","Ulmaceae","Ulmus procera","Siskiyou Mountains, Willamette Valley"
 "Ulmus parvifolia","not naturalized",0,"Dicotyledons","Ulmaceae",,"Willamette Valley"
 "Urochloa mutica","not naturalized",0,"Monocotyledons","Poaceae","Brachiaria mutica","Willamette Valley"
@@ -1422,12 +1374,9 @@
 "Urtica dioica ssp. holosericea","native",4,"Dicotyledons","Urticaceae","Urtica holosericea","Basin and Range, Blue and Wallowa Mountains, Cascades, Columbia Basin, Eastern Cascade Slopes and Foothills, Lava Plains, Owyhee Uplands, Siskiyou Mountains"
 "Urtica urens","naturalized",0,"Dicotyledons","Urticaceae",,"Blue and Wallowa Mountains, Willamette Valley"
 "Vaccinium corymbosum","not naturalized",0,"Dicotyledons","Ericaceae",,"Willamette Valley"
-"Vaccinium myrtillus","native",3,"Dicotyledons","Ericaceae",,"Blue and Wallowa Mountains, Cascades, Siskiyou Mountains"
-"Valeriana californica","native",0,"Dicotyledons","Valerianaceae","Valeriana capitata","Cascades, Eastern Cascade Slopes and Foothills"
 "Valeriana occidentalis","native",0,"Dicotyledons","Valerianaceae","Valeriana dioica var. sylvatica","Basin and Range, Blue and Wallowa Mountains, Eastern Cascade Slopes and Foothills, Lava Plains"
 "Valerianella carinata","naturalized",0,"Dicotyledons","Valerianaceae",,"Siskiyou Mountains, Willamette Valley"
 "Valerianella dentata","not naturalized",0,"Dicotyledons","Valerianaceae",,"Willamette Valley"
-"Vancouveria planipetala","native",2,"Dicotyledons","Berberidaceae",,"Coast Range, Siskiyou Mountains"
 "Veratrum fimbriatum","not naturalized",3,"Monocotyledons","Melanthiaceae",,
 "Verbascum phlomoides","not naturalized",0,"Dicotyledons","Scrophulariaceae",,"Columbia Basin"
 "Verbascum speciosum","not naturalized",0,"Dicotyledons","Scrophulariaceae",,
@@ -1440,7 +1389,7 @@
 "Veronica chamaedrys","naturalized",1,"Dicotyledons","Plantaginaceae",,"Coast Range, Eastern Cascade Slopes and Foothills, Willamette Valley"
 "Veronica filiformis","naturalized",4,"Dicotyledons","Plantaginaceae",,"Coast Range, Columbia Basin, Estuarine Coast, Siskiyou Mountains, Willamette Valley"
 "Veronica longifolia","not naturalized",0,"Dicotyledons","Plantaginaceae","Pseudolysimachion longifolium","Siskiyou Mountains"
-"Veronica peregrina var. peregrina","native",3,"Dicotyledons","Plantaginaceae",,"Siskiyou Mountains, Willamette Valley"
+"Veronica peregrina var. peregrina","native",0,"Dicotyledons","Plantaginaceae",,"Siskiyou Mountains, Willamette Valley"
 "Veronica schizantha","native",1,"Dicotyledons","Plantaginaceae","Synthyris schizantha","Coast Range"
 "Veronica triphyllos","not naturalized",0,"Dicotyledons","Plantaginaceae",,"Columbia Basin"
 "Veronica undulata","not naturalized",0,"Dicotyledons","Plantaginaceae",,"Willamette Valley"
@@ -1458,6 +1407,7 @@
 "Viola tricolor var. tricolor","naturalized",3,"Dicotyledons","Violaceae",,
 "Vitis × labruscana","not naturalized",0,"Dicotyledons","Vitaceae",,"Willamette Valley"
 "Vitis riparia","not naturalized",2,"Dicotyledons","Vitaceae",,"Blue and Wallowa Mountains"
+"Vitis vinifera","not naturalized",0,"Dicotyledons","Vitaceae",,
 "Vulpia octoflora","native",3,"Monocotyledons","Poaceae","Festuca octoflora","Basin and Range, Blue and Wallowa Mountains, Columbia Basin, Estuarine Coast, Lava Plains, Owyhee Uplands, Siskiyou Mountains, Willamette Valley"
 "Woodsia scopulina ssp. laurentiana","native",0,"Pteridophytes","Woodsiaceae",,"Blue and Wallowa Mountains, Cascades, Eastern Cascade Slopes and Foothills, Willamette Valley"
 "Zantedeschia aethiopica","naturalized",3,"Monocotyledons","Araceae",,"Estuarine Coast"
