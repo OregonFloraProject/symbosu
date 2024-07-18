@@ -71,7 +71,7 @@ function buildResult($checklistObj) {
 				];
 				$tjresult['synonyms'] = $taxa->getSynonyms();//adds 16secs to set of 174 taxa
 				#var_dump($vouchers);
-				$tjresult['vouchers'] = $vouchers[$rowArr['tid']];
+				$tjresult['vouchers'] = ($vouchers ? $vouchers[$rowArr['tid']] : '');
 				$tjresult['sciname'] = $taxa->getSciname();
 				$tjresult['checklistNotes'] = ($rowArr['checklistNotes'] == 'NULL'? '' : $rowArr['checklistNotes']);
 				$tjresult['checklistNotes'] = str_replace(',',';',$tjresult['checklistNotes']);//can't change comma to semi-colon in Doctrine, so doing it here
