@@ -165,7 +165,40 @@ class TaxaManager {
 		return $return;
 	}
   public function getThumbnail() {
-    return isset($this->images[0])? $this->images[0]["thumbnailurl"] : null;
+
+    // JGM: 2024-04-19
+    // The line below gets the first image populated by populateImages()
+    // That in turn does multiple joins and pulls all the images for a taxon
+    // This is way overkill for just a thumbnail. Code below is at least more efficient
+    // It could be even better, though. 
+
+    //return isset($this->images[0]) ? $this->images[0]["thumbnailurl"] : null;
+
+    // More efficient code
+    // Use the images without doing a query, if populated
+    if(isset($this->images[0])) {
+      return $this->images[0]["thumbnailurl"];
+    } else {
+
+      // Get the thumbnail of the first image by sort sequence for a taxon
+      $em = SymbosuEntityManager::getEntityManager();
+      $thumb = $em->createQueryBuilder()
+        ->select(["i.thumbnailurl"])
+        ->from("images", "i")
+        ->where("i.tid = :tid")
+        ->setParameter("tid", $this->getTid())
+        ->orderBy("i.sortsequence")
+        ->getQuery()
+        ->execute();
+
+      // Return the thumbnail, if one exists
+      if(isset($thumb[0]['thumbnailurl'])) {
+        return $thumb[0]['thumbnailurl'];
+      } else {
+        return null;
+      }
+    }
+
   }
 
   public function getCharacteristics() {

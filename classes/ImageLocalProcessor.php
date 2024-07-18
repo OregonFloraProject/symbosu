@@ -28,7 +28,7 @@ class ImageLocalProcessor {
 	private $tnPixWidth = '';
 	private $lgPixWidth = '';
 	private $webFileSizeLimit = 500000;
-	private $lgFileSizeLimit = 10000000;
+	private $lgFileSizeLimit = 40000000;
 	private $jpgQuality= 80;
 	private $medProcessingCode = 1;			// 1 = evaluate source and import, 2 = import and use as is, 3 = map to source, 0 = exclude
 	private $tnProcessingCode = 1;			// 1 = create from source, 2 = import source (_tn.jpg), 3 = map to source (_tn.jpg), 0 = exclude
@@ -278,8 +278,9 @@ class ImageLocalProcessor {
 		//$this->logOrEcho("Processing: ".$this->sourcePathBase.$pathFrag);
 		//Read file and loop through images
 		if(file_exists($this->sourcePathBase.$pathFrag)){
-			if($dirFH = opendir($this->sourcePathBase.$pathFrag)){
-				while($fileName = readdir($dirFH)){
+			// Upload files, sorting them by filename in ascending order
+			if($dirFiles = scandir($this->sourcePathBase.$pathFrag, SCANDIR_SORT_ASCENDING)) {
+				foreach($dirFiles as $fileName) {
 					if(substr($fileName,0,1) != '.'){
 						if(is_file($this->sourcePathBase.$pathFrag.$fileName)){
 							$this->processFile($fileName, $pathFrag);
@@ -290,7 +291,6 @@ class ImageLocalProcessor {
 						}
 					}
 				}
-				if($dirFH) closedir($dirFH);
 			}
 			else{
 				$this->logOrEcho('ERROR: unable to access source directory: '.$this->sourcePathBase.$pathFrag,1);
