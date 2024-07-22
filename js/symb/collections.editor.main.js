@@ -963,7 +963,8 @@ function eventDateChanged(eventDateInput){
 	var dateStr = eventDateInput.value;
 	if(dateStr != ""){
 		var dateArr = parseDate(dateStr);
-		if(dateArr['y'] == 0){
+		console.log(dateArr);
+		if(dateArr['y'] == '0'){
 			alert("Unable to interpret Date. Please use the following formats: yyyy-mm-dd, mm/dd/yyyy, or dd mmm yyyy");
 			return false;
 		}
