@@ -1,11 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
+import { Link } from 'react-scroll'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { faArrowCircleUp, faArrowCircleDown } from '@fortawesome/free-solid-svg-icons';
 import ImageCarousel from "../common/imageCarousel.jsx";
 import Loading from "../common/loading.jsx";
 import ImageModal from "../common/modal.jsx";
 import httpGet from "../common/httpGet.js";
 import { getUrlQueryParams } from "../common/queryParams.js";
 import { getTaxaPage } from "../common/taxaUtils";
+
+const RANK_FAMILY = 140;
+const RANK_GENUS = 180;
+
+function stripHtml(str) {
+	/*
+  Description includes HTML tags & URL-encoded characters in the db.
+  It's dangerous to pull/render arbitrary HTML w/ react, so just render the
+  plain text & remove any HTML in it.
+  */
+  return str.replace(/(<\/?[^>]+>)|(&[^;]+;)/g, "");
+}
 
 function showItem(item) {
   const isArray = Array.isArray(item);
@@ -39,6 +55,83 @@ function BorderedItem(props) {
   );
 }
 
+library.add(faArrowCircleUp, faArrowCircleDown);
+function RelatedBorderedItem(props) {
+
+  let value = '';
+	value = (
+		<div className="col-sm-12 related py-2 row">
+			<div className="col-sm-8 related-sciname">{ props.value[0] }</div>
+			<div className="col-sm-4 related-nav pr-0">
+				<span className="related-label">Related</span>
+				<span className="related-links">
+					{ props.rankId > RANK_FAMILY &&
+							<a href={ props.value[1] }>
+								<FontAwesomeIcon icon="arrow-circle-up" />
+							</a>
+					}
+					{ props.rankId > RANK_FAMILY && props.value[2].length > 0 &&
+						/* two statements here because I don't want to wrap them in one div */
+						<span className="separator">/</span>
+					}
+					{ props.value[2].length > 0 &&
+						<Link
+								to="spp-wrapper"
+								spy={true}
+								smooth={true}
+								duration={400}
+								offset={-180}
+							>
+							<FontAwesomeIcon icon="arrow-circle-down"	/>
+						</Link>
+					}
+				</span>
+			</div>
+		</div>
+	);
+  return (
+    <div className={ "row" }>
+      { value }
+    </div>
+  );
+}
+
+function MapItem(props) {
+
+	let mapImage = null;
+	mapImage = `${props.clientRoot}/images/maps/${props.tid}.jpg`;
+	// /map/googlemap.php?maptype=taxa&taxon=6076&clid=0
+	//let mapLink = `${props.clientRoot}/map/googlemap.php?maptype=taxa&clid=0&taxon=${props.tid}`;
+	let mapLink = `${props.clientRoot}/collections/map/googlemap.php?usethes=1&taxa=${props.tid}&minClusterSetting=10&gridSizeSetting=30`;
+
+  return (
+  	<div className={ "sidebar-section mb-5 distribution" }>
+    	<h3 className="text-light-green font-weight-bold mb-3">Distribution</h3>
+    	<div className={ "dashed-border pt-0" }>
+    		<a
+    			className="map-link"
+    			onClick={ () => window.open(mapLink) }
+    		>{/*
+    			onClick={ () => window.open(mapLink,'gmap','toolbar=1,scrollbars=1,width=950,height=700,left=20,top=20') } */}
+      		<img
+						src={mapImage}
+						alt={props.title}
+					/>
+				</a>
+			</div>
+    	<div className={ "map-label text-right" }>
+    		<a
+    			className="map-link"
+    			onClick={ () => window.open(mapLink) }
+    		>	{/*
+    			onClick={ () => window.open(mapLink,'gmap','toolbar=1,scrollbars=1,width=950,height=700,left=20,top=20') } */}
+      		Click/tap to launch
+				</a>
+			</div>
+    </div>
+  );
+}
+
 function SideBarSection(props) {
   let itemKeys = Object.keys(props.items);
   itemKeys = itemKeys.filter((k) => {
@@ -52,6 +145,9 @@ function SideBarSection(props) {
         {
           itemKeys.map((key) => {
             const val = props.items[key];
+            if (key == 'Related') {
+	            return <RelatedBorderedItem key={ key } keyName={ key } value={ val } rankId={ props.rankId }/>
+	          }
             return <BorderedItem key={ key } keyName={ key } value={ val } />
           })
         }
@@ -65,15 +161,15 @@ function SideBarSectionList(props) {
   return (
     <div className={ "sidebar-section mb-4 " + (items.length > 0 ? "" : "d-none") }>
       <h3 className="text-light-green font-weight-bold mb-3">{ props.title }</h3>
-      <span className="row dashed-border"/>
-      {
-        items.map((val) => {
-          return (
-            <div className="associated-sciname" key={val}>{val}</div>
-          );
-        })
-      }
-      <span className="row dashed-border" />
+      <div className="list">
+        {
+          items.map((val) => {
+            return (
+              <div className="associated-sciname" key={val}>{val}</div>
+            );
+          })
+        }
+      </div>
     </div>
   )
 }
@@ -94,7 +190,7 @@ function SideBarSectionTable(props) {
         <h3 className="text-light-green font-weight-bold mb-3">{ props.title }</h3>
         <LookalikesTableRow isHeader keyName="Taxon" value="Differs from featured plant by" />
         {items.map(({ taxon, description }) => (
-          <LookalikesTableRow isRow keyName={taxon} value={description} />
+          <LookalikesTableRow isRow key={taxon} keyName={taxon} value={description} />
         ))}
         <span className="row dashed-border"/>
     </div>
@@ -104,6 +200,7 @@ function SideBarSectionTable(props) {
 const dummyData = {
   vernacularNames: ['Pale larkspur'],
   sciName: 'Delphinium leucophaeum',
+  rankId: 220,
   context: {
     family: 'Ranunculaceae',
     status: {
@@ -171,6 +268,7 @@ function TaxaRareApp(props) {
   const [checklists, setChecklists] = useState([]);
   const [nativeGroups, setNativeGroups] = useState([]);
   const [slideshowCount, setSlideshowCount] = useState(5);
+  const [relatedArr, setRelatedArr] = useState([]);
 
   useEffect(() => {
     // TODO(eric): switch to async/await
@@ -181,6 +279,21 @@ function TaxaRareApp(props) {
       httpGet(url)
         .then((res) => {
           res = JSON.parse(res);
+
+          let url = new URL(window.location);
+					let parentQueryParams = new URLSearchParams(url.search);
+					parentQueryParams.set('taxon',res.parentTid);
+          // TODO(eric): should this be index.php instead of rare.php?
+          // should this be here at all?
+					let parentUrl = window.location.pathname + '?' + parentQueryParams.toString();
+
+					let childUrl = '';
+					if (res.spp.length) {
+						childUrl = "#subspecies";
+					}
+
+					setRelatedArr([res.sciname,parentUrl,childUrl]);
+
           let plantType = '';
           let foliageType = res.characteristics.features.foliage_type;
           plantType += foliageType.length > 0 ? `${foliageType[0]} `: '';
@@ -321,8 +434,8 @@ function TaxaRareApp(props) {
       </div>
       <div className="row print-start">
         <div className="col">
-          <h1 className="">{ data.vernacularNames[0] }</h1>
-          <h2 className="font-italic">{ data.sciName }</h2>
+          <h1 className="font-italic">{ data.sciName }</h1>
+          <h2 className="">{ data.vernacularNames[0] }</h2>
         </div>
         <div className="col-auto">
           <button className="d-block my-2 btn-primary print-trigger" onClick={() => window.print()}>Print page</button>
@@ -387,23 +500,23 @@ function TaxaRareApp(props) {
                 It's dangerous to pull/render arbitrary HTML w/ react, so just render the
                 plain text & remove any HTML in it.
               */}
-              <span class="taxa-prose-section-title">Habitat & distribution</span>{ data.habitatNotes.replace(/(<\/?[^>]+>)|(&[^;]+;)/g, "") }
+              <span className="taxa-prose-section-title">Habitat & distribution</span>{ stripHtml(data.habitatNotes) }
             </p>
             <p>
-              <span class="taxa-prose-section-title">Ecology, natural history & pollinator biology</span>{ data.ecologyNotes.replace(/(<\/?[^>]+>)|(&[^;]+;)/g, "") }
+              <span className="taxa-prose-section-title">Ecology, natural history & pollinator biology</span>{ stripHtml(data.ecologyNotes) }
             </p>
             <p>
-              <span class="taxa-prose-section-title">Trends & conservation</span>{ data.conservationNotes.replace(/(<\/?[^>]+>)|(&[^;]+;)/g, "") }
+              <span className="taxa-prose-section-title">Trends & conservation</span>{ stripHtml(data.conservationNotes) }
             </p>
 
             <h2>Taxon description</h2>
             {Object.entries(data.description).map(([key, value]) => (
-              <p><span class="taxa-prose-section-title">{key}</span>{ value.replace(/(<\/?[^>]+>)|(&[^;]+;)/g, "") }</p>
+              <p key={key}><span className="taxa-prose-section-title">{key}</span>{ stripHtml(value) }</p>
             ))}
 
             <h2>Relevant literature</h2>
-            {data.literature.map(entry => (
-              <p>{entry}</p>
+            {data.literature.map((entry, index) => (
+              <p key={`literature-${index}`}>{entry}</p>
             ))}
           </div>
         </div>
@@ -419,13 +532,8 @@ function TaxaRareApp(props) {
           </h3>
         </ImageModal>
         <div className="col-md-4 sidebar-section">
-          <SideBarSection title="Context" items={ data.context } />
-
-          <div className={ "mb-4 sidebar-canned" }>
-            <h3 className="text-light-green font-weight-bold mb-1">Distribution</h3>
-            <span className="row mt-2 dashed-border"/>
-          </div>
-
+          <SideBarSection title="Context" items={{ "Related": relatedArr, ...data.context }} rankId={ data.rankId } />
+          <MapItem title={ data.sciName } tid={ tid } clientRoot={ props.clientRoot } />
           <SideBarSection title="Survey & Manage" items={ data.surveyManage } />
           <SideBarSectionTable title="Look-Alikes" items={ data.lookalikes } />
           <SideBarSectionList title="Associated species" items={ data.associatedSpecies } />

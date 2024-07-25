@@ -169,8 +169,8 @@
 		margin-bottom: 2rem;
 
 		p {
-			font-size: .9rem;
-			line-height: 1.2rem;
+			font-size: 1rem;
+			line-height: 1.4rem;
 		}
 		h2 {
 			font-size: 2rem;
@@ -185,6 +185,13 @@
 	}
 
 	.sidebar-section {
+		.list {
+			border-top: 1px dashed black;
+			border-bottom: 1px dashed black;
+			line-height: 1.3rem;
+			padding-top: 0.4rem;
+			padding-bottom: 0.4rem;
+		}
 		.associated-sciname {
 			font-style: italic;
 		}
@@ -193,6 +200,73 @@
 		}
 		.row.is-header {
 			font-weight: 700;
+		}
+	}
+}
+#react-taxa-app,
+#react-taxa-rare-app {
+	.sidebar-section {
+
+
+		.related-sciname {
+			font-size: 18px;
+			line-height: 14px;
+		}
+
+		.related,
+		.related-sciname,
+		.related-nav,
+		.col {
+			padding-left: 0px;
+			padding-right: 0px;
+		}
+		.related-nav {
+			text-align: right;
+		}
+		.map-label {
+			border-bottom: 1px dashed black;
+			color: @gray-type;
+			font-style: italic;
+		}
+		.map-link {
+			cursor: pointer;
+		}
+		&.weblinks {
+
+			li {
+				padding-top: .2rem !important;
+				padding-bottom: .2rem !important;
+
+				a {
+					font-weight: bold;
+					text-decoration: underline;
+				}
+			}
+		}
+	}
+
+	.related {
+		.related-label {
+			padding-right: 6px;
+			text-transform: uppercase;
+			font-size: .9em;
+		}
+		.related-links {
+			.separator {
+				padding: 0px 2px;
+			}
+		}
+		.related-sciname {
+			font-style: italic;
+			font-weight: bold;
+		}
+		.fa-arrow-circle-up {
+			transform: rotate(315deg);
+			color: @med-green;
+		}
+		.fa-arrow-circle-down {
+			transform: rotate(315deg);
+			color: @med-green;
 		}
 	}
 }
@@ -300,31 +374,6 @@
 	}
 
 	.sidebar-section {
-
-
-		.related-sciname {
-			font-size: 18px;
-			line-height: 14px;
-		}
-
-		.related,
-		.related-sciname,
-		.related-nav,
-		.col {
-			padding-left: 0px;
-			padding-right: 0px;
-		}
-		.related-nav {
-			text-align: right;
-		}
-		.map-label {
-			border-bottom: 1px dashed black;
-			color: @gray-type;
-			font-style: italic;
-		}
-		.map-link {
-			cursor: pointer;
-		}
 		&.weblinks {
 
 			li {
@@ -342,30 +391,6 @@
 		width: 100%;
 		li {
 			display: block;
-		}
-	}
-	.related {
-		.related-label {
-			padding-right: 6px;
-			text-transform: uppercase;
-			font-size: .9em;
-		}
-		.related-links {
-			.separator {
-				padding: 0px 2px;
-			}
-		}
-		.related-sciname {
-			font-style: italic;
-			font-weight: bold;
-		}
-		.fa-arrow-circle-up {
-			transform: rotate(315deg);
-			color: @med-green;
-		}
-		.fa-arrow-circle-down {
-			transform: rotate(315deg);
-			color: @med-green;
 		}
 	}
 	.more-info {
