@@ -81,17 +81,18 @@ OregonFlora development differs in the following ways:
 
 ### To build the back end:
 1. Follow the [Symbiota installation instructions](docs/INSTALL.md) 
-for Apache, PHP, and MariaDB/MySQL
+for Apache, PHP@7, and MariaDB/MySQL
 2. Install Composer for PHP
 3. Run the following in the repository root to install the PHP dependencies: `composer install`
-4. Run the following in the repository root to generate Doctine's proxy classes `doctrine orm:generate-proxies temp/proxies/`. In a
+4. Run the following in the repository root to generate Doctine's proxy classes `./vendor/bin/doctrine orm:generate-proxies temp/proxies/`. In a
 development environment, you can set IS_DEV to true in [symbini.php](./config/symbini_template.php) to do this automatically
 every time you make changes to the Doctrine-based PHP code.
 
 ### To build the front end:
 Install NodeJS and run the following from [js/react](./js/react)
 1. Install the NodeJS dependences: `npm install`
-2. Build the React- and Less-based pages: `npm run build`
+2. In `src/less`: `cp config_template.less config.less` and fill in the correct value
+3. Build the React- and Less-based pages: `npm run build`
 
 
 For a development server that watches for changes in .js/.jsx/.less files and automatically rebuilds them: `npm run devstart`
