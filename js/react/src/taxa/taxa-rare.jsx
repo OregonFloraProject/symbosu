@@ -23,6 +23,31 @@ function stripHtml(str) {
   return str.replace(/(<\/?[^>]+>)|(&[^;]+;)/g, "");
 }
 
+function renderBasicHtml(str) {
+  const segments = str.split(/(<[^>]+>)/g);
+  const elements = [];
+  for (let i = 0; i < segments.length; i++) {
+    const segment = segments[i];
+    if (segment.toLowerCase() === '<i>') {
+      let j = i + 1;
+      const innerElements = [];
+      while (j < segments.length && segments[j].toLowerCase() !== '</i>') {
+        innerElements.push(stripHtml(segments[j]));
+        j++;
+      }
+      if (j < segments.length) {
+        elements.push(<i>{innerElements}</i>);
+        i = j;
+      }
+    } else if (segment.match(/^<br\s*\/*>$/i)) {
+      elements.push(<br />);
+    } else {
+      elements.push(stripHtml(segment));
+    }
+  }
+  return elements;
+}
+
 function showItem(item) {
   const isArray = Array.isArray(item);
   return (!isArray && item !== '') || item.length > 0;
@@ -42,14 +67,21 @@ function BorderedItem(props) {
   } else if (typeof value === 'object') {
     value = (
       <ul className="list-unstyled p-0 m-0">
-        { Object.entries(props.value).map(([k, v]) => <li key={ k }>{ k } { v }</li>) }
+        { Object.entries(props.value).map(([k, v]) => (
+          <li key={ k }>
+            <span className="subheading-key">{ KEY_NAMES[k] || k }</span>
+            { v }
+          </li>
+        )) }
       </ul>
     )
   }
 
+  const keyName = KEY_NAMES[props.keyName] || props.keyName;
+
   return (
     <div className={ "row dashed-border" }>
-      <div className="col px-0 font-weight-bold char-label">{ props.keyName }</div>
+      <div className="col px-0 font-weight-bold char-label">{ keyName }</div>
       <div className="col px-0 char-value">{ value }</div>
     </div>
   );
@@ -197,6 +229,37 @@ function SideBarSectionTable(props) {
   );
 }
 
+const KEY_NAMES = {
+  // description
+  plants: 'Plants',
+  leaves: 'Leaves',
+  inflorescences: 'Inflorescences',
+  flowers: 'Flowers',
+  fruits: 'Fruits',
+  seeds: 'Seeds',
+
+  // context
+  family: 'Family',
+  status: 'Status',
+  ecoregion: 'Ecoregion',
+  counties: 'OR Counties',
+  habitat: 'Habitat',
+  elevation: 'Elevation',
+  floweringTime: 'Flowering time',
+
+  // context status sub-keys
+  ranking: 'Ranking',
+  federal: 'Federal',
+  state: 'State',
+  orbic: 'ORBIC',
+
+  // survey & manage
+  bestSurveyStatus: 'Best survey status',
+  bestSurveyTime: 'Best survey time',
+  threats: 'Threats',
+  management: 'Management',
+};
+
 const dummyData = {
   vernacularNames: ['Pale larkspur'],
   sciName: 'Delphinium leucophaeum',
@@ -235,12 +298,12 @@ const dummyData = {
     'etc.',
   ],
   description: {
-    plants: '3-6 dm tall, root fleshy, tuberous.<br /><br />Stems usually single, slender, or rarely thickened, easily detached from tuber, puberulent.',
+    plants: '3-6 dm tall, root fleshy, tuberous.<br />Stems usually single, slender, or rarely thickened, easily detached from tuber, puberulent.',
     leaves: 'principally cauline, the lower ones withered by flowering time, blades glabrous or puberulent, 2-7 cm wide, 1-3 times dissected, ultimate segments linear to oblanceolate or broadly elliptic, margins smooth.',
     inflorescences: 'simple of with several axillary branches below the terminal raceme, 1-20 flowers per stem and branch, pedicels 3/4-6 times the length of calyx spur, erect to spreading, puberulent.',
     flowers: 'sepals light yellow or white with bluish tips, spreading, 8-15 mm long, spur 9-11 mm. Lower petals white, 4-6 mm, emarginate or cleft up to 1 mm.',
     fruits: 'follicles erect, 10-15 mm, glabrous or puberulent.',
-    seeds: 'wing-margined.<br /><br />2n = 16.<br /><br />River bluffs, cliffs, talus, rocky slopes and meadows, roadsides, low elevations. WV. WA. Native.',
+    seeds: 'wing-margined.<br />2n = 16.<br />River bluffs, cliffs, talus, rocky slopes and meadows, roadsides, low elevations. WV. WA. Native.',
   },
   habitatNotes: '<i>Delphinium leucophaeum</i> grows on the edges of oak woodlands, often associated with rocky, gravelly areas such as roadside ditches, rocky slopes, where materials accumulate from landslides or other erosion activities, and lowland meadows. Plants are observed in shallow soils high in organic matter and sand. Occurrences encompass a gradient of slopes and exposures, from flat areas to steep slopes, in full sun to relatively depp shade. Oregon\'s populations are restricted to the northern Willamette Valley in Clackamas, Marion, Multnomah, and Washington Counties. Further north, a small disjunct population can be found in Lewis County, Washington.',
   ecologyNotes: '<i>Delphinium leucophaeum</i> grows on the edges of oak woodlands, often associated with rocky, gravelly areas such as roadside ditches, rocky slopes, where materials accumulate from landslides or other erosion activities, and lowland meadows. Plants are observed in shallow soils high in organic matter and sand. Occurrences encompass a gradient of slopes and exposures, from flat areas to steep slopes, in full sun to relatively depp shade. Oregon\'s populations are restricted to the northern Willamette Valley in Clackamas, Marion, Multnomah, and Washington Counties. Further north, a small disjunct population can be found in Lewis County, Washington.',
@@ -283,14 +346,15 @@ function TaxaRareApp(props) {
           let url = new URL(window.location);
 					let parentQueryParams = new URLSearchParams(url.search);
 					parentQueryParams.set('taxon',res.parentTid);
-          // TODO(eric): should this be index.php instead of rare.php?
-          // should this be here at all?
-					let parentUrl = window.location.pathname + '?' + parentQueryParams.toString();
+          // TODO(eric) should this be here at all?
+					let parentUrl = 'index.php?' + parentQueryParams.toString();
 
+          // TODO(eric) ask if this will ever be nonnull and what to link to if so --
+          // index.php#subspecies perhaps?
 					let childUrl = '';
-					if (res.spp.length) {
-						childUrl = "#subspecies";
-					}
+					// if (res.spp.length) {
+					// 	childUrl = "#subspecies";
+					// }
 
 					setRelatedArr([res.sciname,parentUrl,childUrl]);
 
@@ -500,23 +564,23 @@ function TaxaRareApp(props) {
                 It's dangerous to pull/render arbitrary HTML w/ react, so just render the
                 plain text & remove any HTML in it.
               */}
-              <span className="taxa-prose-section-title">Habitat & distribution</span>{ stripHtml(data.habitatNotes) }
+              <span className="taxa-prose-section-title">Habitat & distribution</span>{ renderBasicHtml(data.habitatNotes) }
             </p>
             <p>
-              <span className="taxa-prose-section-title">Ecology, natural history & pollinator biology</span>{ stripHtml(data.ecologyNotes) }
+              <span className="taxa-prose-section-title">Ecology, natural history & pollinator biology</span>{ renderBasicHtml(data.ecologyNotes) }
             </p>
             <p>
-              <span className="taxa-prose-section-title">Trends & conservation</span>{ stripHtml(data.conservationNotes) }
+              <span className="taxa-prose-section-title">Trends & conservation</span>{ renderBasicHtml(data.conservationNotes) }
             </p>
 
             <h2>Taxon description</h2>
             {Object.entries(data.description).map(([key, value]) => (
-              <p key={key}><span className="taxa-prose-section-title">{key}</span>{ stripHtml(value) }</p>
+              <p key={key}><span className="taxa-prose-section-title">{KEY_NAMES[key] || key}</span>{ renderBasicHtml(value) }</p>
             ))}
 
             <h2>Relevant literature</h2>
             {data.literature.map((entry, index) => (
-              <p key={`literature-${index}`}>{entry}</p>
+              <p key={`literature-${index}`}>{renderBasicHtml(entry)}</p>
             ))}
           </div>
         </div>
