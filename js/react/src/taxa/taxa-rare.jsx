@@ -129,36 +129,44 @@ function RelatedBorderedItem(props) {
 }
 
 function MapItem(props) {
-
 	let mapImage = null;
 	mapImage = `${props.clientRoot}/images/maps/${props.tid}.jpg`;
 	// /map/googlemap.php?maptype=taxa&taxon=6076&clid=0
 	//let mapLink = `${props.clientRoot}/map/googlemap.php?maptype=taxa&clid=0&taxon=${props.tid}`;
 	let mapLink = `${props.clientRoot}/collections/map/googlemap.php?usethes=1&taxa=${props.tid}&minClusterSetting=10&gridSizeSetting=30`;
 
+  const mapComponent = (
+    <img
+      src={mapImage}
+      alt={props.title}
+    />
+  );
+
   return (
   	<div className={ "sidebar-section mb-5 distribution" }>
     	<h3 className="text-light-green font-weight-bold mb-3">Distribution</h3>
     	<div className={ "dashed-border pt-0" }>
-    		<a
-    			className="map-link"
-    			onClick={ () => window.open(mapLink) }
-    		>{/*
-    			onClick={ () => window.open(mapLink,'gmap','toolbar=1,scrollbars=1,width=950,height=700,left=20,top=20') } */}
-      		<img
-						src={mapImage}
-						alt={props.title}
-					/>
-				</a>
+        {props.needsPermission ?
+          mapComponent :
+          <a
+            className="map-link"
+            onClick={ () => window.open(mapLink) }
+          >{/*
+            onClick={ () => window.open(mapLink,'gmap','toolbar=1,scrollbars=1,width=950,height=700,left=20,top=20') } */}
+            {mapComponent}
+          </a>
+        }
 			</div>
     	<div className={ "map-label text-right" }>
-    		<a
-    			className="map-link"
-    			onClick={ () => window.open(mapLink) }
-    		>	{/*
-    			onClick={ () => window.open(mapLink,'gmap','toolbar=1,scrollbars=1,width=950,height=700,left=20,top=20') } */}
-      		Click/tap to launch
-				</a>
+        {!props.needsPermission &&
+          <a
+            className="map-link"
+            onClick={ () => window.open(mapLink) }
+          >	{/*
+            onClick={ () => window.open(mapLink,'gmap','toolbar=1,scrollbars=1,width=950,height=700,left=20,top=20') } */}
+            Click/tap to launch
+          </a>
+        }
 			</div>
     </div>
   );
@@ -482,6 +490,7 @@ function TaxaRareApp(props) {
   }
 
   const data = dummyData;
+  const needsPermission = true;
 
   const titleElement = document.getElementsByTagName("title")[0];
   const pageTitle = `${props.defaultTitle} ${data.sciName}`
@@ -597,7 +606,7 @@ function TaxaRareApp(props) {
         </ImageModal>
         <div className="col-md-4 sidebar-section">
           <SideBarSection title="Context" items={{ "Related": relatedArr, ...data.context }} rankId={ data.rankId } />
-          <MapItem title={ data.sciName } tid={ tid } clientRoot={ props.clientRoot } />
+          <MapItem title={ data.sciName } tid={ tid } clientRoot={ props.clientRoot } needsPermission={ needsPermission } />
           <SideBarSection title="Survey & Manage" items={ data.surveyManage } />
           <SideBarSectionTable title="Look-Alikes" items={ data.lookalikes } />
           <SideBarSectionList title="Associated species" items={ data.associatedSpecies } />
