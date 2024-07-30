@@ -1,0 +1,777 @@
+{
+  "clid": 54,
+  "pid": 3,
+  "dynclid": -1,
+  "projName": "",
+  "title": "Grow Natives Complete Collection",
+  "intro": "",
+  "iconUrl": "",
+  "authors": "",
+  "abstract": "",
+  "taxa": [
+    {
+      "tid": 8027,
+      "family": "Alismataceae",
+      "sciname": "Sagittaria latifolia",
+      "parenttid": 1385,
+      "author": "Willd.",
+      "imgid": 23769515,
+      "vernacular": {
+        "basename": "wapato",
+        "names": ["wapato", "broadleaf arrowhead", "duck potato"]
+      },
+      "image": "/imglib/OF_FP/201905/DIG21964_1558125747_tn.jpg"
+    },
+    {
+      "tid": 5429,
+      "family": "Amaranthaceae",
+      "sciname": "Grayia spinosa",
+      "parenttid": 861,
+      "author": "(Hook.) Moq.",
+      "imgid": 23759534,
+      "vernacular": { "basename": "hopsage", "names": ["hopsage"] },
+      "image": "/imglib/_OFPFP/201704/GRA_SPI_0354B_1492399124_tn.jpg"
+    },
+    {
+      "tid": 5891,
+      "family": "Amaranthaceae",
+      "sciname": "Krascheninnikovia lanata",
+      "parenttid": 980,
+      "author": "(Pursh) A. Meeuse & A. Smit",
+      "imgid": 23783255,
+      "vernacular": {
+        "basename": "winter fat",
+        "names": ["winter fat", "winter sage"]
+      },
+      "image": "/imglib/_OFPFP/201704/DIG32266_1492398400_tn.jpg"
+    },
+    {
+      "tid": 2599,
+      "family": "Amaryllidaceae",
+      "sciname": "Allium acuminatum",
+      "parenttid": 374,
+      "author": "Hook.",
+      "imgid": 23759517,
+      "vernacular": {
+        "basename": "onion",
+        "names": ["tapertip onion", "Hooker's onion"]
+      },
+      "image": "/imglib/OF_FP/201905/ALL_ACU_2909B_1558125725_tn.jpg"
+    },
+    {
+      "tid": 2601,
+      "family": "Amaryllidaceae",
+      "sciname": "Allium amplectens",
+      "parenttid": 374,
+      "author": "Torr.",
+      "imgid": 23751736,
+      "vernacular": { "basename": "onion", "names": ["slim-leaf onion"] },
+      "image": "/imglib/OF_FP/201905/DIG11308_1558125052_tn.jpg"
+    },
+    {
+      "tid": 2609,
+      "family": "Amaryllidaceae",
+      "sciname": "Allium cernuum",
+      "parenttid": 374,
+      "author": "Roth",
+      "imgid": 23785896,
+      "vernacular": { "basename": "onion", "names": ["nodding onion"] },
+      "image": "/imglib/OF_FP/201905/DIG34602_1558125717_tn.jpg"
+    },
+    {
+      "tid": 2635,
+      "family": "Amaryllidaceae",
+      "sciname": "Allium tolmiei",
+      "parenttid": 374,
+      "author": "Baker",
+      "imgid": 26968443,
+      "vernacular": { "basename": "onion", "names": ["Tolmie's onion"] },
+      "image": "/imglib/_OFPFP/201704/15DIG23075_1492399746_tn.jpg"
+    },
+    {
+      "tid": 7853,
+      "family": "Anacardiaceae",
+      "sciname": "Rhus aromatica",
+      "parenttid": 1363,
+      "author": "Aiton",
+      "imgid": 23789886,
+      "vernacular": {
+        "basename": "skunkbush",
+        "names": ["fragrant sumac", "aromatic sumac", "skunkbush"]
+      },
+      "image": "/imglib/_OFPFP/201704/DIG39425_1492398452_tn.jpg"
+    },
+    {
+      "tid": 7855,
+      "family": "Anacardiaceae",
+      "sciname": "Rhus glabra",
+      "parenttid": 1363,
+      "author": "L.",
+      "imgid": 23779911,
+      "vernacular": { "basename": "sumac", "names": ["smooth sumac"] },
+      "image": "/imglib/OF_FP/201905/DIG28952_1558125716_tn.jpg"
+    },
+    {
+      "tid": 5547,
+      "family": "Apiaceae",
+      "sciname": "Heracleum maximum",
+      "parenttid": 894,
+      "author": "W. Bartram",
+      "imgid": 23747379,
+      "vernacular": {
+        "basename": "cow parsnip",
+        "names": ["common cow parsnip"]
+      },
+      "image": "/imglib/OF_FP/201905/HER_LAN_4239B_1558124913_tn.jpg"
+    },
+    {
+      "tid": 6211,
+      "family": "Apiaceae",
+      "sciname": "Lomatium macrocarpum",
+      "parenttid": 1051,
+      "author": "(Torr. & A. Gray) J.M. Coult. & Rose",
+      "imgid": 23780696,
+      "vernacular": {
+        "basename": "lomatium",
+        "names": ["large-fruited desert parsley", "bigseed lomatium"]
+      },
+      "image": "/imglib/_OFPFP/201704/DIG29723_1492398386_tn.jpg"
+    },
+    {
+      "tid": 6217,
+      "family": "Apiaceae",
+      "sciname": "Lomatium nudicaule",
+      "parenttid": 1051,
+      "author": "(Pursh) J.M. Coult. & Rose",
+      "imgid": 23747506,
+      "vernacular": {
+        "basename": "biscuitroot",
+        "names": ["barestem lomatium", "barestem biscuitroot"]
+      },
+      "image": "/imglib/_OFPFP/201704/LOM_NUD_3717B_1492398508_tn.jpg"
+    }
+  ],
+  "tids": [
+    8027, 5429, 5891, 2599, 2601, 2609, 2635, 7853, 7855, 5547, 6211, 6217
+  ],
+  "characteristics": [
+    {
+      "hid": 1,
+      "headingname": "Plant Needs",
+      "subheading": "",
+      "characters": [
+        {
+          "charname": "Sunlight",
+          "cid": 680,
+          "display": "select",
+          "units": "",
+          "states": [
+            { "cid": 680, "charstatename": "Sun", "cs": 1, "numval": 0 },
+            { "cid": 680, "charstatename": "Part-Shade", "cs": 2, "numval": 0 },
+            { "cid": 680, "charstatename": "Full-Shade", "cs": 3, "numval": 0 }
+          ]
+        },
+        {
+          "charname": "Moisture",
+          "cid": 683,
+          "display": "select",
+          "units": "",
+          "states": [
+            { "cid": 683, "charstatename": "Dry", "cs": 1, "numval": 0 },
+            { "cid": 683, "charstatename": "Moderate", "cs": 2, "numval": 0 },
+            { "cid": 683, "charstatename": "Wet", "cs": 3, "numval": 0 }
+          ]
+        }
+      ]
+    },
+    {
+      "hid": 2,
+      "headingname": "Mature Size",
+      "subheading": "(Just grab the slider handles)",
+      "characters": [
+        {
+          "charname": "Height",
+          "cid": 140,
+          "display": "slider",
+          "units": "ft",
+          "states": [
+            { "cid": 140, "charstatename": 0, "cs": 1, "numval": 0 },
+            { "cid": 140, "charstatename": 1, "cs": 2, "numval": 1 },
+            { "cid": 140, "charstatename": 2, "cs": 3, "numval": 2 },
+            { "cid": 140, "charstatename": 3, "cs": 4, "numval": 3 },
+            { "cid": 140, "charstatename": 4, "cs": 5, "numval": 4 },
+            { "cid": 140, "charstatename": 5, "cs": 6, "numval": 5 },
+            { "cid": 140, "charstatename": 6, "cs": 7, "numval": 6 },
+            { "cid": 140, "charstatename": 7, "cs": 8, "numval": 7 },
+            { "cid": 140, "charstatename": 8, "cs": 9, "numval": 8 },
+            { "cid": 140, "charstatename": 9, "cs": 10, "numval": 9 },
+            { "cid": 140, "charstatename": 10, "cs": 11, "numval": 10 },
+            { "cid": 140, "charstatename": 11, "cs": 12, "numval": 11 },
+            { "cid": 140, "charstatename": 12, "cs": 13, "numval": 12 },
+            { "cid": 140, "charstatename": 13, "cs": 14, "numval": 13 },
+            { "cid": 140, "charstatename": 14, "cs": 15, "numval": 14 },
+            { "cid": 140, "charstatename": 15, "cs": 16, "numval": 15 },
+            { "cid": 140, "charstatename": 16, "cs": 17, "numval": 16 },
+            { "cid": 140, "charstatename": 17, "cs": 18, "numval": 17 },
+            { "cid": 140, "charstatename": 18, "cs": 19, "numval": 18 },
+            { "cid": 140, "charstatename": 19, "cs": 20, "numval": 19 },
+            { "cid": 140, "charstatename": 20, "cs": 21, "numval": 20 },
+            { "cid": 140, "charstatename": 21, "cs": 22, "numval": 21 },
+            { "cid": 140, "charstatename": 22, "cs": 23, "numval": 22 },
+            { "cid": 140, "charstatename": 23, "cs": 24, "numval": 23 },
+            { "cid": 140, "charstatename": 24, "cs": 25, "numval": 24 },
+            { "cid": 140, "charstatename": 25, "cs": 26, "numval": 25 },
+            { "cid": 140, "charstatename": 26, "cs": 27, "numval": 26 },
+            { "cid": 140, "charstatename": 27, "cs": 28, "numval": 27 },
+            { "cid": 140, "charstatename": 28, "cs": 29, "numval": 28 },
+            { "cid": 140, "charstatename": 29, "cs": 30, "numval": 29 },
+            { "cid": 140, "charstatename": 30, "cs": 31, "numval": 30 },
+            { "cid": 140, "charstatename": 31, "cs": 32, "numval": 31 },
+            { "cid": 140, "charstatename": 32, "cs": 33, "numval": 32 },
+            { "cid": 140, "charstatename": 33, "cs": 34, "numval": 33 },
+            { "cid": 140, "charstatename": 34, "cs": 35, "numval": 34 },
+            { "cid": 140, "charstatename": 35, "cs": 36, "numval": 35 },
+            { "cid": 140, "charstatename": 36, "cs": 37, "numval": 36 },
+            { "cid": 140, "charstatename": 37, "cs": 38, "numval": 37 },
+            { "cid": 140, "charstatename": 38, "cs": 39, "numval": 38 },
+            { "cid": 140, "charstatename": 39, "cs": 40, "numval": 39 },
+            { "cid": 140, "charstatename": 40, "cs": 41, "numval": 40 },
+            { "cid": 140, "charstatename": 41, "cs": 42, "numval": 41 },
+            { "cid": 140, "charstatename": 42, "cs": 43, "numval": 42 },
+            { "cid": 140, "charstatename": 43, "cs": 44, "numval": 43 },
+            { "cid": 140, "charstatename": 44, "cs": 45, "numval": 44 },
+            { "cid": 140, "charstatename": 45, "cs": 46, "numval": 45 },
+            { "cid": 140, "charstatename": 46, "cs": 47, "numval": 46 },
+            { "cid": 140, "charstatename": 47, "cs": 48, "numval": 47 },
+            { "cid": 140, "charstatename": 48, "cs": 49, "numval": 48 },
+            { "cid": 140, "charstatename": 49, "cs": 50, "numval": 49 },
+            { "cid": 140, "charstatename": "50+", "cs": 51, "numval": 50 }
+          ]
+        },
+        {
+          "charname": "Width",
+          "cid": 738,
+          "display": "slider",
+          "units": "ft",
+          "states": [
+            { "cid": 738, "charstatename": 0, "cs": 1, "numval": 0 },
+            { "cid": 738, "charstatename": 1, "cs": 2, "numval": 1 },
+            { "cid": 738, "charstatename": 2, "cs": 3, "numval": 2 },
+            { "cid": 738, "charstatename": 3, "cs": 4, "numval": 3 },
+            { "cid": 738, "charstatename": 4, "cs": 5, "numval": 4 },
+            { "cid": 738, "charstatename": 5, "cs": 6, "numval": 5 },
+            { "cid": 738, "charstatename": 6, "cs": 7, "numval": 6 },
+            { "cid": 738, "charstatename": 7, "cs": 8, "numval": 7 },
+            { "cid": 738, "charstatename": 8, "cs": 9, "numval": 8 },
+            { "cid": 738, "charstatename": 9, "cs": 10, "numval": 9 },
+            { "cid": 738, "charstatename": 10, "cs": 11, "numval": 10 },
+            { "cid": 738, "charstatename": 11, "cs": 12, "numval": 11 },
+            { "cid": 738, "charstatename": 12, "cs": 13, "numval": 12 },
+            { "cid": 738, "charstatename": 13, "cs": 14, "numval": 13 },
+            { "cid": 738, "charstatename": 14, "cs": 15, "numval": 14 },
+            { "cid": 738, "charstatename": 15, "cs": 16, "numval": 15 },
+            { "cid": 738, "charstatename": 16, "cs": 17, "numval": 16 },
+            { "cid": 738, "charstatename": 17, "cs": 18, "numval": 17 },
+            { "cid": 738, "charstatename": 18, "cs": 19, "numval": 18 },
+            { "cid": 738, "charstatename": 19, "cs": 20, "numval": 19 },
+            { "cid": 738, "charstatename": 20, "cs": 21, "numval": 20 },
+            { "cid": 738, "charstatename": 21, "cs": 22, "numval": 21 },
+            { "cid": 738, "charstatename": 22, "cs": 23, "numval": 22 },
+            { "cid": 738, "charstatename": 23, "cs": 24, "numval": 23 },
+            { "cid": 738, "charstatename": 24, "cs": 25, "numval": 24 },
+            { "cid": 738, "charstatename": 25, "cs": 26, "numval": 25 },
+            { "cid": 738, "charstatename": 26, "cs": 27, "numval": 26 },
+            { "cid": 738, "charstatename": 27, "cs": 28, "numval": 27 },
+            { "cid": 738, "charstatename": 28, "cs": 29, "numval": 28 },
+            { "cid": 738, "charstatename": 29, "cs": 30, "numval": 29 },
+            { "cid": 738, "charstatename": 30, "cs": 31, "numval": 30 },
+            { "cid": 738, "charstatename": 31, "cs": 32, "numval": 31 },
+            { "cid": 738, "charstatename": 32, "cs": 33, "numval": 32 },
+            { "cid": 738, "charstatename": 33, "cs": 34, "numval": 33 },
+            { "cid": 738, "charstatename": 34, "cs": 35, "numval": 34 },
+            { "cid": 738, "charstatename": 35, "cs": 36, "numval": 35 },
+            { "cid": 738, "charstatename": 36, "cs": 37, "numval": 36 },
+            { "cid": 738, "charstatename": 37, "cs": 38, "numval": 37 },
+            { "cid": 738, "charstatename": 38, "cs": 39, "numval": 38 },
+            { "cid": 738, "charstatename": 39, "cs": 40, "numval": 39 },
+            { "cid": 738, "charstatename": 40, "cs": 41, "numval": 40 },
+            { "cid": 738, "charstatename": 41, "cs": 42, "numval": 41 },
+            { "cid": 738, "charstatename": 42, "cs": 43, "numval": 42 },
+            { "cid": 738, "charstatename": 43, "cs": 44, "numval": 43 },
+            { "cid": 738, "charstatename": 44, "cs": 45, "numval": 44 },
+            { "cid": 738, "charstatename": 45, "cs": 46, "numval": 45 },
+            { "cid": 738, "charstatename": 46, "cs": 47, "numval": 46 },
+            { "cid": 738, "charstatename": 47, "cs": 48, "numval": 47 },
+            { "cid": 738, "charstatename": 48, "cs": 49, "numval": 48 },
+            { "cid": 738, "charstatename": 49, "cs": 50, "numval": 49 },
+            { "cid": 738, "charstatename": 50, "cs": 51, "numval": 50 },
+            { "cid": 738, "charstatename": 51, "cs": 52, "numval": 51 },
+            { "cid": 738, "charstatename": 52, "cs": 53, "numval": 52 },
+            { "cid": 738, "charstatename": 53, "cs": 54, "numval": 53 },
+            { "cid": 738, "charstatename": 54, "cs": 55, "numval": 54 },
+            { "cid": 738, "charstatename": 55, "cs": 56, "numval": 55 },
+            { "cid": 738, "charstatename": 56, "cs": 57, "numval": 56 },
+            { "cid": 738, "charstatename": 57, "cs": 58, "numval": 57 },
+            { "cid": 738, "charstatename": 58, "cs": 59, "numval": 58 },
+            { "cid": 738, "charstatename": 59, "cs": 60, "numval": 59 },
+            { "cid": 738, "charstatename": 60, "cs": 61, "numval": 60 },
+            { "cid": 738, "charstatename": 61, "cs": 62, "numval": 61 },
+            { "cid": 738, "charstatename": 62, "cs": 63, "numval": 62 },
+            { "cid": 738, "charstatename": 63, "cs": 64, "numval": 63 },
+            { "cid": 738, "charstatename": 64, "cs": 65, "numval": 64 },
+            { "cid": 738, "charstatename": 65, "cs": 66, "numval": 65 },
+            { "cid": 738, "charstatename": 66, "cs": 67, "numval": 66 },
+            { "cid": 738, "charstatename": 67, "cs": 68, "numval": 67 },
+            { "cid": 738, "charstatename": 68, "cs": 69, "numval": 68 },
+            { "cid": 738, "charstatename": 69, "cs": 70, "numval": 69 },
+            { "cid": 738, "charstatename": 70, "cs": 71, "numval": 70 },
+            { "cid": 738, "charstatename": 71, "cs": 72, "numval": 71 },
+            { "cid": 738, "charstatename": 72, "cs": 73, "numval": 72 },
+            { "cid": 738, "charstatename": 73, "cs": 74, "numval": 73 },
+            { "cid": 738, "charstatename": 74, "cs": 75, "numval": 74 },
+            { "cid": 738, "charstatename": 75, "cs": 76, "numval": 75 },
+            { "cid": 738, "charstatename": 76, "cs": 77, "numval": 76 },
+            { "cid": 738, "charstatename": 77, "cs": 78, "numval": 77 },
+            { "cid": 738, "charstatename": 78, "cs": 79, "numval": 78 },
+            { "cid": 738, "charstatename": 79, "cs": 80, "numval": 79 },
+            { "cid": 738, "charstatename": 80, "cs": 81, "numval": 80 }
+          ]
+        }
+      ]
+    },
+    {
+      "hid": 3,
+      "headingname": "Plant Features",
+      "subheading": "",
+      "characters": [
+        {
+          "charname": "flower color",
+          "cid": 612,
+          "display": "",
+          "units": "",
+          "states": [
+            { "cid": 612, "charstatename": "white", "cs": 5, "numval": 0 },
+            { "cid": 612, "charstatename": "pink", "cs": 9, "numval": 0 },
+            { "cid": 612, "charstatename": "red", "cs": 2, "numval": 0 },
+            { "cid": 612, "charstatename": "orange", "cs": 7, "numval": 0 },
+            { "cid": 612, "charstatename": "yellow", "cs": 10, "numval": 0 },
+            { "cid": 612, "charstatename": "green", "cs": 1, "numval": 0 },
+            { "cid": 612, "charstatename": "blue", "cs": 8, "numval": 0 },
+            { "cid": 612, "charstatename": "purple", "cs": 4, "numval": 0 },
+            {
+              "cid": 612,
+              "charstatename": "flowers diminutive",
+              "cs": 11,
+              "numval": 0
+            }
+          ]
+        },
+        {
+          "charname": "bloom months",
+          "cid": 165,
+          "display": "",
+          "units": "",
+          "states": [
+            { "cid": 165, "charstatename": "January", "cs": 1, "numval": 0 },
+            { "cid": 165, "charstatename": "February", "cs": 2, "numval": 0 },
+            { "cid": 165, "charstatename": "March", "cs": 3, "numval": 0 },
+            { "cid": 165, "charstatename": "April", "cs": 4, "numval": 0 },
+            { "cid": 165, "charstatename": "May", "cs": 5, "numval": 0 },
+            { "cid": 165, "charstatename": "June", "cs": 6, "numval": 0 },
+            { "cid": 165, "charstatename": "July", "cs": 7, "numval": 0 },
+            { "cid": 165, "charstatename": "August", "cs": 8, "numval": 0 },
+            { "cid": 165, "charstatename": "September", "cs": 9, "numval": 0 },
+            { "cid": 165, "charstatename": "October", "cs": 10, "numval": 0 },
+            { "cid": 165, "charstatename": "November", "cs": 11, "numval": 0 },
+            { "cid": 165, "charstatename": "December", "cs": 12, "numval": 0 }
+          ]
+        },
+        {
+          "charname": "wildlife support",
+          "cid": 685,
+          "display": "",
+          "units": "",
+          "states": [
+            {
+              "cid": 685,
+              "charstatename": "bees and other insect pollinators",
+              "cs": 2,
+              "numval": 0
+            },
+            {
+              "cid": 685,
+              "charstatename": "beneficial insects/pest eating insects",
+              "cs": 3,
+              "numval": 0
+            },
+            {
+              "cid": 685,
+              "charstatename": "adult butterflies/nectar source",
+              "cs": 1,
+              "numval": 0
+            },
+            {
+              "cid": 685,
+              "charstatename": "caterpillar host plant/larval food source",
+              "cs": 5,
+              "numval": 0
+            },
+            {
+              "cid": 685,
+              "charstatename": "hummingbirds",
+              "cs": 6,
+              "numval": 0
+            }
+          ]
+        },
+        {
+          "charname": "lifespan",
+          "cid": 136,
+          "display": "",
+          "units": "",
+          "states": [
+            { "cid": 136, "charstatename": "annual", "cs": 1, "numval": 0 },
+            { "cid": 136, "charstatename": "biennial", "cs": 2, "numval": 0 },
+            { "cid": 136, "charstatename": "perennial", "cs": 3, "numval": 0 }
+          ]
+        },
+        {
+          "charname": "foliage type",
+          "cid": 100,
+          "display": "",
+          "units": "",
+          "states": [
+            { "cid": 100, "charstatename": "deciduous", "cs": 1, "numval": 0 },
+            { "cid": 100, "charstatename": "evergreen", "cs": 2, "numval": 0 }
+          ]
+        },
+        {
+          "charname": "plant type",
+          "cid": 137,
+          "display": "",
+          "units": "",
+          "states": [
+            {
+              "cid": 137,
+              "charstatename": "fern or fern ally",
+              "cs": 5,
+              "numval": 0
+            },
+            {
+              "cid": 137,
+              "charstatename": "grass or grass-like",
+              "cs": 4,
+              "numval": 0
+            },
+            { "cid": 137, "charstatename": "herb", "cs": 1, "numval": 0 },
+            { "cid": 137, "charstatename": "shrub", "cs": 2, "numval": 0 },
+            { "cid": 137, "charstatename": "tree", "cs": 3, "numval": 0 },
+            { "cid": 137, "charstatename": "vine", "cs": 6, "numval": 0 }
+          ]
+        }
+      ]
+    },
+    {
+      "hid": 4,
+      "headingname": "Growth & Maintenance",
+      "subheading": "",
+      "characters": [
+        {
+          "charname": "landscape uses",
+          "cid": 679,
+          "display": "",
+          "units": "",
+          "states": [
+            {
+              "cid": 679,
+              "charstatename": "clump/tuft-forming",
+              "cs": 1,
+              "numval": 0
+            },
+            {
+              "cid": 679,
+              "charstatename": "erosion control",
+              "cs": 2,
+              "numval": 0
+            },
+            { "cid": 679, "charstatename": "grazing", "cs": 8, "numval": 0 },
+            { "cid": 679, "charstatename": "green roof", "cs": 9, "numval": 0 },
+            {
+              "cid": 679,
+              "charstatename": "groundcover",
+              "cs": 3,
+              "numval": 0
+            },
+            { "cid": 679, "charstatename": "hedgerow", "cs": 4, "numval": 0 },
+            {
+              "cid": 679,
+              "charstatename": "rangeland revegetation",
+              "cs": 10,
+              "numval": 0
+            },
+            { "cid": 679, "charstatename": "screen", "cs": 5, "numval": 0 },
+            {
+              "cid": 679,
+              "charstatename": "thicket-forming",
+              "cs": 6,
+              "numval": 0
+            },
+            { "cid": 679, "charstatename": "windbreak", "cs": 7, "numval": 0 }
+          ]
+        },
+        {
+          "charname": "cultivation preferences",
+          "cid": 767,
+          "display": "",
+          "units": "",
+          "states": [
+            {
+              "cid": 767,
+              "charstatename": "drought tolerant",
+              "cs": 2,
+              "numval": 0
+            },
+            {
+              "cid": 767,
+              "charstatename": "moist soils",
+              "cs": 5,
+              "numval": 0
+            },
+            {
+              "cid": 767,
+              "charstatename": "tolerates constant flooding",
+              "cs": 6,
+              "numval": 0
+            },
+            {
+              "cid": 767,
+              "charstatename": "tolerates seasonal wet",
+              "cs": 7,
+              "numval": 0
+            },
+            {
+              "cid": 767,
+              "charstatename": "well-drained",
+              "cs": 8,
+              "numval": 0
+            }
+          ]
+        },
+        {
+          "charname": "behavior",
+          "cid": 688,
+          "display": "",
+          "units": "",
+          "states": [
+            {
+              "cid": 688,
+              "charstatename": "bulb or bulb-like structures",
+              "cs": 1,
+              "numval": 0
+            },
+            {
+              "cid": 688,
+              "charstatename": "runners (rhizomes, stolons, etc.)",
+              "cs": 2,
+              "numval": 0
+            },
+            { "cid": 688, "charstatename": "seed", "cs": 3, "numval": 0 },
+            { "cid": 688, "charstatename": "spores", "cs": 4, "numval": 0 }
+          ]
+        },
+        {
+          "charname": "propagation",
+          "cid": 740,
+          "display": "",
+          "units": "",
+          "states": [
+            {
+              "cid": 740,
+              "charstatename": "direct- or self-seed",
+              "cs": 3,
+              "numval": 0
+            },
+            {
+              "cid": 740,
+              "charstatename": "seed with stratification",
+              "cs": 5,
+              "numval": 0
+            },
+            {
+              "cid": 740,
+              "charstatename": "seed with scarification",
+              "cs": 7,
+              "numval": 0
+            },
+            {
+              "cid": 740,
+              "charstatename": "seed with both scarification and stratification",
+              "cs": 4,
+              "numval": 0
+            },
+            {
+              "cid": 740,
+              "charstatename": "division/separation",
+              "cs": 2,
+              "numval": 0
+            },
+            { "cid": 740, "charstatename": "cuttings", "cs": 1, "numval": 0 },
+            { "cid": 740, "charstatename": "spores", "cs": 6, "numval": 0 }
+          ]
+        },
+        {
+          "charname": "ease of growth",
+          "cid": 684,
+          "display": "",
+          "units": "",
+          "states": [
+            { "cid": 684, "charstatename": "easy", "cs": 1, "numval": 0 },
+            { "cid": 684, "charstatename": "moderate", "cs": 2, "numval": 0 },
+            { "cid": 684, "charstatename": "hard", "cs": 3, "numval": 0 }
+          ]
+        }
+      ]
+    },
+    {
+      "hid": 5,
+      "headingname": "Beyond the Garden",
+      "subheading": "",
+      "characters": [
+        {
+          "charname": "ecoregion",
+          "cid": 19,
+          "display": "",
+          "units": "",
+          "states": [
+            {
+              "cid": 19,
+              "charstatename": "Basin and Range",
+              "cs": 1,
+              "numval": 0
+            },
+            {
+              "cid": 19,
+              "charstatename": "Blue and Wallowa Mountains",
+              "cs": 2,
+              "numval": 0
+            },
+            { "cid": 19, "charstatename": "Cascades", "cs": 3, "numval": 0 },
+            { "cid": 19, "charstatename": "Coast Range", "cs": 4, "numval": 0 },
+            {
+              "cid": 19,
+              "charstatename": "Columbia Basin",
+              "cs": 5,
+              "numval": 0
+            },
+            {
+              "cid": 19,
+              "charstatename": "Eastern Cascade Slopes and Foothills",
+              "cs": 6,
+              "numval": 0
+            },
+            {
+              "cid": 19,
+              "charstatename": "Estuarine Coast",
+              "cs": 7,
+              "numval": 0
+            },
+            { "cid": 19, "charstatename": "Lava Plains", "cs": 8, "numval": 0 },
+            {
+              "cid": 19,
+              "charstatename": "Owyhee Uplands",
+              "cs": 9,
+              "numval": 0
+            },
+            {
+              "cid": 19,
+              "charstatename": "Siskiyou Mountains",
+              "cs": 10,
+              "numval": 0
+            },
+            {
+              "cid": 19,
+              "charstatename": "Willamette Valley",
+              "cs": 11,
+              "numval": 0
+            }
+          ]
+        },
+        {
+          "charname": "habitat",
+          "cid": 163,
+          "display": "",
+          "units": "",
+          "states": [
+            { "cid": 163, "charstatename": "alpine", "cs": 1, "numval": 0 },
+            {
+              "cid": 163,
+              "charstatename": "brackish water",
+              "cs": 2,
+              "numval": 0
+            },
+            {
+              "cid": 163,
+              "charstatename": "flowing water",
+              "cs": 3,
+              "numval": 0
+            },
+            { "cid": 163, "charstatename": "forest", "cs": 4, "numval": 0 },
+            {
+              "cid": 163,
+              "charstatename": "freshwater wetlands",
+              "cs": 5,
+              "numval": 0
+            },
+            {
+              "cid": 163,
+              "charstatename": "grassland or meadow",
+              "cs": 6,
+              "numval": 0
+            },
+            {
+              "cid": 163,
+              "charstatename": "oak savannah",
+              "cs": 7,
+              "numval": 0
+            },
+            {
+              "cid": 163,
+              "charstatename": "bare or rock-covered ground",
+              "cs": 8,
+              "numval": 0
+            },
+            { "cid": 163, "charstatename": "saltwater", "cs": 9, "numval": 0 },
+            {
+              "cid": 163,
+              "charstatename": "open sandy ground, dunes, or beach",
+              "cs": 10,
+              "numval": 0
+            },
+            {
+              "cid": 163,
+              "charstatename": "shrub, scrub or chaparral",
+              "cs": 11,
+              "numval": 0
+            },
+            {
+              "cid": 163,
+              "charstatename": "freshwater pond or lake",
+              "cs": 12,
+              "numval": 0
+            },
+            {
+              "cid": 163,
+              "charstatename": "disturbed sites",
+              "cs": 13,
+              "numval": 0
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "lat": 0,
+  "lng": 0,
+  "locality": "",
+  "type": ""
+}

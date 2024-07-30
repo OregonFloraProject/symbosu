@@ -30,6 +30,7 @@ const reactConfig = {
     newsletters: path.join(SRC_DIR, "home", "newsletters.jsx"),
     whatsnew: path.join(SRC_DIR, "home", "whatsnew.jsx"),
     garden: path.join(SRC_DIR, "garden", "main.jsx"),
+    rare: path.join(SRC_DIR, "rare", "main.jsx"),
     inventory: path.join(SRC_DIR, "inventory", "main.jsx"),
     identify: path.join(SRC_DIR, "identify", "identify.jsx"),
     taxa: path.join(SRC_DIR, "taxa", "main.jsx"),
@@ -65,6 +66,7 @@ const lessConfig = {
     header: path.join(SRC_DIR, "less", "header.less"),
     footer: path.join(SRC_DIR, "less", "footer.less"),
     garden: path.join(SRC_DIR, "less", "garden.less"),
+    rare: path.join(SRC_DIR, "less", "rare.less"),
     taxa: path.join(SRC_DIR, "less", "taxa.less"),
     inventory: path.join(SRC_DIR, "less", "inventory.less")
   },
