@@ -129,44 +129,49 @@ function RelatedBorderedItem(props) {
 }
 
 function MapItem(props) {
+  const [showOverlay, setShowOverlay] = useState(false);
+
 	let mapImage = null;
 	mapImage = `${props.clientRoot}/images/maps/${props.tid}.jpg`;
 	// /map/googlemap.php?maptype=taxa&taxon=6076&clid=0
 	//let mapLink = `${props.clientRoot}/map/googlemap.php?maptype=taxa&clid=0&taxon=${props.tid}`;
 	let mapLink = `${props.clientRoot}/collections/map/googlemap.php?usethes=1&taxa=${props.tid}&minClusterSetting=10&gridSizeSetting=30`;
 
-  const mapComponent = (
-    <img
-      src={mapImage}
-      alt={props.title}
-    />
-  );
+  const linkText = props.needsPermission ? 'Locality details restricted to authorized users' : 'Click/tap to launch';
+  const onClickHandler = props.needsPermission ?
+    () => { setShowOverlay(!showOverlay) } :
+    () => window.open(mapLink);
 
   return (
   	<div className={ "sidebar-section mb-5 distribution" }>
     	<h3 className="text-light-green font-weight-bold mb-3">Distribution</h3>
-    	<div className={ "dashed-border pt-0" }>
-        {props.needsPermission ?
-          mapComponent :
-          <a
-            className="map-link"
-            onClick={ () => window.open(mapLink) }
-          >{/*
-            onClick={ () => window.open(mapLink,'gmap','toolbar=1,scrollbars=1,width=950,height=700,left=20,top=20') } */}
-            {mapComponent}
-          </a>
-        }
+      <div className={ "dashed-border pt-0 map-overlay-container" }>
+        <a
+          className="map-link"
+          onClick={onClickHandler}
+        >{/*
+          onClick={ () => window.open(mapLink,'gmap','toolbar=1,scrollbars=1,width=950,height=700,left=20,top=20') } */}
+          <img
+            src={mapImage}
+            alt={props.title}
+          />
+          {/* Conditionally rendering the whole div is causing a weird scrolling issue on page load,
+              so just toggle display: none instead. */}
+          <div className={`map-overlay-box${showOverlay ? '' : ' hidden'}`}>
+            <div className="map-overlay">
+              To protect these precious botanical resources, we (in agreement with the agencies) limit access to detailed locality data to those engaged in research or restoration. Please login to view interactive map. To request consideration for data access, please <a onClick={ () => window.open(`${props.clientRoot}/pages/contact.php`) }>contact us</a>.
+            </div>
+          </div>
+        </a>
 			</div>
     	<div className={ "map-label text-right" }>
-        {!props.needsPermission &&
-          <a
-            className="map-link"
-            onClick={ () => window.open(mapLink) }
-          >	{/*
-            onClick={ () => window.open(mapLink,'gmap','toolbar=1,scrollbars=1,width=950,height=700,left=20,top=20') } */}
-            Click/tap to launch
-          </a>
-        }
+        <a
+          className="map-link"
+          onClick={onClickHandler}
+        >	{/*
+          onClick={ () => window.open(mapLink,'gmap','toolbar=1,scrollbars=1,width=950,height=700,left=20,top=20') } */}
+          {linkText}
+        </a>
 			</div>
     </div>
   );

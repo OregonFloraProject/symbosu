@@ -240,6 +240,35 @@
 		.map-link {
 			cursor: pointer;
 		}
+		.map-overlay-container {
+			position: relative;
+		}
+		.map-overlay-box {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background-color: rgba(0, 0, 0, 0.75);
+		}
+		.map-overlay-box.hidden {
+			display: none;
+		}
+		.map-overlay {
+			position: absolute;
+			top: 50%;
+			padding-left: 2rem;
+			padding-right: 2rem;
+			text-align: center;
+			transform: translateY(-50%);
+			color: white;
+		}
+		.map-overlay a {
+			color: @med-green !important;
+		}
+		.map-overlay a:hover {
+			text-decoration: underline;
+		}
 		&.weblinks {
 
 			li {
