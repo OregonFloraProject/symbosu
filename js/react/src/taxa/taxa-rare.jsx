@@ -98,7 +98,7 @@ function RelatedBorderedItem(props) {
 				<span className="related-label">Related</span>
 				<span className="related-links">
 					{ props.rankId > RANK_FAMILY &&
-							<a href={ props.value[1] }>
+							<a className="related-link" onClick={ () => window.open(props.value[1]) }>
 								<FontAwesomeIcon icon="arrow-circle-up" />
 							</a>
 					}
