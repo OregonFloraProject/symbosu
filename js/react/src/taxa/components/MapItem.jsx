@@ -31,7 +31,7 @@ function MapItem(props) {
               so just toggle display: none instead. */}
           <div className={`map-overlay-box${showOverlay ? '' : ' hidden'}`}>
             <div className="map-overlay">
-              To protect these precious botanical resources, we (in agreement with the agencies) limit access to detailed locality data to those engaged in research or restoration. Please login to view interactive map. To request consideration for data access, please <a onClick={ () => window.open(`${props.clientRoot}/pages/contact.php`) }>contact us</a>.
+              To protect these precious botanical resources, we (in agreement with the agencies) limit access to detailed locality data to those engaged in research or restoration. Please login to view interactive map. To request consideration for data access, please <span className="inner-link" onClick={ () => window.open(`${props.clientRoot}/pages/contact.php`) }>contact us</span>.
             </div>
           </div>
         </a>
