@@ -31,5 +31,8 @@ export function renderBasicHtml(str) {
       elements.push(stripHtml(segment));
     }
   }
-  return elements;
+  // create the React element manually instead of just returning the array, to avoid needing to put
+  // a basically useless (in this case) key on every element in the array
+  // https://github.com/facebook/react/issues/12567#issuecomment-414061454
+  return React.createElement(React.Fragment, {}, ...elements);
 }
