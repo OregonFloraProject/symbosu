@@ -33,6 +33,19 @@ class TaxaManager {
   private static $CID_HABITAT = 163;
   private static $CID_ECOREGION = 19;
 
+  # Survey & manage (rare plant guide)
+  private static $CID_SURVEY_MONTHS = 633;
+  private static $CID_THREATS = 823;
+  private static $CID_MANAGEMENT_ACTIONS = 824;
+
+  # Context (rare plant guide)
+  private static $CID_ELEVATION = 820;
+
+  # Conservation status (rare plant guide)
+  private static $CID_CONSERVATION_FED = 242;
+  private static $CID_CONSERVATION_STATE = 243;
+  private static $CID_CONSERVATION_HERITAGE = 244;
+
 	# from TaxonProfileManager
 	private $langArr = array();
 	
@@ -426,6 +439,17 @@ class TaxaManager {
       "beyond_garden" => [
         "ecoregion" => [],
         "habitat" => []
+      ],
+      "survey_manage" => [
+        "survey_months" => [],
+        "threats" => [],
+        "management" => []
+      ],
+      "elevation" => [],
+      "conservation_status" => [
+        "federal" => null,
+        "state" => null,
+        "heritage" => null
       ]
     ];
   }
@@ -590,6 +614,7 @@ class TaxaManager {
       ->innerJoin("Kmcharacters", "c", "WITH", "d.cid = c.cid")
       ->where("d.tid = :tid");
     $attributeQuery = $attributeQuery
+    #TODO(eric): only include the relevant characteristics per query
       ->andWhere($attributeQuery->expr()->in("d.cid", TaxaManager::getAllCids()))
       ->setParameter("tid", $tid);
 
@@ -658,6 +683,27 @@ class TaxaManager {
           break;
         case TaxaManager::$CID_HABITAT:
           array_push($attr_array["beyond_garden"]["habitat"], $attr_val);
+          break;
+        case TaxaManager::$CID_SURVEY_MONTHS:
+          array_push($attr_array["survey_manage"]["survey_months"], $attr_val);
+          break;
+        case TaxaManager::$CID_THREATS:
+          array_push($attr_array["survey_manage"]["threats"], $attr_val);
+          break;
+        case TaxaManager::$CID_MANAGEMENT_ACTIONS:
+          array_push($attr_array["survey_manage"]["management"], $attr_val);
+          break;
+        case TaxaManager::$CID_ELEVATION:
+          array_push($attr_array["elevation"], $attr_val);
+          break;
+        case TaxaManager::$CID_CONSERVATION_FED:
+          $attr_array["conservation_status"]["federal"] = $attr_val;
+          break;
+        case TaxaManager::$CID_CONSERVATION_STATE:
+          $attr_array["conservation_status"]["state"] = $attr_val;
+          break;
+        case TaxaManager::$CID_CONSERVATION_HERITAGE:
+          $attr_array["conservation_status"]["heritage"] = $attr_val;
           break;
         default:
           break;
@@ -766,7 +812,20 @@ class TaxaManager {
   
         # Beyond the garden
       TaxaManager::$CID_HABITAT,
-      TaxaManager::$CID_ECOREGION
+      TaxaManager::$CID_ECOREGION,
+
+      # Survey & manage (rare plant guide)
+      TaxaManager::$CID_SURVEY_MONTHS,
+      TaxaManager::$CID_THREATS,
+      TaxaManager::$CID_MANAGEMENT_ACTIONS,
+
+      # Context (rare plant guide)
+      TaxaManager::$CID_ELEVATION,
+
+      # Conservation status (rare plant guide)
+      TaxaManager::$CID_CONSERVATION_FED,
+      TaxaManager::$CID_CONSERVATION_STATE,
+      TaxaManager::$CID_CONSERVATION_HERITAGE
     ];
   }
 
