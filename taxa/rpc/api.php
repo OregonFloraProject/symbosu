@@ -9,12 +9,12 @@ $result = [];
 
 $CLID_GARDEN_ALL = 54;
 
-function getTaxon($tid) {
+function getTaxon($tid, $queryType = "default") {
   $em = SymbosuEntityManager::getEntityManager();
   $taxaRepo = $em->getRepository("Taxa");
   $taxaModel = $taxaRepo->find($tid);
   $taxa = TaxaManager::fromModel($taxaModel);
-  return taxaManagerToJSON($taxa);
+  return taxaManagerToJSON($taxa,$queryType);
 }
 
 function searchTaxa($searchTerm) {
@@ -33,7 +33,7 @@ function searchTaxa($searchTerm) {
   if ($taxaResults != null) {
     foreach ($taxaResults as $t) {
       $tm = TaxaManager::fromModel($t);
-      $tj = taxaManagerToJSON($tm,true);
+      $tj = taxaManagerToJSON($tm,"default",true);
       array_push($results, $tj);
     }
   }
@@ -66,7 +66,7 @@ function getSubTaxa($parentTid) {#not sure this happens anymore
   if ($taxaResults != null) {
     foreach ($taxaResults as $t) {
       $tm = TaxaManager::fromModel($t);
-      $tj = taxaManagerToJSON($tm);
+      $tj = taxaManagerToJSON($tm,"default");
       array_push($results, $tj);
     }
   }
@@ -74,7 +74,7 @@ function getSubTaxa($parentTid) {#not sure this happens anymore
   return $results;
 }
   
-function taxaManagerToJSON($taxaObj,$recursive = false,$taxaRankId = null) {
+function taxaManagerToJSON($taxaObj,$queryType = "default",$recursive = false,$taxaRankId = null) {
 	/*taxaRankId = the rankId of the requested taxa; we set it below and pass it through
 		so that recursive calls avoid expensive image collection; taxa.tid = 88 runs out of memory
 	*/
@@ -105,7 +105,7 @@ function taxaManagerToJSON($taxaObj,$recursive = false,$taxaRankId = null) {
 			foreach($spp as $rowArr){
 				$taxaModel = $taxaRepo->find($rowArr['tid']);
 				$taxa = TaxaManager::fromModel($taxaModel);
-				$tj = taxaManagerToJSON($taxa,true,$taxaRankId);
+				$tj = taxaManagerToJSON($taxa,$queryType,true,$taxaRankId);
 				if (!isset($result["spp"])) {
 					$result['spp'] = [];
 				}
@@ -127,7 +127,9 @@ function taxaManagerToJSON($taxaObj,$recursive = false,$taxaRankId = null) {
 			$result["origin"] = $taxaObj->getOrigin();
 			$result["family"] = $taxaObj->getFamily();
 			$result["rarePlantFactSheet"] = $taxaObj->getRarePlantFactSheet();
-			$result["characteristics"] = $taxaObj->getCharacteristics();
+			if ($queryType !== 'default') {
+				$result["characteristics"] = $taxaObj->getCharacteristics($queryType);
+			}
 			$taxaObj->setChecklists();
 			$result["checklists"] = $taxaObj->getChecklists();
 			$result["descriptions"] = $taxaObj->getDescriptions();
@@ -186,8 +188,14 @@ function taxaManagerToJSON($taxaObj,$recursive = false,$taxaRankId = null) {
 $result = [];
 if (array_key_exists("search", $_GET)) {
   $result = searchTaxa(trim($_GET["search"]));
-}else if (array_key_exists("taxon", $_GET) && is_numeric($_GET["taxon"])) {
-  $result = getTaxon($_GET["taxon"]);
+} else if (array_key_exists("taxon", $_GET) && is_numeric($_GET["taxon"])) {
+  if (array_key_exists("type", $_GET) && $_GET["type"] === "rare") {
+    $result = getTaxon($_GET["taxon"], "rare");
+  } else if (array_key_exists("type", $_GET) && $_GET["type"] === "garden") {
+    $result = getTaxon($_GET["taxon"], "garden");
+  } else {
+    $result = getTaxon($_GET["taxon"]);
+  }
 } else if (array_key_exists("family", $_GET) && is_numeric($_GET["family"])) {
   $result = getSubTaxa($_GET["family"]);
 } else if (array_key_exists("genus", $_GET) && is_numeric($_GET["genus"])) {
