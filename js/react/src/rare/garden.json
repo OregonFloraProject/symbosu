@@ -1,0 +1,4356 @@
+{
+  "clid": 54,
+  "pid": 3,
+  "dynclid": -1,
+  "projName": "",
+  "title": "Grow Natives Complete Collection",
+  "intro": "",
+  "iconUrl": "",
+  "authors": "",
+  "abstract": "",
+  "taxa": [
+    {
+      "tid": 8027,
+      "family": "Alismataceae",
+      "sciname": "Sagittaria latifolia",
+      "parenttid": 1385,
+      "author": "Willd.",
+      "imgid": 23769515,
+      "vernacular": {
+        "basename": "wapato",
+        "names": ["wapato", "broadleaf arrowhead", "duck potato"]
+      },
+      "image": "/imglib/OF_FP/201905/DIG21964_1558125747_tn.jpg"
+    },
+    {
+      "tid": 5429,
+      "family": "Amaranthaceae",
+      "sciname": "Grayia spinosa",
+      "parenttid": 861,
+      "author": "(Hook.) Moq.",
+      "imgid": 23759534,
+      "vernacular": { "basename": "hopsage", "names": ["hopsage"] },
+      "image": "/imglib/_OFPFP/201704/GRA_SPI_0354B_1492399124_tn.jpg"
+    },
+    {
+      "tid": 5891,
+      "family": "Amaranthaceae",
+      "sciname": "Krascheninnikovia lanata",
+      "parenttid": 980,
+      "author": "(Pursh) A. Meeuse & A. Smit",
+      "imgid": 23783255,
+      "vernacular": {
+        "basename": "winter fat",
+        "names": ["winter fat", "winter sage"]
+      },
+      "image": "/imglib/_OFPFP/201704/DIG32266_1492398400_tn.jpg"
+    },
+    {
+      "tid": 2599,
+      "family": "Amaryllidaceae",
+      "sciname": "Allium acuminatum",
+      "parenttid": 374,
+      "author": "Hook.",
+      "imgid": 23759517,
+      "vernacular": {
+        "basename": "onion",
+        "names": ["tapertip onion", "Hooker's onion"]
+      },
+      "image": "/imglib/OF_FP/201905/ALL_ACU_2909B_1558125725_tn.jpg"
+    },
+    {
+      "tid": 2601,
+      "family": "Amaryllidaceae",
+      "sciname": "Allium amplectens",
+      "parenttid": 374,
+      "author": "Torr.",
+      "imgid": 23751736,
+      "vernacular": { "basename": "onion", "names": ["slim-leaf onion"] },
+      "image": "/imglib/OF_FP/201905/DIG11308_1558125052_tn.jpg"
+    },
+    {
+      "tid": 2609,
+      "family": "Amaryllidaceae",
+      "sciname": "Allium cernuum",
+      "parenttid": 374,
+      "author": "Roth",
+      "imgid": 23785896,
+      "vernacular": { "basename": "onion", "names": ["nodding onion"] },
+      "image": "/imglib/OF_FP/201905/DIG34602_1558125717_tn.jpg"
+    },
+    {
+      "tid": 2635,
+      "family": "Amaryllidaceae",
+      "sciname": "Allium tolmiei",
+      "parenttid": 374,
+      "author": "Baker",
+      "imgid": 26968443,
+      "vernacular": { "basename": "onion", "names": ["Tolmie's onion"] },
+      "image": "/imglib/_OFPFP/201704/15DIG23075_1492399746_tn.jpg"
+    },
+    {
+      "tid": 7853,
+      "family": "Anacardiaceae",
+      "sciname": "Rhus aromatica",
+      "parenttid": 1363,
+      "author": "Aiton",
+      "imgid": 23789886,
+      "vernacular": {
+        "basename": "skunkbush",
+        "names": ["fragrant sumac", "aromatic sumac", "skunkbush"]
+      },
+      "image": "/imglib/_OFPFP/201704/DIG39425_1492398452_tn.jpg"
+    },
+    {
+      "tid": 7855,
+      "family": "Anacardiaceae",
+      "sciname": "Rhus glabra",
+      "parenttid": 1363,
+      "author": "L.",
+      "imgid": 23779911,
+      "vernacular": { "basename": "sumac", "names": ["smooth sumac"] },
+      "image": "/imglib/OF_FP/201905/DIG28952_1558125716_tn.jpg"
+    },
+    {
+      "tid": 5547,
+      "family": "Apiaceae",
+      "sciname": "Heracleum maximum",
+      "parenttid": 894,
+      "author": "W. Bartram",
+      "imgid": 23747379,
+      "vernacular": {
+        "basename": "cow parsnip",
+        "names": ["common cow parsnip"]
+      },
+      "image": "/imglib/OF_FP/201905/HER_LAN_4239B_1558124913_tn.jpg"
+    },
+    {
+      "tid": 6211,
+      "family": "Apiaceae",
+      "sciname": "Lomatium macrocarpum",
+      "parenttid": 1051,
+      "author": "(Torr. & A. Gray) J.M. Coult. & Rose",
+      "imgid": 23780696,
+      "vernacular": {
+        "basename": "lomatium",
+        "names": ["large-fruited desert parsley", "bigseed lomatium"]
+      },
+      "image": "/imglib/_OFPFP/201704/DIG29723_1492398386_tn.jpg"
+    },
+    {
+      "tid": 6217,
+      "family": "Apiaceae",
+      "sciname": "Lomatium nudicaule",
+      "parenttid": 1051,
+      "author": "(Pursh) J.M. Coult. & Rose",
+      "imgid": 23747506,
+      "vernacular": {
+        "basename": "biscuitroot",
+        "names": ["barestem lomatium", "barestem biscuitroot"]
+      },
+      "image": "/imglib/_OFPFP/201704/LOM_NUD_3717B_1492398508_tn.jpg"
+    },
+    {
+      "tid": 6221,
+      "family": "Apiaceae",
+      "sciname": "Lomatium papilioniferum",
+      "parenttid": 1051,
+      "author": "J.A. Alexander & W. Whaley",
+      "imgid": 23747456,
+      "vernacular": {
+        "basename": "biscuitroot",
+        "names": ["butterfly-bearing biscuitroot"]
+      },
+      "image": "/imglib/_OFPFP/201704/LOM_GRA_9300B_1492399623_tn.jpg"
+    },
+    {
+      "tid": 6234,
+      "family": "Apiaceae",
+      "sciname": "Lomatium triternatum",
+      "parenttid": 1051,
+      "author": "(Pursh) J.M. Coult. & Rose",
+      "imgid": 23789526,
+      "vernacular": {
+        "basename": "lomatium",
+        "names": [
+          "nineleaf lomatium",
+          "broad-fruit lomatium",
+          "broad nineleaf lomatium",
+          "Packard's lomatium"
+        ]
+      },
+      "image": "/imglib/_OFPFP/201704/DIG39065_1492398691_tn.jpg"
+    },
+    {
+      "tid": 2827,
+      "family": "Apocynaceae",
+      "sciname": "Apocynum androsaemifolium",
+      "parenttid": 417,
+      "author": "L.",
+      "imgid": 23777749,
+      "vernacular": { "basename": "dogbane", "names": ["spreading dogbane"] },
+      "image": "/imglib/_OFPFP/201704/DIG26790_1492398891_tn.jpg"
+    },
+    {
+      "tid": 2828,
+      "family": "Apocynaceae",
+      "sciname": "Apocynum cannabinum",
+      "parenttid": 417,
+      "author": "L.",
+      "imgid": 23767675,
+      "vernacular": {
+        "basename": "dogbane",
+        "names": ["Indian hemp", "common dogbane", "hemp dogbane"]
+      },
+      "image": "/imglib/_OFPFP/201704/DIG20157_1492399368_tn.jpg"
+    },
+    {
+      "tid": 3018,
+      "family": "Apocynaceae",
+      "sciname": "Asclepias fascicularis",
+      "parenttid": 442,
+      "author": "Decne.",
+      "imgid": 23759596,
+      "vernacular": {
+        "basename": "milkweed",
+        "names": ["narrowleaf milkweed"]
+      },
+      "image": "/imglib/OF_FP/201905/ASC_FAS_3370B_1558125754_tn.jpg"
+    },
+    {
+      "tid": 3021,
+      "family": "Apocynaceae",
+      "sciname": "Asclepias speciosa",
+      "parenttid": 442,
+      "author": "Torr.",
+      "imgid": 23759600,
+      "vernacular": { "basename": "milkweed", "names": ["showy milkweed"] },
+      "image": "/imglib/OF_FP/201905/ASC_SPE_2382B_1558125675_tn.jpg"
+    },
+    {
+      "tid": 6408,
+      "family": "Araceae",
+      "sciname": "Lysichiton americanus",
+      "parenttid": 1068,
+      "author": "Hult\u00c3\u00a9n & H. St. John",
+      "imgid": 23743020,
+      "vernacular": { "basename": "skunk cabbage", "names": ["skunk cabbage"] },
+      "image": "/imglib/OF_FP/201905/DIG4310_1558125743_tn.jpg"
+    },
+    {
+      "tid": 6887,
+      "family": "Araliaceae",
+      "sciname": "Oplopanax horridus",
+      "parenttid": 1186,
+      "author": "(Sm.) Miq.",
+      "imgid": 23746813,
+      "vernacular": { "basename": "devil's club", "names": ["devil's club"] },
+      "image": "/imglib/OF_FP/201905/07SL013FEB1503_1558125692_tn.jpg"
+    },
+    {
+      "tid": 3011,
+      "family": "Aristolochiaceae",
+      "sciname": "Asarum caudatum",
+      "parenttid": 441,
+      "author": "Lindl.",
+      "imgid": 23751897,
+      "vernacular": {
+        "basename": "wild ginger",
+        "names": ["western wild ginger", "long-tailed wild ginger"]
+      },
+      "image": "/imglib/OF_FP/201905/DIG11469_1558125727_tn.jpg"
+    },
+    {
+      "tid": 3384,
+      "family": "Asparagaceae",
+      "sciname": "Brodiaea coronaria",
+      "parenttid": 504,
+      "author": "(Salisb.) Engl.",
+      "imgid": 25917534,
+      "vernacular": {
+        "basename": "cluster-lily",
+        "names": ["crown brodiaea", "harvest brodiaea", "harvest cluster-lily"]
+      },
+      "image": "/imglib/OF_FP/202010/DIG50747_1602356815_tn.jpg"
+    },
+    {
+      "tid": 3548,
+      "family": "Asparagaceae",
+      "sciname": "Camassia leichtlinii",
+      "parenttid": 531,
+      "author": "(Baker) S. Watson",
+      "imgid": 23742295,
+      "vernacular": {
+        "basename": "camas",
+        "names": ["great camas", "Leichtlin's camas"]
+      },
+      "image": "/imglib/OF_FP/201905/DIG3588_1558124591_tn.jpg"
+    },
+    {
+      "tid": 3549,
+      "family": "Asparagaceae",
+      "sciname": "Camassia quamash",
+      "parenttid": 531,
+      "author": "(Pursh) Greene",
+      "imgid": 23745705,
+      "vernacular": { "basename": "camas", "names": ["common camas"] },
+      "image": "/imglib/OF_FP/201905/DSCN3222_1558124568_tn.jpg"
+    },
+    {
+      "tid": 4555,
+      "family": "Asparagaceae",
+      "sciname": "Dichelostemma congestum",
+      "parenttid": 708,
+      "author": "(Sm.) Kunth",
+      "imgid": 23752594,
+      "vernacular": { "basename": "ookow", "names": ["ookow"] },
+      "image": "/imglib/OF_FP/201905/DIG12166_1558124729_tn.jpg"
+    },
+    {
+      "tid": 6038,
+      "family": "Asparagaceae",
+      "sciname": "Leucocrinum montanum",
+      "parenttid": 1016,
+      "author": "Nutt.",
+      "imgid": 23774603,
+      "vernacular": { "basename": "sand-lily", "names": ["sand-lily"] },
+      "image": "/imglib/_OFPFP/201704/DIG24746_1492399641_tn.jpg"
+    },
+    {
+      "tid": 6450,
+      "family": "Asparagaceae",
+      "sciname": "Maianthemum dilatatum",
+      "parenttid": 1077,
+      "author": "(A.W. Wood) A. Nelson & J.F. Macbr.",
+      "imgid": 23750027,
+      "vernacular": {
+        "basename": "beadruby",
+        "names": ["false lily-of-the-valley", "beadruby"]
+      },
+      "image": "/imglib/OF_FP/201905/MAI_DIL_3225B_1558125742_tn.jpg"
+    },
+    {
+      "tid": 6451,
+      "family": "Asparagaceae",
+      "sciname": "Maianthemum racemosum",
+      "parenttid": 1077,
+      "author": "(L.) Link",
+      "imgid": 24081534,
+      "vernacular": {
+        "basename": "false Solomon's seal",
+        "names": ["large false Solomon's seal"]
+      },
+      "image": "/imglib/misc/201905/MAI_RAC_2161B_1558125862_tn.jpg"
+    },
+    {
+      "tid": 6452,
+      "family": "Asparagaceae",
+      "sciname": "Maianthemum stellatum",
+      "parenttid": 1077,
+      "author": "(L.) Link",
+      "imgid": 23743038,
+      "vernacular": {
+        "basename": "false Solomon's seal",
+        "names": ["starry false Solomon's seal", "small false Solomon's seal"]
+      },
+      "image": "/imglib/OF_FP/201905/DIG4328_1558125753_tn.jpg"
+    },
+    {
+      "tid": 8963,
+      "family": "Asparagaceae",
+      "sciname": "Triteleia grandiflora",
+      "parenttid": 1562,
+      "author": "Lindl.",
+      "imgid": 23750122,
+      "vernacular": {
+        "basename": "triteleia",
+        "names": ["large-flowered triteleia", "Howell's triteleia"]
+      },
+      "image": "/imglib/_OFPFP/201704/TRI_GRA_HOW_1072B_1492399624_tn.jpg"
+    },
+    {
+      "tid": 8966,
+      "family": "Asparagaceae",
+      "sciname": "Triteleia hyacinthina",
+      "parenttid": 1562,
+      "author": "(Lindl.) Greene",
+      "imgid": 23754870,
+      "vernacular": {
+        "basename": "fool's-onion",
+        "names": [
+          "hyacinth triteleia",
+          "fool's-onion",
+          "hyacinth cluster-lily",
+          "white triteleia"
+        ]
+      },
+      "image": "/imglib/OF_FP/201905/DIG14443_1558124592_tn.jpg"
+    },
+    {
+      "tid": 2414,
+      "family": "Asteraceae",
+      "sciname": "Achillea millefolium",
+      "parenttid": 336,
+      "author": "L.",
+      "imgid": 23790499,
+      "vernacular": {
+        "basename": "milfoil",
+        "names": ["common yarrow", "milfoil"]
+      },
+      "image": "/imglib/OF_FP/201905/15ACH_MIL_5856B_1558125663_tn.jpg"
+    },
+    {
+      "tid": 2738,
+      "family": "Asteraceae",
+      "sciname": "Anaphalis margaritacea",
+      "parenttid": 395,
+      "author": "(L.) Benth. & Hook. f.",
+      "imgid": 23747737,
+      "vernacular": {
+        "basename": "everlasting",
+        "names": ["pearly everlasting"]
+      },
+      "image": "/imglib/OF_FP/201905/ANA_MAR_7666B_1558125643_tn.jpg"
+    },
+    {
+      "tid": 2991,
+      "family": "Asteraceae",
+      "sciname": "Artemisia ludoviciana",
+      "parenttid": 437,
+      "author": "Nutt.",
+      "imgid": 26968437,
+      "vernacular": {
+        "basename": "wormwood",
+        "names": ["western wormwood", "silver wormwood"]
+      },
+      "image": "/imglib/_OFPFP/201704/DIG26856_1492398788_tn.jpg"
+    },
+    {
+      "tid": 3003,
+      "family": "Asteraceae",
+      "sciname": "Artemisia tridentata",
+      "parenttid": 437,
+      "author": "Nutt.",
+      "imgid": 23746507,
+      "vernacular": { "basename": "sagebrush", "names": ["big sagebrush"] },
+      "image": "/imglib/_OFPFP/201704/DIG7408_1492398593_tn.jpg"
+    },
+    {
+      "tid": 3212,
+      "family": "Asteraceae",
+      "sciname": "Baccharis pilularis",
+      "parenttid": 460,
+      "author": "DC.",
+      "imgid": 24081535,
+      "vernacular": { "basename": "broom", "names": ["chaparral broom"] },
+      "image": "/imglib/_OFPFP/201704/BAC_PIL_9921B_1492399105_tn.jpg"
+    },
+    {
+      "tid": 3231,
+      "family": "Asteraceae",
+      "sciname": "Balsamorhiza sagittata",
+      "parenttid": 464,
+      "author": "(Pursh) Nutt.",
+      "imgid": 23747842,
+      "vernacular": {
+        "basename": "balsamroot",
+        "names": ["arrowleaf balsamroot"]
+      },
+      "image": "/imglib/OF_FP/201905/BAL_SAG_4432B_1558125673_tn.jpg"
+    },
+    {
+      "tid": 3578,
+      "family": "Asteraceae",
+      "sciname": "Canadanthus modestus",
+      "parenttid": 536,
+      "author": "(Lindl.) G.L. Nesom",
+      "imgid": 23747892,
+      "vernacular": {
+        "basename": "aster",
+        "names": [
+          "great northern aster",
+          "few-flowered aster",
+          "giant mountain aster"
+        ]
+      },
+      "image": "/imglib/OF_FP/201905/AST_MOD_8156B_1558125663_tn.jpg"
+    },
+    {
+      "tid": 3990,
+      "family": "Asteraceae",
+      "sciname": "Chaenactis douglasii",
+      "parenttid": 572,
+      "author": "(Hook.) Hook. & Arn.",
+      "imgid": 23747910,
+      "vernacular": {
+        "basename": "false yarrow",
+        "names": ["Douglas' dusty maidens", "hoary false yarrow"]
+      },
+      "image": "/imglib/_OFPFP/201704/CHA_DOU_3754B_1492398528_tn.jpg"
+    },
+    {
+      "tid": 4086,
+      "family": "Asteraceae",
+      "sciname": "Chrysothamnus viscidiflorus",
+      "parenttid": 600,
+      "author": "(Hook.) Nutt.",
+      "imgid": 26968440,
+      "vernacular": {
+        "basename": "rabbitbrush",
+        "names": ["green rabbitbrush", "sticky-flowered rabbitbrush"]
+      },
+      "image": "/imglib/_OFPFP/201704/ERI_VIS_LAN_9081B_1492398958_tn.jpg"
+    },
+    {
+      "tid": 4890,
+      "family": "Asteraceae",
+      "sciname": "Ericameria nauseosa",
+      "parenttid": 776,
+      "author": "(Pall. ex Pursh) G.L. Nesom & G.I. Baird",
+      "imgid": 23739051,
+      "vernacular": {
+        "basename": "rabbitbrush",
+        "names": ["rubber rabbitbrush"]
+      },
+      "image": "/imglib/_OFPFP/201704/06SL043FEB1603_1492398482_tn.jpg"
+    },
+    {
+      "tid": 4906,
+      "family": "Asteraceae",
+      "sciname": "Erigeron compositus",
+      "parenttid": 777,
+      "author": "Pursh",
+      "imgid": 23726134,
+      "vernacular": {
+        "basename": "daisy",
+        "names": [
+          "fernleaf fleabane",
+          "cutleaf daisy",
+          "dwarf mountain fleabane"
+        ]
+      },
+      "image": "/imglib/_OFPFP/201704/ERIGERON_COMPOSITUS9_1492399615_tn.jpg"
+    },
+    {
+      "tid": 4917,
+      "family": "Asteraceae",
+      "sciname": "Erigeron filifolius",
+      "parenttid": 777,
+      "author": "(Hook.) Nutt.",
+      "imgid": 23748013,
+      "vernacular": {
+        "basename": "fleabane",
+        "names": ["threadleaf fleabane"]
+      },
+      "image": "/imglib/_OFPFP/201704/ERI_FIL_3752B_1492399094_tn.jpg"
+    },
+    {
+      "tid": 4926,
+      "family": "Asteraceae",
+      "sciname": "Erigeron linearis",
+      "parenttid": 777,
+      "author": "(Hook.) Piper",
+      "imgid": 23748034,
+      "vernacular": {
+        "basename": "fleabane",
+        "names": ["desert yellow fleabane", "lineleaf fleabane"]
+      },
+      "image": "/imglib/_OFPFP/201704/ERI_LIN_3811B_1492398872_tn.jpg"
+    },
+    {
+      "tid": 4933,
+      "family": "Asteraceae",
+      "sciname": "Erigeron poliospermus",
+      "parenttid": 777,
+      "author": "A. Gray",
+      "imgid": 26968441,
+      "vernacular": {
+        "basename": "daisy",
+        "names": ["purple-cushion fleabane", "hairy-seeded daisy"]
+      },
+      "image": "/imglib/_OFPFP/201704/ERI_POL_3380B_1492398418_tn.jpg"
+    },
+    {
+      "tid": 4936,
+      "family": "Asteraceae",
+      "sciname": "Erigeron speciosus",
+      "parenttid": 777,
+      "author": "(Lindl.) DC.",
+      "imgid": 23768371,
+      "vernacular": {
+        "basename": "daisy",
+        "names": ["showy fleabane", "showy daisy"]
+      },
+      "image": "/imglib/OF_FP/201905/DIG20866_1558125729_tn.jpg"
+    },
+    {
+      "tid": 5010,
+      "family": "Asteraceae",
+      "sciname": "Eriophyllum lanatum",
+      "parenttid": 782,
+      "author": "(Pursh) J. Forbes",
+      "imgid": 23742645,
+      "vernacular": {
+        "basename": "woolly sunflower",
+        "names": ["Oregon sunshine", "woolly sunflower"]
+      },
+      "image": "/imglib/OF_FP/201905/DIG3938_1558125708_tn.jpg"
+    },
+    {
+      "tid": 5127,
+      "family": "Asteraceae",
+      "sciname": "Euthamia occidentalis",
+      "parenttid": 803,
+      "author": "Nutt.",
+      "imgid": 23759802,
+      "vernacular": {
+        "basename": "goldenrod",
+        "names": ["western goldentop", "western goldenrod"]
+      },
+      "image": "/imglib/_OFPFP/201704/EUT_OCC_8230B_1492399155_tn.jpg"
+    },
+    {
+      "tid": 5234,
+      "family": "Asteraceae",
+      "sciname": "Gaillardia aristata",
+      "parenttid": 827,
+      "author": "Pursh",
+      "imgid": 23748081,
+      "vernacular": {
+        "basename": "blanket flower",
+        "names": ["blanket flower", "great-flowered gaillardia"]
+      },
+      "image": "/imglib/OF_FP/201905/GAI_ARI_5261B_1558124845_tn.jpg"
+    },
+    {
+      "tid": 5524,
+      "family": "Asteraceae",
+      "sciname": "Helianthus annuus",
+      "parenttid": 885,
+      "author": "L.",
+      "imgid": 23774339,
+      "vernacular": { "basename": "sunflower", "names": ["common sunflower"] },
+      "image": "/imglib/_OFPFP/201704/DIG24482_1492399101_tn.jpg"
+    },
+    {
+      "tid": 8498,
+      "family": "Asteraceae",
+      "sciname": "Solidago elongata",
+      "parenttid": 1451,
+      "author": "Nutt.",
+      "imgid": 23748374,
+      "vernacular": {
+        "basename": "goldenrod",
+        "names": ["West Coast goldenrod", "narrow goldenrod"]
+      },
+      "image": "/imglib/_OFPFP/201704/SOL_ELO_7944B_1492398927_tn.jpg"
+    },
+    {
+      "tid": 8502,
+      "family": "Asteraceae",
+      "sciname": "Solidago multiradiata",
+      "parenttid": 1451,
+      "author": "Aiton",
+      "imgid": 23775882,
+      "vernacular": {
+        "basename": "goldenrod",
+        "names": ["northern goldenrod"]
+      },
+      "image": "/imglib/_OFPFP/201704/DIG26025_1492399336_tn.jpg"
+    },
+    {
+      "tid": 8720,
+      "family": "Asteraceae",
+      "sciname": "Symphyotrichum subspicatum",
+      "parenttid": 1500,
+      "author": "(Nees) G.L. Nesom",
+      "imgid": 23760020,
+      "vernacular": { "basename": "aster", "names": ["Douglas' aster"] },
+      "image": "/imglib/OF_FP/201905/SYM_SUB_7442B_1558125638_tn.jpg"
+    },
+    {
+      "tid": 8827,
+      "family": "Asteraceae",
+      "sciname": "Townsendia florifer",
+      "parenttid": 1539,
+      "author": "(Hook.) A. Gray",
+      "imgid": 23780232,
+      "vernacular": { "basename": "townsendia", "names": ["showy townsendia"] },
+      "image": "/imglib/_OFPFP/201704/DIG29273_1492398398_tn.jpg"
+    },
+    {
+      "tid": 9174,
+      "family": "Asteraceae",
+      "sciname": "Wyethia angustifolia",
+      "parenttid": 1600,
+      "author": "(DC.) Nutt.",
+      "imgid": 23755035,
+      "vernacular": {
+        "basename": "mule's ears",
+        "names": ["narrow-leaved mule's ears"]
+      },
+      "image": "/imglib/OF_FP/201905/DIG14608_1558125698_tn.jpg"
+    },
+    {
+      "tid": 3178,
+      "family": "Athyriaceae",
+      "sciname": "Athyrium filix-femina",
+      "parenttid": 454,
+      "author": "(L.) Roth",
+      "imgid": 23773212,
+      "vernacular": { "basename": "fern", "names": ["lady fern"] },
+      "image": "/imglib/OF_FP/201905/DIG23355_1558125758_tn.jpg"
+    },
+    {
+      "tid": 2417,
+      "family": "Berberidaceae",
+      "sciname": "Achlys triphylla",
+      "parenttid": 337,
+      "author": "(Sm.) DC.",
+      "imgid": 24081555,
+      "vernacular": {
+        "basename": "vanillaleaf",
+        "names": ["achlys", "vanillaleaf"]
+      },
+      "image": "/imglib/misc/201905/ACH_TRI_1677B_1558125847_tn.jpg"
+    },
+    {
+      "tid": 3249,
+      "family": "Berberidaceae",
+      "sciname": "Berberis aquifolium",
+      "parenttid": 473,
+      "author": "Pursh",
+      "imgid": 23748431,
+      "vernacular": {
+        "basename": "Oregon grape",
+        "names": ["tall Oregon grape", "shining Oregon grape"]
+      },
+      "image": "/imglib/OF_FP/201905/BER_AQU_9183B_1558125746_tn.jpg"
+    },
+    {
+      "tid": 3252,
+      "family": "Berberidaceae",
+      "sciname": "Berberis nervosa",
+      "parenttid": 473,
+      "author": "Pursh",
+      "imgid": 23748433,
+      "vernacular": {
+        "basename": "Oregon grape",
+        "names": ["Cascade Oregon grape"]
+      },
+      "image": "/imglib/OF_FP/201905/BER_NER_MAC_4521B_1558125749_tn.jpg"
+    },
+    {
+      "tid": 3256,
+      "family": "Berberidaceae",
+      "sciname": "Berberis repens",
+      "parenttid": 473,
+      "author": "Lindl.",
+      "imgid": 26436901,
+      "vernacular": {
+        "basename": "Oregon grape",
+        "names": ["creeping Oregon grape"]
+      },
+      "image": "/imglib/OF_FP/202107/DIG52402_1627520189_tn.jpg"
+    },
+    {
+      "tid": 9042,
+      "family": "Berberidaceae",
+      "sciname": "Vancouveria hexandra",
+      "parenttid": 1582,
+      "author": "(Hook.) C. Morren & Decne.",
+      "imgid": 23748442,
+      "vernacular": {
+        "basename": "vancouveria",
+        "names": [
+          "northern inside-out flower",
+          "northern vancouveria",
+          "white inside-out flower"
+        ]
+      },
+      "image": "/imglib/OF_FP/201905/VAN_HEX_2669B_1558125682_tn.jpg"
+    },
+    {
+      "tid": 2658,
+      "family": "Betulaceae",
+      "sciname": "Alnus incana",
+      "parenttid": 378,
+      "author": "(L.) Moench",
+      "imgid": 23799921,
+      "vernacular": { "basename": "alder", "names": ["mountain alder"] },
+      "image": "/imglib/misc/201801/DIG45125_1516993294_tn.jpg"
+    },
+    {
+      "tid": 2660,
+      "family": "Betulaceae",
+      "sciname": "Alnus rhombifolia",
+      "parenttid": 378,
+      "author": "Nutt.",
+      "imgid": 23751749,
+      "vernacular": { "basename": "alder", "names": ["white alder"] },
+      "image": "/imglib/OF_FP/201905/DIG11321_1558125695_tn.jpg"
+    },
+    {
+      "tid": 2662,
+      "family": "Betulaceae",
+      "sciname": "Alnus rubra",
+      "parenttid": 378,
+      "author": "Bong.",
+      "imgid": 23767589,
+      "vernacular": { "basename": "alder", "names": ["red alder"] },
+      "image": "/imglib/OF_FP/201905/DIG20072_1558125670_tn.jpg"
+    },
+    {
+      "tid": 3265,
+      "family": "Betulaceae",
+      "sciname": "Betula occidentalis",
+      "parenttid": 479,
+      "author": "Hook.",
+      "imgid": 23773262,
+      "vernacular": { "basename": "birch", "names": ["water birch"] },
+      "image": "/imglib/_OFPFP/201704/DIG23405_1492399067_tn.jpg"
+    },
+    {
+      "tid": 4290,
+      "family": "Betulaceae",
+      "sciname": "Corylus cornuta",
+      "parenttid": 653,
+      "author": "Marshall",
+      "imgid": 23773717,
+      "vernacular": { "basename": "hazel", "names": ["California hazel"] },
+      "image": "/imglib/OF_FP/201905/DIG23860_1558124698_tn.jpg"
+    },
+    {
+      "tid": 8665,
+      "family": "Blechnaceae",
+      "sciname": "Struthiopteris spicant",
+      "parenttid": 1489,
+      "author": "(L.) Weiss",
+      "imgid": 23746417,
+      "vernacular": { "basename": "fern", "names": ["deer fern", "hard fern"] },
+      "image": "/imglib/OF_FP/201905/DIG7331_1558125720_tn.jpg"
+    },
+    {
+      "tid": 2726,
+      "family": "Boraginaceae",
+      "sciname": "Amsinckia menziesii",
+      "parenttid": 392,
+      "author": "(Lehm.) A. Nelson & J.F. Macbr.",
+      "imgid": 23772968,
+      "vernacular": {
+        "basename": "fiddleneck",
+        "names": ["Menzies' fiddleneck", "rancher's fiddleneck"]
+      },
+      "image": "/imglib/_OFPFP/201704/DIG23111_1492398483_tn.jpg"
+    },
+    {
+      "tid": 6158,
+      "family": "Boraginaceae",
+      "sciname": "Lithospermum ruderale",
+      "parenttid": 1044,
+      "author": "Douglas ex Lehm.",
+      "imgid": 23748513,
+      "vernacular": {
+        "basename": "puccoon",
+        "names": ["western stoneseed", "Columbia puccoon", "western gromwell"]
+      },
+      "image": "/imglib/_OFPFP/201704/LIT_RUD_1316B_1492399029_tn.jpg"
+    },
+    {
+      "tid": 5029,
+      "family": "Brassicaceae",
+      "sciname": "Erysimum capitatum",
+      "parenttid": 787,
+      "author": "(Douglas ex Hook.) Greene",
+      "imgid": 23726175,
+      "vernacular": {
+        "basename": "wallflower",
+        "names": ["western wallflower"]
+      },
+      "image": "/imglib/OF_FP/201905/ERYSIMUM_CAPITATUM1_1558124778_tn.jpg"
+    },
+    {
+      "tid": 7238,
+      "family": "Brassicaceae",
+      "sciname": "Phoenicaulis cheiranthoides",
+      "parenttid": 1258,
+      "author": "Nutt.",
+      "imgid": 23775337,
+      "vernacular": { "basename": "daggerpod", "names": ["daggerpod"] },
+      "image": "/imglib/_OFPFP/201704/DIG25480_1492399037_tn.jpg"
+    },
+    {
+      "tid": 6241,
+      "family": "Caprifoliaceae",
+      "sciname": "Lonicera ciliosa",
+      "parenttid": 1052,
+      "author": "(Pursh) Poir. ex DC.",
+      "imgid": 23760236,
+      "vernacular": {
+        "basename": "honeysuckle",
+        "names": ["orange honeysuckle"]
+      },
+      "image": "/imglib/OF_FP/201905/LON_CIL_1576B_1558125666_tn.jpg"
+    },
+    {
+      "tid": 6243,
+      "family": "Caprifoliaceae",
+      "sciname": "Lonicera hispidula",
+      "parenttid": 1052,
+      "author": "(Lindl.) Douglas ex Torr. & A. Gray",
+      "imgid": 23753423,
+      "vernacular": {
+        "basename": "honeysuckle",
+        "names": ["hairy honeysuckle", "pink honeysuckle"]
+      },
+      "image": "/imglib/OF_FP/201905/DIG12995_1558124617_tn.jpg"
+    },
+    {
+      "tid": 6245,
+      "family": "Caprifoliaceae",
+      "sciname": "Lonicera involucrata",
+      "parenttid": 1052,
+      "author": "(Rich.) Banks ex Spreng.",
+      "imgid": 23746565,
+      "vernacular": {
+        "basename": "twinberry",
+        "names": ["bearberry honeysuckle", "twinberry", "twinberry honeysuckle"]
+      },
+      "image": "/imglib/OF_FP/201905/DIG7465_1558125669_tn.jpg"
+    },
+    {
+      "tid": 8696,
+      "family": "Caprifoliaceae",
+      "sciname": "Symphoricarpos albus",
+      "parenttid": 1499,
+      "author": "(L.) S.F. Blake",
+      "imgid": 24081536,
+      "vernacular": { "basename": "snowberry", "names": ["common snowberry"] },
+      "image": "/imglib/misc/201905/DIG7573_1558125835_tn.jpg"
+    },
+    {
+      "tid": 8699,
+      "family": "Caprifoliaceae",
+      "sciname": "Symphoricarpos mollis",
+      "parenttid": 1499,
+      "author": "Nutt.",
+      "imgid": 23754697,
+      "vernacular": {
+        "basename": "trip vine",
+        "names": [
+          "creeping snowberry",
+          "trip vine",
+          "sharpleaf snowberry",
+          "trailing snowberry"
+        ]
+      },
+      "image": "/imglib/OF_FP/201905/DIG14270_1558125752_tn.jpg"
+    },
+    {
+      "tid": 8701,
+      "family": "Caprifoliaceae",
+      "sciname": "Symphoricarpos rotundifolius",
+      "parenttid": 1499,
+      "author": "A. Gray",
+      "imgid": 23775971,
+      "vernacular": {
+        "basename": "snowberry",
+        "names": ["roundleaf snowberry"]
+      },
+      "image": "/imglib/_OFPFP/201704/DIG26114_1492399699_tn.jpg"
+    },
+    {
+      "tid": 4268,
+      "family": "Cornaceae",
+      "sciname": "Cornus nuttallii",
+      "parenttid": 647,
+      "author": "Audubon ex Torr. & A. Gray",
+      "imgid": 23773721,
+      "vernacular": { "basename": "dogwood", "names": ["Pacific dogwood"] },
+      "image": "/imglib/OF_FP/201905/DIG23864_1558125762_tn.jpg"
+    },
+    {
+      "tid": 4271,
+      "family": "Cornaceae",
+      "sciname": "Cornus sericea",
+      "parenttid": 647,
+      "author": "L.",
+      "imgid": 23749019,
+      "vernacular": { "basename": "dogwood", "names": ["red-osier dogwood"] },
+      "image": "/imglib/OF_FP/201905/COR_SER_2331B_1558125679_tn.jpg"
+    },
+    {
+      "tid": 4274,
+      "family": "Cornaceae",
+      "sciname": "Cornus unalaschkensis",
+      "parenttid": 647,
+      "author": "Ledeb.",
+      "imgid": 26436464,
+      "vernacular": {
+        "basename": "bunchberry",
+        "names": ["western bunchberry"]
+      },
+      "image": "/imglib/OF_FP/202107/DIG52168_1627520229_tn.jpg"
+    },
+    {
+      "tid": 8307,
+      "family": "Crassulaceae",
+      "sciname": "Sedum oreganum",
+      "parenttid": 1426,
+      "author": "Nutt.",
+      "imgid": 23749058,
+      "vernacular": { "basename": "stonecrop", "names": ["Oregon stonecrop"] },
+      "image": "/imglib/OF_FP/201905/SED_OREGA_6735B_1558125724_tn.jpg"
+    },
+    {
+      "tid": 8313,
+      "family": "Crassulaceae",
+      "sciname": "Sedum spathulifolium",
+      "parenttid": 1426,
+      "author": "Hook.",
+      "imgid": 23790801,
+      "vernacular": {
+        "basename": "stonecrop",
+        "names": ["broadleaf stonecrop"]
+      },
+      "image": "/imglib/OF_FP/201905/15SED_SPA_2646B_1558124665_tn.jpg"
+    },
+    {
+      "tid": 8314,
+      "family": "Crassulaceae",
+      "sciname": "Sedum stenopetalum",
+      "parenttid": 1426,
+      "author": "Pursh",
+      "imgid": 26968438,
+      "vernacular": {
+        "basename": "stonecrop",
+        "names": ["wormleaf stonecrop"]
+      },
+      "image": "/imglib/_OFPFP/201704/SED_STE_CIL_3985B_1492399329_tn.jpg"
+    },
+    {
+      "tid": 3499,
+      "family": "Cupressaceae",
+      "sciname": "Calocedrus decurrens",
+      "parenttid": 523,
+      "author": "(Torr.) Florin",
+      "imgid": 23767857,
+      "vernacular": { "basename": "cedar", "names": ["incense-cedar"] },
+      "image": "/imglib/OF_FP/201905/DIG20331_1558125750_tn.jpg"
+    },
+    {
+      "tid": 4006,
+      "family": "Cupressaceae",
+      "sciname": "Chamaecyparis lawsoniana",
+      "parenttid": 579,
+      "author": "(A. Murray bis) Parl.",
+      "imgid": 23768033,
+      "vernacular": { "basename": "cedar", "names": ["Port Orford cedar"] },
+      "image": "/imglib/OF_FP/201905/DIG20506_1558124596_tn.jpg"
+    },
+    {
+      "tid": 8358,
+      "family": "Cupressaceae",
+      "sciname": "Sequoia sempervirens",
+      "parenttid": 1429,
+      "author": "(D. Don) Endl.",
+      "imgid": 23769592,
+      "vernacular": {
+        "basename": "redwood",
+        "names": ["redwood", "coast redwood"]
+      },
+      "image": "/imglib/OF_FP/201905/DIG22063_1558125757_tn.jpg"
+    },
+    {
+      "tid": 8796,
+      "family": "Cupressaceae",
+      "sciname": "Thuja plicata",
+      "parenttid": 1524,
+      "author": "D. Don",
+      "imgid": 23769778,
+      "vernacular": { "basename": "red cedar", "names": ["western red cedar"] },
+      "image": "/imglib/OF_FP/201905/DIG22255_1558125652_tn.jpg"
+    },
+    {
+      "tid": 3323,
+      "family": "Cyperaceae",
+      "sciname": "Bolboschoenus maritimus",
+      "parenttid": 488,
+      "author": "(L.) Palla",
+      "imgid": 23786186,
+      "vernacular": { "basename": "bulrush", "names": ["seacoast bulrush"] },
+      "image": "/imglib/_OFPFP/201704/DIG34892_1492399687_tn.jpg"
+    },
+    {
+      "tid": 3658,
+      "family": "Cyperaceae",
+      "sciname": "Carex densa",
+      "parenttid": 544,
+      "author": "(L.H. Bailey) L.H. Bailey",
+      "imgid": 23749097,
+      "vernacular": { "basename": "sedge", "names": ["dense sedge"] },
+      "image": "/imglib/OF_FP/201905/CAR_DEN_1790B_1558125638_tn.jpg"
+    },
+    {
+      "tid": 3682,
+      "family": "Cyperaceae",
+      "sciname": "Carex geyeri",
+      "parenttid": 544,
+      "author": "Boott",
+      "imgid": 23788797,
+      "vernacular": { "basename": "sedge", "names": ["elk sedge"] },
+      "image": "/imglib/_OFPFP/201704/DIG38336_1492399160_tn.jpg"
+    },
+    {
+      "tid": 3740,
+      "family": "Cyperaceae",
+      "sciname": "Carex nebrascensis",
+      "parenttid": 544,
+      "author": "Dewey",
+      "imgid": 23788834,
+      "vernacular": { "basename": "sedge", "names": ["Nebraska sedge"] },
+      "image": "/imglib/_OFPFP/201704/DIG38373_1492399096_tn.jpg"
+    },
+    {
+      "tid": 3749,
+      "family": "Cyperaceae",
+      "sciname": "Carex obnupta",
+      "parenttid": 544,
+      "author": "L.H. Bailey",
+      "imgid": 23752150,
+      "vernacular": { "basename": "sedge", "names": ["slough sedge"] },
+      "image": "/imglib/OF_FP/201905/DIG11722_1558125689_tn.jpg"
+    },
+    {
+      "tid": 3781,
+      "family": "Cyperaceae",
+      "sciname": "Carex rossii",
+      "parenttid": 544,
+      "author": "Boott",
+      "imgid": 23756822,
+      "vernacular": { "basename": "sedge", "names": ["Ross' sedge"] },
+      "image": "/imglib/OF_FP/201905/09SL016FEB0805_1558124599_tn.jpg"
+    },
+    {
+      "tid": 3797,
+      "family": "Cyperaceae",
+      "sciname": "Carex stipata",
+      "parenttid": 544,
+      "author": "Muhl. ex Willd.",
+      "imgid": 24081537,
+      "vernacular": { "basename": "sedge", "names": ["awl-fruit sedge"] },
+      "image": "/imglib/misc/201905/DIG11735_1558125889_tn.jpg"
+    },
+    {
+      "tid": 3813,
+      "family": "Cyperaceae",
+      "sciname": "Carex unilateralis",
+      "parenttid": 544,
+      "author": "Mack.",
+      "imgid": 23747140,
+      "vernacular": {
+        "basename": "sedge",
+        "names": ["one-sided sedge", "lateral sedge"]
+      },
+      "image": "/imglib/OF_FP/201905/DIG7795_1558125745_tn.jpg"
+    },
+    {
+      "tid": 4722,
+      "family": "Cyperaceae",
+      "sciname": "Eleocharis palustris",
+      "parenttid": 749,
+      "author": "(L.) Roem. & Schult.",
+      "imgid": 23778554,
+      "vernacular": {
+        "basename": "spikerush",
+        "names": ["common spikerush", "creeping spikerush", "marsh spikerush"]
+      },
+      "image": "/imglib/OF_FP/201905/DIG27595_1558125766_tn.jpg"
+    },
+    {
+      "tid": 8207,
+      "family": "Cyperaceae",
+      "sciname": "Schoenoplectus acutus",
+      "parenttid": 1410,
+      "author": "(Muhl. ex Bigelow) \u00c3\ufffd. L\u00c3\u00b6ve & D. L\u00c3\u00b6ve",
+      "imgid": 24081538,
+      "vernacular": { "basename": "bulrush", "names": ["hardstem bulrush"] },
+      "image": "/imglib/misc/201905/DIG29026_1558125881_tn.jpg"
+    },
+    {
+      "tid": 8214,
+      "family": "Cyperaceae",
+      "sciname": "Schoenoplectus pungens",
+      "parenttid": 1410,
+      "author": "(Vahl) Palla",
+      "imgid": 23802785,
+      "vernacular": {
+        "basename": "bulrush",
+        "names": [
+          "common three-square",
+          "common three-square bulrush",
+          "western bulrush"
+        ]
+      },
+      "image": "/imglib/misc/201801/DIG47877_1516993331_tn.jpg"
+    },
+    {
+      "tid": 8217,
+      "family": "Cyperaceae",
+      "sciname": "Schoenoplectus tabernaemontani",
+      "parenttid": 1410,
+      "author": "(C.C. Gmel.) Palla",
+      "imgid": 23741224,
+      "vernacular": {
+        "basename": "tule",
+        "names": ["tule", "soft-stem bulrush"]
+      },
+      "image": "/imglib/_OFPFP/201704/DIG2745_1492398964_tn.jpg"
+    },
+    {
+      "tid": 8240,
+      "family": "Cyperaceae",
+      "sciname": "Scirpus microcarpus",
+      "parenttid": 1412,
+      "author": "J. Presl & C. Presl",
+      "imgid": 23758844,
+      "vernacular": {
+        "basename": "bulrush",
+        "names": ["small-fruited bulrush"]
+      },
+      "image": "/imglib/OF_FP/201905/DIG15279_1558125673_tn.jpg"
+    },
+    {
+      "tid": 4671,
+      "family": "Dryopteridaceae",
+      "sciname": "Dryopteris expansa",
+      "parenttid": 732,
+      "author": "(C. Presl) Fraser-Jenk. & Jermy",
+      "imgid": 23746452,
+      "vernacular": {
+        "basename": "wood fern",
+        "names": ["spreading wood fern", "northern wood fern"]
+      },
+      "image": "/imglib/OF_FP/201905/DIG7366_1558125743_tn.jpg"
+    },
+    {
+      "tid": 4672,
+      "family": "Dryopteridaceae",
+      "sciname": "Dryopteris filix-mas",
+      "parenttid": 732,
+      "author": "(L.) Schott",
+      "imgid": 25918080,
+      "vernacular": { "basename": "fern", "names": ["male fern"] },
+      "image": "/imglib/OF_FP/202010/DIG51398_1602356850_tn.jpg"
+    },
+    {
+      "tid": 7561,
+      "family": "Dryopteridaceae",
+      "sciname": "Polystichum munitum",
+      "parenttid": 1309,
+      "author": "(Kaulf.) C. Presl",
+      "imgid": 23769345,
+      "vernacular": {
+        "basename": "sword fern",
+        "names": ["common sword fern", "western sword fern"]
+      },
+      "image": "/imglib/OF_FP/201905/DIG21774_1558124709_tn.jpg"
+    },
+    {
+      "tid": 2877,
+      "family": "Ericaceae",
+      "sciname": "Arbutus menziesii",
+      "parenttid": 422,
+      "author": "Pursh",
+      "imgid": 23749134,
+      "vernacular": { "basename": "madrone", "names": ["Pacific madrone"] },
+      "image": "/imglib/OF_FP/201905/ARB_MEN_268B_1558125688_tn.jpg"
+    },
+    {
+      "tid": 2894,
+      "family": "Ericaceae",
+      "sciname": "Arctostaphylos columbiana",
+      "parenttid": 425,
+      "author": "Piper",
+      "imgid": 23773038,
+      "vernacular": {
+        "basename": "manzanita",
+        "names": ["hairy manzanita", "Columbia manzanita", "bristly manzanita"]
+      },
+      "image": "/imglib/OF_FP/201905/DIG23181_1558125683_tn.jpg"
+    },
+    {
+      "tid": 2900,
+      "family": "Ericaceae",
+      "sciname": "Arctostaphylos nevadensis",
+      "parenttid": 425,
+      "author": "A. Gray",
+      "imgid": 23780727,
+      "vernacular": { "basename": "manzanita", "names": ["pinemat manzanita"] },
+      "image": "/imglib/_OFPFP/201704/DIG29754_1492398588_tn.jpg"
+    },
+    {
+      "tid": 2907,
+      "family": "Ericaceae",
+      "sciname": "Arctostaphylos uva-ursi",
+      "parenttid": 425,
+      "author": "(L.) Spreng.",
+      "imgid": 23749141,
+      "vernacular": {
+        "basename": "kinnikinnick",
+        "names": ["kinnikinnick", "bearberry"]
+      },
+      "image": "/imglib/OF_FP/201905/ARC_UVA_2064B_1558125680_tn.jpg"
+    },
+    {
+      "tid": 5285,
+      "family": "Ericaceae",
+      "sciname": "Gaultheria shallon",
+      "parenttid": 834,
+      "author": "Pursh",
+      "imgid": 23749166,
+      "vernacular": { "basename": "salal", "names": ["salal"] },
+      "image": "/imglib/OF_FP/201905/GAU_SHA_4325B_1558125742_tn.jpg"
+    },
+    {
+      "tid": 7850,
+      "family": "Ericaceae",
+      "sciname": "Rhododendron macrophyllum",
+      "parenttid": 1362,
+      "author": "D. Don",
+      "imgid": 23749244,
+      "vernacular": {
+        "basename": "rhododendron",
+        "names": ["Pacific rhododendron", "western rhododendron"]
+      },
+      "image": "/imglib/OF_FP/201905/RHO_MAC_1994B_1558125655_tn.jpg"
+    },
+    {
+      "tid": 7852,
+      "family": "Ericaceae",
+      "sciname": "Rhododendron occidentale",
+      "parenttid": 1362,
+      "author": "(Torr. & A. Gray) A. Gray",
+      "imgid": 23749251,
+      "vernacular": { "basename": "azalea", "names": ["western azalea"] },
+      "image": "/imglib/OF_FP/201905/RHO_OCC_0211B_1558125642_tn.jpg"
+    },
+    {
+      "tid": 9018,
+      "family": "Ericaceae",
+      "sciname": "Vaccinium ovatum",
+      "parenttid": 1577,
+      "author": "Pursh",
+      "imgid": 23749263,
+      "vernacular": {
+        "basename": "huckleberry",
+        "names": ["evergreen huckleberry", "California huckleberry"]
+      },
+      "image": "/imglib/OF_FP/201905/VAC_OVAT_2004B_1558125753_tn.jpg"
+    },
+    {
+      "tid": 9020,
+      "family": "Ericaceae",
+      "sciname": "Vaccinium parvifolium",
+      "parenttid": 1577,
+      "author": "Sm.",
+      "imgid": 23785473,
+      "vernacular": { "basename": "huckleberry", "names": ["red huckleberry"] },
+      "image": "/imglib/OF_FP/201905/DIG34216_1558124590_tn.jpg"
+    },
+    {
+      "tid": 4470,
+      "family": "Fabaceae",
+      "sciname": "Dalea ornata",
+      "parenttid": 689,
+      "author": "(Douglas ex Hook.) Eaton & Wright",
+      "imgid": 23739331,
+      "vernacular": {
+        "basename": "dalea",
+        "names": ["western prairie clover", "ornate dalea"]
+      },
+      "image": "/imglib/_OFPFP/201704/07F88_454_PETALOSTEMON_ORNATUM_1492398650_tn.jpg"
+    },
+    {
+      "tid": 6292,
+      "family": "Fabaceae",
+      "sciname": "Lupinus albicaulis",
+      "parenttid": 1060,
+      "author": "Douglas ex Hook.",
+      "imgid": 23784401,
+      "vernacular": {
+        "basename": "lupine",
+        "names": ["sickle-keeled lupine", "pine lupine"]
+      },
+      "image": "/imglib/OF_FP/201905/DIG33375_1558125030_tn.jpg"
+    },
+    {
+      "tid": 6303,
+      "family": "Fabaceae",
+      "sciname": "Lupinus argenteus",
+      "parenttid": 1060,
+      "author": "Pursh",
+      "imgid": 23800820,
+      "vernacular": { "basename": "lupine", "names": ["silvery lupine"] },
+      "image": "/imglib/misc/201801/DIG46020_1516993312_tn.jpg"
+    },
+    {
+      "tid": 6328,
+      "family": "Fabaceae",
+      "sciname": "Lupinus leucophyllus",
+      "parenttid": 1060,
+      "author": "Douglas ex Lindl.",
+      "imgid": 23760516,
+      "vernacular": {
+        "basename": "lupine",
+        "names": ["velvet lupine", "woolly-leaved lupine"]
+      },
+      "image": "/imglib/_OFPFP/201704/LUP_LEU_3678B_1492398892_tn.jpg"
+    },
+    {
+      "tid": 6347,
+      "family": "Fabaceae",
+      "sciname": "Lupinus polyphyllus",
+      "parenttid": 1060,
+      "author": "Lindl.",
+      "imgid": 23755575,
+      "vernacular": { "basename": "lupine", "names": ["bigleaf lupine"] },
+      "image": "/imglib/OF_FP/201905/08AL00606_1558125764_tn.jpg"
+    },
+    {
+      "tid": 6351,
+      "family": "Fabaceae",
+      "sciname": "Lupinus rivularis",
+      "parenttid": 1060,
+      "author": "Douglas ex Lindl.",
+      "imgid": 23749504,
+      "vernacular": { "basename": "lupine", "names": ["riverbank lupine"] },
+      "image": "/imglib/OF_FP/201905/LUP_RIV_1956B_1558125672_tn.jpg"
+    },
+    {
+      "tid": 9096,
+      "family": "Fabaceae",
+      "sciname": "Vicia americana",
+      "parenttid": 1590,
+      "author": "Muhl.",
+      "imgid": 23749611,
+      "vernacular": { "basename": "vetch", "names": ["American vetch"] },
+      "image": "/imglib/_OFPFP/201704/VIC_AME_0696_1B_1492399440_tn.jpg"
+    },
+    {
+      "tid": 7768,
+      "family": "Fagaceae",
+      "sciname": "Quercus chrysolepis",
+      "parenttid": 1350,
+      "author": "Liebm.",
+      "imgid": 23754170,
+      "vernacular": { "basename": "oak", "names": ["canyon live oak"] },
+      "image": "/imglib/OF_FP/201905/DIG13743_1558125672_tn.jpg"
+    },
+    {
+      "tid": 7771,
+      "family": "Fagaceae",
+      "sciname": "Quercus garryana",
+      "parenttid": 1350,
+      "author": "Douglas ex Hook.",
+      "imgid": 23745580,
+      "vernacular": {
+        "basename": "oak",
+        "names": ["Oregon white oak", "Garry oak"]
+      },
+      "image": "/imglib/OF_FP/201905/DSCN3032_1558124636_tn.jpg"
+    },
+    {
+      "tid": 5278,
+      "family": "Garryaceae",
+      "sciname": "Garrya elliptica",
+      "parenttid": 832,
+      "author": "Douglas ex Lindl.",
+      "imgid": 23782977,
+      "vernacular": {
+        "basename": "silk tassel",
+        "names": ["wavyleaf silk tassel", "coast silk tassel"]
+      },
+      "image": "/imglib/OF_FP/201905/DIG31988_1558125657_tn.jpg"
+    },
+    {
+      "tid": 5329,
+      "family": "Geraniaceae",
+      "sciname": "Geranium oreganum",
+      "parenttid": 841,
+      "author": "Howell",
+      "imgid": 23760732,
+      "vernacular": {
+        "basename": "geranium",
+        "names": ["Oregon geranium", "western geranium"]
+      },
+      "image": "/imglib/OF_FP/201905/GER_ORE_2717B_1558124986_tn.jpg"
+    },
+    {
+      "tid": 5335,
+      "family": "Geraniaceae",
+      "sciname": "Geranium viscosissimum",
+      "parenttid": 841,
+      "author": "Fisch. & C.A. Mey.",
+      "imgid": 23783005,
+      "vernacular": {
+        "basename": "geranium",
+        "names": ["sticky geranium", "Rydberg's geranium"]
+      },
+      "image": "/imglib/_OFPFP/201704/DIG32016_1492399576_tn.jpg"
+    },
+    {
+      "tid": 7863,
+      "family": "Grossulariaceae",
+      "sciname": "Ribes aureum",
+      "parenttid": 1366,
+      "author": "Pursh",
+      "imgid": 23800025,
+      "vernacular": { "basename": "currant", "names": ["golden currant"] },
+      "image": "/imglib/misc/201801/DIG45229_1516993257_tn.jpg"
+    },
+    {
+      "tid": 7865,
+      "family": "Grossulariaceae",
+      "sciname": "Ribes bracteosum",
+      "parenttid": 1366,
+      "author": "Douglas",
+      "imgid": 23760772,
+      "vernacular": {
+        "basename": "currant",
+        "names": ["stink currant", "blue currant"]
+      },
+      "image": "/imglib/OF_FP/201905/RIB_BRA_1789B_1558125724_tn.jpg"
+    },
+    {
+      "tid": 7869,
+      "family": "Grossulariaceae",
+      "sciname": "Ribes divaricatum",
+      "parenttid": 1366,
+      "author": "Douglas",
+      "imgid": 23744096,
+      "vernacular": {
+        "basename": "gooseberry",
+        "names": ["spreading gooseberry", "straggly gooseberry"]
+      },
+      "image": "/imglib/OF_FP/201905/AL00296_1558124632_tn.jpg"
+    },
+    {
+      "tid": 7879,
+      "family": "Grossulariaceae",
+      "sciname": "Ribes lacustre",
+      "parenttid": 1366,
+      "author": "(Pers.) Poir.",
+      "imgid": 23760795,
+      "vernacular": {
+        "basename": "currant",
+        "names": ["swamp gooseberry", "swamp currant"]
+      },
+      "image": "/imglib/OF_FP/201905/RIB_LAC_5473B_1558124815_tn.jpg"
+    },
+    {
+      "tid": 7892,
+      "family": "Grossulariaceae",
+      "sciname": "Ribes sanguineum",
+      "parenttid": 1366,
+      "author": "Pursh",
+      "imgid": 23746615,
+      "vernacular": {
+        "basename": "currant",
+        "names": ["red-flowering currant"]
+      },
+      "image": "/imglib/OF_FP/201905/DIG7515_1558124585_tn.jpg"
+    },
+    {
+      "tid": 7208,
+      "family": "Hydrangeaceae",
+      "sciname": "Philadelphus lewisii",
+      "parenttid": 1255,
+      "author": "Pursh",
+      "imgid": 23760825,
+      "vernacular": {
+        "basename": "mock orange",
+        "names": ["Lewis' mock orange", "wild mock orange"]
+      },
+      "image": "/imglib/OF_FP/201905/PHI_LEW_3544B_1558125640_tn.jpg"
+    },
+    {
+      "tid": 5686,
+      "family": "Hydrophyllaceae",
+      "sciname": "Hydrophyllum tenuipes",
+      "parenttid": 937,
+      "author": "A. Heller",
+      "imgid": 23749672,
+      "vernacular": {
+        "basename": "waterleaf",
+        "names": ["Pacific waterleaf", "slender-stemmed waterleaf"]
+      },
+      "image": "/imglib/OF_FP/201905/HYD_TEN_2132B_1558125668_tn.jpg"
+    },
+    {
+      "tid": 5739,
+      "family": "Iridaceae",
+      "sciname": "Iris douglasiana",
+      "parenttid": 954,
+      "author": "Herb.",
+      "imgid": 23790374,
+      "vernacular": { "basename": "iris", "names": ["Douglas iris"] },
+      "image": "/imglib/OF_FP/201905/15DIG24607_1558125683_tn.jpg"
+    },
+    {
+      "tid": 5745,
+      "family": "Iridaceae",
+      "sciname": "Iris missouriensis",
+      "parenttid": 954,
+      "author": "Nutt.",
+      "imgid": 23786912,
+      "vernacular": {
+        "basename": "iris",
+        "names": ["western blue flag", "Rocky Mountain iris"]
+      },
+      "image": "/imglib/_OFPFP/201704/DIG35618_1492398421_tn.jpg"
+    },
+    {
+      "tid": 5747,
+      "family": "Iridaceae",
+      "sciname": "Iris tenax",
+      "parenttid": 954,
+      "author": "Douglas ex Lindl.",
+      "imgid": 23742822,
+      "vernacular": {
+        "basename": "iris",
+        "names": ["tough-leaf iris", "Oregon iris"]
+      },
+      "image": "/imglib/OF_FP/201905/DIG4114_1558125741_tn.jpg"
+    },
+    {
+      "tid": 8446,
+      "family": "Iridaceae",
+      "sciname": "Sisyrinchium bellum",
+      "parenttid": 1444,
+      "author": "S. Watson",
+      "imgid": 23749770,
+      "vernacular": {
+        "basename": "blue-eyed grass",
+        "names": ["western blue-eyed grass", "beautiful blue-eyed grass"]
+      },
+      "image": "/imglib/OF_FP/201905/SIS_BEL_1475B_1558125707_tn.jpg"
+    },
+    {
+      "tid": 8447,
+      "family": "Iridaceae",
+      "sciname": "Sisyrinchium californicum",
+      "parenttid": 1444,
+      "author": "(Ker Gawlowska) W.T. Aiton",
+      "imgid": 23769632,
+      "vernacular": {
+        "basename": "golden-eyed grass",
+        "names": ["golden-eyed grass"]
+      },
+      "image": "/imglib/OF_FP/201905/DIG22104_1558124801_tn.jpg"
+    },
+    {
+      "tid": 8451,
+      "family": "Iridaceae",
+      "sciname": "Sisyrinchium idahoense",
+      "parenttid": 1444,
+      "author": "E.P. Bicknell",
+      "imgid": 23795234,
+      "vernacular": {
+        "basename": "blue-eyed grass",
+        "names": ["Idaho blue-eyed grass"]
+      },
+      "image": "/imglib/OF_FP/201905/DIG43882_1558124707_tn.jpg"
+    },
+    {
+      "tid": 5788,
+      "family": "Juncaceae",
+      "sciname": "Juncus balticus",
+      "parenttid": 965,
+      "author": "Willd.",
+      "imgid": 24081540,
+      "vernacular": { "basename": "rush", "names": ["Baltic rush"] },
+      "image": "/imglib/misc/201905/DIG12751_1558125886_tn.jpg"
+    },
+    {
+      "tid": 5809,
+      "family": "Juncaceae",
+      "sciname": "Juncus effusus",
+      "parenttid": 965,
+      "author": "L.",
+      "imgid": 24081539,
+      "vernacular": {
+        "basename": "rush",
+        "names": ["pasture rush", "soft rush"]
+      },
+      "image": "/imglib/misc/201905/DIG12758_1558125914_tn.jpg"
+    },
+    {
+      "tid": 5810,
+      "family": "Juncaceae",
+      "sciname": "Juncus ensifolius",
+      "parenttid": 965,
+      "author": "Wickstr.",
+      "imgid": 23774498,
+      "vernacular": {
+        "basename": "rush",
+        "names": ["dagger-leaved rush", "swordleaf rush"]
+      },
+      "image": "/imglib/OF_FP/201905/DIG24641_1558125639_tn.jpg"
+    },
+    {
+      "tid": 5838,
+      "family": "Juncaceae",
+      "sciname": "Juncus patens",
+      "parenttid": 965,
+      "author": "E. Mey.",
+      "imgid": 23792839,
+      "vernacular": {
+        "basename": "rush",
+        "names": ["gray rush", "spreading rush"]
+      },
+      "image": "/imglib/OF_FP/201905/DIG41751_1558125732_tn.jpg"
+    },
+    {
+      "tid": 5849,
+      "family": "Juncaceae",
+      "sciname": "Juncus tenuis",
+      "parenttid": 965,
+      "author": "Willd.",
+      "imgid": 23783231,
+      "vernacular": {
+        "basename": "rush",
+        "names": ["path rush", "poverty rush", "slender rush"]
+      },
+      "image": "/imglib/OF_FP/201905/DIG32242_1558125708_tn.jpg"
+    },
+    {
+      "tid": 4178,
+      "family": "Lamiaceae",
+      "sciname": "Clinopodium douglasii",
+      "parenttid": 619,
+      "author": "(Benth.) Kuntze",
+      "imgid": 23760921,
+      "vernacular": {
+        "basename": "tea",
+        "names": ["yerba buena", "Oregon tea"]
+      },
+      "image": "/imglib/OF_FP/201905/SAT_DOU_3950B_1558124663_tn.jpg"
+    },
+    {
+      "tid": 6679,
+      "family": "Lamiaceae",
+      "sciname": "Monardella odoratissima",
+      "parenttid": 1124,
+      "author": "Benth.",
+      "imgid": 23775004,
+      "vernacular": {
+        "basename": "pennyroyal",
+        "names": [
+          "mountain monardella",
+          "western mountain balm",
+          "mountain coyotemint",
+          "mountain pennyroyal"
+        ]
+      },
+      "image": "/imglib/_OFPFP/201704/DIG25147_1492398366_tn.jpg"
+    },
+    {
+      "tid": 7672,
+      "family": "Lamiaceae",
+      "sciname": "Prunella vulgaris",
+      "parenttid": 1323,
+      "author": "L.",
+      "imgid": 24081541,
+      "vernacular": {
+        "basename": "heal-all",
+        "names": ["common self-heal", "common heal-all"]
+      },
+      "image": "/imglib/misc/201905/PRU_VUL_LAN_3119B_1558125859_tn.jpg"
+    },
+    {
+      "tid": 8110,
+      "family": "Lamiaceae",
+      "sciname": "Salvia dorrii",
+      "parenttid": 1390,
+      "author": "(Kellogg) Abrams",
+      "imgid": 23800158,
+      "vernacular": {
+        "basename": "sage",
+        "names": ["purple sage", "mint sage", "tobacco sage"]
+      },
+      "image": "/imglib/misc/201801/DIG45358_1516993266_tn.jpg"
+    },
+    {
+      "tid": 8277,
+      "family": "Lamiaceae",
+      "sciname": "Scutellaria angustifolia",
+      "parenttid": 1422,
+      "author": "Pursh",
+      "imgid": 23755311,
+      "vernacular": {
+        "basename": "skullcap",
+        "names": ["narrow-leaved skullcap"]
+      },
+      "image": "/imglib/_OFPFP/201704/SL003JUN03008_1492399030_tn.jpg"
+    },
+    {
+      "tid": 8985,
+      "family": "Lauraceae",
+      "sciname": "Umbellularia californica",
+      "parenttid": 1571,
+      "author": "(Hook. & Arn.) Nutt.",
+      "imgid": 23760990,
+      "vernacular": {
+        "basename": "bay",
+        "names": ["Oregon myrtle", "California laurel", "California bay"]
+      },
+      "image": "/imglib/OF_FP/201905/UMB_CAL_0803B_1558125691_tn.jpg"
+    },
+    {
+      "tid": 3524,
+      "family": "Liliaceae",
+      "sciname": "Calochortus tolmiei",
+      "parenttid": 524,
+      "author": "Hook. & Arn.",
+      "imgid": 23749885,
+      "vernacular": {
+        "basename": "cat's ear",
+        "names": ["Tolmie's cat's ear"]
+      },
+      "image": "/imglib/OF_FP/201905/CAL_TOL_0695B_1558125754_tn.jpg"
+    },
+    {
+      "tid": 5078,
+      "family": "Liliaceae",
+      "sciname": "Erythronium oregonum",
+      "parenttid": 790,
+      "author": "Applegate",
+      "imgid": 23749967,
+      "vernacular": { "basename": "fawn-lily", "names": ["Oregon fawn-lily"] },
+      "image": "/imglib/OF_FP/201905/ERY_ORE_0889B_1558125673_tn.jpg"
+    },
+    {
+      "tid": 5219,
+      "family": "Liliaceae",
+      "sciname": "Fritillaria affinis",
+      "parenttid": 823,
+      "author": "(Schult.) Sealy",
+      "imgid": 23757672,
+      "vernacular": {
+        "basename": "mission bells",
+        "names": ["checker-lily", "mission bells", "chocolate lily"]
+      },
+      "image": "/imglib/OF_FP/201905/09FRIAFF_HAL00019_FL_1558125022_tn.jpg"
+    },
+    {
+      "tid": 5226,
+      "family": "Liliaceae",
+      "sciname": "Fritillaria pudica",
+      "parenttid": 823,
+      "author": "(Pursh) Spreng.",
+      "imgid": 23749985,
+      "vernacular": {
+        "basename": "yellow bells",
+        "names": ["yellow bells", "yellow fritillary"]
+      },
+      "image": "/imglib/_OFPFP/201704/FRI_PUD_9358B_1492398482_tn.jpg"
+    },
+    {
+      "tid": 6076,
+      "family": "Liliaceae",
+      "sciname": "Lilium columbianum",
+      "parenttid": 1029,
+      "author": "Hanson",
+      "imgid": 23761024,
+      "vernacular": {
+        "basename": "lily",
+        "names": ["Columbia lily", "Oregon lily", "tiger lily"]
+      },
+      "image": "/imglib/OF_FP/201905/LIL_COL_4541B_1558125739_tn.jpg"
+    },
+    {
+      "tid": 7668,
+      "family": "Liliaceae",
+      "sciname": "Prosartes hookeri",
+      "parenttid": 1322,
+      "author": "Torr.",
+      "imgid": 23750048,
+      "vernacular": {
+        "basename": "drops-of-gold",
+        "names": ["Hooker's fairybells", "drops-of-gold", "Oregon fairybells"]
+      },
+      "image": "/imglib/OF_FP/201905/PRO_HOO_2353B_1558125025_tn.jpg"
+    },
+    {
+      "tid": 6124,
+      "family": "Linaceae",
+      "sciname": "Linum lewisii",
+      "parenttid": 1039,
+      "author": "Pursh",
+      "imgid": 24081542,
+      "vernacular": {
+        "basename": "blue flax",
+        "names": ["wild blue flax", "western blue flax"]
+      },
+      "image": "/imglib/misc/201905/LINUM_LEWISII1_1558125825_tn.jpg"
+    },
+    {
+      "tid": 6120,
+      "family": "Linnaeaceae",
+      "sciname": "Linnaea borealis",
+      "parenttid": 1038,
+      "author": "L.",
+      "imgid": 24081543,
+      "vernacular": {
+        "basename": "twinflower",
+        "names": ["western twinflower"]
+      },
+      "image": "/imglib/misc/201905/LIN_BOR_LON_5105B_1558125853_tn.jpg"
+    },
+    {
+      "tid": 6533,
+      "family": "Loasaceae",
+      "sciname": "Mentzelia laevicaulis",
+      "parenttid": 1097,
+      "author": "(Douglas) Torr. & A. Gray",
+      "imgid": 23761091,
+      "vernacular": {
+        "basename": "blazingstar",
+        "names": ["smooth-stem blazingstar"]
+      },
+      "image": "/imglib/_OFPFP/201704/MEN_LAE_5681B_1492399507_tn.jpg"
+    },
+    {
+      "tid": 5720,
+      "family": "Malvaceae",
+      "sciname": "Iliamna rivularis",
+      "parenttid": 949,
+      "author": "(Douglas) Greene",
+      "imgid": 23768633,
+      "vernacular": {
+        "basename": "hollyhock",
+        "names": [
+          "streambank globemallow",
+          "mountain hollyhock",
+          "streambank wild hollyhock"
+        ]
+      },
+      "image": "/imglib/_OFPFP/201704/DIG21103_1492399428_tn.jpg"
+    },
+    {
+      "tid": 8377,
+      "family": "Malvaceae",
+      "sciname": "Sidalcea campestris",
+      "parenttid": 1437,
+      "author": "Greene",
+      "imgid": 23761140,
+      "vernacular": {
+        "basename": "checkermallow",
+        "names": ["meadow checkermallow"]
+      },
+      "image": "/imglib/OF_FP/201905/SID_CAM_3064B_1558124921_tn.jpg"
+    },
+    {
+      "tid": 8378,
+      "family": "Malvaceae",
+      "sciname": "Sidalcea cusickii",
+      "parenttid": 1437,
+      "author": "Piper",
+      "imgid": 23743465,
+      "vernacular": {
+        "basename": "checkermallow",
+        "names": ["Cusick's sidalcea", "Cusick's checkermallow"]
+      },
+      "image": "/imglib/OF_FP/201905/DIG4754_1558125735_tn.jpg"
+    },
+    {
+      "tid": 8386,
+      "family": "Malvaceae",
+      "sciname": "Sidalcea malviflora",
+      "parenttid": 1437,
+      "author": "(DC.) A. Gray ex Benth.",
+      "imgid": 28039366,
+      "vernacular": {
+        "basename": "checkerbloom",
+        "names": ["checkerbloom", "checkermallow"]
+      },
+      "image": "https://oregonflora.org/imglib/OF_FP/DIG60/DIG60299_tn.jpg"
+    },
+    {
+      "tid": 8390,
+      "family": "Malvaceae",
+      "sciname": "Sidalcea oregana",
+      "parenttid": 1437,
+      "author": "(Nutt. ex Torr. & A. Gray) A. Gray",
+      "imgid": 24081545,
+      "vernacular": {
+        "basename": "checkermallow",
+        "names": ["Oregon checkermallow"]
+      },
+      "image": "/imglib/misc/201905/DIG22084_1558125896_tn.jpg"
+    },
+    {
+      "tid": 8556,
+      "family": "Malvaceae",
+      "sciname": "Sphaeralcea munroana",
+      "parenttid": 1464,
+      "author": "(Douglas ex Lindl.) Spach",
+      "imgid": 23769679,
+      "vernacular": {
+        "basename": "globemallow",
+        "names": ["Munro's globemallow", "white-stemmed globemallow"]
+      },
+      "image": "/imglib/_OFPFP/201704/DIG22165_1492399423_tn.jpg"
+    },
+    {
+      "tid": 8932,
+      "family": "Melanthiaceae",
+      "sciname": "Trillium albidum",
+      "parenttid": 1553,
+      "author": "J.D. Freeman",
+      "imgid": 23743733,
+      "vernacular": {
+        "basename": "trillium",
+        "names": ["giant trillium", "sessile trillium"]
+      },
+      "image": "/imglib/OF_FP/201905/DIG4874_1558124707_tn.jpg"
+    },
+    {
+      "tid": 8936,
+      "family": "Melanthiaceae",
+      "sciname": "Trillium ovatum",
+      "parenttid": 1553,
+      "author": "Pursh",
+      "imgid": 24081544,
+      "vernacular": { "basename": "trillium", "names": ["western trillium"] },
+      "image": "/imglib/misc/201905/TRI_OVA_OVA_4175B_1558125854_tn.jpg"
+    },
+    {
+      "tid": 9195,
+      "family": "Melanthiaceae",
+      "sciname": "Xerophyllum tenax",
+      "parenttid": 1612,
+      "author": "(Pursh) Nutt.",
+      "imgid": 23750159,
+      "vernacular": {
+        "basename": "bear-grass",
+        "names": ["bear-grass", "beargrass", "western turkeybeard"]
+      },
+      "image": "/imglib/OF_FP/201905/XER_TEN_3205B_1558125686_tn.jpg"
+    },
+    {
+      "tid": 4163,
+      "family": "Montiaceae",
+      "sciname": "Claytonia sibirica",
+      "parenttid": 615,
+      "author": "L.",
+      "imgid": 23762574,
+      "vernacular": { "basename": "candyflower", "names": ["candyflower"] },
+      "image": "/imglib/OF_FP/201905/CLA_SIB_2183B_1558125687_tn.jpg"
+    },
+    {
+      "tid": 6044,
+      "family": "Montiaceae",
+      "sciname": "Lewisia cotyledon",
+      "parenttid": 1021,
+      "author": "(S. Watson) B.L. Rob.",
+      "imgid": 23790767,
+      "vernacular": { "basename": "lewisia", "names": ["Siskiyou lewisia"] },
+      "image": "/imglib/_OFPFP/201704/15LEW_COT_MAC_4572B_1492398558_tn.jpg"
+    },
+    {
+      "tid": 6051,
+      "family": "Montiaceae",
+      "sciname": "Lewisia rediviva",
+      "parenttid": 1021,
+      "author": "Pursh",
+      "imgid": 23762584,
+      "vernacular": {
+        "basename": "resurrection flower",
+        "names": ["bitterroot", "resurrection flower"]
+      },
+      "image": "/imglib/_OFPFP/201704/LEW_RED_0423B_1492399194_tn.jpg"
+    },
+    {
+      "tid": 6708,
+      "family": "Myricaceae",
+      "sciname": "Morella californica",
+      "parenttid": 1129,
+      "author": "(Cham. & Schltdl.) Wilbur",
+      "imgid": 23790368,
+      "vernacular": {
+        "basename": "wax myrtle",
+        "names": ["Pacific wax myrtle", "western wax myrtle"]
+      },
+      "image": "/imglib/OF_FP/201905/15DIG21441_1558125745_tn.jpg"
+    },
+    {
+      "tid": 5214,
+      "family": "Oleaceae",
+      "sciname": "Fraxinus latifolia",
+      "parenttid": 821,
+      "author": "Benth.",
+      "imgid": 23761228,
+      "vernacular": { "basename": "ash", "names": ["Oregon ash"] },
+      "image": "/imglib/OF_FP/201905/FRA_LAT_5873B_1558125640_tn.jpg"
+    },
+    {
+      "tid": 15145,
+      "family": "Onagraceae",
+      "sciname": "Chamaenerion angustifolium",
+      "parenttid": 15372,
+      "author": "(L.) Scop.",
+      "imgid": 24081546,
+      "vernacular": { "basename": "fireweed", "names": ["fireweed"] },
+      "image": "/imglib/misc/201905/CHA_ANG_CAN_4659B_1558125854_tn.jpg"
+    },
+    {
+      "tid": 4146,
+      "family": "Onagraceae",
+      "sciname": "Clarkia rhomboidea",
+      "parenttid": 614,
+      "author": "Douglas ex Hook.",
+      "imgid": 23761282,
+      "vernacular": {
+        "basename": "clarkia",
+        "names": [
+          "diamond clarkia",
+          "common clarkia",
+          "rhombic petaled clarkia"
+        ]
+      },
+      "image": "/imglib/_OFPFP/201704/CLA_RHO_4727B_1492399498_tn.jpg"
+    },
+    {
+      "tid": 6851,
+      "family": "Onagraceae",
+      "sciname": "Oenothera elata",
+      "parenttid": 1177,
+      "author": "Kunth",
+      "imgid": 26968447,
+      "vernacular": {
+        "basename": "evening primrose",
+        "names": ["western evening primrose"]
+      },
+      "image": "/imglib/_OFPFP/201704/DIG21483_1492399149_tn.jpg"
+    },
+    {
+      "tid": 4286,
+      "family": "Papaveraceae",
+      "sciname": "Corydalis scouleri",
+      "parenttid": 652,
+      "author": "Hook.",
+      "imgid": 23760618,
+      "vernacular": {
+        "basename": "corydalis",
+        "names": ["Scouler's corydalis", "western corydalis"]
+      },
+      "image": "/imglib/OF_FP/201905/COR_SCO_0882B_1558125664_tn.jpg"
+    },
+    {
+      "tid": 4546,
+      "family": "Papaveraceae",
+      "sciname": "Dicentra formosa",
+      "parenttid": 706,
+      "author": "(Haw.) Walp.",
+      "imgid": 23781799,
+      "vernacular": {
+        "basename": "bleeding heart",
+        "names": ["Pacific bleeding heart", "Oregon bleeding heart"]
+      },
+      "image": "/imglib/OF_FP/201905/DIG30827_1558124652_tn.jpg"
+    },
+    {
+      "tid": 5084,
+      "family": "Papaveraceae",
+      "sciname": "Eschscholzia californica",
+      "parenttid": 793,
+      "author": "Cham.",
+      "imgid": 23752839,
+      "vernacular": {
+        "basename": "poppy",
+        "names": ["California poppy", "golden poppy"]
+      },
+      "image": "/imglib/OF_FP/201905/DIG12411_1558125734_tn.jpg"
+    },
+    {
+      "tid": 5044,
+      "family": "Phrymaceae",
+      "sciname": "Erythranthe cardinalis",
+      "parenttid": 789,
+      "author": "(Douglas ex Benth.) Spach",
+      "imgid": 23761710,
+      "vernacular": {
+        "basename": "monkeyflower",
+        "names": ["scarlet monkeyflower", "cardinal monkeyflower"]
+      },
+      "image": "/imglib/OF_FP/201905/MIM_CAR_5553B_1558125704_tn.jpg"
+    },
+    {
+      "tid": 5049,
+      "family": "Phrymaceae",
+      "sciname": "Erythranthe guttata",
+      "parenttid": 789,
+      "author": "(Fisch. ex DC.) G.L. Nesom",
+      "imgid": 23757998,
+      "vernacular": {
+        "basename": "monkeyflower",
+        "names": ["common monkeyflower", "seep monkeyflower"]
+      },
+      "image": "/imglib/OF_FP/201905/09SL048MAR0903_1558124913_tn.jpg"
+    },
+    {
+      "tid": 2380,
+      "family": "Pinaceae",
+      "sciname": "Abies grandis",
+      "parenttid": 329,
+      "author": "(Douglas ex D. Don) Lindl.",
+      "imgid": 23746692,
+      "vernacular": { "basename": "fir", "names": ["grand fir"] },
+      "image": "/imglib/OF_FP/201905/DIG7590_1558125738_tn.jpg"
+    },
+    {
+      "tid": 2386,
+      "family": "Pinaceae",
+      "sciname": "Abies procera",
+      "parenttid": 329,
+      "author": "Rehder",
+      "imgid": 23767517,
+      "vernacular": { "basename": "fir", "names": ["noble fir"] },
+      "image": "/imglib/OF_FP/201905/DIG19993_1558125709_tn.jpg"
+    },
+    {
+      "tid": 7286,
+      "family": "Pinaceae",
+      "sciname": "Picea sitchensis",
+      "parenttid": 1274,
+      "author": "(Bong.) Carri\u00c3\u00a8re",
+      "imgid": 23769253,
+      "vernacular": { "basename": "spruce", "names": ["Sitka spruce"] },
+      "image": "/imglib/OF_FP/201905/DIG21705_1558125677_tn.jpg"
+    },
+    {
+      "tid": 7301,
+      "family": "Pinaceae",
+      "sciname": "Pinus contorta",
+      "parenttid": 1281,
+      "author": "Douglas ex Loudon",
+      "imgid": 23744683,
+      "vernacular": {
+        "basename": "pine",
+        "names": ["lodgepole pine", "shore pine"]
+      },
+      "image": "/imglib/OF_FP/201905/AL03171_1558124810_tn.jpg"
+    },
+    {
+      "tid": 7309,
+      "family": "Pinaceae",
+      "sciname": "Pinus ponderosa",
+      "parenttid": 1281,
+      "author": "Douglas ex C. Lawson",
+      "imgid": 23746742,
+      "vernacular": { "basename": "pine", "names": ["ponderosa pine"] },
+      "image": "/imglib/OF_FP/201905/DIG7640_1558125711_tn.jpg"
+    },
+    {
+      "tid": 7702,
+      "family": "Pinaceae",
+      "sciname": "Pseudotsuga menziesii",
+      "parenttid": 1332,
+      "author": "(Mirb.) Franco",
+      "imgid": 23745562,
+      "vernacular": { "basename": "Douglas-fir", "names": ["Douglas-fir"] },
+      "image": "/imglib/OF_FP/201905/DSCN2964_1558124914_tn.jpg"
+    },
+    {
+      "tid": 8974,
+      "family": "Pinaceae",
+      "sciname": "Tsuga heterophylla",
+      "parenttid": 1565,
+      "author": "(Raf.) Sarg.",
+      "imgid": 23746787,
+      "vernacular": { "basename": "hemlock", "names": ["western hemlock"] },
+      "image": "/imglib/OF_FP/201905/DIG7679_1558125730_tn.jpg"
+    },
+    {
+      "tid": 8975,
+      "family": "Pinaceae",
+      "sciname": "Tsuga mertensiana",
+      "parenttid": 1565,
+      "author": "(Bong.) Carri\u00c3\u00a8re",
+      "imgid": 23769863,
+      "vernacular": { "basename": "hemlock", "names": ["mountain hemlock"] },
+      "image": "/imglib/OF_FP/201905/DIG22340_1558125649_tn.jpg"
+    },
+    {
+      "tid": 7063,
+      "family": "Plantaginaceae",
+      "sciname": "Penstemon deustus",
+      "parenttid": 1234,
+      "author": "Douglas ex Lindl.",
+      "imgid": 26436413,
+      "vernacular": {
+        "basename": "penstemon",
+        "names": ["hotrock penstemon", "scabland penstemon"]
+      },
+      "image": "/imglib/OF_FP/202107/DIG29787_ROT_1627520236_tn.jpg"
+    },
+    {
+      "tid": 7067,
+      "family": "Plantaginaceae",
+      "sciname": "Penstemon euglaucus",
+      "parenttid": 1234,
+      "author": "English",
+      "imgid": 23761957,
+      "vernacular": {
+        "basename": "penstemon",
+        "names": ["glaucous penstemon"]
+      },
+      "image": "/imglib/_OFPFP/201704/PEN_EUG_7055B_1492398736_tn.jpg"
+    },
+    {
+      "tid": 7075,
+      "family": "Plantaginaceae",
+      "sciname": "Penstemon humilis",
+      "parenttid": 1234,
+      "author": "Nutt. ex A. Gray",
+      "imgid": 26968442,
+      "vernacular": { "basename": "penstemon", "names": ["lowly penstemon"] },
+      "image": "/imglib/_OFPFP/201704/DIG41926_1492398767_tn.jpg"
+    },
+    {
+      "tid": 7093,
+      "family": "Plantaginaceae",
+      "sciname": "Penstemon procerus",
+      "parenttid": 1234,
+      "author": "Douglas ex Graham",
+      "imgid": 23800681,
+      "vernacular": {
+        "basename": "penstemon",
+        "names": ["littleflower penstemon"]
+      },
+      "image": "/imglib/misc/201801/DIG45881_1516993260_tn.jpg"
+    },
+    {
+      "tid": 7095,
+      "family": "Plantaginaceae",
+      "sciname": "Penstemon richardsonii",
+      "parenttid": 1234,
+      "author": "Douglas ex Lindl.",
+      "imgid": 23743217,
+      "vernacular": {
+        "basename": "penstemon",
+        "names": ["cutleaf beardtongue", "Richardson's penstemon"]
+      },
+      "image": "/imglib/OF_FP/201905/DIG4506_1558125035_tn.jpg"
+    },
+    {
+      "tid": 7098,
+      "family": "Plantaginaceae",
+      "sciname": "Penstemon rydbergii",
+      "parenttid": 1234,
+      "author": "A. Nelson",
+      "imgid": 27299567,
+      "vernacular": {
+        "basename": "penstemon",
+        "names": ["Rydberg's penstemon"]
+      },
+      "image": "/imglib/OF_FP/202209/DIG25429_CROP_1664404062_tn.jpg"
+    },
+    {
+      "tid": 7100,
+      "family": "Plantaginaceae",
+      "sciname": "Penstemon serrulatus",
+      "parenttid": 1234,
+      "author": "Menzies ex Sm.",
+      "imgid": 23762013,
+      "vernacular": {
+        "basename": "penstemon",
+        "names": ["coast penstemon", "Cascades penstemon"]
+      },
+      "image": "/imglib/OF_FP/201905/PEN_SER_3496B_1558124640_tn.jpg"
+    },
+    {
+      "tid": 7103,
+      "family": "Plantaginaceae",
+      "sciname": "Penstemon speciosus",
+      "parenttid": 1234,
+      "author": "Douglas ex Lindl.",
+      "imgid": 23769182,
+      "vernacular": {
+        "basename": "penstemon",
+        "names": ["royal penstemon", "showy penstemon"]
+      },
+      "image": "/imglib/_OFPFP/201704/DIG21637_1492399622_tn.jpg"
+    },
+    {
+      "tid": 7108,
+      "family": "Plantaginaceae",
+      "sciname": "Penstemon venustus",
+      "parenttid": 1234,
+      "author": "Douglas ex Lindl.",
+      "imgid": 23775298,
+      "vernacular": {
+        "basename": "penstemon",
+        "names": ["Venus penstemon", "elegant penstemon"]
+      },
+      "image": "/imglib/_OFPFP/201704/DIG25441_1492399333_tn.jpg"
+    },
+    {
+      "tid": 9065,
+      "family": "Plantaginaceae",
+      "sciname": "Veronica americana",
+      "parenttid": 1587,
+      "author": "Schwein. ex Benth.",
+      "imgid": 23769907,
+      "vernacular": {
+        "basename": "brooklime",
+        "names": ["American brooklime"]
+      },
+      "image": "/imglib/OF_FP/201905/DIG22360_1558125742_tn.jpg"
+    },
+    {
+      "tid": 15680,
+      "family": "Plantaginaceae",
+      "sciname": "Veronica regina-nivalis",
+      "parenttid": 1587,
+      "author": "M.M. Mart.Ort. & Albach",
+      "imgid": 23762074,
+      "vernacular": { "basename": "snow queen", "names": ["snow queen"] },
+      "image": "/imglib/OF_FP/201905/SYN_REN_8662B_1558124872_tn.jpg"
+    },
+    {
+      "tid": 2952,
+      "family": "Plumbaginaceae",
+      "sciname": "Armeria maritima",
+      "parenttid": 433,
+      "author": "(Mill.) Willd.",
+      "imgid": 23762119,
+      "vernacular": {
+        "basename": "sea pink",
+        "names": ["sea thrift", "sea pink"]
+      },
+      "image": "/imglib/OF_FP/201905/ARM_MAR_3378_063B_1558124679_tn.jpg"
+    },
+    {
+      "tid": 3242,
+      "family": "Poaceae",
+      "sciname": "Beckmannia syzigachne",
+      "parenttid": 467,
+      "author": "(Steud.) Fernald",
+      "imgid": 23750283,
+      "vernacular": {
+        "basename": "sloughgrass",
+        "names": ["American sloughgrass"]
+      },
+      "image": "/imglib/_OFPFP/201704/BEC_SYZ_4302B_1492399086_tn.jpg"
+    },
+    {
+      "tid": 4473,
+      "family": "Poaceae",
+      "sciname": "Danthonia californica",
+      "parenttid": 691,
+      "author": "Bol.",
+      "imgid": 23741054,
+      "vernacular": {
+        "basename": "oatgrass",
+        "names": ["California oatgrass"]
+      },
+      "image": "/imglib/OF_FP/201905/DIG2575_1558125705_tn.jpg"
+    },
+    {
+      "tid": 4528,
+      "family": "Poaceae",
+      "sciname": "Deschampsia cespitosa",
+      "parenttid": 702,
+      "author": "(L.) P. Beauv.",
+      "imgid": 23758480,
+      "vernacular": { "basename": "hairgrass", "names": ["tufted hairgrass"] },
+      "image": "/imglib/OF_FP/201905/DIG14915_1558125744_tn.jpg"
+    },
+    {
+      "tid": 4530,
+      "family": "Poaceae",
+      "sciname": "Deschampsia elongata",
+      "parenttid": 702,
+      "author": "(Hook.) Munro",
+      "imgid": 23789100,
+      "vernacular": { "basename": "hairgrass", "names": ["slender hairgrass"] },
+      "image": "/imglib/_OFPFP/201704/DIG38639_1492398506_tn.jpg"
+    },
+    {
+      "tid": 4598,
+      "family": "Poaceae",
+      "sciname": "Distichlis spicata",
+      "parenttid": 721,
+      "author": "(L.) Greene",
+      "imgid": 23773938,
+      "vernacular": { "basename": "saltgrass", "names": ["saltgrass"] },
+      "image": "/imglib/_OFPFP/201704/DIG24081_1492398847_tn.jpg"
+    },
+    {
+      "tid": 4751,
+      "family": "Poaceae",
+      "sciname": "Elymus elymoides",
+      "parenttid": 756,
+      "author": "(Raf.) Swezey",
+      "imgid": 23741078,
+      "vernacular": { "basename": "squirreltail", "names": ["squirreltail"] },
+      "image": "/imglib/_OFPFP/201704/DIG2599_1492398425_tn.jpg"
+    },
+    {
+      "tid": 1000005,
+      "family": "Poaceae",
+      "sciname": "Eriocoma hymenoides",
+      "parenttid": 1000001,
+      "author": "(Roem. & Schult.) Rydb.",
+      "imgid": 23777603,
+      "vernacular": { "basename": "ricegrass", "names": ["Indian ricegrass"] },
+      "image": "/imglib/_OFPFP/201704/DIG26644_1492398575_tn.jpg"
+    },
+    {
+      "tid": 1000006,
+      "family": "Poaceae",
+      "sciname": "Eriocoma lemmonii",
+      "parenttid": 1000001,
+      "author": "(Vasey) Romasch.",
+      "imgid": 23785829,
+      "vernacular": {
+        "basename": "needlegrass",
+        "names": ["Lemmon's needlegrass"]
+      },
+      "image": "/imglib/_OFPFP/201704/DIG34535_1492399515_tn.jpg"
+    },
+    {
+      "tid": 5158,
+      "family": "Poaceae",
+      "sciname": "Festuca idahoensis",
+      "parenttid": 809,
+      "author": "Elmer",
+      "imgid": 23791193,
+      "vernacular": { "basename": "fescue", "names": ["Idaho fescue"] },
+      "image": "/imglib/_OFPFP/201704/DIG40108_1492399456_tn.jpg"
+    },
+    {
+      "tid": 5164,
+      "family": "Poaceae",
+      "sciname": "Festuca occidentalis",
+      "parenttid": 809,
+      "author": "Hook.",
+      "imgid": 23752918,
+      "vernacular": { "basename": "fescue", "names": ["western fescue"] },
+      "image": "/imglib/_OFPFP/201704/DIG12490_1492399727_tn.jpg"
+    },
+    {
+      "tid": 5172,
+      "family": "Poaceae",
+      "sciname": "Festuca roemeri",
+      "parenttid": 809,
+      "author": "Yu.E. Alexeev",
+      "imgid": 23741110,
+      "vernacular": { "basename": "fescue", "names": ["Roemer's fescue"] },
+      "image": "/imglib/_OFPFP/201704/DIG2631_1492398646_tn.jpg"
+    },
+    {
+      "tid": 5562,
+      "family": "Poaceae",
+      "sciname": "Hesperostipa comata",
+      "parenttid": 903,
+      "author": "(Trin. & Rupr.) Barkworth",
+      "imgid": 26968444,
+      "vernacular": {
+        "basename": "needle-and-thread",
+        "names": ["needle-and-thread"]
+      },
+      "image": "/imglib/OF_FP/202107/DIG52267_1627520031_tn.jpg"
+    },
+    {
+      "tid": 5630,
+      "family": "Poaceae",
+      "sciname": "Hordeum brachyantherum",
+      "parenttid": 923,
+      "author": "Nevski",
+      "imgid": 23791248,
+      "vernacular": { "basename": "barley", "names": ["meadow barley"] },
+      "image": "/imglib/_OFPFP/201704/DIG40163_1492399514_tn.jpg"
+    },
+    {
+      "tid": 5887,
+      "family": "Poaceae",
+      "sciname": "Koeleria macrantha",
+      "parenttid": 978,
+      "author": "(Ledeb.) Schult.",
+      "imgid": 23753220,
+      "vernacular": { "basename": "junegrass", "names": ["junegrass"] },
+      "image": "/imglib/OF_FP/201905/DIG12792_1558124777_tn.jpg"
+    },
+    {
+      "tid": 6055,
+      "family": "Poaceae",
+      "sciname": "Leymus cinereus",
+      "parenttid": 1023,
+      "author": "(Scribn. & Merr.) \u00c3\ufffd. L\u00c3\u00b6ve",
+      "imgid": 23789473,
+      "vernacular": { "basename": "wildrye", "names": ["Great Basin wildrye"] },
+      "image": "/imglib/_OFPFP/201704/DIG39012_1492399726_tn.jpg"
+    },
+    {
+      "tid": 7454,
+      "family": "Poaceae",
+      "sciname": "Poa secunda",
+      "parenttid": 1297,
+      "author": "J. Presl",
+      "imgid": 23758745,
+      "vernacular": { "basename": "bluegrass", "names": ["secund bluegrass"] },
+      "image": "/imglib/_OFPFP/201704/DIG15180_1492399562_tn.jpg"
+    },
+    {
+      "tid": 7699,
+      "family": "Poaceae",
+      "sciname": "Pseudoroegneria spicata",
+      "parenttid": 1329,
+      "author": "(Pursh) \u00c3\ufffd. L\u00c3\u00b6ve",
+      "imgid": 23770137,
+      "vernacular": {
+        "basename": "wheatgrass",
+        "names": ["bluebunch wheatgrass"]
+      },
+      "image": "/imglib/_OFPFP/201704/DIG22555_1492399713_tn.jpg"
+    },
+    {
+      "tid": 4204,
+      "family": "Polemoniaceae",
+      "sciname": "Collomia grandiflora",
+      "parenttid": 629,
+      "author": "Douglas ex Lindl.",
+      "imgid": 23762137,
+      "vernacular": {
+        "basename": "mountain-trumpet",
+        "names": [
+          "large-flowered collomia",
+          "grand collomia",
+          "large-flowered mountain-trumpet",
+          "mountain collomia"
+        ]
+      },
+      "image": "/imglib/_OFPFP/201704/COL_GRA_3750B_1492399744_tn.jpg"
+    },
+    {
+      "tid": 5350,
+      "family": "Polemoniaceae",
+      "sciname": "Gilia capitata",
+      "parenttid": 843,
+      "author": "Sims",
+      "imgid": 23726191,
+      "vernacular": {
+        "basename": "gilia",
+        "names": ["bluehead gilia", "bluefield gilia", "globe gilia"]
+      },
+      "image": "/imglib/OF_FP/201905/GILIA_CAPITATA2_1558125683_tn.jpg"
+    },
+    {
+      "tid": 7223,
+      "family": "Polemoniaceae",
+      "sciname": "Phlox diffusa",
+      "parenttid": 1257,
+      "author": "Benth.",
+      "imgid": 23775342,
+      "vernacular": {
+        "basename": "phlox",
+        "names": ["spreading phlox", "mat phlox"]
+      },
+      "image": "/imglib/OF_FP/201905/DIG25485_1558124648_tn.jpg"
+    },
+    {
+      "tid": 7227,
+      "family": "Polemoniaceae",
+      "sciname": "Phlox hoodii",
+      "parenttid": 1257,
+      "author": "Richardson",
+      "imgid": 23775343,
+      "vernacular": {
+        "basename": "phlox",
+        "names": [
+          "spiny phlox",
+          "carpet phlox",
+          "Hood\u00e2\u20ac\u2122s phlox"
+        ]
+      },
+      "image": "/imglib/_OFPFP/201704/DIG25486_1492399226_tn.jpg"
+    },
+    {
+      "tid": 4957,
+      "family": "Polygonaceae",
+      "sciname": "Eriogonum compositum",
+      "parenttid": 780,
+      "author": "Douglas ex Benth.",
+      "imgid": 23742793,
+      "vernacular": {
+        "basename": "buckwheat",
+        "names": ["arrowleaf buckwheat"]
+      },
+      "image": "/imglib/OF_FP/201905/DIG4085_1558125702_tn.jpg"
+    },
+    {
+      "tid": 4966,
+      "family": "Polygonaceae",
+      "sciname": "Eriogonum heracleoides",
+      "parenttid": 780,
+      "author": "Nutt.",
+      "imgid": 23762350,
+      "vernacular": {
+        "basename": "buckwheat",
+        "names": [
+          "whorled buckwheat",
+          "Wyeth\u00e2\u20ac\u2122s buckwheat",
+          "parsnipflower buckwheat"
+        ]
+      },
+      "image": "/imglib/_OFPFP/201704/ERI_HER_HER_5503B_1492399692_tn.jpg"
+    },
+    {
+      "tid": 4975,
+      "family": "Polygonaceae",
+      "sciname": "Eriogonum niveum",
+      "parenttid": 780,
+      "author": "Douglas ex Benth.",
+      "imgid": 23762359,
+      "vernacular": { "basename": "buckwheat", "names": ["snow buckwheat"] },
+      "image": "/imglib/_OFPFP/201704/ERI_NIV_7385B_1492398965_tn.jpg"
+    },
+    {
+      "tid": 4980,
+      "family": "Polygonaceae",
+      "sciname": "Eriogonum ovalifolium",
+      "parenttid": 780,
+      "author": "Nutt.",
+      "imgid": 23781269,
+      "vernacular": {
+        "basename": "buckwheat",
+        "names": ["oval-leaved buckwheat", "cushion buckwheat"]
+      },
+      "image": "/imglib/_OFPFP/201704/DIG30297_1492398896_tn.jpg"
+    },
+    {
+      "tid": 4994,
+      "family": "Polygonaceae",
+      "sciname": "Eriogonum strictum",
+      "parenttid": 780,
+      "author": "Benth.",
+      "imgid": 26968449,
+      "vernacular": {
+        "basename": "buckwheat",
+        "names": ["strict buckwheat", "Blue Mountain buckwheat"]
+      },
+      "image": "/imglib/_OFPFP/201704/DIG27714_1492398558_tn.jpg"
+    },
+    {
+      "tid": 4998,
+      "family": "Polygonaceae",
+      "sciname": "Eriogonum umbellatum",
+      "parenttid": 780,
+      "author": "Torr.",
+      "imgid": 23742626,
+      "vernacular": {
+        "basename": "sulphur flower",
+        "names": [
+          "sulphur buckwheat",
+          "sulphur-flower buckwheat",
+          "sulphur flower"
+        ]
+      },
+      "image": "/imglib/_OFPFP/201704/DIG3919_1492398967_tn.jpg"
+    },
+    {
+      "tid": 7540,
+      "family": "Polypodiaceae",
+      "sciname": "Polypodium glycyrrhiza",
+      "parenttid": 1307,
+      "author": "D.C. Eaton",
+      "imgid": 23769335,
+      "vernacular": { "basename": "fern", "names": ["licorice fern"] },
+      "image": "/imglib/OF_FP/201905/DIG21767_1558125647_tn.jpg"
+    },
+    {
+      "tid": 4605,
+      "family": "Primulaceae",
+      "sciname": "Dodecatheon hendersonii",
+      "parenttid": 722,
+      "author": "A. Gray",
+      "imgid": 23762674,
+      "vernacular": {
+        "basename": "shooting star",
+        "names": ["Henderson's shooting star", "broadleaf shooting star"]
+      },
+      "image": "/imglib/OF_FP/201905/DOD_HEN_0535B_1558124923_tn.jpg"
+    },
+    {
+      "tid": 4608,
+      "family": "Primulaceae",
+      "sciname": "Dodecatheon poeticum",
+      "parenttid": 722,
+      "author": "L.F. Hend.",
+      "imgid": 23762684,
+      "vernacular": {
+        "basename": "shooting star",
+        "names": ["poet's shooting star", "narcissus shooting star"]
+      },
+      "image": "/imglib/_OFPFP/201704/DOD_POE_9757B_1492399043_tn.jpg"
+    },
+    {
+      "tid": 2458,
+      "family": "Pteridaceae",
+      "sciname": "Adiantum aleuticum",
+      "parenttid": 349,
+      "author": "(Rupr.) C.A. Paris",
+      "imgid": 23746412,
+      "vernacular": {
+        "basename": "maidenhair fern",
+        "names": ["northern maidenhair fern", "western maidenhair fern"]
+      },
+      "image": "/imglib/OF_FP/201905/DIG7326_1558125740_tn.jpg"
+    },
+    {
+      "tid": 7112,
+      "family": "Pteridaceae",
+      "sciname": "Pentagramma triangularis",
+      "parenttid": 1236,
+      "author": "(Kaulf.) Yatsk., Windham, E. Wollenw.",
+      "imgid": 26968446,
+      "vernacular": { "basename": "fern", "names": ["goldback fern"] },
+      "image": "/imglib/_OFPFP/201704/DIG25435_1492398468_tn.jpg"
+    },
+    {
+      "tid": 2454,
+      "family": "Ranunculaceae",
+      "sciname": "Actaea rubra",
+      "parenttid": 346,
+      "author": "(Aiton) Willd.",
+      "imgid": 23762735,
+      "vernacular": {
+        "basename": "baneberry",
+        "names": ["western red baneberry"]
+      },
+      "image": "/imglib/OF_FP/201905/ACT_RUB_2745B_1558125746_tn.jpg"
+    },
+    {
+      "tid": 2835,
+      "family": "Ranunculaceae",
+      "sciname": "Aquilegia formosa",
+      "parenttid": 418,
+      "author": "Fisch. ex DC.",
+      "imgid": 23762775,
+      "vernacular": {
+        "basename": "columbine",
+        "names": ["western columbine", "red columbine", "Sitka columbine"]
+      },
+      "image": "/imglib/OF_FP/201905/AQU_FOR_4176B_1558125706_tn.jpg"
+    },
+    {
+      "tid": 4169,
+      "family": "Ranunculaceae",
+      "sciname": "Clematis ligusticifolia",
+      "parenttid": 616,
+      "author": "Nutt.",
+      "imgid": 23742449,
+      "vernacular": {
+        "basename": "virgin's bower",
+        "names": ["western clematis", "western virgin's bower"]
+      },
+      "image": "/imglib/_OFPFP/201704/DIG3742_1492399274_tn.jpg"
+    },
+    {
+      "tid": 4510,
+      "family": "Ranunculaceae",
+      "sciname": "Delphinium nuttallianum",
+      "parenttid": 700,
+      "author": "Pritz.",
+      "imgid": 23773887,
+      "vernacular": { "basename": "larkspur", "names": ["upland larkspur"] },
+      "image": "/imglib/_OFPFP/201704/DIG24030_1492398838_tn.jpg"
+    },
+    {
+      "tid": 4520,
+      "family": "Ranunculaceae",
+      "sciname": "Delphinium trolliifolium",
+      "parenttid": 700,
+      "author": "A. Gray",
+      "imgid": 23762886,
+      "vernacular": {
+        "basename": "cow poison",
+        "names": ["poison larkspur", "cow poison"]
+      },
+      "image": "/imglib/OF_FP/201905/DEL_TRO_2130B_1558124831_tn.jpg"
+    },
+    {
+      "tid": 7812,
+      "family": "Ranunculaceae",
+      "sciname": "Ranunculus occidentalis",
+      "parenttid": 1354,
+      "author": "Nutt.",
+      "imgid": 23762950,
+      "vernacular": { "basename": "buttercup", "names": ["western buttercup"] },
+      "image": "/imglib/OF_FP/201905/RAN_OCC_OCC_8760B_1558125646_tn.jpg"
+    },
+    {
+      "tid": 8768,
+      "family": "Ranunculaceae",
+      "sciname": "Thalictrum occidentale",
+      "parenttid": 1517,
+      "author": "A. Gray",
+      "imgid": 23790808,
+      "vernacular": { "basename": "meadowrue", "names": ["western meadowrue"] },
+      "image": "/imglib/OF_FP/201905/15THA_OCC_0884B_1558125734_tn.jpg"
+    },
+    {
+      "tid": 3909,
+      "family": "Rhamnaceae",
+      "sciname": "Ceanothus cuneatus",
+      "parenttid": 557,
+      "author": "(Hook.) Nutt. ex Torr. & A. Gray",
+      "imgid": 24081547,
+      "vernacular": { "basename": "buckbrush", "names": ["buckbrush"] },
+      "image": "/imglib/misc/201905/CEA_CUN_0066B_1558125892_tn.jpg"
+    },
+    {
+      "tid": 3911,
+      "family": "Rhamnaceae",
+      "sciname": "Ceanothus integerrimus",
+      "parenttid": 557,
+      "author": "Hook. & Arn.",
+      "imgid": 23763047,
+      "vernacular": { "basename": "deerbrush", "names": ["deerbrush"] },
+      "image": "/imglib/_OFPFP/201704/CEA_THY_1447B_1492398768_tn.jpg"
+    },
+    {
+      "tid": 3915,
+      "family": "Rhamnaceae",
+      "sciname": "Ceanothus prostratus",
+      "parenttid": 557,
+      "author": "Benth.",
+      "imgid": 26968445,
+      "vernacular": { "basename": "Mahala mat", "names": ["Mahala mat"] },
+      "image": "/imglib/_OFPFP/201704/DIG23726_1492399098_tn.jpg"
+    },
+    {
+      "tid": 3917,
+      "family": "Rhamnaceae",
+      "sciname": "Ceanothus sanguineus",
+      "parenttid": 557,
+      "author": "Pursh",
+      "imgid": 23746534,
+      "vernacular": {
+        "basename": "tea tree",
+        "names": ["redstem ceanothus", "Oregon tea tree"]
+      },
+      "image": "/imglib/OF_FP/201905/DIG7435_1558124723_tn.jpg"
+    },
+    {
+      "tid": 3918,
+      "family": "Rhamnaceae",
+      "sciname": "Ceanothus thyrsiflorus",
+      "parenttid": 557,
+      "author": "Eschsch.",
+      "imgid": 23804109,
+      "vernacular": { "basename": "blue blossom", "names": ["blue blossom"] },
+      "image": "/imglib/OF_FP/201905/DIG48418_1558124598_tn.jpg"
+    },
+    {
+      "tid": 3919,
+      "family": "Rhamnaceae",
+      "sciname": "Ceanothus velutinus",
+      "parenttid": 557,
+      "author": "Douglas ex Hook.",
+      "imgid": 23746872,
+      "vernacular": {
+        "basename": "tobacco brush",
+        "names": ["snowbrush", "tobacco brush", "mountain balm"]
+      },
+      "image": "/imglib/OF_FP/201905/07SL081AUG1904_1558125038_tn.jpg"
+    },
+    {
+      "tid": 7840,
+      "family": "Rhamnaceae",
+      "sciname": "Rhamnus purshiana",
+      "parenttid": 1359,
+      "author": "DC.",
+      "imgid": 23763069,
+      "vernacular": { "basename": "chittam", "names": ["cascara", "chittam"] },
+      "image": "/imglib/OF_FP/201905/RHA_PUR_0617B_1558125696_tn.jpg"
+    },
+    {
+      "tid": 2705,
+      "family": "Rosaceae",
+      "sciname": "Amelanchier alnifolia",
+      "parenttid": 385,
+      "author": "(Nutt.) Nutt. ex M. Roem.",
+      "imgid": 23751764,
+      "vernacular": {
+        "basename": "serviceberry",
+        "names": ["Saskatoon serviceberry"]
+      },
+      "image": "/imglib/OF_FP/201905/DIG11336_1558125649_tn.jpg"
+    },
+    {
+      "tid": 2713,
+      "family": "Rosaceae",
+      "sciname": "Amelanchier utahensis",
+      "parenttid": 385,
+      "author": "Koehne",
+      "imgid": 23751769,
+      "vernacular": {
+        "basename": "serviceberry",
+        "names": ["Utah serviceberry"]
+      },
+      "image": "/imglib/_OFPFP/201704/DIG11341_1492398962_tn.jpg"
+    },
+    {
+      "tid": 3008,
+      "family": "Rosaceae",
+      "sciname": "Aruncus dioicus",
+      "parenttid": 440,
+      "author": "(Walter) Fernald",
+      "imgid": 24081548,
+      "vernacular": {
+        "basename": "goatsbeard",
+        "names": ["sylvan goatsbeard"]
+      },
+      "image": "/imglib/misc/201905/ARU_DIO_ACU_5497B_1558125836_tn.jpg"
+    },
+    {
+      "tid": 3986,
+      "family": "Rosaceae",
+      "sciname": "Cercocarpus ledifolius",
+      "parenttid": 571,
+      "author": "Nutt. ex Torr. & A. Gray",
+      "imgid": 23791032,
+      "vernacular": {
+        "basename": "mountain mahogany",
+        "names": ["curlleaf mountain mahogany"]
+      },
+      "image": "/imglib/_OFPFP/201704/DIG39958_1492398866_tn.jpg"
+    },
+    {
+      "tid": 4005,
+      "family": "Rosaceae",
+      "sciname": "Chamaebatiaria millefolium",
+      "parenttid": 578,
+      "author": "(Torr.) Maxim.",
+      "imgid": 27299506,
+      "vernacular": {
+        "basename": "fern bush",
+        "names": ["desert sweet", "fern bush"]
+      },
+      "image": "/imglib/OF_FP/202209/DIG53515_1664322104_tn.jpg"
+    },
+    {
+      "tid": 4321,
+      "family": "Rosaceae",
+      "sciname": "Crataegus douglasii",
+      "parenttid": 661,
+      "author": "Lindl.",
+      "imgid": 23773740,
+      "vernacular": {
+        "basename": "hawthorn",
+        "names": ["Douglas' hawthorn", "black hawthorn"]
+      },
+      "image": "/imglib/OF_FP/201905/DIG23883_1558125699_tn.jpg"
+    },
+    {
+      "tid": 5198,
+      "family": "Rosaceae",
+      "sciname": "Fragaria chiloensis",
+      "parenttid": 816,
+      "author": "(L.) Duchesne",
+      "imgid": 23742687,
+      "vernacular": { "basename": "strawberry", "names": ["beach strawberry"] },
+      "image": "/imglib/OF_FP/201905/DIG3980_1558125708_tn.jpg"
+    },
+    {
+      "tid": 5202,
+      "family": "Rosaceae",
+      "sciname": "Fragaria vesca",
+      "parenttid": 816,
+      "author": "L.",
+      "imgid": 23763122,
+      "vernacular": {
+        "basename": "strawberry",
+        "names": ["woodland strawberry", "woods strawberry"]
+      },
+      "image": "/imglib/OF_FP/201905/FRA_VES_BRA_1757B_1558124643_tn.jpg"
+    },
+    {
+      "tid": 5203,
+      "family": "Rosaceae",
+      "sciname": "Fragaria virginiana",
+      "parenttid": 816,
+      "author": "Mill.",
+      "imgid": 24081549,
+      "vernacular": {
+        "basename": "strawberry",
+        "names": [
+          "Virginia strawberry",
+          "broad petal strawberry",
+          "mountain strawberry"
+        ]
+      },
+      "image": "/imglib/misc/201905/FRA_VIR_PLA_7288B_1558125929_tn.jpg"
+    },
+    {
+      "tid": 5344,
+      "family": "Rosaceae",
+      "sciname": "Geum triflorum",
+      "parenttid": 842,
+      "author": "Pursh",
+      "imgid": 23768491,
+      "vernacular": {
+        "basename": "old man's whiskers",
+        "names": ["old man's whiskers"]
+      },
+      "image": "/imglib/_OFPFP/201704/DIG20965_1492399270_tn.jpg"
+    },
+    {
+      "tid": 5621,
+      "family": "Rosaceae",
+      "sciname": "Holodiscus discolor",
+      "parenttid": 918,
+      "author": "(Pursh) Maxim.",
+      "imgid": 23790597,
+      "vernacular": { "basename": "oceanspray", "names": ["oceanspray"] },
+      "image": "/imglib/OF_FP/201905/15DIG24535_1558125709_tn.jpg"
+    },
+    {
+      "tid": 5624,
+      "family": "Rosaceae",
+      "sciname": "Holodiscus microphyllus",
+      "parenttid": 918,
+      "author": "Rydb.",
+      "imgid": 26968981,
+      "vernacular": { "basename": "spiraea", "names": ["rock spiraea"] },
+      "image": "/imglib/_OFPFP/201704/HOL_DUM_7114B_1492398579_tn.jpg"
+    },
+    {
+      "tid": 6461,
+      "family": "Rosaceae",
+      "sciname": "Malus fusca",
+      "parenttid": 1081,
+      "author": "(Raf.) C.K. Schneid.",
+      "imgid": 23763193,
+      "vernacular": {
+        "basename": "crabapple",
+        "names": ["western crabapple", "Oregon crabapple"]
+      },
+      "image": "/imglib/OF_FP/201905/MAL_FUS_0519B_1558125741_tn.jpg"
+    },
+    {
+      "tid": 6837,
+      "family": "Rosaceae",
+      "sciname": "Oemleria cerasiformis",
+      "parenttid": 1175,
+      "author": "(Torr. & A. Gray ex Hook. & Arn.) J.W. Landon",
+      "imgid": 23763204,
+      "vernacular": { "basename": "osoberry", "names": ["osoberry"] },
+      "image": "/imglib/OF_FP/201905/OEM_CER_1106B_1558125731_tn.jpg"
+    },
+    {
+      "tid": 7279,
+      "family": "Rosaceae",
+      "sciname": "Physocarpus capitatus",
+      "parenttid": 1270,
+      "author": "(Pursh) Kuntze",
+      "imgid": 23763216,
+      "vernacular": { "basename": "ninebark", "names": ["Pacific ninebark"] },
+      "image": "/imglib/OF_FP/201905/PHY_CAP_3523B_1558124611_tn.jpg"
+    },
+    {
+      "tid": 7280,
+      "family": "Rosaceae",
+      "sciname": "Physocarpus malvaceus",
+      "parenttid": 1270,
+      "author": "(Greene) Kuntze",
+      "imgid": 23785112,
+      "vernacular": {
+        "basename": "ninebark",
+        "names": ["mallow ninebark", "few-flowered ninebark"]
+      },
+      "image": "/imglib/_OFPFP/201704/DIG33855_1492398715_tn.jpg"
+    },
+    {
+      "tid": 7623,
+      "family": "Rosaceae",
+      "sciname": "Potentilla gracilis",
+      "parenttid": 1315,
+      "author": "Douglas ex Hook.",
+      "imgid": 23744592,
+      "vernacular": {
+        "basename": "cinquefoil",
+        "names": ["slender cinquefoil"]
+      },
+      "image": "/imglib/OF_FP/201905/AL02927_1558124808_tn.jpg"
+    },
+    {
+      "tid": 7679,
+      "family": "Rosaceae",
+      "sciname": "Prunus emarginata",
+      "parenttid": 1324,
+      "author": "(Douglas ex Hook.) Walp.",
+      "imgid": 23746752,
+      "vernacular": { "basename": "cherry", "names": ["bitter cherry"] },
+      "image": "/imglib/OF_FP/201905/DIG7650_1558124857_tn.jpg"
+    },
+    {
+      "tid": 7732,
+      "family": "Rosaceae",
+      "sciname": "Purshia tridentata",
+      "parenttid": 1345,
+      "author": "(Pursh) DC.",
+      "imgid": 23763269,
+      "vernacular": {
+        "basename": "bitterbrush",
+        "names": ["bitterbrush", "antelope brush"]
+      },
+      "image": "/imglib/_OFPFP/201704/PUR_TRI_9933B_1492399461_tn.jpg"
+    },
+    {
+      "tid": 7929,
+      "family": "Rosaceae",
+      "sciname": "Rosa gymnocarpa",
+      "parenttid": 1372,
+      "author": "Nutt.",
+      "imgid": 23763280,
+      "vernacular": {
+        "basename": "rose",
+        "names": ["baldhip rose", "naked-hip rose"]
+      },
+      "image": "/imglib/OF_FP/201905/ROS_GYM_5713B_1558125723_tn.jpg"
+    },
+    {
+      "tid": 7933,
+      "family": "Rosaceae",
+      "sciname": "Rosa nutkana",
+      "parenttid": 1372,
+      "author": "C. Presl",
+      "imgid": 23745487,
+      "vernacular": { "basename": "rose", "names": ["Nootka rose"] },
+      "image": "/imglib/OF_FP/201905/DSCN1906_1558124603_tn.jpg"
+    },
+    {
+      "tid": 7934,
+      "family": "Rosaceae",
+      "sciname": "Rosa pisocarpa",
+      "parenttid": 1372,
+      "author": "A. Gray",
+      "imgid": 23754324,
+      "vernacular": { "basename": "rose", "names": ["cluster rose"] },
+      "image": "/imglib/OF_FP/201905/DIG13897_1558125726_tn.jpg"
+    },
+    {
+      "tid": 7940,
+      "family": "Rosaceae",
+      "sciname": "Rosa woodsii",
+      "parenttid": 1372,
+      "author": "Lindl.",
+      "imgid": 24081551,
+      "vernacular": {
+        "basename": "rose",
+        "names": ["Woods' rose", "pearhip rose"]
+      },
+      "image": "/imglib/misc/201905/15DIG25828_1558125924_tn.jpg"
+    },
+    {
+      "tid": 7959,
+      "family": "Rosaceae",
+      "sciname": "Rubus parviflorus",
+      "parenttid": 1376,
+      "author": "Nutt.",
+      "imgid": 23790794,
+      "vernacular": { "basename": "thimbleberry", "names": ["thimbleberry"] },
+      "image": "/imglib/OF_FP/201905/15RUB_PAR_4635B_1558125747_tn.jpg"
+    },
+    {
+      "tid": 7962,
+      "family": "Rosaceae",
+      "sciname": "Rubus spectabilis",
+      "parenttid": 1376,
+      "author": "Pursh",
+      "imgid": 23763316,
+      "vernacular": { "basename": "salmonberry", "names": ["salmonberry"] },
+      "image": "/imglib/OF_FP/201905/RUB_SPE_4154B_1558125754_tn.jpg"
+    },
+    {
+      "tid": 7965,
+      "family": "Rosaceae",
+      "sciname": "Rubus ursinus",
+      "parenttid": 1376,
+      "author": "Cham. & Schltdl.",
+      "imgid": 23754355,
+      "vernacular": {
+        "basename": "dewberry",
+        "names": [
+          "trailing blackberry",
+          "Pacific blackberry",
+          "Pacific dewberry"
+        ]
+      },
+      "image": "/imglib/OF_FP/201905/DIG13928_1558124939_tn.jpg"
+    },
+    {
+      "tid": 8565,
+      "family": "Rosaceae",
+      "sciname": "Spiraea douglasii",
+      "parenttid": 1470,
+      "author": "Hook.",
+      "imgid": 23755630,
+      "vernacular": { "basename": "spiraea", "names": ["hardhack", "spiraea"] },
+      "image": "/imglib/OF_FP/201905/08DSCN1717_1558124813_tn.jpg"
+    },
+    {
+      "tid": 8569,
+      "family": "Rosaceae",
+      "sciname": "Spiraea splendens",
+      "parenttid": 1470,
+      "author": "Baumann ex K. Koch",
+      "imgid": 23790034,
+      "vernacular": { "basename": "spiraea", "names": ["subalpine spiraea"] },
+      "image": "/imglib/OF_FP/201905/DIG39573_1558124713_tn.jpg"
+    },
+    {
+      "tid": 7569,
+      "family": "Salicaceae",
+      "sciname": "Populus tremuloides",
+      "parenttid": 1311,
+      "author": "Michx.",
+      "imgid": 23795133,
+      "vernacular": { "basename": "aspen", "names": ["quaking aspen"] },
+      "image": "/imglib/OF_FP/201905/DIG43781_1558125759_tn.jpg"
+    },
+    {
+      "tid": 7570,
+      "family": "Salicaceae",
+      "sciname": "Populus trichocarpa",
+      "parenttid": 1311,
+      "author": "Torr. & A. Gray",
+      "imgid": 23746749,
+      "vernacular": { "basename": "cottonwood", "names": ["black cottonwood"] },
+      "image": "/imglib/OF_FP/201905/DIG7647_1558125692_tn.jpg"
+    },
+    {
+      "tid": 8060,
+      "family": "Salicaceae",
+      "sciname": "Salix geyeriana",
+      "parenttid": 1388,
+      "author": "Andersson",
+      "imgid": 23775735,
+      "vernacular": { "basename": "willow", "names": ["Geyer's willow"] },
+      "image": "/imglib/OF_FP/201905/DIG25878_1558124683_tn.jpg"
+    },
+    {
+      "tid": 8063,
+      "family": "Salicaceae",
+      "sciname": "Salix hookeriana",
+      "parenttid": 1388,
+      "author": "Barratt ex Hook.",
+      "imgid": 23775744,
+      "vernacular": {
+        "basename": "willow",
+        "names": ["coastal willow", "Hooker's willow", "dune willow"]
+      },
+      "image": "/imglib/OF_FP/201905/DIG25887_1558125645_tn.jpg"
+    },
+    {
+      "tid": 8066,
+      "family": "Salicaceae",
+      "sciname": "Salix lasiandra",
+      "parenttid": 1388,
+      "author": "Benth.",
+      "imgid": 26429970,
+      "vernacular": {
+        "basename": "willow",
+        "names": ["shining willow", "Pacific willow"]
+      },
+      "image": "/imglib/OF_FP/202106/DIG51622_1623464300_tn.jpg"
+    },
+    {
+      "tid": 8093,
+      "family": "Salicaceae",
+      "sciname": "Salix scouleriana",
+      "parenttid": 1388,
+      "author": "Barratt ex Hook.",
+      "imgid": 23787539,
+      "vernacular": { "basename": "willow", "names": ["Scouler's willow"] },
+      "image": "/imglib/OF_FP/201905/DIG36245_1558124796_tn.jpg"
+    },
+    {
+      "tid": 8095,
+      "family": "Salicaceae",
+      "sciname": "Salix sitchensis",
+      "parenttid": 1388,
+      "author": "Sanson ex Bong.",
+      "imgid": 23790457,
+      "vernacular": { "basename": "willow", "names": ["Sitka willow"] },
+      "image": "/imglib/OF_FP/201905/15SALSIT_F_32807010_1558125642_tn.jpg"
+    },
+    {
+      "tid": 2400,
+      "family": "Sapindaceae",
+      "sciname": "Acer circinatum",
+      "parenttid": 335,
+      "author": "Pursh",
+      "imgid": 23763451,
+      "vernacular": { "basename": "maple", "names": ["vine maple"] },
+      "image": "/imglib/OF_FP/201905/ACE_CIR_1270B_1558125653_tn.jpg"
+    },
+    {
+      "tid": 2404,
+      "family": "Sapindaceae",
+      "sciname": "Acer macrophyllum",
+      "parenttid": 335,
+      "author": "Pursh",
+      "imgid": 23751692,
+      "vernacular": {
+        "basename": "maple",
+        "names": ["bigleaf maple", "Oregon maple"]
+      },
+      "image": "/imglib/OF_FP/201905/DIG11264_1558125700_tn.jpg"
+    },
+    {
+      "tid": 3350,
+      "family": "Saxifragaceae",
+      "sciname": "Boykinia major",
+      "parenttid": 495,
+      "author": "A. Gray",
+      "imgid": 26437109,
+      "vernacular": {
+        "basename": "boykinia",
+        "names": ["large boykinia", "mountain boykinia"]
+      },
+      "image": "/imglib/OF_FP/202107/DIG33546_APPCROP_1627520179_tn.jpg"
+    },
+    {
+      "tid": 5573,
+      "family": "Saxifragaceae",
+      "sciname": "Heuchera cylindrica",
+      "parenttid": 910,
+      "author": "Douglas",
+      "imgid": 23763539,
+      "vernacular": {
+        "basename": "alumroot",
+        "names": ["roundleaf alumroot", "alpine alumroot"]
+      },
+      "image": "/imglib/_OFPFP/201704/HEU_CYL_CYL_1195B_1492398541_tn.jpg"
+    },
+    {
+      "tid": 8757,
+      "family": "Saxifragaceae",
+      "sciname": "Tellima grandiflora",
+      "parenttid": 1512,
+      "author": "(Pursh) Douglas ex Lindl.",
+      "imgid": 23726782,
+      "vernacular": {
+        "basename": "fringecup",
+        "names": ["fringecup", "large-flowered fringecup"]
+      },
+      "image": "/imglib/OF_FP/201905/F89_357_TELLIMA_GRANDIFLORA_1558124873_tn.jpg"
+    },
+    {
+      "tid": 8801,
+      "family": "Saxifragaceae",
+      "sciname": "Tiarella trifoliata",
+      "parenttid": 1527,
+      "author": "L.",
+      "imgid": 24081553,
+      "vernacular": {
+        "basename": "sugar-scoop",
+        "names": ["three-leaved foamflower", "sugar-scoop"]
+      },
+      "image": "/imglib/misc/201905/TIA_TRI_UNI_5941B_1558125913_tn.jpg"
+    },
+    {
+      "tid": 8811,
+      "family": "Saxifragaceae",
+      "sciname": "Tolmiea menziesii",
+      "parenttid": 1532,
+      "author": "(Pursh) Torr. & A. Gray",
+      "imgid": 23763743,
+      "vernacular": {
+        "basename": "youth-on-age",
+        "names": ["piggyback plant", "youth-on-age"]
+      },
+      "image": "/imglib/_OFPFP/201704/TOL_MEN_2387B_1492398350_tn.jpg"
+    },
+    {
+      "tid": 8755,
+      "family": "Taxaceae",
+      "sciname": "Taxus brevifolia",
+      "parenttid": 1510,
+      "author": "Nutt.",
+      "imgid": 23746783,
+      "vernacular": { "basename": "yew", "names": ["Pacific yew"] },
+      "image": "/imglib/OF_FP/201905/DIG7677_1558125663_tn.jpg"
+    },
+    {
+      "tid": 8979,
+      "family": "Typhaceae",
+      "sciname": "Typha latifolia",
+      "parenttid": 1568,
+      "author": "L.",
+      "imgid": 23743837,
+      "vernacular": {
+        "basename": "cattail",
+        "names": ["broad-leaf cattail", "common cattail"]
+      },
+      "image": "/imglib/OF_FP/201905/DIG4892_1558125719_tn.jpg"
+    },
+    {
+      "tid": 8119,
+      "family": "Viburnaceae",
+      "sciname": "Sambucus mexicana",
+      "parenttid": 1391,
+      "author": "C. Presl ex DC.",
+      "imgid": 23748848,
+      "vernacular": { "basename": "elderberry", "names": ["blue elderberry"] },
+      "image": "/imglib/_OFPFP/201704/SAM_MEX_2440_074B_1492399153_tn.jpg"
+    },
+    {
+      "tid": 8122,
+      "family": "Viburnaceae",
+      "sciname": "Sambucus racemosa",
+      "parenttid": 1391,
+      "author": "L.",
+      "imgid": 23746666,
+      "vernacular": {
+        "basename": "elder",
+        "names": ["red elderberry", "red elder"]
+      },
+      "image": "/imglib/OF_FP/201905/DIG7564_1558125030_tn.jpg"
+    },
+    {
+      "tid": 9090,
+      "family": "Viburnaceae",
+      "sciname": "Viburnum ellipticum",
+      "parenttid": 1589,
+      "author": "Hook.",
+      "imgid": 23748865,
+      "vernacular": {
+        "basename": "blackhaw",
+        "names": ["oval-leaved viburnum", "common viburnum", "western blackhaw"]
+      },
+      "image": "/imglib/OF_FP/201905/VIB_ELL_2344B_1558124993_tn.jpg"
+    },
+    {
+      "tid": 9114,
+      "family": "Violaceae",
+      "sciname": "Viola adunca",
+      "parenttid": 1592,
+      "author": "Sm.",
+      "imgid": 24081554,
+      "vernacular": { "basename": "violet", "names": ["hooked-spur violet"] },
+      "image": "/imglib/misc/201905/VIO_ADU_0704B_1558125884_tn.jpg"
+    },
+    {
+      "tid": 9126,
+      "family": "Violaceae",
+      "sciname": "Viola glabella",
+      "parenttid": 1592,
+      "author": "Nutt.",
+      "imgid": 23763900,
+      "vernacular": {
+        "basename": "violet",
+        "names": ["stream violet", "pioneer violet", "yellow wood violet"]
+      },
+      "image": "/imglib/OF_FP/201905/VIO_GLA_0887B_1558124689_tn.jpg"
+    },
+    {
+      "tid": 9147,
+      "family": "Violaceae",
+      "sciname": "Viola sempervirens",
+      "parenttid": 1592,
+      "author": "Greene",
+      "imgid": 23763961,
+      "vernacular": {
+        "basename": "violet",
+        "names": ["evergreen violet", "redwoods violet"]
+      },
+      "image": "/imglib/OF_FP/201905/VIO_SEM_9427B_1558125767_tn.jpg"
+    }
+  ],
+  "tids": [
+    8027, 5429, 5891, 2599, 2601, 2609, 2635, 7853, 7855, 5547, 6211, 6217,
+    6221, 6234, 2827, 2828, 3018, 3021, 6408, 6887, 3011, 3384, 3548, 3549,
+    4555, 6038, 6450, 6451, 6452, 8963, 8966, 2414, 2738, 2991, 3003, 3212,
+    3231, 3578, 3990, 4086, 4890, 4906, 4917, 4926, 4933, 4936, 5010, 5127,
+    5234, 5524, 8498, 8502, 8720, 8827, 9174, 3178, 2417, 3249, 3252, 3256,
+    9042, 2658, 2660, 2662, 3265, 4290, 8665, 2726, 6158, 5029, 7238, 6241,
+    6243, 6245, 8696, 8699, 8701, 4268, 4271, 4274, 8307, 8313, 8314, 3499,
+    4006, 8358, 8796, 3323, 3658, 3682, 3740, 3749, 3781, 3797, 3813, 4722,
+    8207, 8214, 8217, 8240, 4671, 4672, 7561, 2877, 2894, 2900, 2907, 5285,
+    7850, 7852, 9018, 9020, 4470, 6292, 6303, 6328, 6347, 6351, 9096, 7768,
+    7771, 5278, 5329, 5335, 7863, 7865, 7869, 7879, 7892, 7208, 5686, 5739,
+    5745, 5747, 8446, 8447, 8451, 5788, 5809, 5810, 5838, 5849, 4178, 6679,
+    7672, 8110, 8277, 8985, 3524, 5078, 5219, 5226, 6076, 7668, 6124, 6120,
+    6533, 5720, 8377, 8378, 8386, 8390, 8556, 8932, 8936, 9195, 4163, 6044,
+    6051, 6708, 5214, 15145, 4146, 6851, 4286, 4546, 5084, 5044, 5049, 2380,
+    2386, 7286, 7301, 7309, 7702, 8974, 8975, 7063, 7067, 7075, 7093, 7095,
+    7098, 7100, 7103, 7108, 9065, 15680, 2952, 3242, 4473, 4528, 4530, 4598,
+    4751, 1000005, 1000006, 5158, 5164, 5172, 5562, 5630, 5887, 6055, 7454,
+    7699, 4204, 5350, 7223, 7227, 4957, 4966, 4975, 4980, 4994, 4998, 7540,
+    4605, 4608, 2458, 7112, 2454, 2835, 4169, 4510, 4520, 7812, 8768, 3909,
+    3911, 3915, 3917, 3918, 3919, 7840, 2705, 2713, 3008, 3986, 4005, 4321,
+    5198, 5202, 5203, 5344, 5621, 5624, 6461, 6837, 7279, 7280, 7623, 7679,
+    7732, 7929, 7933, 7934, 7940, 7959, 7962, 7965, 8565, 8569, 7569, 7570,
+    8060, 8063, 8066, 8093, 8095, 2400, 2404, 3350, 5573, 8757, 8801, 8811,
+    8755, 8979, 8119, 8122, 9090, 9114, 9126, 9147
+  ],
+  "characteristics": [
+    {
+      "hid": 1,
+      "headingname": "Plant Needs",
+      "subheading": "",
+      "characters": [
+        {
+          "charname": "Sunlight",
+          "cid": 680,
+          "display": "select",
+          "units": "",
+          "states": [
+            { "cid": 680, "charstatename": "Sun", "cs": 1, "numval": 0 },
+            { "cid": 680, "charstatename": "Part-Shade", "cs": 2, "numval": 0 },
+            { "cid": 680, "charstatename": "Full-Shade", "cs": 3, "numval": 0 }
+          ]
+        },
+        {
+          "charname": "Moisture",
+          "cid": 683,
+          "display": "select",
+          "units": "",
+          "states": [
+            { "cid": 683, "charstatename": "Dry", "cs": 1, "numval": 0 },
+            { "cid": 683, "charstatename": "Moderate", "cs": 2, "numval": 0 },
+            { "cid": 683, "charstatename": "Wet", "cs": 3, "numval": 0 }
+          ]
+        }
+      ]
+    },
+    {
+      "hid": 2,
+      "headingname": "Mature Size",
+      "subheading": "(Just grab the slider handles)",
+      "characters": [
+        {
+          "charname": "Height",
+          "cid": 140,
+          "display": "slider",
+          "units": "ft",
+          "states": [
+            { "cid": 140, "charstatename": 0, "cs": 1, "numval": 0 },
+            { "cid": 140, "charstatename": 1, "cs": 2, "numval": 1 },
+            { "cid": 140, "charstatename": 2, "cs": 3, "numval": 2 },
+            { "cid": 140, "charstatename": 3, "cs": 4, "numval": 3 },
+            { "cid": 140, "charstatename": 4, "cs": 5, "numval": 4 },
+            { "cid": 140, "charstatename": 5, "cs": 6, "numval": 5 },
+            { "cid": 140, "charstatename": 6, "cs": 7, "numval": 6 },
+            { "cid": 140, "charstatename": 7, "cs": 8, "numval": 7 },
+            { "cid": 140, "charstatename": 8, "cs": 9, "numval": 8 },
+            { "cid": 140, "charstatename": 9, "cs": 10, "numval": 9 },
+            { "cid": 140, "charstatename": 10, "cs": 11, "numval": 10 },
+            { "cid": 140, "charstatename": 11, "cs": 12, "numval": 11 },
+            { "cid": 140, "charstatename": 12, "cs": 13, "numval": 12 },
+            { "cid": 140, "charstatename": 13, "cs": 14, "numval": 13 },
+            { "cid": 140, "charstatename": 14, "cs": 15, "numval": 14 },
+            { "cid": 140, "charstatename": 15, "cs": 16, "numval": 15 },
+            { "cid": 140, "charstatename": 16, "cs": 17, "numval": 16 },
+            { "cid": 140, "charstatename": 17, "cs": 18, "numval": 17 },
+            { "cid": 140, "charstatename": 18, "cs": 19, "numval": 18 },
+            { "cid": 140, "charstatename": 19, "cs": 20, "numval": 19 },
+            { "cid": 140, "charstatename": 20, "cs": 21, "numval": 20 },
+            { "cid": 140, "charstatename": 21, "cs": 22, "numval": 21 },
+            { "cid": 140, "charstatename": 22, "cs": 23, "numval": 22 },
+            { "cid": 140, "charstatename": 23, "cs": 24, "numval": 23 },
+            { "cid": 140, "charstatename": 24, "cs": 25, "numval": 24 },
+            { "cid": 140, "charstatename": 25, "cs": 26, "numval": 25 },
+            { "cid": 140, "charstatename": 26, "cs": 27, "numval": 26 },
+            { "cid": 140, "charstatename": 27, "cs": 28, "numval": 27 },
+            { "cid": 140, "charstatename": 28, "cs": 29, "numval": 28 },
+            { "cid": 140, "charstatename": 29, "cs": 30, "numval": 29 },
+            { "cid": 140, "charstatename": 30, "cs": 31, "numval": 30 },
+            { "cid": 140, "charstatename": 31, "cs": 32, "numval": 31 },
+            { "cid": 140, "charstatename": 32, "cs": 33, "numval": 32 },
+            { "cid": 140, "charstatename": 33, "cs": 34, "numval": 33 },
+            { "cid": 140, "charstatename": 34, "cs": 35, "numval": 34 },
+            { "cid": 140, "charstatename": 35, "cs": 36, "numval": 35 },
+            { "cid": 140, "charstatename": 36, "cs": 37, "numval": 36 },
+            { "cid": 140, "charstatename": 37, "cs": 38, "numval": 37 },
+            { "cid": 140, "charstatename": 38, "cs": 39, "numval": 38 },
+            { "cid": 140, "charstatename": 39, "cs": 40, "numval": 39 },
+            { "cid": 140, "charstatename": 40, "cs": 41, "numval": 40 },
+            { "cid": 140, "charstatename": 41, "cs": 42, "numval": 41 },
+            { "cid": 140, "charstatename": 42, "cs": 43, "numval": 42 },
+            { "cid": 140, "charstatename": 43, "cs": 44, "numval": 43 },
+            { "cid": 140, "charstatename": 44, "cs": 45, "numval": 44 },
+            { "cid": 140, "charstatename": 45, "cs": 46, "numval": 45 },
+            { "cid": 140, "charstatename": 46, "cs": 47, "numval": 46 },
+            { "cid": 140, "charstatename": 47, "cs": 48, "numval": 47 },
+            { "cid": 140, "charstatename": 48, "cs": 49, "numval": 48 },
+            { "cid": 140, "charstatename": 49, "cs": 50, "numval": 49 },
+            { "cid": 140, "charstatename": "50+", "cs": 51, "numval": 50 }
+          ]
+        },
+        {
+          "charname": "Width",
+          "cid": 738,
+          "display": "slider",
+          "units": "ft",
+          "states": [
+            { "cid": 738, "charstatename": 0, "cs": 1, "numval": 0 },
+            { "cid": 738, "charstatename": 1, "cs": 2, "numval": 1 },
+            { "cid": 738, "charstatename": 2, "cs": 3, "numval": 2 },
+            { "cid": 738, "charstatename": 3, "cs": 4, "numval": 3 },
+            { "cid": 738, "charstatename": 4, "cs": 5, "numval": 4 },
+            { "cid": 738, "charstatename": 5, "cs": 6, "numval": 5 },
+            { "cid": 738, "charstatename": 6, "cs": 7, "numval": 6 },
+            { "cid": 738, "charstatename": 7, "cs": 8, "numval": 7 },
+            { "cid": 738, "charstatename": 8, "cs": 9, "numval": 8 },
+            { "cid": 738, "charstatename": 9, "cs": 10, "numval": 9 },
+            { "cid": 738, "charstatename": 10, "cs": 11, "numval": 10 },
+            { "cid": 738, "charstatename": 11, "cs": 12, "numval": 11 },
+            { "cid": 738, "charstatename": 12, "cs": 13, "numval": 12 },
+            { "cid": 738, "charstatename": 13, "cs": 14, "numval": 13 },
+            { "cid": 738, "charstatename": 14, "cs": 15, "numval": 14 },
+            { "cid": 738, "charstatename": 15, "cs": 16, "numval": 15 },
+            { "cid": 738, "charstatename": 16, "cs": 17, "numval": 16 },
+            { "cid": 738, "charstatename": 17, "cs": 18, "numval": 17 },
+            { "cid": 738, "charstatename": 18, "cs": 19, "numval": 18 },
+            { "cid": 738, "charstatename": 19, "cs": 20, "numval": 19 },
+            { "cid": 738, "charstatename": 20, "cs": 21, "numval": 20 },
+            { "cid": 738, "charstatename": 21, "cs": 22, "numval": 21 },
+            { "cid": 738, "charstatename": 22, "cs": 23, "numval": 22 },
+            { "cid": 738, "charstatename": 23, "cs": 24, "numval": 23 },
+            { "cid": 738, "charstatename": 24, "cs": 25, "numval": 24 },
+            { "cid": 738, "charstatename": 25, "cs": 26, "numval": 25 },
+            { "cid": 738, "charstatename": 26, "cs": 27, "numval": 26 },
+            { "cid": 738, "charstatename": 27, "cs": 28, "numval": 27 },
+            { "cid": 738, "charstatename": 28, "cs": 29, "numval": 28 },
+            { "cid": 738, "charstatename": 29, "cs": 30, "numval": 29 },
+            { "cid": 738, "charstatename": 30, "cs": 31, "numval": 30 },
+            { "cid": 738, "charstatename": 31, "cs": 32, "numval": 31 },
+            { "cid": 738, "charstatename": 32, "cs": 33, "numval": 32 },
+            { "cid": 738, "charstatename": 33, "cs": 34, "numval": 33 },
+            { "cid": 738, "charstatename": 34, "cs": 35, "numval": 34 },
+            { "cid": 738, "charstatename": 35, "cs": 36, "numval": 35 },
+            { "cid": 738, "charstatename": 36, "cs": 37, "numval": 36 },
+            { "cid": 738, "charstatename": 37, "cs": 38, "numval": 37 },
+            { "cid": 738, "charstatename": 38, "cs": 39, "numval": 38 },
+            { "cid": 738, "charstatename": 39, "cs": 40, "numval": 39 },
+            { "cid": 738, "charstatename": 40, "cs": 41, "numval": 40 },
+            { "cid": 738, "charstatename": 41, "cs": 42, "numval": 41 },
+            { "cid": 738, "charstatename": 42, "cs": 43, "numval": 42 },
+            { "cid": 738, "charstatename": 43, "cs": 44, "numval": 43 },
+            { "cid": 738, "charstatename": 44, "cs": 45, "numval": 44 },
+            { "cid": 738, "charstatename": 45, "cs": 46, "numval": 45 },
+            { "cid": 738, "charstatename": 46, "cs": 47, "numval": 46 },
+            { "cid": 738, "charstatename": 47, "cs": 48, "numval": 47 },
+            { "cid": 738, "charstatename": 48, "cs": 49, "numval": 48 },
+            { "cid": 738, "charstatename": 49, "cs": 50, "numval": 49 },
+            { "cid": 738, "charstatename": 50, "cs": 51, "numval": 50 },
+            { "cid": 738, "charstatename": 51, "cs": 52, "numval": 51 },
+            { "cid": 738, "charstatename": 52, "cs": 53, "numval": 52 },
+            { "cid": 738, "charstatename": 53, "cs": 54, "numval": 53 },
+            { "cid": 738, "charstatename": 54, "cs": 55, "numval": 54 },
+            { "cid": 738, "charstatename": 55, "cs": 56, "numval": 55 },
+            { "cid": 738, "charstatename": 56, "cs": 57, "numval": 56 },
+            { "cid": 738, "charstatename": 57, "cs": 58, "numval": 57 },
+            { "cid": 738, "charstatename": 58, "cs": 59, "numval": 58 },
+            { "cid": 738, "charstatename": 59, "cs": 60, "numval": 59 },
+            { "cid": 738, "charstatename": 60, "cs": 61, "numval": 60 },
+            { "cid": 738, "charstatename": 61, "cs": 62, "numval": 61 },
+            { "cid": 738, "charstatename": 62, "cs": 63, "numval": 62 },
+            { "cid": 738, "charstatename": 63, "cs": 64, "numval": 63 },
+            { "cid": 738, "charstatename": 64, "cs": 65, "numval": 64 },
+            { "cid": 738, "charstatename": 65, "cs": 66, "numval": 65 },
+            { "cid": 738, "charstatename": 66, "cs": 67, "numval": 66 },
+            { "cid": 738, "charstatename": 67, "cs": 68, "numval": 67 },
+            { "cid": 738, "charstatename": 68, "cs": 69, "numval": 68 },
+            { "cid": 738, "charstatename": 69, "cs": 70, "numval": 69 },
+            { "cid": 738, "charstatename": 70, "cs": 71, "numval": 70 },
+            { "cid": 738, "charstatename": 71, "cs": 72, "numval": 71 },
+            { "cid": 738, "charstatename": 72, "cs": 73, "numval": 72 },
+            { "cid": 738, "charstatename": 73, "cs": 74, "numval": 73 },
+            { "cid": 738, "charstatename": 74, "cs": 75, "numval": 74 },
+            { "cid": 738, "charstatename": 75, "cs": 76, "numval": 75 },
+            { "cid": 738, "charstatename": 76, "cs": 77, "numval": 76 },
+            { "cid": 738, "charstatename": 77, "cs": 78, "numval": 77 },
+            { "cid": 738, "charstatename": 78, "cs": 79, "numval": 78 },
+            { "cid": 738, "charstatename": 79, "cs": 80, "numval": 79 },
+            { "cid": 738, "charstatename": 80, "cs": 81, "numval": 80 }
+          ]
+        }
+      ]
+    },
+    {
+      "hid": 3,
+      "headingname": "Plant Features",
+      "subheading": "",
+      "characters": [
+        {
+          "charname": "flower color",
+          "cid": 612,
+          "display": "",
+          "units": "",
+          "states": [
+            { "cid": 612, "charstatename": "white", "cs": 5, "numval": 0 },
+            { "cid": 612, "charstatename": "pink", "cs": 9, "numval": 0 },
+            { "cid": 612, "charstatename": "red", "cs": 2, "numval": 0 },
+            { "cid": 612, "charstatename": "orange", "cs": 7, "numval": 0 },
+            { "cid": 612, "charstatename": "yellow", "cs": 10, "numval": 0 },
+            { "cid": 612, "charstatename": "green", "cs": 1, "numval": 0 },
+            { "cid": 612, "charstatename": "blue", "cs": 8, "numval": 0 },
+            { "cid": 612, "charstatename": "purple", "cs": 4, "numval": 0 },
+            {
+              "cid": 612,
+              "charstatename": "flowers diminutive",
+              "cs": 11,
+              "numval": 0
+            }
+          ]
+        },
+        {
+          "charname": "bloom months",
+          "cid": 165,
+          "display": "",
+          "units": "",
+          "states": [
+            { "cid": 165, "charstatename": "January", "cs": 1, "numval": 0 },
+            { "cid": 165, "charstatename": "February", "cs": 2, "numval": 0 },
+            { "cid": 165, "charstatename": "March", "cs": 3, "numval": 0 },
+            { "cid": 165, "charstatename": "April", "cs": 4, "numval": 0 },
+            { "cid": 165, "charstatename": "May", "cs": 5, "numval": 0 },
+            { "cid": 165, "charstatename": "June", "cs": 6, "numval": 0 },
+            { "cid": 165, "charstatename": "July", "cs": 7, "numval": 0 },
+            { "cid": 165, "charstatename": "August", "cs": 8, "numval": 0 },
+            { "cid": 165, "charstatename": "September", "cs": 9, "numval": 0 },
+            { "cid": 165, "charstatename": "October", "cs": 10, "numval": 0 },
+            { "cid": 165, "charstatename": "November", "cs": 11, "numval": 0 },
+            { "cid": 165, "charstatename": "December", "cs": 12, "numval": 0 }
+          ]
+        },
+        {
+          "charname": "wildlife support",
+          "cid": 685,
+          "display": "",
+          "units": "",
+          "states": [
+            {
+              "cid": 685,
+              "charstatename": "bees and other insect pollinators",
+              "cs": 2,
+              "numval": 0
+            },
+            {
+              "cid": 685,
+              "charstatename": "beneficial insects/pest eating insects",
+              "cs": 3,
+              "numval": 0
+            },
+            {
+              "cid": 685,
+              "charstatename": "adult butterflies/nectar source",
+              "cs": 1,
+              "numval": 0
+            },
+            {
+              "cid": 685,
+              "charstatename": "caterpillar host plant/larval food source",
+              "cs": 5,
+              "numval": 0
+            },
+            {
+              "cid": 685,
+              "charstatename": "hummingbirds",
+              "cs": 6,
+              "numval": 0
+            }
+          ]
+        },
+        {
+          "charname": "lifespan",
+          "cid": 136,
+          "display": "",
+          "units": "",
+          "states": [
+            { "cid": 136, "charstatename": "annual", "cs": 1, "numval": 0 },
+            { "cid": 136, "charstatename": "biennial", "cs": 2, "numval": 0 },
+            { "cid": 136, "charstatename": "perennial", "cs": 3, "numval": 0 }
+          ]
+        },
+        {
+          "charname": "foliage type",
+          "cid": 100,
+          "display": "",
+          "units": "",
+          "states": [
+            { "cid": 100, "charstatename": "deciduous", "cs": 1, "numval": 0 },
+            { "cid": 100, "charstatename": "evergreen", "cs": 2, "numval": 0 }
+          ]
+        },
+        {
+          "charname": "plant type",
+          "cid": 137,
+          "display": "",
+          "units": "",
+          "states": [
+            {
+              "cid": 137,
+              "charstatename": "fern or fern ally",
+              "cs": 5,
+              "numval": 0
+            },
+            {
+              "cid": 137,
+              "charstatename": "grass or grass-like",
+              "cs": 4,
+              "numval": 0
+            },
+            { "cid": 137, "charstatename": "herb", "cs": 1, "numval": 0 },
+            { "cid": 137, "charstatename": "shrub", "cs": 2, "numval": 0 },
+            { "cid": 137, "charstatename": "tree", "cs": 3, "numval": 0 },
+            { "cid": 137, "charstatename": "vine", "cs": 6, "numval": 0 }
+          ]
+        }
+      ]
+    },
+    {
+      "hid": 4,
+      "headingname": "Growth & Maintenance",
+      "subheading": "",
+      "characters": [
+        {
+          "charname": "landscape uses",
+          "cid": 679,
+          "display": "",
+          "units": "",
+          "states": [
+            {
+              "cid": 679,
+              "charstatename": "clump/tuft-forming",
+              "cs": 1,
+              "numval": 0
+            },
+            {
+              "cid": 679,
+              "charstatename": "erosion control",
+              "cs": 2,
+              "numval": 0
+            },
+            { "cid": 679, "charstatename": "grazing", "cs": 8, "numval": 0 },
+            { "cid": 679, "charstatename": "green roof", "cs": 9, "numval": 0 },
+            {
+              "cid": 679,
+              "charstatename": "groundcover",
+              "cs": 3,
+              "numval": 0
+            },
+            { "cid": 679, "charstatename": "hedgerow", "cs": 4, "numval": 0 },
+            {
+              "cid": 679,
+              "charstatename": "rangeland revegetation",
+              "cs": 10,
+              "numval": 0
+            },
+            { "cid": 679, "charstatename": "screen", "cs": 5, "numval": 0 },
+            {
+              "cid": 679,
+              "charstatename": "thicket-forming",
+              "cs": 6,
+              "numval": 0
+            },
+            { "cid": 679, "charstatename": "windbreak", "cs": 7, "numval": 0 }
+          ]
+        },
+        {
+          "charname": "cultivation preferences",
+          "cid": 767,
+          "display": "",
+          "units": "",
+          "states": [
+            {
+              "cid": 767,
+              "charstatename": "drought tolerant",
+              "cs": 2,
+              "numval": 0
+            },
+            {
+              "cid": 767,
+              "charstatename": "moist soils",
+              "cs": 5,
+              "numval": 0
+            },
+            {
+              "cid": 767,
+              "charstatename": "tolerates constant flooding",
+              "cs": 6,
+              "numval": 0
+            },
+            {
+              "cid": 767,
+              "charstatename": "tolerates seasonal wet",
+              "cs": 7,
+              "numval": 0
+            },
+            {
+              "cid": 767,
+              "charstatename": "well-drained",
+              "cs": 8,
+              "numval": 0
+            }
+          ]
+        },
+        {
+          "charname": "behavior",
+          "cid": 688,
+          "display": "",
+          "units": "",
+          "states": [
+            {
+              "cid": 688,
+              "charstatename": "bulb or bulb-like structures",
+              "cs": 1,
+              "numval": 0
+            },
+            {
+              "cid": 688,
+              "charstatename": "runners (rhizomes, stolons, etc.)",
+              "cs": 2,
+              "numval": 0
+            },
+            { "cid": 688, "charstatename": "seed", "cs": 3, "numval": 0 },
+            { "cid": 688, "charstatename": "spores", "cs": 4, "numval": 0 }
+          ]
+        },
+        {
+          "charname": "propagation",
+          "cid": 740,
+          "display": "",
+          "units": "",
+          "states": [
+            {
+              "cid": 740,
+              "charstatename": "direct- or self-seed",
+              "cs": 3,
+              "numval": 0
+            },
+            {
+              "cid": 740,
+              "charstatename": "seed with stratification",
+              "cs": 5,
+              "numval": 0
+            },
+            {
+              "cid": 740,
+              "charstatename": "seed with scarification",
+              "cs": 7,
+              "numval": 0
+            },
+            {
+              "cid": 740,
+              "charstatename": "seed with both scarification and stratification",
+              "cs": 4,
+              "numval": 0
+            },
+            {
+              "cid": 740,
+              "charstatename": "division/separation",
+              "cs": 2,
+              "numval": 0
+            },
+            { "cid": 740, "charstatename": "cuttings", "cs": 1, "numval": 0 },
+            { "cid": 740, "charstatename": "spores", "cs": 6, "numval": 0 }
+          ]
+        },
+        {
+          "charname": "ease of growth",
+          "cid": 684,
+          "display": "",
+          "units": "",
+          "states": [
+            { "cid": 684, "charstatename": "easy", "cs": 1, "numval": 0 },
+            { "cid": 684, "charstatename": "moderate", "cs": 2, "numval": 0 },
+            { "cid": 684, "charstatename": "hard", "cs": 3, "numval": 0 }
+          ]
+        }
+      ]
+    },
+    {
+      "hid": 5,
+      "headingname": "Beyond the Garden",
+      "subheading": "",
+      "characters": [
+        {
+          "charname": "ecoregion",
+          "cid": 19,
+          "display": "",
+          "units": "",
+          "states": [
+            {
+              "cid": 19,
+              "charstatename": "Basin and Range",
+              "cs": 1,
+              "numval": 0
+            },
+            {
+              "cid": 19,
+              "charstatename": "Blue and Wallowa Mountains",
+              "cs": 2,
+              "numval": 0
+            },
+            { "cid": 19, "charstatename": "Cascades", "cs": 3, "numval": 0 },
+            { "cid": 19, "charstatename": "Coast Range", "cs": 4, "numval": 0 },
+            {
+              "cid": 19,
+              "charstatename": "Columbia Basin",
+              "cs": 5,
+              "numval": 0
+            },
+            {
+              "cid": 19,
+              "charstatename": "Eastern Cascade Slopes and Foothills",
+              "cs": 6,
+              "numval": 0
+            },
+            {
+              "cid": 19,
+              "charstatename": "Estuarine Coast",
+              "cs": 7,
+              "numval": 0
+            },
+            { "cid": 19, "charstatename": "Lava Plains", "cs": 8, "numval": 0 },
+            {
+              "cid": 19,
+              "charstatename": "Owyhee Uplands",
+              "cs": 9,
+              "numval": 0
+            },
+            {
+              "cid": 19,
+              "charstatename": "Siskiyou Mountains",
+              "cs": 10,
+              "numval": 0
+            },
+            {
+              "cid": 19,
+              "charstatename": "Willamette Valley",
+              "cs": 11,
+              "numval": 0
+            }
+          ]
+        },
+        {
+          "charname": "habitat",
+          "cid": 163,
+          "display": "",
+          "units": "",
+          "states": [
+            { "cid": 163, "charstatename": "alpine", "cs": 1, "numval": 0 },
+            {
+              "cid": 163,
+              "charstatename": "brackish water",
+              "cs": 2,
+              "numval": 0
+            },
+            {
+              "cid": 163,
+              "charstatename": "flowing water",
+              "cs": 3,
+              "numval": 0
+            },
+            { "cid": 163, "charstatename": "forest", "cs": 4, "numval": 0 },
+            {
+              "cid": 163,
+              "charstatename": "freshwater wetlands",
+              "cs": 5,
+              "numval": 0
+            },
+            {
+              "cid": 163,
+              "charstatename": "grassland or meadow",
+              "cs": 6,
+              "numval": 0
+            },
+            {
+              "cid": 163,
+              "charstatename": "oak savannah",
+              "cs": 7,
+              "numval": 0
+            },
+            {
+              "cid": 163,
+              "charstatename": "bare or rock-covered ground",
+              "cs": 8,
+              "numval": 0
+            },
+            { "cid": 163, "charstatename": "saltwater", "cs": 9, "numval": 0 },
+            {
+              "cid": 163,
+              "charstatename": "open sandy ground, dunes, or beach",
+              "cs": 10,
+              "numval": 0
+            },
+            {
+              "cid": 163,
+              "charstatename": "shrub, scrub or chaparral",
+              "cs": 11,
+              "numval": 0
+            },
+            {
+              "cid": 163,
+              "charstatename": "freshwater pond or lake",
+              "cs": 12,
+              "numval": 0
+            },
+            {
+              "cid": 163,
+              "charstatename": "disturbed sites",
+              "cs": 13,
+              "numval": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "hid": 5,
+      "headingname": "Commercial Availability",
+      "subheading": "",
+      "characters": [
+        {
+          "charname": "click to auto-select nurseries from a region below",
+          "cid": 208,
+          "display": "groupfilter",
+          "units": "",
+          "states": [
+            {
+              "cid": 208,
+              "charstatename": "Portland Metro",
+              "cs": 1,
+              "numval": 0,
+              "children": [31, 10, 20]
+            },
+            {
+              "cid": 208,
+              "charstatename": "Willamette Valley",
+              "cs": 2,
+              "numval": 0,
+              "children": [31, 10, 20, 21, 22]
+            },
+            {
+              "cid": 208,
+              "charstatename": "Eastern Oregon",
+              "cs": 3,
+              "numval": 0,
+              "children": [29, 12, 32, 33]
+            },
+            {
+              "cid": 208,
+              "charstatename": "Siskiyous",
+              "cs": 4,
+              "numval": 0,
+              "children": [13]
+            }
+          ]
+        },
+        {
+          "charname": "nursery availability",
+          "cid": 209,
+          "display": "",
+          "units": "",
+          "states": [
+            {
+              "cid": 209,
+              "charstatename": "Clearwater Native Plant Nursery",
+              "cs": 33,
+              "numval": 0,
+              "clid": 14946,
+              "pid": 4
+            },
+            {
+              "cid": 209,
+              "charstatename": "Echo Valley Natives",
+              "cs": 10,
+              "numval": 0,
+              "clid": 14940,
+              "pid": 4
+            },
+            {
+              "cid": 209,
+              "charstatename": "Great Basin Nursery",
+              "cs": 32,
+              "numval": 0,
+              "clid": 14945,
+              "pid": 4
+            },
+            {
+              "cid": 209,
+              "charstatename": "Humble Roots Nursery",
+              "cs": 12,
+              "numval": 0,
+              "clid": 14938,
+              "pid": 4
+            },
+            {
+              "cid": 209,
+              "charstatename": "Klamath-Siskiyou Native Seeds",
+              "cs": 13,
+              "numval": 0,
+              "clid": 14939,
+              "pid": 4
+            },
+            {
+              "cid": 209,
+              "charstatename": "Sauvie Island Natives",
+              "cs": 31,
+              "numval": 0,
+              "clid": 14937,
+              "pid": 4
+            },
+            {
+              "cid": 209,
+              "charstatename": "Scholls Valley Native Nursery",
+              "cs": 20,
+              "numval": 0,
+              "clid": 14941,
+              "pid": 4
+            },
+            {
+              "cid": 209,
+              "charstatename": "Sevenoaks Native Nursery",
+              "cs": 21,
+              "numval": 0,
+              "clid": 14942,
+              "pid": 4
+            },
+            {
+              "cid": 209,
+              "charstatename": "Shonnard's Nursery",
+              "cs": 22,
+              "numval": 0,
+              "clid": 14947,
+              "pid": 4
+            },
+            {
+              "cid": 209,
+              "charstatename": "WinterCreek Restoration & Nursery",
+              "cs": 29,
+              "numval": 0,
+              "clid": 14935,
+              "pid": 4
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "lat": 0,
+  "lng": 0,
+  "locality": "",
+  "type": ""
+}

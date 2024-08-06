@@ -5,7 +5,7 @@ import ReactDOM from "react-dom";
 
 import InfographicDropdown from "../garden/infographicDropdown.jsx";
 import SideBar from "../garden/sidebar.jsx";
-import {GardenSearchResult, GardenSearchContainer} from "../common/searchResults.jsx";
+import {CardSearchResult, CardSearchContainer} from "../common/searchResults.jsx";
 import ViewOpts from "../common/viewOpts.jsx";
 import httpGet from "../common/httpGet.js";
 import {IconButton} from "../common/iconButton.jsx";
@@ -18,8 +18,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faChevronUp } from '@fortawesome/free-solid-svg-icons'
 library.add( faChevronUp)
-
-import dummyData from './garden-small.json';
 
 const MOBILE_BREAKPOINT = 576;
 
@@ -93,29 +91,11 @@ class RarePageApp extends React.Component {
   }
   componentDidMount() {
      
-    let apiUrl = `${this.props.clientRoot}/garden/rpc/api.php`;
+    let apiUrl = `${this.props.clientRoot}/rare/rpc/api.php`;
     let url = apiUrl;
-
-    let gardenParams = new URLSearchParams();
-    if (this.getClid() > -1) {
-	    gardenParams.append("clid",this.getClid());
-	  }
-	  if (this.getPid() > -1) {
-	    gardenParams.append("pid",this.getPid());
-	  }
-
-  	url = url + '?' + gardenParams.toString();
   	///garden/rpc/api.php?clid=54&pid=3
 		//console.log(url);
 
-		// const cannedSearches = new Promise((resolve, reject) => {
-		// 	let cannedURL = `${this.props.clientRoot}/garden/rpc/api.php?canned=true`;
-		// 	httpGet(cannedURL)
-		// 		.then((res) => {
-		// 			resolve(JSON.parse(res));
-		// 		});
-    // });
-		
 		/*const characteristics = new Promise((resolve, reject) => {
 			let charURL = `${this.props.clientRoot}/garden/rpc/api.php?chars=true`;
 			httpGet(charURL)
@@ -123,23 +103,14 @@ class RarePageApp extends React.Component {
 					resolve(JSON.parse(res));
 				})
    	});*/
-   	// const garden = new Promise((resolve, reject) => {
-		// 	httpGet(url)
-		// 		.then((res) => {
-		// 			resolve(JSON.parse(res));
-		// 		})
-   	// });
 
-		Promise.all([
-			// cannedSearches,
-      // garden
-    ]).then((cres) => {
-			let res = dummyData;
+		 httpGet(url).then((res) => {
+			let data = JSON.parse(res);
 			let taxa = '';
 			let tids = [];
-			if (res && res.taxa) {
-				taxa = this.sortResults(res.taxa);
-				tids = res.tids;//unordered
+			if (data && data.taxa) {
+				taxa = this.sortResults(data.taxa);
+				tids = data.tids;//unordered
 			}
 			let isMobile = false;
 			if (window.innerWidth < MOBILE_BREAKPOINT) {
@@ -148,15 +119,15 @@ class RarePageApp extends React.Component {
 			this.setState({
 				clid: this.getClid(),
 				pid: this.getPid(),
-				projName: res.projName,
+				projName: data.projName,
 				searchResults: taxa,//always the full garden checklist
 				isMobile: isMobile,
 				apiUrl: apiUrl,
 				currentTids: tids,
-				characteristics: res.characteristics
+				characteristics: data.characteristics
 			});
 			const pageTitle = document.getElementsByTagName("title")[0];
-			pageTitle.innerHTML = `${pageTitle.innerHTML} ${res.title}`;
+			pageTitle.innerHTML = `${pageTitle.innerHTML} ${data.title}`;
 		})
 		.catch((err) => {
 			//window.location = "/";
@@ -452,39 +423,6 @@ class RarePageApp extends React.Component {
     let newQueryStr = addUrlQueryParam("viewType", newType);
     /*window.history.replaceState({ query: newQueryStr }, '', window.location.pathname + newQueryStr);*/
   }
-
-  // onCannedFilter(checklistItem) {/*accepts either object or clid*/
-  // 	let checklist = null;
-  // 	if (typeof checklistItem === 'object') {
-  // 		checklist = checklistItem;
-  // 	}else{
-  // 		checklist = this.getCannedByClid(checklistItem);
-  // 	}
-
-  // 	if (checklist !== null) {
-	// 		this.setState({
-	// 			filters: Object.assign({}, this.state.filters, {checklist : checklist})
-	// 		},function() {
-	// 			this.catchQuery();
-	// 		});
-	// 	}
-  // }
-  // resetCanned() {
-	// 	this.setState({
-	// 		filters: Object.assign({}, this.state.filters, {checklist : {'clid':-1,'name':''}})
-	// 	},function() {
-	// 		this.catchQuery();
-	// 	});
-  // }
-  // getCannedByClid(clid) {
-  // 	let ret = null;
-  // 	this.state.cannedSearches.map((canned) => {
-  // 		if (canned.clid == clid) {
-  // 			ret = canned;
-  // 		}
-  // 	});
-  // 	return ret;
-  // }
   
   resetSlider(cid) {
   	let filters = this.state.filters;
@@ -526,7 +464,7 @@ class RarePageApp extends React.Component {
     });
 	}
   render() {
-		let suggestionUrl = `${this.props.clientRoot}/garden/rpc/autofillsearch.php`;
+		let suggestionUrl = `${this.props.clientRoot}/rare/rpc/autofillsearch.php`;
     /*const pageTitle = document.getElementsByTagName("title")[0];
     pageTitle.innerHTML = `${pageTitle.innerHTML} Gardening with Natives`;
     */
@@ -569,17 +507,6 @@ class RarePageApp extends React.Component {
               />
             </div>
             <div className="col-md-8">
-              {/* <div className="row">
-                <div className="col">
-                  <CannedSearchContainer
-                    searches={ this.state.cannedSearches }
-                    onFilter={ this.onCannedFilter }
-										clientRoot={this.props.clientRoot}
-										checklistId={this.state.filters.checklist['clid']}
-										slideshowCount= { this.state.slideshowCount } 
-                  />
-                </div>
-              </div> */}
               <div className="">
                 <div className="" id="results-section">
            				<div className="row">
@@ -668,13 +595,14 @@ class RarePageApp extends React.Component {
 									</div>
 								          
                   { this.state.searchResults.taxonSort.length > 0 ?
-										<GardenSearchContainer
+										<CardSearchContainer
 											searchResults={ this.state.searchResults }
 											viewType={ this.state.viewType }
 											sortBy={ this.state.sortBy }
 											clientRoot={ this.props.clientRoot }
 											isSearching={this.state.isSearching}
 											currentTids={this.state.currentTids}
+											taxaPage="rare"
 										/>
 									:
 									<p className="no-results">Your search term(s) didn’t produce any results.
@@ -718,8 +646,4 @@ class RarePageApp extends React.Component {
 const headerContainer = document.getElementById("react-header");
 const dataProps = JSON.parse(headerContainer.getAttribute("data-props"));
 const domContainer = document.getElementById("react-rare");
-ReactDOM.render(<RarePageApp 
-									clientRoot={ dataProps["clientRoot"] }
-									clid={ 54 }
-									pid={ 3 }
-								/>, domContainer);
+ReactDOM.render(<RarePageApp clientRoot={ dataProps["clientRoot"] } />, domContainer);

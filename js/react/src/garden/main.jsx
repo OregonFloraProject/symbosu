@@ -5,7 +5,7 @@ import ReactDOM from "react-dom";
 
 import InfographicDropdown from "./infographicDropdown.jsx";
 import SideBar from "./sidebar.jsx";
-import {GardenSearchResult, GardenSearchContainer} from "../common/searchResults.jsx";
+import {CardSearchResult, CardSearchContainer} from "../common/searchResults.jsx";
 import CannedSearchContainer from "./cannedSearches.jsx";
 import ViewOpts from "../common/viewOpts.jsx";
 import httpGet from "../common/httpGet.js";
@@ -684,13 +684,14 @@ class GardenPageApp extends React.Component {
 									</div>
 								          
                   { this.state.searchResults.taxonSort.length > 0 ?
-										<GardenSearchContainer
+										<CardSearchContainer
 											searchResults={ this.state.searchResults }
 											viewType={ this.state.viewType }
 											sortBy={ this.state.sortBy }
 											clientRoot={ this.props.clientRoot }
 											isSearching={this.state.isSearching}
 											currentTids={this.state.currentTids}
+											taxaPage="garden"
 										/>
 									:
 									<p className="no-results">Your search term(s) didn’t produce any results.

@@ -90,5 +90,8 @@ function getNurseryCid() {
 function getVendorPid() {
 	return 4;
 }
+function getRareClid() {
+  return 14948;
+}
 
 ?>
