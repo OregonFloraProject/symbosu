@@ -23,7 +23,7 @@ export const KEY_NAMES = {
   ranking: 'Ranking',
   federal: 'Federal',
   state: 'State',
-  orbic: 'ORBIC',
+  heritage: 'ORBIC',
 
   // survey & manage
   bestSurveyStatus: 'Best survey status',

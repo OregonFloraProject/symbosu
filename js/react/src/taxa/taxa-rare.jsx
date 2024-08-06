@@ -14,29 +14,6 @@ import SideBarSectionSpeciesList from './components/SideBarSectionSpeciesList.js
 import { KEY_NAMES } from './constants';
 
 const dummyData = {
-  vernacularNames: ['Pale larkspur'],
-  sciName: 'Delphinium leucophaeum',
-  rankId: 220,
-  context: {
-    family: 'Ranunculaceae',
-    status: {
-      ranking: 'G2/S2',
-      federal: 'Species of concern',
-      state: 'Endangered',
-      orbic: 'List 1',
-    },
-    ecoregion: 'Willamette Valley',
-    counties: ['Clackamas', 'Multnomah', 'Washington'],
-    habitat: ['rock/cliff/scree/talus/bare ground', 'urban/agricultural/roadsides/human disturbance sites'],
-    elevation: '15 - 320 meters',
-    floweringTime: ['April', 'May'],
-  },
-  surveyManage: {
-    bestSurveyStatus: 'flowering',
-    bestSurveyTime: 'late May - early August',
-    threats: ['development', 'habitat loss', 'hybridization', 'invasive species'],
-    management: ['habitat preservation/conservation'],
-  },
   lookalikes: [
     { taxon: 'Delphinium pavoneaceum', description: 'taller; larger flower parts; sepals +/- reflexed to spreading, lower petals with hairy tuft at base of blade, inflorescence raceme wider below, narrowed above' },
     { taxon: 'D. nuttallii', description: 'blue sepals' },
@@ -64,34 +41,59 @@ const dummyData = {
   literature: ['Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.<br />https://www.npmjs.com/package/less-loader/v/5.0.0', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.']
 }
 
+const EMPTY_DATA = {
+  sciName: null,
+  vernacularNames: [],
+  images: [],
+  rankId: null,
+  context: {
+    related: [],
+    family: '',
+    status: {},
+    ecoregion: [],
+    counties: [],
+    habitat: [],
+    elevation: '',
+    floweringTime: '',
+  },
+  surveyManage: {
+    bestSurveyStatus: '',
+    bestSurveyTime: '',
+    threats: [],
+    management: [],
+  },
+  ...dummyData,
+};
+
+function rangeArrToString(arr) {
+  if (arr.length < 1) {
+    return '';
+  } else if (arr.length === 1) {
+    return arr[0];
+  }
+  return `${arr[0]} - ${arr[arr.length - 1]}`;
+}
+
+function elevationArrToString(arr) {
+  const unitlessString = rangeArrToString(arr);
+  return unitlessString && `${unitlessString} meters`;
+}
+
 function TaxaRareApp(props) {
   const [isLoading, setIsLoading] = useState(true);
-  const [sciName, setSciName] = useState('');
-  const [basename, setBasename] = useState('');
-  const [vernacularNames, setVernacularNames] = useState([]);
-  const [images, setImages] = useState([]);
-  const [description, setDescription] = useState("");
-  const [highlights, setHighlights] = useState({});
-  const [plantFacts, setPlantFacts] = useState({});
-  const [growthMaintenance, setGrowthMaintenance] = useState({});
-  const [commercialAvailability, setCommercialAvailability] = useState({});
-  const [isOpen, setIsOpen] = useState(false); //imagemodal
-  const [isPreviewOpen, setIsPreviewOpen] = useState(false); //explorePreviewModal
-  const [currClid, setCurrClid] = useState(-1); //explorePreviewModal
-  const [currPid, setCurrPid] = useState(3); //explorePreviewModal
-  const [tid, setTid] = useState(parseInt(props.tid));
+  const [data, setData] = useState(EMPTY_DATA);
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const [currImage, setCurrImage] = useState(0);
-  const [checklists, setChecklists] = useState([]);
-  const [nativeGroups, setNativeGroups] = useState([]);
   const [slideshowCount, setSlideshowCount] = useState(5);
-  const [relatedArr, setRelatedArr] = useState([]);
+
+  const tid = parseInt(props.tid);
 
   useEffect(() => {
     // TODO(eric): switch to async/await
     if (tid === -1) {
       window.location = "/";
     } else {
-    	let url = `./rpc/api.php?taxon=${tid}`;
+      let url = `./rpc/api.php?taxon=${tid}&type=rare`;
       httpGet(url)
         .then((res) => {
           res = JSON.parse(res);
@@ -99,7 +101,6 @@ function TaxaRareApp(props) {
           let url = new URL(window.location);
 					let parentQueryParams = new URLSearchParams(url.search);
 					parentQueryParams.set('taxon',res.parentTid);
-          // TODO(eric) should this be here at all?
 					let parentUrl = 'index.php?' + parentQueryParams.toString();
 
           // TODO(eric) ask if this will ever be nonnull and what to link to if so --
@@ -109,99 +110,29 @@ function TaxaRareApp(props) {
 					// 	childUrl = "#subspecies";
 					// }
 
-					setRelatedArr([res.sciname,parentUrl,childUrl]);
-
-          let plantType = '';
-          let foliageType = res.characteristics.features.foliage_type;
-          plantType += foliageType.length > 0 ? `${foliageType[0]} `: '';
-
-          if (res.characteristics.features.lifespan.length > 0) {
-            plantType += `${res.characteristics.features.lifespan[0]}`.trim() + " ";
-          }
-          if (res.characteristics.features.plant_type.length > 0) {
-            plantType += res.characteristics.features.plant_type.join(" or ") + " ";
-          }
-
-          const width = res.characteristics.width;
-          const height = res.characteristics.height;
-          let sizeMaturity = "";
-          if (height.length > 0) {
-            sizeMaturity += height.length > 1 ? `${height[0]}-${height[height.length - 1]}` : `${height[0]}`;
-            sizeMaturity += "' high";
-          }
-          if (width.length > 0) {
-            if (sizeMaturity !== '') {
-              sizeMaturity += ", ";
-            }
-            sizeMaturity += (width.length > 1 ? `${width[0]}-${width[width.length - 1]}` : `${width[0]}`);
-            sizeMaturity += "' wide";
-          }
-
-          let ease_of_growth = res.characteristics.growth_maintenance.ease_of_growth;
-          ease_of_growth = ease_of_growth.length > 0 ? ease_of_growth[0] : "";
-
-          const spreads_vigorously = res.characteristics.growth_maintenance.spreads_vigorously;
-          
-          let moisture = [];
-          if (res.characteristics.moisture.length > 0) {
-            moisture.push(`${res.characteristics.moisture[0]}`.trim());
-          }
-          if (res.characteristics.summer_moisture.length > 0) {
-            moisture.push(`${res.characteristics.summer_moisture[0]}`.trim() + " summer water");
-          }
-
-          setSciName(res.sciname);
-          setBasename(res.vernacular.basename);
-          setVernacularNames(res.vernacular.names);
-          setImages(res.imagesBasis.HumanObservation);
-          setDescription(res.gardenDescription);
-          setChecklists(res.checklists);
-          setHighlights({
-            "Plant type": plantType,
-            "Size at maturity": sizeMaturity,
-            "Light tolerance": res.characteristics.sunlight,
-            "Ease of growth": ease_of_growth
-          });
-          setPlantFacts({
-            "Flower color": res.characteristics.features.flower_color,
-            "Bloom time": res.characteristics.features.bloom_months,
-            "Moisture": moisture,
-            "Wildlife support": res.characteristics.features.wildlife_support
-          });
-          setGrowthMaintenance({
-            "Spreads vigorously": spreads_vigorously === null ? "" : spreads_vigorously,
-            "Cultivation preferences": res.characteristics.growth_maintenance.cultivation_preferences,
-            "Plant behavior": res.characteristics.growth_maintenance.behavior,
-            "Propagation": res.characteristics.growth_maintenance.propagation,
-            "Landscape uses": res.characteristics.growth_maintenance.landscape_uses
-          });
-          const nativeGroups = [];
-					httpGet(`${props.clientRoot}/garden/rpc/api.php?canned=true`)
-					.then((cannedSearchesRes) => {
-						let cannedSearches = JSON.parse(cannedSearchesRes);//14796, 14797, 14798, 14799, 14800
-						Object.entries(cannedSearches).map(([key, checklist]) => {
-							let match = res.checklists.indexOf(checklist.clid);
-							if (match > -1) {
-								nativeGroups.push(checklist);
-							}
-						})
-						setNativeGroups(nativeGroups);
-					});
-					
-					const commercialAvailability = {};
-					var vendorURL = `${props.clientRoot}/checklists/rpc/api-vendor.php?action=taxa_garden&tid=${tid}`;
-					httpGet(vendorURL)
-					.then((res) => {
-          	res = JSON.parse(res);
-						Object.entries(res).map(([key, taxon]) => {
-							let vendors = [];
-							Object.entries(taxon.vendors).map(([key,vendor]) => {
-								vendors.push({'clid':vendor.clid,'name':vendor.name});
-							});
-							commercialAvailability[taxon.sciname] = vendors;
-						})
-						setCommercialAvailability(commercialAvailability);
-					});
+          setData({
+            sciName: res.sciname,
+            vernacularNames: res.vernacular.names,
+            images: res.imagesBasis.HumanObservation,
+            rankId: res.rankId,
+            context: {
+              "Related": [res.sciname,parentUrl,childUrl],
+              family: res.family,
+              status: res.characteristics.conservation_status,
+              ecoregion: res.characteristics.ecoregion,
+              counties: [], // TODO(eric): figure out how to get this data
+              habitat: res.characteristics.habitat,
+              elevation: elevationArrToString(res.characteristics.elevation),
+              floweringTime: rangeArrToString(res.characteristics.bloom_months),
+            },
+            surveyManage: {
+              bestSurveyStatus: res.characteristics.best_survey_status,
+              bestSurveyTime: rangeArrToString(res.characteristics.best_survey_months),
+              threats: res.characteristics.threats,
+              management: res.characteristics.management,
+            },
+            ...dummyData,
+          })
         })
         .catch((err) => {
           // TODO: Something's wrong
@@ -227,14 +158,10 @@ function TaxaRareApp(props) {
 	}
 	const toggleImageModal = (_currImage) => {
     setCurrImage(_currImage);
-    setIsOpen(!isOpen);
-  }
-	const togglePreviewModal = (_currClid) => {
-    setCurrClid(_currClid);
-    setIsPreviewOpen(!isPreviewOpen);
+    setIsImageModalOpen(!isImageModalOpen);
   }
 
-  const data = dummyData;
+  // const data = dummyData;
   const needsPermission = true;
 
   const titleElement = document.getElementsByTagName("title")[0];
@@ -263,16 +190,16 @@ function TaxaRareApp(props) {
       <div className="row mt-2 main-wrapper">
         <div className="col-md-8 main-section">
           
-          { images.length > 0 && 
+          { data.images.length > 0 &&
             <figure>
               <div className="img-main-wrapper">
                 <img
                   id="img-main"
-                  src={ images[0].url }
+                  src={ data.images[0].url }
                   alt={ data.sciName }
                 />
               </div>
-            <figcaption>{ images[0].photographer }</figcaption>
+            <figcaption>{ data.images[0].photographer }</figcaption>
             </figure>
           }
 
@@ -281,12 +208,12 @@ function TaxaRareApp(props) {
             <h3 className="text-light-green font-weight-bold mt-2">{ data.vernacularNames[0] } images</h3>
             <div className="slider-wrapper">
             <ImageCarousel
-              images={images}
+              images={data.images}
               imageCount={ length } 
               slideshowCount= { slideshowCount } 
             >
               {
-                images.map((image,index) => {
+                data.images.map((image,index) => {
                   return (					
                     <div key={image.url}>
                       <div className="card" style={{padding: "0.6em"}}>
@@ -339,9 +266,9 @@ function TaxaRareApp(props) {
           </div>
         </div>
         <ImageModal 
-          show={isOpen}
+          show={isImageModalOpen}
           currImage={currImage}
-          images={images}
+          images={data.images}
           onClose={toggleImageModal}
           clientRoot={ props.clientRoot }
         >
@@ -350,7 +277,7 @@ function TaxaRareApp(props) {
           </h3>
         </ImageModal>
         <div className="col-md-4 sidebar-section">
-          <SideBarSection title="Context" items={{ "Related": relatedArr, ...data.context }} rankId={ data.rankId } />
+          <SideBarSection title="Context" items={ data.context } rankId={ data.rankId } />
           <MapItem title={ data.sciName } tid={ tid } clientRoot={ props.clientRoot } needsPermission={ needsPermission } />
           <SideBarSection title="Survey & Manage" items={ data.surveyManage } />
           <SideBarSectionLookalikesTable title="Look-Alikes" items={ data.lookalikes } />
