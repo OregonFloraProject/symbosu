@@ -3,14 +3,14 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-import InfographicDropdown from "../garden/infographicDropdown.jsx";
-import SideBar from "../garden/sidebar.jsx";
-import {CardSearchResult, CardSearchContainer} from "../common/searchResults.jsx";
+import InfographicDropdown from "./infographicDropdown.jsx";
+import SideBar from "./sidebar.jsx";
+import {CardSearchContainer} from "../common/searchResults.jsx";
 import ViewOpts from "../common/viewOpts.jsx";
 import httpGet from "../common/httpGet.js";
 import {IconButton} from "../common/iconButton.jsx";
 import {addUrlQueryParam, getUrlQueryParams} from "../common/queryParams.js";
-import {getCommonNameStr, getGardenTaxaPage} from "../common/taxaUtils";
+import {getCommonNameStr} from "../common/taxaUtils";
 import Loading from "../common/loading.jsx";
 import FilterModal from "../common/filterModal.jsx";
 
@@ -64,7 +64,6 @@ class RarePageApp extends React.Component {
     this.onFilterRemoved = this.onFilterRemoved.bind(this);
     // this.onCannedFilter = this.onCannedFilter.bind(this);
     this.clearFilters = this.clearFilters.bind(this);
-    this.updateViewport = this.updateViewport.bind(this);
       
     this.onAttrChanged = this.onAttrChanged.bind(this);
     this.onGroupFilterClicked = this.onGroupFilterClicked.bind(this);
@@ -134,16 +133,9 @@ class RarePageApp extends React.Component {
 			console.error(err);
 		})
 		.finally(() => {
-			this.updateViewport();
 			this.setState({ isLoading: false });
 		});
-		window.addEventListener('resize', this.updateViewport);
-	
   }
-
-	updateViewport() {
-
-	}
 
 	clearTextSearch() {
 		this.setState({

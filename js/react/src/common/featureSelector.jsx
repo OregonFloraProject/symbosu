@@ -328,7 +328,7 @@ class FeatureSelector extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-    	showFeature: false
+      showFeature: !props.collapsible,
     };
     
     this.getDropdownId = this.getDropdownId.bind(this);
@@ -393,25 +393,25 @@ class FeatureSelector extends React.Component {
   render() {
 		let classes =  "feature-input" + (this.state.showFeature == true ? '' :" short") + (this.props.display == 'slider' ? ' slider' :"");
 		
-		//if (this.props.display == 'slider') {
-		//	classes = "slider ";//collapse
-		//}
+		const title = <span dangerouslySetInnerHTML={{__html: this.props.title.replace(/_/g, ' ')}}></span>;
 
     return (
       <div className="second-level">
         <div className="feature-selectors">
-          <a
-          	className="feature-selector-header"
-            onClick={this.toggleFeature}
-          >
-            <span dangerouslySetInnerHTML={{__html: this.props.title.replace(/_/g, ' ')}}></span>
-            
-            <img
-              className={ "will-v-flip" }
-              src={ `${this.props.clientRoot}/images/garden/expand-arrow.png` }
-              alt="collapse"
-            />
-          </a>
+          {this.props.collapsible ?
+            <a
+              className="feature-selector-header"
+              onClick={this.toggleFeature}
+            >
+              {title}
+              <img
+                className={ "will-v-flip" }
+                src={ `${this.props.clientRoot}/images/garden/expand-arrow.png` }
+                alt="collapse"
+              />
+            </a> :
+            title
+          }
           <div id={ this.getDropdownId() } className={ classes }>
 						{this.showFeature(this.props.display)}
           </div>
@@ -426,6 +426,7 @@ FeatureSelector.defaultProps = {
   onAttrClicked: () => {},
   onGroupFilterClicked: () => {},
   clientRoot: '',
+  collapsible: true,
 };
 
 export default FeatureSelector;
