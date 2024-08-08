@@ -402,6 +402,7 @@ class FeatureSelector extends React.Component {
             <a
               className="feature-selector-header"
               onClick={this.toggleFeature}
+              aria-expanded={this.state.showFeature}
             >
               {title}
               <img
