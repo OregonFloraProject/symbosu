@@ -399,8 +399,9 @@ class FeatureSelector extends React.Component {
       <div className="second-level">
         <div className="feature-selectors">
           <a
-          	className="feature-selector-header"
+            className="feature-selector-header"
             onClick={this.toggleFeature}
+            aria-expanded={this.state.showFeature}
           >
             <span dangerouslySetInnerHTML={{__html: this.props.title.replace(/_/g, ' ')}}></span>
             
