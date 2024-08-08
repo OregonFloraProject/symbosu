@@ -228,11 +228,11 @@ class RarePageApp extends React.Component {
 				Object.keys(states).map((key) => {
 					let stateNum = Number(states[key].numval);
 					let stateCs = Number(states[key].cs);
-					if (stateNum == slider.range[0]) {
+					if (stateNum < slider.range[0]) {
 						min = stateCs;			
 					}
-					if (stateNum == slider.range[1]) {
-						max = stateCs;
+					if (stateNum < slider.range[1]) {
+						max = stateCs + 1;
 					}	
 				})
 				identParams.append("range[]",cid + '-n-' + min);
