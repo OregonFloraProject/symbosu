@@ -192,33 +192,6 @@ class IdentManager extends Manager {
 				$params[] = array(":search",'%' . $this->searchTerm . '%');
 			}
 			
-			if ($this->getThumbnails()) {
-				$selects = array_merge($selects,["i.imgid"]);
-				$innerJoins[] = array("Images","i","WITH","t.tid = i.tid");
-				$orderBy[] = "i.sortsequence";
-				/*
-				
-				
-				$imageSubquery = $em->createQueryBuilder()
-												->select("imgid",'MIN(sortsequence) sortsequence',"tid")
-												->from("images","i2")
-												->where('i2.tid = :tid')
-												#->orderBy("i2.sortsequence")
-												#->setFirstResult(0)
-												#->setMaxResults(1)
-												->getDQL()
-				;
-				#23739310
-				#8122 23746666
-				#var_dump($imageSubquery);exit;
-				$selects = array_merge($selects,["i.imgid"]);
-				$innerJoins[] = array(sprintf('(%s)', $imageSubquery),"i","WITH","i.tid = t.tid");#sprintf('(%s)', $imageSubquery)
-				#$wheres[] = $qb->expr()->in(
-				#	"i.imgid",
-				#	$imageSubquery->getDQL()
-				#);
-				*/
-			}
 			#ATTRs including vendors						
 			$lookups = $this->getVendorLookups();
 			$clidLookup = $lookups->clidLookup;
@@ -366,8 +339,39 @@ class IdentManager extends Manager {
 			}#end foreach $results	
 		}
 		$this->taxa = array_values($newResults);
+		if ($this->getThumbnails()) {
+			$this->setThumbnailUrls();
+		}
 		$em->flush();
   }
+
+	/**
+	 * Get the URL of the thumbnail to display for each taxon in $this->taxa. This is done per-taxon
+	 * rather than as a single query in order to take advantage of LIMIT 1 and avoid having to pull
+	 * all images for each taxon. Thumbnail URLs are inserted under key 'image' in $this->taxa.
+	 */
+	private function setThumbnailUrls() {
+		if (!empty($this->taxa)) {
+			$em = SymbosuEntityManager::getEntityManager();
+			foreach ($this->taxa as $idx => $taxa) {
+				$qb = $em->createQueryBuilder();
+				$thumb = $qb->select(['i.thumbnailurl'])
+					->from('images', 'i')
+					->where('i.tid = :tid')
+					->setParameter('tid', $taxa['tid'])
+					->andWhere($qb->expr()->isNotNull('i.thumbnailurl'))
+					->orderBy('i.sortsequence')
+					->setFirstResult(0)
+					->setMaxResults(1)
+					->getQuery()
+					->execute();
+
+				if (isset($thumb[0]['thumbnailurl'])) {
+					$this->taxa[$idx]['image'] = resolve_img_path($thumb[0]['thumbnailurl']);
+				}
+			}
+		}
+	}
   
 	public function getCharacteristics() {
 		if (!empty($this->taxa)) {
