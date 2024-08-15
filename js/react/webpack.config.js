@@ -105,6 +105,13 @@ const lessConfig = {
         ]
       }
     ]
+  },
+  stats: {
+    errors: true,
+    assets: true,
+    warnings: true,
+    entrypoints: false,
+    modules: false
   }
 };
 
