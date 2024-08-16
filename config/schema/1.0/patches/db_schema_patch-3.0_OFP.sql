@@ -1278,3 +1278,9 @@ ALTER TABLE `omcollpublications`
 
 ALTER TABLE `omcollpuboccurlink` 
   RENAME TO  `deprecated_omcollpuboccurlink` ;
+
+# 2024-08-16(eric):
+# This is used to speed up selecting thumbnail images for many tids,
+# as the minimum value for sortsequence per tid is not always 1.
+# See commit a00f621c66c69206faf944b4910e29353a151624
+ALTER TABLE images ADD INDEX Index_tid_sortsequence (tid, sortsequence);
