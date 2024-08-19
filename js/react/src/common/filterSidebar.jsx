@@ -1,6 +1,5 @@
 import React from "react";
 
-import HelpButton from "../common/helpButton.jsx";
 import {SearchWidget} from "../common/search.jsx";
 import FeatureSelector from "../common/featureSelector.jsx";
 
@@ -19,7 +18,6 @@ class SideBarHeading extends React.Component {
       <div style={{color: "black"}}>
         <div className="mb-1 pt-2" style={{color: "inherit"}}>
           <h3 className="font-weight-bold d-inline">Search for plants</h3>
-          }
         </div>
         <p className="container">
           Start applying characteristics, and the matching plants will appear at
@@ -207,8 +205,7 @@ class SideBar extends React.Component {
 							/>
 
 							{	this.props.characteristics &&
-								Object.keys(this.props.characteristics).map((idx) => {
-								let firstLevel = this.props.characteristics[idx];
+								Object.values(this.props.characteristics).map((firstLevel) => {
 								let accordionKey = firstLevel.hid.toString() + firstLevel.headingname;//hids are duplicated, so use name also
 									return (					
 										<SidebarAccordion 
@@ -218,11 +215,7 @@ class SideBar extends React.Component {
 											clientRoot={this.props.clientRoot}
 										>
 										{
-											Object.keys(firstLevel.characters).map((idx2) => {
-												let secondLevel = firstLevel.characters[idx2];
-												/*if (secondLevel.display == 'slider') {
-													console.log(secondLevel.states);
-												}*/
+											Object.values(firstLevel.characters).map((secondLevel) => {
 												return (
 													<FeatureSelector
 														key={ secondLevel.cid }
@@ -232,14 +225,18 @@ class SideBar extends React.Component {
 														units={ secondLevel.units }
 														states={ secondLevel.states }
 														attrs={ this.props.filters.attrs }
-														sliders={ this.props.filters.sliders }
+														sliders={ this.props.useNewSlider ? undefined : this.props.filters.sliders }
+														ranges={ this.props.useNewSlider ? this.props.filters.ranges : undefined }
 														clientRoot={this.props.clientRoot}
 														/*onChange={ (featureKey) => {
 															this.props.onWholePlantChanged(plantFeature, featureKey)
 														}}*/
 														onAttrClicked={ this.props.onAttrClicked } 
 														onGroupFilterClicked={ this.props.onGroupFilterClicked }
-														onSliderChanged={ this.props.onSliderChanged } 
+														onSliderChanged={ this.props.useNewSlider ? undefined : this.props.onSliderChanged }
+														onRangeChanged={ this.props.useNewSlider ? this.props.onRangeChanged : undefined }
+														collapsible={ this.props.useNewSlider ? secondLevel.display !== 'slider' : undefined }
+														useNewSlider={ this.props.useNewSlider }
 													/>
 												)
 											})
@@ -250,18 +247,7 @@ class SideBar extends React.Component {
 								})
 							}
 							
-							<div className="p-3 natives-credits">
-								<p><a href="https://www.oregonmetro.gov/" target="_blank"><img 
-											src={ this.props.clientRoot + "/images/metro_logo_t.png"} className="metro" 
-										/></a>Support for the Grow Natives section of the site provided by <a href="https://www.oregonmetro.gov/" target="_blank">Metro</a>
-								 &mdash; protecting clean air, water and habitat in greater Portland.</p>
-
-								<p><a href="https://www.nrcs.usda.gov/conservation-basics/conservation-by-state/oregon/" target="_blank"><img 
-											src={ this.props.clientRoot + "/images/nrcs-color-lockup-4x.png"} 
-										/></a>Additional support provided by <a href="https://www.nrcs.usda.gov/conservation-basics/conservation-by-state/oregon" target="_blank">Oregon NRCS</a>.</p>
-								 
-								<p>See contributing partners to OregonFlora <a href={ this.props.clientRoot + "/pages/project-participants.php"}>here</a>.</p>
-							</div>
+							{this.props.children}
 						</div>
 					}
       </div>
@@ -273,6 +259,7 @@ class SideBar extends React.Component {
 SideBar.defaultProps = {
   searchText: '',
   characteristics: {"hid":'',"headingname":'',"characters":{}},
+  useNewSlider: false,
 };
 
 export default SideBar;

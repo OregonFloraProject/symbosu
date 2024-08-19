@@ -4,7 +4,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 
 import InfographicDropdown from "./infographicDropdown.jsx";
-import SideBar from "./sidebar.jsx";
+import SideBar from "../common/filterSidebar.jsx";
 import {GardenSearchResult, GardenSearchContainer} from "../common/searchResults.jsx";
 import CannedSearchContainer from "./cannedSearches.jsx";
 import ViewOpts from "../common/viewOpts.jsx";
@@ -582,7 +582,20 @@ class GardenPageApp extends React.Component {
 								filters={ this.state.filters }
 								getFilterCount={ this.getFilterCount } 
 								isMobile={ this.state.isMobile }
-              />
+							>
+								<div className="p-3 natives-credits">
+									<p><a href="https://www.oregonmetro.gov/" target="_blank"><img
+												src={ this.props.clientRoot + "/images/metro_logo_t.png"} className="metro"
+											/></a>Support for the Grow Natives section of the site provided by <a href="https://www.oregonmetro.gov/" target="_blank">Metro</a>
+									&mdash; protecting clean air, water and habitat in greater Portland.</p>
+
+									<p><a href="https://www.nrcs.usda.gov/conservation-basics/conservation-by-state/oregon/" target="_blank"><img
+												src={ this.props.clientRoot + "/images/nrcs-color-lockup-4x.png"}
+											/></a>Additional support provided by <a href="https://www.nrcs.usda.gov/conservation-basics/conservation-by-state/oregon" target="_blank">Oregon NRCS</a>.</p>
+
+									<p>See contributing partners to OregonFlora <a href={ this.props.clientRoot + "/pages/project-participants.php"}>here</a>.</p>
+								</div>
+							</SideBar>
             </div>
             <div className="col-md-8">
               <div className="row">
