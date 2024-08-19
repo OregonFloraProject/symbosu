@@ -7,6 +7,7 @@ import ImageModal from "../common/modal.jsx";
 import ExplorePreviewModal from "../explore/previewModal.jsx";
 import {getTaxaPage} from "../common/taxaUtils";
 import Loading from "../common/loading.jsx";
+import { sortKeyedCharObject } from "./utils";
 
 function showItem(item) {
   const isArray = Array.isArray(item);
@@ -178,8 +179,8 @@ class TaxaApp extends React.Component {
             plantType += res.characteristics.features.plant_type.join(" or ") + " ";
           }
 
-          const width = res.characteristics.width;
-          const height = res.characteristics.height;
+          const width = sortKeyedCharObject(res.characteristics.width);
+          const height = sortKeyedCharObject(res.characteristics.height);
           let sizeMaturity = "";
           if (height.length > 0) {
             sizeMaturity += height.length > 1 ? `${height[0]}-${height[height.length - 1]}` : `${height[0]}`;
@@ -221,7 +222,7 @@ class TaxaApp extends React.Component {
             },
             plantFacts: {
               "Flower color": res.characteristics.features.flower_color,
-              "Bloom time": res.characteristics.features.bloom_months,
+              "Bloom time": sortKeyedCharObject(res.characteristics.features.bloom_months),
               "Moisture": moisture,
               "Wildlife support": res.characteristics.features.wildlife_support
             },

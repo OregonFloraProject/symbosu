@@ -593,7 +593,7 @@ class TaxaManager {
   private static function populateCharacteristics($tid) {
     $em = SymbosuEntityManager::getEntityManager();
     $attributeQuery = $em->createQueryBuilder()
-      ->select(["d.cid", "s.charstatename"])
+      ->select(["d.cid", "d.cs", "s.charstatename"])
       ->from("Kmdescr", "d")
       ->innerJoin("Kmcs", "s", "WITH", "(d.cid = s.cid AND d.cs = s.cs)")
       ->innerJoin("Kmcharacters", "c", "WITH", "d.cid = c.cid")
@@ -607,12 +607,19 @@ class TaxaManager {
     foreach ($attribs as $attrib) {
       $attr_key = $attrib["cid"];
       $attr_val = $attrib["charstatename"];
+
+      // Since cs values are stored as strings rather than numbers in mysql, they sometimes arrive
+      // sorted incorrectly (e.g. 10, 11, 7, 8, 9 instead of 7, 8, 9, 10, 11). For characteristics
+      // where the order matters (generally numeric values and months), we include the cs in
+      // $attr_array so that JS can sort the states correctly.
+      $attr_cs = $attrib["cs"];
+
       switch ($attr_key) {
         case TaxaManager::$CID_HEIGHT:
-          array_push($attr_array["height"], intval($attr_val));
+          $attr_array["height"][$attr_cs] = $attr_val;
           break;
         case TaxaManager::$CID_WIDTH:
-          array_push($attr_array["width"], intval($attr_val));
+          $attr_array["width"][$attr_cs] = $attr_val;
           break;
         case TaxaManager::$CID_SUNLIGHT:
           array_push($attr_array["sunlight"], $attr_val);
@@ -627,7 +634,7 @@ class TaxaManager {
           array_push($attr_array["features"]["flower_color"], $attr_val);
           break;
         case TaxaManager::$CID_BLOOM_MONTHS:
-          array_push($attr_array["features"]["bloom_months"], $attr_val);
+          $attr_array["features"]["bloom_months"][$attr_cs] = $attr_val;
           break;
         case TaxaManager::$CID_WILDLIFE_SUPPORT:
           array_push($attr_array["features"]["wildlife_support"], $attr_val);
