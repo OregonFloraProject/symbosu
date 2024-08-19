@@ -115,7 +115,8 @@ class GardenPageApp extends React.Component {
 			httpGet(cannedURL)
 				.then((res) => {
 					resolve(JSON.parse(res));
-				});
+				})
+				.catch((err) => reject(err));
     });
 		
 		/*const characteristics = new Promise((resolve, reject) => {
@@ -130,6 +131,7 @@ class GardenPageApp extends React.Component {
 				.then((res) => {
 					resolve(JSON.parse(res));
 				})
+				.catch((err) => reject(err));
    	});
 
 		Promise.all([
