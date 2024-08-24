@@ -19,9 +19,7 @@ class CheckboxList extends React.Component {
 	
 	
 		return (
-	 		<ul
-				className="list-unstyled"
-				style={{ overflow: "hidden", whiteSpace: "nowrap" }}>
+			<ul className="list-unstyled">
 				{
 					Object.keys(this.props.states).map((itemKey) => {
 						let itemVal = this.props.states[itemKey];
