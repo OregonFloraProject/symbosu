@@ -373,8 +373,17 @@ class TaxaManager {
 			$retArr[$indexKey][$rowArr['tdbid']]["caption"] = $rowArr['caption'];
 			$retArr[$indexKey][$rowArr['tdbid']]["source"] = $rowArr['source'];
 			$retArr[$indexKey][$rowArr['tdbid']]["url"] = $rowArr['sourceurl'];
+			$retArr[$indexKey][$rowArr['tdbid']]["desc"] = [];
 		}
-		$retArr[$indexKey][$rowArr['tdbid']]["desc"][$rowArr['tdsid']] = ($rowArr['displayheader'] && $rowArr['heading']?"<b>".$rowArr['heading']."</b>: ":"").$rowArr['statement'];
+		/**
+		 * json_enocde does NOT necessarily preserve array order; using `tdsid` as the key for the
+		 * `desc` array will cause it to be sorted by `tdsid`, rather than `tds.sortsequence` as we
+		 * intended.
+		 *
+		 * To keep the correct order, we use array_push instead, which is ok as we're not relying on
+		 * the `tdsid` values anywhere in JS.
+		 */
+		array_push($retArr[$indexKey][$rowArr['tdbid']]["desc"], ($rowArr['displayheader'] && $rowArr['heading']?"<b>".$rowArr['heading']."</b>: ":"").$rowArr['statement']);
 		return $retArr;
 	}
   
