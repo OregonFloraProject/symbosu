@@ -24,6 +24,9 @@ export function addGlossaryTooltips(text, glossary) {
     // Get the glossary term ID from the singular version of the term matched
     const id = glossary[group2.toLowerCase()];
 
+    // if the matched word isn't in the glossary (bad regex match), return it as-is
+    if (id === undefined) return match;
+
     // Make a 3-digit random number, this helps make unique ids for glossary words that are repeated
     const rand = Math.floor(100 + Math.random() * 900);
 
