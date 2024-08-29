@@ -76,7 +76,7 @@ function GardenSearchResult(props) {
 	}
   if (props.display) {
     return (
-      <a href={props.href} className="text-decoration-none" style={{ maxWidth: "185px" }} target="_blank">
+      <a href={props.href} className="search-result-link-container" target="_blank">
         <div className={ "card search-result " + (useGrid ? "grid-result" : "list-result") }>
             <div className={useGrid ? "" : "card-body"}>
               <img
