@@ -1,6 +1,11 @@
 import React from "react";
 //import CrumbBuilder from "../common/crumbBuilder.jsx";
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { faChevronUp } from '@fortawesome/free-solid-svg-icons';
+library.add(faChevronUp);
+
 
 class InfographicDropdown extends React.Component {
   constructor(props) {
@@ -64,14 +69,10 @@ class InfographicDropdown extends React.Component {
 							background: "none"
 						}}
 						onClick={ this.onButtonClicked.bind(this) }>
-						<img
-							src={ `${this.props.clientRoot}/images/garden/collapse-arrow.png` }
+						<FontAwesomeIcon
+							icon="chevron-up"
+							color="white"
 							className={ "will-v-flip" + (this.state.isCollapsed ? " v-flip" : "") }
-							style={{
-								width: "4em",
-								height: "4em",
-								opacity: "0.5"
-							}}
 							alt="toggle collapse"
 						/>
 					</button>
