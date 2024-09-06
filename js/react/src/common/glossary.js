@@ -16,7 +16,7 @@ export function addGlossaryTooltips(text, glossary) {
     .join('|') + ')(es|s|ly)?\\b)', "gi");
 
   // Search the description for glossary matches, and add tooltip html to each one
-  return text.replace(re, (match, group1, group2) => {
+  return DOMPurify.sanitize(text).replace(re, (match, group1, group2) => {
 
     // If no groups are captured, it's a word in an HTML tag (non-capturing group), so just return it as-is
     if (!group1) return match;
