@@ -172,6 +172,7 @@ class ProfileManager extends Manager{
 
 		$title = array_key_exists('title', $postArr) ? strip_tags($postArr['title']) : '';
 		$institution = array_key_exists('institution', $postArr) ? strip_tags($postArr['institution']) : '';
+		$department = array_key_exists('department', $postArr) ? strip_tags($postArr['department']) : '';
 		$city = array_key_exists('city', $postArr) ? strip_tags($postArr['city']) : '';
 		$state = array_key_exists('state', $postArr) ? strip_tags($postArr['state']) : '';
 		$zip = array_key_exists('zip', $postArr) ? strip_tags($postArr['zip']) : '';
