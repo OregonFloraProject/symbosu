@@ -2,6 +2,10 @@ export function getTaxaPage(clientRoot, tid) {
   return `${clientRoot}/taxa/index.php?taxon=${tid}`;
 }
 
+export function getRareTaxaPage(clientRoot, tid) {
+  return `${clientRoot}/taxa/rare.php?taxon=${tid}`;
+}
+
 export function getGardenTaxaPage(clientRoot, tid) {
   return `${clientRoot}/taxa/garden.php?taxon=${tid}`;
 }
@@ -16,7 +20,6 @@ export function getImageDetailPage(clientRoot, occid) {
 }
 
 export function getCommonNameStr(item) {
-//console.log(item);
   const basename = item.vernacular.basename;
   const names = item.vernacular.names;
 
@@ -25,11 +28,24 @@ export function getCommonNameStr(item) {
     cname = names[0];
   }
 
-  if (cname.includes(basename) && basename !== cname) {
+  if (basename && cname.includes(basename) && basename !== cname) {
     return `${basename}, ${cname.replace(basename, '')}`
   }
 
   return cname;
+}
+
+export function sortByTaxon(taxa, sortBy) {
+  if (sortBy === 'sciName') {
+    return taxa.sort((a, b) => { return a["sciname"] > b["sciname"] ? 1 : -1 });
+  }
+  if (sortBy === 'vernacularName') {
+    return taxa.sort((a, b) => {
+      return getCommonNameStr(a).toLowerCase() > getCommonNameStr(b).toLowerCase() ? 1 : -1
+    });
+  } else {
+    throw new Error(`sortByTaxon: invalid sortBy value '${sortBy}'`);
+  }
 }
 
 export function getChecklistPage(clientRoot,clid,pid) {

@@ -2107,7 +2107,7 @@ img {
 	
 }
 
-.explore, .identify, #react-garden {
+.explore, .identify, #react-garden, #react-rare {
   #sidebar {
   	font-size: .9rem;
 		padding-bottom: 1em;
@@ -2405,7 +2405,14 @@ img {
 					}
 				}
 			}
-			
+
+			&#elevation-accordion {
+				// elevation slider has a large number on the right, so need some extra space here
+				.second-level .feature-selectors {
+					padding-right: 15px;
+				}
+			}
+			// TODO(eric): yikes, do this in react instead of css(!!)
 			&#maturesize-accordion,
 			&#commercialavailability-accordion {
 				.second-level {
@@ -2641,7 +2648,8 @@ img {
 	}
 }
 #react-identify-app,
-#react-garden {
+#react-garden,
+#react-rare {
 	.modal-backdrop.filter-modal {
 		position: fixed;
 		height: 0;

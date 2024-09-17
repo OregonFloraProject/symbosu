@@ -53,7 +53,6 @@ class ViewOpts extends React.Component {
 			let filter = this.props.filters[filterKey];
 			let showItem = true;
 			let itemText = "";
-			let itemKey = filter.key;//override below as needed
 			switch (filter.key) {
 				case "searchText":
 					if (filter.val === ViewOpts.DEFAULT_SEARCH_TEXT) {
@@ -77,6 +76,12 @@ class ViewOpts extends React.Component {
 					if (checklist.clid > -1) {
 						buttons.push({"key":checklist.clid,"text":checklist.name});
 					}
+					break;
+				}
+				case "ranges": {
+					Object.entries(filter.val).forEach(([cid, featureObj]) => {
+						buttons.push({ key: cid, text: featureObj.name });
+					})
 					break;
 				}
 				case "sliders": {

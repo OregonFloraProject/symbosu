@@ -1,5 +1,5 @@
 import React from "react";
-import {getCommonNameStr, getTaxaPage, getGardenTaxaPage} from "../common/taxaUtils";
+import {getCommonNameStr, getTaxaPage, getGardenTaxaPage, getRareTaxaPage} from "../common/taxaUtils";
 import Searching from "../common/searching.jsx";
 import TextareaField from "../common/textarea.jsx";
 
@@ -63,7 +63,7 @@ class SearchResultContainer extends React.Component {
   }
 }
 
-function GardenSearchResult(props) {
+function CardSearchResult(props) {
   const useGrid = props.viewType === "grid";
   let nameFirst = '';
   let nameSecond = '';
@@ -100,44 +100,39 @@ function GardenSearchResult(props) {
   return <span style={{ display: "none" }}/>;
 }
 
-class GardenSearchContainer extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    return (
-      <div
-        id="search-results"
-        className={ "mt-4 w-100" + (this.props.viewType === "grid" ? " search-result-grid" : "") }
-      >
-				<Searching 
-					clientRoot={ this.props.clientRoot }
-					isSearching={ this.props.isSearching }
-				/>
-			{	this.props.searchResults.taxonSort.map((result) =>  {
-						let display = (this.props.currentTids.indexOf(result.tid) > -1);
-						return (
-							<GardenSearchResult
-								display={ display }
-								key={ result.tid }
-								viewType={ this.props.viewType }
-								showTaxaDetail={ this.props.showTaxaDetail }
-								href={ getGardenTaxaPage(this.props.clientRoot, result.tid) }
-								src={ result.image }
-								commonName={ getCommonNameStr(result) }
-								sciName={ result.sciname ? result.sciname : '' }
-								author={ result.author ? result.author : '' }
-								vouchers={  result.vouchers ? result.vouchers : '' }
-								clientRoot={ this.props.clientRoot }
-								sortBy={ this.props.sortBy }
-							/>
-						)
-					})
-				}
-      </div>
-    );
-  }
+function CardSearchContainer(props) {
+	const getTaxaPage = props.taxaPage === 'rare' ? getRareTaxaPage : getGardenTaxaPage;
+	return (
+		<div
+			id="search-results"
+			className={ "mt-4 w-100" + (props.viewType === "grid" ? " search-result-grid" : "") }
+		>
+			<Searching
+				clientRoot={ props.clientRoot }
+				isSearching={ props.isSearching }
+			/>
+		{	props.searchResults.taxonSort.map((result) =>  {
+					let display = (props.currentTids.indexOf(result.tid) > -1);
+					return (
+						<CardSearchResult
+							display={ display }
+							key={ result.tid }
+							viewType={ props.viewType }
+							showTaxaDetail={ props.showTaxaDetail }
+							href={ getTaxaPage(props.clientRoot, result.tid) }
+							src={ result.image }
+							commonName={ getCommonNameStr(result) }
+							sciName={ result.sciname ? result.sciname : '' }
+							author={ result.author ? result.author : '' }
+							vouchers={  result.vouchers ? result.vouchers : '' }
+							clientRoot={ props.clientRoot }
+							sortBy={ props.sortBy }
+						/>
+					)
+				})
+			}
+		</div>
+	);
 }
 
 class ExploreSearchResult extends React.Component  {
@@ -569,6 +564,6 @@ VendorUploadContainer.defaultProps = {
 	isSearching: true
 };
 
-export { SearchResultContainer, SearchResult, GardenSearchContainer, GardenSearchResult, ExploreSearchResult, ExploreSearchContainer, IdentifySearchResult, IdentifySearchContainer, VendorUploadContainer };
+export { SearchResultContainer, SearchResult, CardSearchContainer, CardSearchResult, ExploreSearchResult, ExploreSearchContainer, IdentifySearchResult, IdentifySearchContainer, VendorUploadContainer };
 
 

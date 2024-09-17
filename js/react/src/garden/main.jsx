@@ -5,13 +5,13 @@ import ReactDOM from "react-dom";
 
 import InfographicDropdown from "./infographicDropdown.jsx";
 import SideBar from "../common/filterSidebar.jsx";
-import {GardenSearchResult, GardenSearchContainer} from "../common/searchResults.jsx";
+import {CardSearchResult, CardSearchContainer} from "../common/searchResults.jsx";
 import CannedSearchContainer from "./cannedSearches.jsx";
 import ViewOpts from "../common/viewOpts.jsx";
 import httpGet from "../common/httpGet.js";
 import {IconButton} from "../common/iconButton.jsx";
 import {addUrlQueryParam, getUrlQueryParams} from "../common/queryParams.js";
-import {getCommonNameStr, getGardenTaxaPage} from "../common/taxaUtils";
+import {sortByTaxon} from "../common/taxaUtils";
 import Loading from "../common/loading.jsx";
 import FilterModal from "../common/filterModal.jsx";
 
@@ -63,7 +63,6 @@ class GardenPageApp extends React.Component {
     this.onSearchResults = this.onSearchResults.bind(this);
 
     this.onSortByChanged = this.onSortByChanged.bind(this);
-    this.sortByTaxon = this.sortByTaxon.bind(this);
     this.onViewTypeChanged = this.onViewTypeChanged.bind(this);
     this.onFilterRemoved = this.onFilterRemoved.bind(this);
     this.onCannedFilter = this.onCannedFilter.bind(this);
@@ -379,21 +378,9 @@ class GardenPageApp extends React.Component {
       characteristics: chars
     });
   }
-  sortByTaxon(taxa) {
-		let taxonSort = {};
-		switch (this.state.sortBy) {
-			case 'sciName':
-				taxonSort = taxa.sort((a, b) => { return a["sciname"] > b["sciname"] ? 1 : -1 });
-				break;
-			case 'vernacularName':
-				taxonSort = taxa.sort((a, b) => { return getCommonNameStr(a).toLowerCase() > getCommonNameStr(b).toLowerCase() ? 1 : -1 });
-				break;
-		}
-  	return taxonSort;
-  }
   sortResults(results) {//should receive taxa from API
   	let newResults = {};
-		let taxonSort = this.sortByTaxon(results);
+		let taxonSort = sortByTaxon(results, this.state.sortBy);
 		let familySort = results;
 
     newResults = {"familySort": familySort, "taxonSort": taxonSort};
@@ -406,7 +393,7 @@ class GardenPageApp extends React.Component {
 		this.setState({
       sortBy: (type == 'sciName'? 'sciName': 'vernacularName')
     },function() {
-    	taxonSort = this.sortByTaxon(this.state.searchResults.taxonSort);
+			taxonSort = sortByTaxon(this.state.searchResults.taxonSort, this.state.sortBy);
 			this.setState({
 				searchResults: {"familySort": familySort, "taxonSort": taxonSort}
 			});
@@ -699,13 +686,14 @@ class GardenPageApp extends React.Component {
 									</div>
 								          
                   { this.state.searchResults.taxonSort.length > 0 ?
-										<GardenSearchContainer
+										<CardSearchContainer
 											searchResults={ this.state.searchResults }
 											viewType={ this.state.viewType }
 											sortBy={ this.state.sortBy }
 											clientRoot={ this.props.clientRoot }
 											isSearching={this.state.isSearching}
 											currentTids={this.state.currentTids}
+											taxaPage="garden"
 										/>
 									:
 									<p className="no-results">Your search term(s) didn’t produce any results.
