@@ -1,7 +1,7 @@
 import React from "react";
 
-import {SearchWidget} from "../common/search.jsx";
-import FeatureSelector from "../common/featureSelector.jsx";
+import {SearchWidget} from "./search.jsx";
+import FeatureSelector from "./sidebar/featureSelector.jsx";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -221,6 +221,7 @@ class SideBar extends React.Component {
 														key={ secondLevel.cid }
 														cid={ secondLevel.cid }
 														title={ secondLevel.charname }
+														heading={ firstLevel.headingname }
 														display={ secondLevel.display }
 														units={ secondLevel.units }
 														states={ secondLevel.states }

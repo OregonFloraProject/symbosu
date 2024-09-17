@@ -2,7 +2,7 @@ import React from "react";
 
 import HelpButton from "../common/helpButton.jsx";
 import {SearchWidget} from "../common/search.jsx";
-import FeatureSelector from "../common/featureSelector.jsx";
+import FeatureSelector from "../common/sidebar/featureSelector.jsx";
 //import ViewOpts from "./viewOpts.jsx";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'

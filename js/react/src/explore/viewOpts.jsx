@@ -1,5 +1,4 @@
 import React from "react";
-import CheckboxItem from "../common/checkboxItem.jsx";
 
 class ViewOpts extends React.Component {
 
