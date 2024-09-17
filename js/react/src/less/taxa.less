@@ -3,6 +3,7 @@
 
 
 #react-taxa-garden-app,
+#react-taxa-rare-app,
 #react-taxa-app {
 
 	p,
@@ -80,10 +81,12 @@
 			font-size: 14px;
 			line-height: 1.3rem;
 			margin-bottom: .1rem;
+			text-indent: 0.5rem hanging;
 		}
 	}
 }
-#react-taxa-garden-app {
+#react-taxa-garden-app,
+#react-taxa-rare-app {
   .text-drk-grn();
 
   .text-light-green {
@@ -95,7 +98,6 @@
   }
   .slider-wrapper {
 		max-height: 150px;
-		overflow: hidden; 
   }
   .sidebar-section {
   	a {
@@ -161,6 +163,156 @@
 		}
 	}
 
+}
+#react-taxa-rare-app{
+	.taxa-prose {
+		margin-bottom: 2rem;
+
+		p {
+			font-size: 1rem;
+			line-height: 1.4rem;
+		}
+		h2 {
+			font-size: 2rem;
+			font-weight: 700;
+			margin-top: 2rem !important;
+			color: @med-green;
+		}
+		&.no-images {
+			margin-top: -2rem;
+		}
+	}
+
+	.sidebar-section {
+		.list {
+			border-top: 1px dashed black;
+			border-bottom: 1px dashed black;
+			line-height: 1.3rem;
+			padding-top: 0.4rem;
+			padding-bottom: 0.4rem;
+		}
+		.associated-sciname {
+			font-style: italic;
+		}
+		.row .lookalike-sciname {
+			font-style: italic;
+		}
+		.row.is-header {
+			font-weight: 700;
+		}
+		.row .subheading-key {
+			font-weight: 700;
+			margin-right: 4pt;
+		}
+		.row .char-value {
+			overflow-wrap: break-word;
+		}
+	}
+}
+#react-taxa-app,
+#react-taxa-rare-app {
+	.sidebar-section {
+
+
+		.related-sciname {
+			font-size: 18px;
+			margin-top: -3px;
+		}
+
+		.related,
+		.related-sciname,
+		.related-nav,
+		.col {
+			padding-left: 0px;
+			padding-right: 0px;
+		}
+		.related-nav {
+			text-align: right;
+		}
+		.related-link {
+			cursor: pointer;
+		}
+		.map-label {
+			border-bottom: 1px dashed black;
+			color: @gray-type;
+			font-style: italic;
+		}
+		.map-link {
+			cursor: pointer;
+		}
+		.map-overlay-container {
+			position: relative;
+		}
+		.map-overlay-box {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background-color: rgba(0, 0, 0, 0.75);
+		}
+		.map-overlay-box.hidden {
+			display: none;
+		}
+		.map-overlay {
+			position: absolute;
+			top: 50%;
+			padding-left: 2rem;
+			padding-right: 2rem;
+			text-align: center;
+			transform: translateY(-50%);
+			color: white;
+		}
+		.map-overlay .inner-link {
+			color: @med-green !important;
+		}
+		.map-overlay .inner-link:hover {
+			text-decoration: underline;
+		}
+		&.weblinks {
+
+			li {
+				padding-top: .2rem !important;
+				padding-bottom: .2rem !important;
+
+				a {
+					font-weight: bold;
+					text-decoration: underline;
+				}
+			}
+		}
+	}
+
+	.related {
+		.related-label {
+			padding-right: 6px;
+			text-transform: uppercase;
+			font-size: .9em;
+		}
+		.related-links {
+			.separator {
+				padding: 0px 2px;
+			}
+		}
+		.related-sciname {
+			font-style: italic;
+			font-weight: bold;
+		}
+		.fa-arrow-circle-up {
+			transform: rotate(315deg);
+			color: @med-green;
+		}
+		.fa-arrow-circle-down {
+			transform: rotate(315deg);
+			color: @med-green;
+		}
+	}
+
+	// Glossary word styling
+	.glossary {
+		cursor: pointer;
+        border-bottom: 1px dashed #3c641e;
+	}
 }
 #react-taxa-app {
 	.taxa-detail {
@@ -266,31 +418,6 @@
 	}
 
 	.sidebar-section {
-
-
-		.related-sciname {
-			font-size: 18px;
-			margin-top: -3px;
-		}
-
-		.related,
-		.related-sciname,
-		.related-nav,
-		.col {
-			padding-left: 0px;
-			padding-right: 0px;
-		}
-		.related-nav {
-			text-align: right;
-		}
-		.map-label {
-			border-bottom: 1px dashed black;
-			color: @gray-type;
-			font-style: italic;
-		}
-		.map-link {
-			cursor: pointer;
-		}
 		&.weblinks {
 
 			li {
@@ -308,30 +435,6 @@
 		width: 100%;
 		li {
 			display: block;
-		}
-	}
-	.related {
-		.related-label {
-			padding-right: 6px;
-			text-transform: uppercase;
-			font-size: .9em;
-		}
-		.related-links {
-			.separator {
-				padding: 0px 2px;
-			}
-		}
-		.related-sciname {
-			font-style: italic;
-			font-weight: bold;
-		}
-		.fa-arrow-circle-up {
-			transform: rotate(315deg);
-			color: @med-green;
-		}
-		.fa-arrow-circle-down {
-			transform: rotate(315deg);
-			color: @med-green;
 		}
 	}
 	.more-info {
@@ -422,10 +525,5 @@
 
 			}
 		}
-	}
-	// Glossary word styling
-	.glossary {
-		cursor: pointer;
-        border-bottom: 1px dashed #3c641e;
 	}
 }
