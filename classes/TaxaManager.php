@@ -33,6 +33,20 @@ class TaxaManager {
   private static $CID_HABITAT = 163;
   private static $CID_ECOREGION = 19;
 
+  # Survey & manage (rare plant guide)
+  private static $CID_BEST_SURVEY_MONTHS = 633;
+  private static $CID_BEST_SURVEY_STATUS = 822;
+  private static $CID_THREATS = 823;
+  private static $CID_MANAGEMENT_ACTIONS = 824;
+
+  # Context (rare plant guide)
+  private static $CID_ELEVATION = 820;
+
+  # Conservation status (rare plant guide)
+  private static $CID_CONSERVATION_FED = 242;
+  private static $CID_CONSERVATION_STATE = 243;
+  private static $CID_CONSERVATION_HERITAGE = 244;
+
 	# from TaxonProfileManager
 	private $langArr = array();
 	
@@ -201,8 +215,8 @@ class TaxaManager {
 
   }
 
-  public function getCharacteristics() {
-  	$this->characteristics = self::populateCharacteristics($this->getTid());
+  public function getCharacteristics($queryType = 'default') {
+    $this->characteristics = self::populateCharacteristics($this->getTid(), $queryType);
     return $this->characteristics;
   }
 
@@ -408,35 +422,58 @@ class TaxaManager {
     $this->checklists = self::populateChecklists($this->getTid());
   }
 
-  private static function getEmptyCharacteristics() {
-    return [
-      "height" => [],
-      "width" => [],
-      "sunlight" => [],
-      "moisture" => [],
-      "summer_moisture" => [],
-      "features" => [
+  private static function getEmptyCharacteristics($queryType = 'default') {
+    if ($queryType === 'rare') {
+      return [
+        "habitat" => [],
+        "ecoregion" => [],
+        "elevation" => [],
+        "bloom_months" => [],
+
+        # Survey & manage
+        "best_survey_months" => [],
+        "best_survey_status" => null,
+        "threats" => [],
+        "management" => [],
+
+        "conservation_status" => [
+          "federal" => null,
+          "state" => null,
+          "heritage" => null
+        ]
+      ];
+    } else if ($queryType === 'garden') {
+      return [
+        "height" => [],
+        "width" => [],
+        "sunlight" => [],
+        "moisture" => [],
+        "summer_moisture" => [],
+
+        # Features
         "flower_color" => [],
         "bloom_months" => [],
         "wildlife_support" => [],
         "lifespan" => [],
         "foliage_type" => [],
-        "plant_type" => []
-      ],
-      "growth_maintenance" => [
-        "landscape_uses" => [],
-        "cultivation_preferences" => [],
-        "behavior" => [],
-        "propagation" => [],
-        "ease_of_growth" => [],
-        "spreads_vigorously" => null,
-        //"other_cult_prefs" => []
-      ],
-      "beyond_garden" => [
+        "plant_type" => [],
+
+        # Beyond the garden
         "ecoregion" => [],
-        "habitat" => []
-      ]
-    ];
+        "habitat" => [],
+
+        "growth_maintenance" => [
+          "landscape_uses" => [],
+          "cultivation_preferences" => [],
+          "behavior" => [],
+          "propagation" => [],
+          "ease_of_growth" => [],
+          "spreads_vigorously" => null,
+          //"other_cult_prefs" => []
+        ]
+      ];
+    }
+    return [];
   }
   private function populateAmbiguousSynonyms($tid) {
   	$return = [];
@@ -590,7 +627,8 @@ class TaxaManager {
   	return $links;
  	}
  	
-  private static function populateCharacteristics($tid) {
+  private static function populateCharacteristics($tid, $queryType) {
+    $cids = TaxaManager::getAllCids($queryType);
     $em = SymbosuEntityManager::getEntityManager();
     $attributeQuery = $em->createQueryBuilder()
       ->select(["d.cid", "d.cs", "s.charstatename"])
@@ -599,11 +637,11 @@ class TaxaManager {
       ->innerJoin("Kmcharacters", "c", "WITH", "d.cid = c.cid")
       ->where("d.tid = :tid");
     $attributeQuery = $attributeQuery
-      ->andWhere($attributeQuery->expr()->in("d.cid", TaxaManager::getAllCids()))
+      ->andWhere($attributeQuery->expr()->in("d.cid", $cids))
       ->setParameter("tid", $tid);
 
     $attribs = $attributeQuery->getQuery()->execute();
-    $attr_array = TaxaManager::getEmptyCharacteristics();
+    $attr_array = TaxaManager::getEmptyCharacteristics($queryType);
     foreach ($attribs as $attrib) {
       $attr_key = $attrib["cid"];
       $attr_val = $attrib["charstatename"];
@@ -631,22 +669,22 @@ class TaxaManager {
           array_push($attr_array["summer_moisture"], $attr_val);
           break;
         case TaxaManager::$CID_FLOWER_COLOR:
-          array_push($attr_array["features"]["flower_color"], $attr_val);
+          array_push($attr_array["flower_color"], $attr_val);
           break;
         case TaxaManager::$CID_BLOOM_MONTHS:
-          $attr_array["features"]["bloom_months"][$attr_cs] = $attr_val;
+          $attr_array["bloom_months"][$attr_cs] = $attr_val;
           break;
         case TaxaManager::$CID_WILDLIFE_SUPPORT:
-          array_push($attr_array["features"]["wildlife_support"], $attr_val);
+          array_push($attr_array["wildlife_support"], $attr_val);
           break;
         case TaxaManager::$CID_LIFESPAN:
-          array_push($attr_array["features"]["lifespan"], $attr_val);
+          array_push($attr_array["lifespan"], $attr_val);
           break;
         case TaxaManager::$CID_FOLIAGE_TYPE:
-          array_push($attr_array["features"]["foliage_type"], $attr_val);
+          array_push($attr_array["foliage_type"], $attr_val);
           break;
         case TaxaManager::$CID_PLANT_TYPE:
-          array_push($attr_array["features"]["plant_type"], $attr_val);
+          array_push($attr_array["plant_type"], $attr_val);
           break;
         case TaxaManager::$CID_LANDSCAPE_USES:
           array_push($attr_array["growth_maintenance"]["landscape_uses"], $attr_val);
@@ -670,10 +708,34 @@ class TaxaManager {
         #  array_push($attr_array["growth_maintenance"]["other_cult_prefs"], $attr_val);
         #  break;
         case TaxaManager::$CID_ECOREGION:
-          array_push($attr_array["beyond_garden"]["ecoregion"], $attr_val);
+          array_push($attr_array["ecoregion"], $attr_val);
           break;
         case TaxaManager::$CID_HABITAT:
-          array_push($attr_array["beyond_garden"]["habitat"], $attr_val);
+          array_push($attr_array["habitat"], $attr_val);
+          break;
+        case TaxaManager::$CID_BEST_SURVEY_MONTHS:
+          $attr_array["best_survey_months"][$attr_cs] = $attr_val;
+          break;
+        case TaxaManager::$CID_BEST_SURVEY_STATUS:
+          $attr_array["best_survey_status"] = $attr_val;
+          break;
+        case TaxaManager::$CID_THREATS:
+          array_push($attr_array["threats"], $attr_val);
+          break;
+        case TaxaManager::$CID_MANAGEMENT_ACTIONS:
+          array_push($attr_array["management"], $attr_val);
+          break;
+        case TaxaManager::$CID_ELEVATION:
+          $attr_array["elevation"][$attr_cs] = $attr_val;
+          break;
+        case TaxaManager::$CID_CONSERVATION_FED:
+          $attr_array["conservation_status"]["federal"] = $attr_val;
+          break;
+        case TaxaManager::$CID_CONSERVATION_STATE:
+          $attr_array["conservation_status"]["state"] = $attr_val;
+          break;
+        case TaxaManager::$CID_CONSERVATION_HERITAGE:
+          $attr_array["conservation_status"]["heritage"] = $attr_val;
           break;
         default:
           break;
@@ -681,7 +743,7 @@ class TaxaManager {
     }
 
     foreach (["width", "height"] as $k) {
-      if (count($attr_array[$k]) > 1) {
+      if (in_array($k, $cids) && count($attr_array[$k]) > 1) {
         $tmp = [min($attr_array[$k]), max($attr_array[$k])];
         $attr_array[$k] = $tmp;
       }
@@ -754,36 +816,58 @@ class TaxaManager {
   
 #    	global $LANG_TAG;
  #   var_dump($LANG_TAG);
-  private static function getAllCids() {
-    return [
-      # Basic characteristics
-      TaxaManager::$CID_SUNLIGHT,
-      TaxaManager::$CID_MOISTURE,
-      TaxaManager::$CID_SUMMER_MOISTURE,
-      TaxaManager::$CID_WIDTH,
-      TaxaManager::$CID_HEIGHT,
-  
+  private static function getAllCids($queryType = 'default') {
+    if ($queryType === 'rare') {
+      return [
+        # Context
+        TaxaManager::$CID_HABITAT,
+        TaxaManager::$CID_ECOREGION,
+        TaxaManager::$CID_ELEVATION,
+        TaxaManager::$CID_BLOOM_MONTHS,
+
+        # Survey & manage
+        TaxaManager::$CID_BEST_SURVEY_MONTHS,
+        TaxaManager::$CID_BEST_SURVEY_STATUS,
+        TaxaManager::$CID_THREATS,
+        TaxaManager::$CID_MANAGEMENT_ACTIONS,
+
+        # Conservation status
+        TaxaManager::$CID_CONSERVATION_FED,
+        TaxaManager::$CID_CONSERVATION_STATE,
+        TaxaManager::$CID_CONSERVATION_HERITAGE
+      ];
+    } else if ($queryType === 'garden') {
+      return [
+        # Basic characteristics
+        TaxaManager::$CID_SUNLIGHT,
+        TaxaManager::$CID_MOISTURE,
+        TaxaManager::$CID_SUMMER_MOISTURE,
+        TaxaManager::$CID_WIDTH,
+        TaxaManager::$CID_HEIGHT,
+
         # Plant features
-      TaxaManager::$CID_FLOWER_COLOR,
-      TaxaManager::$CID_BLOOM_MONTHS,
-      TaxaManager::$CID_WILDLIFE_SUPPORT,
-      TaxaManager::$CID_LIFESPAN,
-      TaxaManager::$CID_FOLIAGE_TYPE,
-      TaxaManager::$CID_PLANT_TYPE,
-  
+        TaxaManager::$CID_FLOWER_COLOR,
+        TaxaManager::$CID_BLOOM_MONTHS,
+        TaxaManager::$CID_WILDLIFE_SUPPORT,
+        TaxaManager::$CID_LIFESPAN,
+        TaxaManager::$CID_FOLIAGE_TYPE,
+        TaxaManager::$CID_PLANT_TYPE,
+
         # Growth & maintenance
-      TaxaManager::$CID_LANDSCAPE_USES,
-      TaxaManager::$CID_CULTIVATION_PREFS,
-      TaxaManager::$CID_BEHAVIOR,
-      TaxaManager::$CID_PROPAGATION,
-      TaxaManager::$CID_EASE_GROWTH,
-      TaxaManager::$CID_SPREADS,
-      #TaxaManager::$CID_OTHER_CULT_PREFS,
-  
+        TaxaManager::$CID_LANDSCAPE_USES,
+        TaxaManager::$CID_CULTIVATION_PREFS,
+        TaxaManager::$CID_BEHAVIOR,
+        TaxaManager::$CID_PROPAGATION,
+        TaxaManager::$CID_EASE_GROWTH,
+        TaxaManager::$CID_SPREADS,
+        #TaxaManager::$CID_OTHER_CULT_PREFS,
+
         # Beyond the garden
-      TaxaManager::$CID_HABITAT,
-      TaxaManager::$CID_ECOREGION
-    ];
+        TaxaManager::$CID_HABITAT,
+        TaxaManager::$CID_ECOREGION,
+      ];
+    }
+    return [];
   }
 
 	public static function getEmptyTaxon() {

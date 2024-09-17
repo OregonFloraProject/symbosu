@@ -162,21 +162,21 @@ class TaxaApp extends React.Component {
     if (this.getTid() === -1) {
       window.location = "/";
     } else {
-    	let url = `./rpc/api.php?taxon=${this.props.tid}`;
+      let url = `./rpc/api.php?taxon=${this.props.tid}&type=garden`;
       httpGet(url)
         .then((res) => {
        		// /taxa/rpc/api.php?taxon=2454
           res = JSON.parse(res);
           //console.log(res.characteristics.features);
           let plantType = '';
-          let foliageType = res.characteristics.features.foliage_type;
+          let foliageType = res.characteristics.foliage_type;
           plantType += foliageType.length > 0 ? `${foliageType[0]} `: '';
 
-          if (res.characteristics.features.lifespan.length > 0) {
-            plantType += `${res.characteristics.features.lifespan[0]}`.trim() + " ";
+          if (res.characteristics.lifespan.length > 0) {
+            plantType += `${res.characteristics.lifespan[0]}`.trim() + " ";
           }
-          if (res.characteristics.features.plant_type.length > 0) {
-            plantType += res.characteristics.features.plant_type.join(" or ") + " ";
+          if (res.characteristics.plant_type.length > 0) {
+            plantType += res.characteristics.plant_type.join(" or ") + " ";
           }
 
           const width = sortKeyedCharObject(res.characteristics.width);
@@ -221,10 +221,10 @@ class TaxaApp extends React.Component {
               "Ease of growth": ease_of_growth
             },
             plantFacts: {
-              "Flower color": res.characteristics.features.flower_color,
-              "Bloom time": sortKeyedCharObject(res.characteristics.features.bloom_months),
+              "Flower color": res.characteristics.flower_color,
+              "Bloom time": sortKeyedCharObject(res.characteristics.bloom_months),
               "Moisture": moisture,
-              "Wildlife support": res.characteristics.features.wildlife_support
+              "Wildlife support": res.characteristics.wildlife_support
             },
             growthMaintenance: {
               "Spreads vigorously": spreads_vigorously === null ? "" : spreads_vigorously,
