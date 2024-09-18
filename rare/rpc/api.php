@@ -331,8 +331,10 @@ function getTaxa($params) {
 	return $results;
 }
 
-
-$searchResults = getTaxa($_GET);
+$searchResults = [];
+if (isset($RPG_FLAG) && $RPG_FLAG === 1) {
+	$searchResults = getTaxa($_GET);
+}
 
 // Begin View
 array_walk_recursive($searchResults,'cleanWindowsRecursive');#replace Windows characters

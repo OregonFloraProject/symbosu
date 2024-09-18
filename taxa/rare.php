@@ -31,10 +31,15 @@ include_once("../config/symbini.php");
     <!-- This is inner text! -->
     <div id="innertext">
       <div id="react-taxa-rare-app"></div>
-        <script
-          src="<?php echo $CLIENT_ROOT?>/js/react/dist/taxa-rare.js?<?php echo filemtime($SERVER_ROOT . '/js/react/dist/taxa-rare.js'); ?>"
-          type="text/javascript">
-        </script>
+        <?php
+          if (isset($RPG_FLAG) && $RPG_FLAG === 1) {
+            $js_filemtime = filemtime($SERVER_ROOT . '/js/react/dist/taxa-rare.js');
+            echo "<script
+              src=\"{$CLIENT_ROOT}/js/react/dist/taxa-rare.js?{$js_filemtime}\"
+              type=\"text/javascript\"
+              ></script>";
+          }
+        ?>
     </div>
 
     <?php

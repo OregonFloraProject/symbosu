@@ -190,7 +190,9 @@ if (array_key_exists("search", $_GET)) {
   $result = searchTaxa(trim($_GET["search"]));
 } else if (array_key_exists("taxon", $_GET) && is_numeric($_GET["taxon"])) {
   if (array_key_exists("type", $_GET) && $_GET["type"] === "rare") {
-    $result = getTaxon($_GET["taxon"], "rare");
+    if (isset($RPG_FLAG) && $RPG_FLAG === 1) {
+      $result = getTaxon($_GET["taxon"], "rare");
+    }
   } else if (array_key_exists("type", $_GET) && $_GET["type"] === "garden") {
     $result = getTaxon($_GET["taxon"], "garden");
   } else {

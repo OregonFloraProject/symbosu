@@ -9,25 +9,18 @@ header("Content-Type: text/html; charset=".$CHARSET);
     <meta charset="utf-8">
 
     <link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/css/compiled/theme.css?<?php echo filemtime($SERVER_ROOT . '/css/compiled/theme.css'); ?>" />
-    <link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/css/compiled/rare.css?<?php echo filemtime($SERVER_ROOT . '/css/compiled/rare.css'); ?>" />
+    <?php
+      if (isset($RPG_FLAG) && $RPG_FLAG === 1) {
+        $css_filemtime = filemtime($SERVER_ROOT . '/css/compiled/rare.css');
+        echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"{$CLIENT_ROOT}/css/compiled/rare.css?{$css_filemtime}\" />";
+      }
+    ?>
 
   </head>
   <body>
     <?php
       include_once("$SERVER_ROOT/header.php");
     ?>
-
-    <!-- Header includes jquery, so add jquery scripts after header
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.6.2/css/bootstrap-slider.min.css"
-      integrity="sha256-G3IAYJYIQvZgPksNQDbjvxd/Ca1SfCDFwu2s2lt0oGo="
-      crossorigin="anonymous" />
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.6.2/bootstrap-slider.min.js"
-      integrity="sha256-oj52qvIP5c7N6lZZoh9z3OYacAIOjsROAcZBHUaJMyw="
-      crossorigin="anonymous">
-    </script> -->
 
     <!-- Sliders -->
     <link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/js/react/node_modules/@blueprintjs/core/lib/css/blueprint.css">
@@ -44,14 +37,19 @@ header("Content-Type: text/html; charset=".$CHARSET);
 
     <div id="page-content" style="min-height: 50em;">
       <div id="react-rare"></div>
-        <script
-          src="<?php echo $CLIENT_ROOT?>/js/react/dist/rare.js?<?php echo filemtime($SERVER_ROOT . '/js/react/dist/rare.js'); ?>"
-          type="text/javascript">
-        </script>
+        <?php
+          if (isset($RPG_FLAG) && $RPG_FLAG === 1) {
+            $js_filemtime = filemtime($SERVER_ROOT . '/js/react/dist/rare.js');
+            echo "<script
+              src=\"{$CLIENT_ROOT}/js/react/dist/rare.js?{$js_filemtime}\"
+              type=\"text/javascript\"
+              ></script>";
+          }
+        ?>
     </div>
 
     <?php
-    include("$SERVER_ROOT/footer.php");
+      include("$SERVER_ROOT/footer.php");
     ?>
   </body>
 </html>
