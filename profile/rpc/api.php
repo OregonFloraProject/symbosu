@@ -1,12 +1,17 @@
 <?php
 include_once("../../config/symbini.php");
+include_once("$SERVER_ROOT/classes/Functional.php");
 include_once("$SERVER_ROOT/classes/ProfileManager.php");
 
-function getProfileData() {
+function getProfileData($uid) {
   $pm = new ProfileManager();
-  $pm->setUid($SYMB_UID);
-  $person = $pm->getPerson();
+  $pm->setUid($uid);
 
+  if ($pm->hasRequestedRarePlantAccess()) {
+    return ["hasRequested" => true];
+  }
+
+  $person = $pm->getPerson();
   return [
     "firstName" => $person->getFirstName(),
     "lastName" => $person->getLastName(),
@@ -17,9 +22,9 @@ function getProfileData() {
   ];
 }
 
-function updateProfileData($params) {
+function updateProfileData($uid, $params) {
   $pm = new ProfileManager();
-  $pm->setUid($SYMB_UID);
+  $pm->setUid($uid);
 
   $data = [
     "firstname" => $params["firstName"],
@@ -29,22 +34,24 @@ function updateProfileData($params) {
     "institution" => $params["institution"],
     "department" => $params["department"],
   ];
-  $status = $pm->updateProfileData($data);
+  $status = $pm->updateProfile($data);
+  // TODO(eric): handle error
+
+  if ($status) {
+    $status = $pm->requestRarePlantAccess($params["reason"], time());
+  }
+
+  return $status;
 }
 
-function requestAccess($params) {
-  // save reason string and request timestamp/etc
-}
-
-// $action = array_key_exists('action', $_REQUEST) ? htmlspecialchars($_REQUEST['action'], HTML_SPECIAL_CHARS_FLAGS) : '';
 $type = $_SERVER['REQUEST_METHOD'];
 
 $result = [];
-if (isset($SYMB_UID)) {
+if (isset($SYMB_UID) && $SYMB_UID) {
   if ($type === "GET") {
-    $result = getProfileData();
+    $result = getProfileData($SYMB_UID);
   } else if ($type === "POST") {
-    updateProfileData($_POST); // TODO: set status etc from result
+    $result = updateProfileData($SYMB_UID, $_POST); // TODO: set status etc from result
   }
 }
 

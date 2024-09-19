@@ -614,6 +614,50 @@ class ProfileManager extends Manager{
 	}
 
 	/**
+	 * 2024-09-19: OregonFlora is using the unused fields `users.accessrRights` and `users.notes` to
+	 * store data relating to requests for access to rare plant data (see rare/policy.php);
+	 * `users.accessrRights` stores the user's written reason for requesting access, and `users.notes`
+	 * is used to track the time and status of requests.
+	 *
+	 * The following two helper functions get and set these fields and are used by
+	 * profile/rpc/api.php.
+	 */
+	public function hasRequestedRarePlantAccess(){
+		$hasRequested = false;
+		if($this->uid){
+			$sqlStr = 'SELECT notes, accessrRights FROM users WHERE (uid = '.$this->uid.')';
+			$rs = $this->conn->query($sqlStr);
+			if($r = $rs->fetch_object()){
+				if($r->accessrRights !== null || $r->notes !== null){
+					$hasRequested = true;
+				}
+			}
+			$rs->free();
+		}
+		return $hasRequested;
+	}
+
+	public function requestRarePlantAccess($reason, $timestamp){
+		$status = false;
+		if($this->uid){
+			$this->resetConnection();
+			$sql = 'UPDATE users SET notes = ?, accessrRights = ? WHERE (uid = ?)';
+			if($stmt = $this->conn->prepare($sql)) {
+				$notes = "{$timestamp}; emailed=false";
+				$accessrRights = strip_tags($reason);
+
+				$stmt->bind_param('ssi', $notes, $accessrRights, $this->uid);
+				$stmt->execute();
+				if($stmt->affected_rows && !$stmt->error) $status = true;
+				else $this->errorMessage = 'ERROR updating user profile: '.$stmt->error;
+				$stmt->close();
+			}
+			else $this->errorMessage = 'ERROR preparing statement user profile update: '.$this->conn->error;
+		}
+		return $status;
+	}
+
+	/**
 	 *
 	 * Obtain the list of specimens that have an identification verification status rank less than 6
 	 * within the list of taxa for which this user is listed as a specialist.
