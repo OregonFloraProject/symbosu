@@ -3,12 +3,12 @@ include_once("../../config/symbini.php");
 include_once("$SERVER_ROOT/classes/Functional.php");
 include_once("$SERVER_ROOT/classes/ProfileManager.php");
 
-function getProfileData($uid) {
+function getProfileDataForRequestingAccess($uid) {
   $pm = new ProfileManager();
   $pm->setUid($uid);
 
   if ($pm->hasRequestedRarePlantAccess()) {
-    return ["hasRequested" => true];
+    return ["accessRequested" => true];
   }
 
   $person = $pm->getPerson();
@@ -22,7 +22,7 @@ function getProfileData($uid) {
   ];
 }
 
-function updateProfileData($uid, $params) {
+function updateProfileAndRequestAccess($uid, $params) {
   $pm = new ProfileManager();
   $pm->setUid($uid);
 
@@ -49,9 +49,9 @@ $type = $_SERVER['REQUEST_METHOD'];
 $result = [];
 if (isset($SYMB_UID) && $SYMB_UID) {
   if ($type === "GET") {
-    $result = getProfileData($SYMB_UID);
+    $result = getProfileDataForRequestingAccess($SYMB_UID);
   } else if ($type === "POST") {
-    $result = updateProfileData($SYMB_UID, $_POST); // TODO: set status etc from result
+    $result = updateProfileAndRequestAccess($SYMB_UID, $_POST); // TODO: set status etc from result
   }
 }
 
