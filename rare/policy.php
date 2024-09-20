@@ -9,6 +9,7 @@ header("Content-Type: text/html; charset=".$CHARSET);
     <meta charset="utf-8">
 
       <link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/css/compiled/theme.css?<?php echo filemtime($SERVER_ROOT . '/css/compiled/theme.css'); ?>">
+      <link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/css/compiled/rare.css?<?php echo filemtime($SERVER_ROOT . '/css/compiled/rare.css'); ?>">
 
   </head>
   <body>

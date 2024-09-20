@@ -4,8 +4,9 @@ import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 
 function FormElement(props) {
+  // TODO: check maxlength
   return (
-    <div>
+    <>
       {props.label}:{' '}
       {props.type === "text" &&
         <input
@@ -22,7 +23,7 @@ function FormElement(props) {
           disabled={props.disabled}
         />
       }
-    </div>
+    </>
   );
 }
 
@@ -110,59 +111,62 @@ function PolicyApp(props) {
           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce egestas sem id lectus ultricies sollicitudin. Aliquam tristique turpis ac ipsum rutrum ornare.</p>
           <p>Sed congue consectetur venenatis. Ut blandit tellus nisi, et rhoncus purus blandit quis. Nunc dignissim quam nisi, id dictum nisl accumsan et. Nullam ut euismod tortor. Suspendisse accumsan erat tortor, sit amet aliquam purus luctus eu. Proin libero nisl, auctor non efficitur at, placerat vel odio.</p>
           <p>Mauris dapibus finibus augue, a posuere mauris consequat non. Duis volutpat fermentum imperdiet. Curabitur nec ex eros. </p>
+          <hr />
           {isLoggedIn ?
             (hasRequested ?
               <div>Your request is pending review</div> :
               <div>
-                <FormElement
-                  disabled={isLoading}
-                  type="text"
-                  value={firstName}
-                  onChange={setFirstName}
-                  label="First Name"
-                />
-                <FormElement
-                  disabled={isLoading}
-                  type="text"
-                  value={lastName}
-                  onChange={setLastName}
-                  label="Last Name"
-                />
-                <FormElement
-                  disabled={isLoading}
-                  type="text"
-                  value={email}
-                  onChange={setEmail}
-                  label="Email"
-                />
-                <FormElement
-                  disabled={isLoading}
-                  type="text"
-                  value={title}
-                  onChange={setTitle}
-                  label="Position / Role"
-                />
-                <FormElement
-                  disabled={isLoading}
-                  type="text"
-                  value={institution}
-                  onChange={setInstitution}
-                  label="Institution / Agency"
-                />
-                <FormElement
-                  disabled={isLoading}
-                  type="text"
-                  value={department}
-                  onChange={setDepartment}
-                  label="Department (optional)"
-                />
-                <FormElement
-                  disabled={isLoading}
-                  type="textarea"
-                  value={reason}
-                  onChange={setReason}
-                  label="Reason for requesting access"
-                />
+                <div className="form-grid">
+                  <FormElement
+                    disabled={isLoading}
+                    type="text"
+                    value={firstName}
+                    onChange={setFirstName}
+                    label="First Name"
+                  />
+                  <FormElement
+                    disabled={isLoading}
+                    type="text"
+                    value={lastName}
+                    onChange={setLastName}
+                    label="Last Name"
+                  />
+                  <FormElement
+                    disabled={isLoading}
+                    type="text"
+                    value={email}
+                    onChange={setEmail}
+                    label="Email"
+                  />
+                  <FormElement
+                    disabled={isLoading}
+                    type="text"
+                    value={title}
+                    onChange={setTitle}
+                    label="Position / Role"
+                  />
+                  <FormElement
+                    disabled={isLoading}
+                    type="text"
+                    value={institution}
+                    onChange={setInstitution}
+                    label="Institution / Agency"
+                  />
+                  <FormElement
+                    disabled={isLoading}
+                    type="text"
+                    value={department}
+                    onChange={setDepartment}
+                    label="Department (optional)"
+                  />
+                  <FormElement
+                    disabled={isLoading}
+                    type="textarea"
+                    value={reason}
+                    onChange={setReason}
+                    label="Reason for requesting access"
+                  />
+                </div>
                 <button
                   className="btn-primary"
                   onClick={async () => {
