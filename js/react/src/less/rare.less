@@ -198,10 +198,37 @@ a.external-link {//a -> fa
 	p {
 		font-size: 1rem;
 	}
-	.form-grid {
+
+	h5 {
+		font-size: 1.1rem;
+		font-weight: bold;
+		margin-bottom: 1.5rem;
+	}
+
+	hr {
+		border-top: 4px solid @med-green;
+		width: 100%;
+		margin: 1.5rem 0;
+	}
+
+	form {
 		display: grid;
-		grid-template-columns: max-content min-content;
+		grid-template-columns: repeat(2, 1fr);
 		column-gap: 1rem;
-		row-gap: 0.2rem;
+
+		.form-control {
+			height: unset;
+			padding: 0.2rem 0.5rem;
+		}
+	}
+	@media only screen and (max-width: @medium) {
+		form {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	.btn-primary {
+		padding: .3em 1.2em;
+		line-height: 2em;
 	}
 }

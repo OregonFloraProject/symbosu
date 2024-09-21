@@ -3,13 +3,20 @@ import "regenerator-runtime/runtime";
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 
+const ValidationMessage = {
+  empty: "required",
+  invalid: "Please enter a valid email address",
+  length: "Must be 250 characters or less",
+};
+
 function FormElement(props) {
-  // TODO: check maxlength
   return (
-    <>
-      {props.label}:{' '}
+    <div className="form-group">
+      <label htmlFor={`form-${props.id}`}>{props.label}:{' '}</label>
       {props.type === "text" &&
         <input
+          id={`form-${props.id}`}
+          className={`form-control${props.validation ? " is-invalid" : ""}`}
           type="text"
           value={props.value || ""}
           onChange={e => props.onChange(e.target.value)}
@@ -18,13 +25,20 @@ function FormElement(props) {
       }
       {props.type === "textarea" &&
         <textarea
+          id={`form-${props.id}`}
+          className={`form-control${props.validation ? " is-invalid" : ""}`}
           value={props.value || ""}
           onChange={e => props.onChange(e.target.value)}
           disabled={props.disabled}
           maxlength={props.maxLength}
         />
       }
-    </>
+      {props.validation &&
+        <div class="invalid-feedback">
+          {ValidationMessage[Object.keys(props.validation)[0]]}
+        </div>
+      }
+    </div>
   );
 }
 
@@ -78,9 +92,6 @@ function PolicyApp(props) {
   const [department, setDepartment] = useState();
   const [reason, setReason] = useState();
 
-  /**
-   * possible status values: loading, alreadyRequested, error, sent
-   */
   const [status, setStatus] = useState(Status.LOADING);
   const [validation, setValidation] = useState({});
 
@@ -143,11 +154,15 @@ function PolicyApp(props) {
                 Login to request access
               </button>
             ) :
-            <div>
-              <div className="form-grid">
+            <div className="pb-4">
+              <h5>
+                To request access to restricted data, please fill out the following form:
+              </h5>
+              <form>
                 <FormElement
                   disabled={isLoading}
                   type="text"
+                  id="firstName"
                   value={firstName}
                   onChange={setFirstName}
                   label="First Name"
@@ -156,6 +171,7 @@ function PolicyApp(props) {
                 <FormElement
                   disabled={isLoading}
                   type="text"
+                  id="lastName"
                   value={lastName}
                   onChange={setLastName}
                   label="Last Name"
@@ -164,6 +180,7 @@ function PolicyApp(props) {
                 <FormElement
                   disabled={isLoading}
                   type="text"
+                  id="email"
                   value={email}
                   onChange={setEmail}
                   label="Email"
@@ -172,6 +189,7 @@ function PolicyApp(props) {
                 <FormElement
                   disabled={isLoading}
                   type="text"
+                  id="title"
                   value={title}
                   onChange={setTitle}
                   label="Position / Role"
@@ -180,6 +198,7 @@ function PolicyApp(props) {
                 <FormElement
                   disabled={isLoading}
                   type="text"
+                  id="institution"
                   value={institution}
                   onChange={setInstitution}
                   label="Institution / Agency"
@@ -188,6 +207,7 @@ function PolicyApp(props) {
                 <FormElement
                   disabled={isLoading}
                   type="text"
+                  id="department"
                   value={department}
                   onChange={setDepartment}
                   label="Department (optional)"
@@ -197,14 +217,16 @@ function PolicyApp(props) {
                   disabled={isLoading}
                   type="textarea"
                   maxLength={250}
+                  id="reason"
                   value={reason}
                   onChange={setReason}
                   label="Reason for requesting access"
                   validation={validation.reason}
                 />
-              </div>
+              </form>
               <button
                 className="btn-primary"
+                disabled={isLoading}
                 onClick={async () => {
                   const data = { firstName, lastName, email, title, institution, department, reason };
                   const validation = validateForm(data);
@@ -231,7 +253,9 @@ function PolicyApp(props) {
                     }
                   }
                 }}
-              >Update profile and submit request</button>
+              >
+                Update profile and submit request
+              </button>
             </div>
           }
         </div>
