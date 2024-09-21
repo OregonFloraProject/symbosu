@@ -246,9 +246,9 @@ function PolicyApp(props) {
                           throw new Error(`API response status: ${res.status}`)
                         }
                         
-                        const data = await res.json();
-                        if (data.error) {
-                          throw new Error(`API error: ${data.error}`);
+                        const resJson = await res.json();
+                        if (resJson.error) {
+                          throw new Error(`API error: ${resJson.error}`);
                         }
 
                         setStatus(Status.SENT);
