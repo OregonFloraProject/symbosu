@@ -34,7 +34,7 @@ function FormElement(props) {
         />
       }
       {props.validation &&
-        <div class="invalid-feedback">
+        <div className="invalid-feedback">
           {ValidationMessage[Object.keys(props.validation)[0]]}
         </div>
       }
