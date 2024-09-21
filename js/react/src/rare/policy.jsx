@@ -30,7 +30,7 @@ function FormElement(props) {
           value={props.value || ""}
           onChange={e => props.onChange(e.target.value)}
           disabled={props.disabled}
-          maxlength={props.maxLength}
+          maxLength={props.maxLength}
         />
       }
       {props.validation &&
@@ -79,7 +79,7 @@ const Status = {
 
 const StatusDisplayText = {
   [Status.SENT]: "Thanks! Your request has been received and will be reviewed by the OregonFlora team.",
-  [Status.ERROR]: "An error occurred. Please try again later or contact us.",
+  [Status.ERROR]: <>An error occurred. Please try again later or <a href="../pages/contact.php">contact us</a>.</>,
   [Status.ALREADY_REQUESTED]: "Your request has been received and is pending review.",
 };
 
