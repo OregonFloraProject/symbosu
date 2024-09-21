@@ -79,7 +79,7 @@ const Status = {
 
 const StatusDisplayText = {
   [Status.SENT]: "Thanks! Your request has been received and will be reviewed by the OregonFlora team.",
-  [Status.ERROR]: "An error occurred. Please try again later.",
+  [Status.ERROR]: "An error occurred. Please try again later or contact us.",
   [Status.ALREADY_REQUESTED]: "Your request has been received and is pending review.",
 };
 
@@ -100,7 +100,7 @@ function PolicyApp(props) {
       try {
         const res = await fetch(`${props.clientRoot}/profile/rpc/api.php`);
         if (!res.ok) {
-          throw new Error(`Response status: ${res.status}`);
+          throw new Error(`API response status: ${res.status}`);
         }
         const data = await res.json();
 
@@ -115,9 +115,10 @@ function PolicyApp(props) {
           setDepartment(data.department);
 
           setStatus(Status.READY);
+        } else if ("error" in data) {
+          throw new Error(`API error: ${data.error}`);
         }
       } catch (e) {
-        // TODO(eric): add error handling
         console.error(e);
         setStatus(Status.ERROR);
       }
@@ -242,11 +243,16 @@ function PolicyApp(props) {
                           body: postData(data),
                         });
                         if (!res.ok) {
-                          throw new Error(`Response status: ${res.status}`)
+                          throw new Error(`API response status: ${res.status}`)
                         }
+                        
+                        const data = await res.json();
+                        if (data.error) {
+                          throw new Error(`API error: ${data.error}`);
+                        }
+
                         setStatus(Status.SENT);
                       } catch (e) {
-                        // TODO(eric): handle error
                         console.error(e);
                         setStatus(Status.ERROR);
                       }

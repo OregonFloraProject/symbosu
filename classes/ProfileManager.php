@@ -625,7 +625,7 @@ class ProfileManager extends Manager{
 	public function hasRequestedRarePlantAccess(){
 		$hasRequested = false;
 		if($this->uid){
-			$sqlStr = 'SELECT notes, accessrRights FROM users WHERE (uid = '.$this->uid.')';
+			$sqlStr = 'SELECT notes, accessrRights FROM users WHERE (uid = '.intval($this->uid).')';
 			$rs = $this->conn->query($sqlStr);
 			if($r = $rs->fetch_object()){
 				if($r->accessrRights !== null || $r->notes !== null){
