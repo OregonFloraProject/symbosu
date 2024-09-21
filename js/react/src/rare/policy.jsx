@@ -95,6 +95,7 @@ function PolicyApp(props) {
   const [status, setStatus] = useState(Status.LOADING);
   const [validation, setValidation] = useState({});
 
+  const [refetch, setRefetch] = useState(0);
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
@@ -125,7 +126,7 @@ function PolicyApp(props) {
     }
 
     fetchInitialData();
-  }, []);
+  }, [refetch]);
 
   const isLoggedIn = !!props.userName;
   const isLoading = status === Status.LOADING;
@@ -262,6 +263,23 @@ function PolicyApp(props) {
                   Update profile and submit request
                 </button>
               </>
+            }
+            {(status === Status.ALREADY_REQUESTED || status === Status.SENT) &&
+              <button
+                className="btn-primary"
+                onClick={async () => {
+                  await fetch(`${props.clientRoot}/profile/rpc/api.php`, {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/x-www-form-urlencoded",
+                    },
+                    body: postData({delete: true}),
+                  });
+                  setRefetch(refetch + 1);
+                }}
+              >
+                Delete request (testing only)
+              </button>
             }
           </div>
         </div>
