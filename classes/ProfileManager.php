@@ -182,9 +182,9 @@ class ProfileManager extends Manager{
 		$status = false;
 		if($this->uid && $lastName && $email){
 			$this->resetConnection();
-			$sql = 'UPDATE users SET firstname = ?, lastname = ?, email = ?, title = ?, institution = ?, city = ?, state = ?, zip = ?, country = ?, guid = ? WHERE (uid = ?)';
+			$sql = 'UPDATE users SET firstname = ?, lastname = ?, email = ?, title = ?, institution = ?, department = ?, city = ?, state = ?, zip = ?, country = ?, guid = ? WHERE (uid = ?)';
 			if($stmt = $this->conn->prepare($sql)) {
-				$stmt->bind_param('ssssssssssi', $firstName, $lastName, $email, $title, $institution, $city, $state, $zip, $country, $guid, $this->uid);
+				$stmt->bind_param('sssssssssssi', $firstName, $lastName, $email, $title, $institution, $department, $city, $state, $zip, $country, $guid, $this->uid);
 				$stmt->execute();
 				if($stmt->affected_rows && !$stmt->error) $status = true;
 				else $this->errorMessage = 'ERROR updating user profile: '.$stmt->error;
