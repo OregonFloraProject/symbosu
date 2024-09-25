@@ -134,7 +134,7 @@ function PolicyApp(props) {
 
   return (
     <div className="info-page">
-      <section id="titlebackground" className="title-leaf">
+      <section id="titlebackground">
         <div className="inner-content">
           <h1>Rare Plant Guide</h1>
         </div>

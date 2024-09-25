@@ -45,6 +45,8 @@
 	padding: 1.5rem 0;
 	background-size: cover;
 	background-position: center top;
+	background-image: url("@{subdir}/images/header/h1casrub2.jpg");
+	position: relative;
 	* {
 		color: white !important;
 	}
@@ -195,10 +197,13 @@ a.external-link {//a -> fa
 }
 
 #react-rare-policy {
+	#titlebackground {
+		background-image: url("@{subdir}/images/header/h1casrub2.jpg");
+	}
+
 	p {
 		font-size: 1rem;
 	}
-
 	h5 {
 		font-size: 1.1rem;
 		font-weight: bold;
@@ -207,6 +212,10 @@ a.external-link {//a -> fa
 		a {
 			color: @med-green !important;
 		}
+	}
+	.btn-primary {
+		padding: .3em 1.2em;
+		line-height: 2em;
 	}
 
 	form {
@@ -223,10 +232,5 @@ a.external-link {//a -> fa
 		form {
 			grid-template-columns: 1fr;
 		}
-	}
-
-	.btn-primary {
-		padding: .3em 1.2em;
-		line-height: 2em;
 	}
 }
