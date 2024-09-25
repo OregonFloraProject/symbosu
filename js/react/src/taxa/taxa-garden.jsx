@@ -444,7 +444,7 @@ class TaxaApp extends React.Component {
             <SideBarSection title="Growth and Maintenance" items={ this.state.growthMaintenance } />
             <SideBarSectionVendor title="Commercial Availability" items={ this.state.commercialAvailability } clientRoot={this.props.clientRoot}/>
             <div className="taxa-link">
-            	<a href={ getTaxaPage(this.props.clientRoot, this.getTid()) }><button className="d-block my-2 btn-primary">Core profile page</button></a>
+              <a href={ getTaxaPage(this.props.clientRoot, this.getTid()) }><button className="my-2 btn-primary">Core profile page</button></a>
             </div>
           </div>
         </div>

@@ -269,7 +269,7 @@ function TaxaRareApp(props) {
           <SideBarSectionLookalikesTable title="Look-Alikes" items={ data.lookalikes } glossary={ glossary } />
           <SideBarSectionSpeciesList title="Associated species" items={ data.associatedSpecies } />
           <div className="taxa-link">
-            <a href={ getTaxaPage(props.clientRoot, tid) }><button className="d-block my-2 btn-primary">Core profile page</button></a>
+            <a href={ getTaxaPage(props.clientRoot, tid) }><button className="my-2 btn-primary">Core profile page</button></a>
           </div>
         </div>
       </div>
