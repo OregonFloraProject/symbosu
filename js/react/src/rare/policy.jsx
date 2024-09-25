@@ -246,7 +246,7 @@ function PolicyApp(props) {
                         if (!res.ok) {
                           throw new Error(`API response status: ${res.status}`)
                         }
-                        
+
                         const resJson = await res.json();
                         if (resJson.error) {
                           throw new Error(`API error: ${resJson.error}`);
