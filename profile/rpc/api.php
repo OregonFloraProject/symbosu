@@ -39,25 +39,26 @@ function updateProfileAndRequestAccess($uid, $params) {
     !array_key_exists("lastName", $params) ||
     !array_key_exists("email", $params) ||
     !array_key_exists("title", $params) ||
-    !array_key_exists("institution", $params)
+    !array_key_exists("institution", $params) ||
+    !array_key_exists("reason", $params)
   ) {
     return ["error" => "missing required field"];
   }
 
+  if (strlen($params["reason"]) > 250) {
+    return ["error" => "reason must be 250 characters or less"];
+  }
+
   $data = [
-    "firstname" => $params["firstName"],
-    "lastname" => $params["lastName"],
+    "firstName" => $params["firstName"],
+    "lastName" => $params["lastName"],
     "email" => $params["email"],
     "title" => $params["title"],
     "institution" => $params["institution"],
     "department" => array_key_exists("department", $params) ? $params["department"] : null,
   ];
-  $status = $pm->updateProfile($data);
-  if (!$status) {
-    return ["error" => "error updating profile"];
-  }
 
-  $status = $pm->requestRarePlantAccess($params["reason"], time());
+  $status = $pm->requestRarePlantAccess($params["reason"], time(), $data);
   if (!$status) {
     return ["error" => "error requesting access"];
   }

@@ -172,7 +172,6 @@ class ProfileManager extends Manager{
 
 		$title = array_key_exists('title', $postArr) ? strip_tags($postArr['title']) : '';
 		$institution = array_key_exists('institution', $postArr) ? strip_tags($postArr['institution']) : '';
-		$department = array_key_exists('department', $postArr) ? strip_tags($postArr['department']) : '';
 		$city = array_key_exists('city', $postArr) ? strip_tags($postArr['city']) : '';
 		$state = array_key_exists('state', $postArr) ? strip_tags($postArr['state']) : '';
 		$zip = array_key_exists('zip', $postArr) ? strip_tags($postArr['zip']) : '';
@@ -182,9 +181,9 @@ class ProfileManager extends Manager{
 		$status = false;
 		if($this->uid && $lastName && $email){
 			$this->resetConnection();
-			$sql = 'UPDATE users SET firstname = ?, lastname = ?, email = ?, title = ?, institution = ?, department = ?, city = ?, state = ?, zip = ?, country = ?, guid = ? WHERE (uid = ?)';
+			$sql = 'UPDATE users SET firstname = ?, lastname = ?, email = ?, title = ?, institution = ?, city = ?, state = ?, zip = ?, country = ?, guid = ? WHERE (uid = ?)';
 			if($stmt = $this->conn->prepare($sql)) {
-				$stmt->bind_param('sssssssssssi', $firstName, $lastName, $email, $title, $institution, $department, $city, $state, $zip, $country, $guid, $this->uid);
+				$stmt->bind_param('ssssssssssi', $firstName, $lastName, $email, $title, $institution, $city, $state, $zip, $country, $guid, $this->uid);
 				$stmt->execute();
 				if($stmt->affected_rows && !$stmt->error) $status = true;
 				else $this->errorMessage = 'ERROR updating user profile: '.$stmt->error;
@@ -637,17 +636,34 @@ class ProfileManager extends Manager{
 		return $hasRequested;
 	}
 
-	public function requestRarePlantAccess($reason, $timestamp){
+	/**
+	 * 2024-09-25: We use a custom function here, rather than modifying the existing `updateProfile`,
+	 * to avoid exposing to HTTP the ability to directly manipulate the `accessrRights` and `notes`
+	 * fields.
+	 */
+	public function requestRarePlantAccess($reason, $timestamp, $data){
+		$firstName = strip_tags($data['firstName']);
+		$lastName = strip_tags($data['lastName']);
+		$email = filter_var($data['email'], FILTER_VALIDATE_EMAIL);
+		$title = strip_tags($data['title']);
+		$institution = strip_tags($data['institution']);
+		$department = array_key_exists('department', $data) ? strip_tags($data['department']) : null;
+
 		$status = false;
-		if($this->uid){
+		if($this->uid && $email){
 			$this->resetConnection();
-			$sql = 'UPDATE users SET notes = ?, accessrRights = ? WHERE (uid = ?)';
+			$sql = 'UPDATE users SET firstname = ?, lastname = ?, email = ?, title = ?, institution = ?, department = ?, notes = ?, accessrRights = ? WHERE (uid = ?)';
 			if($stmt = $this->conn->prepare($sql)) {
 				$notes = "{$timestamp}; emailed=false";
 				$accessrRights = strip_tags($reason);
 
-				$stmt->bind_param('ssi', $notes, $accessrRights, $this->uid);
+				$stmt->bind_param('ssssssssi', $firstName, $lastName, $email, $title, $institution, $department, $notes, $accessrRights, $this->uid);
 				$stmt->execute();
+
+				// this can return false if all values are already exactly as they are in the db, e.g. no
+				// update is actually occurring (because affected_rows will be 0); however, this should
+				// never happen if the method is used properly because it should only be called when
+				// accessrRights is null
 				if($stmt->affected_rows && !$stmt->error) $status = true;
 				else $this->errorMessage = 'ERROR updating user profile: '.$stmt->error;
 				$stmt->close();
