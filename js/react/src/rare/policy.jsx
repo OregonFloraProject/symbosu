@@ -132,6 +132,8 @@ function PolicyApp(props) {
   const isLoading = status === Status.LOADING;
   const shouldShowForm = isLoggedIn && (status === Status.LOADING || status === Status.READY);
 
+  const backToPage = (new URLSearchParams(window.location.search)).get("refurl") || `${props.clientRoot}/rare/index.php`;
+
   return (
     <div className="info-page">
       <section id="titlebackground">
@@ -145,6 +147,7 @@ function PolicyApp(props) {
           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce egestas sem id lectus ultricies sollicitudin. Aliquam tristique turpis ac ipsum rutrum ornare.</p>
           <p>Sed congue consectetur venenatis. Ut blandit tellus nisi, et rhoncus purus blandit quis. Nunc dignissim quam nisi, id dictum nisl accumsan et. Nullam ut euismod tortor. Suspendisse accumsan erat tortor, sit amet aliquam purus luctus eu. Proin libero nisl, auctor non efficitur at, placerat vel odio.</p>
           <p>Mauris dapibus finibus augue, a posuere mauris consequat non. Duis volutpat fermentum imperdiet. Curabitur nec ex eros. </p>
+          <p><a href={backToPage}>&lt;&lt; back</a></p>
           <div className="py-4">
             {!shouldShowForm ? (
               isLoggedIn ?
