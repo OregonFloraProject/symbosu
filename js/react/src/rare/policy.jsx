@@ -50,6 +50,17 @@ function postData(data) {
   return params.toString();
 }
 
+const HTMLDecodeMap = {
+  '&apos;': "'",
+  '&quot;': '"',
+};
+const HTMLDecodeRegex = new RegExp(Object.keys(HTMLDecodeMap).join("|"), "g");
+function decodeHTMLChars(string) {
+  // due to Person.php, our api endpoint returns strings with ' and " replaced with &apos; and
+  // &quot; respectively
+  return string.replace(HTMLDecodeRegex, match => HTMLDecodeMap[match]);
+}
+
 function validateForm({ firstName, lastName, email, title, institution, department, reason }) {
   const validation = {};
   if (!firstName) validation.firstName = { empty: true };
@@ -108,12 +119,12 @@ function PolicyApp(props) {
         if ("accessRequested" in data) {
           setStatus(Status.ALREADY_REQUESTED);
         } else if ("email" in data) {
-          setFirstName(data.firstName);
-          setLastName(data.lastName);
-          setEmail(data.email);
-          setTitle(data.title);
-          setInstitution(data.institution);
-          setDepartment(data.department);
+          setFirstName(decodeHTMLChars(data.firstName));
+          setLastName(decodeHTMLChars(data.lastName));
+          setEmail(decodeHTMLChars(data.email));
+          setTitle(decodeHTMLChars(data.title));
+          setInstitution(decodeHTMLChars(data.institution));
+          setDepartment(decodeHTMLChars(data.department));
 
           setStatus(Status.READY);
         } else if ("error" in data) {
