@@ -140,24 +140,10 @@ function getEmpty() {
 function getFilterableChars($tids) {
 	global $FILTERABLE_CHARS;
 
-	#$em = SymbosuEntityManager::getEntityManager();
-	#$charStateRepo = $em->getRepository("Kmcs");
-
 	$identManager = new IdentManager();
-
 	$identManager->setClid(Fmchecklists::$CLID_RARE_ALL);
-	// $identManager->setPid(Fmchecklists::$PID_GARDEN_ALL);
-
-	/*hack: use Fmchklstprojlink|sortSequence to store cs values,
-					which we use to look up the clid */
-	$em = SymbosuEntityManager::getEntityManager();
-	$checklistRepo = $em->getRepository("Fmchecklists");
-
-	// $lookups = $identManager->getVendorLookups();
-	// $clidLookup = $lookups->clidLookup;
-	// $childLookup = $lookups->childLookup;
-
 	$identManager->setTaxa();
+
 	$cids = [];
 	foreach ($FILTERABLE_CHARS as $idx => $group) {
 		foreach ($group['characters'] as $gidx => $char) {
@@ -167,7 +153,6 @@ function getFilterableChars($tids) {
 		}
 	}
 	$cresults = $identManager->getCharQuery($tids,$cids);
-	#var_dump($cresults);
 
 	foreach ($cresults as $cs) {
 		foreach ($FILTERABLE_CHARS as $idx => $group) {
@@ -175,40 +160,10 @@ function getFilterableChars($tids) {
 				if ($char['cid'] == $cs['cid']) {
 					$tmp = [];
 					$tmp['cid'] = $char['cid'];
-					$tmp['charstatename'] = $cs['charstatename'];#$cs->getCharstatename();
-					$tmp['cs'] = $cs['cs'];#$cs->getCs();
+					$tmp['charstatename'] = $cs['charstatename'];
+					$tmp['cs'] = $cs['cs'];
 					$tmp['numval'] = floatval(preg_replace("/[^0-9\.]/","",$tmp['charstatename']));
 
-					// if (getRegionCid() == $char['cid']) {
-					// #var_dump($char);//pass
-					// 	if ($childLookup[$cs['cs']]) {
-					// #var_dump('found child lookup');//fail
-					// 		$tmp['children'] = $childLookup[$cs['cs']];
-					// 	}
-					// }
-					// if (getNurseryCid() == $char['cid']) {
-					// 	if (isset($clidLookup[$cs['cs']])) {
-					// 		$tmp['clid'] = $clidLookup[$cs['cs']];
-					// 		$tmp['pid'] = Fmchecklists::$PID_VENDOR_ALL;
-					// 	}
-					// }
-					/*
-						switch ($cs['cs']) {
-							#$FILTERABLE_CHARS[$idx]['characters'][$gidx]['children'][] = [];
-							case 1:#14928 Portland Metro
-								$tmp['children'] = [2,4];#14921 Aurora Nursery,14923 BeaverLake Nursery
-								break;
-							case 2:#14929 W Valley
-								$tmp['children'] = [3,30];#14922 Balance Restoration,14924 Bloom River Gardens,14927 Katie's Native
-								break;
-							case 3:#14930 Eastern
-								$tmp['children'] = [8];#14925 Clearwater
-								break;
-							case 4:#14931 Sisk
-								$tmp['children'] = [1];#14920 Althouse
-								break;
-						}
-						*/
 					$FILTERABLE_CHARS[$idx]['characters'][$gidx]['states'][] = $tmp;
 				}
 			}
@@ -221,10 +176,11 @@ function getFilterableChars($tids) {
 
 
 /**
- * Returns all unique taxa with thumbnail urls
+ * Returns all unique taxa that match the query. If filtered search params are included in the
+ * request, returns only `tid`s of matching taxa. Otherwise, returns full checklist and taxa data
+ * including thumbnail urls.
  * @params $_GET
  */
-
 function getTaxa($params) {
 
 	$search = null;
@@ -237,23 +193,25 @@ function getTaxa($params) {
 	$identManager->setClid($rareClid);
 	$results["clid"] = $rareClid;
 
-/*
-	if it's the initial page load, attr and range will not be set, and we return full checklist and taxa data.
-	if it's a filtered search, then attr, range, search/name will be set,
-	and we 1) include those params in query, and 2) request only tids
-*/
+	/**
+	 * if it's the initial page load, attr and range will not be set, and we return full checklist and
+	 * taxa data.
+	 * if it's a filtered search, then attr, range, search/name will be set,
+	 * and we 1) include those params in query, and 2) request only tids
+	 */
 
 	if (
-		(key_exists("attr", $params))
-		|| (isset($params['range']))
-		|| ( array_key_exists("search", $params) && !empty($params["search"]) )
+		key_exists("attr", $params)
+		|| isset($params['range'])
+		|| (array_key_exists("search", $params) && !empty($params["search"]))
 	) {
 		$identManager->setIDsOnly(true);
 		#attr, range, search/name handling copied from ident/rpc/api.php
 		$attrs = array();
+
 		if (key_exists("attr", $params)){
 			foreach ($params['attr'] as $attr) {
-				if(strpos($attr,'-') !== false) {
+				if (strpos($attr,'-') !== false) {
 					$fragments = explode("-",$attr);
 					$cid = intval($fragments[0]);
 					$cs = intval($fragments[1]);
@@ -262,42 +220,40 @@ function getTaxa($params) {
 					}
 				}
 			}
-		}#end attr
+		}
+
 		if (isset($params['range'])) {
 			$ranges = array();
 			foreach ($params['range'] as $range) {
-				if(strpos($range,'-') !== false) {
+				if (strpos($range,'-') !== false) {
 					$fragments = explode("-",$range);
 					$cid = intval($fragments[0]);
 					$type = $fragments[1];
-					$cs = intval($fragments[2]);#cancelled for now: for min/max this is cs, but for i(ncrement), it's the increment val
-					if (is_numeric($cid) && !empty($cs) && in_array($type,array("n","x"))) {#,"i"
+					$cs = intval($fragments[2]);
+					if (is_numeric($cid) && !empty($cs) && in_array($type,array("n","x"))) {
 						$ranges[$cid][$type] = $cs;
 					}
 				}
 			}
-			#var_dump($ranges);
 			$charStateRepo = $em->getRepository("Kmcs");
 			foreach ($ranges as $cid => $range) {
-			#var_dump($range);
-				$csQuery = $charStateRepo->findBy([ "cid" => $cid ], ["sortsequence" => "ASC"]);
+				$csQuery = $charStateRepo->findBy(["cid" => $cid], ["sortsequence" => "ASC"]);
 				$csArr = array_map(function($cs) { return intval($cs->getCs()); }, $csQuery);
-				#var_dump($csArr);
 				foreach ($csArr as $_cs) {
 					if ($_cs >= $range['n'] && $_cs <= $range['x']) {
 						$attrs[$cid][] = $_cs;
 					}
 				}
 			}
-		}#end range
-		#var_dump($attrs);
+		}
+
 		$identManager->setAttrs($attrs);
 
-		if (	array_key_exists("search", $params) && !empty($params["search"]) ) {
+		if (array_key_exists("search", $params) && !empty($params["search"])) {
 			$identManager->setSearchTerm($params["search"]);
-			if (array_key_exists("name", $params) && in_array($params['name'],array('sciname','commonname'))) {
+			if (array_key_exists("name", $params) && in_array($params['name'], array('sciname','commonname'))) {
 				$identManager->setSearchName($params['name']);
-			}else{
+			} else {
 				$identManager->setSearchName('');#IdentManager defaults to sciname, so we explicitly set it empty here
 			}
 		}
@@ -309,7 +265,8 @@ function getTaxa($params) {
 		}
 		$results["characteristics"] = getFilterableChars($results['tids']);
 
-	}else{#get full default checklist
+	} else {
+		// This is the initial page load, so get the full checklist with thumbnails and all data.
 
 		$identManager->setThumbnails(true);
 		$identManager->setTaxa();
@@ -321,12 +278,14 @@ function getTaxa($params) {
 			$tids[] = $taxon['tid'];
 		}
 		$results['tids'] = $tids;
+		$results["characteristics"] = getFilterableChars($results['tids']);
+
+		// RPG checklist metadata
 		$repo = $em->getRepository("Fmchecklists");
 		$model = $repo->find($rareClid);
 		$checklist = ExploreManager::fromModel($model);
 		$results["clid"] = $checklist->getClid();
 		$results["title"] = $checklist->getTitle();
-		$results["characteristics"] = getFilterableChars($results['tids']);
 	}
 	return $results;
 }
