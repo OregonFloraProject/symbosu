@@ -3,7 +3,25 @@ include_once("../../config/symbini.php");
 include_once("$SERVER_ROOT/classes/Functional.php");
 include_once("$SERVER_ROOT/classes/ProfileManager.php");
 
+function loggedInUserHasAccess() {
+  global $USER_RIGHTS;
+  if (isset($USER_RIGHTS) &&
+    (array_key_exists('SuperAdmin', $USER_RIGHTS) ||
+    array_key_exists('CollAdmin', $USER_RIGHTS) ||
+    array_key_exists('RareSppAdmin', $USER_RIGHTS) ||
+    array_key_exists('RareSppReadAll', $USER_RIGHTS))
+  ) {
+    // TODO: check for specific collection IDs with CollEditor and RareSppReader?
+    return true;
+  }
+  return false;
+}
+
 function getProfileDataForRequestingAccess($uid) {
+  if (loggedInUserHasAccess()) {
+    return ["accessGranted" => true];
+  }
+
   $pm = new ProfileManager();
   $pm->setUid($uid);
 
@@ -23,6 +41,10 @@ function getProfileDataForRequestingAccess($uid) {
 }
 
 function updateProfileAndRequestAccess($uid, $params) {
+  if (loggedInUserHasAccess()) {
+    return ["accessGranted" => true];
+  }
+
   $pm = new ProfileManager();
   $pm->setUid($uid);
 

@@ -84,14 +84,16 @@ const Status = {
   LOADING: "loading",
   SENT: "sent",
   ERROR: "error",
-  ALREADY_REQUESTED: "alreadyRequested",
+  ACCESS_REQUESTED: "accessRequested",
+  ACCESS_GRANTED: "accessGranted",
   READY: "ready",
 };
 
 const StatusDisplayText = {
   [Status.SENT]: "Thanks! Your request has been received and will be reviewed by the OregonFlora team.",
   [Status.ERROR]: <>An error occurred. Please try again later or <a href="../pages/contact.php">contact us</a>.</>,
-  [Status.ALREADY_REQUESTED]: "Your request has been received and is pending review.",
+  [Status.ACCESS_REQUESTED]: "Your request has been received and is pending review.",
+  [Status.ACCESS_GRANTED]: "You have been granted access by the OregonFlora team.",
 };
 
 function PolicyApp(props) {
@@ -117,7 +119,9 @@ function PolicyApp(props) {
         const data = await res.json();
 
         if ("accessRequested" in data) {
-          setStatus(Status.ALREADY_REQUESTED);
+          setStatus(Status.ACCESS_REQUESTED);
+        } else if ("accessGranted" in data) {
+          setStatus(Status.ACCESS_GRANTED);
         } else if ("email" in data) {
           setFirstName(decodeHTMLChars(data.firstName));
           setLastName(decodeHTMLChars(data.lastName));
@@ -278,7 +282,7 @@ function PolicyApp(props) {
                 </button>
               </>
             }
-            {(status === Status.ALREADY_REQUESTED || status === Status.SENT) &&
+            {(status === Status.ACCESS_REQUESTED || status === Status.SENT) &&
               <button
                 className="btn-primary"
                 onClick={async () => {
