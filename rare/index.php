@@ -5,7 +5,7 @@ header("Content-Type: text/html; charset=".$CHARSET);
 
 <html>
   <head>
-    <title><?php echo $DEFAULT_TITLE?> Rare Plants</title>
+    <title><?php echo $DEFAULT_TITLE?> Rare Plant Guide</title>
     <meta charset="utf-8">
 
     <link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/css/compiled/theme.css?<?php echo filemtime($SERVER_ROOT . '/css/compiled/theme.css'); ?>" />

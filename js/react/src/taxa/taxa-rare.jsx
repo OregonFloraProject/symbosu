@@ -112,6 +112,9 @@ function TaxaRareApp(props) {
             associatedSpecies: [],
             literature: [],
           });
+
+          const titleElement = document.getElementsByTagName("title")[0];
+          titleElement.innerHTML = `${props.defaultTitle} - ${res.sciname} - Rare Plant Profile`;
         } catch (err) {
           // TODO(eric): add error handling
           console.error(err);
@@ -152,12 +155,8 @@ function TaxaRareApp(props) {
     setIsImageModalOpen(!isImageModalOpen);
   }
 
-  // const data = dummyData;
   const needsPermission = true;
 
-  const titleElement = document.getElementsByTagName("title")[0];
-  const pageTitle = `${props.defaultTitle} ${data.sciName}`
-  titleElement.innerHTML = pageTitle;
   return (
     <div className="container mx-auto pl-4 pr-4 pt-5" style={{ minHeight: "45em" }}>
       <Loading
@@ -165,7 +164,7 @@ function TaxaRareApp(props) {
         isLoading={ isLoading }
       />
       <div className="print-header">
-      { pageTitle }<br />
+      { `${props.defaultTitle} - ${data.sciName} - Rare Plant Profile` }<br />
       { window.location.href }
       </div>
       <div className="row print-start">
@@ -175,7 +174,6 @@ function TaxaRareApp(props) {
         </div>
         <div className="col-auto">
           <button className="d-block my-2 btn-primary print-trigger" onClick={() => window.print()}>Print page</button>
-          {/*<button className="d-block my-2 btn-secondary" disabled={ true }>Add to basket</button>*/}
         </div>
       </div>
       <div className="row mt-2 main-wrapper">

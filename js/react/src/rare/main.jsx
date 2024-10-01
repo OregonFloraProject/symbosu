@@ -99,7 +99,7 @@ class RarePageApp extends React.Component {
         });
 
         const pageTitle = document.getElementsByTagName("title")[0];
-        pageTitle.innerHTML = `${pageTitle.innerHTML} ${data.title}`;
+        pageTitle.innerHTML = `${pageTitle.innerHTML} - ${data.title.replace("Rare Plant Guide ", "")}`;
 
         return data;
       } catch (err) {
