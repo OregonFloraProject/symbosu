@@ -696,7 +696,7 @@ class GardenPageApp extends React.Component {
 											taxaPage="garden"
 										/>
 									:
-									<p className="no-results">Your search term(s) didn’t produce any results.
+									<p className="no-results">Your search term(s) didn’t produce any results.{' '}
 										<span className="suggest">Try deleting a filter or Clearing All to try different terms?</span>
 									</p> 
 									}
