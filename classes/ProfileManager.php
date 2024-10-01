@@ -614,14 +614,14 @@ class ProfileManager extends Manager{
 
 	/**
 	 * 2024-09-19: OregonFlora is using the unused fields `users.accessrRights` and `users.notes` to
-	 * store data relating to requests for access to rare plant data (see rare/policy.php);
+	 * store data relating to requests for access to rare species data (see rare/policy.php);
 	 * `users.accessrRights` stores the user's written reason for requesting access, and `users.notes`
 	 * is used to track the time and status of requests.
 	 *
 	 * The following two helper functions get and set these fields and are used by
 	 * profile/rpc/api.php.
 	 */
-	public function hasRequestedRarePlantAccess(){
+	public function hasRequestedRareSpeciesAccess(){
 		$hasRequested = false;
 		if($this->uid){
 			$sqlStr = 'SELECT notes, accessrRights FROM users WHERE (uid = '.intval($this->uid).')';
@@ -641,7 +641,7 @@ class ProfileManager extends Manager{
 	 * to avoid exposing to HTTP the ability to directly manipulate the `accessrRights` and `notes`
 	 * fields.
 	 */
-	public function requestRarePlantAccess($reason, $timestamp, $data){
+	public function requestRareSpeciesAccess($reason, $timestamp, $data){
 		$firstName = strip_tags($data['firstName']);
 		$lastName = strip_tags($data['lastName']);
 		$email = filter_var($data['email'], FILTER_VALIDATE_EMAIL);
@@ -676,7 +676,7 @@ class ProfileManager extends Manager{
 	/**
 	 * 2024-09-20(eric): for testing only, remove before deploying
 	 */
-	public function deleteRarePlantAccessRequest() {
+	public function deleteRareSpeciesAccessRequest() {
 		$status = false;
 		if($this->uid){
 			$this->resetConnection();

@@ -25,7 +25,7 @@ function getProfileDataForRequestingAccess($uid) {
   $pm = new ProfileManager();
   $pm->setUid($uid);
 
-  if ($pm->hasRequestedRarePlantAccess()) {
+  if ($pm->hasRequestedRareSpeciesAccess()) {
     return ["accessRequested" => true];
   }
 
@@ -52,7 +52,7 @@ function updateProfileAndRequestAccess($uid, $params) {
    * 2024-09-20(eric): for testing only, remove before deploying
    */
   if (array_key_exists("delete", $params)) {
-    $pm->deleteRarePlantAccessRequest();
+    $pm->deleteRareSpeciesAccessRequest();
     return [];
   }
 
@@ -80,7 +80,7 @@ function updateProfileAndRequestAccess($uid, $params) {
     "department" => array_key_exists("department", $params) ? $params["department"] : null,
   ];
 
-  $status = $pm->requestRarePlantAccess($params["reason"], time(), $data);
+  $status = $pm->requestRareSpeciesAccess($params["reason"], time(), $data);
   if (!$status) {
     return ["error" => "error requesting access"];
   }
