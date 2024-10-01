@@ -654,7 +654,7 @@ class ProfileManager extends Manager{
 			$this->resetConnection();
 			$sql = 'UPDATE users SET firstname = ?, lastname = ?, email = ?, title = ?, institution = ?, department = ?, notes = ?, accessrRights = ? WHERE (uid = ?)';
 			if($stmt = $this->conn->prepare($sql)) {
-				$notes = "{$timestamp}; emailed=false";
+				$notes = "rareSppAccessRequest={$timestamp}; emailed=false";
 				$accessrRights = strip_tags($reason);
 
 				$stmt->bind_param('ssssssssi', $firstName, $lastName, $email, $title, $institution, $department, $notes, $accessrRights, $this->uid);
