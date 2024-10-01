@@ -10,7 +10,6 @@ import SortOptions from "./components/sortOptions.jsx";
 import SideBar from "../common/filterSidebar.jsx";
 import {CardSearchContainer} from "../common/searchResults.jsx";
 import ViewOpts from "../common/viewOpts.jsx";
-import httpGet from "../common/httpGet.js";
 import {getUrlQueryParams} from "../common/queryParams.js";
 import {sortByTaxon} from "../common/taxaUtils";
 import Loading from "../common/loading.jsx";
@@ -73,6 +72,7 @@ class RarePageApp extends React.Component {
       apiUrl: '',
       glossary: [],
       aboutGuideExpanded: false,
+      apiError: false,
     };
   }
 
@@ -80,8 +80,8 @@ class RarePageApp extends React.Component {
     const fetchData = async () => {
       try {
         const apiUrl = `${this.props.clientRoot}/rare/rpc/api.php`;
-        const res = await httpGet(apiUrl);
-        const data = JSON.parse(res);
+        const res = await fetch(apiUrl);
+        const data = await res.json();
         let taxa = '';
         let tids = [];
         if (data && data.taxa) {
@@ -102,9 +102,6 @@ class RarePageApp extends React.Component {
         pageTitle.innerHTML = `${pageTitle.innerHTML} - ${data.title.replace("Rare Plant Guide ", "")}`;
 
         return data;
-      } catch (err) {
-        // TODO(eric): add some error handling/state to page
-        console.error(err);
       } finally {
         this.setState({ isLoading: false });
       }
@@ -112,12 +109,13 @@ class RarePageApp extends React.Component {
 
     const fetchGlossary = async () => {
       try {
-        const res = await httpGet('../glossary/rpc/getterms.php');
-        const glossary = JSON.parse(res);
+        const res = await fetch('../glossary/rpc/getterms.php');
+        const glossary = await res.json();
         this.setState({ glossary });
         return glossary;
       } catch (err) {
-        // TODO(eric): add some error handling/state to page
+        // just log this error and don't do anything for now, since the glossary isn't strictly
+        // necessary for the functioning of the page
         console.error(err);
       }
     }
@@ -147,8 +145,8 @@ class RarePageApp extends React.Component {
         ));
         this.setState({ characteristics });
       } catch (err) {
-        // TODO(eric): add some error handling/state to page
         console.error(err);
+        this.setState({ apiError: true });
       }
     }
 
@@ -192,11 +190,12 @@ class RarePageApp extends React.Component {
       const url = this.state.apiUrl + '?' + identParams.toString();
 
       try {
-        const res = await httpGet(url);
-        this.onSearchResults(JSON.parse(res).tids);
+        const res = await fetch(url);
+        this.onSearchResults((await res.json()).tids);
+        this.setState({ apiError: false });
       } catch (err) {
-        // TODO(eric): add some error handling/state to page
         console.error(err);
+        this.setState({ apiError: true });
       } finally {
         this.setState({ isSearching: false, searchInit: true });
         this.mobileScrollToResults();
@@ -329,6 +328,12 @@ class RarePageApp extends React.Component {
   resetTaxaResults = () => {
     let tids = this.state.searchResults.taxonSort.map((taxon) => taxon['tid']);
     this.onSearchResults(tids);
+
+    // even if there was an API error, suppress it if there are any initial search results
+    // so that the page is at least partially functional
+    if (this.state.searchResults.taxonSort.length) {
+      this.setState({ apiError: false });
+    }
   }
   onFilterRemoved = (key, text) => {
     if (key === "searchText") {
@@ -425,7 +430,11 @@ class RarePageApp extends React.Component {
               />
             </div>
             <div className="col-md-8">
-              <div className="">
+              {this.state.apiError ?
+                <div class="alert alert-danger" role="alert">
+                  An error occurred. Please try again later.
+                </div>
+                :
                 <div className="" id="results-section">
                   <div className="row">
                     <div className="col">
@@ -488,7 +497,7 @@ class RarePageApp extends React.Component {
                     </a>
                   </div>
                 </div>
-              </div>
+              }
             </div>
           </div>
         </div>

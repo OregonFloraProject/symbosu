@@ -59,6 +59,7 @@ function elevationToString(obj) {
 
 function TaxaRareApp(props) {
   const [isLoading, setIsLoading] = useState(true);
+  const [apiError, setApiError] = useState(false);
   const [data, setData] = useState(EMPTY_DATA);
   const [glossary, setGlossary] = useState([]);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
@@ -116,8 +117,8 @@ function TaxaRareApp(props) {
           const titleElement = document.getElementsByTagName("title")[0];
           titleElement.innerHTML = `${props.defaultTitle} - ${res.sciname} - Rare Plant Profile`;
         } catch (err) {
-          // TODO(eric): add error handling
           console.error(err);
+          setApiError(true);
         } finally {
           setIsLoading(false);
           updateViewport();
@@ -129,7 +130,8 @@ function TaxaRareApp(props) {
           const res = await httpGet('../glossary/rpc/getterms.php');
           setGlossary(JSON.parse(res));
         } catch (err) {
-          // TODO(eric): add some error handling/state to page
+          // just log this error and don't do anything for now, since the glossary isn't strictly
+          // necessary for the functioning of the page
           console.error(err);
         }
       }
@@ -178,6 +180,10 @@ function TaxaRareApp(props) {
       </div>
       <div className="row mt-2 main-wrapper">
         <div className="col-md-8 main-section">
+
+          {apiError && <div class="alert alert-danger" role="alert">
+            An error occurred. Please try again later.
+          </div>}
 
           { data.images.length > 0 &&
             <figure>
