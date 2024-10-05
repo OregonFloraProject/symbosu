@@ -160,8 +160,6 @@ function getTaxa($params) {
 	$search = null;
 	$results = getEmpty();
 
-	$em = SymbosuEntityManager::getEntityManager();
-
 	$identManager = new IdentManager();
 	$rareClid = getRareClid();
 	$identManager->setClid($rareClid);
@@ -180,48 +178,7 @@ function getTaxa($params) {
 		|| (array_key_exists("search", $params) && !empty($params["search"]))
 	) {
 		$identManager->setIDsOnly(true);
-		#attr, range, search/name handling copied from ident/rpc/api.php
-		$attrs = array();
-
-		if (key_exists("attr", $params)){
-			foreach ($params['attr'] as $attr) {
-				if (strpos($attr,'-') !== false) {
-					$fragments = explode("-",$attr);
-					$cid = intval($fragments[0]);
-					$cs = intval($fragments[1]);
-					if (is_numeric($cid) && is_numeric($cs)) {
-						$attrs[$cid][] = $cs;
-					}
-				}
-			}
-		}
-
-		if (isset($params['range'])) {
-			$ranges = array();
-			foreach ($params['range'] as $range) {
-				if (strpos($range,'-') !== false) {
-					$fragments = explode("-",$range);
-					$cid = intval($fragments[0]);
-					$type = $fragments[1];
-					$cs = intval($fragments[2]);
-					if (is_numeric($cid) && !empty($cs) && in_array($type,array("n","x"))) {
-						$ranges[$cid][$type] = $cs;
-					}
-				}
-			}
-			$charStateRepo = $em->getRepository("Kmcs");
-			foreach ($ranges as $cid => $range) {
-				$csQuery = $charStateRepo->findBy(["cid" => $cid], ["sortsequence" => "ASC"]);
-				$csArr = array_map(function($cs) { return intval($cs->getCs()); }, $csQuery);
-				foreach ($csArr as $_cs) {
-					if ($_cs >= $range['n'] && $_cs <= $range['x']) {
-						$attrs[$cid][] = $_cs;
-					}
-				}
-			}
-		}
-
-		$identManager->setAttrs($attrs);
+		$identManager->setAttrsFromParams($params);
 
 		if (array_key_exists("search", $params) && !empty($params["search"])) {
 			$identManager->setSearchTerm($params["search"]);
@@ -255,6 +212,7 @@ function getTaxa($params) {
 		$results["characteristics"] = getFilterableChars($results['tids']);
 
 		// RPG checklist metadata
+		$em = SymbosuEntityManager::getEntityManager();
 		$repo = $em->getRepository("Fmchecklists");
 		$model = $repo->find($rareClid);
 		$checklist = ExploreManager::fromModel($model);

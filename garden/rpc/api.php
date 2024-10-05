@@ -315,8 +315,6 @@ function get_garden_taxa($params) {
 
 	$search = null;
 	$results = getEmpty();
-	
-	$em = SymbosuEntityManager::getEntityManager();
 
 	$identManager = new IdentManager();
 	$identManager->setClid($params['clid']);
@@ -336,49 +334,7 @@ function get_garden_taxa($params) {
 		|| ( array_key_exists("search", $params) && !empty($params["search"]) )
 	) {
 		$identManager->setIDsOnly(true);
-		#attr, range, search/name handling copied from ident/rpc/api.php
-		$attrs = array();
-		if (key_exists("attr", $params)){
-			foreach ($params['attr'] as $attr) {
-				if(strpos($attr,'-') !== false) {
-					$fragments = explode("-",$attr);
-					$cid = intval($fragments[0]);
-					$cs = intval($fragments[1]);
-					if (is_numeric($cid) && is_numeric($cs)) {
-						$attrs[$cid][] = $cs;
-					}
-				}
-			}
-		}#end attr
-		if (isset($params['range'])) {
-			$ranges = array();
-			foreach ($params['range'] as $range) {
-				if(strpos($range,'-') !== false) {
-					$fragments = explode("-",$range);
-					$cid = intval($fragments[0]);
-					$type = $fragments[1];
-					$cs = intval($fragments[2]);#cancelled for now: for min/max this is cs, but for i(ncrement), it's the increment val
-					if (is_numeric($cid) && !empty($cs) && in_array($type,array("n","x"))) {#,"i"
-						$ranges[$cid][$type] = $cs;
-					}
-				}
-			}
-			#var_dump($ranges);
-			$charStateRepo = $em->getRepository("Kmcs");
-			foreach ($ranges as $cid => $range) {
-			#var_dump($range);
-				$csQuery = $charStateRepo->findBy([ "cid" => $cid ], ["sortsequence" => "ASC"]);
-				$csArr = array_map(function($cs) { return intval($cs->getCs()); }, $csQuery);
-				#var_dump($csArr);
-				foreach ($csArr as $_cs) {
-					if ($_cs >= $range['n'] && $_cs <= $range['x']) {
-						$attrs[$cid][] = $_cs;
-					}
-				}
-			}
-		}#end range
-		#var_dump($attrs);
-		$identManager->setAttrs($attrs);
+		$identManager->setAttrsFromParams($params);
 		
 		if (	array_key_exists("search", $params) && !empty($params["search"]) ) {
 			$identManager->setSearchTerm($params["search"]);
@@ -408,6 +364,8 @@ function get_garden_taxa($params) {
 			$tids[] = $taxon['tid'];
 		}
 		$results['tids'] = $tids;
+
+		$em = SymbosuEntityManager::getEntityManager();
 		$repo = $em->getRepository("Fmchecklists");
 		$model = $repo->find(getGardenClid());
 		$checklist = ExploreManager::fromModel($model);

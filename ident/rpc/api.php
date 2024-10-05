@@ -77,54 +77,7 @@ function get_data($params) {
 	if (isset($params['pid']) && $params['pid'] > -1) $identManager->setPid($params['pid']);
 	if (isset($params['taxon'])) $identManager->setTaxonFilter($params['taxon']);
 	if (isset($params['rv'])) $identManager->setRelevanceValue($params['rv']);
-	$attrs = array();
-	if (isset($params['attr'])) {
-		foreach ($params['attr'] as $attr) {
-			if(strpos($attr,'-') !== false) {
-				$fragments = explode("-",$attr);
-				$cid = intval($fragments[0]);
-				$cs = intval($fragments[1]);
-				if (is_numeric($cid) && is_numeric($cs)) {
-					$attrs[$cid][] = $cs;
-				}
-			}
-		}
-	}
-	/*
-		The "range" param doesn't exist in Symbiota, but using attr[] causes unacceptably long URLs;
-		So we use range for purposes of building the API URL, 
-		and here convert it to attrs for the DB call.
-		***This relies on kmcs.cs and kmcs.charstatename being in the SAME SORT ORDER (which Katie assures me is always true)***
-	*/
-	if (isset($params['range'])) {
-		$ranges = array();
-		foreach ($params['range'] as $range) {
-			if(strpos($range,'-') !== false) {
-				$fragments = explode("-",$range);
-				$cid = intval($fragments[0]);
-				$type = $fragments[1];
-				$cs = intval($fragments[2]);#cancelled for now: for min/max this is cs, but for i(ncrement), it's the increment val
-				if (is_numeric($cid) && !empty($cs) && in_array($type,array("n","x"))) {#,"i"
-					$ranges[$cid][$type] = $cs;
-				}
-			}
-		}
-		#var_dump($ranges);
-		$charStateRepo = $em->getRepository("Kmcs");
-		foreach ($ranges as $cid => $range) {
-		#var_dump($range);
-			$csQuery = $charStateRepo->findBy([ "cid" => $cid ], ["sortsequence" => "ASC"]);
-			$csArr = array_map(function($cs) { return intval($cs->getCs()); }, $csQuery);
-			#var_dump($csArr);
-			foreach ($csArr as $_cs) {
-				if ($_cs >= $range['n'] && $_cs <= $range['x']) {
-					$attrs[$cid][] = $_cs;
-				}
-			}
-		}
-	}
-	#var_dump($attrs);
-	$identManager->setAttrs($attrs);
+	$identManager->setAttrsFromParams($params);
 		
 	if ( 	 ( array_key_exists("search", $params) && !empty($params["search"]) )
 			&& ( array_key_exists("name", $params) && in_array($params['name'],array('sciname','commonname')) )
