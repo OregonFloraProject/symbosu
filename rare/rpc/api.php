@@ -144,33 +144,7 @@ function getFilterableChars($tids) {
 	$identManager->setClid(Fmchecklists::$CLID_RARE_ALL);
 	$identManager->setTaxa();
 
-	$cids = [];
-	foreach ($FILTERABLE_CHARS as $idx => $group) {
-		foreach ($group['characters'] as $gidx => $char) {
-			if (empty($FILTERABLE_CHARS[$idx]['characters'][$gidx]['states'])) {
-				$cids[] = $char['cid'];
-			}
-		}
-	}
-	$cresults = $identManager->getCharQuery($tids,$cids);
-
-	foreach ($cresults as $cs) {
-		foreach ($FILTERABLE_CHARS as $idx => $group) {
-			foreach ($group['characters'] as $gidx => $char) {
-				if ($char['cid'] == $cs['cid']) {
-					$tmp = [];
-					$tmp['cid'] = $char['cid'];
-					$tmp['charstatename'] = $cs['charstatename'];
-					$tmp['cs'] = $cs['cs'];
-					$tmp['numval'] = floatval(preg_replace("/[^0-9\.]/","",$tmp['charstatename']));
-
-					$FILTERABLE_CHARS[$idx]['characters'][$gidx]['states'][] = $tmp;
-				}
-			}
-		}
-	}
-
-	return $FILTERABLE_CHARS;
+	return $identManager->getCharacteristicsForStructure($FILTERABLE_CHARS, $tids);
 }
 
 

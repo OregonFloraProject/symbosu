@@ -258,83 +258,14 @@ function getEmpty() {
 function get_garden_characteristics($tids) {
 	global $CUSTOM_GARDEN_CHARACTERISTICS;
 	
-	#$em = SymbosuEntityManager::getEntityManager();
-	#$charStateRepo = $em->getRepository("Kmcs");
-	
 	$identManager = new IdentManager();
 
 	$identManager->setClid(Fmchecklists::$CLID_GARDEN_ALL);
 	$identManager->setPid(Fmchecklists::$PID_GARDEN_ALL);
-	
-	/*hack: use Fmchklstprojlink|sortSequence to store cs values, 
-					which we use to look up the clid */
-	$em = SymbosuEntityManager::getEntityManager();
-	$checklistRepo = $em->getRepository("Fmchecklists");
-
-	$lookups = $identManager->getVendorLookups();
-	$clidLookup = $lookups->clidLookup;
-	$childLookup = $lookups->childLookup;
 
 	$identManager->setTaxa();
-	$cids = [];
-	foreach ($CUSTOM_GARDEN_CHARACTERISTICS as $idx => $group) {
-		foreach ($group['characters'] as $gidx => $char) {
-			if (empty($CUSTOM_GARDEN_CHARACTERISTICS[$idx]['characters'][$gidx]['states'])) {
-				$cids[] = $char['cid'];
-			}
-		}
-	}
-	$cresults = $identManager->getCharQuery($tids,$cids);
-	#var_dump($cresults);
-	
-	foreach ($cresults as $cs) {
-		foreach ($CUSTOM_GARDEN_CHARACTERISTICS as $idx => $group) {
-			foreach ($group['characters'] as $gidx => $char) {
-				if ($char['cid'] == $cs['cid']) {
-					$tmp = [];
-					$tmp['cid'] = $char['cid'];
-					$tmp['charstatename'] = $cs['charstatename'];#$cs->getCharstatename();
-					$tmp['cs'] = $cs['cs'];#$cs->getCs();
-					$tmp['numval'] = floatval(preg_replace("/[^0-9\.]/","",$tmp['charstatename']));
-					
-					if (getRegionCid() == $char['cid']) {
-					#var_dump($char);//pass
-						if ($childLookup[$cs['cs']]) {
-					#var_dump('found child lookup');//fail
-							$tmp['children'] = $childLookup[$cs['cs']];
-						}
-					}		
-					if (getNurseryCid() == $char['cid']) {	
-						if (isset($clidLookup[$cs['cs']])) {
-							$tmp['clid'] = $clidLookup[$cs['cs']];
-							$tmp['pid'] = Fmchecklists::$PID_VENDOR_ALL;
-						}
-					}
-					/*
-						switch ($cs['cs']) {
-							#$CUSTOM_GARDEN_CHARACTERISTICS[$idx]['characters'][$gidx]['children'][] = [];
-							case 1:#14928 Portland Metro
-								$tmp['children'] = [2,4];#14921 Aurora Nursery,14923 BeaverLake Nursery
-								break;
-							case 2:#14929 W Valley
-								$tmp['children'] = [3,30];#14922 Balance Restoration,14924 Bloom River Gardens,14927 Katie's Native
-								break;
-							case 3:#14930 Eastern
-								$tmp['children'] = [8];#14925 Clearwater
-								break;
-							case 4:#14931 Sisk
-								$tmp['children'] = [1];#14920 Althouse
-								break;
-						}
-						*/			
-					$CUSTOM_GARDEN_CHARACTERISTICS[$idx]['characters'][$gidx]['states'][] = $tmp;
-					
-				}
-			}
-		}
-	}
 
-	return $CUSTOM_GARDEN_CHARACTERISTICS;
+	return $identManager->getCharacteristicsForStructure($CUSTOM_GARDEN_CHARACTERISTICS, $tids);
 }
 
 	

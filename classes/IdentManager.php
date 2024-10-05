@@ -454,7 +454,64 @@ class IdentManager extends Manager {
 			#IN(4835,5242,5665,6117)
 		}
 	}
-	public function getCharQuery($tids,$cids) {
+	/**
+	 * Analogous to getCharacteristics, but returns char data structured in a custom way (defined by
+	 * $charStructure), ignoring the heading fields and structure defined by mysql. Used by the garden
+	 * and rare APIs, which define their own filter structure.
+	 */
+	public function getCharacteristicsForStructure($charStructure,$tids) {
+		$cids = [];
+		foreach ($charStructure as $idx => $group) {
+			foreach ($group['characters'] as $gidx => $char) {
+				if (empty($charStructure[$idx]['characters'][$gidx]['states'])) {
+					$cids[] = $char['cid'];
+				}
+			}
+		}
+		$cresults = $this->getCharQuery($tids,$cids);
+
+		// On the garden page, extra keys must be set on the vendor characteristics. Prepare this data
+		// if either relevant cid is part of the requested structure (i.e. we are on the garden page).
+		$clidLookup = [];
+		$childLookup = [];
+		if (in_array(getRegionCid(), $cids) || in_array(getNurseryCid(), $cids)) {
+			$lookups = $this->getVendorLookups();
+			$clidLookup = $lookups->clidLookup;
+			$childLookup = $lookups->childLookup;
+		}
+
+		foreach ($cresults as $cs) {
+			foreach ($charStructure as $idx => $group) {
+				foreach ($group['characters'] as $gidx => $char) {
+					if ($char['cid'] == $cs['cid']) {
+						$tmp = [];
+						$tmp['cid'] = $char['cid'];
+						$tmp['charstatename'] = $cs['charstatename'];
+						$tmp['cs'] = $cs['cs'];
+						$tmp['numval'] = floatval(preg_replace("/[^0-9\.]/","",$tmp['charstatename']));
+
+						// Custom keys for vendor chars (garden page only)
+						if (getRegionCid() == $char['cid']) {
+							if ($childLookup[$cs['cs']]) {
+								$tmp['children'] = $childLookup[$cs['cs']];
+							}
+						}
+						if (getNurseryCid() == $char['cid']) {
+							if (isset($clidLookup[$cs['cs']])) {
+								$tmp['clid'] = $clidLookup[$cs['cs']];
+								$tmp['pid'] = Fmchecklists::$PID_VENDOR_ALL;
+							}
+						}
+
+						$charStructure[$idx]['characters'][$gidx]['states'][] = $tmp;
+					}
+				}
+			}
+		}
+
+		return $charStructure;
+	}
+	private function getCharQuery($tids,$cids) {
 		$em = SymbosuEntityManager::getEntityManager();
 		$qb = $em->createQueryBuilder();
 		$selects = [
@@ -535,6 +592,11 @@ class IdentManager extends Manager {
 	/* This could go elsewhere */
 	public function getVendorLookups() {
 		$em = SymbosuEntityManager::getEntityManager();
+		/**
+		 * 2024-10-04(eric): as far as I understand, Fmchklstprojlink.sortSequence is co-opted here to
+		 * store the char state value for that particular checklist (used for vendor checklists on the
+		 * garden page).
+		 */
 		$vendor = $em->createQueryBuilder()
 			->select(['proj.clid','proj.sortSequence','chil.clidChild'])#
 			->from("Fmchklstprojlink","proj")
@@ -548,31 +610,22 @@ class IdentManager extends Manager {
 	
 		$cisLookup = [];
 		$clidLookup = [];
-		#echo 'vresults' . "\n";
-		#var_dump($vresults);
 		foreach ($vresults as $vres) {
 			if (!isset($cisLookup[$vres['clid']])) {
 				$cisLookup[$vres['clid']] = $vres['sortSequence'];
 			}
 		}
-		#echo 'cisLookup' . "\n";
-		#var_dump($cisLookup);
 		foreach ($vresults as $vres) {
-			#var_dump($vres);
 			if (isset($vres['clidChild']) && $vres['clidChild'] != NULL && isset($cisLookup[$vres['clidChild']])) {
 				$childLookup[$vres['sortSequence']][] = $cisLookup[$vres['clidChild']];
 			}elseif($vres['clidChild'] == null){#must not be a parent
 				$clidLookup[$vres['sortSequence']] = $vres['clid'];
 			}
 		}
-		#echo 'childLookup' . "\n";
-		#var_dump($childLookup);
-		#echo 'clidLookup' . "\n";
-		#var_dump($clidLookup);
+
 		$ret = new StdClass();
 		$ret->childLookup = $childLookup;
 		$ret->clidLookup = $clidLookup;
-		#exit;
 		return $ret;
 	}
 }
