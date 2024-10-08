@@ -1,5 +1,8 @@
 export function addGlossaryTooltips(text, glossary) {
 
+  // If no glossary is passed in, just ignore
+  if (!glossary) return text;
+
   // Don't try to add glossary entries to numbers
   if (typeof text === "number") return text;
 

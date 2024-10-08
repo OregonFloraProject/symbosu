@@ -6,25 +6,15 @@ import {getGardenTaxaPage} from "../common/taxaUtils";
 import ImageCarousel from "../common/imageCarousel.jsx";
 import ImageModal from "../common/modal.jsx";
 import Loading from "../common/loading.jsx";
+import MapItem from "./components/MapItem.jsx";
+import { RANK_FAMILY, RANK_GENUS } from "./constants";
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 //import 'react-tabs/style/react-tabs.css';
-import { Link, DirectLink, Element, Events, animateScroll as scroll, scrollSpy, scroller } from 'react-scroll'
+import { Link } from 'react-scroll'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faArrowCircleUp, faArrowCircleDown, faEdit, faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons'
 library.add(faArrowCircleUp, faArrowCircleDown, faEdit, faChevronDown, faChevronUp)
-
-const RANK_FAMILY = 140;
-const RANK_GENUS = 180;
-
-function stripHtml(str) {
-	/*
-  Description includes HTML tags & URL-encoded characters in the db.
-  It's dangerous to pull/render arbitrary HTML w/ react, so just render the
-  plain text & remove any HTML in it.
-  */
-  return str.replace(/(<\/?[^>]+>)|(&[^;]+;)/g, "");
-}
 
 function BorderedItem(props) {
   let value = props.value;
@@ -209,42 +199,6 @@ function RelatedBorderedItem(props) {
   return (
     <div className={ "row" }>
       { value }
-    </div>
-  );
-}
-
-function MapItem(props) {
-
-	let mapImage = null;
-	mapImage = `${props.clientRoot}/images/maps/${props.tid}.jpg`;
-	// /map/googlemap.php?maptype=taxa&taxon=6076&clid=0
-	//let mapLink = `${props.clientRoot}/map/googlemap.php?maptype=taxa&clid=0&taxon=${props.tid}`;
-	let mapLink = `${props.clientRoot}/collections/map/googlemap.php?usethes=1&taxa=${props.tid}&minClusterSetting=10&gridSizeSetting=30`;
-	
-  return (
-  	<div className={ "sidebar-section mb-5 distribution" }>
-    	<h3 className="text-light-green font-weight-bold mb-3">Distribution</h3>
-    	<div className={ "dashed-border pt-0" }>
-    		<a 
-    			className="map-link"
-    			onClick={ () => window.open(mapLink) }
-    		>{/* 
-    			onClick={ () => window.open(mapLink,'gmap','toolbar=1,scrollbars=1,width=950,height=700,left=20,top=20') } */}
-      		<img
-						src={mapImage}
-						alt={props.title}
-					/>
-				</a>
-			</div>
-    	<div className={ "map-label text-right" }>
-    		<a 
-    			className="map-link"
-    			onClick={ () => window.open(mapLink) }
-    		>	{/* 
-    			onClick={ () => window.open(mapLink,'gmap','toolbar=1,scrollbars=1,width=950,height=700,left=20,top=20') } */}			
-      		Click/tap to launch
-				</a>
-			</div>
     </div>
   );
 }

@@ -5,6 +5,8 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { faArrowCircleUp, faArrowCircleDown } from '@fortawesome/free-solid-svg-icons';
 import { addGlossaryTooltips } from '../../common/glossary';
 import { KEY_NAMES, RANK_FAMILY } from '../constants';
+import { showItem } from './utils';
+library.add(faArrowCircleUp, faArrowCircleDown);
 
 function BorderedItem(props) {
   let value = props.value;
@@ -44,9 +46,7 @@ function BorderedItem(props) {
   );
 }
 
-library.add(faArrowCircleUp, faArrowCircleDown);
 function RelatedBorderedItem(props) {
-
   let value = '';
 	value = (
 		<div className="col-sm-12 related py-2 row">
@@ -83,11 +83,6 @@ function RelatedBorderedItem(props) {
       { value }
     </div>
   );
-}
-
-function showItem(item) {
-  const isArray = Array.isArray(item);
-  return (!isArray && item !== '') || item.length > 0;
 }
 
 function SideBarSection(props) {
