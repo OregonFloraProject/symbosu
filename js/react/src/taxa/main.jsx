@@ -544,7 +544,7 @@ class TaxaDetail extends React.Component {
 					</div>
 					<div className="col-md-4 sidebar sidebar-section">
 						<SideBarSection title="Context" items={ res.highlights } classes="highlights" rankId={ res.rankId } clientRoot={ this.props.clientRoot }/>
-						<MapItem title={ res.sciName } tid={ res.tid } clientRoot={ this.props.clientRoot } />
+						<MapItem title={ res.sciName } tid={ res.tid } clientRoot={ this.props.clientRoot } needsPermission={ res.accessRestricted } />
 						<SideBarSection title="Web links" items={ res.taxalinks} classes="weblinks"  rankId={ res.rankId } clientRoot={ this.props.clientRoot }/>
 					</div>
 				</div>
@@ -589,6 +589,7 @@ class TaxaApp extends React.Component {
       taxalinks: [],
       gardenId: null,
       rarePlantFactSheet: '',
+      accessRestricted: false,
       highlights: {},
       spp: [],
       tid: null,
@@ -702,6 +703,7 @@ class TaxaApp extends React.Component {
             taxalinks: {
             	"webLinks": web_links
             },
+            accessRestricted: !!res.accessRestricted,
             spp: res.spp,
             related: relatedArr,
             family: res.family,
