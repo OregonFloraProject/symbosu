@@ -39,6 +39,7 @@ const EMPTY_DATA = {
   descriptions: [],
   lookalikes: [],
   associatedSpecies: [],
+  accessRestricted: false,
 };
 
 function rangeToString(obj) {
@@ -128,6 +129,7 @@ function TaxaRareApp(props) {
             descriptions,
             lookalikes: [],
             associatedSpecies: [],
+            accessRestricted: !!res.accessRestricted,
           });
 
           const titleElement = document.getElementsByTagName("title")[0];
@@ -172,8 +174,6 @@ function TaxaRareApp(props) {
     setCurrImage(_currImage);
     setIsImageModalOpen(!isImageModalOpen);
   }
-
-  const needsPermission = true;
 
   return (
     <div className="container mx-auto py-5" style={{ minHeight: "45em" }}>
@@ -271,7 +271,7 @@ function TaxaRareApp(props) {
         </ImageModal>
         <div className="col-md-4 sidebar-section">
           <SideBarSection title="Context" items={ data.context } rankId={ data.rankId } glossary={ glossary } />
-          <MapItem title={ data.sciName } tid={ tid } clientRoot={ props.clientRoot } needsPermission={ needsPermission } />
+          <MapItem title={ data.sciName } tid={ tid } clientRoot={ props.clientRoot } needsPermission={ data.accessRestricted } />
           <SideBarSection title="Survey & Manage" items={ data.surveyManage } glossary={ glossary } />
           <SideBarSectionLookalikesTable title="Look-Alikes" items={ data.lookalikes } glossary={ glossary } />
           <SideBarSectionSpeciesList title="Associated species" items={ data.associatedSpecies } />

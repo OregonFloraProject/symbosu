@@ -66,6 +66,7 @@ class TaxaManager {
   protected $parentTid;
   protected $taxalinks;
   protected $rarePlantFactSheet;
+  protected $accessRestricted;
   protected $rankId;
   protected $spp;
   #protected $ambSyn;
@@ -161,6 +162,12 @@ class TaxaManager {
   public function getRarePlantFactSheet() {
     $this->taxalinks = $this->populateTaxalinks($this->getTid());
   	return $this->rarePlantFactSheet;
+  }
+  public function getAccessRestricted() {
+    if (is_null($this->accessRestricted)) {
+      $this->accessRestricted = $this->populateAccessRestricted($this->getTid());
+    }
+    return $this->accessRestricted;
   }
   public function getBasename() {
     return $this->basename;
@@ -420,6 +427,35 @@ class TaxaManager {
 
   public function setChecklists() {
     $this->checklists = self::populateChecklists($this->getTid());
+  }
+
+  private function populateAccessRestricted($tid = null) {
+    if ($tid) {
+      // 2024-10-09: for now, restrict access for all species on the rare species checklist
+      $em = SymbosuEntityManager::getEntityManager();
+      $rows = $em->createQueryBuilder()
+        ->select(["tl.clid"])
+        ->from("Fmchklsttaxalink", "tl")
+        ->where("tl.tid = :tid")
+        ->andWhere("tl.clid = " . Fmchecklists::$CLID_RARE_ALL)
+        ->setParameter("tid", $tid)
+        ->getQuery()
+				->execute();
+
+      if (count($rows) > 0) {
+        global $USER_RIGHTS;
+        if (!isset($USER_RIGHTS) ||
+          (!array_key_exists('SuperAdmin', $USER_RIGHTS) &&
+          !array_key_exists('CollAdmin', $USER_RIGHTS) &&
+          !array_key_exists('RareSppAdmin', $USER_RIGHTS) &&
+          !array_key_exists('RareSppReadAll', $USER_RIGHTS))
+        ) {
+          // TODO: check for specific collection IDs with CollEditor and RareSppReader?
+          return 1;
+        }
+      }
+      return 0;
+    }
   }
 
   private static function getEmptyCharacteristics($queryType = 'default') {

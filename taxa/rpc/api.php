@@ -7,8 +7,6 @@ include_once("$SERVER_ROOT/classes/TaxaManager.php");
 
 $result = [];
 
-$CLID_GARDEN_ALL = 54;
-
 function getTaxon($tid, $queryType = "default") {
   $em = SymbosuEntityManager::getEntityManager();
   $taxaRepo = $em->getRepository("Taxa");
@@ -127,6 +125,7 @@ function taxaManagerToJSON($taxaObj,$queryType = "default",$recursive = false,$t
 			$result["origin"] = $taxaObj->getOrigin();
 			$result["family"] = $taxaObj->getFamily();
 			$result["rarePlantFactSheet"] = $taxaObj->getRarePlantFactSheet();
+			$result["accessRestricted"] = $taxaObj->getAccessRestricted();
 			if ($queryType !== 'default') {
 				$result["characteristics"] = $taxaObj->getCharacteristics($queryType);
 			}
