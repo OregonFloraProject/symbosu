@@ -534,6 +534,7 @@ class SpecialChecklistApp extends React.Component {
         <div className="container mx-auto py-4 pl-3 pr-4">
           {this.props.pageType === 'rare' && (
             <AboutDropdown
+              clientRoot={this.props.clientRoot}
               hidden={!this.state.aboutGuideExpanded}
               numSpecies={this.state.searchResults.familySort.length}
               lists={this.state.includedLists}

@@ -79,6 +79,10 @@ const reactConfig = {
       import: path.join(SRC_DIR, 'explore', 'explore-vendor.jsx'),
       dependOn: 'header',
     },
+    'rare-policy': {
+      import: path.join(SRC_DIR, 'checklist-special', 'rare-policy.jsx'),
+      dependOn: 'header',
+    },
   },
   output: {
     path: REACT_OUT_DIR,

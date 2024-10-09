@@ -628,6 +628,67 @@ class ProfileManager extends Manager{
 	}
 
 	/**
+	 * 2024-09-19: OregonFlora is using the unused fields `users.accessrRights` and `users.notes` to
+	 * store data relating to requests for access to rare species data (see rare/policy.php);
+	 * `users.accessrRights` stores the user's written reason for requesting access, and `users.notes`
+	 * is used to track the time and status of requests.
+	 *
+	 * The following two helper functions get and set these fields and are used by
+	 * profile/rpc/api.php.
+	 */
+	public function hasRequestedRareSpeciesAccess(){
+		$hasRequested = false;
+		if($this->uid){
+			$sqlStr = 'SELECT notes, accessrRights FROM users WHERE (uid = '.intval($this->uid).')';
+			$rs = $this->conn->query($sqlStr);
+			if($r = $rs->fetch_object()){
+				if($r->accessrRights !== null || $r->notes !== null){
+					$hasRequested = true;
+				}
+			}
+			$rs->free();
+		}
+		return $hasRequested;
+	}
+
+	/**
+	 * 2024-09-25: We use a custom function here, rather than modifying the existing `updateProfile`,
+	 * to avoid exposing to HTTP the ability to directly manipulate the `accessrRights` and `notes`
+	 * fields.
+	 */
+	public function requestRareSpeciesAccess($reason, $timestamp, $data){
+		$firstName = strip_tags($data['firstName']);
+		$lastName = strip_tags($data['lastName']);
+		$email = filter_var($data['email'], FILTER_VALIDATE_EMAIL);
+		$title = strip_tags($data['title']);
+		$institution = strip_tags($data['institution']);
+		$department = array_key_exists('department', $data) ? strip_tags($data['department']) : null;
+
+		$status = false;
+		if($this->uid && $email){
+			$this->resetConnection();
+			$sql = 'UPDATE users SET firstname = ?, lastname = ?, email = ?, title = ?, institution = ?, department = ?, notes = ?, accessrRights = ? WHERE (uid = ?)';
+			if($stmt = $this->conn->prepare($sql)) {
+				$notes = "rareSppAccessRequest={$timestamp}; emailed=false";
+				$accessrRights = strip_tags($reason);
+
+				$stmt->bind_param('ssssssssi', $firstName, $lastName, $email, $title, $institution, $department, $notes, $accessrRights, $this->uid);
+				$stmt->execute();
+
+				// this can return false if all values are already exactly as they are in the db, e.g. no
+				// update is actually occurring (because affected_rows will be 0); however, this should
+				// never happen if the method is used properly because it should only be called when
+				// accessrRights is null
+				if($stmt->affected_rows && !$stmt->error) $status = true;
+				else $this->errorMessage = 'ERROR updating user profile: '.$stmt->error;
+				$stmt->close();
+			}
+			else $this->errorMessage = 'ERROR preparing statement user profile update: '.$this->conn->error;
+		}
+		return $status;
+	}
+
+	/**
 	 *
 	 * Obtain the list of specimens that have an identification verification status rank less than 6
 	 * within the list of taxa for which this user is listed as a specialist.
