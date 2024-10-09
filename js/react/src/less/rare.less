@@ -50,6 +50,8 @@
   padding: 1.5rem 0;
   background-size: cover;
   background-position: center top;
+  background-image: url("@{subdir}/images/header/h1casrub2.jpg");
+	position: relative;
   * {
     color: white !important;
   }
@@ -203,4 +205,51 @@ a.external-link {
       line-height: 1rem;
     }
   }
+}
+
+#react-rare-policy {
+	#titlebackground {
+		background-image: url("@{subdir}/images/header/h1casrub2.jpg");
+	}
+
+	p {
+		font-size: 1rem;
+	}
+	h2 {
+		margin-top: 1.25rem;
+	}
+	h5 {
+		font-size: 1.1rem;
+		font-weight: bold;
+		margin-bottom: 1.5rem;
+	}
+	p, h5 {
+		a {
+			color: @med-green !important;
+			text-decoration: none;
+		}
+		a:hover {
+			text-decoration: underline;
+		}
+	}
+	.btn-primary {
+		padding: .3em 1.2em;
+		line-height: 2em;
+	}
+
+	form {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		column-gap: 1rem;
+
+		.form-control {
+			height: unset;
+			padding: 0.2rem 0.5rem;
+		}
+	}
+	@media only screen and (max-width: @medium) {
+		form {
+			grid-template-columns: 1fr;
+		}
+	}
 }

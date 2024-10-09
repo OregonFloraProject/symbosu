@@ -24,14 +24,12 @@ function MapItem(props) {
           <div className={`map-overlay-box${showOverlay ? '' : ' hidden'}`}>
             <div className="map-overlay">
               Access to detailed locality data limited. Please login to view interactive map or read our{' '}
-              <span
+              <a
                 className="inner-link"
-                onClick={() => {
-                  /*window.open(`${props.clientRoot}/pages/contact.php`)*/
-                }}
+                href={`${props.clientRoot}/rare/policy.php?refurl=${encodeURIComponent(window.location.pathname + window.location.search)}`}
               >
                 use policy
-              </span>
+              </a>
               .
             </div>
           </div>

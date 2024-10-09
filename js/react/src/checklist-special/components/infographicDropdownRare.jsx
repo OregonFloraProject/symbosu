@@ -1,18 +1,11 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-function InfographicDropdown(props) {
+function InfographicDropdown() {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   return (
-    <div
-      id="infographic-dropdown"
-      className="container-fluid d-print-none"
-      style={{
-        position: 'relative',
-        backgroundImage: `url(${props.clientRoot}/images/header/h1casrub2.jpg)`,
-      }}
-    >
+    <div id="infographic-dropdown" className="container-fluid d-print-none">
       <div className="container mx-auto p-4">
         <div className="row" style={{ position: 'relative' }}>
           <div className="col">

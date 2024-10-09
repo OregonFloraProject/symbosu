@@ -46,7 +46,13 @@ function AboutDropdown(props) {
           <h4>Information Access</h4>
         </div>
         Detailed location data is limited to agency workers and researchers, in accordance with practices of the
-        organizations responsible for protecting these species. Please see our <a href="#">policy</a> for details.
+        organizations responsible for protecting these species. Please see our{' '}
+        <a
+          href={`${props.clientRoot}/rare/policy.php?refurl=${encodeURIComponent(window.location.pathname + window.location.search)}`}
+        >
+          policy
+        </a>{' '}
+        for details.
       </div>
     </div>
   );

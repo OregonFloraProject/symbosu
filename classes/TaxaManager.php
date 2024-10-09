@@ -173,8 +173,10 @@ class TaxaManager {
   	return $this->family;
   }
   public function getParentTid() {
-  	$this->parentTid = $this->populateParentTid($this->getTid());
-  	return $this->parentTid;
+    if (is_null($this->parentTid)) {
+      $this->parentTid = $this->populateParentTid($this->getTid());
+    }
+    return $this->parentTid;
   }
 	public function getGardenId() {
   	$this->gardenId = $this->populateGardenId($this->getTid());
@@ -468,25 +470,33 @@ class TaxaManager {
 
   private function populateAccessRestricted($tid = null) {
     if ($tid) {
-      // restrict access for all species on the OR rare plant checklist, 14802
+      // restrict access for all species on the OR rare plant checklist ($CLID_RARE_OR)
+      // as well as subspecies of those species
+      $tidsToCheck = [$tid];
+      if ($this->getRankId() > 220) {
+        $parentId = $this->getParentTid();
+        if ($parentId) {
+          $tidsToCheck[] = $parentId;
+        }
+      }
       $em = SymbosuEntityManager::getEntityManager();
       $matchingRows = $em->createQueryBuilder()
         ->select(["count(tl.tid)"])
         ->from("Fmchklsttaxalink", "tl")
-        ->where("tl.tid = :tid")
+        ->where("tl.tid IN (:tids)")
         ->andWhere("tl.clid = " . Fmchecklists::$CLID_RARE_OR)
-        ->setParameter("tid", $tid)
+        ->setParameter("tids", $tidsToCheck)
         ->getQuery()
 				->getSingleScalarResult();
 
       if ($matchingRows > 0) {
         global $USER_RIGHTS;
-        if (!isset($USER_RIGHTS) ||
-          (!array_key_exists('SuperAdmin', $USER_RIGHTS) &&
+        if (!isset($USER_RIGHTS) || (
+          !array_key_exists('SuperAdmin', $USER_RIGHTS) &&
           !array_key_exists('CollAdmin', $USER_RIGHTS) &&
           !array_key_exists('RareSppAdmin', $USER_RIGHTS) &&
-          !array_key_exists('RareSppReadAll', $USER_RIGHTS))
-        ) {
+          !array_key_exists('RareSppReadAll', $USER_RIGHTS)
+        )) {
           // TODO: check for specific collection IDs with CollEditor and RareSppReader?
           return 1;
         }
