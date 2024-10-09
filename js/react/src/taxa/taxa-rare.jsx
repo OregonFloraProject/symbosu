@@ -214,10 +214,17 @@ function TaxaRareApp(props) {
             </figure>
           }
 
+          <div className="taxa-prose">
+            <DescriptionTabs
+              descriptions={data.descriptions}
+              glossary={glossary}
+            />
+          </div>
+
           { data.images.length > 0 &&
             <div className="mt-4 dashed-border taxa-slideshows">
 
-              <h3 className="text-light-green font-weight-bold mt-2"><i>{ data.sciName }</i> images</h3>
+              <h3 className="font-weight-bold mt-2"><i>{ data.sciName }</i> images</h3>
               <div className="slider-wrapper">
               <ImageCarousel
                 images={data.images}
@@ -249,13 +256,6 @@ function TaxaRareApp(props) {
 
             </div>
           }
-
-          <div className={`taxa-prose${data.images.length > 0 && ' mt-4 pt-2 dashed-border'}`}>
-            <DescriptionTabs
-              descriptions={data.descriptions}
-              glossary={glossary}
-            />
-          </div>
 
         </div>
         <ImageModal
