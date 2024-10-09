@@ -399,6 +399,7 @@ class RarePageApp extends React.Component {
         <div className="container mx-auto py-4 pl-3 pr-4">
           <AboutDropdown
             hidden={!this.state.aboutGuideExpanded}
+            clientRoot={this.props.clientRoot}
             numSpecies={this.state.searchResults.familySort.length}
             lists={getIncludedHeritageLists(this.state.characteristics)}
           />

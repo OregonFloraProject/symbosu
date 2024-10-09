@@ -27,7 +27,7 @@ function MapItem(props) {
               so just toggle display: none instead. */}
           <div className={`map-overlay-box${showOverlay ? '' : ' hidden'}`}>
             <div className="map-overlay">
-            Access to detailed locality data limited. Please login to view interactive map or read our <span className="inner-link" onClick={ () => { /*window.open(`${props.clientRoot}/pages/contact.php`)*/} }>use policy</span>.
+            Access to detailed locality data limited. Please login to view interactive map or read our <a className="inner-link" href={`${props.clientRoot}/rare/policy.php?refurl=${encodeURIComponent(window.location.pathname + window.location.search)}`}>use policy</a>.
             </div>
           </div>
         </a>

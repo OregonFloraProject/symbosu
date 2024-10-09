@@ -31,6 +31,7 @@ const reactConfig = {
     whatsnew: path.join(SRC_DIR, "home", "whatsnew.jsx"),
     garden: path.join(SRC_DIR, "garden", "main.jsx"),
     rare: path.join(SRC_DIR, "rare", "main.jsx"),
+    policy: path.join(SRC_DIR, "rare", "policy.jsx"),
     inventory: path.join(SRC_DIR, "inventory", "main.jsx"),
     identify: path.join(SRC_DIR, "identify", "identify.jsx"),
     taxa: path.join(SRC_DIR, "taxa", "main.jsx"),
