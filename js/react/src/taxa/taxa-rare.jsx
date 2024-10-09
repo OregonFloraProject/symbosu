@@ -201,7 +201,7 @@ function TaxaRareApp(props) {
 	  { data.images.length > 0 &&
             <div className="mt-4 dashed-border taxa-slideshows">
 
-              <h3 className="text-light-green font-weight-bold mt-2">{ data.vernacularNames[0] } images</h3>
+              <h3 className="text-light-green font-weight-bold mt-2"><i>{ data.sciName }</i> images</h3>
               <div className="slider-wrapper">
               <ImageCarousel
                 images={data.images}
