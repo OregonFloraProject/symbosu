@@ -5,10 +5,10 @@ import ReactDOM from 'react-dom';
 import ImageCarousel from "../common/imageCarousel.jsx";
 import Loading from "../common/loading.jsx";
 import ImageModal from "../common/modal.jsx";
-import { addGlossaryTooltips } from "../common/glossary";
 import httpGet from "../common/httpGet.js";
 import { getUrlQueryParams } from "../common/queryParams.js";
 import { getTaxaPage } from "../common/taxaUtils";
+import DescriptionTabs from "./components/DescriptionTabs.jsx";
 import MapItem from './components/MapItem.jsx';
 import SideBarSection from './components/SideBarSection.jsx';
 import SideBarSectionLookalikesTable from './components/SideBarSectionLookalikesTable.jsx';
@@ -36,9 +36,9 @@ const EMPTY_DATA = {
     threats: [],
     management: [],
   },
+  descriptions: [],
   lookalikes: [],
   associatedSpecies: [],
-  literature: [],
 };
 
 function rangeToString(obj) {
@@ -87,6 +87,23 @@ function TaxaRareApp(props) {
 					// 	childUrl = "#subspecies";
 					// }
 
+          const descriptions = [
+            {
+              caption: "Summary",
+              desc: [],
+              source: null,
+            },
+            {
+              ...res.descriptions[0],
+              caption: "Taxon description",
+            },
+            {
+              caption: "Relevant literature",
+              desc: [],
+              source: null,
+            },
+          ]
+
           setData({
             sciName: res.sciname,
             vernacularNames: res.vernacular.names,
@@ -108,10 +125,9 @@ function TaxaRareApp(props) {
               threats: res.characteristics.threats,
               management: res.characteristics.management,
             },
-            description: res.descriptions[0].desc, // TODO(eric): filter for the correct source?
+            descriptions,
             lookalikes: [],
             associatedSpecies: [],
-            literature: [],
           });
 
           const titleElement = document.getElementsByTagName("title")[0];
@@ -160,7 +176,7 @@ function TaxaRareApp(props) {
   const needsPermission = true;
 
   return (
-    <div className="container mx-auto pl-4 pr-4 pt-5" style={{ minHeight: "45em" }}>
+    <div className="container mx-auto py-5" style={{ minHeight: "45em" }}>
       <Loading
         clientRoot={ props.clientRoot }
         isLoading={ isLoading }
@@ -179,7 +195,7 @@ function TaxaRareApp(props) {
         </div>
       </div>
       <div className="row mt-2 main-wrapper">
-        <div className="col-md-8 main-section">
+        <div className="col-md-8 pr-4 main-section">
 
           {apiError && <div class="alert alert-danger" role="alert">
             An error occurred. Please try again later.
@@ -198,7 +214,7 @@ function TaxaRareApp(props) {
             </figure>
           }
 
-	  { data.images.length > 0 &&
+          { data.images.length > 0 &&
             <div className="mt-4 dashed-border taxa-slideshows">
 
               <h3 className="text-light-green font-weight-bold mt-2"><i>{ data.sciName }</i> images</h3>
@@ -234,26 +250,13 @@ function TaxaRareApp(props) {
             </div>
           }
 
-          <div className={`taxa-prose${data.images.length > 0 ? ' mt-4 dashed-border' : ' no-images'}`}>
-            <h2>Summary</h2>
-
-            {data.description &&
-              <>
-                <h2>Taxon description</h2>
-                {data.description.map((desc, index) => (
-                  <p
-                    key={`desc-${index}`}
-                    dangerouslySetInnerHTML={{ __html: addGlossaryTooltips(desc, glossary) }}
-                  />
-                ))}
-              </>
-            }
-
-            <h2>Relevant literature</h2>
-            {data.literature.map((entry, index) => (
-              <p key={`literature-${index}`} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(entry) }} />
-            ))}
+          <div className={`taxa-prose${data.images.length > 0 && ' mt-4 pt-2 dashed-border'}`}>
+            <DescriptionTabs
+              descriptions={data.descriptions}
+              glossary={glossary}
+            />
           </div>
+
         </div>
         <ImageModal
           show={isImageModalOpen}
