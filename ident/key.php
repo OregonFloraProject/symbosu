@@ -37,6 +37,9 @@ include_once("../config/symbini.php");
     <link rel="stylesheet" type="text/css" href="../css/tooltip.css?<?php echo $CSS_VERSION; ?>" />
     <script type="text/javascript" src="../js/symb/glossary.tooltip.js"></script>
 
+    <!-- DOMPurify -->
+    <script type="text/javascript" src="../js/purify.min.js"></script>
+
     <!-- This is inner text! -->
     <div id="innertext">
       <div id="react-identify-app"></div>

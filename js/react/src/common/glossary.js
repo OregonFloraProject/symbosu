@@ -12,9 +12,8 @@ export function addGlossaryTooltips(text, glossary) {
   // Makes sure that these are full words by searching for word boundaries
   // Includes plurals and -ly ending (e.g. culms matches culm, calluses matches callus, pinnately matches pinnate)
   // Avoids matching words that are within html tags (e.g., style in <p style="">)
-  // Avoids matching words that already have a glossary tooltip
   // Negative lookbehind is better for HTML, but doesn't work on IOS yet: (?<!<[^>]*)
-  const re = new RegExp('(?:<.*?<\\/\\w+>)|(\\b(' + Object.keys(glossary)
+  const re = new RegExp('(?:<.*?>)|(\\b(' + Object.keys(glossary)
     .map(key => `${key}`)
     .join('|') + ')(es|s|ly)?\\b)', "gi");
 

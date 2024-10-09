@@ -4,6 +4,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 
 import SideBar from "./sidebar.jsx";
+import { addGlossaryTooltips } from "../common/glossary.js";
 import {IdentifySearchContainer, SearchResultContainer} from "../common/searchResults.jsx";
 import ViewOpts from "../common/viewOpts.jsx";
 import httpGet from "../common/httpGet.js";
@@ -47,7 +48,7 @@ class IdentifyApp extends React.Component {
       },
       //searchText: ("search" in queryParams ? queryParams["search"] : ViewOpts.DEFAULT_SEARCH_TEXT),
       searchResults: {"familySort":{},"taxonSort":[]},
-      characteristics: {},
+      characteristics: [],
       sortBy: ("sortBy" in queryParams ? queryParams["sortBy"] : "sciName"),
       totals: {
       	families: 0,
@@ -114,12 +115,13 @@ class IdentifyApp extends React.Component {
   componentDidMount() {
 
     // Get a list of glossary terms
-    httpGet('../glossary/rpc/getterms.php')
+    const glossaryPromise = httpGet('../glossary/rpc/getterms.php')
       .then((res) => {
-          res = JSON.parse(res);
+        res = JSON.parse(res);
         this.setState({
           glossary: res,
         });
+        return res;
       })
       .catch((err) => {
         // TODO: Something's wrong
@@ -143,7 +145,7 @@ class IdentifyApp extends React.Component {
   	url = url + '?' + identParams.toString();
 		//console.log(url);
 		
-    httpGet(url)
+    const dataPromise = httpGet(url)
 			.then((res) => {
 				res = JSON.parse(res);
 				
@@ -191,6 +193,7 @@ class IdentifyApp extends React.Component {
 				});
 				const pageTitle = document.getElementsByTagName("title")[0];
 				pageTitle.innerHTML = `${pageTitle.innerHTML} ${res.title}`;
+				return res;
 			})
 			.catch((err) => {
 				//window.location = "/";
@@ -199,7 +202,13 @@ class IdentifyApp extends React.Component {
       .finally(() => {
         this.setState({ isLoading: false });
       });
- 
+
+		// Add glossary tooltips to characteristics
+		// Wait until both HTTP requests have resolved, then call the function
+		// use return values from the promises instead of state to avoid a race condition
+		// since state updates are asynchronous
+		Promise.all([dataPromise, glossaryPromise])
+			.then(([data, glossary]) => this.addGlossaryToChars(data.characteristics, glossary));
   }
 	updateExportUrls() {
   	this.updateExportUrlCsv();
@@ -242,6 +251,29 @@ class IdentifyApp extends React.Component {
       exportUrlWord: url,
     });
   }
+
+	addGlossaryToChars(characteristics, glossary) {
+		const charsWithGlossary = (characteristics || []).map(firstLevel => (
+			{
+				...firstLevel,
+				characters: firstLevel.characters.map(char => (
+					{
+						...char,
+						// Attach glossary tooltips to character names
+						charname: addGlossaryTooltips(char.charname, glossary),
+						states: char.display ? char.states : char.states.map(state => (
+							{
+								...state,
+								// Attach glossary tooltips to character state names
+								charstatename: addGlossaryTooltips(state.charstatename, glossary),
+							}
+						)),
+					}
+				)),
+			}
+		));
+		this.setState({ characteristics: charsWithGlossary });
+	}
 
 	clearTextSearch() {
 		this.onFilterRemoved("searchText",'');
@@ -354,6 +386,8 @@ class IdentifyApp extends React.Component {
       	let jres = JSON.parse(res);
         this.onSearchResults(jres.taxa);
         this.onAttrResults(jres.characteristics);
+        // since characteristics have changed, we need to add glossary tooltips again
+        this.addGlossaryToChars(jres.characteristics, this.state.glossary);
         this.updateTotals(jres.totals);
         this.updateExportUrls();
       })
@@ -437,7 +471,6 @@ class IdentifyApp extends React.Component {
   	this.setState({
       filters: Object.assign({}, this.state.filters, { attrs: newAttrs }),
       filters: Object.assign({}, this.state.filters, { sliders: newSliders }),
-      characteristics: chars
     });
   }
   sortResults(results) {//should receive taxa from API

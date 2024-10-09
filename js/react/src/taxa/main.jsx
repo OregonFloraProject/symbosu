@@ -1,5 +1,6 @@
 import ReactDOM from "react-dom";
 import React from "react";
+import { addGlossaryTooltips } from "../common/glossary.js";
 import httpGet from "../common/httpGet.js";
 import { getUrlQueryParams } from "../common/queryParams.js";
 import {getGardenTaxaPage} from "../common/taxaUtils";
@@ -307,37 +308,8 @@ class TaxaTabs extends React.Component {
 						Object.entries(descriptions).map(([dkey, dvalue]) => {
 							description += dvalue;
 						})
+						description = addGlossaryTooltips(description, this.props.glossary);
 
-						// https://stackoverflow.com/questions/57951816/javascript-replace-word-from-string-with-matching-array-key
-						let glossary = this.props.glossary;
-
-						// Design a regular expression to search for all glossary words
-						// Makes sure that these are full words by searching for word boundaries
-						// Includes plurals and -ly ending (e.g. culms matches culm, calluses matches callus, pinnately matches pinnate)
-						// Avoids matching words that are encased within html tags (e.g., style in <p style="">)
-						// NB: Negative lookbehind is better for HTML, but doesn't work on IOS yet: (?<!<[^>]*)
-						const re = new RegExp('(?:<.*?>)|(\\b(' + Object.keys(glossary)
-							.map(key => `${key}`)
-							.join('|') + ')(es|s|ly)?\\b)', "gi");
-
-						// Search the description for glossary matches, and add tooltips to each one
-						description = description.replace(re, function(match, group1, group2, group3) {
-
-							// If no groups are captured, it's a HTML tag (non-capturing group), so just return it as-is
-							if(!group1) return match;
-
-							// Get the glossary term ID from the singular version of the term matched
-							let id = glossary[group2.toLowerCase()];
-
-							// Make a 3-digit random number, this helps make unique ids for glossary words that are repeated
-							let rand = Math.floor(100 + Math.random() * 900);
-
-							// Return the modified html for the glossary word
-							return '<span class="glossary" onClick="showTooltip(this, ' + id + ')" id="glossary' + rand + id +
-								'">' + match + '</span>'
-						});
-
-						var display = source + ' ' + description;
 						return (
 							<TabPanel key={key} forceRender={ true }>
 								<h2 className="tabTitle" dangerouslySetInnerHTML={{__html: value.caption}} />
