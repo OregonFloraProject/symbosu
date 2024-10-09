@@ -12,10 +12,6 @@ function InfographicDropdown(props) {
 		<div
 			id="infographic-dropdown"
 			className="container-fluid d-print-none"
-			style={{
-				position: "relative",
-				backgroundImage: `url(${props.clientRoot}/images/header/h1casrub2.jpg)`,
-			}}
 		>
 			 <div className="container mx-auto p-4">
 				<div className="row" style={{ position: "relative"}}>
