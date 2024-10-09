@@ -1,16 +1,15 @@
 import ReactDOM from "react-dom";
 import React from "react";
-import { addGlossaryTooltips } from "../common/glossary.js";
 import httpGet from "../common/httpGet.js";
 import { getUrlQueryParams } from "../common/queryParams.js";
 import {getGardenTaxaPage} from "../common/taxaUtils";
 import ImageCarousel from "../common/imageCarousel.jsx";
 import ImageModal from "../common/modal.jsx";
 import Loading from "../common/loading.jsx";
+import DescriptionTabs from "./components/DescriptionTabs.jsx";
 import MapItem from "./components/MapItem.jsx";
+import { showItem } from "./components/utils.js";
 import { RANK_FAMILY, RANK_GENUS } from "./constants";
-import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-//import 'react-tabs/style/react-tabs.css';
 import { Link } from 'react-scroll'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -272,58 +271,6 @@ function SppItem(props) {
 	)
 
 }
-function showItem(item) {
-  const isArray = Array.isArray(item);
-  return (!isArray && item !== '') || item.length > 0;
-}
-
-class TaxaTabs extends React.Component {
-  constructor() {
-    super();
-    this.state = { tabIndex: 0 };
-  }
-	render() {
-		return (
-			<Tabs className="description-tabs" selectedIndex={this.state.tabIndex} onSelect={tabIndex => this.setState({ tabIndex })}>
-				<TabList>
-					{
-						Object.entries(this.props.descriptions).map(([key, value]) => {
-							return (
-								<Tab key={key}>{value['caption']}</Tab>
-							)
-						})
-					}	
-				</TabList>	
-				{
-					Object.entries(this.props.descriptions).map(([key, value]) => {
-						let descriptions = value['desc'];
-						let source = '';
-						if (value['url'] != null) {
-							source = "<a href=" + value['url'] + " target='_blank' >" + value['source'] + "</a>";
-						}else{
-							source = value['source'];
-						}
-						source = '[ ' + source + ' ]';
-						let description = '';
-						Object.entries(descriptions).map(([dkey, dvalue]) => {
-							description += dvalue;
-						})
-						description = addGlossaryTooltips(description, this.props.glossary);
-
-						return (
-							<TabPanel key={key} forceRender={ true }>
-								<h2 className="tabTitle" dangerouslySetInnerHTML={{__html: value.caption}} />
-								<div className="reference" dangerouslySetInnerHTML={{__html: source}} />	
-								<div className="description" dangerouslySetInnerHTML={{__html: description}} />
-							</TabPanel>
-						)
-					})
-				}	
-
-			</Tabs>
-		)
-	}
-}
 
 class TaxaChooser extends React.Component {
 
@@ -374,7 +321,7 @@ class TaxaChooser extends React.Component {
 						</p>
 						{ 
 							res.descriptions.length > 0 &&
-							<TaxaTabs descriptions={ res.descriptions } glossary={ res.glossary } />
+							<DescriptionTabs descriptions={ res.descriptions } glossary={ res.glossary } />
 						}
 					
 					
@@ -505,7 +452,7 @@ class TaxaDetail extends React.Component {
 							*/}
 							{ /*this.state.descriptions.replace(/(<\/?[^>]+>)|(&[^;]+;)/g, "") */}
 						{ showDescriptions &&
-							<TaxaTabs descriptions={ res.descriptions } glossary={ res.glossary } />
+							<DescriptionTabs descriptions={ res.descriptions } glossary={ res.glossary } />
 						}
 					
 					
