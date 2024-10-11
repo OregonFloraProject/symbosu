@@ -689,6 +689,26 @@ class ProfileManager extends Manager{
 	}
 
 	/**
+	 * 2024-09-20(eric): for testing only, remove before deploying
+	 */
+	public function deleteRareSpeciesAccessRequest() {
+		$status = false;
+		if($this->uid){
+			$this->resetConnection();
+			$sql = 'UPDATE users SET notes = NULL, accessrRights = NULL WHERE (uid = ?)';
+			if($stmt = $this->conn->prepare($sql)) {
+				$stmt->bind_param('i', $this->uid);
+				$stmt->execute();
+				if($stmt->affected_rows && !$stmt->error) $status = true;
+				else $this->errorMessage = 'ERROR updating user profile: '.$stmt->error;
+				$stmt->close();
+			}
+			else $this->errorMessage = 'ERROR preparing statement user profile update: '.$this->conn->error;
+		}
+		return $status;
+	}
+
+	/**
 	 *
 	 * Obtain the list of specimens that have an identification verification status rank less than 6
 	 * within the list of taxa for which this user is listed as a specialist.
