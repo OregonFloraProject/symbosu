@@ -188,8 +188,8 @@ function TaxaRareApp(props) {
       <div className="row print-start">
         <div className="col">
           <h1 className="font-italic">{ data.sciName }</h1>
-          <h2 className="">{ data.vernacularNames[0] }</h2>
-        </div>
+          <h2>{ data.vernacularNames[0] }</h2>
+          </div>
         <div className="col-auto">
           <button className="d-block my-2 btn-primary print-trigger" onClick={() => window.print()}>Print page</button>
         </div>
@@ -200,6 +200,9 @@ function TaxaRareApp(props) {
           {apiError && <div class="alert alert-danger" role="alert">
             An error occurred. Please try again later.
           </div>}
+
+          <div className="profile-type pr-4">Rare Plant Profile</div>
+          <hr />
 
           { data.images.length > 0 &&
             <figure>
