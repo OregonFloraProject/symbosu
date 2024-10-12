@@ -209,6 +209,8 @@ class TaxaManager {
         ->where("i.tid = :tid")
         ->setParameter("tid", $this->getTid())
         ->orderBy("i.sortsequence")
+        ->setFirstResult(0)
+        ->setMaxResults(1)
         ->getQuery()
         ->execute();
 
