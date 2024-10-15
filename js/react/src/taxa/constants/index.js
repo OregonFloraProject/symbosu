@@ -31,3 +31,7 @@ export const KEY_NAMES = {
   threats: 'Threats',
   management: 'Management',
 };
+
+export const SUB_KEY_LIST_ORDERS = {
+  status: ['heritage', 'state', 'federal'],
+};

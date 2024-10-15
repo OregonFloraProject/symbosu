@@ -4,31 +4,19 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faArrowCircleUp, faArrowCircleDown } from '@fortawesome/free-solid-svg-icons';
 import { addGlossaryTooltips } from '../../common/glossary';
-import { KEY_NAMES, RANK_FAMILY } from '../constants';
+import { KEY_NAMES, RANK_FAMILY, SUB_KEY_LIST_ORDERS } from '../constants';
 import { showItem } from './utils';
 library.add(faArrowCircleUp, faArrowCircleDown);
 
 function BorderedItem(props) {
   let value = props.value;
-  const isArray = Array.isArray(value);
 
-  if (isArray) {
+  if (Array.isArray(value)) {
     value = (
       <ul className="list-unstyled p-0 m-0">
         { props.value.map((v) => <li key={ v } dangerouslySetInnerHTML={{ __html: addGlossaryTooltips(v, props.glossary) }} />) }
       </ul>
     );
-  } else if (typeof value === 'object') {
-    value = (
-      <ul className="list-unstyled p-0 m-0">
-        { Object.entries(props.value).map(([k, v]) => (
-          <li key={ k }>
-            <span className="subheading-key">{ KEY_NAMES[k] || k }</span>
-            <span dangerouslySetInnerHTML={{ __html: addGlossaryTooltips(v, props.glossary) }} />
-          </li>
-        )) }
-      </ul>
-    )
   } else {
     value = <span dangerouslySetInnerHTML={{ __html: addGlossaryTooltips(value, props.glossary) }} />
   }
@@ -42,6 +30,40 @@ function BorderedItem(props) {
         dangerouslySetInnerHTML={{ __html: addGlossaryTooltips(keyName, props.glossary) }}
       />
       <div className="col px-0 char-value">{ value }</div>
+    </div>
+  );
+}
+
+/**
+ * BorderedItem used for rows that have labeled sub-items (e.g. conservation status). Uses
+ * SUB_KEY_LIST_ORDERS to determine ordering of sub-items.
+ *
+ * If no value is provided for a key in the SUB_KEY_LIST_ORDERS ordering, props.defaultValue will be
+ * used.
+ */
+function OrderedObjectBorderedItem(props) {
+  const keyName = KEY_NAMES[props.keyName] || props.keyName;
+
+  return (
+    <div className={ "row dashed-border" }>
+      <div
+        className="col px-0 font-weight-bold char-label"
+        dangerouslySetInnerHTML={{ __html: addGlossaryTooltips(keyName, props.glossary) }}
+      />
+      <div className="col px-0 char-value">
+        <ul className="list-unstyled p-0 m-0">
+          { SUB_KEY_LIST_ORDERS[props.keyName].map((k) => (
+            <li key={ k }>
+              <span className="subheading-key">{ KEY_NAMES[k] || k }</span>
+              <span
+                dangerouslySetInnerHTML={{
+                  __html: addGlossaryTooltips(props.value[k] || props.defaultValue, props.glossary),
+                }}
+              />
+            </li>
+          )) }
+        </ul>
+      </div>
     </div>
   );
 }
@@ -98,9 +120,12 @@ function SideBarSection(props) {
         {
           itemKeys.map((key) => {
             const val = props.items[key];
-            if (key == 'Related') {
+            if (key === 'Related') {
 	            return <RelatedBorderedItem key={ key } keyName={ key } value={ val } rankId={ props.rankId }/>
 	          }
+            if (key === 'status') {
+              return <OrderedObjectBorderedItem key={ key } keyName={ key } value={ val } defaultValue="not listed" glossary={ props.glossary } />
+            }
             return <BorderedItem key={ key } keyName={ key } value={ val } glossary={ props.glossary } />
           })
         }
