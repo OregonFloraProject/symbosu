@@ -197,7 +197,7 @@ function TaxaRareApp(props) {
       <div className="row mt-2 main-wrapper">
         <div className="col-md-8 pr-4 main-section">
 
-          {apiError && <div class="alert alert-danger" role="alert">
+          {apiError && <div className="alert alert-danger" role="alert">
             An error occurred. Please try again later.
           </div>}
 

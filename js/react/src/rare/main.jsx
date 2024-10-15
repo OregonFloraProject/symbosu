@@ -431,7 +431,7 @@ class RarePageApp extends React.Component {
             </div>
             <div className="col-md-8">
               {this.state.apiError ?
-                <div class="alert alert-danger" role="alert">
+                <div className="alert alert-danger" role="alert">
                   An error occurred. Please try again later.
                 </div>
                 :
