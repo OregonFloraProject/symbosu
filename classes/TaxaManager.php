@@ -433,18 +433,18 @@ class TaxaManager {
 
   private function populateAccessRestricted($tid = null) {
     if ($tid) {
-      // 2024-10-09: for now, restrict access for all species on the rare species checklist
+      // restrict access for all species on the OR rare plant checklist, 14802
       $em = SymbosuEntityManager::getEntityManager();
-      $rows = $em->createQueryBuilder()
-        ->select(["tl.clid"])
+      $matchingRows = $em->createQueryBuilder()
+        ->select(["count(tl.tid)"])
         ->from("Fmchklsttaxalink", "tl")
         ->where("tl.tid = :tid")
-        ->andWhere("tl.clid = " . Fmchecklists::$CLID_RARE_ALL)
+        ->andWhere("tl.clid = " . Fmchecklists::$CLID_RARE_OR)
         ->setParameter("tid", $tid)
         ->getQuery()
-				->execute();
+				->getSingleScalarResult();
 
-      if (count($rows) > 0) {
+      if ($matchingRows > 0) {
         global $USER_RIGHTS;
         if (!isset($USER_RIGHTS) ||
           (!array_key_exists('SuperAdmin', $USER_RIGHTS) &&
