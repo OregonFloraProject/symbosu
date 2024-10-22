@@ -160,10 +160,11 @@ function taxaManagerToJSON($taxaObj,$queryType = "default",$recursive = false,$t
 			}
 
 		}elseif($recursive === true){#just need one image, as in SPP or searchTaxa()
-			$taxaObj->setImages();
 			if ($taxaRankId > 140) {
+				$taxaObj->setImages();
 				$images = $taxaObj->getImages();
 			}else{
+				$taxaObj->setSingleImage();
 				$images = $taxaObj->getImage();#because getImages runs out of memory for tid 88
 			}
 			if (sizeof($images) === 0 || $images[0] === null) {

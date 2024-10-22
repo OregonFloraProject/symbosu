@@ -816,6 +816,32 @@ class TaxaManager {
   public function setImages() {
   	$this->images = self::populateImages($this->getTid());
   }
+
+  /**
+   * When the application only needs the first image of the set (e.g. for subspecies on a genus
+   * page), we can save a lot of time and memory by only selecting a single image from mysql.
+   *
+   * This is similar to getThumbnail() but selects a fuller set of data about the image.
+   */
+  private static function populateSingleImage($tid) {
+    $em = SymbosuEntityManager::getEntityManager();
+    $images = $em->createQueryBuilder()
+      ->select(["i.imgid, i.thumbnailurl", "i.url", "i.photographer", "i.owner", "i.copyright", "i.notes","o.occid","o.year", "o.month", "o.day","o.country","o.stateprovince","o.county","o.locality","o.recordedby","o.basisofrecord","c.collectionname"])
+      ->from("Images", "i")
+      ->innerJoin("omoccurrences","o","WITH","i.occid = o.occid")
+      ->innerJoin("omcollections","c","WITH","c.collid = o.collid")
+      ->where("i.tid = :tid")
+      ->setParameter("tid", $tid)
+      ->orderBy("i.sortsequence")
+      ->setFirstResult(0)
+      ->setMaxResults(1)
+      ->getQuery()
+      ->execute();
+    return array_map("TaxaManager::processImageData", $images);
+  }
+  public function setSingleImage() {
+    $this->images = self::populateSingleImage($this->getTid());
+  }
   
   private static function processImageData($img) {
   		foreach ($img as $field => $value) {
