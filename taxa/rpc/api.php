@@ -125,7 +125,10 @@ function taxaManagerToJSON($taxaObj,$queryType = "default",$recursive = false,$t
 			$result["origin"] = $taxaObj->getOrigin();
 			$result["family"] = $taxaObj->getFamily();
 			$result["rarePlantFactSheet"] = $taxaObj->getRarePlantFactSheet();
-			$result["accessRestricted"] = $taxaObj->getAccessRestricted();
+			global $RPG_FLAG;
+			if ($RPG_FLAG) {
+				$result["accessRestricted"] = $taxaObj->getAccessRestricted();
+			}
 			if ($queryType !== 'default') {
 				$result["characteristics"] = $taxaObj->getCharacteristics($queryType);
 			}
