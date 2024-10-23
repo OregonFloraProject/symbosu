@@ -4,8 +4,8 @@
   "description": "",
   "private": true,
   "scripts": {
-    "build": "NODE_ENV=production webpack",
-    "devstart": "NODE_ENV=development webpack"
+    "build": "NODE_ENV=production NODE_OPTIONS=\"--openssl-legacy-provider\" webpack",
+    "devstart": "NODE_ENV=development NODE_OPTIONS=\"--openssl-legacy-provider\" webpack"
   },
   "author": "",
   "license": "GPL-3.0-or-later",
