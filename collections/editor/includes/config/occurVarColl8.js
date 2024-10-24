@@ -16,7 +16,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 	let fields = ['associatedcollectors','verbatimeventdate','coordinateuncertaintyinmeters',
 		'geodeticdatum', 'verbatimcoordinates', 'minimumelevationinmeters', 'maximumelevationinmeters', 
-		'verbatimelevation', 'habitat', 'associatedtaxa', 'verbatimattributes', 'occurrenceremarks', 'language', 'processingstatus'];
+		'verbatimelevation', 'habitat', 'associatedtaxa', 'verbatimattributes', 'occurrenceremarks', 
+		'establishmentmeans', 'language', 'processingstatus'];
 
 	let important = ['othercatalognumbers','recordedby','recordnumber', 'eventdate', 'country', 
 		'stateprovince', 'county', 'locality', 'decimallatitude', 'decimallongitude']
@@ -24,11 +25,13 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	if( $("select[name='processingstatus']").val() == 'vouchervision qc') {
 		$(':input').each(function() {
 			if (important.includes($(this).attr('name'))) {
-				$(this).css({"background-color": "#FFA07A"});
+				$(this).css({"background-color": "#FFC5AD", "border": "1px solid gray"});
 			} else if ($(this).val() === '' && fields.includes($(this).attr('name'))) {
-				$(this).css({"background-color": "#B0EEB0"});
-			} else if (fields.includes($(this).attr('name'))) {
-				$(this).css({"background-color": "FFFFA0"});
+				$(this).css({"background-color": "#B0EEB0", "border": "1px solid gray"});
+			} else if (fields.includes($(this).attr('name'))) {				
+				$(this).css({"background-color": "#FFFFA0", "border": "1px solid gray"});
+			} else if ($(this).attr('name') === 'cultivationstatus' && $(this).attr('checked')) {
+				$(this).css({"accent-color": "#FFFFA0", "box-shadow": "0 0 2px 1px gray"});
 			}
 		});
 	}

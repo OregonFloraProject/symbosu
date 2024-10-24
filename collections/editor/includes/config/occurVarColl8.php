@@ -11,7 +11,7 @@ const PROCESSINGSTATUS = [
 'merge duplicate', 'skeletal entry', 'transfer data', 'pending review-nfn', 'reviewed', "vouchervision qc", // Main workflow
 'expert required', 'thea', 'curator', // Quality Control
 'pull specimen', 're-image', 'foreign language', 'de-accession', // Problems
-'special request', 'unprocessed', 'label transcription', 'notes from nature', 'coge', 'quality control', 'Unprocessed - Fern Project', // Admin
+'special request', 'unprocessed', 'label transcription', 'notes from nature', 'coge', 'quality control', 'Unprocessed - Fern Project', 'vouchervision temp', // Admin
 'pending review', 'closed', 'unprocessed/NLP', 'stage 1', 'stage 2', 'stage 3']; // Unused Symbiota defaults
 
 //Uncomment to turn catalogNumber duplicate search check on/off (on by default)

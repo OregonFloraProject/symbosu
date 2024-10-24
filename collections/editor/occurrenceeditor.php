@@ -468,7 +468,7 @@ else{
 		}
 		if(defined('JSARR')){
 			foreach(JSARR as $jsVal){
-				echo '<script src="includes/config/'.$jsVal.'?ver=170601" type="text/javascript"></script>';
+				echo '<script src="includes/config/'.$jsVal.'?ver=170602" type="text/javascript"></script>';
 			}
 		}
 	}
