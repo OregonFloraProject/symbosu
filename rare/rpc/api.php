@@ -230,5 +230,6 @@ if (isset($RPG_FLAG) && $RPG_FLAG === 1) {
 // Begin View
 array_walk_recursive($searchResults,'cleanWindowsRecursive');#replace Windows characters
 header("Content-Type: application/json; charset=UTF-8");
+header("Cache-Control: public, max-age=86400");
 echo json_encode($searchResults, JSON_NUMERIC_CHECK);
 ?>

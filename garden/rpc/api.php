@@ -394,5 +394,6 @@ if (key_exists("canned", $_GET) && $_GET["canned"] === "true") {
 // Begin View
 array_walk_recursive($searchResults,'cleanWindowsRecursive');#replace Windows characters
 header("Content-Type: application/json; charset=UTF-8");
+header("Cache-Control: public, max-age=86400");
 echo json_encode($searchResults, JSON_NUMERIC_CHECK);
 ?>

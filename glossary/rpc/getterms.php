@@ -71,5 +71,6 @@ if ($id) {
 
 // Return as JSON
 header('Content-Type: application/json; charset=utf-8');
+header("Cache-Control: public, max-age=86400");
 echo json_encode($retArr);
 ?>
