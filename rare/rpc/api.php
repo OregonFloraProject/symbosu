@@ -6,6 +6,7 @@ include_once("$SERVER_ROOT/config/SymbosuEntityManager.php");
 include_once("$SERVER_ROOT/classes/TaxaManager.php");
 include_once("$SERVER_ROOT/classes/IdentManager.php");
 include_once("$SERVER_ROOT/classes/ExploreManager.php");
+include_once("$SERVER_ROOT/tools/apicache.php");
 
 /*
 The RPG page characteristics have custom labels and structure,
@@ -159,6 +160,7 @@ function getTaxa($params) {
 
 	$search = null;
 	$results = getEmpty();
+	$resultsString = '';
 
 	$identManager = new IdentManager();
 	$rareClid = getRareClid();
@@ -196,40 +198,51 @@ function getTaxa($params) {
 		}
 		$results["characteristics"] = getFilterableChars($results['tids']);
 
+		array_walk_recursive($results,'cleanWindowsRecursive');#replace Windows characters
+		$resultsString = json_encode($results, JSON_NUMERIC_CHECK);
+
 	} else {
 		// This is the initial page load, so get the full checklist with thumbnails and all data.
 
-		$identManager->setThumbnails(true);
-		$identManager->setTaxa();
-		$taxa = $identManager->getTaxa();
+		$cacheKey = 'rare-full';
+		$resultsString = readFromCache($cacheKey);
+		if ($resultsString === false) {
+			// cache miss, we must generate all the data
+			$identManager->setThumbnails(true);
+			$identManager->setTaxa();
+			$taxa = $identManager->getTaxa();
+	
+			$results['taxa'] = $taxa;
+			$tids = [];
+			foreach ($results['taxa'] as $taxon) {
+				$tids[] = $taxon['tid'];
+			}
+			$results['tids'] = $tids;
+			$results["characteristics"] = getFilterableChars($results['tids']);
+	
+			// RPG checklist metadata
+			$em = SymbosuEntityManager::getEntityManager();
+			$repo = $em->getRepository("Fmchecklists");
+			$model = $repo->find($rareClid);
+			$checklist = ExploreManager::fromModel($model);
+			$results["clid"] = $checklist->getClid();
+			$results["title"] = $checklist->getTitle();
 
-		$results['taxa'] = $taxa;
-		$tids = [];
-		foreach ($results['taxa'] as $taxon) {
-			$tids[] = $taxon['tid'];
+			array_walk_recursive($results,'cleanWindowsRecursive');#replace Windows characters
+			$resultsString = json_encode($results, JSON_NUMERIC_CHECK);
+			writeToCache($cacheKey, $resultsString);
 		}
-		$results['tids'] = $tids;
-		$results["characteristics"] = getFilterableChars($results['tids']);
-
-		// RPG checklist metadata
-		$em = SymbosuEntityManager::getEntityManager();
-		$repo = $em->getRepository("Fmchecklists");
-		$model = $repo->find($rareClid);
-		$checklist = ExploreManager::fromModel($model);
-		$results["clid"] = $checklist->getClid();
-		$results["title"] = $checklist->getTitle();
 	}
-	return $results;
+	return $resultsString;
 }
 
-$searchResults = [];
+$searchResults = '';
 if (isset($RPG_FLAG) && $RPG_FLAG === 1) {
 	$searchResults = getTaxa($_GET);
 }
 
 // Begin View
-array_walk_recursive($searchResults,'cleanWindowsRecursive');#replace Windows characters
 header("Content-Type: application/json; charset=UTF-8");
 header("Cache-Control: public, max-age=86400");
-echo json_encode($searchResults, JSON_NUMERIC_CHECK);
+echo $searchResults;
 ?>

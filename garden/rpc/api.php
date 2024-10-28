@@ -6,6 +6,7 @@ include_once("$SERVER_ROOT/config/SymbosuEntityManager.php");
 include_once("$SERVER_ROOT/classes/TaxaManager.php");
 include_once("$SERVER_ROOT/classes/IdentManager.php");
 include_once("$SERVER_ROOT/classes/ExploreManager.php");
+include_once("$SERVER_ROOT/tools/apicache.php");
 
 /*
 The Natives page characteristics have custom labels and structure, 
@@ -274,34 +275,42 @@ function get_garden_characteristics($tids) {
  */
 
 function get_canned_searches() {
-	$em = SymbosuEntityManager::getEntityManager();
-	$checklistRepo = $em->getRepository("Fmchecklists");
-	#$gardenChecklists = $checklistRepo->findBy([ "parentclid" => Fmchecklists::$CLID_GARDEN_ALL ]);
-	$canned = $em->createQueryBuilder()
-		->select(['c.clid'])
-		->from("Fmchecklists","c")
-		->innerJoin("Fmchklstprojlink","proj","WITH","c.clid = proj.clid")
-		->where("proj.pid = :pid")
-		->andWhere("c.parentclid = " . Fmchecklists::$CLID_GARDEN_ALL)
-		->setParameter(":pid",3)
-		->distinct()
-	;
-	$cquery = $canned->getQuery();
-	$cresults = $cquery->execute();
+	$cacheKey = 'garden-canned';
+	$resultsString = readFromCache($cacheKey);
+	if ($resultsString === false) {
+		// cache miss, we must generate all the data
+		$em = SymbosuEntityManager::getEntityManager();
+		$checklistRepo = $em->getRepository("Fmchecklists");
+		#$gardenChecklists = $checklistRepo->findBy([ "parentclid" => Fmchecklists::$CLID_GARDEN_ALL ]);
+		$canned = $em->createQueryBuilder()
+			->select(['c.clid'])
+			->from("Fmchecklists","c")
+			->innerJoin("Fmchklstprojlink","proj","WITH","c.clid = proj.clid")
+			->where("proj.pid = :pid")
+			->andWhere("c.parentclid = " . Fmchecklists::$CLID_GARDEN_ALL)
+			->setParameter(":pid",3)
+			->distinct()
+		;
+		$cquery = $canned->getQuery();
+		$cresults = $cquery->execute();
+		
+		$results = [];
 	
-	$results = [];
-
-	foreach ($cresults as $cresult) {
-		$cl = $checklistRepo->findBy([ "clid" => $cresult['clid']])[0];
-		array_push($results, [
-			"clid" => $cl->getClid(),
-			"name" => $cl->getName(),
-			"iconUrl" => $cl->getIconurl(),
-			"description" => ucfirst($cl->getTitle())
-		]);
+		foreach ($cresults as $cresult) {
+			$cl = $checklistRepo->findBy([ "clid" => $cresult['clid']])[0];
+			array_push($results, [
+				"clid" => $cl->getClid(),
+				"name" => $cl->getName(),
+				"iconUrl" => $cl->getIconurl(),
+				"description" => ucfirst($cl->getTitle())
+			]);
+		}
+	
+		array_walk_recursive($results,'cleanWindowsRecursive');#replace Windows characters
+		$resultsString = json_encode($results, JSON_NUMERIC_CHECK);
+		writeToCache($cacheKey, $resultsString);
 	}
-
-	return $results;
+	return $resultsString;
 }
 
 
@@ -315,6 +324,7 @@ function get_garden_taxa($params) {
 
 	$search = null;
 	$results = getEmpty();
+	$resultsString = '';
 
 	$identManager = new IdentManager();
 	$identManager->setClid($params['clid']);
@@ -351,36 +361,47 @@ function get_garden_taxa($params) {
 			$results['tids'][] = $taxon['tid'];
 		}
 		$results["characteristics"] = get_garden_characteristics($results['tids']);
+
+		array_walk_recursive($results,'cleanWindowsRecursive');#replace Windows characters
+		$resultsString = json_encode($results, JSON_NUMERIC_CHECK);
 		
 	}else{#get full default checklist
+
+		$cacheKey = 'garden-full';
+		$resultsString = readFromCache($cacheKey);
+		if ($resultsString === false) {
+			// cache miss, we must generate all the data
+			$identManager->setThumbnails(true);
+			$identManager->setTaxa();
+			$taxa = $identManager->getTaxa();
+			
+			$results['taxa'] = $taxa;
+			$tids = [];
+			foreach ($results['taxa'] as $taxon) {
+				$tids[] = $taxon['tid'];
+			}
+			$results['tids'] = $tids;
 	
-		$identManager->setThumbnails(true);
-		$identManager->setTaxa();
-		$taxa = $identManager->getTaxa();
-		
-		$results['taxa'] = $taxa;
-		$tids = [];
-		foreach ($results['taxa'] as $taxon) {
-			$tids[] = $taxon['tid'];
+			$em = SymbosuEntityManager::getEntityManager();
+			$repo = $em->getRepository("Fmchecklists");
+			$model = $repo->find(getGardenClid());
+			$checklist = ExploreManager::fromModel($model);
+			$checklist->setPid(3);
+			$results["clid"] = $checklist->getClid();
+			$results["pid"] = $checklist->getPid();
+			$results["title"] = $checklist->getTitle();
+			$results["characteristics"] = get_garden_characteristics($results['tids']);
+
+			array_walk_recursive($results,'cleanWindowsRecursive');#replace Windows characters
+			$resultsString = json_encode($results, JSON_NUMERIC_CHECK);
+			writeToCache($cacheKey, $resultsString);
 		}
-		$results['tids'] = $tids;
-
-		$em = SymbosuEntityManager::getEntityManager();
-		$repo = $em->getRepository("Fmchecklists");
-		$model = $repo->find(getGardenClid());
-		$checklist = ExploreManager::fromModel($model);
-		$checklist->setPid(3);
-		$results["clid"] = $checklist->getClid();
-		$results["pid"] = $checklist->getPid();
-		$results["title"] = $checklist->getTitle();
-		$results["characteristics"] = get_garden_characteristics($results['tids']);
-
 	}
-	return $results;
+	return $resultsString;
 }
 		
 	
-$searchResults = [];
+$searchResults = '';
 if (key_exists("canned", $_GET) && $_GET["canned"] === "true") {
 	$searchResults = get_canned_searches();
 }/* else if (key_exists("chars", $_GET) && $_GET['chars'] == 'true') {
@@ -392,8 +413,7 @@ if (key_exists("canned", $_GET) && $_GET["canned"] === "true") {
 }
 
 // Begin View
-array_walk_recursive($searchResults,'cleanWindowsRecursive');#replace Windows characters
 header("Content-Type: application/json; charset=UTF-8");
 header("Cache-Control: public, max-age=86400");
-echo json_encode($searchResults, JSON_NUMERIC_CHECK);
+echo $searchResults;
 ?>

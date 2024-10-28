@@ -1,13 +1,14 @@
 <?php
 include_once('../../config/symbini.php');
 include_once($SERVER_ROOT.'/classes/GlossaryManager.php');
+include_once($SERVER_ROOT.'/tools/apicache.php');
 
 // Set ID if it's been set, and sanitize
 $id = array_key_exists('id',$_REQUEST) ? $_REQUEST['id'] : 0;
 if (!is_numeric($id)) $id = 0;
 
-// Initialize array to return
-$retArr = array();
+// Initialize the string to return
+$retStr = '';
 
 // Create a new instance of the glossary manager class
 $glosManager = new GlossaryManager();
@@ -64,13 +65,22 @@ if ($id) {
 		$retArr['images'][$key]['tn_height'] = $size[1];
 	}
 
+	$retStr = json_encode($retArr);
+
 // No glossary term ID set, so return an object of all of them instead
 } else {
-	$retArr = array_flip($glosManager->getTermSearch('', '', 0));
+	$cacheKey = 'glossary-terms';
+	$retStr = readFromCache($cacheKey);
+	if ($retStr === false) {
+		// cache miss, so we need to read from the db and write to the cache
+		$retArr = array_flip($glosManager->getTermSearch('', '', 0));
+		$retStr = json_encode($retArr);
+		writeToCache($cacheKey, $retStr);
+	}
 }
 
 // Return as JSON
 header('Content-Type: application/json; charset=utf-8');
 header("Cache-Control: public, max-age=86400");
-echo json_encode($retArr);
+echo $retStr;
 ?>
