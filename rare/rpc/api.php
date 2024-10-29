@@ -243,6 +243,6 @@ if (isset($RPG_FLAG) && $RPG_FLAG === 1) {
 
 // Begin View
 header("Content-Type: application/json; charset=UTF-8");
-header("Cache-Control: public, max-age=86400");
+header("Cache-Control: public, max-age=3600");
 echo $searchResults;
 ?>

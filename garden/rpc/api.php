@@ -414,6 +414,6 @@ if (key_exists("canned", $_GET) && $_GET["canned"] === "true") {
 
 // Begin View
 header("Content-Type: application/json; charset=UTF-8");
-header("Cache-Control: public, max-age=86400");
+header("Cache-Control: public, max-age=3600");
 echo $searchResults;
 ?>
