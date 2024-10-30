@@ -19,7 +19,11 @@ const commonConfig = {
   },
   watchOptions: {
     ignored: /node_modules/
-  }
+  },
+  node: {
+    Buffer: false,
+    process: false,
+  },
 };
 
 const reactConfig = {
