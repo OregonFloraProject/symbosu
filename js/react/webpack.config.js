@@ -98,12 +98,11 @@ const lessConfig = {
         use: [
           {
             loader: MiniCssExtractPlugin.loader,
-            options: {
-              publicPath: path.join(REACT_OUT_DIR, "css"),
-              hmr: process.env.NODE_ENV === "development"
-            }
           },
-          "css-loader",
+          {
+            loader: "css-loader",
+            options: { url: false },
+          },
           "less-loader"
         ]
       }
