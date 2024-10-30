@@ -1,7 +1,7 @@
 const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const TerserJSPlugin = require('terser-webpack-plugin');
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const CSSMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const exec = require('child_process').exec;
 
 const SRC_DIR = path.resolve(__dirname, "src");
@@ -19,10 +19,6 @@ const commonConfig = {
   },
   watchOptions: {
     ignored: /node_modules/
-  },
-  node: {
-    Buffer: false,
-    process: false,
   },
 };
 
@@ -92,7 +88,7 @@ const lessConfig = {
     }
   ],
   optimization: {
-    minimizer: [new OptimizeCSSAssetsPlugin()]
+    minimizer: [new CSSMinimizerPlugin()]
   },
   module: {
     rules: [
