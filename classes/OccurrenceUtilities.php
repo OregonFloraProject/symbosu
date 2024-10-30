@@ -684,7 +684,7 @@ class OccurrenceUtilities {
 		if(array_key_exists("taxonrank",$recMap)){
 			$tr = strtolower($recMap["taxonrank"]);
 			if($tr == 'species' || !isset($recMap["specificepithet"]) || !$recMap["specificepithet"]) $recMap["taxonrank"] = '';
-			if($tr == 'subspecies') $recMap["taxonrank"] = 'subsp.';
+			if($tr == 'subspecies') $recMap["taxonrank"] = 'ssp.';
 			if($tr == 'variety') $recMap["taxonrank"] = 'var.';
 			if($tr == 'forma') $recMap["taxonrank"] = 'f.';
 		}
@@ -694,7 +694,7 @@ class OccurrenceUtilities {
 			if(substr($recMap['sciname'],-4) == ' sp.') $recMap['sciname'] = substr($recMap['sciname'],0,-4);
 			if(substr($recMap['sciname'],-3) == ' sp') $recMap['sciname'] = substr($recMap['sciname'],0,-3);
 
-			$recMap['sciname'] = str_replace(array(' ssp. ',' ssp '),' subsp. ',$recMap['sciname']);
+			$recMap['sciname'] = str_replace(array(' subsp. ',' ssp '),' ssp. ',$recMap['sciname']);
 			$recMap['sciname'] = str_replace(' var ',' var. ',$recMap['sciname']);
 
 			$pattern = '/\b(cf\.|cf|aff\.|aff)\s{1}/';
