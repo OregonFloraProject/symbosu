@@ -1284,3 +1284,9 @@ ALTER TABLE `omcollpuboccurlink`
 # as the minimum value for sortsequence per tid is not always 1.
 # See commit a00f621c66c69206faf944b4910e29353a151624
 ALTER TABLE images ADD INDEX Index_tid_sortsequence (tid, sortsequence);
+
+# 2024-10-29(eric):
+# This is used to speed up fulltext vernacularName queries,
+# which happen very often (anytime someone types a character into the
+# header search bar).
+ALTER TABLE taxavernaculars ADD FULLTEXT INDEX FT_vernacularName (vernacularName);

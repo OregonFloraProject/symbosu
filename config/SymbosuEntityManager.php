@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityManager;
 include_once(__DIR__ . "/symbini.php");
 include_once("$SERVER_ROOT/config/dbconnection.php");
 require_once("$SERVER_ROOT/vendor/autoload.php");
+include_once("$SERVER_ROOT/config/doctrineextensions/MatchAgainst.php");
 
 foreach (glob("$SERVER_ROOT/models/*.php") as $file) {
   include_once($file);
@@ -29,6 +30,8 @@ class SymbosuEntityManager {
 
     $config->setProxyDir("$SERVER_ROOT/temp/proxies");
     $config->setProxyNamespace("Symbosu\Proxies");
+
+    $config->addCustomStringFunction('match', 'DoctrineExtensions\Query\Mysql\MatchAgainst');
 
     if ($IS_DEV) {
       $cache = new ArrayCache();

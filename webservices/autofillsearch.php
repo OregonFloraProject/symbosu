@@ -29,6 +29,8 @@ if (array_key_exists("q", $_REQUEST)) {
     ->getQuery()
     ->getArrayResult();
 
+  $queryWords = explode(" ", $query);
+  $queryWords = array_map(function($word) { return '+' . $word . '*'; }, $queryWords);
   $vernacularResults = $em->createQueryBuilder()
     ->select("v.vernacularname as text", "t.tid as taxonId", "t.rankid as rankId", "ts.tidaccepted")
     ->from("Taxa", "t")
@@ -36,17 +38,40 @@ if (array_key_exists("q", $_REQUEST)) {
     ->innerJoin("Taxstatus", "ts", "WITH", "t.tid = ts.tid")
     // Restrict to taxa that are contained in a checklist
     ->innerJoin("fmchklsttaxalink", "cl", "WITH", "t.tid = cl.tid")
-    ->where("v.vernacularname LIKE :search")
+    ->where("MATCH(v.vernacularname) AGAINST(:search IN BOOLEAN MODE) > 0")
     ->andWhere("t.rankid >= $RANK_FAMILY")
     // Restrict to Oregon vascular plant taxa contained in the State of Oregon checklist (cl=1)
     ->andWhere("cl.clid = 1")
     ->groupBy("v.vernacularname")
-    ->setParameter("search",'%' . $query . '%')
+    ->setParameter("search", implode(" ", $queryWords))
     ->orderBy("v.sortsequence")
     ->setMaxResults(15)
     ->getQuery()
     ->getArrayResult();
-    
+
+  // If we have no results, try a full wildcard search on vernacularNames which will match inner
+  // substrings as well (i.e. 'wheatgrass' will come up for 'heatg'). But don't do this otherwise,
+  // as it's expensive, slow, and rarely necessary.
+  if (count($sciNameResults) === 0 && count($vernacularResults) === 0) {
+    $vernacularResults = $em->createQueryBuilder()
+      ->select("v.vernacularname as text", "t.tid as taxonId", "t.rankid as rankId", "ts.tidaccepted")
+      ->from("Taxa", "t")
+      ->innerJoin("Taxavernaculars", "v", "WITH", "t.tid = v.tid")
+      ->innerJoin("Taxstatus", "ts", "WITH", "t.tid = ts.tid")
+      // Restrict to taxa that are contained in a checklist
+      ->innerJoin("fmchklsttaxalink", "cl", "WITH", "t.tid = cl.tid")
+      ->where("v.vernacularname LIKE :search")
+      ->andWhere("t.rankid >= $RANK_FAMILY")
+      // Restrict to Oregon vascular plant taxa contained in the State of Oregon checklist (cl=1)
+      ->andWhere("cl.clid = 1")
+      ->groupBy("v.vernacularname")
+      ->setParameter("search",'%' . $query . '%')
+      ->orderBy("v.sortsequence")
+      ->setMaxResults(15)
+      ->getQuery()
+      ->getArrayResult();
+  }
+
   $duplicates = array_uintersect($sciNameResults, $vernacularResults,'compareTextValues');
   $results = array_merge($sciNameResults, $vernacularResults);
 	if ($duplicates) {#overlap between sciname and common name 
