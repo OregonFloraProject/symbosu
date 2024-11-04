@@ -119,7 +119,7 @@ class SideBar extends React.Component {
 		});
 	};
 	
-	componentWillReceiveProps(nextProps) {//necessary because React doesn't set isMobile in componentDidMount grr
+	UNSAFE_componentWillReceiveProps() {//necessary because React doesn't set isMobile in componentDidMount grr
   	let displayFilters = this.state.displayFilters;
 		let isMobile = this.state.isMobile;
 		

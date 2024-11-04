@@ -373,8 +373,7 @@ class GardenPageApp extends React.Component {
   		}
   	});
   	this.setState({
-      filters: Object.assign({}, this.state.filters, { attrs: newAttrs }),
-      filters: Object.assign({}, this.state.filters, { sliders: newSliders }),
+      filters: Object.assign({}, this.state.filters, { attrs: newAttrs, sliders: newSliders }),
       characteristics: chars
     });
   }

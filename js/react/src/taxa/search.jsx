@@ -21,14 +21,14 @@ function SearchPageHeader(props) {
 	if (props.results.length >= 1) {
 		return (
 			<h1 style={{ display: props.results.length > 1 ? "intial" : "none" }}>
-				Results for "{ props.searchText }"
+				Results for &quot;{ props.searchText }&quot;
 			</h1>
 		);
 	} else if (!props.isLoading){
 		return (
 			<div>
 				<h1>
-					Whoops, we didn't find any results for "{ props.searchText }"
+					Whoops, we didn&apos;t find any results for &quot;{ props.searchText }&quot;
 				</h1>
 				<button className="btn btn-primary my-4" onClick={ () => window.history.back() }>Go back</button>
 			</div>

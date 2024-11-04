@@ -90,7 +90,7 @@ class SideBar extends React.Component {
 					/>
 					}
 	
-					<div className="view-opts" className="container row">
+					<div className="view-opts container row">
 						<div className="row">
 							<div className="opt-labels">
 								<p>Search:</p>

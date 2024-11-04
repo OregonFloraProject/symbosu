@@ -167,7 +167,7 @@ export default function Table({ columns, data, pid, clientRoot }) {
 						let exploreUrl = getChecklistPage(clientRoot, row.cells[1].value, pid);
 						let identifyUrl = getIdentifyPage(clientRoot, row.cells[1].value, pid);
 						return (
-							<tr {...row.getRowProps()}>
+							<tr key={i} {...row.getRowProps()}>
 									<td {...row.cells[0].getCellProps()}>
 										<a href={ exploreUrl }>
 											{row.cells[0].render("Cell")}

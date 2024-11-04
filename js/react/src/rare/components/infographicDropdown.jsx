@@ -28,7 +28,7 @@ function InfographicDropdown(props) {
 							id="infographic-inner-text"
 							className={ "w-90 will-collapse" + (isCollapsed ? " is-collapsed" : "") }
 						>
-							A tool to help land managers conserve Oregon's imperiled species and bring new appreciation of these special plants to everyone.
+							A tool to help land managers conserve Oregon&apos;s imperiled species and bring new appreciation of these special plants to everyone.
 						</h3>
 					</div>
 				<button

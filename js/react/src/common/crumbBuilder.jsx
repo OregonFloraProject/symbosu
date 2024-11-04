@@ -8,7 +8,7 @@ function CrumbBuilder(props) {
           return (
             <span key={ crumb.title }>
               <a href={ crumb.url }>{ crumb.title }</a>
-              { idx !== props.crumbs.length - 1 ? <span className="d-inline-block mx-1">></span> : '' }
+              { idx !== props.crumbs.length - 1 ? <span className="d-inline-block mx-1">&gt;</span> : '' }
             </span>
           )
         })

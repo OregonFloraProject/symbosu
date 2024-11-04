@@ -592,7 +592,6 @@ class TaxaApp extends React.Component {
       accessRestricted: false,
       highlights: {},
       spp: [],
-      tid: null,
       rankId: null,
       currImage: 0,
       related: [],

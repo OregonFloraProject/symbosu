@@ -12,6 +12,7 @@ class HelpButton extends React.Component {
 
   componentDidMount() {
     const helpButtonId = this.getHelpButtonId();
+    // eslint-disable-next-line no-undef
     $(`#${helpButtonId}`).popover({
       title: this.props.title,
       html: true,

@@ -110,8 +110,6 @@ class SideBarVendor extends React.Component {
 										name={ label }
 										value={ 'Add ' + label + '?' }	
 										action={ 'add' }
-										tid={ this.props.spp[label] } 
-										section={this.state.section}						
 										onClick={ this.handleAddSPP.bind(this)} 
 									></input>
 								)

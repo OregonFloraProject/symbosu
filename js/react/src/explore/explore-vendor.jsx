@@ -302,11 +302,6 @@ class ExploreApp extends React.Component {
 						msgDiv.classList.remove("display");
 						msgDiv.innerHTML = '';
 					},2000);
-					
-					if (actionStr == 'edit') {
-					
-					
-					}
 			})
 			.catch((err) => {
 				//window.location = "/";

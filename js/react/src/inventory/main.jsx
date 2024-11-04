@@ -224,6 +224,7 @@ class InventoryDetail extends React.Component {
 											return (
 												<Marker
 													key={checklist.clid}
+          								// eslint-disable-next-line no-undef
           								icon={{ url: this.props.clientRoot + '/images/icons/map_markers/single.png', anchor: new google.maps.Point(6,6) }}
 													title={ checklist.name }
 													position={position}
@@ -262,7 +263,7 @@ class InventoryDetail extends React.Component {
                     <FontAwesomeIcon icon="search-plus" />
                 </div>
                 <span className="verticalSeparator"></span>
-                <p><strong>IDENTIFY</strong> a plant you've discovered at that location, using a host of characteristics.</p>
+                <p><strong>IDENTIFY</strong> a plant you&apos;ve discovered at that location, using a host of characteristics.</p>
             </div>
         </div>
         <div className="row mt-4 mb-4 checklists-table">

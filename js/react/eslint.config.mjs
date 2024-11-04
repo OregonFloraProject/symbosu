@@ -12,7 +12,7 @@ export default [
   {
     rules: {
       "react/prop-types": 0,
-      "no-unused-vars": ["error", { "ignoreRestSiblings": true }],
+      "no-unused-vars": ["warn", { "ignoreRestSiblings": true }],
     },
     settings: {
       react: {

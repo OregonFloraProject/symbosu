@@ -237,7 +237,6 @@ class ExploreSearchResult extends React.Component  {
 														name={ this.props.sciName }
 														value={ this.props.sciName }	
 														action={ 'edit' }
-														tid={ this.props.tid } 				
 														title={ 'Edit Notes' }
 														onClick={ () => this.toggleEditingNotes()} 
 													>
@@ -252,7 +251,6 @@ class ExploreSearchResult extends React.Component  {
 														name={ this.props.sciName }
 														value={ this.props.sciName }	
 														action={ 'delete' }
-														tid={ this.props.tid } 				
 														title={ 'Delete from checklist' }
 														onClick={ () => this.props.storeChange({'action': 'delete','name': this.props.sciName, 'value': this.props.tid, 'section': 'spp'})} 
 													>
@@ -270,7 +268,6 @@ class ExploreSearchResult extends React.Component  {
 													<div>			
 														<textarea
 															aria-label="notes"
-															section="spp" 
 															name="notes" 
 															defaultValue={this.props.checklistNotes}
 															placeholder="Your notes here" 
