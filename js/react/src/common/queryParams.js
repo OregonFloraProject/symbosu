@@ -1,9 +1,9 @@
 export function getUrlQueryParams(url) {
   let params = {};
-  if (url.includes("?")) {
-    let queryParams = url.split("?")[1].trim("&").split("&");
+  if (url.includes('?')) {
+    let queryParams = url.split('?')[1].trim('&').split('&');
     for (let i = 0; i < queryParams.length; i++) {
-      let [key, val] = queryParams[i].split("=");
+      let [key, val] = queryParams[i].split('=');
       params[key] = val;
     }
   }
@@ -25,5 +25,5 @@ export function addUrlQueryParam(key, val) {
     }
   }
 
-  return queryParams.length > 0 ? `?${queryParams.join("&")}` : "";
+  return queryParams.length > 0 ? `?${queryParams.join('&')}` : '';
 }

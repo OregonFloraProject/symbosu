@@ -1,89 +1,86 @@
-@import "./mixins.less";
+@import './mixins.less';
 @import '../../node_modules/react-tabs/style/react-tabs.less';
-
 
 #react-taxa-garden-app,
 #react-taxa-rare-app,
 #react-taxa-app {
+  p,
+  li {
+    font-size: 1.4rem;
+    line-height: 1.875rem;
+    margin-bottom: 0.7rem;
+  }
+  h2 {
+    margin-top: 0.1rem !important;
+    margin-bottom: 1rem;
+  }
+  h1 {
+    font-weight: 700;
+    margin-bottom: 0;
+  }
+  //taxa slideshows on main and garden pages
+  .taxa-slideshows {
+    .slick-next,
+    .slick-prev {
+      color: @med-green !important;
+      font-size: 28px;
+      top: 53%;
+      text-align: center;
+    }
+    .slick-next {
+      right: -35px;
+    }
+    .slick-prev {
+      left: -35px;
+    }
+    .slick-slide {
+      height: auto;
+    }
+    .slick-slider {
+      max-width: 90%;
+    }
+  }
 
-	p,
-	li {
-		font-size: 1.4rem;
-		line-height: 1.875rem;
-		margin-bottom: .7rem;
-	}
-	h2 {
-		margin-top: .1rem !important;
-		margin-bottom: 1rem;
-	}
-	h1{
-		font-weight: 700;
-		margin-bottom: 0;
-	}
-	//taxa slideshows on main and garden pages
-	.taxa-slideshows {
-		.slick-next, 
-		.slick-prev {
-			color: @med-green !important;
-			font-size: 28px;
-			top: 53%;
-			text-align: center;
-		}
-		.slick-next {
-			right: -35px;
-		}
-		.slick-prev {
-			left: -35px;
-		}
-		.slick-slide {
-			height: auto;
-		}
-		.slick-slider {
-			max-width: 90%;
-		}
-	}
-	
-	figure {
-		.img-main-wrapper {
-			overflow: hidden;
+  figure {
+    .img-main-wrapper {
+      overflow: hidden;
 
-			#img-main {
-				max-width: 100%;
-				height: auto;
-			}
-		}
-		figcaption {
-			text-align: right;
-			font-size: .875rem;
-		}
-	}
-	.sidebar-section {
+      #img-main {
+        max-width: 100%;
+        height: auto;
+      }
+    }
+    figcaption {
+      text-align: right;
+      font-size: 0.875rem;
+    }
+  }
+  .sidebar-section {
+    font-size: 14px;
+    font-weight: 400;
+    p {
+      font-size: 14px;
+    }
+    h3 {
+      font-size: 1.2rem;
+      margin-bottom: 0.2em !important;
+      color: @med-green;
+    }
 
-		font-size: 14px;
-		font-weight: 400;
-		p {
-			font-size: 14px;
-		}
-		h3{
-			font-size: 1.2rem;
-			margin-bottom: 0.2em !important;
-			color: @med-green;
-		}
-
-		.row {
-			margin-left: 0px;
-			margin-right: 0px;
-			padding-top: .4rem !important;
-			padding-bottom: .4rem !important;
-			line-height: 1.3rem;
-		}
-		li {	
-			font-size: 14px;
-			line-height: 1.3rem;
-			margin-bottom: .1rem;
-			text-indent: 0.5rem hanging;
-		}
-	}
+    .row {
+      margin-left: 0px;
+      margin-right: 0px;
+      padding-top: 0.4rem !important;
+      padding-bottom: 0.4rem !important;
+      line-height: 1.3rem;
+    }
+    li {
+      font-size: 14px;
+      line-height: 1.3rem;
+      margin-bottom: 0.1rem;
+      text-indent: 0.5rem hanging;
+    }
+  }
 }
 #react-taxa-garden-app,
 #react-taxa-rare-app {
@@ -94,437 +91,429 @@
   }
 
   .card {
-  	border: none;
+    border: none;
   }
   .slider-wrapper {
-		max-height: 150px;
+    max-height: 150px;
   }
   .sidebar-section {
-  	a {
-  		color: @dark-green !important;
-  	}
+    a {
+      color: @dark-green !important;
+    }
   }
-	.canned-results {
-		max-width: 100%;
-		display: flex;
-		flex-flow: row wrap;
-		justify-content: space-between;
-		.canned-search-result {
-			flex-basis: 45%;
-			
-			color: #3B631D !important;
-			text-align: center;
-			border-radius: 2%;
-			max-width: 15em;
-			h4 {
-				 color: @dark-green;
-				 font-size: .9rem;
-				 font-weight: 700;
-				 line-height: 1rem;
-				 cursor: pointer;
-			}
-			.card {
-				box-shadow: 0 0.1em 0.5em 0.1em rgba(100, 100, 100, 0.3);
-			}
+  .canned-results {
+    max-width: 100%;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    .canned-search-result {
+      flex-basis: 45%;
 
-			.card:hover {
-				//background: #DFEFD3 !important;
-			}
+      color: #3b631d !important;
+      text-align: center;
+      border-radius: 2%;
+      max-width: 15em;
+      h4 {
+        color: @dark-green;
+        font-size: 0.9rem;
+        font-weight: 700;
+        line-height: 1rem;
+        cursor: pointer;
+      }
+      .card {
+        box-shadow: 0 0.1em 0.5em 0.1em rgba(100, 100, 100, 0.3);
+      }
 
-			.card a:hover {
-				//text-decoration: none;
-			}
+      .card:hover {
+        //background: #DFEFD3 !important;
+      }
 
-			.card-text {
-				font-weight: bold;
-				color: #1E352F !important;
-				font-size: initial;
-			}
+      .card a:hover {
+        //text-decoration: none;
+      }
 
-			.scroll-btn {
-				border-radius: 50%;
-			}
+      .card-text {
+        font-weight: bold;
+        color: #1e352f !important;
+        font-size: initial;
+      }
 
-			.scroll-btn:active {
-				background: rgba(0, 100, 0, 0.1) !important;
-			}
+      .scroll-btn {
+        border-radius: 50%;
+      }
 
-		}
-	}
-	.taxa-link {
-		a {
-			.btn-primary {
-				padding: 0.3em 1.2em;
-				line-height: 2em;
-			}
-			&:hover {
-				text-decoration: none;
-			}
-		}
-	}
-
+      .scroll-btn:active {
+        background: rgba(0, 100, 0, 0.1) !important;
+      }
+    }
+  }
+  .taxa-link {
+    a {
+      .btn-primary {
+        padding: 0.3em 1.2em;
+        line-height: 2em;
+      }
+      &:hover {
+        text-decoration: none;
+      }
+    }
+  }
 }
-#react-taxa-rare-app{
-	.taxa-prose {
-		p {
-			font-size: 1rem;
-			line-height: 1.4rem;
-		}
-	}
-	hr {
-		border-top: 1px dashed @med-green;
-		width: 100%;
-		margin-top: 0;
-	}
-	.profile-type {
-		color: @med-green;
-		font-size: 0.9rem;
-		text-transform: uppercase;
-		position: absolute;
-		right: 0;
-		top: -1.4rem;
-	}
+#react-taxa-rare-app {
+  .taxa-prose {
+    p {
+      font-size: 1rem;
+      line-height: 1.4rem;
+    }
+  }
+  hr {
+    border-top: 1px dashed @med-green;
+    width: 100%;
+    margin-top: 0;
+  }
+  .profile-type {
+    color: @med-green;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    position: absolute;
+    right: 0;
+    top: -1.4rem;
+  }
 
-	.sidebar-section {
-		.list {
-			border-top: 1px dashed black;
-			border-bottom: 1px dashed black;
-			line-height: 1.3rem;
-			padding-top: 0.4rem;
-			padding-bottom: 0.4rem;
-		}
-		.associated-sciname {
-			font-style: italic;
-		}
-		.row .lookalike-sciname {
-			font-style: italic;
-		}
-		.row.is-header {
-			font-weight: 700;
-		}
-		.row .subheading-key {
-			font-weight: 700;
-			margin-right: 4pt;
-		}
-		.row .char-value {
-			overflow-wrap: break-word;
-		}
-	}
+  .sidebar-section {
+    .list {
+      border-top: 1px dashed black;
+      border-bottom: 1px dashed black;
+      line-height: 1.3rem;
+      padding-top: 0.4rem;
+      padding-bottom: 0.4rem;
+    }
+    .associated-sciname {
+      font-style: italic;
+    }
+    .row .lookalike-sciname {
+      font-style: italic;
+    }
+    .row.is-header {
+      font-weight: 700;
+    }
+    .row .subheading-key {
+      font-weight: 700;
+      margin-right: 4pt;
+    }
+    .row .char-value {
+      overflow-wrap: break-word;
+    }
+  }
 }
 #react-taxa-app,
 #react-taxa-rare-app {
-	.sidebar-section {
+  .sidebar-section {
+    .related-sciname {
+      font-size: 18px;
+      margin-top: -3px;
+    }
 
+    .related,
+    .related-sciname,
+    .related-nav,
+    .col {
+      padding-left: 0px;
+      padding-right: 0px;
+    }
+    .related-nav {
+      text-align: right;
+    }
+    .related-link {
+      cursor: pointer;
+    }
+    .map-label {
+      border-bottom: 1px dashed black;
+      color: @gray-type;
+      font-style: italic;
+    }
+    .map-link {
+      cursor: pointer;
+    }
+    .map-overlay-container {
+      position: relative;
+    }
+    .map-overlay-box {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.75);
+    }
+    .map-overlay-box.hidden {
+      display: none;
+    }
+    .map-overlay {
+      position: absolute;
+      top: 50%;
+      padding-left: 2rem;
+      padding-right: 2rem;
+      text-align: center;
+      transform: translateY(-50%);
+      color: white;
+    }
+    .map-overlay .inner-link {
+      color: @med-green !important;
+    }
+    .map-overlay .inner-link:hover {
+      text-decoration: underline;
+    }
+    &.weblinks {
+      li {
+        padding-top: 0.2rem !important;
+        padding-bottom: 0.2rem !important;
 
-		.related-sciname {
-			font-size: 18px;
-			margin-top: -3px;
-		}
+        a {
+          font-weight: bold;
+          text-decoration: underline;
+        }
+      }
+    }
+  }
 
-		.related,
-		.related-sciname,
-		.related-nav,
-		.col {
-			padding-left: 0px;
-			padding-right: 0px;
-		}
-		.related-nav {
-			text-align: right;
-		}
-		.related-link {
-			cursor: pointer;
-		}
-		.map-label {
-			border-bottom: 1px dashed black;
-			color: @gray-type;
-			font-style: italic;
-		}
-		.map-link {
-			cursor: pointer;
-		}
-		.map-overlay-container {
-			position: relative;
-		}
-		.map-overlay-box {
-			position: absolute;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-			background-color: rgba(0, 0, 0, 0.75);
-		}
-		.map-overlay-box.hidden {
-			display: none;
-		}
-		.map-overlay {
-			position: absolute;
-			top: 50%;
-			padding-left: 2rem;
-			padding-right: 2rem;
-			text-align: center;
-			transform: translateY(-50%);
-			color: white;
-		}
-		.map-overlay .inner-link {
-			color: @med-green !important;
-		}
-		.map-overlay .inner-link:hover {
-			text-decoration: underline;
-		}
-		&.weblinks {
+  .related {
+    .related-label {
+      padding-right: 6px;
+      text-transform: uppercase;
+      font-size: 0.9em;
+    }
+    .related-links {
+      .separator {
+        padding: 0px 2px;
+      }
+    }
+    .related-sciname {
+      font-style: italic;
+      font-weight: bold;
+    }
+    .fa-arrow-circle-up {
+      transform: rotate(315deg);
+      color: @med-green;
+    }
+    .fa-arrow-circle-down {
+      transform: rotate(315deg);
+      color: @med-green;
+    }
+  }
 
-			li {
-				padding-top: .2rem !important;
-				padding-bottom: .2rem !important;
+  // Glossary word styling
+  .glossary {
+    cursor: pointer;
+    border-bottom: 1px dashed #3c641e;
+  }
 
-				a {
-					font-weight: bold;
-					text-decoration: underline;
-				}
-			}
-		}
-	}
+  .description-tabs {
+    margin-top: 1em;
+    //box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+    .react-tabs__tab-list {
+      margin-bottom: 0px;
+      font-weight: 600;
+      border-bottom: 1px solid @gray-type;
 
-	.related {
-		.related-label {
-			padding-right: 6px;
-			text-transform: uppercase;
-			font-size: .9em;
-		}
-		.related-links {
-			.separator {
-				padding: 0px 2px;
-			}
-		}
-		.related-sciname {
-			font-style: italic;
-			font-weight: bold;
-		}
-		.fa-arrow-circle-up {
-			transform: rotate(315deg);
-			color: @med-green;
-		}
-		.fa-arrow-circle-down {
-			transform: rotate(315deg);
-			color: @med-green;
-		}
-	}
+      li {
+        margin-bottom: -1px;
+        font-size: 1.1rem;
+      }
 
-	// Glossary word styling
-	.glossary {
-		cursor: pointer;
-        border-bottom: 1px dashed #3c641e;
-	}
+      .react-tabs__tab {
+        background-color: @dark-green;
+        color: @light-green;
+        border: 1px solid @gray-type;
+        margin-right: 0.5em;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        text-transform: uppercase;
+        &.react-tabs__tab--selected {
+          border-bottom: 2px solid @ivory;
+          background-color: @ivory;
+          color: @dark-green;
+        }
+      }
+    }
 
-	.description-tabs {
-		margin-top: 1em;
-		//box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
-		.react-tabs__tab-list {
-			margin-bottom: 0px;
-			font-weight: 600;
-			border-bottom: 1px solid @gray-type;
-
-			li {
-				margin-bottom: -1px;
-				font-size: 1.1rem;
-			}
-
-			.react-tabs__tab {
-				background-color: @dark-green;
-				color: @light-green;
-				border: 1px solid @gray-type;
-				margin-right: 0.5em;
-				border-top-left-radius: 10px;
-				border-top-right-radius: 10px;
-				text-transform: uppercase;
-				&.react-tabs__tab--selected {
-					border-bottom: 2px solid @ivory;
-					background-color: @ivory;
-					color: @dark-green;
-				}
-			}
-		}
-
-		.react-tabs__tab-panel {
-			background-color: @ivory;
-			padding: 1.8em;
-			border-width: 1px;
-			border-left: @gray-type 1px solid;
-			border-right: @gray-type 1px solid;
-			border-bottom: @gray-type 1px solid;
-			h2 {/*used for print only*/
-				display: none;
-			}
-			.reference {
-				font-style: italic;
-				font-weight: bold;
-				text-align: right;
-				margin-bottom: 1rem;
-			}
-			.description {
-				height: 250px;
-				overflow-y: scroll;
-				background-color: white;
-				border-top: 2px solid #CFCAC2;
-				border-left: 2px solid #CFCAC2;
-				padding: 1em;
-				--scrollbarBG: @med-green;
-				--thumbBG: white;
-				scrollbar-color: @med-green white;
-				line-height: 1.4em;
-			}
-		}
-	}
+    .react-tabs__tab-panel {
+      background-color: @ivory;
+      padding: 1.8em;
+      border-width: 1px;
+      border-left: @gray-type 1px solid;
+      border-right: @gray-type 1px solid;
+      border-bottom: @gray-type 1px solid;
+      h2 {
+        /*used for print only*/
+        display: none;
+      }
+      .reference {
+        font-style: italic;
+        font-weight: bold;
+        text-align: right;
+        margin-bottom: 1rem;
+      }
+      .description {
+        height: 250px;
+        overflow-y: scroll;
+        background-color: white;
+        border-top: 2px solid #cfcac2;
+        border-left: 2px solid #cfcac2;
+        padding: 1em;
+        --scrollbarBG: @med-green;
+        --thumbBG: white;
+        scrollbar-color: @med-green white;
+        line-height: 1.4em;
+      }
+    }
+  }
 }
 
 #react-taxa-app {
-	.taxa-detail {
-		position: relative;
-	}
-	h2 {
-		font-weight: 400;
-		&.ambiguous {
-			font-size: 1.25rem;
-			line-height: 1.6rem;
+  .taxa-detail {
+    position: relative;
+  }
+  h2 {
+    font-weight: 400;
+    &.ambiguous {
+      font-size: 1.25rem;
+      line-height: 1.6rem;
 
-			@media (min-width: @large) {
-				margin-right: 25%;
-			}
-		}
-	}
-	.synonym {
-		font-size: 1.35rem;
-		color: @gray-type;
-		padding-left: 2px;
-	}
-	figure {
-		.img-main-wrapper {
-			overflow: hidden;
-			position: relative;
-			height: 485px;
-			#img-main {
-				/*max-width: 100%;
+      @media (min-width: @large) {
+        margin-right: 25%;
+      }
+    }
+  }
+  .synonym {
+    font-size: 1.35rem;
+    color: @gray-type;
+    padding-left: 2px;
+  }
+  figure {
+    .img-main-wrapper {
+      overflow: hidden;
+      position: relative;
+      height: 485px;
+      #img-main {
+        /*max-width: 100%;
 				height: auto;*/
-				width: 100%;
-				height: 100%;
-				object-fit: cover;
-				object-position: left center;
-			}
-		}
-	}
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: left center;
+      }
+    }
+  }
 
-	.card {
-  	border: none;
-	}
-	.sidebar {
-		@media (max-width: @medium) {
-			margin-top: 2rem;
-		}
-	}
+  .card {
+    border: none;
+  }
+  .sidebar {
+    @media (max-width: @medium) {
+      margin-top: 2rem;
+    }
+  }
 
-	.sidebar-section {
-		&.weblinks {
+  .sidebar-section {
+    &.weblinks {
+      li {
+        padding-top: 0.2rem !important;
+        padding-bottom: 0.2rem !important;
 
-			li {
-				padding-top: .2rem !important;
-				padding-bottom: .2rem !important;
+        a {
+          font-weight: bold;
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+  ul.single-border-item {
+    width: 100%;
+    li {
+      display: block;
+    }
+  }
+  .more-info {
+    button img {
+      padding-right: 3px;
+    }
+  }
+  .fa-edit {
+    color: @med-green;
+  }
 
-				a {
-					font-weight: bold;
-					text-decoration: underline;
-				}
-			}
-		}
-	}
-	ul.single-border-item {
-		width: 100%;
-		li {
-			display: block;
-		}
-	}
-	.more-info {
-		button img {
-			padding-right: 3px;
-		}
+  .synonym-items {
+    .show-short {
+      .short-list:after {
+        content: '...';
+      }
+      .full-list {
+        display: none;
+      }
+    }
+    .show-full {
+      .full-list {
+        display: block;
+      }
+    }
+    .synonym-sciname {
+      font-style: italic;
+    }
+  }
 
-	}
-	.fa-edit {
-		color: @med-green;
-	}
-	
-	.synonym-items {
-		.show-short {
-			.short-list:after {
-				content: '...';
-			}
-			.full-list {
-				display: none;
-			}
-		}
-		.show-full {
-			.full-list {
-				display: block;
-			}
-		}	
-		.synonym-sciname {
-			font-style: italic;
-		}
-	}
+  .up-down-toggle {
+    color: @med-green;
+    text-align: center;
+    font-size: 1.5em;
+    padding: 0.3em 0;
+    cursor: pointer;
+  }
+  .spp-wrapper {
+    &.search-result-grid {
+      grid-auto-rows: 17em;
+    }
+    .card {
+      overflow: hidden;
+      a {
+        display: block;
+        overflow: hidden;
+        height: 100%;
+      }
+      h4 {
+        font-size: 0.8em;
+        font-style: italic;
+        text-align: center;
+        min-height: 30px;
+      }
+      .img-thumbnail,
+      .map-preview {
+        padding: 0 0 4px 0;
+        border: none;
+        position: relative;
+        width: 100%;
+        height: 6.5em;
+      }
+      .map-preview {
+        height: 6em;
+      }
+    }
+  }
+  .taxa-chooser {
+    .related {
+      margin-bottom: 1em;
+      .related-label {
+        padding: 0px 8px;
+        text-transform: none;
+        font-weight: bold;
+        font-size: 1rem;
+      }
+    }
 
-	.up-down-toggle {
-		color: @med-green;
-		text-align: center;
-		font-size: 1.5em;
-		padding: .3em 0;
-		cursor: pointer;
-	}
-	.spp-wrapper {
-		&.search-result-grid {
-			grid-auto-rows: 17em;
-		}
-		.card {
-			overflow: hidden;
-			a {
-				display: block;
-				overflow: hidden;
-				height: 100%;
-			}
-			h4 {
-				font-size: .8em;
-				font-style: italic;
-				text-align: center;
-				min-height: 30px;
-			}
-			.img-thumbnail,
-			.map-preview {
-				padding: 0 0 4px 0;
-				border: none;
-				position: relative;
-				width: 100%;
-				height: 6.5em;
-			}
-			.map-preview {
-				height: 6em;
-			}
-
-		}
-	}
-	.taxa-chooser {
-		.related {
-			margin-bottom: 1em;
-			.related-label {
-				padding: 0px 8px;
-				text-transform: none;
-				font-weight: bold;
-				font-size: 1rem;
-			}
-		}	
-		
-		.spp-wrapper {
-			padding-top: 1em;
-			.card {
-
-			}
-		}
-	}
+    .spp-wrapper {
+      padding-top: 1em;
+      .card {
+      }
+    }
+  }
 }

@@ -1,24 +1,25 @@
-@import "./config.less";//this gets propagated to all other .less files, because all use mixins.less
+@import './config.less'; //this gets propagated to all other .less files, because all use mixins.less
 
-
-@light-green: #DFEFD3;
-@light-green-alpha: #DFEFD3CC;
-@med-green: #5FB021;
-@med-dark-green: #5A8C37;
-@dark-green: #3C641E;
-@dark-grn-type: #1E352F;
-@dark-gray: #000000E3;
+@light-green: #dfefd3;
+@light-green-alpha: #dfefd3cc;
+@med-green: #5fb021;
+@med-dark-green: #5a8c37;
+@dark-green: #3c641e;
+@dark-grn-type: #1e352f;
+@dark-gray: #000000e3;
 @gray-type: #999999;
-@type-primary: #000000C2;
+@type-primary: #000000c2;
 @ivory: #fbf7ee;
 
-@font: 'Source Sans Pro', sans-serif !important;
+@font:
+  'Source Sans Pro',
+  sans-serif !important;
 
 /* breakpoints  */
 @xlarge: 1200px;
-@large: 992px; 
+@large: 992px;
 @medium: 768px;
-@small: 576px; 
+@small: 576px;
 //@xsmall: 374px;
 
 .text-capitalize() {
@@ -66,17 +67,16 @@
   text-shadow: none !important;
 }
 .dropdown-current() {
-	.dropdown-hover();
-	background-color: @light-green-alpha !important;
-	&:hover{
-  	background: @light-green !important;
-	}
+  .dropdown-hover();
+  background-color: @light-green-alpha !important;
+  &:hover {
+    background: @light-green !important;
+  }
 }
 .collapsed-header() {
   height: 3.8em !important;
   padding-top: 0 !important;
-  transition: height 0.5s, padding-top 0.5s;
+  transition:
+    height 0.5s,
+    padding-top 0.5s;
 }
-
-
-

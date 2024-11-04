@@ -13,7 +13,7 @@ function httpGet(url) {
       }
     };
 
-    req.open("GET", url);
+    req.open('GET', url);
     req.send();
   });
 }

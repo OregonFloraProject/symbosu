@@ -12,7 +12,6 @@ export function getGardenTaxaPage(clientRoot, tid) {
 
 export function getGardenPage(clientRoot, clid) {
   return `${clientRoot}/garden/index.php?clid=${clid}`;
-
 }
 
 export function getImageDetailPage(clientRoot, occid) {
@@ -29,7 +28,7 @@ export function getCommonNameStr(item) {
   }
 
   if (basename && cname.includes(basename) && basename !== cname) {
-    return `${basename}, ${cname.replace(basename, '')}`
+    return `${basename}, ${cname.replace(basename, '')}`;
   }
 
   return cname;
@@ -37,21 +36,23 @@ export function getCommonNameStr(item) {
 
 export function sortByTaxon(taxa, sortBy) {
   if (sortBy === 'sciName') {
-    return taxa.sort((a, b) => { return a["sciname"] > b["sciname"] ? 1 : -1 });
+    return taxa.sort((a, b) => {
+      return a['sciname'] > b['sciname'] ? 1 : -1;
+    });
   }
   if (sortBy === 'vernacularName') {
     return taxa.sort((a, b) => {
-      return getCommonNameStr(a).toLowerCase() > getCommonNameStr(b).toLowerCase() ? 1 : -1
+      return getCommonNameStr(a).toLowerCase() > getCommonNameStr(b).toLowerCase() ? 1 : -1;
     });
   } else {
     throw new Error(`sortByTaxon: invalid sortBy value '${sortBy}'`);
   }
 }
 
-export function getChecklistPage(clientRoot,clid,pid) {
+export function getChecklistPage(clientRoot, clid, pid) {
   return `${clientRoot}/checklists/checklist.php?cl=${clid}&pid=${pid}`;
 }
 
-export function getIdentifyPage(clientRoot,clid,pid) {
+export function getIdentifyPage(clientRoot, clid, pid) {
   return `${clientRoot}/ident/key.php?cl=${clid}&proj=${pid}&taxon=All+Species`;
 }

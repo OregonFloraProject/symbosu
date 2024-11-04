@@ -2,7 +2,7 @@
  * @param url URL to POST
  * @returns {Promise<string>} Either the response text or error code/text
  */
-function httpPost(url,mapParamString) {
+function httpPost(url, mapParamString) {
   return new Promise((resolve, reject) => {
     const req = new XMLHttpRequest();
     req.onload = () => {
@@ -12,8 +12,8 @@ function httpPost(url,mapParamString) {
         reject(`${req.status.toString()} ${req.statusText}`);
       }
     };
-    req.open("POST", url);
-		req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    req.open('POST', url);
+    req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     req.send(mapParamString);
   });
 }

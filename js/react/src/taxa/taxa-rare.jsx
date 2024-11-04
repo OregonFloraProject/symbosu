@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import ImageCarousel from "../common/imageCarousel.jsx";
-import Loading from "../common/loading.jsx";
-import ImageModal from "../common/modal.jsx";
-import httpGet from "../common/httpGet.js";
-import { getUrlQueryParams } from "../common/queryParams.js";
-import { getTaxaPage } from "../common/taxaUtils";
-import DescriptionTabs from "./components/DescriptionTabs.jsx";
+import ImageCarousel from '../common/imageCarousel.jsx';
+import Loading from '../common/loading.jsx';
+import ImageModal from '../common/modal.jsx';
+import httpGet from '../common/httpGet.js';
+import { getUrlQueryParams } from '../common/queryParams.js';
+import { getTaxaPage } from '../common/taxaUtils';
+import DescriptionTabs from './components/DescriptionTabs.jsx';
 import MapItem from './components/MapItem.jsx';
 import SideBarSection from './components/SideBarSection.jsx';
 import SideBarSectionLookalikesTable from './components/SideBarSectionLookalikesTable.jsx';
@@ -69,39 +69,39 @@ function TaxaRareApp(props) {
 
   useEffect(() => {
     if (tid === -1) {
-      window.location = "/";
+      window.location = '/';
     } else {
       const fetchData = async () => {
         try {
           const res = JSON.parse(await httpGet(`./rpc/api.php?taxon=${tid}&type=rare`));
 
           const url = new URL(window.location);
-					const parentQueryParams = new URLSearchParams(url.search);
-					parentQueryParams.set('taxon',res.parentTid);
-					const parentUrl = 'index.php?' + parentQueryParams.toString();
+          const parentQueryParams = new URLSearchParams(url.search);
+          parentQueryParams.set('taxon', res.parentTid);
+          const parentUrl = 'index.php?' + parentQueryParams.toString();
           // TODO(eric) ask if this will ever be nonnull and what to link to if so --
           // index.php#subspecies perhaps?
-					const childUrl = '';
-					// if (res.spp.length) {
-					// 	childUrl = "#subspecies";
-					// }
+          const childUrl = '';
+          // if (res.spp.length) {
+          // 	childUrl = "#subspecies";
+          // }
 
           const descriptions = [
             {
-              caption: "Summary",
+              caption: 'Summary',
               desc: [],
               source: null,
             },
             {
               ...res.descriptions[0],
-              caption: "Taxon description",
+              caption: 'Taxon description',
             },
             {
-              caption: "Relevant literature",
+              caption: 'Relevant literature',
               desc: [],
               source: null,
             },
-          ]
+          ];
 
           setData({
             sciName: res.sciname,
@@ -109,7 +109,7 @@ function TaxaRareApp(props) {
             images: res.imagesBasis.HumanObservation,
             rankId: res.rankId,
             context: {
-              "Related": [res.sciname, parentUrl, childUrl],
+              Related: [res.sciname, parentUrl, childUrl],
               family: res.family,
               status: res.characteristics.conservation_status,
               ecoregion: res.characteristics.ecoregion,
@@ -130,7 +130,7 @@ function TaxaRareApp(props) {
             accessRestricted: !!res.accessRestricted,
           });
 
-          const titleElement = document.getElementsByTagName("title")[0];
+          const titleElement = document.getElementsByTagName('title')[0];
           titleElement.innerHTML = `${props.defaultTitle} - ${res.sciname} - Rare Plant Profile`;
         } catch (err) {
           console.error(err);
@@ -139,7 +139,7 @@ function TaxaRareApp(props) {
           setIsLoading(false);
           updateViewport();
         }
-      }
+      };
 
       const fetchGlossary = async () => {
         try {
@@ -150,7 +150,7 @@ function TaxaRareApp(props) {
           // necessary for the functioning of the page
           console.error(err);
         }
-      }
+      };
 
       fetchData();
       fetchGlossary();
@@ -159,89 +159,78 @@ function TaxaRareApp(props) {
   }, []);
 
   const updateViewport = () => {
-		let newSlideshowCount = 5;
-		if (window.innerWidth < 1200) {
-			newSlideshowCount = 4;
-		}
-		if (window.innerWidth < 992) {
-			newSlideshowCount = 3;
-		}
+    let newSlideshowCount = 5;
+    if (window.innerWidth < 1200) {
+      newSlideshowCount = 4;
+    }
+    if (window.innerWidth < 992) {
+      newSlideshowCount = 3;
+    }
     setSlideshowCount(newSlideshowCount);
-	}
-	const toggleImageModal = (_currImage) => {
+  };
+  const toggleImageModal = (_currImage) => {
     setCurrImage(_currImage);
     setIsImageModalOpen(!isImageModalOpen);
-  }
+  };
 
   return (
-    <div className="container mx-auto py-5" style={{ minHeight: "45em" }}>
-      <Loading
-        clientRoot={ props.clientRoot }
-        isLoading={ isLoading }
-      />
+    <div className="container mx-auto py-5" style={{ minHeight: '45em' }}>
+      <Loading clientRoot={props.clientRoot} isLoading={isLoading} />
       <div className="print-header">
-      { `${props.defaultTitle} - ${data.sciName} - Rare Plant Profile` }<br />
-      { window.location.href }
+        {`${props.defaultTitle} - ${data.sciName} - Rare Plant Profile`}
+        <br />
+        {window.location.href}
       </div>
       <div className="row print-start">
         <div className="col">
-          <h1 className="font-italic">{ data.sciName }</h1>
-          <h2>{ data.vernacularNames[0] }</h2>
-          </div>
+          <h1 className="font-italic">{data.sciName}</h1>
+          <h2>{data.vernacularNames[0]}</h2>
+        </div>
         <div className="col-auto">
-          <button className="d-block my-2 btn-primary print-trigger" onClick={() => window.print()}>Print page</button>
+          <button className="d-block my-2 btn-primary print-trigger" onClick={() => window.print()}>
+            Print page
+          </button>
         </div>
       </div>
       <div className="row mt-2 main-wrapper">
         <div className="col-md-8 pr-4 main-section">
-
-          {apiError && <div className="alert alert-danger" role="alert">
-            An error occurred. Please try again later.
-          </div>}
+          {apiError && (
+            <div className="alert alert-danger" role="alert">
+              An error occurred. Please try again later.
+            </div>
+          )}
 
           <div className="profile-type pr-4">Rare Plant Profile</div>
           <hr />
 
-          { data.images.length > 0 &&
+          {data.images.length > 0 && (
             <figure>
               <div className="img-main-wrapper">
-                <img
-                  id="img-main"
-                  src={ data.images[0].url }
-                  alt={ data.sciName }
-                />
+                <img id="img-main" src={data.images[0].url} alt={data.sciName} />
               </div>
-            <figcaption>{ data.images[0].photographer }</figcaption>
+              <figcaption>{data.images[0].photographer}</figcaption>
             </figure>
-          }
+          )}
 
           <div className="taxa-prose">
-            <DescriptionTabs
-              descriptions={data.descriptions}
-              glossary={glossary}
-            />
+            <DescriptionTabs descriptions={data.descriptions} glossary={glossary} />
           </div>
 
-          { data.images.length > 0 &&
+          {data.images.length > 0 && (
             <div className="mt-4 dashed-border taxa-slideshows">
-
-              <h3 className="font-weight-bold mt-2"><i>{ data.sciName }</i> images</h3>
+              <h3 className="font-weight-bold mt-2">
+                <i>{data.sciName}</i> images
+              </h3>
               <div className="slider-wrapper">
-              <ImageCarousel
-                images={data.images}
-                imageCount={ length }
-                slideshowCount= { slideshowCount }
-              >
-                {
-                  data.images.map((image,index) => {
+                <ImageCarousel images={data.images} imageCount={length} slideshowCount={slideshowCount}>
+                  {data.images.map((image, index) => {
                     return (
                       <div key={image.url}>
-                        <div className="card" style={{padding: "0.6em"}}>
-                          <div style={{ position: "relative", width: "100%", height: "7em", borderRadius: "0.25em"}}>
-
+                        <div className="card" style={{ padding: '0.6em' }}>
+                          <div style={{ position: 'relative', width: '100%', height: '7em', borderRadius: '0.25em' }}>
                             <img
                               className="d-block"
-                              style={{width: "100%", height: "100%", objectFit: "cover"}}
+                              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                               src={image.thumbnailurl}
                               alt={image.thumbnailurl}
                               onClick={() => toggleImageModal(index)}
@@ -250,34 +239,38 @@ function TaxaRareApp(props) {
                         </div>
                       </div>
                     );
-                  })
-                }
-              </ImageCarousel>
+                  })}
+                </ImageCarousel>
               </div>
-
             </div>
-          }
-
+          )}
         </div>
         <ImageModal
           show={isImageModalOpen}
           currImage={currImage}
           images={data.images}
           onClose={toggleImageModal}
-          clientRoot={ props.clientRoot }
+          clientRoot={props.clientRoot}
         >
           <h3>
-            <span>{ data.vernacularNames[0] }</span> images
+            <span>{data.vernacularNames[0]}</span> images
           </h3>
         </ImageModal>
         <div className="col-md-4 sidebar-section">
-          <SideBarSection title="Context" items={ data.context } rankId={ data.rankId } glossary={ glossary } />
-          <MapItem title={ data.sciName } tid={ tid } clientRoot={ props.clientRoot } needsPermission={ data.accessRestricted } />
-          <SideBarSection title="Survey & Manage" items={ data.surveyManage } glossary={ glossary } />
-          <SideBarSectionLookalikesTable title="Look-Alikes" items={ data.lookalikes } glossary={ glossary } />
-          <SideBarSectionSpeciesList title="Associated species" items={ data.associatedSpecies } />
+          <SideBarSection title="Context" items={data.context} rankId={data.rankId} glossary={glossary} />
+          <MapItem
+            title={data.sciName}
+            tid={tid}
+            clientRoot={props.clientRoot}
+            needsPermission={data.accessRestricted}
+          />
+          <SideBarSection title="Survey & Manage" items={data.surveyManage} glossary={glossary} />
+          <SideBarSectionLookalikesTable title="Look-Alikes" items={data.lookalikes} glossary={glossary} />
+          <SideBarSectionSpeciesList title="Associated species" items={data.associatedSpecies} />
           <div className="taxa-link">
-            <a href={ getTaxaPage(props.clientRoot, tid) }><button className="my-2 btn-primary">Core profile page</button></a>
+            <a href={getTaxaPage(props.clientRoot, tid)}>
+              <button className="my-2 btn-primary">Core profile page</button>
+            </a>
           </div>
         </div>
       </div>
@@ -285,9 +278,9 @@ function TaxaRareApp(props) {
   );
 }
 
-const headerContainer = document.getElementById("react-header");
-const dataProps = JSON.parse(headerContainer.getAttribute("data-props"));
-const domContainer = document.getElementById("react-taxa-rare-app");
+const headerContainer = document.getElementById('react-header');
+const dataProps = JSON.parse(headerContainer.getAttribute('data-props'));
+const domContainer = document.getElementById('react-taxa-rare-app');
 const queryParams = getUrlQueryParams(window.location.search);
 
 // Use both taxon and tid (symbiota-light) to denote the taxon
@@ -299,9 +292,14 @@ if (queryParams.search) {
   window.location = `./search.php?search=${encodeURIComponent(queryParams.search)}`;
 } else if (queryParams.taxon) {
   ReactDOM.render(
-    <TaxaRareApp tid={ queryParams.taxon } defaultTitle={ dataProps["defaultTitle"] } clientRoot={ dataProps["clientRoot"] } synonym={ queryParams.synonym - 0 } />,
-    domContainer
+    <TaxaRareApp
+      tid={queryParams.taxon}
+      defaultTitle={dataProps['defaultTitle']}
+      clientRoot={dataProps['clientRoot']}
+      synonym={queryParams.synonym - 0}
+    />,
+    domContainer,
   );
 } else {
-  window.location = "/";
+  window.location = '/';
 }

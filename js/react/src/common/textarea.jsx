@@ -1,20 +1,17 @@
-import React from "react";
-import TextField from "../common/formFields.jsx";
-
+import React from 'react';
+import TextField from '../common/formFields.jsx';
 
 export default class TextareaField extends TextField {
-
-	render() {
-		return (
-			<textarea
-				aria-label={this.state.name}
-				name={this.state.name}
-				defaultValue={this.state.value}
-				placeholder={this.state.placeholder}
-				onBlur={ this.handleBlur.bind(this)}
-				onChange={ this.handleChange}
-			/>
-		);
-	}
-
+  render() {
+    return (
+      <textarea
+        aria-label={this.state.name}
+        name={this.state.name}
+        defaultValue={this.state.value}
+        placeholder={this.state.placeholder}
+        onBlur={this.handleBlur.bind(this)}
+        onChange={this.handleChange}
+      />
+    );
+  }
 }

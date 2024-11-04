@@ -5,5 +5,7 @@
  */
 export function sortKeyedCharObject(obj) {
   // sort entries by key (cs), then map to an array of just the values (charstatename)
-  return Object.entries(obj).sort((a, b) => a[0] - b[0]).map(entry => entry[1]);
+  return Object.entries(obj)
+    .sort((a, b) => a[0] - b[0])
+    .map((entry) => entry[1]);
 }

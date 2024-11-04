@@ -1,13 +1,13 @@
-import React from "react";
+import React from 'react';
 
 function Loading(props) {
-	/*let checked = (props.checked == true? 'checked':'');*/
-	let lClass = (props.isLoading == true? 'loading':'');
+  /*let checked = (props.checked == true? 'checked':'');*/
+  let lClass = props.isLoading == true ? 'loading' : '';
   return (
-		<div className={"loading-overlay " + lClass}> 
-			<img src={`${props.clientRoot}/images/icons/loading-state.png`} />
-		</div>
-  )
+    <div className={'loading-overlay ' + lClass}>
+      <img src={`${props.clientRoot}/images/icons/loading-state.png`} />
+    </div>
+  );
 }
 /*
 Loading.defaultProps = {

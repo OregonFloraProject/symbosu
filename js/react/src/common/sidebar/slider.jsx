@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { RangeSlider } from "@blueprintjs/core";
+import React, { useEffect, useState } from 'react';
+import { RangeSlider } from '@blueprintjs/core';
 
 function getSliderDescription(charstates, unit, state) {
   if (!Array.isArray(state)) {
@@ -33,7 +33,7 @@ function cleanRange(range, stepSize) {
 
 function getCsValuesForRange(range, states) {
   let min = states[0].cs;
-  let max = (states.length > 1? states[1].cs : states[0].cs);
+  let max = states.length > 1 ? states[1].cs : states[0].cs;
   Object.keys(states).map((key) => {
     let stateNum = Number(states[key].numval);
     let stateCs = Number(states[key].cs);
@@ -51,7 +51,7 @@ function getCsValuesForRange(range, states) {
 }
 
 function Slider({
-  states = [{charstatename:'',}],
+  states = [{ charstatename: '' }],
   ranges = {},
   label = '',
   cid = -1,
@@ -59,7 +59,7 @@ function Slider({
   onRangeChanged = () => {},
 }) {
   const overallMin = states[0].numval;
-  const overallMax = parseInt(states[states.length - 1].numval.toString().replace(/[>+]/g,'') - 0);
+  const overallMax = parseInt(states[states.length - 1].numval.toString().replace(/[>+]/g, '') - 0);
 
   const [displayRange, setDisplayRange] = useState([overallMin, overallMax]);
 
@@ -95,10 +95,10 @@ function Slider({
         max={overallMax}
         stepSize={stepSize}
         value={displayRange}
-        onChange={range => {
+        onChange={(range) => {
           setDisplayRange(range);
         }}
-        onRelease={range => {
+        onRelease={(range) => {
           // only actually fire search onRelease
           const cleanedRange = cleanRange(range, stepSize);
           let featureObj;
@@ -126,7 +126,7 @@ function Slider({
         {getSliderDescription(states, units, displayRange)}
       </label>
     </div>
-  )
+  );
 }
 
 export default Slider;
