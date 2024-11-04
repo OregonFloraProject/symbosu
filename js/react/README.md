@@ -1,5 +1,5 @@
 ### To build
-1. Make sure [NodeJS](https://nodejs.org/en/download) is installed. 
+1. Make sure [NodeJS](https://nodejs.org/en/download) 22 is installed.
 2. Use NodeJS to install the React and LESS transpilers. In this project 
 we use [Babel](https://babeljs.io/) and 
 [Webpack](https://webpack.js.org/) for this. These dependencies 
@@ -10,5 +10,5 @@ Simply run `npm install` from this directory to install them.
 the React- and LESS-based pages.
 
 NOTE: For development, replace `npm run build` in step 3 with
-`npm run dev`. Webpack will watch the files as you edit them &
+`npm run devstart`. Webpack will watch the files as you edit them &
 recompile on the fly.

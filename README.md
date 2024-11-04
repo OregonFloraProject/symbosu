@@ -89,7 +89,7 @@ development environment, you can set IS_DEV to true in [symbini.php](./config/sy
 every time you make changes to the Doctrine-based PHP code.
 
 ### To build the front end:
-Install NodeJS and run the following from [js/react](./js/react)
+Install NodeJS 22 and run the following from [js/react](./js/react)
 1. Install the NodeJS dependences: `npm install`
 2. In `src/less`: `cp config_template.less config.less` and fill in the correct value
 3. Build the React- and Less-based pages: `npm run build`
