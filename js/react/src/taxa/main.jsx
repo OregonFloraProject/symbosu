@@ -667,7 +667,7 @@ class TaxaApp extends React.Component {
 							<div key={link.url}>
 								<a 
 									href={link.url}
-									target="_blank"
+									target="_blank" rel="noreferrer"
 								>{link.title}
 								</a>
 							</div>

@@ -77,7 +77,7 @@ function RelatedBorderedItem(props) {
 				<span className="related-label">Related</span>
 				<span className="related-links">
 					{ props.rankId > RANK_FAMILY &&
-							<a className="related-link" href={props.value[1]} target="_blank">
+							<a className="related-link" href={props.value[1]} target="_blank" rel="noreferrer">
 								<FontAwesomeIcon icon="arrow-circle-up" />
 							</a>
 					}

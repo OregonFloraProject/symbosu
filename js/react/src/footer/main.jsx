@@ -46,29 +46,29 @@ class FooterApp extends React.Component {
                   </a>
                 </div>
                 <p className="mt-2">
-                  OregonFlora is based at the <a href="https://bpp.oregonstate.edu/herbarium" target="_blank">OSU Herbarium</a> at Oregon State University.
+                  OregonFlora is based at the <a href="https://bpp.oregonstate.edu/herbarium" target="_blank" rel="noreferrer">OSU Herbarium</a> at Oregon State University.
                   Our program is funded through grants and contributions. We welcome your support!
                 </p>
               </div>
             </div>
             <div className="col-md osu">
-              <a href={ "https://oregonstate.edu/" } target="_blank"><img src={ `${this.props.clientRoot}/images/footer/osu_horizontal_2c_o_over_b.png` } alt="OSU Logo"/></a>
+              <a href={ "https://oregonstate.edu/" } target="_blank" rel="noreferrer"><img src={ `${this.props.clientRoot}/images/footer/osu_horizontal_2c_o_over_b.png` } alt="OSU Logo"/></a>
               <p className="my-2">
                 <strong>OregonFlora</strong><br/>
-                <a href={ "https://bpp.oregonstate.edu/" } target="_blank">Dept. Botany & Plant Pathology</a>, OSU<br/>
+                <a href={ "https://bpp.oregonstate.edu/" } target="_blank" rel="noreferrer">Dept. Botany & Plant Pathology</a>, OSU<br/>
                 2701 SW Campus Way, Corvallis, OR 97331<br/>
-                <a href="mailto:info@oregonflora.org" target="_blank">info@oregonflora.org</a>
+                <a href="mailto:info@oregonflora.org" target="_blank" rel="noreferrer">info@oregonflora.org</a>
               </p>
             </div> 
             <div className="col-md symbiota">
-              <a href={ "https://symbiota.org/" } target="_blank"><img
+              <a href={ "https://symbiota.org/" } target="_blank" rel="noreferrer"><img
                 className="d-block mb-2"
                 style={{ width: "10em" }}
                 src={ `${this.props.clientRoot}/images/footer/LogoSymbiotaPNG.png` }
                 alt="Symbiota logo"
               /></a>
               <p>
-                OregonFlora is built on <a href={ "https://symbiota.org/" } target="_blank"><strong>Symbiota</strong></a>, a collaborative, open source content
+                OregonFlora is built on <a href={ "https://symbiota.org/" } target="_blank" rel="noreferrer"><strong>Symbiota</strong></a>, a collaborative, open source content
                 management system for curating specimen- and observation-based biodiversity data.
               </p>
             </div>

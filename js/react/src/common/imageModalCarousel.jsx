@@ -115,7 +115,7 @@ export default class ImageModalCarousel extends Component {
 													className="btn" 
 													style={{color: "white"}}
 													href={ getImageDetailPage(this.props.clientRoot, image.occid) }
-													target="_blank"
+													target="_blank" rel="noreferrer"
 												>See the full record for this image</a>
 
 										</div>

@@ -28,7 +28,7 @@ function AboutDropdown(props) {
           The following partners contribute to the occurrence data and conservation strategies:
           {PARTNERS.map(({ url, name }) => (
             <p key={name}>
-              <a href={url} target="_blank">
+              <a href={url} target="_blank" rel="noreferrer">
                 {name}
                 {' '}
                 <FontAwesomeIcon icon="external-link-alt" />

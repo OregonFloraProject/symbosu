@@ -733,7 +733,7 @@ class ExploreApp extends React.Component {
           </div>
           <div className="col-3 text-right mt-3 map">
           		{ this.state.googleMapUrl.length > 0 &&
-          			<a href={ this.props.clientRoot + "/map/googlemap.php?maptype=occquery&clid=" + this.getClid() } target="_blank">
+          			<a href={ this.props.clientRoot + "/map/googlemap.php?maptype=occquery&clid=" + this.getClid() } target="_blank" rel="noreferrer">
               		<img className="img-fluid" src={this.state.googleMapUrl} title="Project map" alt="Map representation of checklists" />
               	</a>
               }

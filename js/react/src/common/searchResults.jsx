@@ -22,7 +22,7 @@ function SearchResult(props) {
 	}
   if (props.display) {
     return (
-      <a href={props.href} className="text-decoration-none" style={{ maxWidth: "185px" }} target="_blank">
+      <a href={props.href} className="text-decoration-none" style={{ maxWidth: "185px" }} target="_blank" rel="noreferrer">
         <div className={ "card search-result " + (useGrid ? "grid-result" : "list-result") }>
             <div className={useGrid ? "" : "card-body"}>
               <img
@@ -76,7 +76,7 @@ function CardSearchResult(props) {
 	}
   if (props.display) {
     return (
-      <a href={props.href} className="search-result-link-container" target="_blank">
+      <a href={props.href} className="search-result-link-container" target="_blank" rel="noreferrer">
         <div className={ "card search-result " + (useGrid ? "grid-result" : "list-result") }>
             <div className={useGrid ? "" : "card-body"}>
               <img
@@ -200,7 +200,7 @@ class ExploreSearchResult extends React.Component  {
 								}
 								<div className={(useGrid ? "card-body" : "d-inline py-1") + " px-0"} style={{overflow: "hidden"}}>
 									<div className={"card-text" + (useGrid ? "" : " d-inline")}>
-										<a href={this.props.href} className="text-decoration-none" style={{ maxWidth: "185px" }} target="_blank">
+										<a href={this.props.href} className="text-decoration-none" style={{ maxWidth: "185px" }} target="_blank" rel="noreferrer">
 											<span className="font-italic sci-name">{this.props.sciName}</span>
 											{
 												this.props.showTaxaDetail === 'on' &&
@@ -216,7 +216,7 @@ class ExploreSearchResult extends React.Component  {
 												{
 													this.props.vouchers.map((voucher) =>  {
 														return (
-															<a href={ this.props.clientRoot + "/collections/individual/index.php?occid=" + voucher.occid } target="_blank" key={ voucher.occid } className={ "voucher" } >
+															<a href={ this.props.clientRoot + "/collections/individual/index.php?occid=" + voucher.occid } target="_blank" key={ voucher.occid } className={ "voucher" } rel="noreferrer" >
 																<span className={ "recorded-by" }>{voucher.recordedby} </span>
 																<span className={ "event-date" }>{voucher.eventdate}</span>
 																<span className={ "institution-code" }> [{ voucher.institutioncode }]</span>
@@ -414,7 +414,7 @@ ExploreSearchContainer.defaultProps = {
 function IdentifySearchResult(props) {
   const useGrid = props.viewType === "grid";//not an option here but leaving it in case
 	return (
-		<a href={props.href} className="text-decoration-none" style={{ maxWidth: "185px" }} target="_blank">
+		<a href={props.href} className="text-decoration-none" style={{ maxWidth: "185px" }} target="_blank" rel="noreferrer">
 			<div className={ "card search-result " + (useGrid ? "grid-result" : "list-result") }>
 					<div className={useGrid ? "" : "card-body"}>
 						{useGrid &&
