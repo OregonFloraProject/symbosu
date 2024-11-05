@@ -13,3 +13,14 @@
 NOTE: For development, replace `npm run build` in step 3 with
 `npm run devstart`. Webpack will watch the files as you edit them &
 recompile on the fly.
+
+### Tools
+
+ESLint and Prettier are set up in this folder to help catch issues and
+to ensure uniform & readable code style, respectively. It's recommended
+to install their helper extensions in your editor and set up Prettier
+to auto-format on save.
+
+They can also be invoked on the command line by running `npx eslint src`
+(with optional `--fix` argument to auto-fix certain issues) and
+`npx prettier . --write`.
