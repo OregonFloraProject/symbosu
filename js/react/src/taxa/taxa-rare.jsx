@@ -1,5 +1,3 @@
-import "regenerator-runtime/runtime";
-
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import ImageCarousel from "../common/imageCarousel.jsx";
