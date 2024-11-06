@@ -23,8 +23,8 @@ header("Content-Type: text/html; charset=".$CHARSET);
     ?>
 
     <!-- Sliders -->
-    <link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/js/react/node_modules/@blueprintjs/core/lib/css/blueprint.css">
-    <link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/js/react/node_modules/@blueprintjs/icons/lib/css/blueprint-icons.css">
+    <link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/js/react/node_modules/@blueprintjs/core/lib/css/blueprint.css?<?php echo filemtime($SERVER_ROOT . '/js/react/node_modules/@blueprintjs/core/lib/css/blueprint.css'); ?>">
+    <link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/js/react/node_modules/@blueprintjs/icons/lib/css/blueprint-icons.css?<?php echo filemtime($SERVER_ROOT . '/js/react/node_modules/@blueprintjs/icons/lib/css/blueprint-icons.css'); ?>">
 
     <!-- Enable Glossary Tooltips -->
     <script src="../js/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>

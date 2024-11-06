@@ -34,8 +34,8 @@ header("Content-Type: text/html; charset=".$CHARSET);
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css" />
     
     <!-- Sliders -->
-    <link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/js/react/node_modules/@blueprintjs/core/lib/css/blueprint.css">
-    <link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/js/react/node_modules/@blueprintjs/icons/lib/css/blueprint-icons.css">
+    <link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/js/react/node_modules/@blueprintjs/core/lib/css/blueprint.css?<?php echo filemtime($SERVER_ROOT . '/js/react/node_modules/@blueprintjs/core/lib/css/blueprint.css'); ?>">
+    <link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/js/react/node_modules/@blueprintjs/icons/lib/css/blueprint-icons.css?<?php echo filemtime($SERVER_ROOT . '/js/react/node_modules/@blueprintjs/icons/lib/css/blueprint-icons.css'); ?>">
 
     <div id="page-content" style="min-height: 50em;">
       <div id="react-garden"></div>
