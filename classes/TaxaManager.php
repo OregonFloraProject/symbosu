@@ -7,6 +7,8 @@ include_once("$SERVER_ROOT/config/SymbosuEntityManager.php");
 class TaxaManager {
 
   private static $RANK_GENUS = 180;
+  # sortSequence cutoff for images to show on taxon profile page
+  private static $IMAGE_SORT_SEQUENCE_CUTOFF = 100;
 
   # Basic characteristics
   private static $CID_SUNLIGHT = 680;
@@ -820,6 +822,7 @@ class TaxaManager {
       ->innerJoin("omoccurrences","o","WITH","i.occid = o.occid")
       ->innerJoin("omcollections","c","WITH","c.collid = o.collid")
       ->where("i.tid IN (:tids)")
+      ->andWhere("i.sortsequence < " . self::$IMAGE_SORT_SEQUENCE_CUTOFF)
       ->setParameter("tids", $tids)
       ->orderBy("i.sortsequence")
       ->getQuery()
