@@ -5,6 +5,9 @@ include_once("$SERVER_ROOT/classes/Functional.php");
 include_once("$SERVER_ROOT/config/SymbosuEntityManager.php");
 
 class TaxaManager {
+
+  private static $RANK_GENUS = 180;
+
   # Basic characteristics
   private static $CID_SUNLIGHT = 680;
   private static $CID_MOISTURE = 683;
@@ -89,7 +92,6 @@ class TaxaManager {
       $this->descriptions = [];
       $this->gardenId = -1;
       $this->gardenDescription = '';
-      $this->spp = [];
       $this->ambiguousSynonyms = [];
     }
   }
@@ -201,13 +203,14 @@ class TaxaManager {
       return $this->images[0]["thumbnailurl"];
     } else {
 
+      $tids = $this->getImageTids();
       // Get the thumbnail of the first image by sort sequence for a taxon
       $em = SymbosuEntityManager::getEntityManager();
       $thumb = $em->createQueryBuilder()
         ->select(["i.thumbnailurl"])
         ->from("images", "i")
-        ->where("i.tid = :tid")
-        ->setParameter("tid", $this->getTid())
+        ->where("i.tid IN (:tids)")
+        ->setParameter("tids", $tids)
         ->orderBy("i.sortsequence")
         ->setFirstResult(0)
         ->setMaxResults(1)
@@ -243,8 +246,10 @@ class TaxaManager {
     return $this->gardenDescription;
   }
   public function getSpp() {
-  	$this->spp = $this->populateSpp($this->getTid());
-  	return $this->spp;
+    if (!isset($this->spp)) {
+      $this->spp = $this->populateSpp($this->getTid());
+    }
+    return $this->spp;
   }
   
   public function isGardenTaxa() {
@@ -790,15 +795,32 @@ class TaxaManager {
     return $attr_array;
   }
 
-  private static function populateImages($tid) {
+  /**
+   * Utility function that returns an array of tids to use when selecting images. For bare species,
+   * we want to include all subspecies and order by sortSequence across all images, rather than just
+   * those associated with the bare species tid.
+   *
+   * We avoid doing this for higher taxa since their profile pages don't include tid-associated
+   * images anyway.
+   */
+  private function getImageTids() {
+    if ($this->getRankId() > self::$RANK_GENUS) {
+      $spp = $this->getSpp();
+      return [$this->getTid(), ...$spp];
+    }
+    return [$this->getTid()];
+  }
+
+  private function populateImages($tid) {
+    $tids = $this->getImageTids();
     $em = SymbosuEntityManager::getEntityManager();
     $images = $em->createQueryBuilder()
       ->select(["i.imgid, i.thumbnailurl", "i.url", "i.photographer", "i.owner", "i.copyright", "i.notes","o.occid","o.year", "o.month", "o.day","o.country","o.stateprovince","o.county","o.locality","o.recordedby","o.basisofrecord","c.collectionname"])#
       ->from("Images", "i")
       ->innerJoin("omoccurrences","o","WITH","i.occid = o.occid")
       ->innerJoin("omcollections","c","WITH","c.collid = o.collid")
-      ->where("i.tid = :tid")
-      ->setParameter("tid", $tid)
+      ->where("i.tid IN (:tids)")
+      ->setParameter("tids", $tids)
       ->orderBy("i.sortsequence")
       ->getQuery()
       ->execute();
@@ -814,7 +836,7 @@ class TaxaManager {
     return $return;
   }
   public function setImages() {
-  	$this->images = self::populateImages($this->getTid());
+    $this->images = $this->populateImages($this->getTid());
   }
 
   /**
@@ -823,15 +845,16 @@ class TaxaManager {
    *
    * This is similar to getThumbnail() but selects a fuller set of data about the image.
    */
-  private static function populateSingleImage($tid) {
+  private function populateSingleImage($tid) {
+    $tids = $this->getImageTids();
     $em = SymbosuEntityManager::getEntityManager();
     $images = $em->createQueryBuilder()
       ->select(["i.imgid, i.thumbnailurl", "i.url", "i.photographer", "i.owner", "i.copyright", "i.notes","o.occid","o.year", "o.month", "o.day","o.country","o.stateprovince","o.county","o.locality","o.recordedby","o.basisofrecord","c.collectionname"])
       ->from("Images", "i")
       ->innerJoin("omoccurrences","o","WITH","i.occid = o.occid")
       ->innerJoin("omcollections","c","WITH","c.collid = o.collid")
-      ->where("i.tid = :tid")
-      ->setParameter("tid", $tid)
+      ->where("i.tid IN (:tids)")
+      ->setParameter("tids", $tids)
       ->orderBy("i.sortsequence")
       ->setFirstResult(0)
       ->setMaxResults(1)
@@ -840,7 +863,7 @@ class TaxaManager {
     return array_map("TaxaManager::processImageData", $images);
   }
   public function setSingleImage() {
-    $this->images = self::populateSingleImage($this->getTid());
+    $this->images = $this->populateSingleImage($this->getTid());
   }
   
   private static function processImageData($img) {

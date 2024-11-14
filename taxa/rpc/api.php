@@ -140,12 +140,14 @@ function taxaManagerToJSON($taxaObj,$queryType = "default",$recursive = false,$t
 			$result["taxalinks"] = $taxaObj->getTaxalinks();
 			foreach ($result["taxalinks"] as $idx => $taxalink) {
 				$result["taxalinks"][$idx]['url'] = str_replace("--SCINAME--",$result["sciname"],$taxalink['url']);
-			}	
-			$taxaObj->setImages();
-			$allImages = $taxaObj->getImagesByBasisOfRecord();
-			$result["imagesBasis"]['HumanObservation'] = (isset($allImages['HumanObservation']) ? $allImages['HumanObservation'] : []);
-			$result["imagesBasis"]['PreservedSpecimen'] = (isset($allImages['PreservedSpecimen']) ? $allImages['PreservedSpecimen'] : []);
-			$result["imagesBasis"]['LivingSpecimen'] = (isset($allImages['LivingSpecimen']) ? $allImages['LivingSpecimen'] : []);
+			}
+			if ($taxaRankId > 180) {
+				$taxaObj->setImages();
+				$allImages = $taxaObj->getImagesByBasisOfRecord();
+				$result["imagesBasis"]['HumanObservation'] = (isset($allImages['HumanObservation']) ? $allImages['HumanObservation'] : []);
+				$result["imagesBasis"]['PreservedSpecimen'] = (isset($allImages['PreservedSpecimen']) ? $allImages['PreservedSpecimen'] : []);
+				$result["imagesBasis"]['LivingSpecimen'] = (isset($allImages['LivingSpecimen']) ? $allImages['LivingSpecimen'] : []);
+			}
 			
 			if ($taxaRankId > 140) {
 				foreach ($result['spp'] as $staxa) {#collate SPP images into bare taxon image lists
