@@ -1,4 +1,5 @@
 import React from 'react';
+import throttle from 'lodash.throttle';
 import httpGet from './httpGet';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -42,11 +43,7 @@ export class SearchWidget extends React.Component {
     };
 
     this.onKeyUp = this.onKeyUp.bind(this);
-    this.onSuggestionsRequested = this.onSuggestionsRequested.bind(this);
-  }
-
-  onTextValueChanged(e) {
-    this.setState({ textValue: e.target.value });
+    this.onSuggestionsRequested = throttle(this.onSuggestionsRequested.bind(this), 500);
   }
 
   onKeyUp(event) {
@@ -54,13 +51,13 @@ export class SearchWidget extends React.Component {
       this.setState({ suggestions: [] });
     } else if ((event.which || event.keyCode) === SearchWidget.enterKey && !this.props.isLoading) {
       this.props.onSearch({ text: this.props.textValue, value: -1 });
-    } else {
+    } else if (this.props.textValue && this.props.textValue.length > 1) {
       this.onSuggestionsRequested();
     }
   }
 
   onSuggestionsRequested() {
-    if (this.props.suggestionUrl !== '') {
+    if (this.props.suggestionUrl !== '' && this.props.textValue) {
       let suggestionUrl = `${this.props.suggestionUrl}?q=${this.props.textValue}`;
       if (this.props.clid) {
         suggestionUrl += '&clid=' + this.props.clid;
