@@ -193,7 +193,7 @@ class IdentManager extends Manager {
 			}
 			
 			#ATTRs including vendors						
-			$lookups = $this->getVendorLookups();
+			$lookups = self::getVendorLookups();
 			$clidLookup = $lookups->clidLookup;
 			$childLookup = $lookups->childLookup;
 			$vendorClids = [];
@@ -413,7 +413,7 @@ class IdentManager extends Manager {
 			}
 			$cids = array_unique(array_merge($cids,array_keys($this->attrs)));
 			
-			$cresults = $this->getCharQuery($taxa_tids,$cids);
+			$cresults = self::getCharQuery($taxa_tids,$cids);
 			$results = [];
 
 			foreach ($cresults as $cres) {
@@ -459,7 +459,7 @@ class IdentManager extends Manager {
 	 * $charStructure), ignoring the heading fields and structure defined by mysql. Used by the garden
 	 * and rare APIs, which define their own filter structure.
 	 */
-	public function getCharacteristicsForStructure($charStructure,$tids) {
+	public static function getCharacteristicsForStructure($charStructure,$tids) {
 		$cids = [];
 		foreach ($charStructure as $idx => $group) {
 			foreach ($group['characters'] as $gidx => $char) {
@@ -468,14 +468,14 @@ class IdentManager extends Manager {
 				}
 			}
 		}
-		$cresults = $this->getCharQuery($tids,$cids);
+		$cresults = self::getCharQuery($tids,$cids);
 
 		// On the garden page, extra keys must be set on the vendor characteristics. Prepare this data
 		// if either relevant cid is part of the requested structure (i.e. we are on the garden page).
 		$clidLookup = [];
 		$childLookup = [];
 		if (in_array(getRegionCid(), $cids) || in_array(getNurseryCid(), $cids)) {
-			$lookups = $this->getVendorLookups();
+			$lookups = self::getVendorLookups();
 			$clidLookup = $lookups->clidLookup;
 			$childLookup = $lookups->childLookup;
 		}
@@ -511,7 +511,7 @@ class IdentManager extends Manager {
 
 		return $charStructure;
 	}
-	private function getCharQuery($tids,$cids) {
+	private static function getCharQuery($tids,$cids) {
 		$em = SymbosuEntityManager::getEntityManager();
 		$qb = $em->createQueryBuilder();
 		$selects = [
@@ -641,7 +641,7 @@ class IdentManager extends Manager {
 		return $this->setAttrs($attrs);
 	}
 	/* This could go elsewhere */
-	public function getVendorLookups() {
+	public static function getVendorLookups() {
 		$em = SymbosuEntityManager::getEntityManager();
 		/**
 		 * 2024-10-04(eric): as far as I understand, Fmchklstprojlink.sortSequence is co-opted here to

@@ -140,11 +140,7 @@ function getEmpty() {
 
 function getFilterableChars($tids) {
 	global $FILTERABLE_CHARS;
-
 	$identManager = new IdentManager();
-	$identManager->setClid(Fmchecklists::$CLID_RARE_ALL);
-	$identManager->setTaxa();
-
 	return $identManager->getCharacteristicsForStructure($FILTERABLE_CHARS, $tids);
 }
 
@@ -196,7 +192,6 @@ function getTaxa($params) {
 		foreach ($taxa as $taxon) {#flatten tids into an array
 			$results['tids'][] = $taxon['tid'];
 		}
-		$results["characteristics"] = getFilterableChars($results['tids']);
 
 		array_walk_recursive($results,'cleanWindowsRecursive');#replace Windows characters
 		$resultsString = json_encode($results, JSON_NUMERIC_CHECK);

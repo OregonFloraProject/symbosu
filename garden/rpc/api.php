@@ -258,14 +258,7 @@ function getEmpty() {
 
 function get_garden_characteristics($tids) {
 	global $CUSTOM_GARDEN_CHARACTERISTICS;
-	
 	$identManager = new IdentManager();
-
-	$identManager->setClid(Fmchecklists::$CLID_GARDEN_ALL);
-	$identManager->setPid(Fmchecklists::$PID_GARDEN_ALL);
-
-	$identManager->setTaxa();
-
 	return $identManager->getCharacteristicsForStructure($CUSTOM_GARDEN_CHARACTERISTICS, $tids);
 }
 
@@ -327,7 +320,7 @@ function get_garden_taxa($params) {
 	$resultsString = '';
 
 	$identManager = new IdentManager();
-	$identManager->setClid($params['clid']);
+	$identManager->setClid(getGardenClid());
 	$identManager->setPid(3);
 	$results["clid"] = getGardenClid();
 	$results["pid"] = 3;
@@ -341,8 +334,11 @@ function get_garden_taxa($params) {
 	if (
 		(key_exists("attr", $params))
 		|| (isset($params['range']))
-		|| ( array_key_exists("search", $params) && !empty($params["search"]) )
+		|| (array_key_exists("search", $params) && !empty($params["search"]))
+		|| (isset($params["clid"]) && $params["clid"] != getGardenClid())
 	) {
+		$identManager->setClid($params["clid"]);
+
 		$identManager->setIDsOnly(true);
 		$identManager->setAttrsFromParams($params);
 		
@@ -360,7 +356,6 @@ function get_garden_taxa($params) {
 		foreach ($taxa as $taxon) {#flatten tids into an array
 			$results['tids'][] = $taxon['tid'];
 		}
-		$results["characteristics"] = get_garden_characteristics($results['tids']);
 
 		array_walk_recursive($results,'cleanWindowsRecursive');#replace Windows characters
 		$resultsString = json_encode($results, JSON_NUMERIC_CHECK);
