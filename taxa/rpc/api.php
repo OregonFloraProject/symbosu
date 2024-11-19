@@ -17,13 +17,23 @@ function getTaxon($tid, $queryType = "default") {
 
 function searchTaxa($searchTerm) {
   $results = [];
-  $taxaRepo = SymbosuEntityManager::getEntityManager()->getRepository("Taxa");
+  $em = SymbosuEntityManager::getEntityManager();
+  $expr = $em->getExpressionBuilder();
+  $taxaRepo = $em->getRepository("Taxa");
   $taxaResults = $taxaRepo->createQueryBuilder("t")
-    ->innerJoin("Taxavernaculars", "v", "WITH", "t.tid = v.tid")
-    ->orWhere("t.sciname LIKE :search")
-    ->orWhere("v.vernacularname LIKE :search")
-    ->groupBy("t.tid")
-		->orderBy("t.sciname")
+    ->where($expr->in(
+      "t.tid",
+      $em->createQueryBuilder()
+        ->select("ts.tidaccepted")
+        ->from("Taxa", "t0")
+        ->innerJoin("Taxstatus", "ts", "WITH", "t0.tid = ts.tid")
+        ->leftJoin("Taxavernaculars", "v", "WITH", "t0.tid = v.tid")
+        ->orWhere("t0.sciname LIKE :search")
+        ->orWhere("v.vernacularname LIKE :search")
+        ->groupBy("ts.tidaccepted")
+        ->getDQL()
+    ))
+    ->orderBy("t.sciname")
     ->setParameter("search", '%' . $searchTerm . '%')
     ->getQuery()
     ->getResult();
