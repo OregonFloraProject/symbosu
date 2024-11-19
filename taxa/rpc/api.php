@@ -18,45 +18,76 @@ function getTaxon($tid, $queryType = "default") {
 function searchTaxa($searchTerm) {
   $results = [];
   $em = SymbosuEntityManager::getEntityManager();
-  $expr = $em->getExpressionBuilder();
   $taxaRepo = $em->getRepository("Taxa");
-  $taxaResults = $taxaRepo->createQueryBuilder("t")
-    ->where($expr->in(
-      "t.tid",
-      $em->createQueryBuilder()
-        ->select("ts.tidaccepted")
-        ->from("Taxa", "t0")
-        ->innerJoin("Taxstatus", "ts", "WITH", "t0.tid = ts.tid")
-        ->leftJoin("Taxavernaculars", "v", "WITH", "t0.tid = v.tid")
-        ->orWhere("t0.sciname LIKE :search")
-        ->orWhere("v.vernacularname LIKE :search")
-        ->groupBy("ts.tidaccepted")
-        ->getDQL()
-    ))
-    ->orderBy("t.sciname")
-    ->setParameter("search", '%' . $searchTerm . '%')
+
+  // first search for a single exact match
+  $initialQueryResults = $taxaRepo->createQueryBuilder("t")
+    ->where("t.sciname = :search")
+    ->groupBy("t.tid")
+    ->setParameter("search", $searchTerm)
     ->getQuery()
     ->getResult();
 
-  if ($taxaResults != null) {
-    foreach ($taxaResults as $t) {
-      $tm = TaxaManager::fromModel($t);
-      $tj = taxaManagerToJSON($tm,"default",true);
-      array_push($results, $tj);
+  // if there is a single exact match, just return it; taxa/search.jsx will redirect.
+  // if not, we need to do a broader search
+  if ($initialQueryResults !== null && count($initialQueryResults) === 1) {
+    $t = $initialQueryResults[0];
+    $tm = TaxaManager::fromModel($t);
+    $tj = taxaManagerToJSON($tm,"default",true);
+
+    // if this is a unique synonym, include tidaccepted so we can redirect appropriately
+    $tsResults = getTaxStatus($t->getTid());
+    if (count($tsResults) === 1 && $tsResults[0]->getTidAccepted() !== $t->getTid()) {
+      $tj["tidaccepted"] = $tsResults[0]->getTidAccepted();
+    }
+
+    array_push($results, $tj);
+  } else {
+    $expr = $em->getExpressionBuilder();
+    $taxaResults = $taxaRepo->createQueryBuilder("t")
+      ->where($expr->in(
+        "t.tid",
+        $em->createQueryBuilder()
+          ->select("ts.tidaccepted")
+          ->from("Taxa", "t0")
+          ->innerJoin("Taxstatus", "ts", "WITH", "t0.tid = ts.tid")
+          ->leftJoin("Taxavernaculars", "v", "WITH", "t0.tid = v.tid")
+          ->orWhere("t0.sciname LIKE :search")
+          ->orWhere("v.vernacularname LIKE :search")
+          ->groupBy("ts.tidaccepted")
+          ->getDQL()
+      ))
+      ->orderBy("t.sciname")
+      ->setParameter("search", '%' . $searchTerm . '%')
+      ->getQuery()
+      ->getResult();
+
+    if ($taxaResults != null) {
+      foreach ($taxaResults as $t) {
+        $tm = TaxaManager::fromModel($t);
+        $tj = taxaManagerToJSON($tm,"default",true);
+        array_push($results, $tj);
+      }
     }
   }
 
   return $results;
 }
+
+function getTaxStatus($tid) {
+  $tsRepo = SymbosuEntityManager::getEntityManager()->getRepository("Taxstatus");
+  $tsResults = $tsRepo->createQueryBuilder("ts")
+    ->orWhere("ts.tid = :tid")
+    ->setParameter(":tid", $tid)
+    ->getQuery()
+    ->getResult();
+  return $tsResults;
+}
+
 #if a synonym value is passed, determine whether the synonym tid is unique in TaxStatus
 #if not, we will redirect in taxa/main.jsx
 function checkSynonym($synonym) {
-  $tsRepo = SymbosuEntityManager::getEntityManager()->getRepository("Taxstatus");
-  $tsResults = $tsRepo->createQueryBuilder("ts")
-    ->orWhere("ts.tid = :synonym")
-    ->setParameter(":synonym", intval($synonym))
-    ->getQuery()
-    ->getResult();
+  $tsResults = getTaxStatus(intval($synonym));
   return ["count" => sizeof($tsResults)];
 }
 

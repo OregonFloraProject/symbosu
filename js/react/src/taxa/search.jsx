@@ -55,7 +55,10 @@ class TaxaSearchResults extends React.Component {
           res = JSON.parse(res);
           //console.log(res);
           if (res.length === 1) {
-            window.location = `./index.php?taxon=${res[0].tid}`;
+            window.location =
+              'tidaccepted' in res[0]
+                ? `./index.php?taxon=${res[0].tidaccepted}&synonym=${res[0].tid}`
+                : `./index.php?taxon=${res[0].tid}`;
           }
           this.setState({ results: res });
         })
