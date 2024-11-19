@@ -82,11 +82,7 @@ function getSubTaxa($parentTid) {#not sure this happens anymore
   return $results;
 }
   
-function taxaManagerToJSON($taxaObj,$queryType = "default",$recursive = false,$taxaRankId = null) {
-	/*taxaRankId = the rankId of the requested taxa; we set it below and pass it through
-		so that recursive calls avoid expensive image collection; taxa.tid = 88 runs out of memory
-	*/
-
+function taxaManagerToJSON($taxaObj,$queryType = "default",$minimalData = false) {
 	$result = TaxaManager::getEmptyTaxon();
   $taxaRepo = SymbosuEntityManager::getEntityManager()->getRepository("Taxa");
 
@@ -98,22 +94,20 @@ function taxaManagerToJSON($taxaObj,$queryType = "default",$recursive = false,$t
 		$result['imagesBasis'] = [];
 		$result['imagesBasis']['HumanObservation'] = [];
 		$result['imagesBasis']['PreservedSpecimen'] = [];
-		$result['imagesBasis']['LivingSpecimen'] = [];  
-		$result["rankId"] = $taxaObj->getRankId();  
-		if ($taxaRankId === null) {
-			$taxaRankId = $taxaObj->getRankId();
-		}
+		$result['imagesBasis']['LivingSpecimen'] = [];
+		$taxaRankId = $taxaObj->getRankId();
+		$result["rankId"] = $taxaRankId;
 		$result["vernacular"] = [
 			"basename" => $taxaObj->getBasename(),
 			"names" => $taxaObj->getVernacularNames()
 		];
-		
-		if ($recursive === false) {#default
+
+		if ($minimalData === false) {#default
 			$spp = $taxaObj->getSpp(); 
 			foreach($spp as $rowArr){
 				$taxaModel = $taxaRepo->find($rowArr['tid']);
 				$taxa = TaxaManager::fromModel($taxaModel);
-				$tj = taxaManagerToJSON($taxa,$queryType,true,$taxaRankId);
+				$tj = taxaManagerToJSON($taxa,$queryType,true);
 				if (!isset($result["spp"])) {
 					$result['spp'] = [];
 				}
@@ -158,30 +152,10 @@ function taxaManagerToJSON($taxaObj,$queryType = "default",$recursive = false,$t
 				$result["imagesBasis"]['PreservedSpecimen'] = (isset($allImages['PreservedSpecimen']) ? $allImages['PreservedSpecimen'] : []);
 				$result["imagesBasis"]['LivingSpecimen'] = (isset($allImages['LivingSpecimen']) ? $allImages['LivingSpecimen'] : []);
 			}
-			
-			if ($taxaRankId > 140) {
-				foreach ($result['spp'] as $staxa) {#collate SPP images into bare taxon image lists
 
-					if (isset($staxa['imagesBasis']['HumanObservation'])) {
-						$result['imagesBasis']['HumanObservation'] = array_merge($result['imagesBasis']['HumanObservation'],$staxa['imagesBasis']['HumanObservation']);
-					}
-					if (isset($staxa['imagesBasis']['PreservedSpecimen'])) {
-						$result['imagesBasis']['PreservedSpecimen'] = array_merge($result['imagesBasis']['PreservedSpecimen'],$staxa['imagesBasis']['PreservedSpecimen']);
-					}
-					if (isset($staxa['imagesBasis']['HumanObservation'])) {
-						$result['imagesBasis']['LivingSpecimen'] = array_merge($result['imagesBasis']['LivingSpecimen'],$staxa['imagesBasis']['LivingSpecimen']);
-					}
-				}
-			}
-
-		}elseif($recursive === true){#just need one image, as in SPP or searchTaxa()
-			if ($taxaRankId > 140) {
-				$taxaObj->setImages();
-				$images = $taxaObj->getImages();
-			}else{
-				$taxaObj->setSingleImage();
-				$images = $taxaObj->getImage();#because getImages runs out of memory for tid 88
-			}
+		}elseif($minimalData === true){#just need one image, as in SPP or searchTaxa()
+			$taxaObj->setSingleImage();
+			$images = $taxaObj->getImage();
 			if (sizeof($images) === 0 || $images[0] === null) {
 				$spp = $taxaObj->getSpp();
 				foreach($spp as $rowArr){
