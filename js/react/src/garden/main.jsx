@@ -156,6 +156,11 @@ class GardenPageApp extends React.Component {
         });
         const pageTitle = document.getElementsByTagName('title')[0];
         pageTitle.innerHTML = `${pageTitle.innerHTML} ${res.title}`;
+
+        const queryParams = getUrlQueryParams(window.location.search);
+        if (queryParams.clid) {
+          this.onCannedFilter(queryParams.clid);
+        }
       })
       .catch((err) => {
         //window.location = "/";
@@ -286,7 +291,6 @@ class GardenPageApp extends React.Component {
       });
 
       url = url + '?' + identParams.toString();
-      //console.log(decodeURIComponent(url));
       httpGet(url)
         .then((res) => {
           let jres = JSON.parse(res);
@@ -350,31 +354,6 @@ class GardenPageApp extends React.Component {
     this.setState({ currentTids: tids });
   }
 
-  onAttrResults(chars) {
-    let newAttrs = {};
-    let newSliders = {};
-
-    let newCids = [];
-    Object.entries(chars).map(([key, group]) => {
-      Object.entries(group.characters).map(([ckey, gchar]) => {
-        newCids.push(gchar.cid);
-      });
-    });
-    Object.entries(this.state.filters.attrs).map(([cid, attr]) => {
-      if (newCids.indexOf(Number(cid)) != -1) {
-        newAttrs[cid] = attr;
-      }
-    });
-    Object.entries(this.state.filters.sliders).map(([cid, slider]) => {
-      if (newCids.indexOf(Number(cid)) != -1) {
-        newSliders[cid] = slider;
-      }
-    });
-    this.setState({
-      filters: Object.assign({}, this.state.filters, { attrs: newAttrs, sliders: newSliders }),
-      characteristics: chars,
-    });
-  }
   sortResults(results) {
     //should receive taxa from API
     let newResults = {};
