@@ -25,9 +25,13 @@ function SearchPageHeader(props) {
       </h1>
     );
   } else if (!props.isLoading) {
+    const message =
+      props.searchText?.length < 3
+        ? `Whoops, we couldn't get results for "${props.searchText}". Please try again with a longer search term.`
+        : `Whoops, we didn't find any results for "${props.searchText}"`;
     return (
       <div>
-        <h1>Whoops, we didn&apos;t find any results for &quot;{props.searchText}&quot;</h1>
+        <h1>{message}</h1>
         <button className="btn btn-primary my-4" onClick={() => window.history.back()}>
           Go back
         </button>

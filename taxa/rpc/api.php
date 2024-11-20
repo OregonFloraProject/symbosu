@@ -17,6 +17,11 @@ function getTaxon($tid, $queryType = "default") {
 
 function searchTaxa($searchTerm) {
   $results = [];
+  $searchTerm = trim($searchTerm);
+  if (strlen($searchTerm) < 3) {
+    return $results;
+  }
+
   $em = SymbosuEntityManager::getEntityManager();
   $taxaRepo = $em->getRepository("Taxa");
 
