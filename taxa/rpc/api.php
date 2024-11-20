@@ -26,17 +26,40 @@ function searchTaxa($searchTerm) {
   $taxaRepo = $em->getRepository("Taxa");
 
   // first search for a single exact match
-  $initialQueryResults = $taxaRepo->createQueryBuilder("t")
+  $exactMatchResults = $taxaRepo->createQueryBuilder("t")
     ->where("t.sciname = :search")
     ->groupBy("t.tid")
     ->setParameter("search", $searchTerm)
     ->getQuery()
     ->getResult();
 
+  // next search for coarse vernacularname matches; we can only use the exact match above if there
+  // are no vernacularname matches
+  $expr = $em->getExpressionBuilder();
+  $vernacularResults = $taxaRepo->createQueryBuilder("t")
+    ->where($expr->in(
+      "t.tid",
+      $em->createQueryBuilder()
+        ->select("ts.tidaccepted")
+        ->from("Taxavernaculars", "v")
+        ->innerJoin("Taxstatus", "ts", "WITH", "v.tid = ts.tid")
+        ->orWhere("v.vernacularname LIKE :search")
+        ->groupBy("ts.tidaccepted")
+        ->getDQL()
+    ))
+    ->orderBy("t.sciname")
+    ->setParameter("search", '%' . $searchTerm . '%')
+    ->getQuery()
+    ->getResult();
+
   // if there is a single exact match, just return it; taxa/search.jsx will redirect.
-  // if not, we need to do a broader search
-  if ($initialQueryResults !== null && count($initialQueryResults) === 1) {
-    $t = $initialQueryResults[0];
+  // if not, we need to do a broader sciname search as well, and return all the coarse results
+  if ($exactMatchResults !== null
+    && $vernacularResults !== null
+    && count($exactMatchResults) === 1
+    && count($vernacularResults) === 0
+  ) {
+    $t = $exactMatchResults[0];
     $tm = TaxaManager::fromModel($t);
     $tj = taxaManagerToJSON($tm,"default",true);
 
@@ -49,16 +72,14 @@ function searchTaxa($searchTerm) {
     array_push($results, $tj);
   } else {
     $expr = $em->getExpressionBuilder();
-    $taxaResults = $taxaRepo->createQueryBuilder("t")
+    $sciNameResults = $taxaRepo->createQueryBuilder("t")
       ->where($expr->in(
         "t.tid",
         $em->createQueryBuilder()
           ->select("ts.tidaccepted")
           ->from("Taxa", "t0")
           ->innerJoin("Taxstatus", "ts", "WITH", "t0.tid = ts.tid")
-          ->leftJoin("Taxavernaculars", "v", "WITH", "t0.tid = v.tid")
           ->orWhere("t0.sciname LIKE :search")
-          ->orWhere("v.vernacularname LIKE :search")
           ->groupBy("ts.tidaccepted")
           ->getDQL()
       ))
@@ -67,8 +88,15 @@ function searchTaxa($searchTerm) {
       ->getQuery()
       ->getResult();
 
-    if ($taxaResults != null) {
+    if ($sciNameResults !== null && $vernacularResults !== null) {
+      $taxaResults = array_merge($sciNameResults, $vernacularResults);
+      usort($taxaResults, function ($a, $b) { return strcasecmp($a->getSciname(), $b->getSciname()); });
+
+      // strip duplicates, since we're now searching for sciname and vernacular name separately
+      $tids = [];
       foreach ($taxaResults as $t) {
+        if (isset($tids[$t->getTid()])) continue;
+        $tids[$t->getTid()] = true;
         $tm = TaxaManager::fromModel($t);
         $tj = taxaManagerToJSON($tm,"default",true);
         array_push($results, $tj);
