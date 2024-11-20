@@ -12,8 +12,8 @@ include_once("../config/symbini.php");
       include("$SERVER_ROOT/header.php");
     ?>
     <!-- Include page style here to override anything in header -->
-    <link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/css/compiled/theme.css">
-    <link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/css/compiled/taxa.css">
+    <link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/css/compiled/theme.css?<?php echo filemtime($SERVER_ROOT . '/css/compiled/theme.css'); ?>">
+    <link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/css/compiled/taxa.css?<?php echo filemtime($SERVER_ROOT . '/css/compiled/taxa.css'); ?>">
     
     
     <!-- image carousel -->

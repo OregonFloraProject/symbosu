@@ -63,7 +63,7 @@ class SynonymItem extends React.Component {
     return (
       <div className={'synonym-items row dashed-border py-1'}>
         <div className="col font-weight-bold char-label">Synonyms and Misapplied Names</div>
-        <div className={(this.state.showSynonyms ? 'show-full' : 'show-short') + ' col'}>
+        <div className="synonym-list col">
           <span className="short-list">
             {visibleItems.length > 0 &&
               Object.entries(visibleItems)
@@ -76,9 +76,10 @@ class SynonymItem extends React.Component {
                   );
                 })
                 .reduce((prev, curr) => [prev, ', ', curr])}
+            {hiddenItems.length > 0 && !this.state.showSynonyms ? '...' : ''}
           </span>
 
-          <span className="full-list">
+          <span className="full-list" hidden={!this.state.showSynonyms}>
             {hiddenItems.length > 0 &&
               Object.entries(hiddenItems)
                 .map(([key, obj]) => {
