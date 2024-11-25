@@ -30,9 +30,11 @@ function disableTaxonomy() {
 		'verbatimelevation', 'habitat', 'associatedtaxa', 'verbatimattributes', 'occurrenceremarks', 
 		'establishmentmeans', 'language', 'processingstatus'];
 
+	// Processing statuses to enable vouchervision field colors etc.
+	let vvProcessingStatus = ['vouchervision qc', 'vouchervision temp', 'special request'];
 
-	// Add some customizations for VoucherVision QC processing status
-	if( $("select[name='processingstatus']").val() == 'vouchervision qc') {
+	// Add some customizations for VoucherVision processing statuses
+	if( vvProcessingStatus.includes($("select[name='processingstatus']").val())) {
 
 		// Disable taxonomy fields to force use of Determination History
 		// Defined in occurVarOSUColls.js
