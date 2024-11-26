@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import SearchWidget from '../common/search.jsx';
 import httpGet from '../common/httpGet.js';
@@ -105,23 +105,30 @@ function HeaderDropdownItem(props) {
 }
 
 function HeaderDropdown(props) {
+  const [show, setShow] = useState(false);
   let id = props.title.replace(/[^a-zA-Z_]/g, '').toLowerCase();
   id = `header-dropdown-${id}`;
   return (
-    <li className="nav-item dropdown">
+    <li
+      className="nav-item dropdown"
+      onClick={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget)) setShow(!show);
+      }}
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget)) setShow(false);
+      }}
+    >
       <a
         id={id}
         className={'nav-link dropdown-toggle' + props.classes}
         href="#"
-        rel="external"
         role="button"
-        data-toggle="dropdown"
         aria-haspopup="true"
-        aria-expanded="false"
+        aria-expanded={show}
       >
         {props.title}
       </a>
-      <div className="dropdown-menu" aria-labelledby={id}>
+      <div className={`dropdown-menu${show ? ' show' : ''}`} aria-labelledby={id}>
         {props.children}
       </div>
     </li>
@@ -139,6 +146,7 @@ class HeaderApp extends React.Component {
       dropdowns: DROPDOWNS,
       headerHeight: 100,
       isMobile: false,
+      showMobileMenu: false,
     };
 
     this.onSearchTextChanged = this.onSearchTextChanged.bind(this);
@@ -296,16 +304,23 @@ class HeaderApp extends React.Component {
           style={{ height: this.state.headerHeight }}
         >
           {/* ${this.state.isCollapsed ? "site-header-scroll" : ''} */}
-          <div id="site-header-dropdowns-wrapper" className="">
+          <div
+            id="site-header-dropdowns-wrapper"
+            onBlur={(e) => {
+              if (!e.currentTarget.contains(e.relatedTarget)) this.setState({ showMobileMenu: false });
+            }}
+          >
             <button
               id="site-header-navbar-toggler"
               className={'navbar-toggler ml-auto' + (this.state.isMobile ? ' collapsed' : '')}
               type="button"
-              data-toggle="collapse"
-              data-target="#site-header-dropdowns"
               aria-controls="navbarSupportedContent"
-              aria-expanded="false"
+              aria-expanded={this.state.showMobileMenu}
               aria-label="Toggle navigation"
+              onClick={(e) => {
+                if (!e.currentTarget.contains(e.relatedTarget))
+                  this.setState({ showMobileMenu: !this.state.showMobileMenu });
+              }}
             >
               <span className="menu-toggle">
                 <FontAwesomeIcon icon="bars" size="2x" />
@@ -313,7 +328,10 @@ class HeaderApp extends React.Component {
             </button>
 
             {
-              <ul id="site-header-dropdowns" className={'navbar-nav' + (this.state.isMobile ? ' collapse' : '')}>
+              <ul
+                id="site-header-dropdowns"
+                className={`navbar-nav${this.state.isMobile ? ' collapse' : ''}${this.state.showMobileMenu ? ' show' : ''}`}
+              >
                 {Object.keys(this.state.dropdowns).map((key) => {
                   let currentParent = this.state.dropdowns[key].currentAncestor ? ' current-page current-ancestor' : '';
                   return (

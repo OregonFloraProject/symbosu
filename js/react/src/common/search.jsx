@@ -40,6 +40,7 @@ export class SearchWidget extends React.Component {
     super(props);
     this.state = {
       suggestions: [],
+      focused: false,
     };
 
     this.onKeyUp = this.onKeyUp.bind(this);
@@ -94,12 +95,20 @@ export class SearchWidget extends React.Component {
 
   render() {
     return (
-      <div className="search-widget" style={this.props.style}>
+      <div
+        className="search-widget"
+        style={this.props.style}
+        onFocus={(e) => {
+          if (!e.currentTarget.contains(e.relatedTarget)) this.setState({ focused: true });
+        }}
+        onBlur={(e) => {
+          if (!e.currentTarget.contains(e.relatedTarget)) this.setState({ focused: false });
+        }}
+      >
         <input
           name="search"
           type="text"
           className="form-control"
-          data-toggle="dropdown"
           autoComplete="off"
           onKeyUp={this.onKeyUp}
           placeholder={this.props.placeholder}
@@ -107,7 +116,7 @@ export class SearchWidget extends React.Component {
           value={this.props.textValue}
         />
         <div
-          className="dropdown-menu"
+          className={`dropdown-menu${this.state.focused ? ' show' : ''}`}
           style={{ display: Object.keys(this.state.suggestions).length === 0 ? ' none' : '' }}
         >
           {this.state.suggestions.map((s) => {
