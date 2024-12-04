@@ -196,6 +196,10 @@ function taxaManagerToJSON($taxaObj,$queryType = "default",$minimalData = false)
 			global $RPG_FLAG;
 			if ($RPG_FLAG) {
 				$result["accessRestricted"] = $taxaObj->getAccessRestricted();
+
+				if ($queryType === 'rare') {
+					$result["associations"] = $taxaObj->getAssociations();
+				}
 			}
 			if ($queryType !== 'default') {
 				$result["characteristics"] = $taxaObj->getCharacteristics($queryType);

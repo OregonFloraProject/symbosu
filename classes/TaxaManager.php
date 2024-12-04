@@ -76,6 +76,7 @@ class TaxaManager {
   protected $spp;
   #protected $ambSyn;
   protected $ambiguousSynonyms;
+  protected $associations;
 
   public function __construct($tid=-1) {
     if ($tid !== -1) {
@@ -172,6 +173,12 @@ class TaxaManager {
       $this->accessRestricted = $this->populateAccessRestricted($this->getTid());
     }
     return $this->accessRestricted;
+  }
+  public function getAssociations() {
+    if (is_null($this->associations)) {
+      $this->associations = $this->populateAssociations($this->getTid());
+    }
+    return $this->associations;
   }
   public function getBasename() {
     return $this->basename;
@@ -465,6 +472,32 @@ class TaxaManager {
       }
       return 0;
     }
+  }
+
+  private function populateAssociations($tid = null) {
+    $return = [];
+    if ($tid) {
+      $em = SymbosuEntityManager::getEntityManager();
+      $associations = $em->createQueryBuilder()
+        ->select(["ta.relationship", "ta.tidassociate", "COALESCE(t.sciname, ta.verbatimsciname) sciname", "ta.notes"])
+        ->from("Taxonassociations", "ta")
+        ->leftJoin("Taxa", "t", "WITH", "t.tid = ta.tidassociate")
+        ->where("ta.tid = :tid")
+        ->orderBy("sciname")
+        ->setParameter("tid", $tid)
+        ->getQuery()
+        ->execute();
+
+      foreach($associations as $row) {
+        $type = $row["relationship"];
+        unset($row["relationship"]);
+        if ($type === "associatedWith") {
+          unset($row["notes"]);
+        }
+        $return[$type][] = $row;
+      }
+    }
+    return $return;
   }
 
   private static function getEmptyCharacteristics($queryType = 'default') {
