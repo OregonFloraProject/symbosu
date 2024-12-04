@@ -125,8 +125,8 @@ function TaxaRareApp(props) {
               management: res.characteristics.management,
             },
             descriptions,
-            lookalikes: [],
-            associatedSpecies: [],
+            lookalikes: res.associations['look-alike'] ?? [],
+            associatedSpecies: res.associations.associatedWith ?? [],
             accessRestricted: !!res.accessRestricted,
           });
 
@@ -265,8 +265,17 @@ function TaxaRareApp(props) {
             needsPermission={data.accessRestricted}
           />
           <SideBarSection title="Survey & Manage" items={data.surveyManage} glossary={glossary} />
-          <SideBarSectionLookalikesTable title="Look-Alikes" items={data.lookalikes} glossary={glossary} />
-          <SideBarSectionSpeciesList title="Associated species" items={data.associatedSpecies} />
+          <SideBarSectionLookalikesTable
+            title="Look-Alikes"
+            items={data.lookalikes}
+            glossary={glossary}
+            clientRoot={props.clientRoot}
+          />
+          <SideBarSectionSpeciesList
+            title="Associated species"
+            items={data.associatedSpecies}
+            clientRoot={props.clientRoot}
+          />
           <div className="taxa-link">
             <a href={getTaxaPage(props.clientRoot, tid)}>
               <button className="my-2 btn-primary">Core profile page</button>
