@@ -86,20 +86,25 @@ function TaxaRareApp(props) {
           // 	childUrl = "#subspecies";
           // }
 
+          // use profile 8 and 9 for summary and relevant literature, respectively,
+          // and the first other profile for taxon description
+          const taxonDescriptions = res.descriptions.filter((desc) => desc.profile !== 8 && desc.profile !== 9);
           const descriptions = [
             {
-              caption: 'Summary',
-              desc: [],
               source: null,
+              desc: [],
+              ...(res.descriptions.find((desc) => desc.profile === 8) ?? {}),
+              caption: 'Summary',
             },
             {
-              ...res.descriptions[0],
+              ...taxonDescriptions[0],
               caption: 'Taxon description',
             },
             {
               caption: 'Relevant literature',
-              desc: [],
               source: null,
+              desc: [],
+              ...(res.descriptions.find((desc) => desc.profile === 9) ?? {}),
             },
           ];
 

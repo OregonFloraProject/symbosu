@@ -32,6 +32,13 @@ class Taxadescrblock
   /**
    * @var integer
    *
+   * @ORM\Column(name="tdprofileid")
+   */
+  private $tdprofileid;
+
+  /**
+   * @var integer
+   *
    * @ORM\Column(name="tid")
    */
   private $tid;

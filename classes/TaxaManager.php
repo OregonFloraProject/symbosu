@@ -347,7 +347,7 @@ class TaxaManager {
   	if ($tid) {
 			$em = SymbosuEntityManager::getEntityManager();
 			$rsArr = $em->createQueryBuilder()
-				->select(["ts.tid, tdb.tdbid, tdb.caption, tdb.language, tdb.source, tdb.sourceurl, tds.tdsid, tds.heading, tds.statement, tds.displayheader"])#
+				->select(["ts.tid, tdb.tdbid, tdb.caption, tdb.language, tdb.source, tdb.sourceurl, tds.tdsid, tds.heading, tds.statement, tds.displayheader, tdb.tdprofileid"])#
 				->from("Taxstatus", "ts")
 				->innerJoin("Taxadescrblock", "tdb", "WITH", "ts.tid = tdb.tid")
 				->innerJoin("Taxadescrstmts", "tds", "WITH", "tds.tdbid = tdb.tdbid")
@@ -408,6 +408,7 @@ class TaxaManager {
 		#}
 		if(!isset($retArr[$indexKey]) || !array_key_exists($rowArr['tdbid'],$retArr[$indexKey])){
 			$retArr[$indexKey][$rowArr['tdbid']]["caption"] = $rowArr['caption'];
+			$retArr[$indexKey][$rowArr['tdbid']]["profile"] = $rowArr['tdprofileid'];
 			$retArr[$indexKey][$rowArr['tdbid']]["source"] = $rowArr['source'];
 			$retArr[$indexKey][$rowArr['tdbid']]["url"] = $rowArr['sourceurl'];
 			$retArr[$indexKey][$rowArr['tdbid']]["desc"] = [];
