@@ -37,10 +37,19 @@ header("Content-Type: text/html; charset=".$CHARSET);
     <link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/js/react/node_modules/@blueprintjs/core/lib/css/blueprint.css?<?php echo filemtime($SERVER_ROOT . '/js/react/node_modules/@blueprintjs/core/lib/css/blueprint.css'); ?>">
     <link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/js/react/node_modules/@blueprintjs/icons/lib/css/blueprint-icons.css?<?php echo filemtime($SERVER_ROOT . '/js/react/node_modules/@blueprintjs/icons/lib/css/blueprint-icons.css'); ?>">
 
+    <!-- Enable Glossary Tooltips -->
+    <script src="../js/jquery-ui.min.js" type="text/javascript"></script>
+    <link href="../css/jquery-ui.min.css" type="text/css" rel="Stylesheet" />
+    <link rel="stylesheet" type="text/css" href="../css/tooltip.css?<?php echo $CSS_VERSION; ?>" />
+    <script type="text/javascript" src="../js/symb/glossary.tooltip.js"></script>
+
+    <!-- DOMPurify -->
+    <script type="text/javascript" src="../js/purify.min.js"></script>
+
     <div id="page-content" style="min-height: 50em;">
       <div id="react-garden"></div>
 				<script 
-					src="<?php echo $CLIENT_ROOT?>/js/react/dist/garden.js?<?php echo filemtime($SERVER_ROOT . '/js/react/dist/garden.js'); ?>"
+					src="<?php echo $CLIENT_ROOT?>/js/react/dist/checklist-special.js?<?php echo filemtime($SERVER_ROOT . '/js/react/dist/checklist-special.js'); ?>"
 					type="text/javascript">
 				</script>
     </div>

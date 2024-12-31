@@ -1,10 +1,6 @@
 import React from 'react';
 //import CrumbBuilder from "../common/crumbBuilder.jsx";
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { faChevronUp } from '@fortawesome/free-solid-svg-icons';
-library.add(faChevronUp);
 
 class InfographicDropdown extends React.Component {
   constructor(props) {

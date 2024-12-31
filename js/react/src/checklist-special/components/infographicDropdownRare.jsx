@@ -1,9 +1,5 @@
 import React, { useState } from 'react';
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { faChevronUp } from '@fortawesome/free-solid-svg-icons';
-library.add(faChevronUp);
 
 function InfographicDropdown(props) {
   const [isCollapsed, setIsCollapsed] = useState(false);
