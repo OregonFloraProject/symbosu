@@ -39,9 +39,9 @@ header("Content-Type: text/html; charset=".$CHARSET);
       <div id="react-rare"></div>
         <?php
           if (isset($RPG_FLAG) && $RPG_FLAG === 1) {
-            $js_filemtime = filemtime($SERVER_ROOT . '/js/react/dist/rare.js');
+            $js_filemtime = filemtime($SERVER_ROOT . '/js/react/dist/checklist-special.js');
             echo "<script
-              src=\"{$CLIENT_ROOT}/js/react/dist/rare.js?{$js_filemtime}\"
+              src=\"{$CLIENT_ROOT}/js/react/dist/checklist-special.js?{$js_filemtime}\"
               type=\"text/javascript\"
               ></script>";
           }

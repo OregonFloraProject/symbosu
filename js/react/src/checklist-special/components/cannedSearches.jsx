@@ -1,12 +1,8 @@
 import React from 'react';
 import GardenCarousel from './gardenCarousel.jsx';
-import HelpButton from '../common/helpButton.jsx';
-import ExplorePreviewModal from '../explore/previewModal.jsx';
-
+import HelpButton from '../../common/helpButton.jsx';
+import ExplorePreviewModal from '../../explore/previewModal.jsx';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
-library.add(faChevronDown);
 
 function getChecklistUrl(clientRoot, clid) {
   const gardenPid = 3;
