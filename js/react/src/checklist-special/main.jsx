@@ -4,7 +4,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import AboutDropdown from './components/aboutDropdown.jsx';
-import InfographicDropdown from './components/infographicDropdown.jsx';
+import CannedSearchContainer from './components/cannedSearches.jsx';
+import GardenCredits from './components/gardenCredits.jsx';
+import InfographicDropdownGarden from './components/infographicDropdownGarden.jsx';
+import InfographicDropdownRare from './components/infographicDropdownRare.jsx';
 import SortOptions from './components/sortOptions.jsx';
 import SideBar from '../common/filterSidebar.jsx';
 import { CardSearchContainer } from '../common/searchResults.jsx';
@@ -37,15 +40,54 @@ function getIncludedHeritageLists(characteristics) {
   return heritageChar.states.map((state) => capitalize(state.charstatename));
 }
 
-function getDefaultSearchResultsMessage(numTaxa, characteristics) {
-  const listsOfTaxa = getIncludedHeritageLists(characteristics);
-  if (!listsOfTaxa || !listsOfTaxa.length) {
-    return 'No filters applied';
+function getDefaultSearchResultsMessage(numTaxa, characteristics, pageType) {
+  if (pageType === 'garden') {
+    return 'No filters applied, so showing all native plants';
+  } else if (pageType === 'rare') {
+    const listsOfTaxa = getIncludedHeritageLists(characteristics);
+    if (listsOfTaxa && listsOfTaxa.length) {
+      return `No filters applied, so showing ${numTaxa} ${listsOfTaxa.join(' and ')} taxa`;
+    }
   }
-  return `No filters applied, showing ${numTaxa} ${listsOfTaxa.join(' and ')} taxa`;
+  return 'No filters applied';
 }
 
-class RarePageApp extends React.Component {
+function getApiUrl(pageType, clientRoot) {
+  if (pageType === 'garden') {
+    return `${clientRoot}/garden/rpc/api.php`;
+  } else if (pageType === 'rare') {
+    return `${clientRoot}/rare/rpc/api.php`;
+  }
+  throw new Error('Tried to render SpecialChecklistApp with bad pageType');
+}
+
+function getDefaultSortBy(pageType) {
+  return pageType === 'garden' ? 'vernacularName' : 'sciName';
+}
+
+function getInfographicDropdownComponent(pageType) {
+  return pageType === 'garden' ? InfographicDropdownGarden : InfographicDropdownRare;
+}
+
+function getDefaultClid(pageType) {
+  if (pageType === 'garden') {
+    return 54;
+  } else if (pageType === 'rare') {
+    return 14948;
+  }
+  throw new Error('Tried to render SpecialChecklistApp with bad pageType');
+}
+
+function getDefaultPid(pageType) {
+  if (pageType === 'garden') {
+    return 3;
+  } else if (pageType === 'rare') {
+    return -1;
+  }
+  throw new Error('Tried to render SpecialChecklistApp with bad pageType');
+}
+
+class SpecialChecklistApp extends React.Component {
   constructor(props) {
     super(props);
     const queryParams = getUrlQueryParams(window.location.search);
@@ -55,7 +97,8 @@ class RarePageApp extends React.Component {
       isMobile: false,
       showFilterModal: false,
       searchInit: false,
-      clid: -1,
+      clid: getDefaultClid(props.pageType),
+      pid: getDefaultPid(props.pageType),
       projName: '',
       currentTids: [],
       filters: {
@@ -66,9 +109,11 @@ class RarePageApp extends React.Component {
       },
       searchResults: { familySort: [], taxonSort: [] },
       characteristics: [],
-      sortBy: 'sortBy' in queryParams ? queryParams['sortBy'] : 'sciName',
+      cannedSearches: [],
+      sortBy: 'sortBy' in queryParams ? queryParams['sortBy'] : getDefaultSortBy(this.props.pageType),
       viewType: 'viewType' in queryParams ? queryParams['viewType'] : 'grid',
       apiUrl: '',
+      slideshowCount: 0,
       glossary: [],
       aboutGuideExpanded: false,
       apiError: false,
@@ -78,8 +123,10 @@ class RarePageApp extends React.Component {
   componentDidMount() {
     const fetchData = async () => {
       try {
-        const apiUrl = `${this.props.clientRoot}/rare/rpc/api.php`;
-        const res = await fetch(apiUrl);
+        const apiUrl = getApiUrl(this.props.pageType, this.props.clientRoot);
+        const url =
+          this.props.pageType === 'garden' ? `${apiUrl}?clid=${this.state.clid}&pid=${this.state.pid}` : apiUrl;
+        const res = await fetch(url);
         const data = await res.json();
         let taxa = '';
         let tids = [];
@@ -106,6 +153,22 @@ class RarePageApp extends React.Component {
       }
     };
 
+    const fetchCannedSearchData = async () => {
+      if (this.props.pageType === 'garden') {
+        try {
+          const url = `${this.props.clientRoot}/garden/rpc/api.php?canned=true`;
+          const res = await fetch(url);
+          const data = await res.json();
+          this.setState({ cannedSearches: data });
+
+          this.updateViewport();
+          window.addEventListener('resize', this.updateViewport);
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    };
+
     const fetchGlossary = async () => {
       try {
         const res = await fetch('../glossary/rpc/getterms.php');
@@ -123,22 +186,28 @@ class RarePageApp extends React.Component {
       try {
         // wait for all the data to be fetched
         // use return values because the state may not update synchronously
-        const [data, glossary] = await Promise.all([fetchData(), fetchGlossary()]);
+        const [data, glossary] = await Promise.all([fetchData(), fetchGlossary(), fetchCannedSearchData()]);
         if (!data.characteristics) return;
         const characteristics = data.characteristics.map((firstLevel) => ({
           ...firstLevel,
           characters: firstLevel.characters.map((char) => ({
             ...char,
             charname: addGlossaryTooltips(char.charname, glossary),
-            states: char.display
-              ? char.states
-              : char.states.map((state) => ({
-                  ...state,
-                  charstatename: addGlossaryTooltips(state.charstatename, glossary),
-                })),
+            states:
+              char.display || char.cid === 209 // don't add tooltips to nursery names
+                ? char.states
+                : char.states.map((state) => ({
+                    ...state,
+                    charstatename: addGlossaryTooltips(state.charstatename, glossary),
+                  })),
           })),
         }));
         this.setState({ characteristics });
+
+        const queryParams = getUrlQueryParams(window.location.search);
+        if (queryParams.clid) {
+          this.onCannedFilter(queryParams.clid);
+        }
       } catch (err) {
         console.error(err);
         this.setState({ apiError: true });
@@ -171,6 +240,11 @@ class RarePageApp extends React.Component {
       const identParams = new URLSearchParams();
       if (this.state.filters.checklist && this.state.filters.checklist['clid'] > -1) {
         identParams.append('clid', this.state.filters.checklist['clid']);
+      } else if (this.state.clid > -1) {
+        identParams.append('clid', this.state.clid);
+      }
+      if (this.state.pid > -1) {
+        identParams.append('pid', this.state.pid);
       }
       if (this.state.filters.searchText) {
         identParams.append('search', this.state.filters.searchText);
@@ -321,6 +395,54 @@ class RarePageApp extends React.Component {
       () => this.catchQuery(),
     );
   };
+  onGroupFilterClicked = (children) => {
+    let nurseries = this.state.characteristics[5].characters[1]; //as hardcoded in garden/rpc/api.php
+    nurseries.states.map((attr) => {
+      let val = 'off';
+      if (children.indexOf(attr.cs) != -1) {
+        val = 'on';
+      }
+      this.onAttrChanged(attr.cid + '-' + attr.cs, attr.charstatename, val);
+    });
+  };
+
+  /**
+   * SECTION: canned searches
+   */
+  onCannedFilter = (checklistItem) => {
+    /*accepts either object or clid*/
+    let checklist = null;
+    if (typeof checklistItem === 'object') {
+      checklist = checklistItem;
+    } else {
+      checklist = this.getCannedByClid(checklistItem);
+    }
+
+    if (checklist !== null) {
+      this.setState({ filters: { ...this.state.filters, checklist } }, () => this.catchQuery());
+    }
+  };
+  getCannedByClid = (clid) => {
+    for (let canned of this.state.cannedSearches) {
+      if (canned.clid == clid) {
+        return canned;
+      }
+    }
+    return null;
+  };
+  resetCanned = () => {
+    this.setState({ filters: { ...this.state.filters, checklist: { clid: -1, name: '' } } }, () => this.catchQuery());
+  };
+  updateViewport = () => {
+    let newSlideshowCount = 4;
+    if (window.innerWidth < 1200) {
+      newSlideshowCount = 3;
+    }
+    if (window.innerWidth < 992) {
+      newSlideshowCount = 2;
+    }
+    this.setState({ slideshowCount: newSlideshowCount });
+  };
 
   /**
    * SECTION: charstate filter utils
@@ -359,13 +481,16 @@ class RarePageApp extends React.Component {
     if (this.state.filters.ranges[key]) {
       this.onRangeChanged(key, null);
     }
+    if (this.state.filters.checklist['clid'] == key) {
+      this.resetCanned();
+    }
   };
   clearFilters = () => {
     let filters = {
       searchText: ViewOpts.DEFAULT_SEARCH_TEXT,
       attrs: {},
       ranges: {},
-      checklist: {},
+      checklist: { clid: -1, name: '' },
     };
     this.setState({ filters: filters }, function () {
       this.catchQuery();
@@ -381,33 +506,38 @@ class RarePageApp extends React.Component {
   };
 
   render() {
+    const InfographicDropdown = getInfographicDropdownComponent(this.props.pageType);
     return (
       <div id="rare-wrapper">
         <Loading clientRoot={this.props.clientRoot} isLoading={this.state.isLoading} />
         <InfographicDropdown clientRoot={this.props.clientRoot} />
-        <div id="about-guide-flip">
-          <div className="container mx-auto px-4">
-            <button
-              aria-expanded={this.state.aboutGuideExpanded}
-              aria-controls="about-guide"
-              onClick={() => this.setState({ aboutGuideExpanded: !this.state.aboutGuideExpanded })}
-            >
-              <h3>About This Guide</h3>
-              <FontAwesomeIcon
-                icon="chevron-down"
-                color="white"
-                className={'will-v-flip' + (this.state.aboutGuideExpanded ? ' v-flip' : '')}
-                alt="toggle collapse"
-              />
-            </button>
+        {this.props.pageType === 'rare' && (
+          <div id="about-guide-flip">
+            <div className="container mx-auto px-4">
+              <button
+                aria-expanded={this.state.aboutGuideExpanded}
+                aria-controls="about-guide"
+                onClick={() => this.setState({ aboutGuideExpanded: !this.state.aboutGuideExpanded })}
+              >
+                <h3>About This Guide</h3>
+                <FontAwesomeIcon
+                  icon="chevron-down"
+                  color="white"
+                  className={'will-v-flip' + (this.state.aboutGuideExpanded ? ' v-flip' : '')}
+                  alt="toggle collapse"
+                />
+              </button>
+            </div>
           </div>
-        </div>
+        )}
         <div className="container mx-auto py-4 pl-3 pr-4">
-          <AboutDropdown
-            hidden={!this.state.aboutGuideExpanded}
-            numSpecies={this.state.searchResults.familySort.length}
-            lists={getIncludedHeritageLists(this.state.characteristics)}
-          />
+          {this.props.pageType === 'rare' && (
+            <AboutDropdown
+              hidden={!this.state.aboutGuideExpanded}
+              numSpecies={this.state.searchResults.familySort.length}
+              lists={getIncludedHeritageLists(this.state.characteristics)}
+            />
+          )}
           <div className="row">
             <hr hidden={!this.state.aboutGuideExpanded} />
             <div className="col-md-4">
@@ -418,7 +548,7 @@ class RarePageApp extends React.Component {
                 clientRoot={this.props.clientRoot}
                 characteristics={this.state.characteristics}
                 searchText={this.state.filters.searchText}
-                searchSuggestionUrl={`${this.props.clientRoot}/rare/rpc/autofillsearch.php`}
+                searchSuggestionUrl={`${this.props.clientRoot}/${this.props.pageType}/rpc/autofillsearch.php`}
                 onSearch={this.onSearch}
                 onSearchTextChanged={this.onSearchTextChanged}
                 searchName={this.state.searchName}
@@ -428,14 +558,30 @@ class RarePageApp extends React.Component {
                 onAttrClicked={this.onAttrChanged}
                 onRangeChanged={this.onRangeChanged}
                 onFilterClicked={this.onFilterRemoved}
+                onGroupFilterClicked={this.onGroupFilterClicked}
                 onClearSearch={this.clearTextSearch}
                 filters={this.state.filters}
                 getFilterCount={this.getFilterCount}
                 isMobile={this.state.isMobile}
                 useNewSlider
-              />
+              >
+                {this.props.pageType === 'garden' && <GardenCredits clientRoot={this.props.clientRoot} />}
+              </SideBar>
             </div>
             <div className="col-md-8">
+              {this.props.pageType === 'garden' && (
+                <div className="row">
+                  <div className="col">
+                    <CannedSearchContainer
+                      searches={this.state.cannedSearches}
+                      onFilter={this.onCannedFilter}
+                      checklistId={this.state.filters.checklist['clid']}
+                      clientRoot={this.props.clientRoot}
+                      slideshowCount={this.state.slideshowCount}
+                    />
+                  </div>
+                </div>
+              )}
               {this.state.apiError ? (
                 <div className="alert alert-danger" role="alert">
                   An error occurred. Please try again later.
@@ -467,6 +613,7 @@ class RarePageApp extends React.Component {
                           defaultMessage={getDefaultSearchResultsMessage(
                             this.state.searchResults.familySort.length,
                             this.state.characteristics,
+                            this.props.pageType,
                           )}
                         />
                       </div>
@@ -477,6 +624,7 @@ class RarePageApp extends React.Component {
                       onViewTypeChanged={this.onViewTypeChanged}
                       sortBy={this.state.sortBy}
                       onSortByChanged={this.onSortByChanged}
+                      defaultSortBy={getDefaultSortBy(this.props.pageType)}
                     />
                   </div>
 
@@ -488,7 +636,7 @@ class RarePageApp extends React.Component {
                       clientRoot={this.props.clientRoot}
                       isSearching={this.state.isSearching}
                       currentTids={this.state.currentTids}
-                      taxaPage="rare"
+                      taxaPage={this.props.pageType}
                     />
                   ) : (
                     <p className="no-results">
@@ -527,7 +675,14 @@ class RarePageApp extends React.Component {
   }
 }
 
+let pageType;
+if (window.location.pathname.includes('/garden/')) {
+  pageType = 'garden';
+} else if (window.location.pathname.includes('/rare/')) {
+  pageType = 'rare';
+}
+
 const headerContainer = document.getElementById('react-header');
 const dataProps = JSON.parse(headerContainer.getAttribute('data-props'));
-const domContainer = document.getElementById('react-rare');
-ReactDOM.render(<RarePageApp clientRoot={dataProps['clientRoot']} />, domContainer);
+const domContainer = document.getElementById(`react-${pageType}`);
+ReactDOM.render(<SpecialChecklistApp pageType={pageType} clientRoot={dataProps['clientRoot']} />, domContainer);
