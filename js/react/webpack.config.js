@@ -24,20 +24,61 @@ const commonConfig = {
 
 const reactConfig = {
   entry: {
-    header: path.join(SRC_DIR, 'header', 'main.jsx'),
-    footer: path.join(SRC_DIR, 'footer', 'main.jsx'),
-    home: path.join(SRC_DIR, 'home', 'main.jsx'),
-    newsletters: path.join(SRC_DIR, 'home', 'newsletters.jsx'),
-    whatsnew: path.join(SRC_DIR, 'home', 'whatsnew.jsx'),
-    'checklist-special': path.join(SRC_DIR, 'checklist-special', 'main.jsx'),
-    inventory: path.join(SRC_DIR, 'inventory', 'main.jsx'),
-    identify: path.join(SRC_DIR, 'identify', 'identify.jsx'),
-    taxa: path.join(SRC_DIR, 'taxa', 'main.jsx'),
-    'taxa-search': path.join(SRC_DIR, 'taxa', 'search.jsx'),
-    'taxa-garden': path.join(SRC_DIR, 'taxa', 'taxa-garden.jsx'),
-    'taxa-rare': path.join(SRC_DIR, 'taxa', 'taxa-rare.jsx'),
-    explore: path.join(SRC_DIR, 'explore', 'explore.jsx'),
-    'explore-vendor': path.join(SRC_DIR, 'explore', 'explore-vendor.jsx'),
+    header: {
+      import: path.join(SRC_DIR, 'header', 'main.jsx'),
+    },
+    footer: {
+      import: path.join(SRC_DIR, 'footer', 'main.jsx'),
+      dependOn: 'header',
+    },
+    home: {
+      import: path.join(SRC_DIR, 'home', 'main.jsx'),
+      dependOn: 'header',
+    },
+    newsletters: {
+      import: path.join(SRC_DIR, 'home', 'newsletters.jsx'),
+      dependOn: 'header',
+    },
+    whatsnew: {
+      import: path.join(SRC_DIR, 'home', 'whatsnew.jsx'),
+      dependOn: 'header',
+    },
+    'checklist-special': {
+      import: path.join(SRC_DIR, 'checklist-special', 'main.jsx'),
+      dependOn: 'header',
+    },
+    inventory: {
+      import: path.join(SRC_DIR, 'inventory', 'main.jsx'),
+      dependOn: 'header',
+    },
+    identify: {
+      import: path.join(SRC_DIR, 'identify', 'identify.jsx'),
+      dependOn: 'header',
+    },
+    taxa: {
+      import: path.join(SRC_DIR, 'taxa', 'main.jsx'),
+      dependOn: 'header',
+    },
+    'taxa-search': {
+      import: path.join(SRC_DIR, 'taxa', 'search.jsx'),
+      dependOn: 'header',
+    },
+    'taxa-garden': {
+      import: path.join(SRC_DIR, 'taxa', 'taxa-garden.jsx'),
+      dependOn: 'header',
+    },
+    'taxa-rare': {
+      import: path.join(SRC_DIR, 'taxa', 'taxa-rare.jsx'),
+      dependOn: 'header',
+    },
+    explore: {
+      import: path.join(SRC_DIR, 'explore', 'explore.jsx'),
+      dependOn: 'header',
+    },
+    'explore-vendor': {
+      import: path.join(SRC_DIR, 'explore', 'explore-vendor.jsx'),
+      dependOn: 'header',
+    },
   },
   output: {
     path: REACT_OUT_DIR,
