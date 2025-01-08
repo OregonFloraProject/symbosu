@@ -204,8 +204,8 @@ function taxaManagerToJSON($taxaObj,$queryType = "default",$minimalData = false)
 			if ($queryType !== 'default') {
 				$result["characteristics"] = $taxaObj->getCharacteristics($queryType);
 			}
-			$taxaObj->setChecklists();
-			$result["checklists"] = $taxaObj->getChecklists();
+			$taxaObj->setSpecialChecklists();
+			$result["specialChecklists"] = $taxaObj->getSpecialChecklists();
 			$result["descriptions"] = $taxaObj->getDescriptions();
 			$result["gardenDescription"] = $taxaObj->getGardenDescription();
 			$result["gardenId"] = $taxaObj->getGardenId();

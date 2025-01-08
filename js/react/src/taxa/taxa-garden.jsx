@@ -123,7 +123,7 @@ class TaxaApp extends React.Component {
             vernacularNames: res.vernacular.names,
             images: res.imagesBasis.HumanObservation,
             description: res.gardenDescription,
-            checklists: res.checklists,
+            checklists: res.specialChecklists,
             highlights: {
               'Plant type': plantType,
               'Size at maturity': sizeMaturity,
