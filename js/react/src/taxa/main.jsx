@@ -2,14 +2,14 @@ import ReactDOM from 'react-dom';
 import React from 'react';
 import httpGet from '../common/httpGet.js';
 import { getUrlQueryParams } from '../common/queryParams.js';
-import { getGardenTaxaPage } from '../common/taxaUtils';
+import { getGardenTaxaPage, getRareTaxaPage } from '../common/taxaUtils';
 import ImageCarousel from '../common/imageCarousel.jsx';
 import ImageModal from '../common/modal.jsx';
 import Loading from '../common/loading.jsx';
 import DescriptionTabs from './components/DescriptionTabs.jsx';
 import MapItem from './components/MapItem.jsx';
 import { showItem } from './components/utils.js';
-import { RANK_FAMILY, RANK_GENUS } from './constants';
+import { CLID_RARE_ALL, RANK_FAMILY, RANK_GENUS } from './constants';
 import { Link } from 'react-scroll';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -314,7 +314,7 @@ class TaxaChooser extends React.Component {
               <div className="mt-4 dashed-border" id="subspecies">
                 <h3 className="text-light-green font-weight-bold mt-2">Species, subspecies and varieties</h3>
                 <div className="spp-wrapper search-result-grid">
-                  {res.spp.map((spp, index) => {
+                  {res.spp.map((spp) => {
                     return <SppItem item={spp} key={spp.tid} clientRoot={this.props.clientRoot} />;
                   })}
                 </div>
@@ -449,7 +449,7 @@ class TaxaDetail extends React.Component {
               <div className="mt-4 dashed-border" id="subspecies">
                 <h3 className="text-light-green font-weight-bold mt-2">Subspecies and varieties</h3>
                 <div className="spp-wrapper search-result-grid">
-                  {res.spp.map((spp, index) => {
+                  {res.spp.map((spp) => {
                     return <SppItem item={spp} key={spp.tid} clientRoot={this.props.clientRoot} />;
                   })}
                 </div>
@@ -644,6 +644,10 @@ class TaxaApp extends React.Component {
           const relatedArr = [res.sciname, parentUrl, childUrl];
 
           let moreInfo = [];
+          if (res.specialChecklists && res.specialChecklists.includes(CLID_RARE_ALL)) {
+            const rareProfileUrl = getRareTaxaPage(this.props.clientRoot, this.props.tid);
+            moreInfo.push({ title: 'Rare Plant Profile', url: rareProfileUrl });
+          }
           if (res.rarePlantFactSheet.length) {
             moreInfo.push({ title: 'Rare Plant Fact Sheet', url: res.rarePlantFactSheet });
           }
@@ -652,7 +656,7 @@ class TaxaApp extends React.Component {
             moreInfo.push({ title: 'Garden Fact Sheet', url: gardenUrl });
           }
 
-          let web_links = res.taxalinks.map((link, index) => {
+          let web_links = res.taxalinks.map((link) => {
             return (
               <div key={link.url}>
                 <a href={link.url} target="_blank" rel="noreferrer">

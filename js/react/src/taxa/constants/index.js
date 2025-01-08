@@ -1,6 +1,8 @@
 export const RANK_FAMILY = 140;
 export const RANK_GENUS = 180;
 
+export const CLID_RARE_ALL = 14948;
+
 export const KEY_NAMES = {
   // description
   plants: 'Plants',

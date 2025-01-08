@@ -61,7 +61,7 @@ class TaxaManager {
   protected $basename;
   protected $images;
   protected $characteristics;
-  protected $checklists;
+  protected $specialChecklists;
   protected $descriptions;
   protected $gardenId;
   protected $gardenDescription;
@@ -91,7 +91,7 @@ class TaxaManager {
       $this->basename = '';
       $this->images = [];
       $this->characteristics = [];
-      $this->checklists = [];
+      $this->specialChecklists = [];
       $this->descriptions = [];
       $this->gardenId = -1;
       $this->gardenDescription = '';
@@ -241,8 +241,8 @@ class TaxaManager {
     return $this->characteristics;
   }
 
-  public function getChecklists() {
-    return $this->checklists;
+  public function getSpecialChecklists() {
+    return $this->specialChecklists;
   }
 
   public function getDescriptions() {
@@ -424,14 +424,15 @@ class TaxaManager {
 		return $retArr;
 	}
   
-  private static function populateChecklists($tid) {
+  private static function populateSpecialChecklists($tid) {
+    global $RPG_FLAG;
     $em = SymbosuEntityManager::getEntityManager();
     $clQuery = $em->createQueryBuilder()
       ->select(["cl.clid"])
       ->from("Fmchklsttaxalink", "tl")
       ->innerJoin("Fmchecklists", "cl", "WITH", "tl.clid = cl.clid")
       ->where("tl.tid = :tid")
-      ->andWhere("cl.parentclid = " . Fmchecklists::$CLID_GARDEN_ALL . " OR cl.clid = " . FmChecklists::$CLID_GARDEN_ALL)
+      ->andWhere("cl.parentclid = " . Fmchecklists::$CLID_GARDEN_ALL . " OR cl.clid = " . FmChecklists::$CLID_GARDEN_ALL .  ($RPG_FLAG ? " OR cl.clid = " . FmChecklists::$CLID_RARE_ALL : ""))
       ->setParameter("tid", $tid);
 
     return array_map(
@@ -441,8 +442,8 @@ class TaxaManager {
   }
   
 
-  public function setChecklists() {
-    $this->checklists = self::populateChecklists($this->getTid());
+  public function setSpecialChecklists() {
+    $this->specialChecklists = self::populateSpecialChecklists($this->getTid());
   }
 
   private function populateAccessRestricted($tid = null) {
