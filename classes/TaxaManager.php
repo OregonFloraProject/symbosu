@@ -262,8 +262,7 @@ class TaxaManager {
   }
   
   public function isGardenTaxa() {
-    // Since we only populate children of garden checklist anyway
-    return count($this->checklists) > 0;
+    return array_search(Fmchecklists::$CLID_GARDEN_ALL, $this->specialChecklists) !== false;
   }
 
   private function populateGardenId() {
@@ -283,7 +282,7 @@ class TaxaManager {
 				->from("Fmchklsttaxalink", "tl")
 				->innerJoin("Fmchecklists", "cl", "WITH", "tl.clid = cl.clid")
 				->where("tl.tid = :tid")
-				->andWhere("cl.parentclid = " . Fmchecklists::$CLID_GARDEN_ALL)
+				->andWhere("cl.parentclid = " . Fmchecklists::$CLID_GARDEN_ALL . " OR cl.clid = " . FmChecklists::$CLID_GARDEN_ALL)
 				->setParameter("tid", $parentId)
 				->getQuery()
 				->execute();
@@ -432,7 +431,7 @@ class TaxaManager {
       ->from("Fmchklsttaxalink", "tl")
       ->innerJoin("Fmchecklists", "cl", "WITH", "tl.clid = cl.clid")
       ->where("tl.tid = :tid")
-      ->andWhere("cl.parentclid = " . Fmchecklists::$CLID_GARDEN_ALL)
+      ->andWhere("cl.parentclid = " . Fmchecklists::$CLID_GARDEN_ALL . " OR cl.clid = " . FmChecklists::$CLID_GARDEN_ALL)
       ->setParameter("tid", $tid);
 
     return array_map(
