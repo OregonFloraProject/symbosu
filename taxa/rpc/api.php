@@ -188,7 +188,6 @@ function taxaManagerToJSON($taxaObj,$queryType = "default",$minimalData = false)
 			}
     	$result['vernacular']['names'] = array_merge($result['vernacular']['names'],$vernacular);
 			$result['vernacular']['names'] = array_unique($result['vernacular']['names']);
-    	sort($result['vernacular']['names'],SORT_NATURAL | SORT_FLAG_CASE);
 			
 			$result["origin"] = $taxaObj->getOrigin();
 			$result["family"] = $taxaObj->getFamily();
