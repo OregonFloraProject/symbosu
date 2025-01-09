@@ -5,9 +5,13 @@ import { getUrlQueryParams } from '../common/queryParams.js';
 import Table from './table.jsx';
 import PageHeader from '../common/pageHeader.jsx';
 import { getChecklistPage } from '../common/taxaUtils';
-import { GoogleMap, LoadScript, Marker, MarkerClusterer } from '@react-google-maps/api';
 import Loading from '../common/loading.jsx';
 //const ScriptLoaded = require("../../docs/ScriptLoaded").default;
+
+import { MapContainer } from 'react-leaflet/MapContainer';
+import { TileLayer } from 'react-leaflet/TileLayer';
+import { Marker } from 'react-leaflet/Marker';
+import MarkerClusterGroup from 'react-leaflet-markercluster';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -38,19 +42,6 @@ function ChecklistTable(props) {
     <div className="App">
       <Table columns={columns} data={props.checklists} pid={props.pid} clientRoot={props.clientRoot} />
     </div>
-  );
-}
-function ProjectMap(props) {
-  return (
-    <LoadScript googleMapsApiKey={props.googleMapKey}>
-      <GoogleMap
-        mapContainerStyle={{ width: '100%', height: '100%' }}
-        center={{ lat: 44.156944, lng: -120.490556 }}
-        zoom={props.zoomLevel}
-      >
-        {props.children}
-      </GoogleMap>
-    </LoadScript>
   );
 }
 
@@ -114,60 +105,6 @@ class InventoryDetail extends React.Component {
   render() {
     let pid = this.getPid();
 
-    const clusterIconStyles = [
-      {
-        height: 23,
-        width: 23,
-        textColor: '#ffffff',
-        textSize: 13,
-        url: this.props.clientRoot + '/images/icons/map_markers/2-9.png',
-      },
-      {
-        height: 23,
-        width: 23,
-        textSize: 13,
-        textColor: '#ffffff',
-        url: this.props.clientRoot + '/images/icons/map_markers/2-9.png',
-      },
-      {
-        height: 31,
-        width: 31,
-        textSize: 15,
-        textColor: '#ffffff',
-        url: this.props.clientRoot + '/images/icons/map_markers/10-100.png',
-      },
-      {
-        height: 46,
-        width: 46,
-        textSize: 17,
-        textColor: '#ffffff',
-        url: this.props.clientRoot + '/images/icons/map_markers/101+.png',
-      },
-      {
-        height: 46,
-        width: 46,
-        textSize: 17,
-        textColor: '#ffffff',
-        url: this.props.clientRoot + '/images/icons/map_markers/101+.png',
-      },
-      {
-        height: 46,
-        width: 46,
-        textSize: 17,
-        textColor: '#ffffff',
-        url: this.props.clientRoot + '/images/icons/map_markers/101+.png',
-      },
-    ];
-
-    const clusterOptions = {
-      //imagePath:
-      //'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m', // so you must have m1.png, m2.png, m3.png, m4.png, m5.png and m6.png in that folder
-      //this.props.clientRoot + '/images/icons/map_markers/m', // so you must have m1.png, m2.png, m3.png, m4.png, m5.png and m6.png in that folder
-      minimumClusterSize: 6,
-      averageCenter: true,
-      imageSizes: [23, 23, 31, 46, 46, 46],
-      styles: clusterIconStyles,
-    };
     let checklistTxt = '(referenced in the map above)';
     if (pid === 3) {
       checklistTxt = '(see also the <a href="' + this.props.clientRoot + '/garden/index.php">Grow Natives</a> page)';
@@ -201,34 +138,46 @@ class InventoryDetail extends React.Component {
           {(pid == 1 || pid == 2) && (
             <div className="row map">
               <div className="col">
-                <ProjectMap googleMapKey={this.props.googleMapKey} zoomLevel={this.state.zoomLevel}>
-                  <MarkerClusterer options={clusterOptions}>
-                    {(clusterer) =>
-                      this.state.checklists.map((checklist, index) => {
-                        let position = {
-                          lat: checklist.latcentroid,
-                          lng: checklist.longcentroid,
-                        };
-                        let href = getChecklistPage(this.props.clientRoot, checklist.clid, pid);
+                <MapContainer center={[44.156944, -120.490556]} zoom={7} scrollWheelZoom={false}>
+                  <TileLayer
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  />
+                  <MarkerClusterGroup
+                    iconCreateFunction={(cluster) => {
+                      const childCount = cluster.getChildCount();
+                      let iconUrl;
+                      if (childCount < 10) {
+                        iconUrl = this.props.clientRoot + '/images/icons/map_markers/2-9.png';
+                      } else if (childCount < 100) {
+                        iconUrl = this.props.clientRoot + '/images/icons/map_markers/10-100.png';
+                      } else {
+                        iconUrl = this.props.clientRoot + '/images/icons/map_markers/101+.png';
+                      }
+                      // eslint-disable-next-line no-undef
+                      return L.icon({ iconUrl });
+                    }}
+                  >
+                    {this.state.checklists.map((checklist) => {
+                      let position = [checklist.latcentroid, checklist.longcentroid];
+                      let href = getChecklistPage(this.props.clientRoot, checklist.clid, pid);
 
-                        return (
-                          <Marker
-                            key={checklist.clid}
-                            icon={{
-                              url: this.props.clientRoot + '/images/icons/map_markers/single.png',
-                              // eslint-disable-next-line no-undef
-                              anchor: new google.maps.Point(6, 6),
-                            }}
-                            title={checklist.name}
-                            position={position}
-                            clusterer={clusterer}
-                            onClick={() => (location.href = href)}
-                          />
-                        );
-                      })
-                    }
-                  </MarkerClusterer>
-                </ProjectMap>
+                      return (
+                        <Marker
+                          key={checklist.clid}
+                          // eslint-disable-next-line no-undef
+                          icon={L.icon({ iconUrl: this.props.clientRoot + '/images/icons/map_markers/single.png' })}
+                          position={position}
+                          eventHandlers={{
+                            click: () => {
+                              location.href = href;
+                            },
+                          }}
+                        />
+                      );
+                    })}
+                  </MarkerClusterGroup>
+                </MapContainer>
               </div>
             </div>
           )}
