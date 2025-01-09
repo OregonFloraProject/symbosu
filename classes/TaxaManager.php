@@ -59,6 +59,7 @@ class TaxaManager {
   protected $model;
 
   protected $basename;
+  protected $vernacularNames;
   protected $images;
   protected $characteristics;
   protected $specialChecklists;
@@ -128,12 +129,31 @@ class TaxaManager {
     return $this->model->getRankid();
   }
   public function getVernacularNames() {
-    $vern = $this->model->getVernacularNames()
-      ->filter(function($vn) { return strtolower($vn->getLanguage()) === "english"; })
-      ->map(function($vn) { return $vn->getVernacularName(); })
-      ->toArray();
-    sort($vern);
-    return $vern; 
+    if (!isset($this->vernacularNames)) {
+      $vern = $this->model->getVernacularNames()
+        ->filter(function($vn) { return strtolower($vn->getLanguage()) === "english"; })
+        ->toArray();
+
+      // re-sort to move names with null sortsequence to the end of the list
+      // since MySQL sorts NULL ahead of integers
+      $firstNullSortSeqKey = 0;
+      $nulls = [];
+      foreach ($vern as $key => $vn) {
+        if ($vn->getSortsequence() !== null) {
+          $firstNullSortSeqKey = $key;
+          break;
+        } else {
+          array_push($nulls, $vn);
+        }
+      }
+      if ($firstNullSortSeqKey !== 0) {
+        array_splice($vern, 0, $firstNullSortSeqKey);
+        $vern = array_merge($vern, $nulls);
+      }
+
+      $this->vernacularNames = array_map(function($vn) { return $vn->getVernacularName(); }, $vern);
+    }
+    return $this->vernacularNames;
   }
 
   public function getSynonyms() {
