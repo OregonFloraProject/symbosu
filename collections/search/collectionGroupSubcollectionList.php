@@ -1,4 +1,4 @@
-<section id="cat-<?php echo $idStr ?>" class="bottom-breathing-room-rel">
+<section id="cat-<?php echo $idStr ?>" class="bottom-breathing-room-rel"<?php /* non-OSU groups default collapsed */ echo $catid === $catId ? '' : ' style="display: none;"'; ?>>
     <div>
         <fieldset name="boop">
             <legend>

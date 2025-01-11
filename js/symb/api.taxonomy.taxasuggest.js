@@ -8,8 +8,9 @@ function initTaxaSuggest() {
 		var dirArr = window.location.pathname.split('/');
 		dirArr.shift(); dirArr.pop();
 		var loopCnt = 0;
-		if(urlExists("/portal"+acUrlBase)) acUrl = "/portal"+acUrlBase;
-		else{
+		// JGM: Buggy code. Won't work if there's also a separate installation at /portal.
+		//if(urlExists("/portal"+acUrlBase)) acUrl = "/portal"+acUrlBase;
+		//else{
 			while(!urlExists(acUrl) && dirArr.length > loopCnt){
 				var newUrl = '';
 				for(i = 0; i <= loopCnt; i++){
@@ -18,7 +19,7 @@ function initTaxaSuggest() {
 				acUrl = newUrl + acUrlBase;
 				loopCnt = loopCnt + 1;
 			}
-		}
+		//}
 	}
 	
 	function extractLast( term ) {
@@ -37,6 +38,7 @@ function initTaxaSuggest() {
 		    } else
 		    */
 			// don't navigate away from the field on tab when selecting an item
+
 			if (event.keyCode === $.ui.keyCode.TAB) {
 				if ($(this).autocomplete('widget').is(':visible')) {
 					$(this).trigger("select");
@@ -47,9 +49,14 @@ function initTaxaSuggest() {
 			}
 		})
 		.autocomplete({
+
 			source: $.proxy(function( request, response ) {
+
+				// Check whether to restrict the autosuggest to Oregon vascular plants curated by OregonFlora
+				let oregontaxa = ($( "#oregonvascplant" ).is(':checked')) ? 1 : 0
+
 				$.getJSON( acUrl, {
-					term: extractLast( request.term ), t: function() { return $("#taxontype").val(); }
+					term: extractLast( request.term ), oregontaxa: oregontaxa, t: function() { return $("#taxontype").val(); }
 				}, response );
 				this.autocomplete_stage = 0;
 			},$('#taxa')[0]),

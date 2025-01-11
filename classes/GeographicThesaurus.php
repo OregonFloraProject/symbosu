@@ -775,7 +775,9 @@ class GeographicThesaurus extends Manager {
 		}
 	}
 
-	public function searchGeothesaurus(string $geoterm, int|null $geolevel = null, string|null $parent = null, bool $distict_geoterms = false): array {
+	// TODO: union types require PHP 8
+	// public function searchGeothesaurus(string $geoterm, int|null $geolevel = null, string|null $parent = null, bool $distict_geoterms = false): array {
+	public function searchGeothesaurus(string $geoterm, int $geolevel = null, string $parent = null, bool $distict_geoterms = false): array {
 		$sql = <<<SQL
 		SELECT g.geoThesID, g.geoterm, g.geoLevel, g.parentID, g2.geoterm AS parentterm, g2.geoLevel AS parentlevel FROM geographicthesaurus g 
 		LEFT JOIN geographicthesaurus g2 ON g2.geoThesID = g.parentID

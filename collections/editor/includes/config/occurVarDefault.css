@@ -1,3 +1,83 @@
+/* Custom CSS for the Occurrence Editor on OregonFlora */
+#editortd {
+	min-width: 820px;
+}
+
+#occdiv {
+	width: 800px;
+}
+
+#querydiv {
+	width: 800px !important;
+	min-width: 800px !important;
+}
+
+#determdiv, #imagediv, #voucherdiv, #admindiv {
+	width: 765px !important;
+}
+
+h1 {
+    font-size: 1.5em !important;
+}
+
+.navpath {
+	font-size: unset;
+	padding-top: unset;
+}
+
+#editortd .field-div {
+	margin-right: 5px;
+}
+
+#labelHeaderDiv {
+	margin-top: unset !important;
+}
+
+.fieldGroupDiv {
+	margin-bottom: 0.3rem !important;
+}
+
+#catalogNumberDiv { 
+	margin-top: 20px;
+}
+
+#catalogNumberDiv input{
+	width:  200px;
+}
+
+#eventDateDiv {
+	margin-left: 10px;
+}
+
+ #otherCatalogNumbersDiv {
+ 	margin-left: 10px;
+	margin-bottom: 10px;
+}
+
+#dupesDiv {
+	margin-left: 20px;
+}
+
+#locationIdDiv input {
+	width: 80px;
+}
+
+#verbatimCoordinatesDiv input {
+	width: 270px;
+}
+
+#ownerInstitutionCodeDiv input {
+	width: 135px;
+}
+
+#processingStatusDiv select {
+	width: 130px;
+}
+
 #dataGeneralizationsDiv input{
 	width: 700px;
+}
+
+div:has(> fieldset.ocr-box) {
+	margin-top: 10px;
 }

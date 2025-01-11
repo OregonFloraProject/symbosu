@@ -32,47 +32,88 @@ class TaxonSearchSupport{
 			if($this->taxonType == TaxaSearchType::ANY_NAME){
 			    global $LANG;
 			    $sql =
-			    "SELECT DISTINCT tid, CONCAT('".$LANG['SELECT_1-5'].": ',v.vernacularname) AS sciname ".
+			    "SELECT DISTINCT v.tid, CONCAT('".$LANG['SELECT_1-5'].": ',v.vernacularname) AS sciname ".
 			    "FROM taxavernaculars v ".
+			    // Restrict to taxa contained in the State of Oregon vascular plant checklist (clid=1)
+			    ($this->oregonTaxa ? 'LEFT JOIN `fmchklsttaxalink` as cl ON v.tid = cl.tid ' : '').
 			    "WHERE v.vernacularname LIKE '%".$this->queryString."%' ".
 
 			    "UNION ".
 
-			    "SELECT DISTINCT tid, CONCAT('".$LANG['SELECT_1-2'].": ', sciname) AS sciname ".
-			    "FROM taxa ".
-			    "WHERE sciname LIKE '%".$this->queryString."%' AND rankid > 179 ".
+			    "SELECT DISTINCT t.tid, CONCAT('".$LANG['SELECT_1-2'].": ', t.sciname) AS sciname ".
+			    "FROM taxa t ".
+			    // Restrict to taxa contained in the State of Oregon vascular plant checklist (clid=1)
+			    ($this->oregonTaxa ? 'LEFT JOIN `fmchklsttaxalink` as cl ON t.tid = cl.tid ' : '').
+			    "WHERE t.sciname LIKE '%".$this->queryString."%' AND t.rankid > 179 ".
+			    ($this->oregonTaxa ? 'AND (cl.clid = 1) ' : '').
 
 			    "UNION ".
 
-			    "SELECT DISTINCT tid, CONCAT('".$LANG['SELECT_1-3'].": ', sciname) AS sciname ".
-			    "FROM taxa ".
-			    "WHERE sciname LIKE '".$this->queryString."%' AND rankid = 140 ".
+			    "SELECT DISTINCT t.tid, CONCAT('".$LANG['SELECT_1-3'].": ', t.sciname) AS sciname ".
+			    "FROM taxa t ".
+			    // Restrict to taxa contained in the State of Oregon vascular plant checklist (clid=1)
+			    ($this->oregonTaxa ? 'LEFT JOIN `fmchklsttaxalink` as cl ON t.tid = cl.tid ' : '').
+			    "WHERE t.sciname LIKE '".$this->queryString."%' AND t.rankid = 140 ".
+			    ($this->oregonTaxa ? 'AND (cl.clid = 1) ' : '').
 
 			    "UNION ".
 
-			    "SELECT tid, CONCAT('".$LANG['SELECT_1-4'].": ',sciname) AS sciname ".
-			    "FROM taxa ".
-			    "WHERE sciname LIKE '".$this->queryString."%' AND rankid > 20 AND rankid < 180 AND rankid != 140 ";
+			    "SELECT t.tid, CONCAT('".$LANG['SELECT_1-4'].": ',t.sciname) AS sciname ".
+			    "FROM taxa t ".
+			    // Restrict to taxa contained in the State of Oregon vascular plant checklist (clid=1)
+			    ($this->oregonTaxa ? 'LEFT JOIN `fmchklsttaxalink` as cl ON t.tid = cl.tid ' : '').
+			    "WHERE t.sciname LIKE '".$this->queryString."%' AND t.rankid > 20 AND t.rankid < 180 AND t.rankid != 140 ".
+			    ($this->oregonTaxa ? 'AND (cl.clid = 1) ' : '');
 
 			}
 			elseif($this->taxonType == TaxaSearchType::SCIENTIFIC_NAME){
-				$sql = 'SELECT tid, sciname FROM taxa WHERE sciname LIKE "'.$this->queryString.'%" LIMIT 30';
+				$sql = 'SELECT t.tid, t.sciname FROM taxa t '.
+
+				// Restrict to taxa contained in the State of Oregon vascular plant checklist (clid=1)
+			    ($this->oregonTaxa ? 'LEFT JOIN `fmchklsttaxalink` as cl ON t.tid = cl.tid ' : '').
+				'WHERE t.sciname LIKE "'.$this->queryString.'%" '.
+				($this->oregonTaxa ? 'AND (cl.clid = 1) ' : '').
+				'LIMIT 30';
 			}
 			elseif($this->taxonType == TaxaSearchType::FAMILY_ONLY){
-				$sql = 'SELECT tid, sciname FROM taxa WHERE rankid = 140 AND sciname LIKE "'.$this->queryString.'%" LIMIT 30';
+				$sql = 'SELECT t.tid, t.sciname FROM taxa t '.
+
+				// Restrict to taxa contained in the State of Oregon vascular plant checklist (clid=1)
+			    ($this->oregonTaxa ? 'LEFT JOIN `fmchklsttaxalink` as cl ON t.tid = cl.tid ' : '').
+				'WHERE t.rankid = 140 AND t.sciname LIKE "'.$this->queryString.'%" '.
+				($this->oregonTaxa ? 'AND (cl.clid = 1) ' : '').
+				'LIMIT 30';
 			}
 			elseif($this->taxonType == TaxaSearchType::TAXONOMIC_GROUP){
-				$sql = 'SELECT tid, sciname FROM taxa WHERE rankid > 20 AND rankid < 180 AND sciname LIKE "'.$this->queryString.'%" LIMIT 30';
+				$sql = 'SELECT t.tid, t.sciname FROM taxa t '.
+
+				// Restrict to taxa contained in the State of Oregon vascular plant checklist (clid=1)
+			    ($this->oregonTaxa ? 'LEFT JOIN `fmchklsttaxalink` as cl ON t.tid = cl.tid ' : '').
+				'WHERE t.rankid > 20 AND t.rankid < 180 AND t.sciname LIKE "'.$this->queryString.'%" '.
+				($this->oregonTaxa ? 'AND (cl.clid = 1) ' : '').
+				'LIMIT 30';
 			}
 			elseif($this->taxonType == TaxaSearchType::COMMON_NAME){
 				$sql = 'SELECT DISTINCT v.tid, CONCAT(v.vernacularname, " (", t.sciname, ")") AS sciname
-					FROM taxavernaculars v INNER JOIN taxa t ON v.tid = t.tid
-					WHERE v.vernacularname LIKE "%'.$this->queryString.'%" LIMIT 50';
+					FROM taxavernaculars v INNER JOIN taxa t ON v.tid = t.tid'.
+
+				// Restrict to taxa contained in the State of Oregon vascular plant checklist (clid=1)
+			    ($this->oregonTaxa ? 'LEFT JOIN `fmchklsttaxalink` as cl ON t.tid = cl.tid ' : '').
+				'WHERE v.vernacularname LIKE "%'.$this->queryString.'%" '.
+				($this->oregonTaxa ? 'AND (cl.clid = 1) ' : '').
+				'LIMIT 50';
 				//$sql = 'SELECT DISTINCT tid, vernacularname AS sciname FROM taxavernaculars WHERE vernacularname LIKE "%'.$this->queryString.'%" LIMIT 50 ';
 			}
 			else{
-				$sql = 'SELECT tid, sciname FROM taxa WHERE sciname LIKE "'.$this->queryString.'%" LIMIT 20';
+				$sql = 'SELECT t.tid, t.sciname FROM taxa t '. 
+
+				// Restrict to taxa contained in the State of Oregon vascular plant checklist (clid=1)
+			    ($this->oregonTaxa ? 'LEFT JOIN `fmchklsttaxalink` as cl ON t.tid = cl.tid ' : '').
+				'WHERE t.sciname LIKE "'.$this->queryString.'%" '
+				($this->oregonTaxa ? 'AND (cl.clid = 1) ' : '').
+				'LIMIT 20';
 			}
+
 			$rs = $this->conn->query($sql);
 			while ($r = $rs->fetch_object()) {
 				$retArr[] = array('id' => $r->tid, 'value' => $r->sciname);
@@ -86,7 +127,7 @@ class TaxonSearchSupport{
 		$retArr = Array();
 		if($this->queryString){
 			$sql = 'SELECT sciname FROM taxa ';
-			// Add whether each taxon belongs to any checklists
+			// Restrict to taxa contained in the State of Oregon vascular plant checklist (clid=1)
 			if ($this->oregonTaxa) $sql .= 'LEFT JOIN `fmchklsttaxalink` as cl ON taxa.tid = cl.tid ';
 			$sql .= ' WHERE (sciname LIKE "'.$this->queryString.'%") ';
 			if(is_numeric($this->rankLow)){

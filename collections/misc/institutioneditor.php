@@ -213,7 +213,8 @@ if (!$view | $view != 'tab') {
 		if($instArr = $instManager->getInstitutionData()){
 			//Cleaning this in function when data is harvested is fine, but only if data is used as output by all pages.
 			//If data from fuction is used by another class/page to be reinserted into data, than that would be a problem, but this is rare.
-			$instArr = $instManager->cleanOutArray($instArr);
+			// JGM: This breaks the notes field for GrSciColl data
+			//$instArr = $instManager->cleanOutArray($instArr);
 			?>
 			<div style="float:right;">
 				<a href="<?php echo $view == 'tab' ? '../misc/institutioneditor.php' : 'institutioneditor.php'; ?>">
@@ -631,10 +632,10 @@ if (!$view | $view != 'tab') {
 						$instList = $instManager->getInstitutionList();
 						if($instList){
 							foreach($instList as $iid => $iArr){
-								echo '<li><a href="/collections/misc/institutioneditor.php?' . ($view == 'tab' ? 'view=tab&' : '') . 'iid='.$iid.'">';
+								echo '<li><a href="' . $CLIENT_ROOT . '/collections/misc/institutioneditor.php?' . ($view == 'tab' ? 'view=tab&' : '') . 'iid='.$iid.'">';
 								echo $iArr['institutionname'].' ('.$iArr['institutioncode'].')';
 								if($editorCode == 3 || array_intersect(explode(',',$iArr['collid']),$USER_RIGHTS["CollAdmin"])){
-									echo ' <a href="institutioneditor.php?' . ($view == 'tab' ? 'view=tab&' : '') . 'emode=1&iid=' . $iid . '"><img src="' . $CLIENT_ROOT . '/images/edit.png" style="width:1.2em;" /></a>';
+									echo ' <a href="' . $CLIENT_ROOT . '/collections/misc/institutioneditor.php?' . ($view == 'tab' ? 'view=tab&' : '') . 'emode=1&iid=' . $iid . '"><img src="' . $CLIENT_ROOT . '/images/edit.png" style="width:1.2em;" /></a>';
 								}
 								echo '</a></li>';
 							}

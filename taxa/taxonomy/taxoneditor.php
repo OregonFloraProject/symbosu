@@ -190,7 +190,7 @@ if($isEditor){
 									<option value="&#215;" <?php echo ($unitInd1 && (mb_ord($unitInd1)==215 || strtolower($unitInd1) == 'x')?'selected':''); ?>>&#215;</option>
 									<option value="&#8224;" <?php echo ($unitInd1 && mb_ord($unitInd1)==8224?'selected':''); ?>>&#8224;</option>
 								</select>
-								<input type="text" id="unitname1" name="unitname1" style="width:300px;border-style:inset;" value="<?php echo $taxonEditorObj->getUnitName1(); ?>" />
+								<input type="text" id="unitname1" name="unitname1" style="width:300px;" value="<?php echo $taxonEditorObj->getUnitName1(); ?>" />
 							</div>
 						</div>
 						<div class="editDiv">
@@ -206,7 +206,7 @@ if($isEditor){
 									<option value=""></option>
 									<option value="&#215;" <?php echo (ord($unitInd2 ?? '') == 195 || strtolower($unitInd2 ?? '') == 'x'?'selected':''); ?>>&#215;</option>
 								</select>
-								<input type="text" id="unitname2" name="unitname2" style="width:300px;border-style:inset;" value="<?php echo $taxonEditorObj->getUnitName2(); ?>" />
+								<input type="text" id="unitname2" name="unitname2" style="width:300px;" value="<?php echo $taxonEditorObj->getUnitName2(); ?>" />
 							</div>
 						</div>
 						<div class="editDiv">
@@ -215,8 +215,8 @@ if($isEditor){
 								<?php echo $taxonEditorObj->getUnitInd3()." ".$taxonEditorObj->getUnitName3();?>
 							</div>
 							<div class="editfield" style="display:none;">
-								<input type="text" id="unitind3" name="unitind3" style="width:50px;border-style:inset;" value="<?php echo $taxonEditorObj->getUnitInd3(); ?>" />
-								<input type="text" id="unitname3" name="unitname3" style="width:300px;border-style:inset;" value="<?php echo $taxonEditorObj->getUnitName3(); ?>" />
+								<input type="text" id="unitind3" name="unitind3" style="width:50px;" value="<?php echo $taxonEditorObj->getUnitInd3(); ?>" />
+								<input type="text" id="unitname3" name="unitname3" style="width:300px;" value="<?php echo $taxonEditorObj->getUnitName3(); ?>" />
 							</div>
 						</div>
 						<div class="editDiv">
@@ -225,7 +225,7 @@ if($isEditor){
 								<?php echo $taxonEditorObj->getAuthor();?>
 							</div>
 							<div class="editfield" style="display:none;">
-								<input type="text" id="author" name="author" style="width:400px;border-style:inset;" value="<?php echo $taxonEditorObj->getAuthor(); ?>" />
+								<input type="text" id="author" name="author" style="width:400px;" value="<?php echo $taxonEditorObj->getAuthor(); ?>" />
 							</div>
 						</div>
 						<div id="kingdomdiv" class="editDiv">

@@ -52,7 +52,7 @@ li {
 
 */
 
-h2 {
+*[id^='react-'] h2 {
   font-size: 2.25rem;
   line-height: 2.5rem;
   margin-top: 1.4rem;
@@ -175,6 +175,10 @@ img {
 
 .navbar-toggler,
 .dropdown-menu {
+  background-color: @med-green;
+}
+
+.navbar-toggler:hover {
   background-color: @med-green;
 }
 
@@ -2879,7 +2883,7 @@ img {
     }
   }
 }
-body.spatial {
+body.spatial, body.collapsed-header {
   #react-header {
     height: 60px;
     .header-wrapper {
@@ -2902,6 +2906,8 @@ body.spatial {
       height: 60px !important;
     }
   }
+}
+body.spatial {
   #site-content {
     margin-top: 60px;
     overflow: hidden;

@@ -674,7 +674,7 @@ else{
 									$person = $pHandler->getPerson();
 									$userEmail = ($person?$person->getEmail():'');
 
-									$anchorVars = 'occid='.$occManager->getOccId().'&occindex='.$occIndex.'&csmode='.$crowdSourceMode.'&collid='.$collId;
+									$anchorVars = 'occid='.$occManager->getOccId().'&occindex='.$occIndex.'&csmode='.$crowdSourceMode.'&collid='.$collId.'&isgenobs='.$isGenObs;
 									$detVars = 'identby=' . urlencode($occArr['identifiedby'] ?? '') . '&dateident=' . urlencode($occArr['dateidentified'] ?? '') .
 										'&sciname=' . urlencode($occArr['sciname'] ?? '') . '&em=' . $isEditor .
 										'&annotatorname=' . urlencode($USER_DISPLAY_NAME ?? '') . '&annotatoremail=' . urlencode($userEmail ?? '') .
@@ -831,8 +831,8 @@ else{
 												<br/>
 												<input type="text" name="eventdate" value="<?php echo array_key_exists('eventdate',$occArr)?$occArr['eventdate']:''; ?>" onchange="eventDateChanged(this);" />
 											</div>
-											<div id="eventDate2Div" class="field-div" title="Latest Date Collected">
-												<?= $LANG['EVENT_DATE2']; ?>
+											<div id="eventDate2Div" class="field-div" title="<?php echo (defined('EVENTDATETIP') ? EVENTDATETIP : 'Latest Date Collected'); ?>">
+												<?= (defined('EVENTDATE2LABEL')?EVENTDATE2LABEL:$LANG['EVENT_DATE2']) ?>
 												<a href="#" onclick="return dwcDoc('eventDate2')" tabindex="-1"><img class="docimg" src="../../images/qmark.png" /></a>
 												<br/>
 												<input type="text" name="eventdate2" value="<?= array_key_exists('eventdate2',$occArr)?$occArr['eventdate2']:''; ?>" onchange="eventDate2Changed(this);" >
@@ -904,7 +904,7 @@ else{
 										<legend><?php echo (isset($LANG['LATEST_ID'])?$LANG['LATEST_ID']:'Latest Identification'); ?></legend>
 										<div style="clear:both;">
 											<div id="scinameDiv" class="field-div" title="<?php echo (defined('SCIENTIFICNAMETIP') ? SCIENTIFICNAMETIP : ''); ?>">
-												<?php echo echo (defined('SCIENTIFICNAMELABEL')?SCIENTIFICNAMELABEL:$LANG['SCINAME']); ?>
+												<?php echo (defined('SCIENTIFICNAMELABEL')?SCIENTIFICNAMELABEL:$LANG['SCINAME']); ?>
 												<a href="#" onclick="return dwcDoc('scientificName')" tabindex="-1"><img class="docimg" src="../../images/qmark.png" /></a>
 												<br/>
 												<input type="text" id="ffsciname" name="sciname" maxlength="250" value="<?php echo array_key_exists('sciname',$occArr)?$occArr['sciname']:''; ?>" onchange="fieldChanged('sciname');" <?php if($isEditor > 2) echo 'disabled'; ?> />
@@ -999,23 +999,23 @@ else{
 										?>
 										<legend><?php echo $LANG['LOCALITY']; ?></legend>
 										<div id="geography1-div" class="fieldGroup-div" style="<?= ($displayGeo1Div ? 'display:flex' : 'display:none') ?>">
-											<div id="continentDiv" class="field-div">
-												<?= $LANG['CONTINENT']; ?>
+											<div id="continentDiv" class="field-div" title="<?php echo (defined('CONTINENTTIP') ? CONTINENTTIP : ''); ?>">
+												<?= (defined('CONTINENTLABEL')?CONTINENTLABEL:$LANG['CONTINENT']); ?>
 												<a href="#" onclick="return dwcDoc('continent')" tabindex="-1"><img class="docimg" src="../../images/qmark.png" /></a>
 												<input type="text" id="ffcontinent" name="continent" value="<?= $continent ?>" onchange="fieldChanged('continent');" autocomplete="off" />
 											</div>
-											<div id="waterBodyDiv" class="field-div">
-												<?= $LANG['WATER_BODY']; ?>
+											<div id="waterBodyDiv" class="field-div" title="<?php echo (defined('WATERBODYTIP') ? WATERBODYTIP : ''); ?>">
+												<?= (defined('WATERBODYLABEL')?WATERBODYLABEL:$LANG['WATER_BODY']); ?>
 												<a href="#" onclick="return dwcDoc('waterBody')" tabindex="-1"><img class="docimg" src="../../images/qmark.png" /></a>
 												<input type="text" id="ffwaterbody" name="waterbody" value="<?= $waterBody ?>" onchange="fieldChanged('waterbody');" autocomplete="off" />
 											</div>
-											<div id="islandGroupDiv" class="field-div">
-												<?= $LANG['ISLAND_GROUP']; ?>
+											<div id="islandGroupDiv" class="field-div" title="<?php echo (defined('ISLANDGROUPTIP') ? ISLANDGROUPTIP : ''); ?>">
+												<?= (defined('ISLANDGROUPLABEL')?ISLANDGROUPLABEL:$LANG['ISLAND_GROUP']); ?>
 												<a href="#" onclick="return dwcDoc('islandGroup')" tabindex="-1"><img class="docimg" src="../../images/qmark.png" /></a>
 												<input type="text" id="ffislandgroup" name="islandgroup" value="<?= $islandGroup ?>" onchange="fieldChanged('islandgroup');" autocomplete="off" />
 											</div>
-											<div id="islandDiv" class="field-div">
-												<?= $LANG['ISLAND']; ?>
+											<div id="islandDiv" class="field-div" title="<?php echo (defined('ISLANDTIP') ? ISLANDTIP : ''); ?>">
+												<?= (defined('ISLANDLABEL')?ISLANDLABEL:$LANG['ISLAND']); ?>
 												<a href="#" onclick="return dwcDoc('island')" tabindex="-1"><img class="docimg" src="../../images/qmark.png" /></a>
 												<input type="text" id="ffisland" name="island" value="<?= $island ?>" onchange="fieldChanged('island');" autocomplete="off" />
 											</div>
@@ -1078,7 +1078,7 @@ else{
 										</div>
 										<?php
 										if($LOCALITY_AUTO_LOOKUP){
-											echo '<div id="localAutoDeactivatedDiv"' . (defined(LOCALITYAUTOLOOKUPTIP) ? LOCALITYAUTOLOOKUPTIP : '')  . '>';
+											echo '<div id="localAutoDeactivatedDiv" title="' . (defined(LOCALITYAUTOLOOKUPTIP) ? LOCALITYAUTOLOOKUPTIP : '')  . '">';
 											echo '<input name="localautodeactivated" type="checkbox" value="1" onchange="localAutoChanged(this)" ' . ($LOCALITY_AUTO_LOOKUP == 2? 'checked' : '') . ' tabindex="-1" > ';
 											echo (isset($LANG['DEACTIVATE_LOOKUP'])?$LANG['DEACTIVATE_LOOKUP']:'Deactivate Locality Lookup').'</div>';
 										}
@@ -1369,14 +1369,14 @@ else{
 												else echo '<input type="text" name="reproductivecondition" maxlength="255" value="'.(array_key_exists('reproductivecondition',$occArr)?$occArr['reproductivecondition']:'').'" onchange="fieldChanged(\'reproductivecondition\');" />';
 												?>
 											</div>
-											<div id="behaviorDiv" class="field-div">
-												<?= $LANG['BEHAVIOR']; ?>
+											<div id="behaviorDiv" class="field-div" title="<?php echo (defined('BEHAVIORTIP') ? BEHAVIORTIP : ''); ?>">
+												<?= (defined('BEHAVIORLABEL')?BEHAVIORLABEL:$LANG['BEHAVIOR']); ?>
 												<a href="#" onclick="return dwcDoc('behavior')" tabindex="-1"><img class="docimg" src="../../images/qmark.png"></a>
 												<br/>
 												<input type="text" id="ffbehavior" name="behavior" value="<?= array_key_exists('behavior',$occArr)?$occArr['behavior']:''; ?>" onchange="fieldChanged('behavior');" autocomplete="off" />
 											</div>
-											<div id="vitalityDiv" class="field-div">
-												<?= $LANG['VITALITY']; ?>
+											<div id="vitalityDiv" class="field-div" title="<?php echo (defined('VITALITYTIP') ? VITALITYTIP : ''); ?>">
+												<?= (defined('VITALITYLABEL')?VITALITYLABEL:$LANG['VITALITY']); ?>
 												<a href="#" onclick="return dwcDoc('vitality')" tabindex="-1"><img class="docimg" src="../../images/qmark.png"></a>
 												<br/>
 												<input type="text" id="ffvitality" name="vitality" value="<?= array_key_exists('vitality',$occArr)?$occArr['vitality']:''; ?>" onchange="fieldChanged('vitality');" autocomplete="off" />
@@ -1445,7 +1445,7 @@ else{
 												<a href="#" onclick="return dwcDoc('collectionCode')" tabindex="-1"><img class="docimg" src="../../images/qmark.png" /></a><br/>
 												<input type="text" name="collectioncode" maxlength="32" value="<?php echo array_key_exists('collectioncode',$occArr)?$occArr['collectioncode']:''; ?>" onchange="fieldChanged('collectioncode');" />
 											</div>
-											<div id="ownerInstitutionCodeDiv" class="field-div" title="<?php echo defined('OWNERINSTITUTIONCODETIP') ? OWNERINSTITUTIONCODETIP : $LANG['OWNER_CODE_EXPLAIN']); ?>">
+											<div id="ownerInstitutionCodeDiv" class="field-div" title="<?php echo (defined('OWNERINSTITUTIONCODETIP') ? OWNERINSTITUTIONCODETIP : $LANG['OWNER_CODE_EXPLAIN']); ?>">
 												<?php echo (defined('OWNERINSTITUTIONCODELABEL')?OWNERINSTITUTIONCODELABEL:$LANG['OWNER_INSTITUTION_CODE']); ?>
 												<a href="#" onclick="return dwcDoc('ownerInstitutionCode')" tabindex="-1"><img class="docimg" src="../../images/qmark.png" /></a><br/>
 												<input type="text" name="ownerinstitutioncode" maxlength="32" value="<?php echo array_key_exists('ownerinstitutioncode',$occArr)?$occArr['ownerinstitutioncode']:''; ?>" onchange="fieldChanged('ownerinstitutioncode');" />

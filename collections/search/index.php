@@ -25,6 +25,7 @@ $collData = new CollectionMetadata();
 $siteData = new DatasetsMetadata();
 
 $catId = array_key_exists("catid",$_REQUEST)?$_REQUEST["catid"]:'';
+if($catId == '' && isset($DEFAULTCATID)) $catId = $DEFAULTCATID;
 $collList = $collManager->getFullCollectionList($catId);
 $specArr = (isset($collList['spec'])?$collList['spec']:null);
 $obsArr = (isset($collList['obs'])?$collList['obs']:null);
@@ -35,13 +36,14 @@ $obsArr = (isset($collList['obs'])?$collList['obs']:null);
 <head>
 	<title><?php echo $DEFAULT_TITLE; ?> - <?php echo $LANG['SAMPLE_SEARCH'] ?></title>
 	<link href="<?= $CSS_BASE_PATH ?>/jquery-ui.css" type="text/css" rel="stylesheet">
-	<?php
-	include_once($SERVER_ROOT . '/includes/head.php');
-	?>
+	<!-- JGM: Moved these css files above head.php to allow for customizations.css to overload them -->
 	<link href="<?= $CLIENT_ROOT ?>/collections/search/css/searchStyles.css?ver=1" type="text/css" rel="stylesheet">
 	<link href="<?= $CLIENT_ROOT ?>/collections/search/css/searchStylesInner.css" type="text/css" rel="stylesheet">
 	<link href="<?= $CLIENT_ROOT ?>/collections/search/css/tables.css" type="text/css" rel="stylesheet">
 	<link href="<?= $CSS_BASE_PATH ?>/symbiota/collections/sharedCollectionStyling.css" type="text/css" rel="stylesheet">
+	<?php
+	include_once($SERVER_ROOT . '/includes/head.php');
+	?>
 	<script src="<?= $CLIENT_ROOT ?>/js/jquery-3.7.1.min.js" type="text/javascript"></script>
 	<script src="<?php echo $CLIENT_ROOT . '/js/jquery-ui.min.js'; ?>" type="text/javascript"></script>
 	<script src="../../js/symb/localitySuggest.js" type="text/javascript"></script>
@@ -90,12 +92,17 @@ $obsArr = (isset($collList['obs'])?$collList['obs']:null);
 	include($SERVER_ROOT . '/includes/header.php');
 	?>
 	<!-- This is inner text! -->
-	<div role="main" id="innertext" class="inner-search" style="max-width: 1920px">
+	<div role="main" id="innertext" class="inner-search" style="max-width: 1920px; margin-top: 20px;">
+
+
 		<h1 class="page-heading"><?php echo $LANG['SAMPLE_SEARCH'] ?></h1>
+		<div style="display: grid; grid-template-columns: 3fr 1fr; margin-bottom: 10px;">
+			This feature gives access to all the digitized collections housed in the Oregon State University Herbarium at Corvallis, which includes specimens originating at University of Oregon (ORE) and Willamette University (WILLU) as well as Oregon State University (OSC). Collections represented are the vascular plants, algae, bryophytes, fungi, and lichens. As part of its work to produce the Flora of Oregon in printed and digital formats, OregonFlora aligns the taxonomy of the Oregon vascular plants presented on this website with the Flora of Oregon's taxonomic framework.
+		</div>
 		<div id="error-msgs" class="errors"></div>
 		<div style="display: grid; grid-template-columns: 3fr 1fr;">
-			<button onClick="handleAccordionExpand()" class="inner-search button" id="expand-all-button" type="button" style="font-size: 1rem;"><?= $LANG['EXPAND_ALL_SECTIONS']; ?></button>
-			<button onClick="handleAccordionCollapse()" class="inner-search button" id="collapse-all-button" type="button" style="display: none; font-size: 1rem;"><?= $LANG['COLLAPSE_ALL_SECTIONS']; ?></button>
+			<button onClick="handleAccordionExpand()" class="inner-search button" id="expand-all-button" type="button" style="display: none; font-size: 1rem;"><?= $LANG['EXPAND_ALL_SECTIONS']; ?></button>
+			<button onClick="handleAccordionCollapse()" class="inner-search button" id="collapse-all-button" type="button" style="font-size: 1rem;"><?= $LANG['COLLAPSE_ALL_SECTIONS']; ?></button>
 		</div>
 		<form id="params-form" action="javascript:void(0);">
 			<!-- Criteria forms -->
@@ -142,7 +149,7 @@ $obsArr = (isset($collList['obs'])?$collList['obs']:null);
 				<!-- Locality -->
 				<section>
 					<!-- Accordion selector -->
-					<input type="checkbox" id="locality" name="locality" class="accordion-selector" />
+					<input type="checkbox" id="locality" name="locality" class="accordion-selector" checked />
 					<!-- Accordion header -->
 					<label for="locality" class="accordion-header"><?php echo $LANG['LOCALITY'] ?></label>
 					<!-- Accordion content -->
@@ -356,7 +363,7 @@ $obsArr = (isset($collList['obs'])?$collList['obs']:null);
 				<!-- Collecting Event -->
 				<section>
 					<!-- Accordion selector -->
-					<input type="checkbox" id="coll-event" class="accordion-selector" />
+					<input type="checkbox" id="coll-event" class="accordion-selector" checked />
 					<!-- Accordion header -->
 					<label for="coll-event" class="accordion-header"><?php echo $LANG['COLLECTING_EVENT'] ?></label>
 					<!-- Accordion content -->
@@ -399,7 +406,7 @@ $obsArr = (isset($collList['obs'])?$collList['obs']:null);
 				<!-- Sample Properties -->
 				<section>
 					<!-- Accordion selector -->
-					<input type="checkbox" id="sample" class="accordion-selector" />
+					<input type="checkbox" id="sample" class="accordion-selector" checked />
 					<!-- Accordion header -->
 					<label for="sample" class="accordion-header"><?php echo $LANG['SAMPLE_PROPERTIES'] ?></label>
 					<!-- Accordion content -->
@@ -472,7 +479,7 @@ $obsArr = (isset($collList['obs'])?$collList['obs']:null);
 							?>
 							<section>
 								<!-- Accordion selector -->
-								<input type="checkbox" id="trait" class="accordion-selector" />
+								<input type="checkbox" id="trait" class="accordion-selector" checked />
 								<!-- Accordion header -->
 								<label for="trait" class="accordion-header"><?php echo $LANG['TRAIT_CRITERIA'] ?></label>
 								<!-- Accordion content -->
@@ -575,7 +582,7 @@ $obsArr = (isset($collList['obs'])?$collList['obs']:null);
 </script>
 <script>
 	let alerts = [{
-		'alertMsg': '<?php echo $LANG['ALERT_MSG_PREVIOUS_SEARCH_FORM'] ?> <a href="<?php echo $CLIENT_ROOT ?>/collections/index.php" alt="Traditional Sample Search Form"><?= $LANG['PREVIOUS_SAMPLE_SEARCH']; ?></a>.'
+		'alertMsg': '<?php echo $LANG['ALERT_MSG_PREVIOUS_SEARCH_FORM'] ?> <a href="<?php echo $CLIENT_ROOT ?>/collections/harvestparams.php?db[]=5,8,238,239,240,241" alt="Traditional Sample Search Form"><?= $LANG['PREVIOUS_SAMPLE_SEARCH']; ?></a>.'
 	}];
 	handleAlerts(alerts, 3000);
 

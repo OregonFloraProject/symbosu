@@ -4,7 +4,6 @@ include_once($SERVER_ROOT.'/classes/OccurrenceCollectionProfile.php');
 include_once($SERVER_ROOT.'/content/lang/collections/misc/collstats.' . $LANG_TAG . '.php');
 header("Content-Type: text/html; charset=" . $CHARSET);
 ini_set('max_execution_time', 1200); //1200 seconds = 20 minutes
-
 $catID = array_key_exists('catid', $_REQUEST) ? filter_var($_REQUEST['catid'], FILTER_SANITIZE_NUMBER_INT) : 0;
 if(!$catID && isset($DEFAULTCATID) && $DEFAULTCATID) $catID = $DEFAULTCATID;
 $collId = array_key_exists('collid', $_REQUEST) ? $_REQUEST['collid'] : 0; // can't sanitize here as int because this could be a comma-delimited set of collIds
@@ -242,26 +241,10 @@ if($action != "Update Statistics"){
 			?>
 			<link href="<?= $CSS_BASE_PATH; ?>/symbiota/collections/listdisplay.css" type="text/css" rel="stylesheet" />
 			<link href="<?= $CSS_BASE_PATH ?>/symbiota/collections/sharedCollectionStyling.css" type="text/css" rel="stylesheet" />
-		</head>
-		<body>
-			<?php
-			$displayLeftMenu = (isset($collections_misc_collstatsMenu)?$collections_misc_collstatsMenu:false);
-			include($SERVER_ROOT.'/includes/header.php');
-			if(isset($collections_misc_collstatsCrumbs)){
-				if($collections_misc_collstatsCrumbs){
-					echo "<div class='navpath'>";
-					echo "<a href='../../index.php'>Home</a> &gt;&gt; ";
-					echo $collections_misc_collstatsCrumbs.' &gt;&gt; ';
-					echo "<b>" . $LANG['COL_STATS'] . "</b>";
-					echo "</div>";
-				}
-			}
-			else{
-				?>
             <script src="<?= $CLIENT_ROOT; ?>/js/jquery-3.7.1.min.js" type="text/javascript"></script>
 			<script src="<?= $CLIENT_ROOT; ?>/js/jquery-ui.min.js" type="text/javascript"></script>
-				<script src="../../js/symb/collections.index.js" type="text/javascript"></script>
-				<script type="text/javascript">
+			<script src="../../js/symb/collections.index.js" type="text/javascript"></script>
+			<script type="text/javascript">
 				$(document).ready(function() {
 					if(!navigator.cookieEnabled){
 						alert("<?php echo $LANG['NEED_COOKIES']; ?>");
@@ -409,7 +392,28 @@ if($action != "Update Statistics"){
 					display: flex;
 					flex-direction: column;
 				}
-				</script>
+
+				/* JGM: Fixes width of tables */
+				#statsdiv {
+					width: 100%;
+				}
+			</style>
+		</head>
+		<body>
+			<?php
+			$displayLeftMenu = (isset($collections_misc_collstatsMenu)?$collections_misc_collstatsMenu:false);
+			include($SERVER_ROOT.'/includes/header.php');
+			if(isset($collections_misc_collstatsCrumbs)){
+				if($collections_misc_collstatsCrumbs){
+					echo "<div class='navpath'>";
+					echo "<a href='../../index.php'>Home</a> &gt;&gt; ";
+					echo $collections_misc_collstatsCrumbs.' &gt;&gt; ';
+					echo "<b>" . $LANG['COL_STATS'] . "</b>";
+					echo "</div>";
+				}
+			}
+			else{
+				?>
 				<div class='navpath'>
 					<a href='../../index.php'><?php echo htmlspecialchars($LANG['HOME'], ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE); ?></a> &gt;&gt;
 					<a href='collprofiles.php'><?php echo htmlspecialchars($LANG['COLLECTIONS'], ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE); ?></a> &gt;&gt;

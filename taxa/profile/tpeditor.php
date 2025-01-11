@@ -135,7 +135,7 @@ if($isEditor && $action){
 		#taxonDiv a{ color:#990000; font-weight: bold; font-style: italic; }
 		#familyDiv{ margin-left:20px; margin-top:0.25em; }
 		.tox-dialog{ min-height: 400px }
-		input{ margin:3px; border:inset; }
+		input{ margin:3px; }
 		hr{ margin:30px 0px; }
 		.icon-img{ border: 0px; height: 1.2em; }
 	</style>

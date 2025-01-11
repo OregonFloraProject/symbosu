@@ -17,7 +17,7 @@ class FooterApp extends React.Component {
                 </a>
               </li>
               <li className="nav-item">
-                <a href="http://main.oregonstate.edu/official-web-disclaimer" className="nav-link">
+                <a href="https://oregonstate.edu/official-web-disclaimer" className="nav-link">
                   Disclaimer
                 </a>
               </li>

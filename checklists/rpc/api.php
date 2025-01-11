@@ -137,12 +137,12 @@ function buildDynResult($dynclid) {
 }
 
 $result = [];
-if (array_key_exists("clid", $_GET) && $_GET["clid"] > -1 && array_key_exists("pid", $_GET) && $_GET["pid"] > -1) {
+if (array_key_exists("clid", $_GET) && $_GET["clid"] > -1) {
   $em = SymbosuEntityManager::getEntityManager();
   $repo = $em->getRepository("Fmchecklists");
   $model = $repo->find($_GET["clid"]);
   $checklist = ExploreManager::fromModel($model);
-  if ($_GET["pid"] > -1) {
+  if (array_key_exists("pid", $_GET) && $_GET["pid"] > -1) {
 	  $checklist->setPid($_GET["pid"]);
 	}
   
@@ -157,10 +157,9 @@ if (array_key_exists("clid", $_GET) && $_GET["clid"] > -1 && array_key_exists("p
 	}
 	$result = buildResult($checklist);
 
-}elseif(array_key_exists("dynclid", $_GET) && $_GET["dynclid"] > -1) {
+} elseif(array_key_exists("dynclid", $_GET) && $_GET["dynclid"] > -1) {
 	$dynclid = $_GET["dynclid"];
 	$result = buildDynResult($dynclid);
-
 	
 }else{
 	#todo: generate error or redirect

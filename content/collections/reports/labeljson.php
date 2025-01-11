@@ -406,7 +406,7 @@
                 "style": "font-size: 0.65em; padding-top: 5px;"
             },
             "customStyles": ".field-block{clear: both; font-size: 0.9e} .text-base{font-size: 0.8em;} .text-sm{font-size: 0.7em;} .label{box-shadow: inset 0 0 0 5px white, inset 0 0 0 6px black; margin: 0 5px; width: 40%; position: relative} .row{margin-bottom: 10px;} .other-catalog-numbers{display: none;} .label-blocks{min-height: 180px; width: calc(100% - 55px);} .cn-barcode{position: absolute; top: 192px; left: calc(100% - 64px)} .cn-barcode img {height: 47px; border: 1px solid black; padding: 5px; transform: rotate(270deg); transform-origin: top left;}",
-            "defaultCss": "..\/..\/css\/v202209\/symbiota\/collections\/reports\/labelhelpers.css",
+            "defaultCss": "..\/..\/css\/symbiota\/collections\/reports\/labelhelpers.css",
             "customCss": "",
             "customJS": "",
             "labelType": "2",
@@ -562,7 +562,7 @@
             "displayBarcode": 0,
             "labelType": "2",
             "customStyles": "body{ font-size:10pt; }",
-            "defaultCss": "..\/..\/css\/v202209\/symbiota\/collections\/reports\/labelhelpers.css",
+            "defaultCss": "..\/..\/css\/symbiota\/collections\/reports\/labelhelpers.css",
             "customCss": "",
             "customJs": "",
             "pageSize": "letter",
@@ -630,7 +630,8 @@
                                     {
                                         "field": "dateidentified"
                                     }
-                                ]
+                                ],
+                                "delimiter": " "
                             },
                             {
                                 "fieldBlock": [
@@ -824,7 +825,7 @@
             "displayBarcode": 0,
             "labelType": "3",
             "customStyles": "body{ font-size:10pt; }",
-            "defaultCss": "..\/..\/css\/v202209\/symbiota\/collections\/reports\/labelhelpers.css",
+            "defaultCss": "..\/..\/css\/symbiota\/collections\/reports\/labelhelpers.css",
             "customCss": "",
             "customJs": "",
             "pageSize": "letter",
@@ -1047,8 +1048,8 @@
                 "style": ""
             },
             "customStyles": "",
-            "defaultCss": "..\/..\/css\/v202209\/symbiota\/collections\/reports\/labelhelpers.css",
-            "customCss": "..\/..\/css\/v202209\/symbiota\/collections\/reports\/lichenpacket.css",
+            "defaultCss": "..\/..\/css\/symbiota\/collections\/reports\/labelhelpers.css",
+            "customCss": "..\/..\/css\/symbiota\/collections\/reports\/lichenpacket.css",
             "customJS": "..\/..\/js\/symb\/lichenpacket.js",
             "labelType": "packet",
             "pageSize": "letter",

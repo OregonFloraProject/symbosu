@@ -5,7 +5,7 @@ $catIcon = $catEl['icon'];
 unset($catEl['name']);
 unset($catEl['acronym']);
 unset($catEl['icon']);
-$idStr = $collCnt . '-' . $catId;
+$idStr = $collCnt . '-' . $catid;
 ?>
 <section class="gridlike-form-row bottom-breathing-room-rel">
     <?php
@@ -33,12 +33,12 @@ $idStr = $collCnt . '-' . $catId;
     <div>
         <a href="#" class="condense-expand-flex" onclick="toggleCat('<?php echo htmlspecialchars($idStr, ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE); ?>');return false;">
         <div class="condense-expand-button-set">
-            <img id="plus-<?php echo $idStr; ?>" src="<?php echo $CLIENT_ROOT; ?>/images/plus.png" style="display:none; width:1em;" alt="plus sign to expand menu" />
-            <img id="minus-<?php echo $idStr; ?>" src="<?php echo $CLIENT_ROOT; ?>/images/minus.png" style="width:1em;" alt="minus sign to condense menu" />
-            <p id="ptext-<?php echo $idStr; ?>" style="<?php echo ((0 != $catid)?'':'display:none;') ?>">
+            <img id="plus-<?php echo $idStr; ?>" src="<?php echo $CLIENT_ROOT; ?>/images/plus.png" style="<?php echo (($catId == $catid)?'display:none;':'') ?>width:1em;" alt="plus sign to expand menu" />
+            <img id="minus-<?php echo $idStr; ?>" src="<?php echo $CLIENT_ROOT; ?>/images/minus.png" style="<?php echo (($catId == $catid)?'':'display:none;') ?>width:1em;" alt="minus sign to condense menu" />
+            <p id="ptext-<?php echo $idStr; ?>" style="<?php echo (($catId == $catid)?'':'display:none;') ?>">
                 <?php echo $LANG['CONDENSE'] ?>
             </p>
-            <p id="mtext-<?php echo $idStr; ?>" style="<?php echo ((0 != $catid)?'display:none;':'') ?>" >
+            <p id="mtext-<?php echo $idStr; ?>" style="<?php echo (($catId == $catid)?'display:none;':'') ?>" >
                 <?php echo $LANG['EXPAND'] ?>
             </p>
         </div>

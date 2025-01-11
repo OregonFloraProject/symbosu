@@ -123,19 +123,23 @@ UPDATE `omoccurassociations`
   WHERE associationType = "" AND occidAssociate IS NULL AND resourceUrl IS NULL AND verbatimSciname IS NOT NULL;
 
 
-# Corrects an issue with db_schema-3.0.sql. Will fail when udating 1.x schemas, thus ignore
-ALTER TABLE `omoccurdeterminations` 
-  CHANGE COLUMN `identificationID` `sourceIdentifier` VARCHAR(45) NULL DEFAULT NULL ;
+-- OF: we already have this column, comment out to prevent error
+-- # Corrects an issue with db_schema-3.0.sql. Will fail when udating 1.x schemas, thus ignore
+-- ALTER TABLE `omoccurdeterminations` 
+--   CHANGE COLUMN `identificationID` `sourceIdentifier` VARCHAR(45) NULL DEFAULT NULL ;
 
 
-# Needed to ensure basisOfRecord values are tagged correctly based on collection type (aka collType field)
-UPDATE `omoccurrences` o INNER JOIN omcollections c ON o.collid = c.collid
-  SET o.basisofrecord = "PreservedSpecimen"
-  WHERE (o.basisofrecord = "HumanObservation" OR o.basisofrecord IS NULL) AND c.colltype = 'Preserved Specimens'
-  AND o.occid NOT IN(SELECT occid FROM omoccuredits WHERE fieldname = "basisofrecord");
+-- OF: Katie has made this change manually
+--
+-- # Needed to ensure basisOfRecord values are tagged correctly based on collection type (aka collType field)
+-- UPDATE `omoccurrences` o INNER JOIN omcollections c ON o.collid = c.collid
+--   SET o.basisofrecord = "PreservedSpecimen"
+--   WHERE (o.basisofrecord = "HumanObservation" OR o.basisofrecord IS NULL) AND c.colltype = 'Preserved Specimens'
+--   AND o.occid NOT IN(SELECT occid FROM omoccuredits WHERE fieldname = "basisofrecord");
 
-ALTER TABLE `omoccurrences` 
-  ADD COLUMN `vitality` VARCHAR(150) NULL DEFAULT NULL AFTER `behavior`;
+-- OF: we already have this column, comment out to prevent error
+-- ALTER TABLE `omoccurrences` 
+--   ADD COLUMN `vitality` VARCHAR(150) NULL DEFAULT NULL AFTER `behavior`;
 
 #Standardize naming of indexes within occurrence table 
 SET FOREIGN_KEY_CHECKS=0;
@@ -194,7 +198,7 @@ ALTER TABLE `omoccurrences`
   ADD INDEX `IX_occurrences_stateProvince` (`stateProvince` ASC),
   ADD INDEX `IX_occurrences_county` (`county` ASC),
   ADD INDEX `IX_occurrences_municipality` (`municipality` ASC),
-  ADD INDEX `IX_occurrences_locality` (`locality`(100) ASC),
+  ADD INDEX `IX_occurrences_locality` (`locality`(100) ASC), -- since locality is a text column, we need to specify a max length here to avoid a warning and the default max length of 1024 being used
   ADD INDEX `IX_occurrences_locationID` (`locationID` ASC),
   ADD INDEX `IX_occurrences_localitySecurity` (`localitySecurity` ASC),
   ADD INDEX `IX_occurrences_elevMin` (`minimumElevationInMeters` ASC),
@@ -208,13 +212,15 @@ ALTER TABLE `omoccurrences`
 SET FOREIGN_KEY_CHECKS=1; 
 
 
-# Clean up localitySecurity for occurrences that are cultivated and have not explicitly had their localitySecurity edited to be 1 (and are missing a security reason) more recently than it has been edited to 0.
-UPDATE omoccurrences o INNER JOIN omoccuredits e ON o.occid = e.occid
-  LEFT JOIN (SELECT occid, ocedid FROM omoccuredits WHERE fieldName = "localitySecurity" AND fieldValueNew = 0) e2 ON e.occid = e2.occid AND e.ocedid < e2.ocedid
-  SET o.localitySecurity = 1, o.localitySecurityReason = "[Security Setting Explicitly Locked]"
-  WHERE o.localitySecurityReason IS NULL AND e.fieldName = "localitySecurity" AND e.fieldValueNew = 1 AND e2.occid IS NULL;
-
-UPDATE omoccurrences SET localitySecurity=0 WHERE cultivationStatus=1 AND localitySecurity=1 AND localitySecurityReason IS NULL;
+-- OF: we are ignoring these changes or doing them manually
+--
+-- # Clean up localitySecurity for occurrences that are cultivated and have not explicitly had their localitySecurity edited to be 1 (and are missing a security reason) more recently than it has been edited to 0.
+-- UPDATE omoccurrences o INNER JOIN omoccuredits e ON o.occid = e.occid
+--   LEFT JOIN (SELECT occid, ocedid FROM omoccuredits WHERE fieldName = "localitySecurity" AND fieldValueNew = 0) e2 ON e.occid = e2.occid AND e.ocedid < e2.ocedid
+--   SET o.localitySecurity = 1, o.localitySecurityReason = "[Security Setting Explicitly Locked]"
+--   WHERE o.localitySecurityReason IS NULL AND e.fieldName = "localitySecurity" AND e.fieldValueNew = 1 AND e2.occid IS NULL;
+-- 
+-- UPDATE omoccurrences SET localitySecurity=0 WHERE cultivationStatus=1 AND localitySecurity=1 AND localitySecurityReason IS NULL;
 
 
 ALTER TABLE `taxa` 
@@ -237,8 +243,9 @@ ALTER TABLE `taxa`
   DROP INDEX `rankid_index` ;
 
 
-ALTER TABLE `uploadspectemp` 
-  ADD COLUMN `vitality` VARCHAR(150) NULL DEFAULT NULL AFTER `behavior`;
+-- OF: we already have this column, comment out to prevent error
+-- ALTER TABLE `uploadspectemp` 
+--   ADD COLUMN `vitality` VARCHAR(150) NULL DEFAULT NULL AFTER `behavior`;
 
 ALTER TABLE `uploadspectemp` 
   DROP INDEX `Index_uploadspectemp_occid`,

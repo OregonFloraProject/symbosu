@@ -992,7 +992,7 @@ elseif(file_exists('../editor/includes/config/occurVarDefault.php')){
 								if (substr($iconStr, 0, 6) == 'images') $iconStr = '../../' . $iconStr;
 								?>
 								<div class="justify-center">
-									<img src='<?= $iconStr ?>' class="col-profile-img" alt="icon for collection" /><br />
+									<img src='<?= $iconStr ?>' class="col-profile-img"/><br />
 								</div>
 								<?php
 							} else{ // placeholder for missing icon
@@ -1016,8 +1016,12 @@ elseif(file_exists('../editor/includes/config/occurVarDefault.php')){
 								</a>
 							</h3>
 							<div style='margin:10px;'>
-								<div class="coll-description bottom-breathing-room-rel"><?= $collData['fulldescription'] ?></div>
 								<?php
+								if(isset($collData['fulldescription'])){
+									?>
+									<div class="coll-description bottom-breathing-room-rel"><?= $collData['fulldescription'] ?></div>
+									<?php
+								}
 								if(isset($collData['resourcejson'])){
 									if($resourceArr = json_decode($collData['resourcejson'], true)){
 										$title = $LANG['HOMEPAGE'];

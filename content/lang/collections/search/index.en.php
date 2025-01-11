@@ -6,7 +6,7 @@ Language: English
 */
 include_once($SERVER_ROOT . '/content/lang/collections/sharedterms.en.php');
 
-$LANG['SAMPLE_SEARCH'] = 'Record Search';
+$LANG['SAMPLE_SEARCH'] = 'Search the digitized collections of the Oregon State University Herbarium';
 $LANG['TAXONOMY'] = 'Taxonomy';
 $LANG['TAXON'] = 'Taxon';
 $LANG['TYPE_CHAR_FOR_SUGGESTIONS'] = 'Type at least 4 characters for quick suggestions. Separate multiple with commas.';

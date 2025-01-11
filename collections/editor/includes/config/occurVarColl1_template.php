@@ -32,11 +32,9 @@
 //define('RECORDEDBYLABEL','');
 //define('RECORDNUMBERLABEL','');
 //define('EVENTDATELABEL','');
+//define('EVENTDATE2LABEL','');
 //define('ASSOCIATEDCOLLECTORSLABEL','');
 //define('VERBATIMEVENTDATELABEL','');
-//define('YYYYMMDDLABEL','');
-//define('DAYOFYEARLABEL','');
-//define('ENDDATELABEL','');
 //define('EXSICCATITITLELABEL','');
 //define('EXSICCATINUMBERLABEL','');
 //define('SCIENTIFICNAMELABEL','');
@@ -49,6 +47,10 @@
 //define('IDENTIFICATIONREFERENCELABEL','');
 //define('IDENTIFICATIONREMARKSLABEL','');
 //define('TAXONREMARKSLABEL','');
+//define('CONTINENTLABEL','');
+//define('WATERBODYLABEL','');
+//define('ISLANDGROUPLABEL','');
+//define('ISLANDLABEL','');
 //define('COUNTRYLABEL','');
 //define('STATEPROVINCELABEL','');
 //define('COUNTYLABEL','');
@@ -86,6 +88,8 @@
 //define('SAMPLINGPROTOCOLLABEL','');
 //define('PREPARATIONSLABEL','');
 //define('REPRODUCTIVECONDITIONLABEL','');
+//define('BEHAVIORLABEL','');
+//define('VITALITYLABEL','');
 //define('ESTABLISHMENTMEANSLABEL','');
 //define('CULTIVATIONSTATUSLABEL','');
 //define('TYPESTATUSLABEL','');
@@ -113,17 +117,10 @@
 //define('RECORDEDBYTIP','');
 //define('RECORDNUMBERTIP','');
 //define('EVENTDATETIP','');
+//define('EVENTDATE2TIP');
 //define('DUPLICATESTIP','');
 //define('ASSOCIATEDCOLLECTORSTIP','');
 //define('VERBATIMEVENTDATETIP','');
-//define('YYYYMMDDTIP','');
-//define('NUMERICYEARTIP','');
-//define('NUMERICMONTHTIP','');
-//define('NUMERICDAYTIP','');
-//define('DAYOFYEARTIP','');
-//define('STARTDAYOFYEARTIP','');
-//define('ENDDAYOFYEARTIP','');
-//define('ENDDATETIP','');
 
 // Exsiccati
 //define('EXSICCATITITLETIP','');
@@ -142,6 +139,10 @@
 //define('TAXONREMARKSTIP','');
 
 // Locality & Georeferencing
+//define('CONTINENTTIP', '');
+//define('WATERBODYTIP', '');
+//define('ISLANDGROUPTIP', '');
+//define('ISLANDTIP', '');
 //define('COUNTRYTIP','');
 //define('STATEPROVINCETIP','');
 //define('COUNTYTIP','');
@@ -149,13 +150,13 @@
 //define('LOCATIONIDTIP','');
 //define('LOCALITYTIP','');
 //define('LOCATIONREMARKSTIP','');
-//define('LOCALITYAUTOLOOKUP','');
+//define('LOCALITYAUTOLOOKUPTIP','');
 //define('LOCALITYSECURITYTIP','');
 //define('LOCALITYSECURITYREASONTIP','');
 //define('DECIMALLATITUDETIP','');
 //define('DECIMALLONGITUDETIP','');
 //define('COORDINATEUNCERTAINITYINMETERSTIP','');
-//define('GOOGLEMAPSTIP','');
+//define('MAPSTIP','');
 //define('GEOLOCATETIP','');
 //define('COORDCLONETIP','');
 //define('GEOTOOLSTIP','');
@@ -194,6 +195,8 @@
 //define('SAMPLINGPROTOCOLTIP','');
 //define('PREPARATIONSTIP','');
 //define('REPRODUCTIVECONDITIONTIP','');
+//define('BEHAVIORTIP','');
+//define('VITALITYTIP','');
 //define('ESTABLISHMENTMEANSTIP','');
 //define('CULTIVATIONSTATUSTIP','');
 

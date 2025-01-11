@@ -198,7 +198,7 @@ if(isset($_REQUEST['llpoint'])) {
 			left: 0;
 			background-color: #ffffff;
 			overflow: hidden;
-			transition: width 0.5s;
+			transition: left 0.5s;
 			transition-timing-function: ease;
 		}
 
@@ -913,7 +913,6 @@ if(isset($_REQUEST['llpoint'])) {
 				markers = [];
 
 				if(heatmapLayer) map.mapLayer.removeLayer(heatmapLayer);
-
 				getOccurenceRecords(formData).then(res => {
 					if (res) loadOccurenceRecords(res);
 				});
@@ -1736,7 +1735,6 @@ if(isset($_REQUEST['llpoint'])) {
 		function loadOccurenceRecords(html, id="occurrencelist") {
 			document.getElementById(id).innerHTML = html;
 			$('.pagination a').click(async function(e){
-				e.preventDefault();
 				let response = await fetch(e.target.href, {
 					method: "GET",
 					credentials: "same-origin",
@@ -1923,9 +1921,10 @@ if(isset($_REQUEST['llpoint'])) {
 		</script>
 		<script src="../../js/symb/api.taxonomy.taxasuggest.js?ver=4" type="text/javascript"></script>
 	</head>
-	<body style='width:100%;max-width:100%;min-width:500px;' <?php echo (!$activateGeolocation?'onload="initialize();"':''); ?>>
+	<body class="collapsed-header" style='width:100%;max-width:100%;min-width:500px;' <?php echo (!$activateGeolocation?'onload="initialize();"':''); ?>>
 		<?php
 		if($shouldUseMinimalMapHeader) include_once($SERVER_ROOT . '/includes/minimalheader.php');
+		include($SERVER_ROOT . '/includes/header.php');
 		?>
 	  	<h1 class="page-heading screen-reader-only">Map Interface</h1>
 		<div
@@ -1941,21 +1940,23 @@ if(isset($_REQUEST['llpoint'])) {
 		>
 		</div>
 		<div>
-			<button onclick="document.getElementById('defaultpanel').style.width='29rem';  " style="position:absolute;top:0;left:0;margin:0px;z-index:10; gap: 0.2rem">
+			<button onclick="document.getElementById('defaultpanel').style.left='0';  " style="position:absolute;top:60px;left:0;margin:0px;z-index:10; gap: 0.2rem">
 				<span style="padding-bottom:0.2rem">
 					&#9776;
 				</span>
 				<b>Open Search Panel</b>
 			</button>
 		</div>
-		<div id='map' style='width:100vw;height:100vh;z-index:1'></div>
-		<div id="defaultpanel" class="sidepanel"  <?= $menuClosed? 'style="width: 0"': ''?>>
+		<div id='map' style='width:100%;height:calc(100vh - 60px);z-index:1'></div>
+		<div id="defaultpanel" class="sidepanel"  <?= $menuClosed? 'style="left: -29rem"': ''?>>
 			<div class="menu" style="display:flex; align-items: center; background-color: var(--darkest-color); height: 2rem">
-				<a style="text-decoration: none; margin-left: 0.5rem;" href="<?php echo htmlspecialchars($CLIENT_ROOT, ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE); ?>/index.php">
+				<!-- OF: we don't need this
+				<a style="text-decoration: none; margin-left: 0.5rem; color: white !important" href="<?php echo htmlspecialchars($CLIENT_ROOT, ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE); ?>/index.php">
 					<?php echo (isset($LANG['H_HOME'])?$LANG['H_HOME']:'Home'); ?>
 				</a>
+				-->
 				<span style="display: flex; flex-grow: 1; margin-right:1rem; justify-content: right">
-					<a onclick="document.getElementById('defaultpanel').style.width='0px'">Hide Panel</a>
+					<a style="color: white !important" onclick="document.getElementById('defaultpanel').style.left='-29rem'">Hide Panel</a>
 				</span>
 			</div>
 			<div class="panel-content">
@@ -2031,6 +2032,13 @@ Record Limit:
 											<input data-role="none" id="usethes" type="checkbox" name="usethes" value="1" <?php if($mapManager->getSearchTerm('usethes') || !$submitForm) echo "CHECKED"; ?> >
 										<label for="usethes">
 											<?php echo (isset($LANG['INCLUDE_SYNONYMS'])?$LANG['INCLUDE_SYNONYMS']:'Include Synonyms'); ?>
+										</label>
+									</div>
+									<div>
+										<span style="">
+											<input data-role="none" id="oregonvascplant" type="checkbox" name="oregonvascplant" value="1" checked="">
+										<label for="oregonvascplant">
+											Restrict autosuggest to Oregon vascular plant taxa
 										</label>
 									</div>
 									<div>

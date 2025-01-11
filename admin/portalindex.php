@@ -16,6 +16,7 @@ $portalManager = new PortalIndex();
 $isEditor = 0;
 if($IS_ADMIN) $isEditor = 1;
 ?>
+<!DOCTYPE html>
 <html lang="en">
 	<head>
 		<title><?php echo $DEFAULT_TITLE; ?> Portal Index Control Panel</title>

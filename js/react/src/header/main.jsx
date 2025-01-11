@@ -24,10 +24,10 @@ const DROPDOWNS = {
   tools: {
     title: 'Explore',
     children: [
-      { title: 'Mapping', href: '/spatial/index.php' },
+      { title: 'Mapping', href: '/collections/map/index.php' },
       { title: 'Identify Plants', href: '/checklists/dynamicmap.php?interface=key' },
       { title: 'Inventories', href: '/projects/index.php' },
-      { title: 'OSU Herbarium', href: '/collections/harvestparams.php?db[]=5,8,10,7,238,239,240,241' },
+      { title: 'OSU Herbarium', href: '/collections/search/index.php?db[]=5,8,238,239,240,241' },
       { title: 'Grow Natives', href: '/garden/index.php' },
       { title: 'Rare Plants', href: '/pages/rare-plant-guide.php' },
       { title: 'Taxonomic Tree', href: '/taxa/taxonomy/taxonomydisplay.php' },
@@ -79,7 +79,7 @@ const DROPDOWNS = {
 function HeaderButton(props) {
   return (
     <a href={props.href} rel="external">
-      <button className={'col header-button' + props.classes}>{props.title}</button>
+      <button className={'col header-button no-symbiota-placement' + props.classes}>{props.title}</button>
     </a>
   );
 }
@@ -246,7 +246,7 @@ class HeaderApp extends React.Component {
         {/* style={{ display: this.state.isCollapsed ? 'none' : 'flex' }}*/}
         {this.props.userName !== '' && (
           <a href="" rel="external" className={'disabled'}>
-            <button className={'col header-button'}>{'Hello, ' + this.props.userName + '!'}</button>
+            <button className={'col header-button no-symbiota-placement'}>{'Hello, ' + this.props.userName + '!'}</button>
           </a>
         )}
         {this.state.dropdowns['profile'].children.map((dropDownChildData) => {
@@ -299,7 +299,7 @@ class HeaderApp extends React.Component {
           <div id="site-header-dropdowns-wrapper" className="">
             <button
               id="site-header-navbar-toggler"
-              className={'navbar-toggler ml-auto' + (this.state.isMobile ? ' collapsed' : '')}
+              className={'navbar-toggler ml-auto no-symbiota-placement' + (this.state.isMobile ? ' collapsed' : '')}
               type="button"
               data-toggle="collapse"
               data-target="#site-header-dropdowns"
@@ -351,6 +351,7 @@ class HeaderApp extends React.Component {
             {this.getLoginButtons()}
             <button
               id="site-search-toggler"
+              className="no-symbiota-placement"
               type="button"
               data-toggle="collapse"
               data-target="#search-widget-wrapper"

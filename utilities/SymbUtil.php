@@ -7,7 +7,9 @@ class SymbUtil {
 	 * @param string $sql 
 	 * @param string $params
 	 */
-	static function execute_query(mysqli $conn, string $sql, array $params): mysqli_result | bool {
+	static function execute_query(mysqli $conn, string $sql, array $params): mysqli_result {
+	// JGM: union return types are only supported in PHP8+ 
+	//static function execute_query(mysqli $conn, string $sql, array $params): mysqli_result | bool {
 		//This is supported from 4 to 8
 		$version = phpversion();
 		[$major, $minor, $patch] = explode('.', $version);

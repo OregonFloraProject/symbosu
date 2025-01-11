@@ -248,7 +248,7 @@ else{
 						if($x < 8) echo '<option '.($cOpenParen == '(((' ? 'SELECTED' : '').' value="(((">(((</option>';
 						?>
 					</select>
-					<select name="q_customfield<?php echo $x; ?>" onchange="customSelectChanged(<?php echo $x; ?>)" aria-label="<?php echo $LANG['CRITERIA']; ?>">
+					<select name="q_customfield<?php echo $x; ?>" style="width:180px;" onchange="customSelectChanged(<?php echo $x; ?>)" aria-label="<?php echo $LANG['CRITERIA']; ?>">
 						<option value=""><?php echo $LANG['SELECT_FIELD_NAME']; ?></option>
 						<option value="">---------------------------------</option>
 						<?php
@@ -257,14 +257,14 @@ else{
 						}
 						?>
 					</select>
-					<select name="q_customtype<?php echo $x; ?>" aria-label="<?php echo $LANG['CONDITION']; ?>">
+					<select name="q_customtype<?php echo $x; ?>" style="width:140px;" aria-label="<?php echo $LANG['CONDITION']; ?>">
 						<?php
 						foreach($customTermArr as $term){
 							echo '<option '.($cTerm == $term ? 'SELECTED' : '').' value="'.$term.'">'.$LANG[$term].'</option>' ;
 						}
 						?>
 					</select>
-					<input name="q_customvalue<?php echo $x; ?>" type="text" value="<?php echo $cValue; ?>" style="width:200px;" aria-label="<?php echo $LANG['CRITERIA']; ?>"/>
+					<input name="q_customvalue<?php echo $x; ?>" type="text" value="<?php echo $cValue; ?>" style="width:150px;" aria-label="<?php echo $LANG['CRITERIA']; ?>"/>
 					<select name="q_customcloseparen<?php echo $x; ?>" onchange="customSelectChanged(<?php echo $x; ?>)" aria-label="<?php echo $LANG['CLOSE_PAREN_FIELD']; ?>">
 						<option value="">---</option>
 						<?php

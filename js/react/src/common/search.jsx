@@ -16,7 +16,7 @@ function SearchButton(props) {
   }
 
   return (
-    <button className="btn-search" style={props.style} onClick={props.isLoading ? () => {} : props.onClick}>
+    <button className="btn-search no-symbiota-placement" style={props.style} onClick={props.isLoading ? () => {} : props.onClick}>
       {/*<img
         style={{display: props.isLoading ? "none" : "block"}}
         src={imgSrc}

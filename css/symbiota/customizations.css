@@ -2,4 +2,190 @@
 Place your CSS customizations here.
 This stylesheet is defined last and will override all previously loaded sheets. You may reference variables defined in variables.css 
  */
- 
+
+/* ##### OregonFlora Modifications ##### */
+
+/* OregonFlora React Components */
+
+#react-header a, #footer-app a {
+  transition: unset;
+  font-weight: unset;
+  text-decoration: unset;
+}
+
+#react-header button, #footer-app button {
+  transition: unset;
+  font-weight: unset;
+  letter-spacing: unset;
+  white-space: unset;
+  align-items: unset;
+}
+
+#react-header li, #footer-app li {
+  padding: unset;
+}
+
+#react-header ul, #footer-app ul {
+  margin-block-start: unset;
+  margin-block-end: unset;
+  margin-inline-start: unset;
+  margin-inline-end: unset;
+  padding-inline-start: unset;
+}
+
+/* End OregonFlora React Components */
+
+/* OregonFlora Symbiota Components */
+
+:root {
+
+  /* Overload CSS variables in variables.css */
+  --body-bg-color: #ffffff;
+  --max-innertext-width: 1100px;
+
+  /* Green color used for buttons, footer, etc on OregonFlora */
+  --oregonflora-green: #74B147;
+  --oregonflora-light-green: #dfefd3;
+}
+
+.navpath{
+  font-size: 11px;
+  padding-top: 30px;
+}
+
+.page-heading {
+  font-size: 2rem;
+}
+
+#innertext {
+  margin-bottom: 20px;
+}
+
+/* <button> buttons */
+button {
+  background: var(--oregonflora-green);
+  border-radius: 5px !important;
+  &:not(.no-symbiota-placement) {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    margin: 4px 0px !important;
+    display: inline;
+  }
+}
+
+/* <a> buttons */
+.button-primary {
+  background-color: var(--oregonflora-green);
+}
+
+.button-primary a {
+  color: #fff !important;
+}
+
+/* Search page buttons */
+.inner-search button {
+  background-color: var(--oregonflora-green) !important;
+}
+
+.inner-search button:hover {
+  background-color: var(--medium-color) !important;
+}
+
+.inner-search button#reset-btn:hover {
+  background-color: var(--oregonflora-green) !important;
+}
+
+/* Map page styles */
+#mapsearchform, #mapoptions, #symbology, #maptaxalist {
+  font-size: .9rem;
+}
+
+/* Account for header on map page */
+.sidepanel{
+  top: 60px !important;
+}
+
+/* Tab navigation */
+.ui-widget-header, .ui-accordion-header {
+  background: var(--oregonflora-green) !important;
+}
+
+.ui-widget-header .ui-state-default {
+  background: var(--oregonflora-light-green) !important;
+}
+
+.ui-widget-header .ui-state-active {
+  background: white !important;
+}
+
+.ui-widget-header .ui-state-active a {
+  /* not all tabs need this, but collections/individual/index.php is an example that does */
+  color: #000000c2 !important;
+}
+
+.ui-tabs a {
+  /* prevent the weird zoom animation on page load */
+  transition: unset !important;
+}
+
+.ui-accordion-header {
+  color: white !important;
+  font-weight: 500 !important;
+}
+
+/* Leaflet fix for scale meter covering up layers selector on small screens */
+.leaflet-top {
+  z-index: 1001 !important;
+}
+
+/* End OregonFlora Symbiota Components */
+
+/* Bootstrap overrides */
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: bold !important;
+  line-height: 1.5 !important;
+}
+
+h1 {
+  font-size: 2em !important;
+}
+
+h2 {
+  font-size: 1.5em !important;
+}
+
+p {
+  margin-top: unset !important;
+  margin-bottom: unset !important;
+}
+
+/* fieldsets except those on collections/misc/collstats.php (hidden by default) */
+fieldset:not(.statspercollbox, .famdistbox, .geodistbox) {
+  /* copied directly from main.css */
+  display: block !important;
+  margin-inline-start: 2px !important;
+  margin-inline-end: 2px !important;
+  padding-block-start: 0.35em !important;
+  padding-inline-start: 0.75em !important;
+  padding-inline-end: 0.75em !important;
+  padding-block-end: 0.625em !important;
+  min-inline-size: min-content !important;
+  border-width: 2px !important;
+  border-style: groove !important;
+  border-color: rgb(192, 192, 192) !important;
+  border-image: initial !important;
+}
+
+legend {
+  font-size: 1rem !important;
+  padding: 0px 5px !important;
+  width: auto !important;
+  margin: 0px !important;
+}
+
+.pagination {
+  display: unset !important;
+}
+
+/* End Bootstrap overrides */

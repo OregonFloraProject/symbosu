@@ -5,6 +5,9 @@ include_once($SERVER_ROOT.'/classes/OccurrenceMapManager.php');
 header('Content-Type: application/json;charset='.$CHARSET);
 include_once($SERVER_ROOT . '/rpc/crossPortalHeaders.php');
 
+// TODO(eric): remove this once we upgrade to PHP 8
+include_once($SERVER_ROOT . '/utilities/str_contains_polyfill.php');
+
 /*
 $distFromMe = array_key_exists('distFromMe', $_REQUEST)?$_REQUEST['distFromMe']:'';
 $gridSize = array_key_exists('gridSizeSetting', $_REQUEST) && $_REQUEST['gridSizeSetting']?$_REQUEST['gridSizeSetting']:60;

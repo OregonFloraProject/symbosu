@@ -2,10 +2,11 @@
 document.addEventListener("DOMContentLoaded", function(event) { 
 
 	document.getElementById("catalognumber").disabled = true;
-	document.getElementById("othercatalognumbers").disabled = true;
+	//document.getElementById("othercatalognumbers").disabled = true;
 	document.getElementsByName("verbatimeventdate")[0].disabled = true;
 	document.getElementsByName("taxonremarks")[0].disabled = true;
 	document.getElementsByName("locationid")[0].disabled = true;
+	document.getElementsByName("behavior")[0].disabled = true;
 	document.getElementsByName("disposition")[0].disabled = true;
 	document.getElementsByName("occurrenceid")[0].disabled = true;
 	document.getElementsByName("institutioncode")[0].disabled = true;

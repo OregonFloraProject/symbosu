@@ -121,6 +121,12 @@ if(isset($MAPPING_BOUNDARIES)){
 	   include_once($SERVER_ROOT.'/includes/head.php');
 	   include_once($SERVER_ROOT.'/includes/leafletMap.php');
 	?>
+	<style type="text/css">
+		legend {
+			font-size: 1.2rem !important;
+			font-weight: bold;
+		}
+	</style>
 	<script type="text/javascript">
       let occurCoords;
       let colorLegend;
@@ -391,7 +397,11 @@ if(isset($MAPPING_BOUNDARIES)){
 
 	</script>
 </head>
-<body style="width:100%; min-width: 900px" onload="initialize();">
+<body class="collapsed-header" style="width:100%; min-width: 900px" onload="initialize();">
+	<?php
+	//if($shouldUseMinimalMapHeader) include_once($SERVER_ROOT . '/includes/minimalheader.php');
+	include($SERVER_ROOT . '/includes/header.php');
+	?>
    <h1 class="page-heading screen-reader-only">Leaflet Map</h1>
 	<?php
 	if(!$coordArr){
@@ -416,8 +426,12 @@ if(isset($MAPPING_BOUNDARIES)){
       data-clid="<?= htmlspecialchars($clid) ?>"
       data-legend="<?= htmlspecialchars(json_encode($legendArr)) ?>"
    />
-	<div id="map_canvas" style="width:100%;height:80vh"></div>
-	<div style="width:500px;float:left;">
+<?php /* 2025-01-01(eric): adding a few extra divs for flexbox / page layout purposes;
+indentation levels are weird to avoid a big/unhelpful git diff */ ?>
+<div style="height:calc(100vh - 60px);display:flex;flex-direction:column;">
+	<div id="map_canvas" style="width:100%;height:100%;flex:1;min-height:50vh;"></div>
+<div style="display:flex;">
+	<div style="flex:1;">
 		<fieldset>
             <legend>
                <?php echo (isset($LANG['LEGEND']) ? $LANG['LEGEND']: 'Legend') ?>
@@ -553,6 +567,8 @@ if(isset($MAPPING_BOUNDARIES)){
 			</div>
 		</fieldset>
 	</div>
+</div>
+</div>
 </body>
 </html>
 

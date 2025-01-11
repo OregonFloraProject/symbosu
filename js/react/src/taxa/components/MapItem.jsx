@@ -4,7 +4,7 @@ function MapItem(props) {
   const [showOverlay, setShowOverlay] = useState(false);
 
   const mapImage = `${props.clientRoot}/images/maps/${props.tid}.jpg`;
-  const mapLink = `${props.clientRoot}/collections/map/googlemap.php?usethes=1&taxa=${props.tid}&minClusterSetting=10&gridSizeSetting=30`;
+  const mapLink = `${props.clientRoot}/collections/map/leafletmap.php?usethes=1&taxa=${props.tid}&gridSizeSetting=30`;
 
   const linkText = props.needsPermission ? 'Locality details restricted to authorized users' : 'Click/tap to launch';
   const onClickHandler = props.needsPermission

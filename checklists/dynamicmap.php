@@ -267,7 +267,7 @@ if(!$zoomInt){
 		<div class="flex-form" id='innertext'>
 			<div style="margin-left: 2rem; margin-bottom: 1rem;">
 				<h3>An easy-to-use plant identification tool based on the plant features you recognize.
-				<span id="moredetails" style="cursor:pointer;color:blue;font-size:70%;" onclick="this.style.display='none';document.getElementById('moreinfo').style.display='inline';document.getElementById('lessdetails').style.display='inline';">
+				<span id="moredetails" style="cursor:pointer;color:blue;font-size:70%;font-weight:normal;" onclick="this.style.display='none';document.getElementById('moreinfo').style.display='inline';document.getElementById('lessdetails').style.display='inline';">
 					<?php echo $LANG['MORE_DETAILS']; ?>
 				</span>
                 </h3>
@@ -287,7 +287,7 @@ if(!$zoomInt){
 			</div>
 			<div>
 				<form name="mapForm" action="dynamicchecklist.php" method="post" onsubmit="return checkForm();" class="flex-form">
-					<div class="flex-form">
+					<div class="flex-form" style="float:left;margin-right:35px;">
 						<div style="margin-left: 0;">
 							<label for="taxa"><?php echo $LANG['TAXON_FILTER']; ?>:</label>
 							<input id="taxa" name="taxa" type="text" placeholder="(optional)" value="<?php echo $taxa; ?>" />
@@ -302,7 +302,7 @@ if(!$zoomInt){
 							</select>
 						</div>
 					</div>
-					<div>
+					<div style="float:left;width:300px;">
 						<input type="hidden" name="interface" value="<?php echo $interface; ?>" />
 						<input type="hidden" id="latbox" name="lat" value="" />
 						<input type="hidden" id="lngbox" name="lng" value="" />

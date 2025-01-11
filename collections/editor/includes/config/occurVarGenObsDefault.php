@@ -1,6 +1,8 @@
 <?php 
+// OSC Label Collections
+
 //Enter one to many custom cascading style sheet files 
-//const CSSARR = array('example1.css','example2.css');
+const CSSARR = array('occurVarDefault.css');
 
 //Enter one to many custom java script files 
 //const JSARR = array('example1.js','example2.js'); 
@@ -32,11 +34,9 @@ define('OTHERCATALOGNUMBERSLABEL','Accession Number');
 define('RECORDEDBYLABEL','Collector');
 define('RECORDNUMBERLABEL','Collector Number');
 //define('EVENTDATELABEL','');
+//define('EVENTDATE2LABEL','');
 //define('ASSOCIATEDCOLLECTORSLABEL','');
 //define('VERBATIMEVENTDATELABEL','');
-//define('YYYYMMDDLABEL','');
-//define('DAYOFYEARLABEL','');
-//define('ENDDATELABEL','');
 //define('EXSICCATITITLELABEL','');
 //define('EXSICCATINUMBERLABEL','');
 //define('SCIENTIFICNAMELABEL','');
@@ -49,6 +49,10 @@ define('RECORDNUMBERLABEL','Collector Number');
 //define('IDENTIFICATIONREFERENCELABEL','');
 //define('IDENTIFICATIONREMARKSLABEL','');
 //define('TAXONREMARKSLABEL','');
+//define('CONTINENTLABEL','');
+//define('WATERBODYLABEL','');
+//define('ISLANDGROUPLABEL','');
+//define('ISLANDLABEL','');
 //define('COUNTRYLABEL','');
 //define('STATEPROVINCELABEL','');
 //define('COUNTYLABEL','');
@@ -86,6 +90,8 @@ define('OCCURRENCEREMARKSLABEL','Notes (Occurrence Remarks)');
 //define('SAMPLINGPROTOCOLLABEL','');
 //define('PREPARATIONSLABEL','');
 //define('REPRODUCTIVECONDITIONLABEL','');
+//define('BEHAVIORLABEL','');
+//define('VITALITYLABEL','');
 //define('ESTABLISHMENTMEANSLABEL','');
 //define('CULTIVATIONSTATUSLABEL','');
 //define('TYPESTATUSLABEL','');
@@ -108,21 +114,14 @@ define('DATAGENERALIZATIONSLABEL','Transcription Notes (Data Generalizations)');
 
 // Collection and Collector info
 define('CATALOGNUMBERTIP','Field disabled. Leave this blank. The herbarium will add a barcode number.');
-define('OTHERCATALOGNUMBERSTIP','Field disabled. Leave this blank. The herbarium will add an accession number.');
+define('OTHERCATALOGNUMBERSTIP','Enter any additional specimen identifiers, along with their name: (e.g., field numbers)');
 define('RECORDEDBYTIP','Primary or only collector name. Omit preceding titles (e.g., Dr., Mr., Mrs., Miss) unless Mrs. is followed by husband’s name.');
 define('RECORDNUMBERTIP','Collector number. Include any letters or symbols in the collector number (e.g., KP-004b)');
 define('EVENTDATETIP','Date of specimen collection. Enter in the format YYYY-MM-DD. If year, month, or day is unknown, replace missing information with zeros (e.g. 2004-00-00).');
+define('EVENTDATE2TIP','End date of specimen collection, if multiple dates are specified on the label. Enter in the format YYYY-MM-DD. If year, month, or day is unknown, replace missing information with zeros (e.g. 2004-00-00). Roman numerals always indicate the month. If there is only one date specified, enter as the start date, and leave this blank.');
 define('DUPLICATESTIP','Search for duplicate specimen information from other herbaria. Turn this off if you do not expect other herbaria to have your duplicates yet.');
 define('ASSOCIATEDCOLLECTORSTIP','Any associated collectors names. Each name should be in order of “First name Last name.”, separated by commas. Exclude other words (e.g., “and”, “with”, “&”). Remove preceding titles (see also Collector).');
 define('VERBATIMEVENTDATETIP','Field disabled. Leave blank. Only used for old specimens in the herbarium.');
-//define('YYYYMMDDTIP','');
-//define('NUMERICYEARTIP','');
-//define('NUMERICMONTHTIP','');
-//define('NUMERICDAYTIP','');
-//define('DAYOFYEARTIP','');
-//define('STARTDAYOFYEARTIP','');
-//define('ENDDAYOFYEARTIP','');
-//define('ENDDATETIP','');
 
 // Exsiccati
 //define('EXSICCATITITLETIP','');
@@ -148,6 +147,10 @@ define('IDENTIFICATIONREMARKSTIP','Comments or notes about the identification (e
 define('TAXONREMARKSTIP','Field disabled. Not used at OSU.');
 
 // Locality & Georeferencing
+//define('CONTINENTTIP', '');
+//define('WATERBODYTIP', '');
+//define('ISLANDGROUPTIP', '');
+//define('ISLANDTIP', '');
 define('COUNTRYTIP','The country where the specimen was collected. Spell out in full (“United States”, not “U.S.”).');
 define('STATEPROVINCETIP','The state (USA) or province (Canada) where the specimen was collected. Enter as a full name rather than an abbreviation (e.g., “California” instead of “CA”). ');
 define('COUNTYTIP','The county (parish in Louisiana) in which the specimen was collected. 
@@ -156,8 +159,8 @@ define('COUNTYTIP','The county (parish in Louisiana) in which the specimen was c
 define('MUNICIPALITYTIP','Not generally used at OSU, but record for specimens from Mexico.');
 define('LOCATIONIDTIP','Field disabled. Not used at OSU.');
 define('LOCALITYTIP','The geographic description of where the specimen was collected. This should not include country, state, or county information, unless it is necessary for context of the locality (e.g., “southwest corner of Jefferson county” or “northeast Oregon”). Only capitalize pronouns.');
-//define('LOCATIONREMARKS','');
-define('LOCALITYAUTOLOOKUP','Unless deactivated, when you type in a locality, it will try to autocomplete with previously entered localities that also match the collector and date. If you select one of those matches, it will fill in any associated data (lat/long, elevation, habitat, associated species, etc.)');
+//define('LOCATIONREMARKSTIP','');
+define('LOCALITYAUTOLOOKUPTIP','Unless deactivated, when you type in a locality, it will try to autocomplete with previously entered localities that also match the collector and date. If you select one of those matches, it will fill in any associated data (lat/long, elevation, habitat, associated species, etc.)');
 //define('LOCALITYSECURITYTIP','');
 //define('LOCALITYSECURITYREASONTIP','');
 define('DECIMALLATITUDETIP','If Latitude is stated on the label in decimal format, enter here. If on the label as degrees/minutes/seconds, TRS or UTM, click the F (format) button, enter in the respective fields and click the Insert Values button. This auto-populates the Verbatim Coordinates and Lat/Long fields.');
@@ -205,6 +208,8 @@ define('INDIVIDUALCOUNTTIP','Not generally used at OSU');
 define('SAMPLINGPROTOCOLTIP','Not generally used at OSU');
 define('PREPARATIONSTIP','Not generally used at OSU');
 define('REPRODUCTIVECONDITIONTIP','Enter phenology here, if you have it.');
+define('BEHAVIORTIP','Field disabled. Not used at OSU.');
+define('VITALITYTIP','Not generally used at OSU');
 define('ESTABLISHMENTMEANSTIP','Default value is “wild collection” to indicate the collection is naturally occurring (this includes self-propagating garden weeds). 
 Other options are:
   * “cultivated” if the specimen was planted.

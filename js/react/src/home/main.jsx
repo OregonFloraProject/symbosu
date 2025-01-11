@@ -200,17 +200,17 @@ class Home extends React.Component {
 
                   <div className="row link-card">
                     <p className="link-text">
-                      <a href={this.props.clientRoot + '/spatial/index.php'}>
+                      <a href={this.props.clientRoot + '/collections/map/index.php'}>
                         <img src={this.props.clientRoot + '/images/slide-find.png'} />
                       </a>
-                      <a href={this.props.clientRoot + '/spatial/index.php'}>
+                      <a href={this.props.clientRoot + '/collections/map/index.php'}>
                         <strong>Find</strong>
                       </a>{' '}
                       where any Oregon vascular plant calls home.
                     </p>
                     <p className="link-desc">
                       With our powerful{' '}
-                      <a href={this.props.clientRoot + '/spatial/index.php'}>
+                      <a href={this.props.clientRoot + '/collections/map/index.php'}>
                         <strong>Mapping</strong>
                       </a>{' '}
                       resource.
@@ -219,17 +219,17 @@ class Home extends React.Component {
 
                   <div className="row link-card">
                     <p className="link-text">
-                      <a href={this.props.clientRoot + '/collections/harvestparams.php?db[]=5,8,10,7,238,239,240,241'}>
+                      <a href={this.props.clientRoot + '/collections/search/index.php?db[]=5,8,238,239,240,241'}>
                         <img src={this.props.clientRoot + '/images/slide-explore.png'} />
                       </a>
-                      <a href={this.props.clientRoot + '/collections/harvestparams.php?db[]=5,8,10,7,238,239,240,241'}>
+                      <a href={this.props.clientRoot + '/collections/search/index.php?db[]=5,8,238,239,240,241'}>
                         <strong>Explore</strong>
                       </a>{' '}
                       the collections of the OSU Herbarium.
                     </p>
                     <p className="link-desc">
                       Explore{' '}
-                      <a href={this.props.clientRoot + '/collections/harvestparams.php?db[]=5,8,10,7,238,239,240,241'}>
+                      <a href={this.props.clientRoot + '/collections/search/index.php?db[]=5,8,238,239,240,241'}>
                         <strong>OSU Herbarium</strong>
                       </a>{' '}
                       plants, mosses, lichens, algae, and fungi.

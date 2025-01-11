@@ -222,11 +222,11 @@ include($SERVER_ROOT.'/includes/header.php');
 						<legend class="profile-legend"><?php echo (isset($LANG['PORTAL_LOGIN'])?$LANG['PORTAL_LOGIN']:'Portal Login'); ?></legend>
 						<div>
 							<label for="login"><?php echo (isset($LANG['LOGIN_NAME'])?$LANG['LOGIN_NAME']:'Login'); ?>:</label> 
-							<input id="login" name="login" value="<?php echo $login; ?>" style="border-style:inset;" />
+							<input id="login" name="login" value="<?php echo $login; ?>" />
 						</div>
 						<div>
 							<label for="password"><?php echo (isset($LANG['PASSWORD'])?$LANG['PASSWORD']:"Password"); ?>:</label>
-							<input type="password" id="password" name="password"  style="border-style:inset;" autocomplete="off" />
+							<input type="password" id="password" name="password" autocomplete="off" />
 						</div>
 						<div>
 							<input type="checkbox" value='1' name="remember" id="remember" checked >

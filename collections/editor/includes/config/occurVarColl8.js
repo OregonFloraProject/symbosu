@@ -3,16 +3,16 @@
 // Runs once the page has loaded
 document.addEventListener("DOMContentLoaded", function(event) { 
 	
-// Function to disable taxonomy fields to force use of Determination Jistory
-function disableTaxonomy() {
-        document.getElementsByName("sciname")[0].disabled = true;
-        document.getElementsByName("scientificnameauthorship")[0].disabled = true;
-        document.getElementsByName("identificationqualifier")[0].disabled = true;
-        document.getElementsByName("family")[0].disabled = true;
-        document.getElementsByName("identifiedby")[0].disabled = true;
-        document.getElementsByName("dateidentified")[0].disabled = true;
-        $("#scinameDiv").before( '<div style="font-weight: bold; font-style: italic;">This section is read-only. Use the Determination History tab');
-}
+	// Function to disable taxonomy fields to force use of Determination Jistory
+	function disableTaxonomy() {
+	        document.getElementsByName("sciname")[0].disabled = true;
+	        document.getElementsByName("scientificnameauthorship")[0].disabled = true;
+	        document.getElementsByName("identificationqualifier")[0].disabled = true;
+	        document.getElementsByName("family")[0].disabled = true;
+	        document.getElementsByName("identifiedby")[0].disabled = true;
+	        document.getElementsByName("dateidentified")[0].disabled = true;
+	        $("#scinameDiv").before( '<div style="font-weight: bold; font-style: italic;">This section is read-only. Use the Determination History tab');
+	}
 
 	// Disable the following fields, which we do not use
 	document.getElementsByName("samplingprotocol")[0].disabled = true;
@@ -21,8 +21,8 @@ function disableTaxonomy() {
 	//document.getElementById("").disabled = true;
 
 	// Data entry fields that are especially important and need to be checked carefully for correctness
-	let important = ['othercatalognumbers','recordedby','recordnumber', 'eventdate', 'country', 
-		'stateprovince', 'county', 'locality', 'decimallatitude', 'decimallongitude']
+	let important = ['idname[]', 'idvalue[]','recordedby','recordnumber', 'eventdate', 'country', 
+		'stateprovince', 'county', 'locality', 'decimallatitude', 'decimallongitude'];
 
 	// Other common data entry fields
 	let fields = ['associatedcollectors','verbatimeventdate','coordinateuncertaintyinmeters',
@@ -31,7 +31,7 @@ function disableTaxonomy() {
 		'establishmentmeans', 'language', 'processingstatus'];
 
 	// Processing statuses to enable vouchervision field colors etc.
-	let vvProcessingStatus = ['vouchervision qc', 'vouchervision temp', 'special request'];
+	let vvProcessingStatus = ['vouchervision qc'];
 
 	// Add some customizations for VoucherVision processing statuses
 	if( vvProcessingStatus.includes($("select[name='processingstatus']").val())) {
@@ -59,9 +59,6 @@ function disableTaxonomy() {
 			}
 		});
 	}
-
-
-
 
 });
 

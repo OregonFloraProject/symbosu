@@ -12,13 +12,19 @@
 
 <link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/css/compiled/theme.css?<?php echo filemtime($SERVER_ROOT . '/css/compiled/theme.css'); ?>"> 
 <link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/css/compiled/header.css?<?php echo filemtime($SERVER_ROOT . '/css/compiled/header.css'); ?>"> 
-    
+
+ <!--   
 <script
   type="text/javascript"
   src="https://code.jquery.com/jquery-3.4.1.min.js"
   integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
   crossorigin="anonymous">
 </script>
+-->
+
+<!-- Use Symbiota's version of jQuery, and only load it if it is not already loaded in <head> by the page, checking first. -->
+<script> window.jQuery || document.write('<script src="<?php echo $CLIENT_ROOT; ?>/js/jquery-3.7.1.min.js" type="text/javascript">\x3C/script>')</script>
+
 <script
   type="text/javascript"
   src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
@@ -39,7 +45,7 @@
 <!-- Render header -->
 <div
   id="react-header"
-  data-props='{ "defaultTitle": "<?php echo $DEFAULT_TITLE; ?>", "currentPage": "<?php echo $_SERVER['SCRIPT_NAME']; ?>", "googleMapKey": "<?php echo $GOOGLE_MAP_KEY; ?>", "clientRoot": "<?php echo "$CLIENT_ROOT" ?>", "userName": "<?php echo ($USER_DISPLAY_NAME ? $USER_DISPLAY_NAME : '') ?>" }'>
+  data-props='{ "defaultTitle": "<?php echo $DEFAULT_TITLE; ?>", "currentPage": "<?php echo $_SERVER['SCRIPT_NAME']; ?>", "googleMapKey": "<?php echo $GOOGLE_MAP_KEY ?? ""; ?>", "clientRoot": "<?php echo "$CLIENT_ROOT" ?>", "userName": "<?php echo ($USER_DISPLAY_NAME ? $USER_DISPLAY_NAME : '') ?>" }'>
 </div>
 
 <script
