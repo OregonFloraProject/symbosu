@@ -168,11 +168,12 @@ if(isset($_REQUEST['llpoint'])) {
 		<script src="../../js/symb/collections.map.index.js?ver=2" type="text/javascript"></script>
 
 		<?php
-		if(empty($GOOGLE_MAP_KEY)) {
+		// Always use Leaflet Maps
+		//if(empty($GOOGLE_MAP_KEY)) {
 			include_once($SERVER_ROOT.'/includes/leafletMap.php');
-		} else {
-			include_once($SERVER_ROOT.'/includes/googleMap.php');
-		}
+		//} else {
+			//include_once($SERVER_ROOT.'/includes/googleMap.php');
+		//}
 		?>
 
 		<script src="../../js/symb/wktpolygontools.js" type="text/javascript"></script>
@@ -643,6 +644,9 @@ if(isset($_REQUEST['llpoint'])) {
 			let color = "B2BEB5";
 
 			map.mapLayer.zoomControl.setPosition('topright');
+
+			// OregonFlora customizations
+			addOregonFlora(map);
 
 			class LeafletMapGroup {
 				markers = {};
@@ -1909,11 +1913,12 @@ if(isset($_REQUEST['llpoint'])) {
 				alert("Failed to initialize map coordinate data")
 			}
 
-			<?php if(empty($GOOGLE_MAP_KEY)): ?>
+			// Always use Leaflet Maps
+			<?php //if(empty($GOOGLE_MAP_KEY)): ?>
 				leafletInit();
-			<?php else: ?>
-				googleInit();
-			<?php endif?>
+			<?php //else: ?>
+				//googleInit();
+			<?php //endif?>
 	  }
 		</script>
 		<script src="../../js/symb/api.taxonomy.taxasuggest.js?ver=4" type="text/javascript"></script>

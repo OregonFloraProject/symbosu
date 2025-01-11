@@ -116,6 +116,9 @@ if(!$zoomInt){
 
          map = new LeafletMap('map_canvas', dmOptions)
 
+         // Add all the OregonFlora leaflet customizations
+         addOregonFlora(map);
+
          let markerGroup = new L.layerGroup().addTo(map.mapLayer);
          let latlng;
 
@@ -210,11 +213,12 @@ if(!$zoomInt){
             alert("Failed to load map centering");
          }
 
-         <?php if(empty($GOOGLE_MAP_KEY)) { ?>
+         // Always use Leaflet maps
+         <?php /* if(empty($GOOGLE_MAP_KEY)) { */ ?>
             leafletInit();
-         <?php } else { ?>
-         googleInit();
-      <?php } ?>
+         <?php /* } else { ?>
+         //googleInit();
+      <?php //} */ ?>
       }
 
       function updateMarkerPosition(lat, lng) {

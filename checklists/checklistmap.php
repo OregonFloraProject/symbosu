@@ -63,6 +63,7 @@ $shouldUseMinimalMapHeader = $SHOULD_USE_MINIMAL_MAP_HEADER ?? false;
                center: [41,-95],
             };
             map = new LeafletMap("map_canvas", dmOptions);
+
             const leafletSmallPin = img => L.icon({
                iconUrl: img,
                iconSize:     [12, 20],
@@ -92,6 +93,9 @@ $shouldUseMinimalMapHeader = $SHOULD_USE_MINIMAL_MAP_HEADER ?? false;
             markerGroup.addTo(map.mapLayer)
 
             map.mapLayer.fitBounds(markerGroup.getBounds());
+
+            // Add all the OregonFlora leaflet customizations
+            addOregonFlora(map, false);
 
             //Only for inaturalist for now
             if(clMeta.dynamicProperties && clMeta.dynamicProperties.externalserviceid) {
@@ -229,11 +233,12 @@ $shouldUseMinimalMapHeader = $SHOULD_USE_MINIMAL_MAP_HEADER ?? false;
                cl_footprint_shape = loadMapShape("polygon", { polygonLoader: () => clMeta.footprintwkt });
             }
 
-            <?php if(empty($GOOGLE_MAP_KEY)):?>
+            // Always use Leaflet maps
+            <?php //if(empty($GOOGLE_MAP_KEY)):?>
                leafletInit();
-            <?php else:?>
-               googleInit();
-            <?php endif?>
+            <?php //else:?>
+               //googleInit();
+            <?php //endif?>
          }
 
          function openIndPU(occId){

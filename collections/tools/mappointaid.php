@@ -101,6 +101,9 @@ $shouldUseMinimalMapHeader = $SHOULD_USE_MINIMAL_MAP_HEADER ?? false;
 				lang: "<?php echo $LANG_TAG; ?>"
 			});
 
+			// OregonFlora customizations
+			addOregonFlora(map, false);
+
 			var drawnItems = new L.FeatureGroup();
 			map.mapLayer.addLayer(drawnItems);
 
@@ -401,11 +404,13 @@ $shouldUseMinimalMapHeader = $SHOULD_USE_MINIMAL_MAP_HEADER ?? false;
 					alert(`Error: Not Coordinates lat: ${lat}, lng: ${lng}`);
 				}
 			}
-			<?php if(empty($GOOGLE_MAP_KEY)) { ?>
+
+			// Always use Leaflet maps
+			<?php //if(empty($GOOGLE_MAP_KEY)) { ?>
 			leafletInit();
-			<?php } else { ?>
-			googleInit();
-			<?php } ?>
+			<?php //} else { ?>
+			//googleInit();
+			<?php //} ?>
 		}
 
 		function updateParentForm(f) {

@@ -151,6 +151,10 @@ else{
             }
 
             map = new LeafletMap('map_canvas', mapOptions);
+
+            // Add all the OregonFlora leaflet customizations
+            addOregonFlora(map, false);
+
             map.enableDrawing({
                polyline: false,
                circlemarker: false,
@@ -225,11 +229,12 @@ else{
 				document.getElementById("footprintwkt").value = parent_wkt.value 
 			}
 
-            if(<?= (!empty($GOOGLE_MAP_KEY)?'true':'false') ?>) {
-               googleInit();
-            } else {
+            // Always use Leaflet maps
+            //if(<?= (!empty($GOOGLE_MAP_KEY)?'true':'false') ?>) {
+            //   googleInit();
+            //} else {
                leafletInit();
-            }
+            //}
 
             drawLoadedShape();
          }

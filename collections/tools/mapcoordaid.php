@@ -50,11 +50,12 @@ else{
 		<title><?php echo $DEFAULT_TITLE; ?> - Taxon Map</title>
 		<?php
 		include_once($SERVER_ROOT.'/includes/head.php');
-		if(empty($GOOGLE_MAP_KEY)) {
+		// Always use Leaflet maps
+		//if(empty($GOOGLE_MAP_KEY)) {
 			include_once($SERVER_ROOT.'/includes/leafletMap.php');
-		} else {
-			include_once($SERVER_ROOT.'/includes/googleMap.php');
-		}
+		//} else {
+		//	include_once($SERVER_ROOT.'/includes/googleMap.php');
+		//}
 		?>
 		<meta charset="utf-8">
 		<script src="<?php echo $CLIENT_ROOT; ?>/js/symb/wktpolygontools.js" type="text/javascript"></script>
@@ -301,6 +302,10 @@ else{
 			};
 
 			let map = new LeafletMap('map', MapOptions );
+
+			// Add all the OregonFlora leaflet customizations
+			addOregonFlora(map, false);
+
 			let mode = "<?php echo $mapMode?>";
 
 			map.enableDrawing({
@@ -335,12 +340,12 @@ else{
 			if(formShape) 
 			map.drawShape(formShape, setShapeToSearchForm)
 		}
-
-		<?php if(empty($GOOGLE_MAP_KEY)): ?> 
+		// Always use Leaflet maps
+		<?php //if(empty($GOOGLE_MAP_KEY)): ?>
 			leafletInit();
-		<?php else:?> 
-			googleInit();
-		<?php endif ?>
+		<?php //else:?>
+			//googleInit();
+		<?php //endif ?>
 		</script>
 	</body>
 </html>

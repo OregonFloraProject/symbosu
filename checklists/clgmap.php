@@ -28,12 +28,15 @@ $shouldUseMinimalMapHeader = $SHOULD_USE_MINIMAL_MAP_HEADER ?? false;
          let pid;
 
          function navigateToCheckList(clid, pid) {
-            window.location.href = `../ident/key.php?clid=${clid}&pid=${pid}&taxon=All+Species`;
+            window.location.href = `../ident/key.php?cl=${clid}&proj=${pid}&taxon=All+Species`;
          }
 
          function leafletInit() {
             let map = new LeafletMap('map_canvas');
             const markers = [];
+
+            // OregonFlora customizations
+            addOregonFlora(map);
 
             for(let checklistId of Object.keys(checklists)) {
                const checklist = checklists[checklistId];
@@ -105,11 +108,12 @@ $shouldUseMinimalMapHeader = $SHOULD_USE_MINIMAL_MAP_HEADER ?? false;
                alert("<?= $LANG['FAILED_TO_LOAD'] ?>");
             }
 
-            <?php if(empty($GOOGLE_MAP_KEY)) { ?>
-               leafletInit();
-            <?php } else { ?>
-               googleInit();
-            <?php } ?>
+            // Always use Leaflet maps
+            <?php //if(empty($GOOGLE_MAP_KEY)) { ?>
+            leafletInit();
+            <?php //} else { ?>
+            //googleInit();
+            <?php //} ?>
 			}
 		</script>
 		<style>

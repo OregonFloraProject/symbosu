@@ -141,6 +141,20 @@ if(isset($MAPPING_BOUNDARIES)){
 
          map = new LeafletMap('map_canvas');
 
+			// Add all the OregonFlora leaflet customizations
+			addOregonFlora(map);
+
+			// Set up an array to store taxa markerClusters
+			map.taxaCluster = [];
+
+			// Set up groups of markers so that different types can be toggled on and off
+			map.markerGroups = {
+			  "osc": [],
+			  "ofphoto": [],
+			  "spec": [],
+			  "obs": []
+			};
+
          const checkLatLng = (latlng) => {
             return (
                (!isNaN(latlng[0]) && latlng[0] <= 90 && latlng[0] >= -90) &&
@@ -158,12 +172,16 @@ if(isset($MAPPING_BOUNDARIES)){
                html: `<div style="background-color: #${colorGroup.c}CC;"><span>` + childCount + '</span></div>',
                   className: 'marker-cluster',
                   iconSize: new L.Point(40, 40),
-                  color: `#${colorGroup.c}77`,
+                  // OregonFlora: remove transparent outer border of cluster icons
+                  //color: `#${colorGroup.c}77`, // Old
+                  color: `#${colorGroup.c}00`,
                });
             }
 
             let taxaCluster = L.markerClusterGroup({
-               iconCreateFunction: colorCluster
+               iconCreateFunction: colorCluster,
+               tid: tid, // Save tid to the cluster
+               maxClusterRadius: <?php echo $gridSize . ',' ?>
             });
 
             for(let groupId of Object.keys(colorGroup.points)) {
@@ -171,39 +189,109 @@ if(isset($MAPPING_BOUNDARIES)){
                for(let occid of Object.keys(taxaGroup)) {
                   const occur = taxaGroup[occid];
                   const latlng = [parseFloat(occur.lat), parseFloat(occur.lng)];
-                  let displayStr = `${occur.instcode}${occur.collcode}`;
+                  // let displayStr = `${occur.instcode}`;
 
-                  if(!checkLatLng(latlng)) continue;
+                  // // Account for missing collection codes
+                  // if(occur.collcode) displayStr = `${displayStr}-${occur.collcode}`;
 
-                  if(occur.catnum) {
-                     if(!isNaN(occur.catnum)) {
-                        displayStr = `${displayStr}-${occur.catnum}`;
-                     } else {
-                        displayStr = occur.catnum;
-                     }
-                  } else if(occur.collector) {
-                     displayStr = `${displayStr}-${occur.collector}`;
-                  } else if(occur.ocatnum) {
-                     displayStr = `${displayStr}-${occur.ocatnum}`;
-                  }
+                  // if(!checkLatLng(latlng)) continue;
 
-                  //Add marker based on occurence type
-                  let marker = (occur.colltype === "spec"?
-                  L.circleMarker(latlng, {
-                     radius : 8,
-                     color  : '#000000',
-                     weight: 2,
-                     fillColor: `#${colorGroup.c}`,
-                     opacity: 1.0,
-                     fillOpacity: 1.0
-                  }):
-                  L.marker(latlng, {
-                     icon: getObservationSvg({
-                        color: `#${colorGroup.c}`,
-                        size: 30
-                     })
-                  }))
-                  .bindTooltip(`<div style="font-size:1.2rem">${displayStr}</div>`)
+                  // if(occur.catnum) {
+                  //    if(!isNaN(occur.catnum)) {
+                  //       displayStr = `${displayStr}-${occur.catnum}`;
+                  //    } else {
+                  //       displayStr = occur.catnum;
+                  //    }
+                  // } else if(occur.collector) {
+                  //    displayStr = `${displayStr}-${occur.collector}`;
+                  // } else if(occur.ocatnum) {
+                  //    displayStr = `${displayStr}-${occur.ocatnum}`;
+                  // }
+
+						// Alternative display string format for OregonFlora
+						let displayStr = `<div><strong>Collection: </strong>${occur.instcode}`;
+
+						// Account for missing collection codes
+						if(occur.collcode) displayStr += `-${occur.collcode}`;
+
+						displayStr += '</div>';
+						if(occur.catnum) displayStr += `<div><strong>Catalog #: </strong>${occur.catnum}</div>`;
+						if(occur.ocatnum) displayStr += `<div><strong>Secondary Catalog #: </strong>${occur.ocatnum}</div>`;
+						let recordedByType = occur.colltype == 'spec' ? 'Collector' : 'Observer';
+						if(occur.collector) displayStr += `<div><strong>${recordedByType}: </strong>${occur.collector}</div>`;
+
+						//Add marker based on occurence type
+						// OSU herbarium specimen: diamond
+						let marker = {};
+						if(occur.instcode == 'OSU' && occur.colltype == 'spec') {
+							marker = L.marker(latlng, {
+								icon: getOregonFloraSvg({
+									color: `#${colorGroup.c}`,
+									size: 30,
+									icon: 'osc'
+								})
+							});
+
+							// Add marker to markerGroup
+							map.markerGroups['osc'][tid] = (map.markerGroups['osc'][tid] || []).concat(marker);
+
+						// OregonFlora Photo: square
+						} else if (occur.instcode == 'OF' && occur.collcode == 'FP') {
+							marker = L.marker(latlng, {
+								icon: getOregonFloraSvg({
+									color: `#${colorGroup.c}`,
+									size: 30,
+									icon: 'ofphoto'
+								})
+							});
+
+							// Add marker to markerGroup
+							map.markerGroups['ofphoto'][tid] = (map.markerGroups['ofphoto'][tid] || []).concat(marker);
+
+						// Other Herbarium Specimens: circle
+						} else if (occur.colltype == 'spec') {
+							marker = L.circleMarker(latlng, {
+								radius : 8,
+								color  : '#000000',
+								weight: 2,
+								fillColor: `#${colorGroup.c}`,
+								opacity: 1.0,
+								fillOpacity: 1.0
+							})
+
+							// Add marker to markerGroup
+							map.markerGroups['spec'][tid] = (map.markerGroups['spec'][tid] || []).concat(marker);
+
+						// Other Observations: triangle
+						} else {
+							marker = L.marker(latlng, {
+								icon: getObservationSvg({
+									color: `#${colorGroup.c}`,
+									size: 30
+								})
+							});
+
+							// Add marker to markerGroup
+							map.markerGroups['obs'][tid] = (map.markerGroups['obs'][tid] || []).concat(marker);
+						}
+
+                  // let marker = (occur.colltype === "spec"?
+                  // L.circleMarker(latlng, {
+                  //    radius : 8,
+                  //    color  : '#000000',
+                  //    weight: 2,
+                  //    fillColor: `#${colorGroup.c}`,
+                  //    opacity: 1.0,
+                  //    fillOpacity: 1.0
+                  // }):
+                  // L.marker(latlng, {
+                  //    icon: getOregonFloraSvg({
+                  //       color: `#${colorGroup.c}`,
+                  //       size: 30
+                  //    })
+                  // }))
+
+                  marker.bindTooltip(`<div style="font-size:1.2rem">${displayStr}</div>`)
                   .on('click', function() { openIndPU(occid, clid) })
 
                   taxaCluster.addLayer(marker)
@@ -211,6 +299,9 @@ if(isset($MAPPING_BOUNDARIES)){
                }
             }
             map.mapLayer.addLayer(taxaCluster);
+
+            // Oregonflora Addition: save the taxa markerClusters for later manipulation
+            map.taxaCluster[tid] = taxaCluster;
          }
          map.mapLayer.fitBounds(bounds.getBounds());
       }
@@ -354,25 +445,49 @@ if(isset($MAPPING_BOUNDARIES)){
 			</div>
 			<div style="float: left;">
 				<div>
+					<svg style="height:14px;width:14px;margin-bottom:-2px;">" xmlns="http://www.w3.org/2000/svg">
+						<g>
+							<path stroke="#000000" d="m0,7 7,-7l 7,7l -7,7z" stroke-width="1px" fill="white"/>
+						</g>
+					</svg> = OSU Herbarium
+				</div>
+				<div>
 					<svg xmlns="http://www.w3.org/2000/svg" style="height:15px;width:15px;margin-bottom:-2px;">">
 						<g>
 							<circle cx="7.5" cy="7.5" r="7" fill="white" stroke="#000000" stroke-width="1px" ></circle>
 						</g>
-                  </svg> = 
-                  <?php echo (isset($LANG['COLLECTION']) ? $LANG['COLLECTION']: 'Collection') ?>
+					</svg> = Other Herbaria
+				</div>
+				<div>
+					<svg style="height:14px;width:14px;margin-bottom:-2px;">" xmlns="http://www.w3.org/2000/svg">
+						<g>
+							<path stroke="#000000" d="m0,0l 12,0l 0,12l -12,0l 0,-12z" stroke-width="1px" fill="white"/>
+						</g>
+					</svg> = OregonFlora Photo
 				</div>
 				<div>
 					<svg style="height:14px;width:14px;margin-bottom:-2px;">" xmlns="http://www.w3.org/2000/svg">
 						<g>
 							<path stroke="#000000" d="m6.70496,0.23296l-6.70496,13.48356l13.88754,0.12255l-7.18258,-13.60611z" stroke-width="1px" fill="white"/>
 						</g>
-					</svg> = 
+					</svg> =
                <?php echo (isset($LANG['OBSERVATION']) ? $LANG['OBSERVATION']: 'Observation') ?>
 				</div>
 			</div>
 		</fieldset>
 	</div>
-	<div style="width:400px;float:left;">
+	<div style="flex:1;">
+		<fieldset style="display:flex !important">
+			<legend>Points to Display</legend>
+			<div style="flex:1;">
+				<input type="checkbox" id="osc" checked onClick="toggleMarkers(this.id);"> OSU Herbarium Specimens<br/>
+				<input type="checkbox" id="spec" checked onClick="toggleMarkers(this.id);"> Other Herbarium Specimens
+			</div>
+			<div style="flex:1;">
+				<input type="checkbox" id="ofphoto" checked onClick="toggleMarkers(this.id);"> OregonFlora Photos<br/>
+				<input type="checkbox" id="obs" checked onClick="toggleMarkers(this.id);"> Unvouchered Observations
+			</div>
+		</fieldset>
 		<fieldset>
             <legend>
                <?php echo (isset($LANG['ADD_REFERENCE_POINT']) ? $LANG['ADD_REFERENCE_POINT']: 'Add Point of Reference') ?>

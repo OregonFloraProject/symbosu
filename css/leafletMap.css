@@ -43,3 +43,19 @@
   vertical-align: middle;
   font-size: 1rem;
 }
+
+/*
+OregonFlora customizations
+Some leaflet pages don't load customizations.css, so we add here instead
+*/
+
+.county-labels {
+  background-color: transparent;
+  color: var(--darkest-color);
+  font-size: 1pt;
+  display: none;
+  font-weight: bold;
+  border: 0px;
+  box-shadow: none;
+  z-index: -1;
+}

@@ -107,7 +107,8 @@ class LeafletMap {
       });
 
       if(map_options.layer_control !== false) {
-         L.control.layers({
+         // Oregonflora Addition: save the layer control for later manipulation
+         this.layerControl = L.control.layers({
             "Terrain": terrainLayer,
             "Basic": basicLayer,
             "Topo": openTopoLayer,
@@ -117,7 +118,8 @@ class LeafletMap {
       }
 
       if(map_options.scale !== false) {
-         L.control.scale({maxWidth: 200}).addTo(this.mapLayer);
+         // Oregonflora Addition: save the scale control for later manipulation
+         this.scaleControl = L.control.scale({maxWidth: 200}).addTo(this.mapLayer);
       }
 
       this.setLang(map_options.lang);

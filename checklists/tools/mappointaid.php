@@ -85,6 +85,9 @@ $shouldUseMinimalMapHeader = $SHOULD_USE_MINIMAL_MAP_HEADER ?? false;
 
 				map = new LeafletMap('map_canvas', MapOptions);
 
+				// Add all the OregonFlora leaflet customizations
+				addOregonFlora(map);
+
 			let markerGroup = L.layerGroup().addTo(map.mapLayer);
 
 			if(latValue && lngValue) {
@@ -136,11 +139,13 @@ $shouldUseMinimalMapHeader = $SHOULD_USE_MINIMAL_MAP_HEADER ?? false;
 			});
 		}
 		function initialize() {
-			<?php if(empty($GOOGLE_MAP_KEY)): ?>
+
+			// Always use Leaflet maps
+			//<?php if(empty($GOOGLE_MAP_KEY)): ?>
 				leafletInit();
-			<?php else:?>
-				googleInit();
-			<?php endif ?>
+			//<?php else:?>
+			//	googleInit();
+			//<?php endif ?>
 		}
 
 		function placeMarker() {
