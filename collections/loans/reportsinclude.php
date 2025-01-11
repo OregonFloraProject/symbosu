@@ -1,6 +1,36 @@
 <?php
 if($LANG_TAG != 'en' && file_exists($SERVER_ROOT.'/content/lang/collections/loans/loan_langs.' . $LANG_TAG . '.php')) include_once($SERVER_ROOT.'/content/lang/collections/loans/loan_langs.' . $LANG_TAG . '.php');
 else include_once($SERVER_ROOT . '/content/lang/collections/loans/loan_langs.en.php');
+
+// Allow for collection-specific loan reports
+// Custom invoice
+if($collid && file_exists('reports/invoiceColl'.$collid.'.php')){
+	$invoice = 'invoiceColl'.$collid;
+} else {
+	$invoice = 'defaultinvoice';
+}
+
+// Custom specimen list
+if($collid && file_exists('reports/specimenlistColl'.$collid.'.php')){
+	$speclist = 'specimenlistColl'.$collid;
+} else {
+	$speclist = 'defaultspecimenlist';
+}
+
+// Custom mailing label
+if($collid && file_exists('reports/mailinglabelColl'.$collid.'.php')){
+	$mailinglabel = 'mailinglabelColl'.$collid;
+} else {
+	$mailinglabel= 'defaultmailinglabel';
+}
+
+// Custom envelope
+if($collid && file_exists('reports/envelopeColl'.$collid.'.php')){
+	$envelope = 'envelopeColl'.$collid;
+} else {
+	$envelope = 'defaultenvelope';
+}
+
 ?>
 
 <form name="reportsform" onsubmit="return ProcessReport();" method="post" target="_blank">
@@ -22,15 +52,15 @@ else include_once($SERVER_ROOT . '/content/lang/collections/loans/loan_langs.en.
 		<input name="loantype" type="hidden" value="<?php echo $loanType; ?>" />
 		<input name="collid" type="hidden" value="<?php echo $collid; ?>" />
 		<input name="identifier" type="hidden" value="<?php echo $identifier; ?>" />
-		<button name="formsubmit" type="submit" onclick="this.form.action ='reports/oscinvoice.php'" value="invoice"><?php echo $LANG['INVOICE']; ?></button>
+		<button name="formsubmit" type="submit" onclick="this.form.action ='reports/<?php echo $invoice; ?>.php'" value="invoice"><?php echo $LANG['INVOICE']; ?></button>
 		<?php
 		if(isset($specimenTotal) && $specimenTotal){
 			?>
-			<button name="formsubmit" type="submit" onclick="this.form.action ='reports/defaultspecimenlist.php'" value="spec"><?php echo $LANG['SPEC_LIST']; ?></button>
+			<button name="formsubmit" type="submit" onclick="this.form.action ='reports/<?php echo $speclist; ?>.php'" value="spec"><?php echo $LANG['SPEC_LIST']; ?></button>
 			<?php
 		}
 		?>
-		<button name="formsubmit" type="submit" onclick="this.form.action ='reports/oscmailinglabel.php'" value="label"><?php echo $LANG['MAILING_LABEL']; ?></button>
-		<button name="formsubmit" type="submit" onclick="this.form.action ='reports/defaultenvelope.php'" value="envelope"><?php echo $LANG['ENVELOPE']; ?></button>
+		<button name="formsubmit" type="submit" onclick="this.form.action ='reports/<?php echo $mailinglabel; ?>.php'" value="label"><?php echo $LANG['MAILING_LABEL']; ?></button>
+		<button name="formsubmit" type="submit" onclick="this.form.action ='reports/<?php echo $envelope; ?>.php'" value="envelope"><?php echo $LANG['ENVELOPE']; ?></button>
 	</fieldset>
 </form>
