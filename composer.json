@@ -1,10 +1,11 @@
 {
     "require": {
         "doctrine/orm": "2.7.3",
+        "jumbojett/openid-connect-php": "^1.0",
         "pclzip/pclzip": "2.8.2",
         "phpoffice/common": "0.2.9",
         "phpoffice/phpspreadsheet": "1.18.0",
-        "phpoffice/phpword": "^0.18.2",
+        "phpoffice/phpword": "^1.3.0",
         "psr/simple-cache": "1.0.1",
         "zendframework/zend-escaper": "2.6.1",
         "zendframework/zend-stdlib": "3.1.0"
@@ -18,6 +19,11 @@
           "Psr\\SimpleCache\\": "src/",
           "Zend\\Escaper\\": "src/",
           "Zend\\Stdlib\\": "src/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "ocramius/package-versions": true
         }
     }
 }

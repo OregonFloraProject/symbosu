@@ -40,7 +40,8 @@ elseif(file_exists('includes/config/occurVarDefault.php')){
 }
 
 ?>
-<html>
+<!DOCTYPE html>
+<html lang="<?php echo $LANG_TAG ?>">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=<?php echo $CHARSET; ?>">
 	<title><?php echo $DEFAULT_TITLE.' '.$LANG['OCC_SKEL_SUBMIT']; ?></title>
@@ -48,43 +49,42 @@ elseif(file_exists('includes/config/occurVarDefault.php')){
 	<?php
 	include_once($SERVER_ROOT.'/includes/head.php');
 	?>
-	
+	<script src="<?php echo $CLIENT_ROOT; ?>/js/jquery-3.7.1.min.js" type="text/javascript"></script>
+	<script src="<?php echo $CLIENT_ROOT; ?>/js/jquery-ui.min.js" type="text/javascript"></script>
+	<script src="../../js/symb/collections.editor.skeletal.js?ver=2" type="text/javascript"></script>
+	<script src="../../js/symb/collections.editor.autocomplete.js?ver=1" type="text/javascript"></script>
+	<script src="../../js/symb/shared.js?ver=1" type="text/javascript"></script>
+	<style>
+		label{  }
+		fieldset{ padding: 15px; }
+		legend{ font-weight: bold; }
+	</style>
 </head>
 <body>
 	<?php
 	$displayLeftMenu = false;
 	include($SERVER_ROOT.'/includes/header.php');
 	?>
-	<script src="../../js/jquery.js" type="text/javascript"></script>
-	<script src="../../js/jquery-ui.js" type="text/javascript"></script>
-	<script src="../../js/symb/collections.editor.skeletal.js?ver=1" type="text/javascript"></script>
-	<script src="../../js/symb/shared.js?ver=150324" type="text/javascript"></script>
-	<style type="text/css">
-		label{ font-weight: bold; }
-		fieldset{ padding: 15px; }
-		legend{ font-weight: bold; }
-	</style>
 	<div class='navpath'>
-		<a href="../../index.php"><?php echo $LANG['HOME']; ?></a> &gt;&gt;
-		<a href="../misc/collprofiles.php?collid=<?php echo $collid; ?>&emode=1"><?php echo $LANG['COL_MNGMT']; ?></a> &gt;&gt;
+		<a href="../../index.php"><?php echo htmlspecialchars($LANG['HOME'], ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE); ?></a> &gt;&gt;
+		<a href="../misc/collprofiles.php?collid=<?php echo htmlspecialchars($collid, ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE); ?>&emode=1"><?php echo htmlspecialchars($LANG['COL_MNGMT'], ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE); ?></a> &gt;&gt;
 		<b><?php echo $LANG['OCC_SKEL_SUBMIT']; ?></b>
 	</div>
 	<!-- inner text -->
-	<div id="innertext">
-		<div style="float:right;"><a href="#" onclick="toggle('descriptiondiv')"><b><?php echo $LANG['DISPLAY_INSTRUCTIONS']; ?></b></a></div>
-		<h1><?php echo $collMap['collectionname']; ?></h1>
+	<div role="main" id="innertext">
+		<h1 class="page-heading"><?php echo $LANG['OCC_SKEL_SUBMIT'] . ': ' . $collMap['collectionname']; ?></h1>
 		<?php
 		if($statusStr){
 			echo '<div style="margin:15px;color:red;">'.$statusStr.'</div>';
 		}
 		if($isEditor){
 			?>
-			<fieldset>
-				<legend>
-					<b><?php echo $LANG['SKELETAL_DATA']; ?></b>
-					<a id="optionimgspan" href="#" onclick="showOptions()"><img src="../../images/list.png" style="width:12px;" title="<?php echo $LANG['DISPLAY_OPTIONS']; ?>" /></a>
-					<a href="#" onclick="toggle('descriptiondiv')"><img src="../../images/info.png" style="width:12px;" title="<?php echo $LANG['TOOL_DESCRIPTION']; ?>" /></a>
-				</legend>
+			<section class="fieldset-like">
+				<h2>
+					<span><?php echo $LANG['SKELETAL_DATA']; ?></span>
+					<span onclick="toggle('descriptiondiv')" onkeypress="toggle('descriptiondiv')" tabindex="0"><img src="../../images/info.png" style="width:1em;" title="<?php echo $LANG['TOOL_DESCRIPTION']; ?>" aria-label="<?php echo (isset($LANG['IMG_TOOL_DESCRIPTION'])?$LANG['IMG_TOOL_DESCRIPTION']:'Description of Tool Button'); ?>"/></span>
+					<span id="optionimgspan" onclick="showOptions()" onkeypress="showOptions()" tabindex="0"><img src="../../images/list.png" style="width:1em;" title="<?php echo $LANG['DISPLAY_OPTIONS']; ?>" aria-label="<?php echo (isset($LANG['IMG_DISPLAY_OPTIONS'])?$LANG['IMG_DISPLAY_OPTIONS']:'Display Options Button'); ?>"/></span>
+				</h2>
 				<div id="descriptiondiv" style="display:none;margin:10px;width:80%">
 					<div style="margin-bottom:5px">
 						<?php echo $LANG['SKELETAL_DESCIPRTION_1']; //This page is typically used to enter skeletal records into the system during the imaging process...?>
@@ -97,7 +97,7 @@ elseif(file_exists('includes/config/occurVarDefault.php')){
 					</div>
  				</div>
 				<form id="defaultform" name="defaultform" action="skeletalsubmit.php" method="post" autocomplete="off" onsubmit="return submitDefaultForm(this)">
-					<div id="optiondiv" style="display:none;background-color:white;">
+					<div id="optiondiv" style="display:none;position:absolute;background-color:white; z-index: 1;">
 						<fieldset style="margin-top: -10px;padding-top:5px">
 							<legend><b><?php echo $LANG['OPTIONS']; ?></b></legend>
 							<div style="float:right;"><a href="#" onclick="hideOptions()" style="color:red" ><?php echo $LANG['X_CLOSE']; ?></a></div>
@@ -121,64 +121,74 @@ elseif(file_exists('includes/config/occurVarDefault.php')){
 							<input name="addaction" type="radio" value="2" /> <?php echo $LANG['APPEND_VALUES']; ?>
 						</fieldset>
 					</div>
-					<div style="position:absolute;background-color:white;top:10px;right:10px;">
-						<?php echo $LANG['SESSION']; ?>: <label id="minutes">00</label>:<label id="seconds">00</label><br/>
-						<?php echo $LANG['COUNT']; ?>: <label id="count">0</label><br/>
-						<?php echo $LANG['RATE']; ?>: <label id="rate">0</label> <?php echo $LANG['PER_HOUR']; ?>
-					</div>
-					<div>
-						<div style="">
-							<div id="scinamediv" style="float:left" title="<?php echo (defined('SCIENTIFICNAMETIP') ? SCIENTIFICNAMETIP : ''); ?>">
-								<label><?php echo (defined('SCIENTIFICNAMELABEL')?SCIENTIFICNAMELABEL:(isset($LANG['SCINAME'])?$LANG['SCINAME']:'Scientific Name')); ?>:</label>
-								<input id="fsciname" name="sciname" type="text" value="" style="width:300px"/>
-								<input id="ftidinterpreted" name="tidinterpreted" type="hidden" value="" />&nbsp;
-							</div>
-							<div id="authordiv" style="float:left" title="<?php echo (defined('SCIENTIFICNAMEAUTHORSHIPTIP') ? SCIENTIFICNAMEAUTHORSHIPTIP : ''); ?>">
-								<label><?php echo (defined('SCIENTIFICNAMEAUTHORSHIPLABEL')?SCIENTIFICNAMEAUTHORSHIPLABEL:(isset($LANG['AUTHOR'])?$LANG['AUTHOR']:'Author')); ?>:</label>
-								<input id="fscientificnameauthorship" name="scientificnameauthorship" type="text" value="" />
-							</div>
-							<?php
-							if($IS_ADMIN || isset($USER_RIGHTS['Taxonomy'])){
-								?>
-								<div style="float:left;padding:2px 3px;">
-									<a href="../../taxa/taxonomy/taxonomyloader.php" target="_blank">
-										<img src="../../images/add.png" style="width:14px;" title="<?php echo $LANG['ADD_NAME_THESAURUS']; ?>" />
-									</a>
-								</div>
-								<?php
-							}
-							?>
-							<div style="clear:both;">
-								<div id="familydiv" style="float:left" title="<?php echo (defined('FAMILYTIP') ? FAMILYTIP : ''); ?>">
-									<label><?php echo (defined('FAMILYLABEL')?FAMILYLABEL:(isset($LANG['FAMILY'])?$LANG['FAMILY']:'Family')); ?>:</label> <input id="ffamily" name="family" type="text" tabindex="0" value="" />
-								</div>
-								<div id="localitysecuritydiv" style="float:left;margin:3px 5px">
-									<input id="flocalitysecurity" name="localitysecurity" type="checkbox" tabindex="0" value="1" />
-									<?php echo $LANG['PROTECT_LOCALITY']; ?>
-								</div>
+					<?php echo $LANG['SESSION']; ?>: <span id="minutes">00</span>:<span id="seconds">00</span><br/>
+					<?php echo $LANG['COUNT']; ?>: <span id="count">0</span><br/>
+					<?php echo $LANG['RATE']; ?>: <span id="rate">0</span> <?php echo $LANG['PER_HOUR']; ?>
+
+					<div class="flex-form" style="float:right">
+							<div>
+								<button name="clearform" type="reset" onclick="resetForm()" value="<?php echo $LANG['CLEAR'] ?>"><?php echo $LANG['CLEAR'] ?></button>
 							</div>
 						</div>
-						<div style="clear:both;padding-top:5px">
-							<div id="countrydiv" style="display:none;float:left;margin:3px 3px 3px 0px;" title="<?php echo (defined('COUNTRYTIP') ? COUNTRYTIP : ''); ?>">
-								<label><?php echo (defined('COUNTRYLABEL')?COUNTRYLABEL:(isset($LANG['COUNTRY'])?$LANG['COUNTRY']:'Country')); ?>:</label><br/>
+					<div class="flex-form">
+						<div class="flex-form">
+							<div id="scinamediv" title="<?php echo (defined('SCIENTIFICNAMETIP') ? SCIENTIFICNAMETIP : ''); ?>">
+									<label for="fsciname"><?php echo (defined('SCIENTIFICNAMELABEL')?SCIENTIFICNAMELABEL:(isset($LANG['SCINAME'])?$LANG['SCINAME']:'Scientific Name')); ?>:</label>
+									<input id="fsciname" name="sciname" type="text" value=""/>
+									<input id="ftidinterpreted" name="tidinterpreted" type="hidden" value="" />
+							</div>
+						</div>
+						<div class="flex-form">
+							<div id="authordiv" class="left-breathing-room-rel" title="<?php echo (defined('SCIENTIFICNAMEAUTHORSHIPTIP') ? SCIENTIFICNAMEAUTHORSHIPTIP : ''); ?>">
+								<label for="fscientificnameauthorship">
+									<?php echo (defined('SCIENTIFICNAMEAUTHORSHIPLABEL')?SCIENTIFICNAMEAUTHORSHIPLABEL:(isset($LANG['AUTHOR'])?$LANG['AUTHOR']:'Authorship')). ':'; ?>
+								</label>
+								<input id="fscientificnameauthorship" name="scientificnameauthorship" type="text" value="" />
+							</div>
+						</div>
+						<?php
+						if($IS_ADMIN || isset($USER_RIGHTS['Taxonomy'])){
+							?>
+							<div style="float:left;padding:2px 3px;">
+								<a href="../../taxa/taxonomy/taxonomyloader.php" target="_blank">
+									<img src="../../images/add.png" style="width:1.5em" title="<?php echo $LANG['ADD_NAME_THESAURUS']; ?>" aria-label="<?php echo $LANG['ADD_NAME_THESAURUS']; ?>" />
+								</a>
+							</div>
+							<?php
+						}
+						?>
+						<div class="flex-form">
+							<div id="familydiv" title="<?php echo (defined('FAMILYTIP') ? FAMILYTIP : ''); ?>">
+								<label for="ffamily"><?php echo (defined('FAMILYLABEL')?FAMILYLABEL:(isset($LANG['FAMILY'])?$LANG['FAMILY']:'Family')); ?>:</label> <input id="ffamily" name="family" type="text" tabindex="0" value="" />
+							</div>
+							<div id="localitysecuritydiv">
+								<input id="flocalitysecurity" name="localitysecurity" type="checkbox" tabindex="0" value="1" />
+								<label for="flocalitysecurity">
+									<?php echo $LANG['PROTECT_LOCALITY']; ?>
+								</label>
+							</div>
+						</div>
+						<div class="flex-form">
+							<div id="countrydiv" style="display:none;float:left;margin:3px;" title="<?php echo (defined('COUNTRYTIP') ? COUNTRYTIP : ''); ?>">
+								<label for="fcountry"><?php echo (defined('COUNTRYLABEL')?COUNTRYLABEL:(isset($LANG['COUNTRY'])?$LANG['COUNTRY']:'Country')); ?></label><br/>
 								<input id="fcountry" name="country" type="text" value="" autocomplete="off" />
 							</div>
-							<div id="statediv" style="float:left;margin:3px 3px 3px 0px;" title="<?php echo (defined('STATEPROVINCETIP') ? STATEPROVINCETIP : ''); ?>">
-								<label><?php echo (defined('STATEPROVINCELABEL')?STATEPROVINCELABEL:(isset($LANG['STATE_PROVINCE'])?$LANG['STATE_PROVINCE']:'State/Province')); ?>:</label><br/>
+							<div id="statediv" title="<?php echo (defined('STATEPROVINCETIP') ? STATEPROVINCETIP : ''); ?>">
+								<label for="fstateprovince"><?php echo (defined('STATEPROVINCELABEL')?STATEPROVINCELABEL:(isset($LANG['STATE_PROVINCE'])?$LANG['STATE_PROVINCE']:'State/Province')); ?>:</label>
 								<input id="fstateprovince" name="stateprovince" type="text" value="" autocomplete="off" onchange="localitySecurityCheck(this.form)" />
 							</div>
-							<div id="countydiv" style="float:left;margin:3px 3px 3px 0px;" title="<?php echo (defined('COUNTYTIP') ? COUNTYTIP : ''); ?>">
-								<label><?php echo (defined('COUNTYLABEL')?COUNTYLABEL:(isset($LANG['COUNTY_PARISH'])?$LANG['COUNTY_PARISH']:'County')); ?>:</label><br/>
+							<div id="countydiv" title="<?php echo (defined('COUNTYTIP') ? COUNTYTIP : ''); ?>">
+								<label for="fcounty"><?php echo (defined('COUNTYLABEL')?COUNTYLABEL:(isset($LANG['COUNTY_PARISH'])?$LANG['COUNTY_PARISH']:'County')); ?>:</label>
 								<input id="fcounty" name="county" type="text" autocomplete="off" value="" />
 							</div>
 						</div>
-						<div style="clear:both;padding-top:5px">
+						<div >
 							<div id="recordedbydiv" style="display:none;float:left;margin:3px;" title="<?php echo (defined('RECORDEDBYTIP') ? RECORDEDBYTIP : ''); ?>">
-								<label><?php echo (defined('RECORDEDBYLABEL')?RECORDEDBYLABEL:(isset($LANG['COLLECTOR'])?$LANG['COLLECTOR']:'Collector')); ?>:</label><br/>
+								<label for="frecordedby"><?php echo (defined('RECORDEDBYLABEL')?RECORDEDBYLABEL:(isset($LANG['COLLECTOR'])?$LANG['COLLECTOR']:'Collector')); ?></label><br/>
 								<input id="frecordedby" name="recordedby" type="text" value="" />
 							</div>
 							<div id="recordnumberdiv" style="display:none;float:left;margin:3px;" title="<?php echo (defined('RECORDNUMBERTIP') ? RECORDNUMBERTIP : ''); ?>">
-								<label><?php echo (defined('RECORDNUMBERLABEL')?RECORDNUMBERLABEL:(isset($LANG['COLLECTOR_NO'])?$LANG['COLLECTOR_NO']:'Collector Number')); ?>:</label><br/>
+								<label for="frecordnumber"><?php echo (defined('RECORDNUMBERLABEL')?RECORDNUMBERLABEL:(isset($LANG['COLLECTOR_NO'])?$LANG['COLLECTOR_NO']:'Collector Number')); ?></label><br/>
 								<input id="frecordnumber" name="recordnumber" type="text" value="" />
 							</div>
 							<div id="eventdatediv" style="display:none;float:left;margin:3px;" title="<?php echo (defined('EVENTDATETIP') ? EVENTDATETIP : 'Earliest Date Collected'); ?>">
@@ -238,30 +248,35 @@ elseif(file_exists('includes/config/occurVarDefault.php')){
 								</div>
 							</div>
 						</div>
-						<div style="clear:both;padding:15px;">
-							<div style="float:right;margin:16px 30px 0px 0px;">
-								<input name="clearform" type="reset" onclick="resetForm()" value="Clear Form" style="margin-right:40px" />
-							</div>
+
+						<div class="flex-form">
+
 							<div style="float:left;" title="<?php echo (defined('CATALOGNUMBERTIP') ? CATALOGNUMBERTIP : ''); ?>">
-								<label><?php echo (defined('CATALOGNUMBERLABEL')?CATALOGNUMBERLABEL:(isset($LANG['CAT_NUM'])?$LANG['CAT_NUM']:'Catalog Number')); ?>:</label><br/>
+								<label for="fcatalognumber">
+									<?php echo (defined('CATALOGNUMBERLABEL')?CATALOGNUMBERLABEL:(isset($LANG['CAT_NUM'])?$LANG['CAT_NUM']:'Catalog Number')); ?>:
+								</label>
 								<input id="fcatalognumber" name="catalognumber" type="text" style="border-color:green;" />
 							</div>
 							<div id="othercatalognumbersdiv" style="display:none;float:left;margin:3px;" title="<?php echo (defined('OTHERCATALOGNUMBERSTIP') ? OTHERCATALOGNUMBERSTIP : ''); ?>">
 								<label><?php echo (defined('OTHERCATALOGNUMBERSLABEL')?OTHERCATALOGNUMBERSLABEL:(isset($LANG['OTHER_CAT_NUMS'])?$LANG['OTHER_CAT_NUMS']:'Other Catalog Numbers')); ?>:</label><br/>
 								<input id="fothercatalognumbers" name="othercatalognumbers" type="text" value="" />
 							</div>
-							<div style="float:left;margin:16px 3px 3px 3px;">
+							<div>
 								<input id="fcollid" name="collid" type="hidden" value="<?php echo $collid; ?>" />
 								<button name="recordsubmit" type="submit" value="Add Record"><?php echo $LANG['ADD_RECORD']; ?></button>
 							</div>
 						</div>
+
 					</div>
 				</form>
-			</fieldset>
-			<fieldset style="padding:15px;">
-				<legend><b><?php echo $LANG['RECORDS']; ?></b></legend>
-				<div id="occurlistdiv"></div>
-			</fieldset>
+			</section>
+			<section class="fieldset-like">
+				<h2>
+					<span><?php echo $LANG['RECORDS']; ?></span>
+				</h2>
+				<div id="occurlistdiv">
+				</div>
+			</section>
 			<?php
 		}
 		else{

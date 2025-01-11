@@ -22,7 +22,7 @@ $LANG['RADIUS_DESCRIPTION'] = 'You can filter results to a single plant family u
 //					best represent the local species diversity. In other words, poorly collected areas will have a larger radius sampled. 
 //					Setting the taxon filter will limit the return to species found within that taxonomic group.';
 $LANG['LESS_DETAILS'] = '[less]';
-//$LANG['LESS_DETAILS'] = 'Less Details';
+//$LANG['LESS_DETAILS'] = 'Fewer Details';
 $LANG['BUILD_CHECKLIST'] = 'Search';
 //$LANG['BUILD_CHECKLIST'] = 'Build Checklist';
 $LANG['POINT'] = 'Point (Lat, Long)';
@@ -32,5 +32,6 @@ $LANG['TAXON_FILTER'] = 'Higher Taxon Filter';
 $LANG['RADIUS'] = 'Radius';
 $LANG['KM'] = 'Kilometers';
 $LANG['MILES'] = 'Miles';
+$LANG['UNITS'] = 'Units';
 
 ?>

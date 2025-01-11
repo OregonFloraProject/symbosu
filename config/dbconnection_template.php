@@ -21,33 +21,36 @@ class MySQLiConnectionFactory {
         )
     );
 
-    public static function getConParams($type) {
-        foreach (MySQLiConnectionFactory::$SERVERS as $c) {
-            if ($c["type"] === $type) {
-                return $c;
-            }
-        }
-        return null;
-    }
-
-    public static function getCon($type) {
-        // Figure out which connections are open, automatically opening any connections
-        // which are failed or not yet opened but can be (re)established.
-        for ($i = 0, $n = count(MySQLiConnectionFactory::$SERVERS); $i < $n; $i++) {
-            $server = MySQLiConnectionFactory::$SERVERS[$i];
-            if($server['type'] == $type){
-				$connection = new mysqli($server['host'], $server['username'], $server['password'], $server['database'], $server['port']);
-                if(mysqli_connect_errno()){
-					throw new Exception('Could not connect to any databases! Please try again later.');
-                }
-				if(isset($server['charset']) && $server['charset']) {
-					if(!$connection->set_charset($server['charset'])){
-						throw new Exception('Error loading character set '.$server['charset'].': '.$connection->error);
+	public static function getConParams($type) {
+			foreach (MySQLiConnectionFactory::$SERVERS as $c) {
+					if ($c["type"] === $type) {
+							return $c;
 					}
+			}
+			return null;
+	}
+
+	public static function getCon($type) {
+		// Figure out which connections are open, automatically opening any connections
+		// which are failed or not yet opened but can be (re)established.
+		for ($i = 0, $n = count(MySQLiConnectionFactory::$SERVERS); $i < $n; $i++) {
+			$server = MySQLiConnectionFactory::$SERVERS[$i];
+			if($server['type'] == $type){
+				try{
+					$connection = new mysqli($server['host'], $server['username'], $server['password'], $server['database'], $server['port']);
+					if(isset($server['charset']) && $server['charset']) {
+						if(!$connection->set_charset($server['charset'])){
+							throw new Exception('Error loading character set '.$server['charset'].': '.$connection->error);
+						}
+					}
+					return $connection;
 				}
-                return $connection;
-            }
-        }
-    }
+				catch(Exception $e){
+					echo $e->getMessage();
+					return null;
+				}
+			}
+		}
+	}
 }
 ?>

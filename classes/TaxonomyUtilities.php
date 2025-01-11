@@ -42,7 +42,7 @@ class TaxonomyUtilities {
 			}
 			//Remove extra spaces
 			$inStr = preg_replace('/\s\s+/',' ',$inStr);
-
+			if(!$inStr) return $retArr;
 			$sciNameArr = explode(' ',trim($inStr));
 			$okToCloseConn = true;
 			if($conn !== null) $okToCloseConn = false;
@@ -127,7 +127,19 @@ class TaxonomyUtilities {
 					//cycles through the final terms to evaluate and extract infraspecific data
 					while($sciStr = array_shift($sciNameArr)){
 						if($testArr = self::cleanInfra($sciStr)){
-							self::setInfraNode($sciStr, $sciNameArr, $retArr, $authorArr, $testArr['infra']);
+							if($sciNameArr){
+								$infraStr = array_shift($sciNameArr);
+								if(preg_match('/^[a-z]{3,}$/', $infraStr)){
+									$retArr['unitind3'] = $testArr['infra'];
+									$retArr['unitname3'] = $infraStr;
+									unset($authorArr);
+									$authorArr = array();
+								}
+								else{
+									$authorArr[] = $sciStr;
+									$authorArr[] = $infraStr;
+								}
+							}
 						}
 						elseif($kingdomName == 'Animalia' && !$retArr['unitname3'] && ($rankId == 230 || preg_match('/^[a-z]{3,}$/',$sciStr) || preg_match('/^[A-Z]{3,}$/',$sciStr))){
 							$retArr['unitind3'] = '';
@@ -156,6 +168,13 @@ class TaxonomyUtilities {
 							}
 							$rs->free();
 						}
+					}
+				}
+				if(isset($retArr['author']) && mb_strpos($retArr['author'], '×') !== false){
+					if((!isset($retArr['unitind3']) || !$retArr['unitind3']) && (!isset($retArr['unitname3']) || !$retArr['unitname3'])){
+						$retArr['unitind3'] = '×';
+						$retArr['unitname3'] = substr($retArr['author'], trim(strpos($retArr['author'], '×') + 2));
+						if(!isset($retArr['rankid']) || !$retArr['rankid']) $retArr['rankid'] = 220;
 					}
 				}
 			}
@@ -192,8 +211,17 @@ class TaxonomyUtilities {
 				}
 			}
 			//Build sciname, without author
-			$sciname = (isset($retArr['unitind1'])?$retArr['unitind1'].' ':'').$retArr['unitname1'].' ';
-			$sciname .= (isset($retArr['unitind2'])?$retArr['unitind2'].' ':'').$retArr['unitname2'].' ';
+			$sciname = '';
+			if(!empty($retArr['unitind1'])){
+				$sciname = $retArr['unitind1'];
+				if($retArr['unitind1'] != '×' || $retArr['unitind1'] != '†') $sciname .= ' ';
+			}
+			$sciname .= $retArr['unitname1'].' ';
+			if(!empty($retArr['unitind2'])){
+				$sciname .= $retArr['unitind2'];
+				if($retArr['unitind2'] != '×') $sciname .= ' ';
+			}
+			$sciname .= $retArr['unitname2'].' ';
 			$sciname .= trim($retArr['unitind3'].' '.$retArr['unitname3']);
 			$retArr['sciname'] = trim($sciname);
 		}
@@ -229,22 +257,6 @@ class TaxonomyUtilities {
 			$retArr['rankid'] = 230;
 		}
 		return $retArr;
-	}
-
-	private static function setInfraNode($sciStr, &$sciNameArr, &$retArr, &$authorArr, $rankTag){
-		if($sciNameArr){
-			$infraStr = array_shift($sciNameArr);
-			if(preg_match('/^[a-z]{3,}$/', $infraStr)){
-				$retArr['unitind3'] = $rankTag;
-				$retArr['unitname3'] = $infraStr;
-				unset($authorArr);
-				$authorArr = array();
-			}
-			else{
-				$authorArr[] = $sciStr;
-				$authorArr[] = $infraStr;
-			}
-		}
 	}
 
 	//Taxonomic indexing functions

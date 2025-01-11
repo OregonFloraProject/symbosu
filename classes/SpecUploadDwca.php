@@ -16,7 +16,6 @@ class SpecUploadDwca extends SpecUploadBase{
 	function __construct() {
  		parent::__construct();
 		$this->setUploadTargetPath();
-		ini_set('auto_detect_line_endings', true);
 	}
 
 	public function __destruct(){
@@ -94,6 +93,7 @@ class SpecUploadDwca extends SpecUploadBase{
 		if(file_exists($this->uploadTargetPath.$localFolder)){
 			//Reset upload directory
 			$this->deleteTempFiles($localFolder, false);
+			$this->uploadTargetPath .= $localFolder;
 		}
 		else{
 			if(mkdir($this->uploadTargetPath.$localFolder)) $this->uploadTargetPath .= $localFolder;
@@ -102,7 +102,7 @@ class SpecUploadDwca extends SpecUploadBase{
 
 	private function deleteTempFiles($pathFragment = '', $filetimeLimit = '-2 days'){
 		$dirPath = $this->uploadTargetPath.$pathFragment;
-		$allowedToBeDeleted = array('csv','txt','xml','zip');
+		$allowedToBeDeleted = array('csv','dat','tab','txt','xml','zip');
 		if($handle = opendir($dirPath)) {
 			$loopCnt = 0;
 			while(false !== ($item = readdir($handle))) {
@@ -561,13 +561,13 @@ class SpecUploadDwca extends SpecUploadBase{
 										}
 									}
 								}
-								if($cond == 'ISNULL'){
+								if($cond == 'IS_NULL'){
 									if($targetValue){
 										$addRecord = false;
 										continue 2;
 									}
 								}
-								elseif($cond == 'NOTNULL'){
+								elseif($cond == 'NOT_NULL'){
 									if(!$targetValue){
 										$addRecord = false;
 										continue 2;
@@ -580,7 +580,7 @@ class SpecUploadDwca extends SpecUploadBase{
 									}
 								}
 								else{
-									if($cond == 'STARTS'){
+									if($cond == 'STARTS_WITH'){
 										//Multiple values treated as an OR condition
 										$condMeet = false;
 										foreach($valueArr as $filterValue){
@@ -606,14 +606,14 @@ class SpecUploadDwca extends SpecUploadBase{
 											continue 2;
 										}
 									}
-									elseif($cond == 'LESSTHAN'){
+									elseif($cond == 'LESS_THAN'){
 										$filterValue = array_pop($valueArr);
 										if($targetValue > $filterValue){
 											$addRecord = false;
 											continue 2;
 										}
 									}
-									elseif($cond == 'GREATERTHAN'){
+									elseif($cond == 'GREATER_THAN'){
 										$filterValue = array_pop($valueArr);
 										if($targetValue < $filterValue){
 											$addRecord = false;
@@ -775,9 +775,11 @@ class SpecUploadDwca extends SpecUploadBase{
 			closedir($handle);
 		}
 		//Delete directory
-		if(stripos($dirPath, $this->uploadTargetPath) === 0){
+		/*
+		if(stripos($dirPath, $this->uploadTargetPath) === 0 && !preg_match('#/temp/data/$#', $dirPath)){
 			rmdir($dirPath);
 		}
+		*/
 	}
 
 	private function uploadExtension($targetStr, $fieldMap, $sourceArr){
@@ -923,6 +925,7 @@ class SpecUploadDwca extends SpecUploadBase{
 			}
 			else $this->outputMsg('<li>ERROR cross-mapping occurrences: '.$portalManager->getErrorMessage().'</li> ');
 		}
+		$this->transferAssociatedOccurrences();
 		$this->finalCleanup();
 		$this->outputMsg('<li style="">Upload Procedure Complete ('.date('Y-m-d h:i:s A').')!</li>');
 		$this->outputMsg(' ');

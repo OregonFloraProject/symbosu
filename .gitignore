@@ -9,6 +9,7 @@
 .idea/
 /config/dbconnection.php
 /config/symbini.php
+/config/auth_config.php
 vendor/
 !**/.gitkeep
 temp/proxies/
@@ -18,4 +19,3 @@ temp/proxies/
 /temp/api-caches/*
 /temp/data/solr.json
 /js/react/src/less/config.less
-

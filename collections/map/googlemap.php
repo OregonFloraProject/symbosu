@@ -1,11 +1,12 @@
 <?php
 include_once('../../config/symbini.php');
 include_once($SERVER_ROOT.'/classes/OccurrenceMapManager.php');
+include_once($SERVER_ROOT.'/content/lang/collections/map/simplemap.'.$LANG_TAG.'.php');
 header("Content-Type: text/html; charset=".$CHARSET);
 
-$clid = array_key_exists('clid',$_REQUEST)?$_REQUEST['clid']:0;
-$gridSize = array_key_exists('gridSizeSetting',$_REQUEST)?$_REQUEST['gridSizeSetting']:10;
-$minClusterSize = array_key_exists('minClusterSetting',$_REQUEST)?$_REQUEST['minClusterSetting']:50;
+$clid = array_key_exists('clid', $_REQUEST) ? filter_var($_REQUEST['clid'], FILTER_SANITIZE_NUMBER_INT) : 0;
+$gridSize = array_key_exists('gridSizeSetting', $_REQUEST) ? filter_var($_REQUEST['gridSizeSetting'], FILTER_SANITIZE_NUMBER_INT) : 10;
+$minClusterSize = array_key_exists('minClusterSetting', $_REQUEST) ? filter_var($_REQUEST['minClusterSetting'], FILTER_SANITIZE_NUMBER_INT) : 50;
 
 $occurManager = new OccurrenceMapManager();
 $coordArr = $occurManager->getMappingData(0);
@@ -33,7 +34,8 @@ if(array_key_exists('taxa', $taxaArr)){
 	}
 }
 ?>
-<html>
+<!DOCTYPE html>
+<html lang="<?php echo $LANG_TAG ?>">
 <head>
 	<title><?php echo $DEFAULT_TITLE; ?> - Google Map</title>
 	<?php
@@ -41,7 +43,7 @@ if(array_key_exists('taxa', $taxaArr)){
 	include_once($SERVER_ROOT.'/includes/head.php');
 	?>
 	<script src="//www.google.com/jsapi"></script>
-	<script src="//maps.googleapis.com/maps/api/js?<?php echo (isset($GOOGLE_MAP_KEY) && $GOOGLE_MAP_KEY?'key='.$GOOGLE_MAP_KEY:''); ?>"></script>
+	<script src="//maps.googleapis.com/maps/api/js?<?= (!empty($GOOGLE_MAP_KEY) && $GOOGLE_MAP_KEY != 'DEV' ? 'key=' . $GOOGLE_MAP_KEY : '') ?>"></script>
 	<script type="text/javascript" src="../../js/symb/markerclusterer.js?ver=260913"></script>
 	<script type="text/javascript" src="../../js/symb/oms.min.js"></script>
 	<script type="text/javascript" src="../../js/symb/keydragzoom.js"></script>
@@ -410,6 +412,7 @@ if(array_key_exists('taxa', $taxaArr)){
 	</script>
 </head>
 <body style="width:100%; min-width: 900px" onload="initialize();">
+	<h1 class="page-heading">Google Map</h1>
 	<?php
 	$displayLeftMenu = false;
 	include($SERVER_ROOT.'/header.php');
@@ -449,7 +452,9 @@ if(array_key_exists('taxa', $taxaArr)){
 	<div id="map_canvas" style="width:100%;height:700px"></div>
 	<div style="width:500px;float:left;">
 		<fieldset>
-			<legend>Legend</legend>
+            <legend>
+               <?php echo (isset($LANG['LEGEND']) ? $LANG['LEGEND']: 'Legend') ?>
+            </legend>
 			<div style="float: left; margin-right: 25px; margin-bottom: 10px">
 				<?php
 				$tailItem = '';
@@ -498,7 +503,8 @@ if(array_key_exists('taxa', $taxaArr)){
 						<g>
 							<path stroke="#000000" d="m6.70496,0.23296l-6.70496,13.48356l13.88754,0.12255l-7.18258,-13.60611z" stroke-width="1px" fill="white"/>
 						</g>
-					</svg> = Observation
+					</svg> =
+               <?php echo (isset($LANG['OBSERVATION']) ? $LANG['OBSERVATION']: 'Observation') ?>
 				</div>
 			</div>
 		</fieldset>
@@ -516,10 +522,13 @@ if(array_key_exists('taxa', $taxaArr)){
 			</div>
 		</fieldset>
 		<fieldset>
-			<legend>Add Point of Reference</legend>
+            <legend>
+               <?php echo (isset($LANG['ADD_REFERENCE_POINT']) ? $LANG['ADD_REFERENCE_POINT']: 'Add Point of Reference') ?>
+            </legend>
 			<div>
 				<div>
-					Marker Name: <input name='title' id='title' size='15' type='text' />
+               <?php echo (isset($LANG['MARKER_NAME']) ? $LANG['MARKER_NAME']: 'Marker Name') ?>:
+					<input name='title' id='title' size='15' type='text' />
 				</div>
 				<div class="latlongdiv">
 					<div style="margin-top:5px;">
@@ -529,12 +538,14 @@ if(array_key_exists('taxa', $taxaArr)){
 						Longitude decimal: <input name='lng' id='lng' size='10' type='text' /> eg: -112.38
 					</div>
 					<div style='font-size:80%;margin-top:5px;clear:both'>
-						<a href='#' onclick='toggleLatLongDivs();'>Enter in D:M:S format</a>
+                     <a href='#' onclick='toggleLatLongDivs();'>
+                        <?php echo (isset($LANG['ENTER_IN_DMS']) ? $LANG['ENTER_IN_DMS']: 'Enter in D:M:S format') ?>
+                     </a>
 					</div>
 				</div>
 				<div class='latlongdiv' style='margin-top: 5px;display:none;clear:both'>
 					<div>
-						Latitude:
+                  <?php echo (isset($LANG['LATITUDE']) ? $LANG['LATITUDE']: 'Latitude') ?>:
 						<input name='latdeg' id='latdeg' size='2' type='text' />&deg;
 						<input name='latmin' id='latmin' size='4' type='text' />&prime;
 						<input name='latsec' id='latsec' size='4' type='text' />&Prime;
@@ -544,7 +555,7 @@ if(array_key_exists('taxa', $taxaArr)){
 						</select>
 					</div>
 					<div style="margin-top:5px;">
-						Longitude:
+                  <?php echo (isset($LANG['LONGITUDE']) ? $LANG['LONGITUDE']: 'Longitude') ?>:
 						<input name='longdeg' id='longdeg' size='2' type='text' />&deg;
 						<input name='longmin' id='longmin' size='4' type='text' />&prime;
 						<input name='longsec' id='longsec' size='4' type='text' />&Prime;
@@ -554,11 +565,15 @@ if(array_key_exists('taxa', $taxaArr)){
 						</select>
 					</div>
 					<div style='font-size:80%;margin-top:5px;'>
-						<a href='#' onclick='toggleLatLongDivs();'>Enter in Decimal format</a>
+                     <a href='#' onclick='toggleLatLongDivs();'>
+                        <?php echo (isset($LANG['ENTER_IN_DECIMAL']) ? $LANG['ENTER_IN_DECIMAL']: 'Enter in decimal format') ?>
+                     </a>
 					</div>
 				</div>
 				<div style="margin-top:10px;">
-					<input type='submit' value='Add Marker' onclick='addRefPoint();' />
+               <button onclick='addRefPoint();'>
+                  <?php echo (isset($LANG['ADD_MARKER']) ? $LANG['ADD_MARKER']: 'Add Marker') ?>
+               </button>
 				</div>
 			</div>
 		</fieldset>

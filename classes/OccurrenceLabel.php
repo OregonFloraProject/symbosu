@@ -18,7 +18,7 @@ class OccurrenceLabel{
 	}
 
 	//Label functions
-	public function queryOccurrences($postArr){
+	public function queryOccurrences($postArr, $limit){
 		global $USER_RIGHTS;
 		$canReadRareSpp = false;
 		if($GLOBALS['IS_ADMIN'] || array_key_exists('CollAdmin', $USER_RIGHTS) || array_key_exists('RareSppAdmin', $USER_RIGHTS) || array_key_exists('RareSppReadAll', $USER_RIGHTS)){
@@ -137,7 +137,7 @@ class OccurrenceLabel{
 			if($sqlWhere) $sql .= 'WHERE '.substr($sqlWhere, 4);
 			if($sqlOrderBy) $sql .= ' ORDER BY '.substr($sqlOrderBy,1);
 			else $sql .= ' ORDER BY (o.recordnumber+1)';
-			$sql .= ' LIMIT 400';
+			$sql .= ' LIMIT ' . $limit;
 			//echo '<div>'.$sql.'</div>';
 			$rs = $this->conn->query($sql);
 			while($r = $rs->fetch_object()){
@@ -172,38 +172,39 @@ class OccurrenceLabel{
 				'INNER JOIN taxa t2 ON ts.parenttid = t2.tid '.
 				$sqlWhere.' AND t.rankid > 220 AND ts.taxauthid = 1 ';
 			if(!$speciesAuthors) $sql1 .= 'AND t.unitname2 = t.unitname3 ';
-			//echo $sql1; exit;
 			if($rs1 = $this->conn->query($sql1)){
 				while($row1 = $rs1->fetch_object()){
-					$authorArr[$row1->occid] = $row1->author;
+					$authorArr[$row1->occid] = $row1->author ?? '';
 				}
 				$rs1->free();
 			}
 			//Get occurrence records
 			$this->setLabelFieldArr();
 			$sql2 = 'SELECT '.implode(',',$this->labelFieldArr).' FROM omoccurrences o LEFT JOIN taxa t ON o.tidinterpreted = t.tid '.$sqlWhere;
-			//echo 'SQL: '.$sql2;
 			if($rs2 = $this->conn->query($sql2)){
 				while($row2 = $rs2->fetch_assoc()){
-					$row2 = array_change_key_case($row2);
-					if(array_key_exists($row2['occid'],$authorArr)) $row2['parentauthor'] = $authorArr[$row2['occid']];
+					$occid = $row2['occid'];
+					foreach($row2 as $fieldName => $fieldValue){
+						$retArr[$occid][strtolower($fieldName)] = $fieldValue ?? '';
+					}
+					if(array_key_exists($occid, $authorArr)){
+						$retArr[$occid]['parentauthor'] = $authorArr[$occid];
+					}
 
 					// The name is not in the taxonomic thesaurus, so attempt a fix to add species name, taxon rank, and infraspecific epithet
-					if($row2['speciesname'] == "" && $row2['scientificname'] != "") {
+					if($retArr[$occid]['speciesname'] == "" && $retArr[$occid]['scientificname'] != "") {
 						$pattern = '/(.*) (ssp.|var.|nothossp.|f.) (.*)/';
 						// Check for infrataxa and split out
-						if(preg_match($pattern, $row2['scientificname'])) {
-							$row2['speciesname'] = preg_replace($pattern, "$1", $row2['scientificname']);
-							$row2['taxonrank'] = preg_replace($pattern, "$2", $row2['scientificname']);
-							$row2['infraspecificepithet'] = preg_replace($pattern, "$3", $row2['scientificname']);
+						if(preg_match($pattern, $retArr[$occid]['scientificname'])) {
+							$retArr[$occid]['speciesname'] = preg_replace($pattern, "$1", $retArr[$occid]['scientificname']);
+							$retArr[$occid]['taxonrank'] = preg_replace($pattern, "$2", $retArr[$occid]['scientificname']);
+							$retArr[$occid]['infraspecificepithet'] = preg_replace($pattern, "$3", $retArr[$occid]['scientificname']);
 						} else {
-							$row2['speciesname'] = $row2['scientificname'];
+							$retArr[$occid]['speciesname'] = $retArr[$occid]['scientificname'];
 						}
 					}
 					// Remove autonym authors if they are specified in the occurrence record, they should not be included
-					if($speciesAuthors && $row2['infraspecificepithet'] != "" && $row2['scientificnameauthorship'] == $row2['parentauthor'] && preg_match('/.* '.$row2['infraspecificepithet']."/", $row2['speciesname'])) $row2['scientificnameauthorship'] = "";
-
-					$retArr[$row2['occid']] = $row2;
+					if($speciesAuthors && $retArr[$occid]['infraspecificepithet'] != "" && $retArr[$occid]['scientificnameauthorship'] == $retArr[$occid]['parentauthor'] && preg_match('/.* '.$retArr[$occid]['infraspecificepithet']."/", $retArr[$occid]['speciesname'])) $retArr[$occid]['scientificnameauthorship'] = "";
 				}
 				$rs2->free();
 			}
@@ -215,12 +216,12 @@ class OccurrenceLabel{
 					$cnt = 0;
 					while($r = $rs->fetch_object()){
 						$otherCatArr[$r->occid][$cnt]['v'] = $r->identifiervalue;
-						$otherCatArr[$r->occid][$cnt]['n'] = $r->identifiername;
+						$otherCatArr[$r->occid][$cnt]['n'] = $r->identifiername ?? '';
 						$cnt++;
 					}
 					$rs->free();
 					foreach($otherCatArr as $occid => $ocnArr){
-						$verbIdStr = $retArr[$occid]['othercatalognumbers'];
+						$verbIdStr = $retArr[$occid]['othercatalognumbers'] ?? '';
 						$ocnStr = '';
 						foreach($ocnArr as $idArr){
 							$ocnStr .= '; '.($idArr['n']?$idArr['n'].': ':'').$idArr['v'];
@@ -247,6 +248,9 @@ class OccurrenceLabel{
 			$labelArr = $this->getLabelArray($occidArr, $speciesAuthors);
 			if($labelArr){
 				$fileName = 'labeloutput_'.time().".csv";
+				ob_start();
+				ob_clean();
+				ob_end_flush();
 				header('Content-Description: Symbiota Label Output File');
 				header ('Content-Type: text/csv');
 				header ('Content-Disposition: attachment; filename="'.$fileName.'"');
@@ -315,7 +319,7 @@ class OccurrenceLabel{
 				$fieldDivStr = '';
 				foreach($bArr['fieldBlock'] as $fieldArr){
 					$fieldName = strtolower($fieldArr['field']);
-					$fieldValue = trim($occArr[$fieldName]);
+					$fieldValue = trim($occArr[$fieldName] ?? '');
 					if($fieldValue){
 						if($delimiter && $cnt) $fieldDivStr .= $delimiter;
 						$fieldDivStr .= '<span class="'.$fieldName.(isset($fieldArr['className'])?' '.$fieldArr['className']:'').'" '.(isset($fieldArr['style'])?'style="'.$fieldArr['style'].'"':'').'>';
@@ -429,7 +433,7 @@ class OccurrenceLabel{
 			else $retArr['g'] = array('labelFormats'=>array());
 			//Add collection defined label formats
 			if($this->collid){
-				$collFormatArr = json_decode($this->collArr['dynprops'],true);
+				$collFormatArr = json_decode($this->collArr['dynprops'] ?? '[]',true);
 				if($annotated){
 					if(isset($collFormatArr['labelFormats'])){
 						foreach($collFormatArr['labelFormats'] as $k => $labelObj){
@@ -450,7 +454,7 @@ class OccurrenceLabel{
 					$dynPropStr = $r->dynamicProperties;
 				}
 				$rs->free();
-				$dynPropArr = json_decode($dynPropStr,true);
+				$dynPropArr = json_decode($dynPropStr  ?? '',true);
 				if($annotated){
 					if(isset($dynPropArr['labelFormats'])){
 						foreach($dynPropArr['labelFormats'] as $k => $labelObj){

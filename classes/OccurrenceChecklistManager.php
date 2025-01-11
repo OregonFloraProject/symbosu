@@ -39,11 +39,11 @@ class OccurrenceChecklistManager extends OccurrenceManager{
 					$this->getTableJoins($sqlWhere).
 					$sqlWhere.' AND ((t.rankid > 140 AND ts1.taxauthid = 1) OR t.tid IS NULL) ';
 			}
-			//echo '<div>'.$sql.'</div>';
 			$result = $this->conn->query($sql);
 			while($r = $result->fetch_object()){
-				$family = strtoupper($r->family);
-				if(!$family) $family = 'undefined';
+				$family = $r->family;
+				if($family) $family = strtoupper($family);
+				else $family = 'undefined';
 				$sciName = $r->sciname;
 				if($sciName && substr($sciName,-5)!='aceae' && substr($sciName,-4)!='idae'){
 					$returnVec[$family][$sciName] = $r->tid;

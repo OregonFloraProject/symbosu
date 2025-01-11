@@ -29,11 +29,11 @@ $gameInfo = $gameManager->setOOTD($oodID,$ootdGameChecklist);
 	<div style="font-size:130%;font-weight:bold;">
 		<?php echo $ootdGameTitle; ?>
 	</div>
-	<a href="<?php echo $CLIENT_ROOT; ?>/games/ootd/index.php?oodid=<?php echo $oodID.'&cl='.$ootdGameChecklist.'&title='.$ootdGameTitle.'&type='.$ootdGameType; ?>">
-		<img src="<?php echo $CLIENT_ROOT; ?>/temp/ootd/<?php echo $oodID; ?>_organism300_1.jpg?ver=<?php echo date('Ymd'); ?>" style="width:250px;border:0px;" />
+	<a href="<?php echo htmlspecialchars($CLIENT_ROOT, ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE); ?>/games/ootd/index.php?oodid=<?php echo htmlspecialchars($oodID, ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE) . '&cl=' . htmlspecialchars($ootdGameChecklist, ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE) . '&title=' . htmlspecialchars($ootdGameTitle, ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE) . '&type=' . htmlspecialchars($ootdGameType, ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE); ?>">
+		<img src="<?php echo $gameInfo['images'][0]; ?>" style="width:250px;border:0px;" />
 	</a><br/>
 	<b>What is this <?php echo $ootdGameType; ?>?</b><br/>
-	<a href="<?php echo $CLIENT_ROOT; ?>/games/ootd/index.php?oodid=<?php echo $oodID.'&cl='.$ootdGameChecklist.'&title='.$ootdGameTitle.'&type='.$ootdGameType; ?>">
+	<a href="<?php echo htmlspecialchars($CLIENT_ROOT, ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE); ?>/games/ootd/index.php?oodid=<?php echo htmlspecialchars($oodID, ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE) . '&cl=' . htmlspecialchars($ootdGameChecklist, ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE) . '&title=' . htmlspecialchars($ootdGameTitle, ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE) . '&type=' . htmlspecialchars($ootdGameType\, ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE); ?>">
 		Click here to test your knowledge
 	</a>
 </div>
