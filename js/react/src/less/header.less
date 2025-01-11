@@ -284,12 +284,31 @@
           position: absolute;
           background-color: @med-green;
           text-align: left;
-          margin-top: 7px;
+          margin-top: 6px;
           padding: 0 0 1em 0;
           min-width: 300px;
           width: 33vw;
           border-right: 1px solid @dark-green;
           border-bottom-right-radius: 10px;
+          max-height: calc(100vh - 61px);
+
+          .mobile-inner-container {
+            position: relative;
+            overflow-y: scroll;
+          }
+
+          &.mobile-collapsed {
+            transition: max-height .35s ease, padding-top .35s ease, padding-bottom .35s ease;
+            max-height: 0;
+            overflow: hidden;
+            &.mobile-show {
+              max-height: 100vh;
+            }
+            &:not(.mobile-show) {
+              padding-top: 0;
+              padding-bottom: 0;
+            }
+          }
 
           &.navbar-collapse {
             align-items: flex-start;
@@ -359,6 +378,21 @@
         padding: 6px 0 0 0;
         position: relative;
         z-index: 1000;
+        #search-widget-wrapper {
+          // TODO: fix this duplication while keeping nestedness
+          &.mobile-collapsed {
+            transition: max-height .35s ease, padding-top .35s ease, padding-bottom .35s ease;
+            max-height: 0;
+            overflow: hidden;
+            &.mobile-show {
+              max-height: 100vh;
+            }
+            &:not(.mobile-show) {
+              padding-top: 0;
+              padding-bottom: 0;
+            }
+          }
+        }
         #site-search-toggler {
           display: flex;
           flex-flow: row nowrap;

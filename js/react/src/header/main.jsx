@@ -110,7 +110,7 @@ function HeaderDropdown(props) {
   id = `header-dropdown-${id}`;
   return (
     <li
-      className="nav-item dropdown"
+      className={`nav-item dropdown${show ? ' show' : ''}`}
       onClick={(e) => {
         if (!e.currentTarget.contains(e.relatedTarget)) setShow(!show);
       }}
@@ -147,6 +147,7 @@ class HeaderApp extends React.Component {
       headerHeight: 100,
       isMobile: false,
       showMobileMenu: false,
+      showMobileSearch: false,
     };
 
     this.onSearchTextChanged = this.onSearchTextChanged.bind(this);
@@ -304,12 +305,7 @@ class HeaderApp extends React.Component {
           style={{ height: this.state.headerHeight }}
         >
           {/* ${this.state.isCollapsed ? "site-header-scroll" : ''} */}
-          <div
-            id="site-header-dropdowns-wrapper"
-            onBlur={(e) => {
-              if (!e.currentTarget.contains(e.relatedTarget)) this.setState({ showMobileMenu: false });
-            }}
-          >
+          <div id="site-header-dropdowns-wrapper">
             <button
               id="site-header-navbar-toggler"
               className={'navbar-toggler ml-auto' + (this.state.isMobile ? ' collapsed' : '')}
@@ -330,28 +326,32 @@ class HeaderApp extends React.Component {
             {
               <ul
                 id="site-header-dropdowns"
-                className={`navbar-nav${this.state.isMobile ? ' collapse' : ''}${this.state.showMobileMenu ? ' show' : ''}`}
+                className={`navbar-nav${this.state.isMobile ? ' mobile-collapsed' : ''}${this.state.showMobileMenu ? ' mobile-show' : ''}`}
               >
-                {Object.keys(this.state.dropdowns).map((key) => {
-                  let currentParent = this.state.dropdowns[key].currentAncestor ? ' current-page current-ancestor' : '';
-                  return (
-                    <HeaderDropdown key={key} title={this.state.dropdowns[key].title} classes={currentParent}>
-                      {this.state.dropdowns[key].children.map((dropDownChildData) => {
-                        let currentChild = dropDownChildData.currentPage ? ' current-page' : '';
+                <div className="mobile-inner-container">
+                  {Object.keys(this.state.dropdowns).map((key) => {
+                    let currentParent = this.state.dropdowns[key].currentAncestor
+                      ? ' current-page current-ancestor'
+                      : '';
+                    return (
+                      <HeaderDropdown key={key} title={this.state.dropdowns[key].title} classes={currentParent}>
+                        {this.state.dropdowns[key].children.map((dropDownChildData) => {
+                          let currentChild = dropDownChildData.currentPage ? ' current-page' : '';
 
-                        return (
-                          <HeaderDropdownItem
-                            key={dropDownChildData.title}
-                            title={dropDownChildData.title}
-                            href={`${dropDownChildData.href}`}
-                            classes={currentChild}
-                            rel="external"
-                          />
-                        );
-                      })}
-                    </HeaderDropdown>
-                  );
-                })}
+                          return (
+                            <HeaderDropdownItem
+                              key={dropDownChildData.title}
+                              title={dropDownChildData.title}
+                              href={`${dropDownChildData.href}`}
+                              classes={currentChild}
+                              rel="external"
+                            />
+                          );
+                        })}
+                      </HeaderDropdown>
+                    );
+                  })}
+                </div>
               </ul>
             }
           </div>
@@ -370,15 +370,20 @@ class HeaderApp extends React.Component {
             <button
               id="site-search-toggler"
               type="button"
-              data-toggle="collapse"
-              data-target="#search-widget-wrapper"
               aria-expanded="false"
               aria-controls="search-widget-wrapper"
+              onClick={(e) => {
+                // if (!e.currentTarget.contains(e.relatedTarget))
+                this.setState({ showMobileSearch: !this.state.showMobileSearch });
+              }}
             >
               <span>Plant search</span>
               <img src={`${this.props.clientRoot}/images/icons/search-icon-2x.png`} />
             </button>
-            <div className="row widget-wrapper collapse" id="search-widget-wrapper">
+            <div
+              className={`row widget-wrapper mobile-collapsed${this.state.showMobileSearch ? ' mobile-show' : ''}`}
+              id="search-widget-wrapper"
+            >
               <SearchWidget
                 placeholder="Search all plants"
                 clientRoot={this.props.clientRoot}
