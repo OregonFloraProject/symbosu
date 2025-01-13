@@ -98,7 +98,7 @@ function getScrollPos() {
 
 function HeaderDropdownItem(props) {
   return (
-    <a className={'dropdown-item' + props.classes} rel="external" href={props.href}>
+    <a className={'dropdown-item' + props.classes} rel="external" href={props.href} tabIndex={0}>
       {props.title}
     </a>
   );
@@ -111,8 +111,8 @@ function HeaderDropdown(props) {
   return (
     <li
       className={`nav-item dropdown${show ? ' show' : ''}`}
-      onClick={(e) => {
-        if (!e.currentTarget.contains(e.relatedTarget)) setShow(!show);
+      onClick={() => {
+        setShow(!show);
       }}
       onBlur={(e) => {
         if (!e.currentTarget.contains(e.relatedTarget)) setShow(false);
@@ -125,6 +125,7 @@ function HeaderDropdown(props) {
         role="button"
         aria-haspopup="true"
         aria-expanded={show}
+        tabIndex={0}
       >
         {props.title}
       </a>
@@ -313,9 +314,8 @@ class HeaderApp extends React.Component {
               aria-controls="navbarSupportedContent"
               aria-expanded={this.state.showMobileMenu}
               aria-label="Toggle navigation"
-              onClick={(e) => {
-                if (!e.currentTarget.contains(e.relatedTarget))
-                  this.setState({ showMobileMenu: !this.state.showMobileMenu });
+              onClick={() => {
+                this.setState({ showMobileMenu: !this.state.showMobileMenu });
               }}
             >
               <span className="menu-toggle">
@@ -372,8 +372,7 @@ class HeaderApp extends React.Component {
               type="button"
               aria-expanded="false"
               aria-controls="search-widget-wrapper"
-              onClick={(e) => {
-                // if (!e.currentTarget.contains(e.relatedTarget))
+              onClick={() => {
                 this.setState({ showMobileSearch: !this.state.showMobileSearch });
               }}
             >

@@ -98,9 +98,6 @@ export class SearchWidget extends React.Component {
       <div
         className="search-widget"
         style={this.props.style}
-        onFocus={(e) => {
-          if (!e.currentTarget.contains(e.relatedTarget)) this.setState({ focused: true });
-        }}
         onBlur={(e) => {
           if (!e.currentTarget.contains(e.relatedTarget)) this.setState({ focused: false });
         }}
@@ -114,6 +111,9 @@ export class SearchWidget extends React.Component {
           placeholder={this.props.placeholder}
           onChange={this.props.onTextValueChanged}
           value={this.props.textValue}
+          onFocus={() => {
+            this.setState({ focused: true });
+          }}
         />
         <div
           className={`dropdown-menu${this.state.focused ? ' show' : ''}`}
@@ -131,6 +131,7 @@ export class SearchWidget extends React.Component {
                 className="dropdown-item"
                 href="#"
                 target="_blank"
+                tabIndex={0}
               >
                 {s.text}
               </a>
