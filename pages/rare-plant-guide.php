@@ -2,6 +2,9 @@
 //error_reporting(E_ALL);
 include_once( "../config/symbini.php" );
 header( "Content-Type: text/html; charset=" . $charset );
+if ($RPG_FLAG) {
+  header('Location: '.$CLIENT_ROOT.'/rare/index.php');
+}
 ?>
 <html>
 <head>
