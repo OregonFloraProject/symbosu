@@ -1,5 +1,6 @@
 import ReactDOM from 'react-dom';
 import React from 'react';
+import { addGlossaryTooltips } from '../common/glossary.js';
 import httpGet from '../common/httpGet.js';
 import { getUrlQueryParams } from '../common/queryParams.js';
 import ImageCarousel from '../common/imageCarousel.jsx';
@@ -34,6 +35,7 @@ class TaxaApp extends React.Component {
       checklists: [],
       nativeGroups: [],
       slideshowCount: 5,
+      glossary: {},
     };
     this.getTid = this.getTid.bind(this);
     this.updateViewport = this.updateViewport.bind(this);
@@ -146,7 +148,7 @@ class TaxaApp extends React.Component {
           const nativeGroups = [];
           httpGet(`${this.props.clientRoot}/garden/rpc/api.php?canned=true`).then((res) => {
             let cannedSearches = JSON.parse(res); //14796, 14797, 14798, 14799, 14800
-            Object.entries(cannedSearches).map(([key, checklist]) => {
+            Object.values(cannedSearches).map((checklist) => {
               let match = this.state.checklists.indexOf(checklist.clid);
               if (match > -1) {
                 nativeGroups.push(checklist);
@@ -157,20 +159,15 @@ class TaxaApp extends React.Component {
 
           const commercialAvailability = {};
           var vendorURL = `${this.props.clientRoot}/checklists/rpc/api-vendor.php?action=taxa_garden&tid=${this.props.tid}`;
-          //console.log(vendorURL);
           httpGet(vendorURL).then((res) => {
             res = JSON.parse(res);
-            //console.log(res);
-            Object.entries(res).map(([key, taxon]) => {
-              //console.log(taxon.sciname);
+            Object.values(res).map((taxon) => {
               let vendors = [];
-              Object.entries(taxon.vendors).map(([key, vendor]) => {
+              Object.values(taxon.vendors).map((vendor) => {
                 vendors.push({ clid: vendor.clid, name: vendor.name });
               });
-              //console.log(vendors);
               commercialAvailability[taxon.sciname] = vendors;
             });
-            //console.log(commercialAvailability);
             this.setState({ commercialAvailability: commercialAvailability });
           });
         })
@@ -182,6 +179,19 @@ class TaxaApp extends React.Component {
           this.setState({ isLoading: false });
           this.updateViewport();
         });
+
+      const fetchGlossary = async () => {
+        try {
+          const res = await httpGet('../glossary/rpc/getterms.php');
+          this.setState({ glossary: JSON.parse(res) });
+        } catch (err) {
+          // just log this error and don't do anything for now, since the glossary isn't strictly
+          // necessary for the functioning of the page
+          console.error(err);
+        }
+      };
+      fetchGlossary();
+
       window.addEventListener('resize', this.updateViewport);
     }
   } //componentDidMount
@@ -221,14 +231,10 @@ class TaxaApp extends React.Component {
               </figure>
             )}
 
-            <p className="mt-4">
-              {/*
-                Description includes HTML tags & URL-encoded characters in the db.
-                It's dangerous to pull/render arbitrary HTML w/ react, so just render the
-                plain text & remove any HTML in it.
-              */}
-              {this.state.description.replace(/(<\/?[^>]+>)|(&[^;]+;)/g, '')}
-            </p>
+            <p
+              className="mt-4"
+              dangerouslySetInnerHTML={{ __html: addGlossaryTooltips(this.state.description, this.state.glossary) }}
+            />
             <div className="mt-4 dashed-border taxa-slideshows">
               <h3 className="text-light-green font-weight-bold mt-2">{this.state.vernacularNames[0]} images</h3>
               <div className="slider-wrapper">
