@@ -11,7 +11,7 @@ import MapItem from './components/MapItem.jsx';
 import SideBarSection from './components/SideBarSection.jsx';
 import SideBarSectionLookalikesTable from './components/SideBarSectionLookalikesTable.jsx';
 import SideBarSectionSpeciesList from './components/SideBarSectionSpeciesList.jsx';
-import { sortKeyedCharObject } from './utils';
+import { csRangeToString } from './utils';
 
 const EMPTY_DATA = {
   sciName: null,
@@ -41,19 +41,8 @@ const EMPTY_DATA = {
   legacyFactSheetUrl: null,
 };
 
-function rangeToString(obj) {
-  // sort entries by key (cs), then map to an array of just the values (charstatename)
-  const arr = sortKeyedCharObject(obj);
-  if (arr.length < 1) {
-    return '';
-  } else if (arr.length === 1) {
-    return arr[0];
-  }
-  return `${arr[0]} - ${arr[arr.length - 1]}`;
-}
-
 function elevationToString(obj) {
-  const unitlessString = rangeToString(obj);
+  const unitlessString = csRangeToString(obj);
   return unitlessString && `${unitlessString} meters`;
 }
 
@@ -115,11 +104,11 @@ function TaxaRareApp(props) {
               counties: [], // TODO(eric): figure out how to get this data
               habitat: res.characteristics.habitat,
               elevation: elevationToString(res.characteristics.elevation),
-              floweringTime: rangeToString(res.characteristics.bloom_months),
+              floweringTime: csRangeToString(res.characteristics.bloom_months, '-'),
             },
             surveyManage: {
               bestSurveyStatus: res.characteristics.best_survey_status,
-              bestSurveyTime: rangeToString(res.characteristics.best_survey_months),
+              bestSurveyTime: csRangeToString(res.characteristics.best_survey_months, '-'),
               threats: res.characteristics.threats,
               management: res.characteristics.management,
             },
