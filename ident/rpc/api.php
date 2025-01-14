@@ -43,7 +43,13 @@ function get_data($params) {
 		$repo = $em->getRepository("Fmchecklists");
 		$model = $repo->find($params["clid"]);
 		$checklist = ExploreManager::fromModel($model);
-		$checklist->setPid($params["pid"]);
+    if (array_key_exists("pid", $params)) {
+      $checklist->setPid($params["pid"]);
+      $projRepo = SymbosuEntityManager::getEntityManager()->getRepository("Fmprojects");
+      $model = $projRepo->find($params["pid"]);
+      $project = InventoryManager::fromModel($model);
+      $results["projName"] = $project->getProjname();
+    }
 		$results["clid"] = $checklist->getClid();
 		$results["pid"] = $checklist->getPid();
 		$results["title"] = $checklist->getTitle();
@@ -56,10 +62,6 @@ function get_data($params) {
     $results["locality"] = ($checklist->getLocality()? $checklist->getLocality() :'') ;
     $results["type"] = ($checklist->getType()? $checklist->getType() :'') ;
 
-		$projRepo = SymbosuEntityManager::getEntityManager()->getRepository("Fmprojects");					
-		$model = $projRepo->find($params["pid"]);
-		$project = InventoryManager::fromModel($model);
-		$results["projName"] = $project->getProjname();
 	}elseif(isset($params['dynclid']) && $params['dynclid'] > -1) {
 
 		$em = SymbosuEntityManager::getEntityManager();
@@ -74,7 +76,6 @@ function get_data($params) {
 	$identManager = new IdentManager();
 	if (isset($params['clid']) && $params['clid'] > -1) $identManager->setClid($params['clid']);
 	if (isset($params['dynclid']) && $params['dynclid'] > -1) $identManager->setDynClid($params['dynclid']);
-	if (isset($params['pid']) && $params['pid'] > -1) $identManager->setPid($params['pid']);
 	if (isset($params['taxon'])) $identManager->setTaxonFilter($params['taxon']);
 	if (isset($params['rv'])) $identManager->setRelevanceValue($params['rv']);
 	$identManager->setAttrsFromParams($params);
@@ -120,9 +121,13 @@ $result = [];
 
 
 if (
-			(array_key_exists("clid", $_GET) && is_numeric($_GET["clid"])&& array_key_exists("pid", $_GET) && is_numeric($_GET["pid"]))
-			|| (array_key_exists("dynclid", $_GET) && is_numeric($_GET["dynclid"]))
-		) {
+  (
+    array_key_exists("clid", $_GET) &&
+    is_numeric($_GET["clid"]) &&
+    (!array_key_exists("pid", $_GET) || is_numeric($_GET["pid"]))
+  )
+	|| (array_key_exists("dynclid", $_GET) && is_numeric($_GET["dynclid"]))
+) {
 	$result = get_data($_GET);
 } else {
 	#todo: generate error or redirect
