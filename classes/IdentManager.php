@@ -67,6 +67,7 @@ class IdentManager extends Manager {
   */
   
   public function setPid($pid) {
+    // TODO: remove as this seems to do nothing
   	$this->pid = intval($pid);
   }
   public function setClid($clid) {
