@@ -9,3 +9,18 @@ export function sortKeyedCharObject(obj) {
     .sort((a, b) => a[0] - b[0])
     .map((entry) => entry[1]);
 }
+
+/**
+ * Turns an array/object of char state names into a single string containing just the extremities
+ * e.g. ['dry', 'moist', 'wet'] => 'dry to wet'
+ */
+export function csRangeToString(obj, separator = 'to') {
+  // sort entries by key (cs), then map to an array of just the values (charstatename)
+  const arr = sortKeyedCharObject(obj);
+  if (arr.length < 1) {
+    return '';
+  } else if (arr.length === 1) {
+    return arr[0];
+  }
+  return `${arr[0]} ${separator} ${arr[arr.length - 1]}`;
+}
