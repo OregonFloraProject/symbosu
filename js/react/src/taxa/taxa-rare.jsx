@@ -38,6 +38,7 @@ const EMPTY_DATA = {
   lookalikes: [],
   associatedSpecies: [],
   accessRestricted: false,
+  legacyFactSheetUrl: null,
 };
 
 function rangeToString(obj) {
@@ -126,6 +127,7 @@ function TaxaRareApp(props) {
             lookalikes: res.associations['look-alike'] ?? [],
             associatedSpecies: res.associations.associatedWith ?? [],
             accessRestricted: !!res.accessRestricted,
+            legacyFactSheetUrl: res.rarePlantFactSheet ?? null,
           });
 
           const titleElement = document.getElementsByTagName('title')[0];
@@ -275,9 +277,20 @@ function TaxaRareApp(props) {
             clientRoot={props.clientRoot}
           />
           <div className="taxa-link">
-            <a href={getTaxaPage(props.clientRoot, tid)}>
+            <a href={getTaxaPage(props.clientRoot, tid)} style={{ marginRight: '1rem' }}>
               <button className="my-2 btn-primary">Core profile page</button>
             </a>
+            {data.legacyFactSheetUrl && (
+              <a href={`${props.clientRoot}${data.legacyFactSheetUrl}`}>
+                <button className="my-2 btn-primary">
+                  <img
+                    src={`${props.clientRoot}/images/pdf24.png`}
+                    style={{ paddingRight: '3px', marginLeft: '-0.2em' }}
+                  />
+                  Legacy fact sheet
+                </button>
+              </a>
+            )}
           </div>
         </div>
       </div>

@@ -647,8 +647,7 @@ class TaxaApp extends React.Component {
           if (res.specialChecklists && res.specialChecklists.includes(CLID_RARE_ALL)) {
             const rareProfileUrl = getRareTaxaPage(this.props.clientRoot, this.props.tid);
             moreInfo.push({ title: 'Rare Plant Profile', url: rareProfileUrl });
-          }
-          if (res.rarePlantFactSheet.length) {
+          } else if (res.rarePlantFactSheet.length) {
             moreInfo.push({ title: 'Rare Plant Fact Sheet', url: res.rarePlantFactSheet });
           }
           if (res.gardenId > 0) {
