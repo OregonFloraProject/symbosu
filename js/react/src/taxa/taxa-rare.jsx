@@ -50,7 +50,7 @@ function TaxaRareApp(props) {
   const [isLoading, setIsLoading] = useState(true);
   const [apiError, setApiError] = useState(false);
   const [data, setData] = useState(EMPTY_DATA);
-  const [glossary, setGlossary] = useState([]);
+  const [glossary, setGlossary] = useState({});
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const [currImage, setCurrImage] = useState(0);
   const [slideshowCount, setSlideshowCount] = useState(5);
