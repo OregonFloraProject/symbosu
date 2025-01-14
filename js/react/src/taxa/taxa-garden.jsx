@@ -9,7 +9,7 @@ import { getTaxaPage } from '../common/taxaUtils';
 import Loading from '../common/loading.jsx';
 import SideBarSection from './components/SideBarSection.jsx';
 import SideBarSectionVendor from './components/SideBarSectionVendor.jsx';
-import { sortKeyedCharObject } from './utils';
+import { csRangeToString, sortKeyedCharObject } from './utils';
 
 class TaxaApp extends React.Component {
   constructor(props) {
@@ -104,17 +104,16 @@ class TaxaApp extends React.Component {
             sizeMaturity += "' wide";
           }
 
-          let ease_of_growth = res.characteristics.growth_maintenance.ease_of_growth;
-          ease_of_growth = ease_of_growth.length > 0 ? ease_of_growth[0] : '';
+          const ease_of_growth = csRangeToString(res.characteristics.growth_maintenance.ease_of_growth);
 
           const spreads_vigorously = res.characteristics.growth_maintenance.spreads_vigorously;
 
           let moisture = [];
           if (res.characteristics.moisture.length > 0) {
-            moisture.push(`${res.characteristics.moisture[0]}`.trim());
+            moisture.push(csRangeToString(res.characteristics.moisture));
           }
           if (res.characteristics.summer_moisture.length > 0) {
-            moisture.push(`${res.characteristics.summer_moisture[0]}`.trim() + ' summer water');
+            moisture.push(`${csRangeToString(res.characteristics.summer_moisture)} summer water`);
           }
 
           this.setState({
@@ -132,7 +131,7 @@ class TaxaApp extends React.Component {
             },
             plantFacts: {
               'Flower color': res.characteristics.flower_color,
-              'Bloom time': sortKeyedCharObject(res.characteristics.bloom_months),
+              'Bloom time': csRangeToString(res.characteristics.bloom_months, '-'),
               Moisture: moisture,
               'Wildlife support': res.characteristics.wildlife_support,
             },
