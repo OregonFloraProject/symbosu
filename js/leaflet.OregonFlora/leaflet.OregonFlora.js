@@ -21,7 +21,7 @@ function addOregonFlora(map, fitBounds = true){
 	}
 
 	// Move the scale bar to the bottom right
-	map.scaleControl.setPosition('bottomright');
+	map.mapLayer.scaleControl.setPosition('bottomright');
 
 	// Add/rename/reorder basemaps
 	addBasemaps(map);
@@ -106,29 +106,29 @@ function addBasemaps(map) {
 	});
 
 	// Add additional baselayers to layers control
-	map.layerControl.addBaseLayer(Esri_Topo, "ESRI Topo");
-	map.layerControl.addBaseLayer(googleHybrid, "Google Satellite");
-	map.layerControl.addBaseLayer(googleStreets, "Google Streets");
-	map.layerControl.addBaseLayer(USGS_Topo, "USGS Topo");
-	map.layerControl.addBaseLayer(USGS_Imagery, "USGS Satellite");
+	map.mapLayer.layerControl.addBaseLayer(Esri_Topo, "ESRI Topo");
+	map.mapLayer.layerControl.addBaseLayer(googleHybrid, "Google Satellite");
+	map.mapLayer.layerControl.addBaseLayer(googleStreets, "Google Streets");
+	map.mapLayer.layerControl.addBaseLayer(USGS_Topo, "USGS Topo");
+	map.mapLayer.layerControl.addBaseLayer(USGS_Imagery, "USGS Satellite");
 
 	// Rename existing layers
-	map.layerControl._layers[0].name = "Google Terrain";
-	map.layerControl._layers[1].name = "OpenStreetMap";
-	map.layerControl._layers[2].name = "OpenTopoMap";
-	map.layerControl._layers[3].name = "ESRI Satellite";
+	map.mapLayer.layerControl._layers[0].name = "Google Terrain";
+	map.mapLayer.layerControl._layers[1].name = "OpenStreetMap";
+	map.mapLayer.layerControl._layers[2].name = "OpenTopoMap";
+	map.mapLayer.layerControl._layers[3].name = "ESRI Satellite";
 
 	// Fix Google Terrain attribution
-	map.layerControl._layers[0].layer.options.attribution = "Google";
+	map.mapLayer.layerControl._layers[0].layer.options.attribution = "Google";
 
 	// Add sort order to the existing layers
-	map.layerControl._layers[0].layer.options.sort = 2;
-	map.layerControl._layers[1].layer.options.sort = 8;
-	map.layerControl._layers[2].layer.options.sort = 9;
-	map.layerControl._layers[3].layer.options.sort = 5;
+	map.mapLayer.layerControl._layers[0].layer.options.sort = 2;
+	map.mapLayer.layerControl._layers[1].layer.options.sort = 8;
+	map.mapLayer.layerControl._layers[2].layer.options.sort = 9;
+	map.mapLayer.layerControl._layers[3].layer.options.sort = 5;
 
 	// Set layercontrol options
-	map.layerControl.options = {
+	map.mapLayer.layerControl.options = {
 
 		// Collapse the layers control to start
 		collapsed: true, 
@@ -143,7 +143,7 @@ function addBasemaps(map) {
 	};
 
 	// Change the default layer: first remove the old default, then re-add a layer.
-	map.layerControl._layers[0].layer.remove();
+	map.mapLayer.layerControl._layers[0].layer.remove();
 	USGS_Topo.addTo(map.mapLayer);
 }
 
@@ -178,7 +178,7 @@ function addOverlays(map) {
 			}).addTo(map.mapLayer);
 
 			// Add the counties layer to the layer controls 
-			map.layerControl.addOverlay(countiesLayer, "Counties");
+			map.mapLayer.layerControl.addOverlay(countiesLayer, "Counties");
 		});
 
 	// Add ecoregions from KML using the KML plugin if not on the dynamicMap page:
@@ -192,7 +192,7 @@ function addOverlays(map) {
 			const ecoregions = new L.KML(kml);
 
 			// Add the ecoregions layer to the layer controls
-			map.layerControl.addOverlay(ecoregions, "Ecoregions");
+			map.mapLayer.layerControl.addOverlay(ecoregions, "Ecoregions");
 
 			// Adjust map to show the kml
 			//const bounds = track.getBounds();
@@ -264,7 +264,7 @@ function toggleMarkers(type){
 	// This should be faster than using removeLayers. But it's fast enough for now. 
 
 	// For each taxon, go through and add or remove points from clusters
-	map.taxaCluster.forEach(cluster =>{
+	map.taxaClusters.forEach(cluster =>{
 
 		// Get the list of markers for that taxon and type
 		let markers = map.markerGroups[type][cluster.options.tid];

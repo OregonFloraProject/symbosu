@@ -62,6 +62,17 @@ class LeafletMap {
    /* Reference Leaflet Feature Group for all drawn items*/
    drawLayer;
 
+   /* Save Markerclusterer taxa clusters for later manipulation */
+   taxaClusters = [];
+
+   // Set up groups of markers so that different types can be toggled on and off
+   markerGroups = {
+      "osc": [],
+      "ofphoto": [],
+      "spec": [],
+      "obs": []
+   };
+
    constructor(map_id, map_options={}) {
 
 	  map_options = {
@@ -108,7 +119,7 @@ class LeafletMap {
 
       if(map_options.layer_control !== false) {
          // Oregonflora Addition: save the layer control for later manipulation
-         this.layerControl = L.control.layers({
+         this.mapLayer.layerControl = L.control.layers({
             "Terrain": terrainLayer,
             "Basic": basicLayer,
             "Topo": openTopoLayer,
@@ -119,7 +130,7 @@ class LeafletMap {
 
       if(map_options.scale !== false) {
          // Oregonflora Addition: save the scale control for later manipulation
-         this.scaleControl = L.control.scale({maxWidth: 200}).addTo(this.mapLayer);
+         this.mapLayer.scaleControl = L.control.scale({maxWidth: 200}).addTo(this.mapLayer);
       }
 
       this.setLang(map_options.lang);

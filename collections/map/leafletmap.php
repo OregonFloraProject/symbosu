@@ -150,17 +150,6 @@ if(isset($MAPPING_BOUNDARIES)){
 			// Add all the OregonFlora leaflet customizations
 			addOregonFlora(map);
 
-			// Set up an array to store taxa markerClusters
-			map.taxaCluster = [];
-
-			// Set up groups of markers so that different types can be toggled on and off
-			map.markerGroups = {
-			  "osc": [],
-			  "ofphoto": [],
-			  "spec": [],
-			  "obs": []
-			};
-
          const checkLatLng = (latlng) => {
             return (
                (!isNaN(latlng[0]) && latlng[0] <= 90 && latlng[0] >= -90) &&
@@ -186,7 +175,7 @@ if(isset($MAPPING_BOUNDARIES)){
 
             let taxaCluster = L.markerClusterGroup({
                iconCreateFunction: colorCluster,
-               tid: tid, // Save tid to the cluster
+               tid: tid, // Save the taxon ID to the cluster
                maxClusterRadius: <?php echo $gridSize . ',' ?>
             });
 
@@ -219,6 +208,8 @@ if(isset($MAPPING_BOUNDARIES)){
 
 						// Account for missing collection codes
 						if(occur.collcode) displayStr += `-${occur.collcode}`;
+
+						if(!checkLatLng(latlng)) continue;
 
 						displayStr += '</div>';
 						if(occur.catnum) displayStr += `<div><strong>Catalog #: </strong>${occur.catnum}</div>`;
@@ -307,7 +298,7 @@ if(isset($MAPPING_BOUNDARIES)){
             map.mapLayer.addLayer(taxaCluster);
 
             // Oregonflora Addition: save the taxa markerClusters for later manipulation
-            map.taxaCluster[tid] = taxaCluster;
+            map.taxaClusters[tid] = taxaCluster;
          }
          map.mapLayer.fitBounds(bounds.getBounds());
       }
