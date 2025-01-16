@@ -220,7 +220,7 @@ class ExploreSearchResult extends React.Component {
                   )}
                   <span className="common-name">{this.props.commonName}</span>
                 </a>
-                {this.props.showTaxaDetail === 'on' && this.props.vouchers.length && (
+                {this.props.showTaxaDetail === 'on' && this.props.vouchers.length > 0 && (
                   <div className="vouchers">
                     Vouchers:&nbsp;
                     {this.props.vouchers
