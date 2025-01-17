@@ -333,7 +333,7 @@ function ExploreSearchContainer(props) {
   if (props.currentTids.length) {
     if (props.sortBy === 'taxon') {
       return (
-        <div id="search-results" className={'mt-4 w-100' + (props.viewType === 'grid' ? ' search-result-grid' : '')}>
+        <div id="search-results" className={'mt-4 w-100' + (useGrid ? ' search-result-grid' : '')}>
           <Searching clientRoot={props.clientRoot} isSearching={props.isSearching} />
           {props.searchResults.taxonSort.map((result) => {
             //console.log(result);
@@ -414,6 +414,18 @@ ExploreSearchContainer.defaultProps = {
 
 function IdentifySearchResult(props) {
   const useGrid = props.viewType === 'grid'; //not an option here but leaving it in case
+  let nameFirst, nameSecond, classFirst, classSecond;
+  if (props.sortBy == 'vernacularName') {
+    nameFirst = props.commonName;
+    nameSecond = props.sciName;
+    classFirst = '';
+    classSecond = ' font-italic';
+  } else {
+    nameFirst = props.sciName;
+    nameSecond = props.commonName;
+    classFirst = ' font-italic';
+    classSecond = '';
+  }
   return (
     <a
       href={props.href}
@@ -433,16 +445,10 @@ function IdentifySearchResult(props) {
           )}
           {!useGrid && <FontAwesomeIcon icon="square" />}
           <div className={(useGrid ? 'card-body' : 'd-inline py-1') + ' px-0'} style={{ overflow: 'hidden' }}>
-            {props.sortBy === 'sciName' && (
-              <div className={'card-text' + (useGrid ? '' : ' d-inline')}>
-                <span className="font-italic sci-name">{props.sciName}</span>
-              </div>
-            )}
-            {props.sortBy === 'vernacularName' && (
-              <div className={'card-text' + (useGrid ? '' : ' d-inline')}>
-                <span className="font-italic sci-name">{props.commonName}</span>
-              </div>
-            )}
+            <div className={'card-text' + (useGrid ? '' : ' d-inline')}>
+              <span className={`sci-name${classFirst}`}>{nameFirst}</span>
+              {useGrid && <span className={`sci-name${classSecond}`}>{nameSecond}</span>}
+            </div>
           </div>
         </div>
       </div>
@@ -450,7 +456,7 @@ function IdentifySearchResult(props) {
   );
 }
 function IdentifySearchContainer(props) {
-  const useGrid = props.viewType === 'grid'; //not an option here but leaving it in case
+  const useGrid = props.viewType === 'grid';
   if (props.searchResults) {
     return (
       <div id="search-results" className={'mt-2 w-100'}>
@@ -459,16 +465,17 @@ function IdentifySearchContainer(props) {
           return (
             <div key={family} className="family-group">
               <h4>{family}</h4>
-              <div className={props.viewType === 'grid' ? ' search-result-grid' : ''}>
+              <div className={useGrid ? ' search-result-grid' : ''}>
                 {results.map((result) => {
                   return (
                     <IdentifySearchResult
                       key={result.tid}
                       href={getTaxaPage(props.clientRoot, result.tid)}
-                      src={result.thumbnail}
+                      src={result.image}
                       commonName={getCommonNameStr(result)}
                       sciName={result.sciname ? result.sciname : ''}
                       sortBy={props.sortBy}
+                      viewType={props.viewType}
                     />
                   );
                 })}

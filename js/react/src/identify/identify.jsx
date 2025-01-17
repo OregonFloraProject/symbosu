@@ -50,6 +50,7 @@ class IdentifyApp extends React.Component {
       searchResults: { familySort: {}, taxonSort: [] },
       characteristics: [],
       sortBy: 'sortBy' in queryParams ? queryParams['sortBy'] : 'sciName',
+      viewType: 'viewType' in queryParams ? queryParams['viewType'] : 'list',
       totals: {
         families: 0,
         genera: 0,
@@ -78,6 +79,7 @@ class IdentifyApp extends React.Component {
     this.onSearch = this.onSearch.bind(this);
     this.onSearchResults = this.onSearchResults.bind(this);
     this.onSortByChanged = this.onSortByChanged.bind(this);
+    this.onViewTypeChanged = this.onViewTypeChanged.bind(this);
     this.onFilterRemoved = this.onFilterRemoved.bind(this);
     this.clearFilters = this.clearFilters.bind(this);
     this.onAttrChanged = this.onAttrChanged.bind(this);
@@ -584,6 +586,9 @@ class IdentifyApp extends React.Component {
       });
     });
   }
+  onViewTypeChanged(type) {
+    this.setState({ viewType: type });
+  }
 
   clearFilters() {
     let filters = {
@@ -683,6 +688,7 @@ class IdentifyApp extends React.Component {
                   onSearchTextChanged={this.onSearchTextChanged}
                   searchName={this.state.searchName}
                   viewType={this.state.viewType}
+                  onViewTypeClicked={this.onViewTypeChanged}
                   sortBy={this.state.sortBy}
                   onSortByClicked={this.onSortByChanged}
                   onAttrClicked={this.onAttrChanged}
