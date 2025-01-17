@@ -459,7 +459,7 @@ class IdentifyApp extends React.Component {
       });
     });
     Object.entries(this.state.filters.attrs).map(([cid, attr]) => {
-      if (newCids.indexOf(Number(cid)) != -1) {
+      if (newCids.indexOf(Number(cid.split('-')[0])) != -1) {
         newAttrs[cid] = attr;
       }
     });
