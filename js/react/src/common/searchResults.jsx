@@ -67,14 +67,17 @@ class SearchResultContainer extends React.Component {
 
 function CardSearchResult(props) {
   const useGrid = props.viewType === 'grid';
-  let nameFirst = '';
-  let nameSecond = '';
+  let nameFirst, nameSecond, classFirst, classSecond;
   if (props.sortBy == 'vernacularName') {
     nameFirst = props.commonName;
     nameSecond = props.sciName;
+    classFirst = '';
+    classSecond = 'font-italic';
   } else {
     nameFirst = props.sciName;
     nameSecond = props.commonName;
+    classFirst = 'font-italic';
+    classSecond = '';
   }
   if (props.display) {
     return (
@@ -88,9 +91,9 @@ function CardSearchResult(props) {
             />
             <div className={(useGrid ? 'card-body' : 'd-inline py-1') + ' px-0'} style={{ overflow: 'hidden' }}>
               <div className={'card-text' + (useGrid ? '' : ' d-inline')}>
-                <span className="">{nameFirst}</span>
+                <span className={classFirst}>{nameFirst}</span>
                 {useGrid ? <br /> : ' - '}
-                <span className="font-italic">{nameSecond}</span>
+                <span className={classSecond}>{nameSecond}</span>
               </div>
             </div>
           </div>
