@@ -307,8 +307,42 @@ class SideBar extends React.Component {
               {/* row */}
             </div>
             {/*  view-opts */}
+            <div className="view-opts container row">
+              <div className="row">
+                <div className="opt-labels">
+                  <p>Show results:</p>
+                </div>
+                <div className="opt-settings ">
+                  <div className="view-opt-wrapper">
+                    <input
+                      type="radio"
+                      name="viewType"
+                      onChange={() => {
+                        this.props.onViewTypeClicked('grid');
+                      }}
+                      checked={this.props.viewType === 'grid'}
+                    />{' '}
+                    <label className="" htmlFor={'viewType'}>
+                      As images
+                    </label>
+                  </div>
+                  <div className="view-opt-wrapper">
+                    <input
+                      type="radio"
+                      name="viewType"
+                      onChange={() => {
+                        this.props.onViewTypeClicked('list');
+                      }}
+                      checked={this.props.viewType === 'list'}
+                    />{' '}
+                    <label className="" htmlFor={'viewType'}>
+                      As list
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-            <h3 className="filter-title">Filter by characteristic</h3>
             {this.props.characteristics &&
               Object.keys(this.props.characteristics).map((idx) => {
                 let firstLevel = this.props.characteristics[idx];
