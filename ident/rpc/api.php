@@ -87,6 +87,14 @@ function get_data($params) {
 		$identManager->setSearchName($params['name']);
 	}
 	
+  if (
+    !array_key_exists("search", $params) &&
+    !array_key_exists("name", $params) &&
+    !array_key_exists("attr", $params) &&
+    !array_key_exists("range", $params)
+  ) {
+    $identManager->setThumbnails(true);
+  }
 	$identManager->setTaxa();
 	$results['taxa'] = $identManager->getTaxa();
 	$results['totals'] = TaxaManager::getTaxaCounts($results['taxa']);
