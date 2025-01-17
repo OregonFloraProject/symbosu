@@ -1,4 +1,100 @@
 Version,Family,Scientific name,Previously,Changed to,Date
+v 2.3,Aizoaceae,Tetragonia tetragonioides,Excluded,Accepted (terminal),1/2/2025 0:00
+v 2.3,Amaranthaceae,Atriplex oblongifolia,Under evaluation,Accepted (terminal),1/2/2025 0:00
+v 2.3,Amaryllidaceae,Allium cratericola,Under evaluation,Accepted (terminal),7/24/2024 0:00
+v 2.3,Amaryllidaceae,Allium fimbriatum,Under evaluation,Accepted (not terminal),7/24/2024 0:00
+v 2.3,Amaryllidaceae,Allium fimbriatum var. fimbriatum,Under evaluation,Accepted (terminal),7/24/2024 0:00
+v 2.3,Amaryllidaceae,Allium hoffmanii,Under evaluation,Accepted (terminal),7/24/2024 0:00
+v 2.3,Asteraceae,Gaillardia × grandiflora,Under evaluation,Accepted (terminal),1/2/2025 0:00
+v 2.3,Boraginaceae,Cryptantha intermedia var. hendersonii,Accepted,Accepted or a synonym of C. intermedia var. intermedia,
+v 2.3,Caprifoliaceae,Lonicera tatarica,Excluded,Accepted (terminal),1/2/2025 0:00
+v 2.3,Cyperaceae,Carex inops,Accepted (not terminal),Accepted (terminal),1/2/2025 0:00
+v 2.3,Cyperaceae,Carex inops ssp. inops,Accepted (terminal),Synonym of Carex inops,1/2/2025 0:00
+v 2.3,Cyperaceae,Carex vespertina,Under evaluation,Accepted (terminal),1/2/2025 0:00
+v 2.3,Cyperaceae,Schoenoplectiella mucronata,Synonym of Schoenoplectus mucronatus,Accepted (terminal),7/24/2024 0:00
+v 2.3,Cyperaceae,Schoenoplectiella saximontana,Under evaluation,Accepted (terminal),7/24/2024 0:00
+v 2.3,Cyperaceae,Schoenoplectus mucronatus,Accepted (terminal),Synonym of Schoenoplectiella mucronata,7/24/2024 0:00
+v 2.3,Cyperaceae,Schoenoplectus saximontanus,Accepted (terminal),Synonym of Schoenoplectiella saximontana,7/24/2024 0:00
+v 2.3,Fabaceae,Gleditsia triacanthos,Under evaluation,Accepted (terminal),1/2/2025 0:00
+v 2.3,Grossulariaceae,Ribes oxyacanthoides ssp. cognatum,Accepted (terminal),Synonym of Ribes oxyacanthoides var. cognatum,1/2/2025 0:00
+v 2.3,Grossulariaceae,Ribes oxyacanthoides ssp. irriguum,Accepted (terminal),Synonym of Ribes oxyacanthoides var. irriguum,1/2/2025 0:00
+v 2.3,Grossulariaceae,Ribes oxyacanthoides var. cognatum,Synonym of Ribes oxyacanthoides ssp. cognatum,Accepted (terminal),1/2/2025 0:00
+v 2.3,Grossulariaceae,Ribes oxyacanthoides var. irriguum,Synonym of Ribes oxyacanthoides ssp. irriguum,Accepted (terminal),1/2/2025 0:00
+v 2.3,Hydrophyllaceae,Phacelia heterophylla ssp. virgata,Accepted (terminal),Synonym of Phacelia heterophylla var. virgata,1/2/2025 0:00
+v 2.3,Hydrophyllaceae,Phacelia heterophylla var. virgata,Synonym of Phacelia heterophylla ssp. virgata,Accepted (terminal),1/2/2025 0:00
+v 2.3,Hydrophyllaceae,Phacelia nemoralis ssp. oregonensis,Accepted (terminal),Synonym of Phacelia nemoralis var. oregonensis,1/2/2025 0:00
+v 2.3,Hydrophyllaceae,Phacelia nemoralis var. oregonensis,Synonym of Phacelia nemoralis ssp. oregonensis,Accepted (terminal),1/2/2025 0:00
+v 2.3,Lamiaceae,Monardella purpurea,Accepted (terminal),Accepted (not terminal),1/2/2025 0:00
+v 2.3,Lamiaceae,Monardella purpurea ssp. purpurea,Under evaluation,Accepted (terminal),1/2/2025 0:00
+v 2.3,Melanthiaceae,Trillium cuneatum,Accepted (terminal),Misapplied to Trillium chloropetalum,1/2/2025 0:00
+v 2.3,Melanthiaceae,Trillium kurabayashii,Accepted,Accepted or misapplied to T. chloropetalum,
+v 2.3,Montiaceae,Lewisia nevadensis,Accepted (terminal),Synonym of Lewisia pygmaea var. nevadensis,7/24/2024 0:00
+v 2.3,Montiaceae,Lewisia pygmaea,Accepted (terminal),Accepted (not terminal),7/24/2024 0:00
+v 2.3,Montiaceae,Lewisia pygmaea var. nevadensis,Synonym of Lewisia nevadensis,Accepted (terminal),7/24/2024 0:00
+v 2.3,Montiaceae,Lewisia pygmaea var. pygmaea,Synonym of Lewisia pygmaea,Accepted (terminal),7/24/2024 0:00
+v 2.3,Montiaceae,Lewisia rediviva,Accepted (terminal),Accepted (not terminal),7/24/2024 0:00
+v 2.3,Montiaceae,Lewisia rediviva var. rediviva,Synonym of Lewisia rediviva,Accepted (terminal),7/24/2024 0:00
+v 2.3,Onagraceae,Epilobium foliosum,Accepted (terminal),Illegitimate name for Epilobium ravenii,8/7/2024 0:00
+v 2.3,Onagraceae,Epilobium ravenii,Under evaluation,Accepted (terminal),8/7/2024 0:00
+v 2.3,Oxalidaceae,Oxalis debilis,Accepted (not terminal),Accepted (terminal),1/2/2025 0:00
+v 2.3,Oxalidaceae,Oxalis debilis var. corymbosa,Accepted (terminal),Synonym of Oxalis debilis,1/2/2025 0:00
+v 2.3,Papaveraceae,Fumaria parviflora,Misapplied to Fumaria vaillantii,Accepted (terminal),7/24/2024 0:00
+v 2.3,Pinaceae,Pinus ponderosa var. cunninghamia,Under evaluation,Accepted (terminal),1/2/2025 0:00
+v 2.3,Plantaginaceae,Hebe elliptica,Under evaluation,Accepted (terminal),1/2/2025 0:00
+v 2.3,Poaceae,Agrostis blasdalei,Under evaluation,Accepted (terminal),1/2/2025 0:00
+v 2.3,Poaceae,Calamagrostis tacomensis,Accepted (terminal),Accepted or misapplied to C. utsutsuensis,
+v 2.3,Poaceae,Muhlenbergia rigens,Under evaluation,Accepted (terminal),1/2/2025 0:00
+v 2.3,Poaceae,Phyllostachys nigra,Under evaluation,Accepted (not terminal),7/24/2024 0:00
+v 2.3,Poaceae,Phyllostachys nigra var. henonis,Under evaluation,Accepted (terminal),7/24/2024 0:00
+v 2.3,Poaceae,Phyllostachys vivax,Under evaluation,Accepted (terminal),1/2/2025 0:00
+v 2.3,Poaceae,Sasa palmata,Under evaluation,Accepted (terminal),1/2/2025 0:00
+v 2.3,Poaceae,Semiarundinaria fastuosa,Under evaluation,Accepted (terminal),7/24/2024 0:00
+v 2.3,Poaceae,Sporobolus niliacus,Under evaluation,Accepted (terminal),1/2/2025 0:00
+v 2.3,Ranunculaceae,Actaea elata,Accepted (not terminal),Accepted (terminal),7/24/2024 0:00
+v 2.3,Ranunculaceae,Actaea elata var. alpestris,Accepted (terminal),Synonym of Actaea elata,7/24/2024 0:00
+v 2.3,Ranunculaceae,Actaea elata var. elata,Accepted (terminal),Synonym of Actaea elata,7/24/2024 0:00
+v 2.3,Ranunculaceae,Aquilegia formosa,Accepted (terminal),Accepted (not terminal),7/24/2024 0:00
+v 2.3,Ranunculaceae,Aquilegia formosa var. formosa,Synonym of Aquilegia formosa,Accepted (terminal),7/24/2024 0:00
+v 2.3,Ranunculaceae,Aquilegia formosa var. truncata,Synonym of Aquilegia formosa,Accepted (terminal),7/24/2024 0:00
+v 2.3,Ranunculaceae,Beckwithia andersonii,Synonym of Ranunculus andersonii,Accepted (terminal),7/24/2024 0:00
+v 2.3,Ranunculaceae,Coptis occidentalis,Excluded,Accepted (terminal),7/24/2024 0:00
+v 2.3,Ranunculaceae,Enemion hallii,Accepted (terminal),Synonym of Isopyrum hallii,7/24/2024 0:00
+v 2.3,Ranunculaceae,Enemion occidentale,Accepted (terminal),Synonym of Isopyrum occidentale,1/2/2025 0:00
+v 2.3,Ranunculaceae,Enemion stipitatum,Accepted (terminal),Synonym of Isopyrum stipitatum,7/24/2024 0:00
+v 2.3,Ranunculaceae,Halerpestes cymbalaria,Synonym of Ranunculus cymbalaria,Accepted (terminal),7/24/2024 0:00
+v 2.3,Ranunculaceae,Isopyrum hallii,Synonym of Enemion hallii,Accepted (terminal),7/24/2024 0:00
+v 2.3,Ranunculaceae,Isopyrum occidentale,Under evaluation,Accepted (terminal),7/24/2024 0:00
+v 2.3,Ranunculaceae,Isopyrum stipitatum,Synonym of Enemion stipitatum,Accepted (terminal),7/24/2024 0:00
+v 2.3,Ranunculaceae,Myosurus alopecuroides,Accepted (terminal),Synonym of Myosurus minimus,7/24/2024 0:00
+v 2.3,Ranunculaceae,Myosurus minimus,Synonym of Myosurus alopecuroides,Accepted (terminal),7/24/2024 0:00
+v 2.3,Ranunculaceae,Ranunculus andersonii,Accepted (terminal),Synonym of Beckwithia andersonii,7/24/2024 0:00
+v 2.3,Ranunculaceae,Ranunculus californicus,Accepted (terminal),Accepted (not terminal),7/24/2024 0:00
+v 2.3,Ranunculaceae,Ranunculus californicus var. californicus,Synonym of Ranunculus californicus,Accepted (terminal),7/24/2024 0:00
+v 2.3,Ranunculaceae,Ranunculus californicus var. cuneatus,Synonym of Ranunculus californicus,Accepted (terminal),7/24/2024 0:00
+v 2.3,Ranunculaceae,Ranunculus cymbalaria,Accepted (terminal),Synonym of Halerpestes cymbalaria,7/24/2024 0:00
+v 2.3,Ranunculaceae,Ranunculus flammula,Accepted (terminal),Accepted (not terminal),7/24/2024 0:00
+v 2.3,Ranunculaceae,Ranunculus flammula var. ovalis,Synonym of Ranunculus flammula,Accepted (terminal),7/24/2024 0:00
+v 2.3,Ranunculaceae,Ranunculus occidentalis,Accepted (terminal),Accepted (not terminal),7/24/2024 0:00
+v 2.3,Ranunculaceae,Ranunculus occidentalis var. dissectus,Synonym of Ranunculus occidentalis,Accepted (terminal),7/24/2024 0:00
+v 2.3,Ranunculaceae,Ranunculus occidentalis var. howellii,Synonym of Ranunculus occidentalis,Accepted (terminal),7/24/2024 0:00
+v 2.3,Ranunculaceae,Ranunculus occidentalis var. occidentalis,Synonym of Ranunculus occidentalis,Accepted (terminal),7/24/2024 0:00
+v 2.3,Ranunculaceae,Ranunculus occidentalis var. ultramontanus,Synonym of Ranunculus occidentalis,Accepted (terminal),7/24/2024 0:00
+v 2.3,Rosaceae,Drymocallis glandulosa var. wrangelliana,Accepted (terminal),Synonym of Drymocallis glandulosa var. glandulosa,7/24/2024 0:00
+v 2.3,Rosaceae,Drymocallis lactea,Accepted (not terminal),Accepted (terminal),7/24/2024 0:00
+v 2.3,Rosaceae,Drymocallis lactea var. austiniae,Accepted (terminal),Synonym of Drymocallis lactea,7/24/2024 0:00
+v 2.3,Rosaceae,Drymocallis lactea var. lactea,Accepted (terminal),Synonym of Drymocallis lactea,7/24/2024 0:00
+v 2.3,Rosaceae,Drymocallis modocana,Under evaluation,Accepted (terminal),7/24/2024 0:00
+v 2.3,Rosaceae,Fragaria virginiana ssp. glauca,Excluded,Accepted (terminal),1/2/2025 0:00
+v 2.3,Rosaceae,Fragaria virginiana ssp. platypetala,Accepted (terminal),Synonym of Fragaria virginiana ssp. glauca,1/2/2025 0:00
+v 2.3,Rosaceae,Rosa gymnocarpa ssp. gymnocarpa,Synonym of Rosa gymnocarpa var. gymnocarpa,Accepted (terminal),1/2/2025 0:00
+v 2.3,Rosaceae,Rosa gymnocarpa var. gymnocarpa,Accepted (terminal),Synonym of Rosa gymnocarpa ssp. gymnocarpa,1/2/2025 0:00
+v 2.3,Rosaceae,Rosa gymnocarpa var. serpentina,Accepted (terminal),Synonym of Rosa gymnocarpa ssp. gymnocarpa,1/2/2025 0:00
+v 2.3,Rosaceae,Rubus armeniacus,Accepted,Accepted or misapplied to R. praecox,
+v 2.3,Rosaceae,Rubus praecox,Under evaluation,Accepted (terminal),1/2/2025 0:00
+v 2.3,Salicaceae,Salix × fragilis,Synonym of Salix euxina,Accepted (terminal),1/2/2025 0:00
+v 2.3,Salicaceae,Salix euxina,Accepted (terminal),Excluded,1/2/2025 0:00
+v 2.3,Sapindaceae,Acer campestre,Excluded,Accepted (terminal),1/2/2025 0:00
+v 2.3,Typhaceae,Typha × glauca,Excluded,Accepted (terminal),7/24/2024 0:00
 v 2.2,Amaranthaceae,Amaranthus palmeri,Under evaluation,Accepted (terminal),1/11/2024 0:00
 v 2.2,Amaryllidaceae,Galanthus nivalis,Under evaluation,Accepted (terminal),1/11/2024 0:00
 v 2.2,Asparagaceae,Muscari armeniacum,Excluded,Accepted (terminal),1/11/2024 0:00
@@ -50,7 +146,7 @@ v 2.2,Iridaceae,Crocus tommasinianus,Under evaluation,Accepted (terminal),1/11/2
 v 2.2,Juncaceae,Juncus pylaei,Excluded,Accepted (terminal),1/11/2024 0:00
 v 2.2,Liliaceae,Lilium rubescens,Excluded,Accepted (terminal),1/11/2024 0:00
 v 2.2,Malvaceae,Malva arborea,Excluded,Accepted (terminal),1/11/2024 0:00
-v 2.2,Melanthiaceae,Trillium chloropetalum,Misapplied misapplied to either T. albidum or T. kurabayashii,Accepted or misapplied to either T. albidum or T. kurabayashii,1/12/2024 0:00
+v 2.2,Melanthiaceae,Trillium chloropetalum,Misapplied to either T. kurabayashii or T. albidum,"Misapplied to either T. albidum or T. kurabayashii and also now recognized (accepted), occurring in SW Oregon",1/12/2024 0:00
 v 2.2,Montiaceae,Claytonia lanceolata,Accepted (not terminal),Accepted (terminal),1/11/2024 0:00
 v 2.2,Montiaceae,Claytonia lanceolata var. sessilifolia,Accepted (terminal),Synonym of Claytonia lanceolata,1/11/2024 0:00
 v 2.2,Montiaceae,Claytonia parviflora,Accepted (terminal),Accepted (not terminal),1/11/2024 0:00
@@ -496,7 +592,7 @@ v 2.0,Boraginaceae,Plagiobothrys cognatus,Synonym of Plagiobothrys hispidulus,Ac
 v 2.0,Boraginaceae,Plagiobothrys cusickii,Synonym of Plagiobothrys hispidulus,Accepted (terminal),10/12/2020 0:00
 v 2.0,Boraginaceae,Plagiobothrys glyptocarpus,Accepted (terminal),Accepted (not terminal),10/12/2020 0:00
 v 2.0,Boraginaceae,Plagiobothrys glyptocarpus var. glyptocarpus,Synonym of Plagiobothrys glyptocarpus,Accepted (terminal),10/12/2020 0:00
-v 2.0,Boraginaceae,Plagiobothrys hispidulus,Accepted (terminal),Synonym (in part) of P. cognatus or P. cusickii,10/12/2020 0:00
+v 2.0,Boraginaceae,Plagiobothrys hispidulus,Accepted (terminal),Accepted or a synonym (in part) of P. cognatus or P. cusickii,10/12/2020 0:00
 v 2.0,Boraginaceae,Plagiobothrys kingii,Accepted (not terminal),Synonym of Amsinckiopsis kingii,10/12/2020 0:00
 v 2.0,Boraginaceae,Plagiobothrys kingii var. harknessii,Accepted (terminal),Synonym of Amsinckiopsis kingii var. harknessii,10/12/2020 0:00
 v 2.0,Boraginaceae,Plagiobothrys kingii var. kingii,Accepted (terminal),Synonym of Amsinckiopsis kingii var. kingii,10/12/2020 0:00
@@ -757,7 +853,7 @@ v 2.0,Pteridaceae,Myriopteris gracillima,Under evaluation,Accepted (terminal),10
 v 2.0,Pteridaceae,Myriopteris intertexta,Under evaluation,Accepted (terminal),10/12/2020 0:00
 v 2.0,Ranunculaceae,Caltha biflora,Synonym of Caltha leptosepala,Accepted (terminal),10/12/2020 0:00
 v 2.0,Ranunculaceae,Caltha chionophila,Under evaluation,Accepted (terminal),10/12/2020 0:00
-v 2.0,Ranunculaceae,Caltha leptosepala,Accepted (terminal),Synonym for C. leptosepala or C. biflora,10/12/2020 0:00
+v 2.0,Ranunculaceae,Caltha leptosepala,Accepted (terminal),a good species or a synonym (in part) for C. biflora,10/12/2020 0:00
 v 2.0,Ranunculaceae,Cimicifuga elata,Accepted (terminal),Accepted (not terminal),10/12/2020 0:00
 v 2.0,Ranunculaceae,Cimicifuga elata var. alpestris,Synonym of Cimicifuga elata,Accepted (terminal),10/12/2020 0:00
 v 2.0,Ranunculaceae,Cimicifuga elata var. elata,Synonym of Cimicifuga elata,Accepted (terminal),10/12/2020 0:00
