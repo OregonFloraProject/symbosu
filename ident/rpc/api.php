@@ -86,7 +86,8 @@ function get_data($params) {
 		$identManager->setSearchTerm($params["search"]);
 		$identManager->setSearchName($params['name']);
 	}
-	
+
+	$identManager->setThumbnails(true);
 	$identManager->setTaxa();
 	$results['taxa'] = $identManager->getTaxa();
 	$results['totals'] = TaxaManager::getTaxaCounts($results['taxa']);
