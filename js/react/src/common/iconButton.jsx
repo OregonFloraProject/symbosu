@@ -27,7 +27,12 @@ class IconButton extends React.Component {
           width="1em"
           height="1em"
           className="mx-1"
-          style={{ display: this.props.icon === '' ? 'none' : 'inline-block', width: '1em', height: '1em' }}
+          style={{
+            display: this.props.icon === '' ? 'none' : 'inline-block',
+            width: '1em',
+            height: '1em',
+            marginTop: '-3px',
+          }}
           src={this.props.icon}
           onClick={this.props.onClickImg ? this.props.onClickImg : this.props.onClick}
         />
