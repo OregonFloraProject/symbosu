@@ -378,14 +378,16 @@ class TaxaDetail extends React.Component {
 
     /* handle unusual cases of ambiguous synonyms like 6617 */
     let otherH2 = '';
-    if (Object.keys(res.ambiguousSynonyms).length > 0) {
-      otherH2 = 'This name is a synonym for the following accepted taxa: ';
+    const numAcceptedSynonyms = Object.keys(res.acceptedSynonyms).length;
+    if (numAcceptedSynonyms > 0) {
+      const taxonWord = numAcceptedSynonyms === 1 ? 'taxon' : 'taxa';
+      otherH2 = `This name is a synonym for the following accepted ${taxonWord}: `;
       h2class = 'ambiguous';
-      h2 = Object.keys(res.ambiguousSynonyms)
+      h2 = Object.keys(res.acceptedSynonyms)
         .map((ampTid) => {
           return (
             <a key={ampTid} href={`${this.props.clientRoot}/taxa/index.php?taxon=${ampTid}`}>
-              {res.ambiguousSynonyms[ampTid]['sciname']}
+              {res.acceptedSynonyms[ampTid]['sciname']}
             </a>
           );
         })
@@ -576,7 +578,7 @@ class TaxaApp extends React.Component {
       descriptions: [],
       synonym: '',
       synonyms: [],
-      ambiguousSynonyms: [],
+      acceptedSynonyms: [],
       origin: '',
       taxalinks: [],
       gardenId: null,
@@ -699,7 +701,7 @@ class TaxaApp extends React.Component {
             related: relatedArr,
             family: res.family,
             synonym: synonym,
-            ambiguousSynonyms: res.ambiguousSynonyms,
+            acceptedSynonyms: res.acceptedSynonyms,
           });
         })
         .catch((err) => {

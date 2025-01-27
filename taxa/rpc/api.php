@@ -178,9 +178,9 @@ function taxaManagerToJSON($taxaObj,$queryType = "default",$minimalData = false)
 				$result["spp"][] = $tj;
 			}
 			$result["synonyms"] = $taxaObj->getSynonyms();
-			$result["ambiguousSynonyms"] = $taxaObj->getAmbiguousSynonyms();
+			$result["acceptedSynonyms"] = $taxaObj->getAcceptedSynonyms();
 			$vernacular = [];#flatten the vernacular array
-			foreach ($result["ambiguousSynonyms"] as $tid => $arr) {
+			foreach ($result["acceptedSynonyms"] as $tid => $arr) {
 				if (empty($result['vernacular']['basename']) && !empty($arr['vernacular']['basename'])) {
 					$result['vernacular']['basename'] = $arr['vernacular']['basename'];
 				}
