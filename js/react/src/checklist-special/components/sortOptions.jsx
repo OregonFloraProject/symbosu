@@ -23,13 +23,13 @@ function SortOptions(props) {
         <div className="col-7 p-0">
           <IconButton
             title="Grid"
-            icon={`${props.clientRoot}/images/garden/gridViewIcon.png`}
+            icon={`${props.clientRoot}/images/garden/gridViewIcon-${props.viewType === 'grid' ? 'dark' : 'light'}.png`}
             onClick={() => props.onViewTypeChanged('grid')}
             isSelected={props.viewType === 'grid'}
           />
           <IconButton
             title="List"
-            icon={`${props.clientRoot}/images/garden/listViewIcon.png`}
+            icon={`${props.clientRoot}/images/garden/listViewIcon-${props.viewType === 'list' ? 'dark' : 'light'}.png`}
             onClick={() => props.onViewTypeChanged('list')}
             isSelected={props.viewType === 'list'}
           />
