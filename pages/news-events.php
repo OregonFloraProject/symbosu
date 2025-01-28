@@ -3,6 +3,7 @@
 include_once( "../config/symbini.php" );
 header( "Content-Type: text/html; charset=" . $charset );
 ?>
+<!doctype html>
 <html>
 <head>
     <title><?php echo $defaultTitle ?>News and Events</title>

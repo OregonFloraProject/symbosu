@@ -1,6 +1,7 @@
 <?php
 include_once("../config/symbini.php");
 ?>
+<!doctype html>
 <html>
   <head>
     <meta charset="utf-8"/>

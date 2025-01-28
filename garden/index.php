@@ -3,6 +3,7 @@ include_once('../config/symbini.php');
 header("Content-Type: text/html; charset=".$CHARSET);
 ?>
 
+<!doctype html>
 <html>
   <head>
     <title><?php echo $DEFAULT_TITLE?> Gardening with Natives</title>
