@@ -4,6 +4,7 @@ header("Content-Type: text/html; charset=".$CHARSET);
 if(!$RPG_FLAG && !$SYMB_UID) header('Location: ../profile/index.php?refurl=../rare/index.php?'.htmlspecialchars($_SERVER['QUERY_STRING'], ENT_QUOTES));
 ?>
 
+<!doctype html>
 <html>
   <head>
     <title><?php echo $DEFAULT_TITLE?> Rare Plant Guide</title>
