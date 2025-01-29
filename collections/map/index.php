@@ -1044,9 +1044,17 @@ if(isset($_REQUEST['llpoint'])) {
 					if(recordArr[i]['occid'] === e.detail.occid) {
 						const current_zoom = map.mapLayer.getZoom()
 						map.mapLayer.setView([recordArr[i]['lat'], recordArr[i]['lng']], current_zoom <= 12? 12: current_zoom)
+
+						// JGM: Open the tooltip when a user clicks See map point, and close it as soon as the mouse moves
+						markers[i].openTooltip();
+						addEventListener("mousemove", (event) => {
+							markers[i].closeTooltip();
+						}, {once: true});
+
 						break;
 					}
 				}
+
 			});
 
 			document.addEventListener('deleteShape', e => {
