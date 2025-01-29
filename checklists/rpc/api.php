@@ -48,8 +48,8 @@ function buildResult($checklistObj) {
     $result["publication"] = ($checklistObj->getPublication()? $checklistObj->getPublication() :'') ;
     $result["notes"] = ($checklistObj->getNotes()? $checklistObj->getNotes() :'') ;
     $result["pointradiusmeters"] = ($checklistObj->getPointRadius()? $checklistObj->getPointRadius() :'') ;
-    $result["latcentroid"] = ($checklistObj->getLatcentroid()? $checklistObj->getLatcentroid() :'') ;
-    $result["longcentroid"] = ($checklistObj->getLongcentroid()? $checklistObj->getLongcentroid() :'') ;
+    $result["lat"] = ($checklistObj->getLatcentroid()? $checklistObj->getLatcentroid() :'') ;
+    $result["lng"] = ($checklistObj->getLongcentroid()? $checklistObj->getLongcentroid() :'') ;
     $taxa = $checklistObj->getTaxa(); 
     if (sizeof($taxa)) {
 			$taxaRepo = SymbosuEntityManager::getEntityManager()->getRepository("Taxa");					

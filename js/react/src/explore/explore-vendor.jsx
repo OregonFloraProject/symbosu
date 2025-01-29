@@ -379,7 +379,7 @@ class ExploreApp extends React.Component {
         let googleMapUrl = '';
         let host = window.location.host;
 
-        if (res.latcentroid !== '' && res.longcentroid !== '') {
+        if (res.lat !== '' && res.lng !== '' && res.lat > 0 && res.lng != 0) {
           googleMapUrl += 'https://maps.google.com/maps/api/staticmap';
           let mapParams = new URLSearchParams();
           let markerUrl = 'http://' + host + this.props.clientRoot + '/images/icons/map_markers/single.png';
@@ -387,10 +387,7 @@ class ExploreApp extends React.Component {
           mapParams.append('maptype', 'terrain');
           mapParams.append('size', '220x220');
           mapParams.append('zoom', 6);
-          mapParams.append(
-            'markers',
-            'icon:' + markerUrl + '|anchor:center|' + res.latcentroid + ',' + res.longcentroid,
-          );
+          mapParams.append('markers', 'icon:' + markerUrl + '|anchor:center|' + res.lat + ',' + res.lng);
 
           googleMapUrl += '?' + mapParams.toString();
         }
@@ -416,8 +413,8 @@ class ExploreApp extends React.Component {
           locality: res.locality,
           publication: res.publication,
           notes: res.notes,
-          latcentroid: res.latcentroid,
-          longcentroid: res.longcentroid,
+          latcentroid: res.lat,
+          longcentroid: res.lng,
           pointradiusmeters: res.pointradiusmeters,
           viewType: viewType,
           //taxa: res.taxa,
