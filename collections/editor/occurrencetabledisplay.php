@@ -249,6 +249,7 @@ else{
 			padding-bottom: 1.2rem;
 		}
 
+		/* JGM: Use OregonFlora styles
 		.button-toggle {
 			background-color: transparent; 
 			color: var(--body-text-color); 
@@ -264,10 +265,7 @@ else{
 				border: 2px solid var(--medium-color);
 				color: var(--light-color);
 			}
-		}
-
-		/* revert OregonFlora styles in the queryform */
-		button, input, fieldset, form div {all: revert;}
+		}*/
 	</style>
 </head>
 <body style="margin-left: 0px; margin-right: 0px;background-color:white;">

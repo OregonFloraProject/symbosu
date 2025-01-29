@@ -147,6 +147,15 @@ button {
   }
 }
 
+/* Customizations for the occurrence table display page in collection tools */
+#record-viewer-innertext{
+  font-size: 12px !important;
+
+  .fieldGroupDiv {
+    margin-bottom: 0.3rem !important;
+  }
+}
+
 /* End OregonFlora Symbiota Components */
 
 /* Bootstrap overrides */
