@@ -252,8 +252,8 @@ elseif(file_exists('../editor/includes/config/occurVarDefault.php')){
 								<label for="datetarget"><?php echo (isset($LANG['ITYPE_OF_DATE']) ? $LANG['TYPE_OF_DATE'] : 'Type of date'); ?>:</label>
 								<select name="datetarget" id="datetarget">
 									<option value="dateentered"><?php echo (isset($LANG['DATE_ENTERED']) ? $LANG['DATE_ENTERED'] : 'Date Entered') ?></option>
-									<option value="datelastmodified" <?php echo (isset($_POST['datetarget']) && $_POST['datetarget'] == 'datelastmodified'?'SELECTED':''); ?>><?php echo (isset($LANG['DATE_MOD']) ? $LANG['DATE_MOD'] : 'Date Modified') ?></option>
-									<option value="eventdate"<?php echo (isset($_POST['datetarget']) && $_POST['datetarget'] == 'eventdate'?'SELECTED':''); ?>><?php echo (isset($LANG['DATE_COLL']) ? $LANG['DATE_COLL'] : 'Date Collected') ?></option>
+									<option value="datelastmodified" <?php echo (isset($_REQUEST['datetarget']) && $_REQUEST['datetarget'] == 'datelastmodified'?'SELECTED':''); ?>><?php echo (isset($LANG['DATE_MOD']) ? $LANG['DATE_MOD'] : 'Date Modified') ?></option>
+									<option value="eventdate"<?php echo (isset($_REQUEST['datetarget']) && $_REQUEST['datetarget'] == 'eventdate'?'SELECTED':''); ?>><?php echo (isset($LANG['DATE_COLL']) ? $LANG['DATE_COLL'] : 'Date Collected') ?></option>
 								</select>
 							</div>
 						</div>

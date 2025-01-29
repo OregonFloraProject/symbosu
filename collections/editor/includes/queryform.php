@@ -292,31 +292,6 @@ else{
 				}
 				?>
 			<div>
-				<div>
-
-					<?php
-					if(!$crowdSourceMode){
-						$qryStr = '';
-						if($qRecordedBy) $qryStr .= '&recordedby='.$qRecordedBy;
-						if($qRecordNumber) $qryStr .= '&recordnumber='.$qRecordNumber;
-						if($qEventDate) $qryStr .= '&eventdate='.$qEventDate;
-						if($qCatalogNumber) $qryStr .= '&catalognumber='.$qCatalogNumber;
-						if($qOtherCatalogNumbers) $qryStr .= '&othercatalognumbers='.$qOtherCatalogNumbers;
-						if($qUser && $qUserAction == 'enteredby') $qryStr .= '&recordenteredby='.$qUser;
-						if($qDateEntered) $qryStr .= '&dateentered='.$qDateEntered;
-						if($qDateLastModified) $qryStr .= '&datelastmodified='.$qDateLastModified;
-						if($qryStr){
-							?>
-							<a href="../reports/labelmanager.php?collid=<?php echo htmlspecialchars($collId, ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE) . htmlspecialchars($qryStr, ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE); ?>" target="_blank">
-								<button type="button" class="icon-button" title="<?php echo $LANG['GO_LABEL_PRINT']; ?>">
-									<img src="../../images/list.png" style="width:1.3em" />
-								</button>
-							</a>
-							<?php
-						}
-					}
-					?>
-				</div>
 				<input type="hidden" name="collid" value="<?php echo $collId; ?>" />
 				<input type="hidden" name="csmode" value="<?php echo $crowdSourceMode; ?>" />
 				<input type="hidden" name="occid" value="<?php echo $occManager->getOccId(); ?>" />
@@ -332,6 +307,31 @@ else{
 					</div>
 					<div style="margin-left: 0;">
 						<button type="button" name="reset" value="Reset Form" onclick="resetQueryForm(this.form)">Reset Form</button>
+					</div>
+					<div>
+
+					<?php
+					if(!$crowdSourceMode){
+						$qryStr = '';
+						if($qRecordedBy) $qryStr .= '&recordedby='.$qRecordedBy;
+						if($qRecordNumber) $qryStr .= '&recordnumber='.$qRecordNumber;
+						if($qEventDate) $qryStr .= 'datetarget=eventdate&date1='.$qEventDate;
+						if($qCatalogNumber) { $qryStr .= '&identifier='.$qCatalogNumber; }
+						else if($qOtherCatalogNumbers) {$qryStr .= '&identifier='.$qOtherCatalogNumbers;}
+						if($qUser && $qUserAction == 'enteredby') $qryStr .= '&recordenteredby='.$qUser;
+						if($qDateEntered) $qryStr .= 'datetarget=dateentered&date1='.$qDateEntered;
+						if($qDateLastModified) $qryStr .= 'datetarget=datelastmodified&date1='.$qDateLastModified;
+						if($qryStr){
+							?>
+							<a href="../reports/labelmanager.php?collid=<?php echo htmlspecialchars($collId, ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE) . htmlspecialchars($qryStr, ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE); ?>" target="_blank" style="text-decoration: none;">
+								<button type="button" title="<?php echo $LANG['GO_LABEL_PRINT']; ?>">
+									Print Labels
+								</button>
+							</a>
+							<?php
+						}
+					}
+					?>
 					</div>
 				</section>
 				<section class="fieldGroupDiv">
