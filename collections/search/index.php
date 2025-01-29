@@ -539,7 +539,8 @@ $obsArr = (isset($collList['obs'])?$collList['obs']:null);
 			</div>
 
 			<!-- Criteria panel -->
-			<div id="criteria-panel" style="position: sticky; top: 0; height: 100vh">
+<?php /* 2025-01-28(eric): replacing height: 100vh with align-self: start keeps sticky behavior while fixing footer issue if content overflows 100vh  */ ?>
+			<div id="criteria-panel" style="position: sticky; top: 0; align-self: start;">
 			<fieldset class="bottom-breathing-room-rel">
 				<legend>
 					<?php echo $LANG['DISPLAY_FORMAT']; ?>
