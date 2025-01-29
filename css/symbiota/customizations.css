@@ -138,6 +138,15 @@ button {
   z-index: 1001 !important;
 }
 
+/* Collection Profiles (collections/misc/collprofiles.php) page styles */
+.collprofiles {
+  --max-innertext-width: 1024px;
+
+  h3 {
+    font-size: 1.17em;
+  }
+}
+
 /* End OregonFlora Symbiota Components */
 
 /* Bootstrap overrides */

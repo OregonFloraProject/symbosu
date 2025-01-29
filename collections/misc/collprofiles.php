@@ -247,7 +247,7 @@ elseif(file_exists('../editor/includes/config/occurVarDefault.php')){
 		<a href="../index.php"><?= $LANG['COLLECTION_SEARCH'] ?></a> &gt;&gt;
 		<b><?= $LANG['COLL_PROFILE'] ?></b>
 	</div>
-	<div role="main" id="innertext" style="padding-top:0">
+	<div role="main" id="innertext" class="collprofiles" style="padding-top:0">
 		<?php
 		if ($collid && !$collid == 0){
 			?>
@@ -338,7 +338,7 @@ elseif(file_exists('../editor/includes/config/occurVarDefault.php')){
 				curl_close($ch);
 				// Check the response code - display image if exists
 				if ($responseCode === 200) {
-    				echo '<a href="https://bionomia.net/dataset/' . $datasetKey . '"><img src="' . $bionomiaUrl . '" alt="Bionomia dataset badge" style="width:262px; height:24px; padding-left:10px;"></a>';
+    				echo '<a href="https://bionomia.net/dataset/' . $datasetKey . '"><img src="' . $bionomiaUrl . '" alt="Bionomia dataset badge" style="width:262px; height:24px; padding-left:10px; margin-top: -16px;"></a>';
 				}
 				echo '</div>';
 			}
