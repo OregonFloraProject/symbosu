@@ -92,7 +92,8 @@ function obfuscate($email) {
 	<p>Metro (Portland, Oregon)</p>
 	<p>Barbara J. Mendius Administrative Trust</p>
 	<p>USDA&mdash;Natural Resources Conservation Service (Oregon)</p>
-	<p>Department of Botany &amp; Plant Pathology, Oregon State University</p>`
+	<p>Department of Botany &amp; Plant Pathology, Oregon State University</p>
+	<p>US Forest Service, Forest Health Protection</p>
 
 <h2>Advisory Council</h2>
 	<p>Lynda Boyer</p>
@@ -104,21 +105,20 @@ function obfuscate($email) {
 	<p>Robert Soreng</p>
 	<br>
 
-<h2>Students (2022-23)</h2>
-	<p>Dayne Galash</p>
-	<p>Julia Metzler (MS student, Dept. Botany)</p>
-	<p>Jessica Tuson</p>
+<h2>Students (2024-25)</h2>
+	<p>Juniper Maurer</p>
+	<p>Grace Willis</p>
 	<br>
   							
 <h2>Affiliates</h2>
 	<p>Dennis Albert</p>
 	<p>Jason Bradford</p>
 	<p>Gerald Carr</p>
-	<p>Kenton Chambers</p>
 	<p>Christian Feuillet</p>
 	<p>Richard Halse</p>
-	<p>James Mickley</p>
 	<p>George Kral</p>
+	<p>Aaron Liston</p>
+	<p>James Mickley</p>
 	<br>
             
 
