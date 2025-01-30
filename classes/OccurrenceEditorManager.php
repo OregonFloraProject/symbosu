@@ -53,6 +53,7 @@ class OccurrenceEditorManager {
 			'biostratigraphy','lithogroup','formation','taxonenvironment','member','bed','lithology','stratremarks','element','slideproperties','geologicalcontextid');
 		$this->fieldArr['omoccuridentifiers'] = array('idname','idvalue');
 		$this->fieldArr['omexsiccatiocclink'] = array('ometid','exstitle','exsnumber');
+		$this->fieldArr['latestidfields'] = array('sciname', 'scientificnameauthorship', 'family', 'identificationqualifier', 'identifiedby', 'dateidentified', 'identificationreferences', 'identificationremarks', 'taxonremarks');
 	}
 
 	public function __destruct(){
@@ -1092,6 +1093,10 @@ class OccurrenceEditorManager {
 								$status = $LANG['ERROR_TAGGING_USER'].' (#'.$this->occid.'): '.$this->conn->error.' ';
 							}
 						}
+
+						// Update latest determination, or add if not present
+						if (array_intersect($editArr, $this->fieldArr['latestidfields'])) $this->updateLatestDetermination($this->occid);
+
 						//Deal with additional identifiers
 						if(isset($postArr['idvalue'])) $this->updateIdentifiers($postArr, $identArr);
 						//Deal with paleo fields
@@ -1227,14 +1232,47 @@ class OccurrenceEditorManager {
 		$guid = UuidFactory::getUuidV4();
 		$sqlInsert = 'INSERT IGNORE INTO omoccurdeterminations(occid, identifiedBy, dateIdentified, sciname, scientificNameAuthorship, '.
 			'identificationQualifier, identificationReferences, identificationRemarks, recordID, sortsequence, isCurrent) '.
-			'SELECT occid, IFNULL(identifiedby,"unknown") AS idby, IFNULL(dateidentified,"s.d.") AS di, '.
-			'sciname, scientificnameauthorship, identificationqualifier, identificationreferences, identificationremarks, "'.$guid.'", 10 AS sortseq, (SELECT IF(COUNT(*) > 0, 0, 1) AS isCur from omoccurdeterminations where isCurrent = 1 and occid = '. $occid . ') '.
+			'SELECT occid, IFNULL(identifiedBy, IFNULL(recordedBy, "Unknown")) AS idby, '.
+			'IFNULL(dateIdentified, IFNULL(eventDate, "0000-00-00")) AS di, sciname, scientificnameauthorship, '.
+			'identificationqualifier, identificationreferences, identificationremarks, "'.$guid.'", 10 AS sortseq, (SELECT IF(COUNT(*) > 0, 0, 1) AS isCur from omoccurdeterminations where isCurrent = 1 and occid = '. $occid . ') '.
 			'FROM omoccurrences WHERE (occid = ' . $occid . ') AND (identifiedBy IS NOT NULL OR dateIdentified IS NOT NULL OR sciname IS NOT NULL)';
+		echo $sqlInsert;
 		try {
 			$this->conn->query($sqlInsert);
 		} catch (mysqli_sql_exception $e) {
 			echo 'Duplicate: '.$this->conn->error;
 			error_log('Error Duplicate determination from latest identification:' . $e->getMessage());
+		}
+	}
+
+	// JGM Function added so that when the latest identification is updated in the editor,
+	// it will also update the current determination in the determination history.
+	private function updateLatestDetermination($occid) : void {
+
+		// First check to see if a current determination is present for this occid. If not, add it.
+		$sql = 'SELECT detid FROM omoccurdeterminations WHERE (occid = ' . $occid . ') AND isCurrent = 1';
+		$rs = $this->conn->query($sql);
+		if($r = $rs->fetch_object()){
+
+			// Current determination is present, so update it
+			$sql = 'UPDATE omoccurdeterminations d JOIN omoccurrences o ON d.occid = o.occid ' .
+				'SET d.identifiedBy = IFNULL(o.identifiedBy, IFNULL(o.recordedBy, "Unknown")), ' .
+				'd.dateIdentified = IFNULL(o.dateIdentified, IFNULL(o.eventDate, "0000-00-00")), ' .
+				'd.sciname = o.sciname, d.scientificNameAuthorship = o.scientificNameAuthorship, ' .
+				'd.identificationQualifier = o.identificationQualifier, ' .
+				'd.identificationReferences = o.identificationReferences, ' .
+				'd.identificationRemarks = o.identificationRemarks ' .
+				'WHERE d.detid = ' . $r->detid;
+
+			try {
+				$this->conn->query($sql);
+			} catch (mysqli_sql_exception $e) {
+				error_log('Failed to update latest determination:' . $e->getMessage());
+			}
+
+		} else {
+			// No current determination present, so add this one
+			$this->addLatestIdentToDetermination($occid);
 		}
 	}
 

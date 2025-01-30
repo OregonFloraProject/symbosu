@@ -106,7 +106,7 @@ class OccurrenceEditorDeterminations extends OccurrenceEditorManager{
 				$guid = UuidFactory::getUuidV4();
 				$sqlInsert = 'INSERT IGNORE INTO omoccurdeterminations(occid, identifiedBy, dateIdentified, sciname, scientificNameAuthorship, '.
 					'identificationQualifier, identificationReferences, identificationRemarks, recordID, sortsequence) '.
-					'SELECT occid, IFNULL(identifiedby,"unknown") AS idby, IFNULL(dateidentified,"s.d.") AS di, '.
+					'SELECT occid, IFNULL(identifiedby,"Unknown") AS idby, IFNULL(dateidentified,"0000-00-00") AS di, '.
 					'sciname, scientificnameauthorship, identificationqualifier, identificationreferences, identificationremarks, "'.$guid.'", 10 AS sortseq '.
 					'FROM omoccurrences WHERE (occid = '.$this->occid.') AND (identifiedBy IS NOT NULL OR dateIdentified IS NOT NULL OR sciname IS NOT NULL)';
 				$this->conn->query($sqlInsert);
