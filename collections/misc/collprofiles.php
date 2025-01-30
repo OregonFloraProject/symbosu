@@ -323,7 +323,7 @@ elseif(file_exists('../editor/includes/config/occurVarDefault.php')){
 			if ($collData['collectioncode']) $codeStr .= '-' . $collData['collectioncode'];
 			$codeStr .= ')';
 			$_SESSION['colldata'] = $collData;
-			echo '<h1 class="page-heading">' . $LANG['COLL_PROF_FOR'] . ':<br>' . $collData['collectionname'] . $codeStr . '</h1>';
+			echo '<h1 class="page-heading">' . $collData['collectionname'] . $codeStr . '</h1>';
 			// GBIF citations widget
 			if ($datasetKey) {
 				echo '<div style="margin-left: 10px; margin-bottom: 20px;">';
