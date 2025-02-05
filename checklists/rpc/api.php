@@ -27,17 +27,24 @@ function getEmpty() {
   ];
 }
 
-function buildResult($checklistObj) {
+function buildResult($params) {
+  $em = SymbosuEntityManager::getEntityManager();
+  $repo = $em->getRepository("Fmchecklists");
+  $model = $repo->find($params["clid"]);
+  $checklistObj = ExploreManager::fromModel($model);
+  if (array_key_exists("pid", $params) && $params["pid"] > -1) {
+    $checklistObj->setPid($params["pid"]);
+  }
 
   $result = getEmpty();
 
   if ($checklistObj !== null) {
-  	if ($checklistObj->getPid() > -1) {
-			$projRepo = SymbosuEntityManager::getEntityManager()->getRepository("Fmprojects");					
-  		$model = $projRepo->find($checklistObj->getPid());
-  		$project = InventoryManager::fromModel($model);
-  		$result["projName"] = $project->getProjname();
-  	}
+    if ($checklistObj->getPid() > -1) {
+      $projRepo = SymbosuEntityManager::getEntityManager()->getRepository("Fmprojects");
+      $model = $projRepo->find($checklistObj->getPid());
+      $project = InventoryManager::fromModel($model);
+      $result["projName"] = $project->getProjname();
+    }
     $result["clid"] = $checklistObj->getClid();
     $result["title"] = $checklistObj->getTitle();
     $result["intro"] = ($checklistObj->getIntro()? $checklistObj->getIntro() :'') ;
@@ -50,43 +57,48 @@ function buildResult($checklistObj) {
     $result["pointradiusmeters"] = ($checklistObj->getPointRadius()? $checklistObj->getPointRadius() :'') ;
     $result["lat"] = ($checklistObj->getLatcentroid()? $checklistObj->getLatcentroid() :'') ;
     $result["lng"] = ($checklistObj->getLongcentroid()? $checklistObj->getLongcentroid() :'') ;
-    $taxa = $checklistObj->getTaxa(); 
+
+    $identManager = new IdentManager();
+    $identManager->setClid($checklistObj->getClid());
+    $identManager->setOrderBySciname(true);
+    $identManager->setIncludeChecklistNotes(true);
+
+    if (
+      (array_key_exists("search", $params) && !empty($params["search"])) &&
+      (array_key_exists("name", $params) && in_array($params['name'], array('sciname', 'commonname')))
+    ) {
+      $identManager->setSearchTerm($params["search"]);
+      $identManager->setSearchName($params['name']);
+      $identManager->setSearchSynonyms((isset($params['synonyms']) && $params['synonyms'] == 'on') ? true : false);
+    } else {
+      // no search terms, so this is the initial page load; in this case we want thumbnails
+      $identManager->setThumbnails(true);
+    }
+
+    $identManager->setTaxa();
+    $taxa = $identManager->getTaxa();
     if (sizeof($taxa)) {
-			$taxaRepo = SymbosuEntityManager::getEntityManager()->getRepository("Taxa");					
-			$vouchers = $checklistObj->getVouchers();
-			foreach($taxa as $rowArr){
-				$taxaModel = $taxaRepo->find($rowArr['tid']);
-				$taxa = TaxaManager::fromModel($taxaModel);
-				$tjresult = [];
-				$tjresult['tid'] = $taxa->getTid();
-				$tjresult['family'] = $taxa->getFamily();
-				$tjresult['author'] = $taxa->getAuthor();
-				$tjresult['thumbnail'] = $taxa->getThumbnail();
-				$tjresult["vernacular"] = [
-					"basename" => $taxa->getBasename(),
-					"names" => $taxa->getVernacularNames()
-				];
-				$tjresult['synonyms'] = $taxa->getSynonyms();
-				#var_dump($vouchers);
-				$tjresult['vouchers'] = ($vouchers && isset($vouchers[$rowArr['tid']]) ? $vouchers[$rowArr['tid']] : '');
-				$tjresult['sciname'] = $taxa->getSciname();
-				$tjresult['checklistNotes'] = ($rowArr['checklistNotes'] == 'NULL'? '' : $rowArr['checklistNotes']);
-				$tjresult['checklistNotes'] = str_replace(',',';',$tjresult['checklistNotes']);//can't change comma to semi-colon in Doctrine, so doing it here
-				/*if (sizeof(explode(" ",$tjresult['sciname'])) == 1) {
-					$tjresult['sciname'] .= " sp.";#the old code does this, but Katie says it's unnecessary
-				}*/
-				$result["taxa"][] = $tjresult;
-			}
-			foreach ($result["taxa"] as $taxon) {#flatten tids into an array
-				$result['tids'][] = $taxon['tid'];
-			}			
-		}
-		$result['totals'] = TaxaManager::getTaxaCounts($result['taxa']);
+      $vouchers = $checklistObj->getVouchers();
+      foreach ($taxa as $rowArr){
+        $rowArr['vouchers'] = ($vouchers && isset($vouchers[$rowArr['tid']]) ? $vouchers[$rowArr['tid']] : '');
+        $rowArr['checklistNotes'] = str_replace(',', ';', $rowArr['checklistNotes']); //can't change comma to semi-colon in Doctrine, so doing it here
+
+        if (array_key_exists('image', $rowArr)) {
+          $rowArr['thumbnail'] = $rowArr['image'];
+          unset($rowArr['image']);
+        }
+
+        $result['taxa'][] = $rowArr;
+        $result['tids'][] = $rowArr['tid'];
+      }
+    }
+    $result['totals'] = TaxaManager::getTaxaCounts($result['taxa']);
   }
   return $result;
 }
 
-function buildDynResult($dynclid) {
+function buildDynResult($params) {
+  $dynclid = $params["dynclid"];
 
   $result = getEmpty();
 
@@ -94,8 +106,8 @@ function buildDynResult($dynclid) {
 	$repo = $em->getRepository("Fmdynamicchecklists");
 	$model = $repo->find($dynclid);
 	$dynamic_checklist = ExploreManager::fromModel($model);
-  if ($dynamic_checklist !== null) {
-  	
+	if ($dynamic_checklist !== null) {
+
 		$result["title"] = $dynamic_checklist->getTitle();
 		$result["abstract"] = '';
 		$result["authors"] = '';
@@ -106,28 +118,30 @@ function buildDynResult($dynclid) {
 
 		$identManager = new IdentManager();
 		$identManager->setDynClid($dynclid);
-	
-		if (	array_key_exists("search", $_GET) && !empty($_GET["search"])	) {
-			$identManager->setSearchTerm($_GET["search"]);
+		$identManager->setOrderBySciname(true);
+		$identManager->setIncludeChecklistNotes(true);
+
+		if (array_key_exists("search", $params) && !empty($params["search"])) {
+			$identManager->setSearchTerm($params["search"]);
 			//$identManager->setIDsOnly(true);
-			if (	array_key_exists("name", $_GET) && !empty($_GET["name"])	) {
-				$identManager->setSearchName($_GET["name"]);			
-			}			
+			if (array_key_exists("name", $params) && !empty($params["name"])) {
+				$identManager->setSearchName($params["name"]);
+			}
+			$identManager->setSearchSynonyms((isset($params['synonyms']) && $params['synonyms'] == 'on') ? true : false);
+		} else {
+			// no search terms, so this is the initial page load; in this case we want thumbnails
+			$identManager->setThumbnails(true);
 		}
 
 		$identManager->setTaxa();
 		$result["taxa"] = $identManager->getTaxa(); 
-    if (sizeof($result["taxa"])) {
-			$taxaRepo = SymbosuEntityManager::getEntityManager()->getRepository("Taxa");					
-			#$vouchers = $dynamic_checklist->getVouchers();
-			for ($i = 0; $i < sizeof($result["taxa"]); $i++){
-				$taxaModel = $taxaRepo->find($result["taxa"][$i]['tid']);
-				$taxa = TaxaManager::fromModel($taxaModel);
-				$result["taxa"][$i]['thumbnail'] = $taxa->getThumbnail();
-				#$result["taxa"][$i]['vouchers'] = $vouchers[$result["taxa"][$i]['tid']];
+		foreach ($result["taxa"] as $taxonKey => $taxon) {
+			// replace 'image' key with 'thumbnail'
+			if (array_key_exists('image', $taxon)) {
+				$result["taxa"][$taxonKey]['thumbnail'] = $taxon['image'];
+				unset($result["taxa"][$taxonKey]['image']);
 			}
-		}
-		foreach ($result["taxa"] as $taxon) {#flatten tids into an array
+			#flatten tids into an array
 			$result['tids'][] = $taxon['tid'];
 		}
 		$result['totals'] = TaxaManager::getTaxaCounts($result['taxa']);
@@ -138,38 +152,13 @@ function buildDynResult($dynclid) {
 
 $result = [];
 if (array_key_exists("clid", $_GET) && $_GET["clid"] > -1) {
-  $em = SymbosuEntityManager::getEntityManager();
-  $repo = $em->getRepository("Fmchecklists");
-  $model = $repo->find($_GET["clid"]);
-  $checklist = ExploreManager::fromModel($model);
-  if (array_key_exists("pid", $_GET) && $_GET["pid"] > -1) {
-	  $checklist->setPid($_GET["pid"]);
-	}
-  
-	if ( 	 ( array_key_exists("search", $_GET) && !empty($_GET["search"]) )
-			&& ( array_key_exists("name", $_GET) && in_array($_GET['name'],array('sciname','commonname')) )
-	) {
-		$checklist->setSearchTerm($_GET["search"]);
-		$checklist->setSearchName($_GET['name']);
-		
-		$synonyms = (isset($_GET['synonyms']) && $_GET['synonyms'] == 'on') ? true : false;
-		$checklist->setSearchSynonyms($synonyms);
-	}
-	$result = buildResult($checklist);
-
-} elseif(array_key_exists("dynclid", $_GET) && $_GET["dynclid"] > -1) {
-	$dynclid = $_GET["dynclid"];
-	$result = buildDynResult($dynclid);
-	
-}else{
+	$result = buildResult($_GET);
+} elseif (array_key_exists("dynclid", $_GET) && $_GET["dynclid"] > -1) {
+	$result = buildDynResult($_GET);
+} else {
 	#todo: generate error or redirect
 }
-// Begin View
-
 
 array_walk_recursive($result,'cleanWindowsRecursive');#replace Windows characters
 header("Content-Type: application/json; charset=utf-8");
 echo json_encode($result, JSON_NUMERIC_CHECK | JSON_INVALID_UTF8_SUBSTITUTE);
-
-
-
