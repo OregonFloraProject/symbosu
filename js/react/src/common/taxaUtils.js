@@ -49,10 +49,16 @@ export function sortByTaxon(taxa, sortBy) {
   }
 }
 
-export function getChecklistPage(clientRoot, clid, pid) {
+export function getChecklistPage(clientRoot, clid, pid, dynclid) {
+  if (clid < 0 && dynclid > -1) {
+    return `${clientRoot}/checklists/checklist.php?dynclid=${dynclid}`;
+  }
   return `${clientRoot}/checklists/checklist.php?cl=${clid}&pid=${pid}`;
 }
 
-export function getIdentifyPage(clientRoot, clid, pid) {
+export function getIdentifyPage(clientRoot, clid, pid, dynclid) {
+  if (clid < 0 && dynclid > -1) {
+    return `${clientRoot}/ident/key.php?dynclid=${dynclid}&taxon=All+Species`;
+  }
   return `${clientRoot}/ident/key.php?cl=${clid}&proj=${pid}&taxon=All+Species`;
 }
