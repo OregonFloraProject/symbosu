@@ -25,6 +25,8 @@ class IdentManager extends Manager {
   protected $searchTerm;
   protected $searchName = 'sciname';
   protected $searchSynonyms = false;
+  protected $orderBySciname = false;
+  protected $includeChecklistNotes = false;
   protected $IDsOnly = false;
   protected $showThumbnails = false;
   /*
@@ -96,7 +98,15 @@ class IdentManager extends Manager {
   		$this->searchName = $name;
   	#}
   }
-  
+  public function setSearchSynonyms($searchSynonyms = false) {
+    $this->searchSynonyms = $searchSynonyms ? true : false;
+  }
+  public function setOrderBySciname($orderBySciname = false) {
+    $this->orderBySciname = $orderBySciname ? true : false;
+  }
+  public function setIncludeChecklistNotes($includeChecklistNotes = false) {
+    $this->includeChecklistNotes = $includeChecklistNotes ? true : false;
+  }
   public function setThumbnails($bool = false) {
   	$this->showThumbnails = ($bool == true? true: false);
   }
@@ -137,7 +147,9 @@ class IdentManager extends Manager {
 			$groupBy = [
 				"v.vernacularname",
 			];
-			$orderBy[] = "ts.family";
+			if (!$this->orderBySciname) {
+				$orderBy[] = "ts.family";
+      }
 			$orderBy[] = "t.sciname";
 			$orderBy[] = "v.sortsequence";
 			
@@ -238,6 +250,9 @@ class IdentManager extends Manager {
 					*/
 					$innerJoins[] = array("Fmchklsttaxalink","clk","WITH","t.tid = clk.tid");
 					$params[] = array("clid",$this->clid);
+					if ($this->includeChecklistNotes) {
+						$selects = array_merge($selects,["clk.notes as checklistNotes"]);
+					}
 					if ($vendorClids) {//check both 54 and vendor checklist, and also handle trinomials
 						$innerJoins[] = array("Fmchklsttaxalink","clk2","WITH","t.tid = clk2.tid");
 						
