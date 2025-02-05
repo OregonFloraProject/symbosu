@@ -723,10 +723,17 @@ class IdentifyApp extends React.Component {
                         <FontAwesomeIcon icon="search-plus" /> Identify
                       </div>
                     </div>
-                    {this.getClid() > -1 && (
+                    {(this.getClid() > -1 || this.getDynclid() > -1) && (
                       <div className="alt-wrapper">
                         <div>Switch to</div>
-                        <a href={getChecklistPage(this.props.clientRoot, this.getClid(), this.getPid())}>
+                        <a
+                          href={getChecklistPage(
+                            this.props.clientRoot,
+                            this.getClid(),
+                            this.getPid(),
+                            this.getDynclid(),
+                          )}
+                        >
                           <div className="btn btn-primary alt-button" role="button">
                             <FontAwesomeIcon icon="list-ul" /> Explore
                           </div>
