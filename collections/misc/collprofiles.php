@@ -204,6 +204,7 @@ elseif(file_exists('../editor/includes/config/occurVarDefault.php')){
 				width: 12vw;
 				right: 1rem;
 				float: right;
+				top: 2rem;
 			}
 		}
 		@media (min-width: 1500px) {
