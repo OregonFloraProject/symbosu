@@ -60,11 +60,15 @@ $collectionSearchPage = $SHOULD_USE_HARVESTPARAMS ? '/collections/index.php' : '
 	src="<?php echo $CLIENT_ROOT?>/js/react/dist/header.js?<?php echo filemtime($SERVER_ROOT . '/js/react/dist/header.js'); ?>"
 	type="text/javascript">
 </script>
+<?php
+/*
 <div class="urgent-banner">
 	<p>
 	Oregon Legislature to consider HB3173 to support OregonFlora in hearing Wednesday Feb 5. Learn more <a href="https://www.npsoregon.org/wp/legislative-support-for-oregonflora-lets-make-it-a-reality/" target="_blank">here</a>.
 	</p>
 </div>
+*/
+?>
 <!-- Global site tag (gtag.js) - Google Analytics 4-->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-98WFW6HYV2"></script>
 <script>
