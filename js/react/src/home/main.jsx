@@ -90,7 +90,7 @@ class Home extends React.Component {
 
         this.setState({
           news: res.news.splice(0, 3),
-          events: res.events.splice(0, 3),
+          events: res.events.splice(0, 2),
         });
         const pageTitle = document.getElementsByTagName('title')[0];
         pageTitle.innerHTML = `${pageTitle.innerHTML} Home`;
