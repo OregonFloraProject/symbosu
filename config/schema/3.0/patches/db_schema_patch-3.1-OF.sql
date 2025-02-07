@@ -137,9 +137,8 @@ UPDATE `omoccurassociations`
 --   WHERE (o.basisofrecord = "HumanObservation" OR o.basisofrecord IS NULL) AND c.colltype = 'Preserved Specimens'
 --   AND o.occid NOT IN(SELECT occid FROM omoccuredits WHERE fieldname = "basisofrecord");
 
--- OF: we already have this column, comment out to prevent error
--- ALTER TABLE `omoccurrences` 
---   ADD COLUMN `vitality` VARCHAR(150) NULL DEFAULT NULL AFTER `behavior`;
+ALTER TABLE `omoccurrences` 
+  ADD COLUMN `vitality` VARCHAR(150) NULL DEFAULT NULL AFTER `behavior`;
 
 #Standardize naming of indexes within occurrence table 
 SET FOREIGN_KEY_CHECKS=0;
@@ -243,9 +242,8 @@ ALTER TABLE `taxa`
   DROP INDEX `rankid_index` ;
 
 
--- OF: we already have this column, comment out to prevent error
--- ALTER TABLE `uploadspectemp` 
---   ADD COLUMN `vitality` VARCHAR(150) NULL DEFAULT NULL AFTER `behavior`;
+ALTER TABLE `uploadspectemp` 
+  ADD COLUMN `vitality` VARCHAR(150) NULL DEFAULT NULL AFTER `behavior`;
 
 ALTER TABLE `uploadspectemp` 
   DROP INDEX `Index_uploadspectemp_occid`,
