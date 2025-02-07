@@ -142,6 +142,9 @@ function addBasemaps(map) {
 		}
 	};
 
+	// Bring macrostrat layer to the front so it's not behind the new basemaps
+	map.mapLayer.macro_strat.setZIndex(11);
+
 	// Change the default layer: first remove the old default, then re-add a layer.
 	map.mapLayer.layerControl._layers[0].layer.remove();
 	USGS_Topo.addTo(map.mapLayer);

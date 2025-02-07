@@ -22,6 +22,21 @@ xmlns="http://www.w3.org/2000/svg"
    });
 }
 
+async function getMacroStratData(lat, lng, zoom) {
+   return fetch(`https://macrostrat.org/api/v2/mobile/map_query_v2?lng=${lng}&lat=${lat}&z=${zoom}`)
+      .then(async response => {
+      if(!response.ok) {
+         return {};
+      }
+      const json_data = await response.json()
+
+      if(!json_data.success) {
+         return {};
+      }
+      return json_data.success.data;
+   })
+}
+
 class LeafletMap {
    //DEFAULTS
    DEFAULT_MAP_OPTIONS = {
@@ -111,11 +126,127 @@ class LeafletMap {
          attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
       });
 
+      var macro_strat = L.tileLayer('https://macrostrat.org/api/v2/maps/burwell/emphasized/{z}/{x}/{y}/tile.png', {
+         displayRetina:true,
+         opacity: .40,
+         attribution: 'Map data: &copy; <a href="https://macrostrat.org/#about">Macrostrat</a> (<a href="http://creativecommons.org/licenses/by/4.0/">CC-BY-4.0</a>)',
+      });
+
       const openTopoLayer = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
          maxZoom: 17,
          displayRetina:true,
          attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
       });
+
+      const macro_strat_info = async e => {
+         const zoom = e.target._zoom;
+         const lat = e.latlng.lat;
+         const lon = e.latlng.lng;
+         const macro_strat_data = await getMacroStratData(lat, lon, zoom);
+
+         const loop_strat_names = (data) => {
+            let html_str = "";
+            for(let strat_name of data.macrostrat.strat_names) {
+               html_str += `<a target="_blank" href="https://macrostrat.org/sift/#/strat_name/${strat_name.strat_name_id}">${strat_name.rank_name}</a> `
+            }
+
+            return html_str;
+         }
+         console.log(macro_strat_data.mapData)
+
+         if(macro_strat_data.mapData && macro_strat_data.mapData.length) {
+            let content = ""
+
+            if(macro_strat_data.mapData[0].name) {
+               content += `<div>
+                  <span style="font-weight:bold">Unit: </span>
+                  <span>${macro_strat_data.mapData[0].name}</span>
+               </div>`;
+            }
+
+            if(macro_strat_data.mapData[0].age) {
+               content+= `<div>
+                  <span style="font-weight:bold">Age: </span>
+                  <span>${macro_strat_data.mapData[0].age}</span>
+               </div>`;
+
+            }
+
+            if(macro_strat_data.mapData[0].descrip) {
+               content += `<div style="font-size:0.8rem">
+                  <span style="font-weight:bold">Description:</span>
+                  <span>${macro_strat_data.mapData[0].descrip}</span>
+               </div>`;
+
+            }
+
+            if(macro_strat_data.mapData[0].ref) {
+               content += `<div style="font-size:0.8rem">
+                  <span style="font-weight:bold">Source:</span>
+                  ${macro_strat_data.mapData[0].ref.authors}, ${macro_strat_data.mapData[0].ref.ref_year}, ${macro_strat_data.mapData[0].ref.ref_title}: ${macro_strat_data.mapData[0].ref.ref_source}, ${macro_strat_data.mapData[0].ref.isbn_doi} ${macro_strat_data.mapData[0].ref.source_id} / ${macro_strat_data.mapData[0].map_id}
+               </div>`;
+            }
+
+            if(macro_strat_data.mapData[0].macrostrat && macro_strat_data.mapData[0].macrostrat.strat_names && macro_strat_data.mapData[0].macrostrat.strat_names.length) {
+               content += `<div style="margin-top:1rem">
+                  <span style="font-weight:bold">Macrostrat matched units: </span>
+                  ${loop_strat_names(macro_strat_data.mapData[0])}
+               </div>`;
+            }
+
+            L.popup()
+               .setLatLng([lat, lon])
+               .setContent(`
+                  <div style="font-size:1rem">
+                     ${content}
+                  </div>`)
+               .openOn(this.mapLayer);
+         }
+      }
+
+
+      /* Alternative to using the api. Uses color inference. Back if we don't want to use macrostrat api*/
+      const macro_strat_color = (e) => {
+         const zoom = e.target._zoom;
+
+         let coords = this.mapLayer.project(e.latlng, zoom).floor();
+
+         let pX = coords.x / 256;
+         let pY = coords.y / 256;
+
+         coords.x = Math.floor(pX);
+         coords.y = Math.floor(pY);
+         coords.z = zoom
+
+         const tile = new Image();
+         tile.crossOrigin = "anonymous";
+         tile.src = `https://macrostrat.org/api/v2/maps/burwell/emphasized/${coords.z}/${coords.x}/${coords.y}/tile.png`;
+
+         const canvas = document.createElement("canvas");
+         const ctx = canvas.getContext("2d");
+
+         tile.addEventListener('load', function() {
+            ctx.drawImage(tile, 0, 0);
+            const dX = Math.floor((pX - coords.x) * 512);
+            const dY = Math.floor((pY - coords.y) * 512);
+            const pixel = ctx.getImageData(dX, dY, 1, 1);   
+
+            ctx.fillRect(dX, dY, 10, 10);
+
+            const data = pixel.data;
+            console.log(`rgb(${data[0]} ${data[1]} ${data[2]} / ${data[3] / 255})`);
+         });
+      }
+
+      macro_strat.on('add', (e) => {
+         this.mapLayer.on('click', macro_strat_info)
+      })
+
+      macro_strat.on('remove', (e) => {
+         this.mapLayer.off('click', macro_strat_info)
+      })
+
+      this.mapLayer.macro_strat = L.layerGroup([macro_strat]);
 
       if(map_options.layer_control !== false) {
          // Oregonflora Addition: save the layer control for later manipulation
@@ -125,8 +256,12 @@ class LeafletMap {
             "Topo": openTopoLayer,
             "Satellite": Esri_WorldImagery,
             //"Satellite": satelliteLayer,
+         }, {
+            "Geology": this.mapLayer.macro_strat
          }).addTo(this.mapLayer);
       }
+
+      //this.mapLayer.layerControl.addOverlay(, "Macrostrat");
 
       if(map_options.scale !== false) {
          // Oregonflora Addition: save the scale control for later manipulation
