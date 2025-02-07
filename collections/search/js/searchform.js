@@ -924,6 +924,14 @@ document
   .getElementById("reset-btn")
   .addEventListener("click", function (event) {
     document.getElementById("params-form").reset();
+    const urlVar = parseUrlVariables(sessionStorage.querystr);
+    if (urlVar.db) {
+      const queriedCollections = urlVar.db.split(",");
+      if (queriedCollections.length > 0) {
+        uncheckEverything();
+        checkTheCollectionsThatShouldBeChecked(queriedCollections);
+      }
+    }
     updateChip();
   });
 // When checking "all neon collections" box, toggle checkboxes in modal
