@@ -984,7 +984,7 @@ class SpecUploadBase extends SpecUpload{
 					$insertCnt = $this->conn->affected_rows;
 					$warnCnt = $this->conn->warning_count;
 					if($warnCnt){
-						if(strpos($this->conn->get_warnings()->message,'UNIQUE_occurrenceID'))
+						if(strpos($this->conn->get_warnings()->message,'UQ_occurrences_occurrenceID'))
 							$this->outputMsg('<li style="margin-left:10px"><span style="color:orange">WARNING</span>: '.$warnCnt.' records failed to load due to duplicate occurrenceID values which must be unique across all collections)</li>');
 					}
 				}
