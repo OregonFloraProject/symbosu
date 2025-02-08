@@ -763,7 +763,9 @@ function checkTheCollectionsThatShouldBeChecked(queriedCollections) {
         targetElem = candidateTargetElems[0]; // there should only be one match; get the first one
       }
     }
-    targetElem.checked = true;
+    if (targetElem) {
+      targetElem.checked = true;
+    }
   });
 }
 
