@@ -32,6 +32,8 @@ class ProfileManager extends Manager{
 		if($domainName == 'localhost') $domainName = false;
 		setcookie('SymbiotaCrumb', '', time() - 3600, ($GLOBALS['CLIENT_ROOT']?$GLOBALS['CLIENT_ROOT']:'/'), $domainName, false, true);
 		setcookie('SymbiotaCrumb', '', time() - 3600, ($GLOBALS['CLIENT_ROOT']?$GLOBALS['CLIENT_ROOT']:'/'));
+		setcookie(session_name(), '', time() - 3600, ($GLOBALS['CLIENT_ROOT']?$GLOBALS['CLIENT_ROOT'].'/profile':'/profile'), $domainName, false, true);
+		setcookie(session_name(), '', time() - 3600, ($GLOBALS['CLIENT_ROOT']?$GLOBALS['CLIENT_ROOT'].'/profile':'/profile'));
 		unset($_SESSION['userrights']);
 		unset($_SESSION['userparams']);
 	}
