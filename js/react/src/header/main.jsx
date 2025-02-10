@@ -8,9 +8,6 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 library.add(faBars);
 
-const RANK_FAMILY = 140;
-const RANK_GENUS = 180;
-
 /*
 const DROPDOWNS = [
   { title: "Tools" },
@@ -27,7 +24,7 @@ const DROPDOWNS = {
       { title: 'Mapping', href: '/collections/map/index.php' },
       { title: 'Identify Plants', href: '/checklists/dynamicmap.php?interface=key' },
       { title: 'Inventories', href: '/projects/index.php' },
-      { title: 'OSU Herbarium', href: '/collections/search/index.php?db[]=5,8,238,239,240,241' },
+      { title: 'OSU Herbarium', href: '/collections/search/index.php?db[]=5,8,238,239,240' },
       { title: 'Grow Natives', href: '/garden/index.php' },
       { title: 'Rare Plants', href: '/pages/rare-plant-guide.php' },
       { title: 'Taxonomic Tree', href: '/taxa/taxonomy/taxonomydisplay.php' },
@@ -223,8 +220,6 @@ class HeaderApp extends React.Component {
 
     this.setState({ dropdowns: dropdowns });
 
-    const siteHeader = document.getElementById('site-header');
-
     window.addEventListener('scroll', this.handleScroll);
     this.updateViewport();
     window.addEventListener('resize', this.updateViewport);
@@ -246,7 +241,9 @@ class HeaderApp extends React.Component {
         {/* style={{ display: this.state.isCollapsed ? 'none' : 'flex' }}*/}
         {this.props.userName !== '' && (
           <a href="" rel="external" className={'disabled'}>
-            <button className={'col header-button no-symbiota-placement'}>{'Hello, ' + this.props.userName + '!'}</button>
+            <button className={'col header-button no-symbiota-placement'}>
+              {'Hello, ' + this.props.userName + '!'}
+            </button>
           </a>
         )}
         {this.state.dropdowns['profile'].children.map((dropDownChildData) => {

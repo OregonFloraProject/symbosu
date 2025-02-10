@@ -5,9 +5,6 @@ import httpGet from '../common/httpGet.js';
 import SearchWidget from '../common/search.jsx';
 import ModalVideo from 'react-modal-video';
 
-const RANK_FAMILY = 140;
-const RANK_GENUS = 180;
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faChevronRight, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
@@ -219,17 +216,17 @@ class Home extends React.Component {
 
                   <div className="row link-card">
                     <p className="link-text">
-                      <a href={this.props.clientRoot + '/collections/search/index.php?db[]=5,8,238,239,240,241'}>
+                      <a href={this.props.clientRoot + '/collections/search/index.php?db[]=5,8,238,239,240'}>
                         <img src={this.props.clientRoot + '/images/slide-explore.png'} />
                       </a>
-                      <a href={this.props.clientRoot + '/collections/search/index.php?db[]=5,8,238,239,240,241'}>
+                      <a href={this.props.clientRoot + '/collections/search/index.php?db[]=5,8,238,239,240'}>
                         <strong>Explore</strong>
                       </a>{' '}
                       the collections of the OSU Herbarium.
                     </p>
                     <p className="link-desc">
                       Explore{' '}
-                      <a href={this.props.clientRoot + '/collections/search/index.php?db[]=5,8,238,239,240,241'}>
+                      <a href={this.props.clientRoot + '/collections/search/index.php?db[]=5,8,238,239,240'}>
                         <strong>OSU Herbarium</strong>
                       </a>{' '}
                       plants, mosses, lichens, algae, and fungi.
