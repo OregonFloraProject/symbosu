@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import SearchWidget from '../common/search.jsx';
 import httpGet from '../common/httpGet.js';
@@ -95,30 +95,38 @@ function getScrollPos() {
 
 function HeaderDropdownItem(props) {
   return (
-    <a className={'dropdown-item' + props.classes} rel="external" href={props.href}>
+    <a className={'dropdown-item' + props.classes} rel="external" href={props.href} tabIndex={0}>
       {props.title}
     </a>
   );
 }
 
 function HeaderDropdown(props) {
+  const [show, setShow] = useState(false);
   let id = props.title.replace(/[^a-zA-Z_]/g, '').toLowerCase();
   id = `header-dropdown-${id}`;
   return (
-    <li className="nav-item dropdown">
+    <li
+      className={`nav-item dropdown${show ? ' show' : ''}`}
+      onClick={() => {
+        setShow(!show);
+      }}
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget)) setShow(false);
+      }}
+    >
       <a
         id={id}
         className={'nav-link dropdown-toggle' + props.classes}
         href="#"
-        rel="external"
         role="button"
-        data-toggle="dropdown"
         aria-haspopup="true"
-        aria-expanded="false"
+        aria-expanded={show}
+        tabIndex={0}
       >
         {props.title}
       </a>
-      <div className="dropdown-menu" aria-labelledby={id}>
+      <div className={`dropdown-menu${show ? ' show' : ''}`} aria-labelledby={id}>
         {props.children}
       </div>
     </li>
@@ -136,6 +144,8 @@ class HeaderApp extends React.Component {
       dropdowns: DROPDOWNS,
       headerHeight: 100,
       isMobile: false,
+      showMobileMenu: false,
+      showMobileSearch: false,
     };
 
     this.onSearchTextChanged = this.onSearchTextChanged.bind(this);
@@ -293,16 +303,17 @@ class HeaderApp extends React.Component {
           style={{ height: this.state.headerHeight }}
         >
           {/* ${this.state.isCollapsed ? "site-header-scroll" : ''} */}
-          <div id="site-header-dropdowns-wrapper" className="">
+          <div id="site-header-dropdowns-wrapper">
             <button
               id="site-header-navbar-toggler"
               className={'navbar-toggler ml-auto no-symbiota-placement' + (this.state.isMobile ? ' collapsed' : '')}
               type="button"
-              data-toggle="collapse"
-              data-target="#site-header-dropdowns"
               aria-controls="navbarSupportedContent"
-              aria-expanded="false"
+              aria-expanded={this.state.showMobileMenu}
               aria-label="Toggle navigation"
+              onClick={() => {
+                this.setState({ showMobileMenu: !this.state.showMobileMenu });
+              }}
             >
               <span className="menu-toggle">
                 <FontAwesomeIcon icon="bars" size="2x" />
@@ -310,27 +321,34 @@ class HeaderApp extends React.Component {
             </button>
 
             {
-              <ul id="site-header-dropdowns" className={'navbar-nav' + (this.state.isMobile ? ' collapse' : '')}>
-                {Object.keys(this.state.dropdowns).map((key) => {
-                  let currentParent = this.state.dropdowns[key].currentAncestor ? ' current-page current-ancestor' : '';
-                  return (
-                    <HeaderDropdown key={key} title={this.state.dropdowns[key].title} classes={currentParent}>
-                      {this.state.dropdowns[key].children.map((dropDownChildData) => {
-                        let currentChild = dropDownChildData.currentPage ? ' current-page' : '';
+              <ul
+                id="site-header-dropdowns"
+                className={`navbar-nav${this.state.isMobile ? ' mobile-collapsed' : ''}${this.state.showMobileMenu ? ' mobile-show' : ''}`}
+              >
+                <div className="mobile-inner-container">
+                  {Object.keys(this.state.dropdowns).map((key) => {
+                    let currentParent = this.state.dropdowns[key].currentAncestor
+                      ? ' current-page current-ancestor'
+                      : '';
+                    return (
+                      <HeaderDropdown key={key} title={this.state.dropdowns[key].title} classes={currentParent}>
+                        {this.state.dropdowns[key].children.map((dropDownChildData) => {
+                          let currentChild = dropDownChildData.currentPage ? ' current-page' : '';
 
-                        return (
-                          <HeaderDropdownItem
-                            key={dropDownChildData.title}
-                            title={dropDownChildData.title}
-                            href={`${dropDownChildData.href}`}
-                            classes={currentChild}
-                            rel="external"
-                          />
-                        );
-                      })}
-                    </HeaderDropdown>
-                  );
-                })}
+                          return (
+                            <HeaderDropdownItem
+                              key={dropDownChildData.title}
+                              title={dropDownChildData.title}
+                              href={`${dropDownChildData.href}`}
+                              classes={currentChild}
+                              rel="external"
+                            />
+                          );
+                        })}
+                      </HeaderDropdown>
+                    );
+                  })}
+                </div>
               </ul>
             }
           </div>
@@ -350,15 +368,19 @@ class HeaderApp extends React.Component {
               id="site-search-toggler"
               className="no-symbiota-placement"
               type="button"
-              data-toggle="collapse"
-              data-target="#search-widget-wrapper"
               aria-expanded="false"
               aria-controls="search-widget-wrapper"
+              onClick={() => {
+                this.setState({ showMobileSearch: !this.state.showMobileSearch });
+              }}
             >
               <span>Plant search</span>
               <img src={`${this.props.clientRoot}/images/icons/search-icon-2x.png`} />
             </button>
-            <div className="row widget-wrapper collapse" id="search-widget-wrapper">
+            <div
+              className={`row widget-wrapper mobile-collapsed${this.state.showMobileSearch ? ' mobile-show' : ''}`}
+              id="search-widget-wrapper"
+            >
               <SearchWidget
                 placeholder="Search all plants"
                 clientRoot={this.props.clientRoot}

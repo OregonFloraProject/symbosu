@@ -16,7 +16,11 @@ function SearchButton(props) {
   }
 
   return (
-    <button className="btn-search no-symbiota-placement" style={props.style} onClick={props.isLoading ? () => {} : props.onClick}>
+    <button
+      className="btn-search no-symbiota-placement"
+      style={props.style}
+      onClick={props.isLoading ? () => {} : props.onClick}
+    >
       {/*<img
         style={{display: props.isLoading ? "none" : "block"}}
         src={imgSrc}
@@ -40,6 +44,7 @@ export class SearchWidget extends React.Component {
     super(props);
     this.state = {
       suggestions: [],
+      focused: false,
     };
 
     this.onKeyUp = this.onKeyUp.bind(this);
@@ -94,20 +99,28 @@ export class SearchWidget extends React.Component {
 
   render() {
     return (
-      <div className="search-widget" style={this.props.style}>
+      <div
+        className="search-widget"
+        style={this.props.style}
+        onBlur={(e) => {
+          if (!e.currentTarget.contains(e.relatedTarget)) this.setState({ focused: false });
+        }}
+      >
         <input
           name="search"
           type="text"
           className="form-control"
-          data-toggle="dropdown"
           autoComplete="off"
           onKeyUp={this.onKeyUp}
           placeholder={this.props.placeholder}
           onChange={this.props.onTextValueChanged}
           value={this.props.textValue}
+          onFocus={() => {
+            this.setState({ focused: true });
+          }}
         />
         <div
-          className="dropdown-menu"
+          className={`dropdown-menu${this.state.focused ? ' show' : ''}`}
           style={{ display: Object.keys(this.state.suggestions).length === 0 ? ' none' : '' }}
         >
           {this.state.suggestions.map((s) => {
@@ -118,10 +131,12 @@ export class SearchWidget extends React.Component {
                   e.preventDefault();
                   e.stopPropagation();
                   this.props.onSearch(s);
+                  this.setState({ focused: false });
                 }}
                 className="dropdown-item"
                 href="#"
                 target="_blank"
+                tabIndex={0}
               >
                 {s.text}
               </a>

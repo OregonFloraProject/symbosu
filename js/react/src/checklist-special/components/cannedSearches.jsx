@@ -1,6 +1,6 @@
 import React from 'react';
 import GardenCarousel from './gardenCarousel.jsx';
-import HelpButton from '../../common/helpButton.jsx';
+// import HelpButton from '../../common/helpButton.jsx';
 import ExplorePreviewModal from '../../explore/previewModal.jsx';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -8,10 +8,6 @@ function getChecklistUrl(clientRoot, clid) {
   const gardenPid = 3;
   return `${clientRoot}/checklists/checklist.php?cl=${clid}&pid=${gardenPid}`;
 }
-
-const helpHtml = `
-
-`;
 
 class CannedSearchResult extends React.Component {
   constructor(props) {
@@ -147,9 +143,9 @@ class CannedSearchContainer extends React.Component {
           <div className="row">
             <h3 className="col">Or start with these plant combinations:</h3>
             {/* TODO: Re-enable once we have help verbiage */}
-            <div className="col-auto d-none">
+            {/* <div className="col-auto">
               <HelpButton title="Garden collections" html={helpHtml} clientRoot={this.props.clientRoot} />
-            </div>
+            </div> */}
           </div>
 
           <div className="row">

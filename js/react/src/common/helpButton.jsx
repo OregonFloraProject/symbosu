@@ -12,6 +12,12 @@ class HelpButton extends React.Component {
 
   componentDidMount() {
     const helpButtonId = this.getHelpButtonId();
+    /**
+     * TODO(eric): As written, this requires Bootstrap's JS scripts to work, but we really shouldn't
+     * be using both Bootstrap JS and React simultaneously. I've removed Bootstrap JS from the site,
+     * and nothing is currently using this HelpButton component, but if we want to use it in the
+     * future it should be rewritten to use react-bootstrap or some other React library.
+     */
     // eslint-disable-next-line no-undef
     $(`#${helpButtonId}`).popover({
       title: this.props.title,
