@@ -1236,7 +1236,6 @@ class OccurrenceEditorManager {
 			'IFNULL(dateIdentified, IFNULL(eventDate, "0000-00-00")) AS di, sciname, scientificnameauthorship, '.
 			'identificationqualifier, identificationreferences, identificationremarks, "'.$guid.'", 10 AS sortseq, (SELECT IF(COUNT(*) > 0, 0, 1) AS isCur from omoccurdeterminations where isCurrent = 1 and occid = '. $occid . ') '.
 			'FROM omoccurrences WHERE (occid = ' . $occid . ') AND (identifiedBy IS NOT NULL OR dateIdentified IS NOT NULL OR sciname IS NOT NULL)';
-		echo $sqlInsert;
 		try {
 			$this->conn->query($sqlInsert);
 		} catch (mysqli_sql_exception $e) {
@@ -1748,6 +1747,7 @@ class OccurrenceEditorManager {
 
 	// Note source is record that started duplicate lookup and is deleted up success
 	public function mergeRecords($targetOccid,$sourceOccid){
+
 		global $LANG;
 		$status = true;
 		if(!$targetOccid || !$sourceOccid){
@@ -1771,6 +1771,7 @@ class OccurrenceEditorManager {
 		$this->addLegacyIdentifers($targetOccid);
 		$this->addLegacyIdentifers($sourceOccid);
 		$stage = '';
+
 		try {
 			$oArr = array();
 			//Merge records
@@ -1815,17 +1816,19 @@ class OccurrenceEditorManager {
 			$currentDeterminations = $get_current_determinations($targetOccid);
 
 			//Remap determinations
+			// JGM: Can't modify a table that is also used in a select subquery
+			// Fixed query below, to make it a multi-table query
+			// See: https://dev.mysql.com/doc/refman/9.0/en/update.html
 			$sql = <<<'SQL'
-			UPDATE omoccurdeterminations 
-			SET occid = ? WHERE occid = ?
-			AND detid NOT IN (
-				SELECT source.detid FROM omoccurdeterminations source
-				JOIN omoccurdeterminations target ON target.occid = ? 
-				WHERE source.occid = ? 
+			UPDATE omoccurdeterminations, 
+				(SELECT source.detid FROM omoccurdeterminations source
+				JOIN omoccurdeterminations target ON target.occid = ?
+				WHERE source.occid = ?
 				AND source.sciname = target.sciname
 				AND source.dateIdentified = target.dateIdentified
-				AND source.identifiedBy = target.identifiedBy
-			);
+				AND source.identifiedBy = target.identifiedBy) AS det
+			SET occid = ?WHERE occid = ?
+			AND omoccurdeterminations.detid != det.detid;
 			SQL;
 			SymbUtil::execute_query($this->conn, $sql, [
 				//Update To This Occid
