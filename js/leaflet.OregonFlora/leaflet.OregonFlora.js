@@ -162,7 +162,7 @@ function addOverlays(map) {
 	fetch(clientRoot + 'js/leaflet.OregonFlora/layers/oregon.counties.json')
 		.then(response => response.json())
 		.then(counties => {
-			var countiesLayer = L.geoJson(counties, {
+			let countiesLayer = L.geoJson(counties, {
 
 				// Style the polygon and borders
 				style: {
@@ -185,7 +185,7 @@ function addOverlays(map) {
 		});
 
 	// Add ecoregions from KML using the KML plugin if not on the dynamicMap page:
-	fetch(clientRoot + '/js/leaflet.OregonFlora/layers/ecoregions.kml')
+	fetch(clientRoot + 'js/leaflet.OregonFlora/layers/ecoregions.kml')
 		.then(res => res.text())
 		.then(kmltext => {
 
