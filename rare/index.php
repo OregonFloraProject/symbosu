@@ -27,8 +27,8 @@ header("Content-Type: text/html; charset=".$CHARSET);
     <link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/js/react/node_modules/@blueprintjs/icons/lib/css/blueprint-icons.css?<?php echo filemtime($SERVER_ROOT . '/js/react/node_modules/@blueprintjs/icons/lib/css/blueprint-icons.css'); ?>">
 
     <!-- Enable Glossary Tooltips -->
-    <script src="../js/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
-    <link href="../js/jquery-ui/jquery-ui.min.css" type="text/css" rel="Stylesheet" />
+    <script src="../js/jquery-ui.min.js" type="text/javascript"></script>
+    <link href="../css/jquery-ui.min.css" type="text/css" rel="Stylesheet" />
     <link rel="stylesheet" type="text/css" href="../css/tooltip.css?<?php echo $CSS_VERSION; ?>" />
     <script type="text/javascript" src="../js/symb/glossary.tooltip.js"></script>
 

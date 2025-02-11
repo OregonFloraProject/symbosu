@@ -73,7 +73,10 @@ if ($id) {
 	$retStr = readFromCache($cacheKey);
 	if ($retStr === false) {
 		// cache miss, so we need to read from the db and write to the cache
-		$retArr = array_flip($glosManager->getTermSearch('', '', 0));
+		$retArr = array_map(
+			function($v) { return array_key_first($v); },
+			$glosManager->getTermSearch('', '', 0)
+		);
 		$retStr = json_encode($retArr);
 		writeToCache($cacheKey, $retStr);
 	}
