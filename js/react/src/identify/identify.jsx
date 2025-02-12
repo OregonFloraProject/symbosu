@@ -349,7 +349,7 @@ class IdentifyApp extends React.Component {
     }
     if (this.state.filters.searchText) {
       identParams.append('search', this.state.filters.searchText);
-      identParams.append('name', 'sciname');
+      identParams.append('name', this.state.sortBy === 'vernacularName' ? 'commonname' : 'sciname');
       //url += '&synonyms=off';
     }
     Object.keys(this.state.filters.attrs).map((idx) => {
@@ -686,7 +686,7 @@ class IdentifyApp extends React.Component {
                   searchSuggestionUrl={suggestionUrl}
                   onSearch={this.onSearch}
                   onSearchTextChanged={this.onSearchTextChanged}
-                  searchName={this.state.searchName}
+                  searchName={this.state.sortBy === 'vernacularName' ? 'commonname' : 'sciname'}
                   viewType={this.state.viewType}
                   onViewTypeClicked={this.onViewTypeChanged}
                   sortBy={this.state.sortBy}
