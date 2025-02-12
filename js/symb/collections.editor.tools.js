@@ -197,8 +197,9 @@ function searchCatalogNumber(f,verbose){
 	}
 }
 
-function searchOtherCatalogNumbers(f){
-	var ocnValue = f.othercatalognumbers.value;
+function searchOtherCatalogNumbers(inputElem){
+	var ocnValue = inputElem.value;
+	var f = inputElem.form;
 	if(ocnValue){
 		document.getElementById("dupeMsgDiv").style.display = "block";
 		document.getElementById("dupesearch").style.display = "block";
@@ -210,7 +211,7 @@ function searchOtherCatalogNumbers(f){
 			}).done(function( msg ) {
 				if(msg.length > 6){
 					if(confirm("Record(s) using the same identifier already exists. Do you want to view this record?")){
-						var occWindow=open("dupesearch.php?occidquery="+msg+"&collid="+f.collid.value+"&curoccid="+f.occid.value,"occsearch","resizable=1,scrollbars=1,toolbar=0,width=900,height=600,left=20,top=20");
+						var occWindow=open("dupesearch.php?occidquery="+msg+"&collid="+f.collid.value+"&curoccid="+f.occid.value,"occsearch","resizable=1,scrollbars=1,toolbar=0,width=950,height=600,left=20,top=20");
 						if(occWindow != null){
 							if (occWindow.opener == null) occWindow.opener = self;
 							occWindow.focus();

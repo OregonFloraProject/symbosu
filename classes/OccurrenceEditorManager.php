@@ -1279,7 +1279,7 @@ class OccurrenceEditorManager {
 	// This should be removed when otherCatalogNumber is no longer in omoccurrences
 	private function addLegacyIdentifers($occid) : void {
 		$sql_cnt = 'SELECT COUNT(*) AS cnt FROM omoccuridentifiers oi join omoccurrences o on o.occid = oi.occid WHERE o.occid = ?';
-		$sql_insert = 'INSERT INTO omoccuridentifiers(occid, identifierName, identifierValue, notes, modifiedUid) select occid,"legacyOtherCatalogNumber" as identifierName, otherCatalogNumbers as identifierValue, "Auto generated during record merge" as notes, ? as modifiedUid from omoccurrences where occid = ?';
+		$sql_insert = 'INSERT INTO omoccuridentifiers(occid, identifierName, identifierValue, notes, modifiedUid) select occid,"legacyOtherCatalogNumber" as identifierName, otherCatalogNumbers as identifierValue, "Auto generated during record merge" as notes, ? as modifiedUid from omoccurrences where otherCatalogNumbers IS NOT NULL AND occid = ?';
 		try {
 			$result_cnt = SymbUtil::execute_query($this->conn,$sql_cnt, [$occid]);
 			$cnt = ($result_cnt->fetch_assoc())["cnt"];
@@ -1827,7 +1827,7 @@ class OccurrenceEditorManager {
 				AND source.sciname = target.sciname
 				AND source.dateIdentified = target.dateIdentified
 				AND source.identifiedBy = target.identifiedBy) AS det
-			SET occid = ?WHERE occid = ?
+			SET occid = ? WHERE occid = ?
 			AND omoccurdeterminations.detid != det.detid;
 			SQL;
 			SymbUtil::execute_query($this->conn, $sql, [
