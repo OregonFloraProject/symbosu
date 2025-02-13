@@ -44,6 +44,9 @@ $(document).ready(function() {
 		}
 	});
 
+	// Autocomplete for otherCatalogNumbers tagNames
+	autocompleteTagNames();
+
 	$("#exstitleinput").autocomplete({
 		source: "rpc/exsiccatisuggest.php",
 		minLength: 2,
@@ -255,6 +258,29 @@ $(document).ready(function() {
 	if (getCookie("autodupe") == 1) editForm.autodupe.checked = true;
 });
 
+// Autocomplete for otherCatalogNumbers tagNames
+// Running as a function so that it can be activated as new rows are added
+function autocompleteTagNames() {
+	$(".idNameInput").autocomplete({
+		minLength: 0,
+		autoFocus: true,
+		source: function( request, response ) {
+			let collId = document.fullform.collid.value;
+			$.ajax({
+				type: "POST",
+				url: "rpc/tagnamesuggest.php",
+				data: {collid: document.fullform.collid.value, term: request.term},
+				success: function( data ){
+					response(data);
+				}
+			});
+		}
+	}).focus(function() {
+		// If the user clicks the tag name box and it's empty, provide possible values
+		if ($(this).val() === '') $(this).autocomplete("search", $(this).val());
+	});
+}
+
 //Field changed and verification functions
 function verifyFullFormSciName() {
 	$.ajax({
@@ -298,8 +324,9 @@ function verifyFullFormSciName() {
 function addIdentifierField(clickedObj) {
 	$(clickedObj).hide();
 	var identDiv = document.getElementById("identifierBody");
-	var insertHtml = '<div class="divTableRow"><div class="divTableCell"><input name="idkey[]" type="hidden" value="newidentifier" /><input name="idname[]" type="text" value="" onchange="fieldChanged(\'idname\');" autocomplete="off" /></div><div class="divTableCell"><input name="idvalue[]" type="text" value="" onchange="fieldChanged(\'idvalue\');searchOtherCatalogNumbers(this.form);" autocomplete="off" /><a href="#" onclick="addIdentifierField(this);return false"><img src="../../images/plus.png" /></a></div></div>';
+	var insertHtml = '<div class="divTableRow"><div class="divTableCell"><input name="idkey[]" type="hidden" value="newidentifier" /><input class="idNameInput" name="idname[]" type="text" value="" onchange="fieldChanged(\'idname\');" autocomplete="off" /></div><div class="divTableCell"><input class="idValueInput" name="idvalue[]" type="text" value="" onchange="fieldChanged(\'idvalue\');searchOtherCatalogNumbers(this.form);" autocomplete="off" /><a href="#" onclick="addIdentifierField(this);return false"><img src="../../images/plus.png" /></a></div></div>';
 	identDiv.insertAdjacentHTML('beforeend', insertHtml);
+	autocompleteTagNames();
 }
 
 function deleteIdentifier(identID, occid) {
