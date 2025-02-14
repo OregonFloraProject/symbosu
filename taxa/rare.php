@@ -1,5 +1,6 @@
 <?php
 include_once("../config/symbini.php");
+if(!$RPG_FLAG && !$SYMB_UID) header('Location: ../profile/index.php?refurl=../taxa/rare.php?'.htmlspecialchars($_SERVER['QUERY_STRING'], ENT_QUOTES));
 ?>
 <html>
   <head>
