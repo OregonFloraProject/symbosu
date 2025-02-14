@@ -1,6 +1,7 @@
 <?php
 include_once('../config/symbini.php');
 header("Content-Type: text/html; charset=".$CHARSET);
+if(!$RPG_FLAG && !$SYMB_UID) header('Location: ../profile/index.php?refurl=../rare/index.php?'.htmlspecialchars($_SERVER['QUERY_STRING'], ENT_QUOTES));
 ?>
 
 <html>
