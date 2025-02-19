@@ -831,7 +831,7 @@ else{
 												<br/>
 												<input type="text" name="eventdate" value="<?php echo array_key_exists('eventdate',$occArr)?$occArr['eventdate']:''; ?>" onchange="eventDateChanged(this);" />
 											</div>
-											<div id="eventDate2Div" class="field-div" title="<?php echo (defined('EVENTDATETIP') ? EVENTDATETIP : 'Latest Date Collected'); ?>">
+											<div id="eventDate2Div" class="field-div" title="<?php echo (defined('EVENTDATE2TIP') ? EVENTDATE2TIP : 'Latest Date Collected'); ?>">
 												<?= (defined('EVENTDATE2LABEL')?EVENTDATE2LABEL:$LANG['EVENT_DATE2']) ?>
 												<a href="#" onclick="return dwcDoc('eventDate2')" tabindex="-1"><img class="docimg" src="../../images/qmark.png" /></a>
 												<br/>
