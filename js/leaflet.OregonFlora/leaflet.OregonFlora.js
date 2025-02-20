@@ -39,6 +39,8 @@ function addOregonFlora(map, fitBounds = true){
 		onZoom(e, zoomLevel);
 			
 	});
+
+	setUpDragAndDrop(map);
 }
 
 
@@ -187,20 +189,60 @@ function addOverlays(map) {
 	// Add ecoregions from KML using the KML plugin if not on the dynamicMap page:
 	fetch(clientRoot + 'js/leaflet.OregonFlora/layers/ecoregions.kml')
 		.then(res => res.text())
-		.then(kmltext => {
+		.then(kmltext => addKMLLayer(kmltext, 'Ecoregions', map, false));
+}
 
-			// Create new kml overlay
-			const parser = new DOMParser();
-			const kml = parser.parseFromString(kmltext, 'text/xml');
-			const ecoregions = new L.KML(kml);
+function addKMLLayer(text, name, map, visible = true) {
+	// Create new kml overlay
+	const parser = new DOMParser();
+	const kml = parser.parseFromString(text, 'text/xml');
+	const layer = new L.KML(kml);
 
-			// Add the ecoregions layer to the layer controls
-			map.mapLayer.layerControl.addOverlay(ecoregions, "Ecoregions");
+	// Add to layer controls
+	map.mapLayer.layerControl.addOverlay(layer, name);
 
-			// Adjust map to show the kml
-			//const bounds = track.getBounds();
-			//map.fitBounds(bounds);
-		});
+	if (visible) {
+		// Add to map and adjust bounds to show the new layer
+		layer.addTo(map.mapLayer);
+		map.mapLayer.fitBounds(layer.getBounds());
+	}
+}
+
+
+function setUpDragAndDrop(map) {
+	document.getElementById('site-content').ondrop = (event) => {
+		event.preventDefault();
+
+		if (event.dataTransfer.items) {
+			[...event.dataTransfer.items].forEach((item) => {
+				// If dropped items aren't files, ignore them
+				if (item.kind === 'file') {
+					const file = item.getAsFile();
+					processFile(file, map);
+				}
+			});
+		} else {
+			[...event.dataTransfer.files].forEach((file) => {
+				processFile(file, map);
+			});
+		}
+	}
+
+	document.getElementById('site-content').ondragover = (event) => {
+		event.preventDefault();
+	}
+}
+
+function processFile(file, map) {
+	const filenameComponents = file.name.split('.');
+	const type = filenameComponents.pop();
+	const name = filenameComponents.join('');
+	if (type.toLowerCase() === 'kml') {
+		file.text().then((text) => addKMLLayer(text, name, map));
+		return true;
+	}
+	// TODO: add geojson, shp, dbf support
+	return false;
 }
 
 
@@ -287,4 +329,4 @@ function toggleMarkers(type){
 // - Highlight counties with points
 //   - This could be just a polygon styled like the counties but higher opacity
 //   - either based on county name data (shaky), or on the points themselves (what about inaccurate points?)
-// - KML import, select ecoregion to search
+// - Select KML region to search
