@@ -198,6 +198,14 @@ function addKMLLayer(text, name, map, visible = true) {
 	const kml = parser.parseFromString(text, 'text/xml');
 	const layer = new L.KML(kml);
 
+	layer.on('dblclick', (event) => {
+		if (event.layer instanceof L.Polygon) {
+			map.clearMap();
+			map.drawShape({ type: 'polygon', latlngs: event.layer.getLatLngs()[0] });
+			setQueryShape(getShapeCoords('polygon', event.layer));
+		}
+	});
+
 	// Add to layer controls
 	map.mapLayer.layerControl.addOverlay(layer, name);
 
