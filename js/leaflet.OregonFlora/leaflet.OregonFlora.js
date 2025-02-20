@@ -204,6 +204,14 @@ function addKMLLayer(text, name, map, userAdded = true) {
 		return;
 	}
 
+	layer.on('dblclick', (event) => {
+		if (event.layer instanceof L.Polygon) {
+			map.clearMap();
+			map.drawShape({ type: 'polygon', latlngs: event.layer.getLatLngs()[0] });
+			setQueryShape(getShapeCoords('polygon', event.layer));
+		}
+	});
+
 	// Add to layer controls
 	map.mapLayer.layerControl.addOverlay(layer, name);
 
