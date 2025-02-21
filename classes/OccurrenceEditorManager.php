@@ -1044,7 +1044,8 @@ class OccurrenceEditorManager {
 					$postArr = array_merge($postArr, $this->getDatefields($postArr));
 					$sql = '';
 					//Apply autoprocessing status if set
-					if(array_key_exists('autoprocessingstatus',$postArr) && $postArr['autoprocessingstatus']){
+					// Manually setting the processing status will trump the autoprocessing status
+					if(array_key_exists('autoprocessingstatus',$postArr) && $postArr['autoprocessingstatus'] && !in_array('processingstatus',$editFieldArr['omoccurrences'])){
 						$postArr['processingstatus'] = $postArr['autoprocessingstatus'];
 					}
 					if($this->collMap){
