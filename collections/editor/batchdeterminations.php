@@ -230,7 +230,8 @@ elseif(file_exists('includes/config/occurVarDefault.php')){
 					$("#idQualifierDiv").hide();
 					f.confidenceranking.value = "";
 					$("#codDiv").hide();
-					f.identifiedby.value = "Nomenclatural Adjustment";
+					// OSU convention: add this to the Notes rather than the determiner
+					f.identificationremarks.value = "Nomenclatural Adjustment";
 					f.identifiedby.readonly = true;
 					f.makecurrent.checked = true;
 

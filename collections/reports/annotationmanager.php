@@ -58,7 +58,7 @@ elseif(file_exists('../editor/includes/config/occurVarDefault.php')){
 
 			function validateSelectForm(f){
 				// Warn users about leaving annotations in the print queue
-				let clearQueue = document.getElementsByName("clearqueue");
+				let clearQueue = document.getElementsByName("clearqueue")[0];
 				if(!clearQueue.checked) {
 					if(!confirm("Are you sure that you want to leave the checked annotations in the print queue? If yes, press OK. If they should be removed, press Cancel and check the box for Remove selected annotations from queue.")) return false;
 				}

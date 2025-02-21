@@ -25,8 +25,8 @@ if($SYMB_UID){
 	<head>
 		<title><?php echo $DEFAULT_TITLE; ?> Default Annotations</title>
 		<style type="text/css">
-			table.labels { page-break-before:auto; }
-			table.labels tr td { page-break-inside: avoid; white-space: nowrap; }
+			table.labels { page-break-before:auto; width: 8.5in;}
+			table.labels tr td { page-break-inside: avoid; white-space: normal; }
 			<?php
 			$marginSize = 5;
 			if(array_key_exists('marginsize',$_POST) && $_POST['marginsize']) $marginSize = $_POST['marginsize'];
@@ -36,7 +36,8 @@ if($SYMB_UID){
 			$borderWidth = 1;
 			if(array_key_exists('borderwidth',$_POST)) $borderWidth = $_POST['borderwidth'];
 			?>
-			table.labels td {width:<?php echo $widthStr; ?>;padding:8px;border:<?php echo $borderWidth; ?>px solid black;}
+			table.labels th {width:<?php echo $widthStr; ?>;}
+			table.labels td{padding:8px;border:<?php echo $borderWidth; ?>px solid black;}
 			p.printbreak {page-break-after:always;}
 			.lheader {width:100%;margin-bottom:5px;text-align:center;font:bold 9pt arial,sans-serif;}
 			.scientificnamediv {clear:both;font-size:10pt;}
@@ -61,6 +62,7 @@ if($SYMB_UID){
 					}
 					$labelCnt = 0;
 					echo '<table class="labels">';
+					echo '<thead><tr><th></th>' . ($rowsPerPage == 2 ? '<th></th>' : $rowsPerPage == 3 ? '<th></th><th></th>' : '') . '</tr></thead>';
 					foreach($labelArr as $occid => $occArr){
 						$headerStr = trim($lHeader);
 						$footerStr = trim($lFooter);
@@ -129,7 +131,7 @@ if($SYMB_UID){
 									}
 									if($occArr['identificationreferences']){
 										?>
-										<div class="subfielddiv"><?php echo $occArr['identificationreferences']; ?></div>
+										<div class="subfielddiv">Reference: <?php echo $occArr['identificationreferences']; ?></div>
 										<?php
 									}
 									if($occArr['identificationremarks']){
