@@ -32,6 +32,10 @@ const PROCESSINGSTATUS = [
 //Uncomment to turn the Associated Taxa entry aid (popup to enter associated taxa) on/off (on by default)
 //define('ACTIVATEASSOCTAXAAID',true);
 
+//Uncomment to set custom annotation label header and footer
+//define('ANNOTATIONHEADER', '');
+define('ANNOTATIONFOOTER', 'Oregon State University Herbarium (OSC)');
+
 
 // FieldLabel text: uncomment variables and add a value to modify field labels 
 define('CATALOGNUMBERLABEL','Barcode Number');

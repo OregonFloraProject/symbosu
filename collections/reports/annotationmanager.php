@@ -184,11 +184,11 @@ elseif(file_exists('../editor/includes/config/occurVarDefault.php')){
 							<div>
 								<div style="margin:4px;">
 									<b><?php echo $LANG['HEADER']; ?>:</b>
-									<input type="text" name="lheading" value="" style="width:450px" />
+									<input type="text" name="lheading" value="<?php echo (defined('ANNOTATIONHEADER') ? ANNOTATIONHEADER : ''); ?>" style="width:450px" />
 								</div>
 								<div style="margin:4px;">
 									<b><?php echo $LANG['FOOTER']; ?>:</b>
-									<input type="text" name="lfooter" value="<?php echo $datasetManager->getAnnoCollName(); ?>" style="width:450px" />
+									<input type="text" name="lfooter" value="<?php echo (defined('ANNOTATIONFOOTER') ? ANNOTATIONFOOTER : $datasetManager->getAnnoCollName()); ?>" style="width:450px" />
 								</div>
 							</div>
 							<div style="float:left">
