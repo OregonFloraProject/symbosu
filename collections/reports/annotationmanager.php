@@ -57,6 +57,12 @@ elseif(file_exists('../editor/includes/config/occurVarDefault.php')){
 			}
 
 			function validateSelectForm(f){
+				// Warn users about leaving annotations in the print queue
+				let clearQueue = document.getElementsByName("clearqueue");
+				if(!clearQueue.checked) {
+					if(!confirm("Are you sure that you want to leave the checked annotations in the print queue? If yes, press OK. If they should be removed, press Cancel and check the box for Remove selected annotations from queue.")) return false;
+				}
+
 				var dbElements = document.getElementsByName("detid[]");
 				for(i = 0; i < dbElements.length; i++){
 					var dbElement = dbElements[i];
@@ -187,7 +193,7 @@ elseif(file_exists('../editor/includes/config/occurVarDefault.php')){
 							</div>
 							<div style="float:left">
 								<div style="margin:4px;">
-									<input type="checkbox" name="speciesauthors" value="1" onclick="" />
+									<input type="checkbox" name="speciesauthors" value="1" onclick="" checked/>
 									<b><?php echo $LANG['PRINT_INF_AUTH']; ?></b>
 								</div>
 								<div style="margin:4px;">
@@ -219,7 +225,7 @@ elseif(file_exists('../editor/includes/config/occurVarDefault.php')){
 								</div>
 								<div style="margin-top:4px;">
 									<b><?php echo $LANG['SPACE_BW_LABELS']; ?>:</b>
-									<input type="text" name="marginsize" value="5" style="width:25px" />
+									<input type="text" name="marginsize" value="2" style="width:25px" />
 								</div>
 							</div>
 							<div style="float:left;margin-left:50px">
