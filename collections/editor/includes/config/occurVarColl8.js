@@ -37,8 +37,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	if( vvProcessingStatus.includes($("select[name='processingstatus']").val())) {
 
 		// Disable taxonomy fields to force use of Determination History
-		// Defined in occurVarOSUColls.js
-		disableTaxonomy();
+		//disableTaxonomy();
 
 		// Color the fields according to importance and whether they are empty or not
 		$(':input').each(function() {

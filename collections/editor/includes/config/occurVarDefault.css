@@ -66,8 +66,15 @@ h1 {
 	width: 270px;
 }
 
+#occurrenceIdDiv input {
+	width: 210px;
+}
+
 #ownerInstitutionCodeDiv input {
 	width: 135px;
+}
+#basisOfRecordDiv select {
+	width: 132px;
 }
 
 #processingStatusDiv select {
@@ -75,7 +82,7 @@ h1 {
 }
 
 #dataGeneralizationsDiv input{
-	width: 700px;
+	width: 730px;
 }
 
 div:has(> fieldset.ocr-box) {

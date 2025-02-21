@@ -120,14 +120,19 @@ define('DATAGENERALIZATIONSLABEL','Transcription Notes (Data Generalizations)');
 
 // Collection and Collector info
 define('CATALOGNUMBERTIP','Usually OSC-B- followed by 5 digits. Packets with more than one collection label or taxon present at any time in its determination history, should have a barcode for each, with clear indication to show which barcode represents which collection.');
-define('OTHERCATALOGNUMBERSTIP','Original accession number of the specimen, usually stamped on, preceded by the herbarium code, e.g., OSC24228. Newer collections do not have a stamped accession number; leave this blank for those.
-Use the following for different collections: 
-  * OSC for Oregon State University or College
-  * ORE for University of Oregon');
+define('OTHERCATALOGNUMBERSTIP','Original accession number of the specimen, usually stamped on, preceded by the herbarium code prefix (see below), e.g., OSC24228. Newer specimens do not have a stamped accession number and will only have a barcode. Leave these fields blank for those.
+
+Enter the number in the Additional Identifier Value field with the following prefix (without leading zeros): 
+  * OSC for Oregon State University, Oregon State College, Oregon Agricultural College (e.g., OSC24228)
+  * ORE for University of Oregon or UO Museum of Natural History (e.g., ORE1456)
+
+Then, click into the Tag Name field and select “Accession Number” from the dropdown.');
 define('RECORDEDBYTIP','Primary or only collector name. This is often the name that follows “col.”, “leg.”, and “legit.” Omit preceding titles (e.g., Dr., Mr., Mrs., Miss) unless Mrs. is followed by husband’s name. If no collector is present, enter “none”.');
 define('RECORDNUMBERTIP','If no number is present, enter “s.n.” (sine numero is Latin for “without number”). Include any letters or symbols in the collector number (e.g., KP-004b)');
 define('EVENTDATETIP','Date of specimen collection. Enter in the format YYYY-MM-DD. If year, month, or day is unknown, replace missing information with zeros (e.g. 2004-00-00). Roman numerals always indicate the month. If there is no collection date enter “0000-00-00”.');
-define('EVENTDATE2TIP','End date of specimen collection, if multiple dates are specified on the label. Enter in the format YYYY-MM-DD. If year, month, or day is unknown, replace missing information with zeros (e.g. 2004-00-00). Roman numerals always indicate the month. If there is only one date specified, enter as the start date, and leave this blank.');
+define('EVENTDATE2TIP','End date of specimen collection, if multiple dates are specified on the label. Enter in the format YYYY-MM-DD. If year, month, or day is unknown, replace missing information with zeros (e.g. 2004-00-00). Roman numerals always indicate the month. 
+
+If there is only one date specified on the label, enter it as the start date, and leave this blank.');
 define('DUPLICATESTIP','Search for duplicate specimens in other herbarium collections to import data from.');
 define('ASSOCIATEDCOLLECTORSTIP','Collectors following the primary collector. Each name should be in order of “First name Last name.”, separated by commas. Exclude other words (e.g., “and”, “with”, “&”). Remove preceding titles (see also Collector).');
 define('VERBATIMEVENTDATETIP','Date as it appears on the label (e.g., 7-3 ‘82, date in another language, a range of dates)');
@@ -219,8 +224,8 @@ define('INDIVIDUALCOUNTTIP','Not generally used at OSU, but record if given.');
 define('SAMPLINGPROTOCOLTIP','Not generally used at OSU, but record if given.');
 define('PREPARATIONSTIP','Not generally used at OSU, but record if given.');
 define('REPRODUCTIVECONDITIONTIP','If the phenology (life stage of the specimen such as “flowering” or “fruiting”) is stated on the label, enter it here.');
-define('BEHAVIORTIP','BEHAVIORTIP');
-define('VITALITYTIP','VITALITYTIP');
+define('BEHAVIORTIP','Field disabled. Not in use for OSU collections.');
+define('VITALITYTIP','Field disabled. Not in use for OSU collections.');
 define('ESTABLISHMENTMEANSTIP','Default value is “wild collection” to indicate the collection is naturally occurring (this includes self-propagating garden weeds). 
 Other options are:
   * “cultivated” if the specimen was planted.
