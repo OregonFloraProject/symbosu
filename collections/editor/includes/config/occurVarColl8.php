@@ -12,7 +12,7 @@ const JSARR = array('occurVarOSUColls.js', 'occurVarColl8.js');
 const PROCESSINGSTATUS = [
 'merge duplicate', 'skeletal entry', 'transfer data', 'pending review-nfn', 'reviewed', "vouchervision qc", // Main workflow
 'expert required', 'thea', 'curator', // Quality Control
-'pull specimen', 're-image', 'foreign language', 'de-accession', // Problems
+'pull specimen', 're-image', 'specimen pulled', 'foreign language', 'de-accession', // Problems
 'special request', 'unprocessed', 'label transcription', 'notes from nature', 'coge', 'quality control', 'Unprocessed - Fern Project', // Admin
 'pending review', 'closed', 'unprocessed/NLP', 'stage 1', 'stage 2', 'stage 3']; // Unused Symbiota defaults
 
