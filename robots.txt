@@ -1,4 +1,5 @@
 User-agent: *
 Disallow: /collections/list.php
 Disallow: /collections/listtabledisplay.php
+Crawl-delay: 10
 
