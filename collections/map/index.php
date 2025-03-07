@@ -301,6 +301,7 @@ if(isset($_REQUEST['llpoint'])) {
 		<?php } ?>
 		</style>
 		<script type="text/javascript">
+			const USE_SOLR_SEARCH = true;
 		//Clid
 		let recordArr = [];
 		let taxaMap = [];
