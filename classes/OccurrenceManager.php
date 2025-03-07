@@ -62,6 +62,7 @@ class OccurrenceManager extends OccurrenceTaxaManager {
 
 	protected function setSqlWhere(){
 		$sqlWhere = '';
+		$sqlWhereConditional = '';
 		if(array_key_exists("targetclid",$this->searchTermArr) && is_numeric($this->searchTermArr["targetclid"])){
 			if(!$this->voucherManager){
 				$this->setChecklistVariables($this->searchTermArr['targetclid']);
@@ -116,7 +117,7 @@ class OccurrenceManager extends OccurrenceTaxaManager {
 		elseif(array_key_exists('db',$this->searchTermArr) && $this->searchTermArr['db']){
 			$pattern = '/[^\d,]/';
 			if (preg_match($pattern, $this->searchTermArr['db'])==0) {
-				$sqlWhere .= OccurrenceSearchSupport::getDbWhereFrag($this->cleanInStr($this->searchTermArr['db']));
+				$sqlWhereConditional .= OccurrenceSearchSupport::getDbWhereFrag($this->cleanInStr($this->searchTermArr['db']));
 			}
 		}
 		if(array_key_exists('datasetid',$this->searchTermArr)){
@@ -138,7 +139,7 @@ class OccurrenceManager extends OccurrenceTaxaManager {
 					$tempArr[] = '(o.Country = "'.$this->cleanInStr($value).'")';
 				}
 			}
-			$sqlWhere .= 'AND ('.implode(' OR ',$tempArr).') ';
+			$sqlWhereConditional .= 'AND ('.implode(' OR ',$tempArr).') ';
 			$this->displaySearchArr[] = implode(' ' .  $this->LANG['OR'] . ' ', $countryArr);
 		}
 		if(array_key_exists("state",$this->searchTermArr)){
@@ -153,7 +154,7 @@ class OccurrenceManager extends OccurrenceTaxaManager {
 					$tempArr[] = '(o.StateProvince = "'.$this->cleanInStr($value).'")';
 				}
 			}
-			$sqlWhere .= 'AND ('.implode(' OR ',$tempArr).') ';
+			$sqlWhereConditional .= 'AND ('.implode(' OR ',$tempArr).') ';
 			$this->displaySearchArr[] = implode(' ' .  $this->LANG['OR'] . ' ', $stateAr);
 		}
 		if(array_key_exists("county",$this->searchTermArr)){
@@ -437,33 +438,33 @@ class OccurrenceManager extends OccurrenceTaxaManager {
 		}
 		if(!empty($this->searchTermArr['materialsampletype'])){
 			if($this->searchTermArr['materialsampletype'] == 'all-ms'){
-				$sqlWhere .= 'AND (o.occid IN(SELECT occid FROM ommaterialsample)) ';
+				$sqlWhereConditional .= 'AND (o.occid IN(SELECT occid FROM ommaterialsample)) ';
 				$this->displaySearchArr[] = $this->LANG['HAS_MATERIAL_SAMPLE'];
 			}
 			else{
-				$sqlWhere .= 'AND (o.occid IN(SELECT occid FROM ommaterialsample WHERE sampleType = "' . $this->cleanInStr($this->searchTermArr['materialsampletype']) . '")) ';
+				$sqlWhereConditional .= 'AND (o.occid IN(SELECT occid FROM ommaterialsample WHERE sampleType = "' . $this->cleanInStr($this->searchTermArr['materialsampletype']) . '")) ';
 				$this->displaySearchArr[] = $this->LANG['MATERIAL_SAMPLE'] . ': ' . $this->searchTermArr['materialsampletype'];
 			}
 		}
 		if(array_key_exists('typestatus', $this->searchTermArr)){
-			$sqlWhere .= 'AND (o.typestatus IS NOT NULL) ';
+			$sqlWhereConditional .= 'AND (o.typestatus IS NOT NULL) ';
 			$this->displaySearchArr[] = $this->LANG['IS_TYPE'];
 		}
 		if(array_key_exists('hasimages', $this->searchTermArr)){
-			$sqlWhere .= 'AND (o.occid IN(SELECT occid FROM images)) ';
+			$sqlWhereConditional .= 'AND (o.occid IN(SELECT occid FROM images)) ';
 			$this->displaySearchArr[] = $this->LANG['HAS_IMAGES'];
 		}
 		if(array_key_exists('hasgenetic', $this->searchTermArr)){
-			$sqlWhere .= 'AND (o.occid IN(SELECT occid FROM omoccurgenetic)) ';
+			$sqlWhereConditional .= 'AND (o.occid IN(SELECT occid FROM omoccurgenetic)) ';
 			$this->displaySearchArr[] = $this->LANG['HAS_GENETIC_DATA'];
 		}
 		if(array_key_exists('hascoords', $this->searchTermArr)){
-			$sqlWhere .= 'AND (o.decimalLatitude IS NOT NULL) ';
+			$sqlWhereConditional .= 'AND (o.decimalLatitude IS NOT NULL) ';
 			$this->displaySearchArr[] = $this->LANG['HAS_COORDINATES'];
 		}
-		if($sqlWhere){
+		if($sqlWhereConditional){
 			if(!array_key_exists('includecult', $this->searchTermArr)){
-				$sqlWhere .= 'AND (o.cultivationStatus IS NULL OR o.cultivationStatus = 0) ';
+				$sqlWhereConditional .= 'AND (o.cultivationStatus IS NULL OR o.cultivationStatus = 0) ';
 				$this->displaySearchArr[] = $this->LANG['EXCLUDE_CULTIVATED'];
 			}
 			else{
@@ -487,6 +488,10 @@ class OccurrenceManager extends OccurrenceTaxaManager {
 			}
 			$sqlWhere .= 'AND (o.occid IN(SELECT occid FROM tmattributes WHERE stateid IN(' . $this->searchTermArr['attr'] . '))) ';
 		}
+
+		// only add conditional params if there are other params
+		// we don't want to allow queries that are too broad (e.g. only dbs or a country set)
+		if ($sqlWhere && $sqlWhereConditional) $sqlWhere .= $sqlWhereConditional;
 
 		if($sqlWhere) $this->sqlWhere = 'WHERE '.substr($sqlWhere,4);
 		else{
