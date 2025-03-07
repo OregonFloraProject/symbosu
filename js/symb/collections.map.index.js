@@ -255,8 +255,6 @@ function verifyCollForm(f) {
   //make sure they have filled out at least one field.
   if (
     f.taxa.value == "" &&
-    f.country.value == "" &&
-    f.state.value == "" &&
     f.county.value == "" &&
     f.locality.value == "" &&
     f.upperlat.value == "" &&
@@ -267,7 +265,10 @@ function verifyCollForm(f) {
     f.eventdate1.value == "" &&
     f.catnum.value == ""
   ) {
-    alert("Please fill in at least one search parameter!");
+    const message = (f.country.value == "" && f.state.value == "")
+      ? "Please fill in at least one search parameter!"
+      : "The parameters you have entered are too broad. Please refine your search.";
+    alert(message);
     return false;
   }
 

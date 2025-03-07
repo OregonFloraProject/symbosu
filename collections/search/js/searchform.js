@@ -37,6 +37,22 @@ let paramNames = [
   "attr[]",
   "materialsampletype",
 ];
+// at least one of these params must be filled in for the search to be valid
+const requiredParams = [
+  "taxa",
+  "county",
+  "local",
+  "elevlow",
+  "elevhigh",
+  "llbound",
+  "footprintwkt",
+  "llpoint",
+  "eventdate1",
+  "eventdate2",
+  "collnum",
+  "collector",
+  "catnum",
+];
 const uLat = document.getElementById("upperlat") || null;
 const uLatNs = document.getElementById("upperlat_NS") || null;
 const bLat = document.getElementById("bottomlat") || null;
@@ -588,7 +604,7 @@ function getSearchUrl() {
 
   baseUrl.searchParams.append("comingFrom", "newsearch");
 
-  return baseUrl.href;
+  return baseUrl;
 }
 
 /**
@@ -711,7 +727,14 @@ function simpleSearch() {
   let isValid = errors.length == 0;
   if (isValid) {
     let searchUrl = getSearchUrl();
-    window.location = searchUrl;
+    if (!searchUrl.searchParams || requiredParams.every((paramName) => !searchUrl.searchParams.has(paramName))) {
+      handleValErrors([{
+        elId: 'taxa', // show the error in the topmost field we know must be empty
+        errorMsg: 'The parameters you have entered are too broad. Please refine your search.',
+      }]);
+    } else {
+      window.location = searchUrl.href;
+    }
   } else {
     handleValErrors(errors);
   }
