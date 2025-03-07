@@ -1726,30 +1726,34 @@ if(isset($_REQUEST['llpoint'])) {
          sessionStorage.querystr = "";
 			try {
 				const url = host? `${host}/collections/map/rpc/searchCollections.php`: 'rpc/searchCollections.php'
-				console.log(url, body);
 				getCollectionParams(body);
-				prepareTaxaParams(body, function(res){
-					getTextParams(body);
-					getGeographyParams(body);
-					let solrqString = '';
-					if(solrqArr.length > 0 || solrgeoqArr.length > 0){
-						solrqString = buildSOLRQString();
-					}
-					lazyLoadPoints(solrqString, 0, (res) => { console.log('solr res', res); });
-				});
+				await prepareTaxaParamsAsync(body);
+				getTextParams(body);
+				getGeographyParams(body);
 
-				let response = await fetch(url, {
-					method: "POST",
-					mode: "cors",
-					body: body,
-			});
-            if(response) {
-             const search = await response.json()
-               sessionStorage.querystr = search.query;
-               return search;
-            } else {
-               return emptyResponse;
-            }
+				let solrqString = '';
+				if(solrqArr.length > 0 || solrgeoqArr.length > 0){
+					solrqString = buildSOLRQString();
+				}
+				const response = await lazyLoadPoints(solrqString, 0);
+				console.log(response);
+				const converted = convertSOLRResponse(response);
+				console.log(converted);
+				return converted;
+
+			// 	let response = await fetch(url, {
+			// 		method: "POST",
+			// 		mode: "cors",
+			// 		body: body,
+			// });
+      //       if(response) {
+      //        const search = await response.json()
+			// 			 console.log('searchCollections response', search);
+      //          sessionStorage.querystr = search.query;
+      //          return search;
+      //       } else {
+      //          return emptyResponse;
+      //       }
 			} catch(e) {
 				return emptyResponse;
 			}

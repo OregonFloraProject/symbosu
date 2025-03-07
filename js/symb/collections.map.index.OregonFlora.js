@@ -37,24 +37,20 @@ function getCollectionParams(formData) {
   }
 }
 
-function prepareTaxaData(callback) {
-  var http = new XMLHttpRequest();
-  var url = '../../spatial/rpc/gettaxalinks.php';
-  var taxaArrStr = JSON.stringify(taxaArr);
-  var params =
+async function prepareTaxaDataAsync(taxaArr) {
+  const url = '../../spatial/rpc/gettaxalinks.php';
+  const taxaArrStr = JSON.stringify(taxaArr);
+  const params =
     'taxajson=' + taxaArrStr + '&type=' + taxontype + '&thes=' + thes;
-  http.open('POST', url, true);
-  http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-  http.onreadystatechange = function () {
-    if (http.readyState == 4 && http.status == 200) {
-      taxaArr = JSON.parse(http.responseText);
-      callback(1);
-    }
-  };
-  http.send(params);
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-type': 'application/x-www-form-urlencoded' },
+    body: params,
+  });
+  return await response.json();
 }
 
-function prepareTaxaParams(formData, callback) {
+async function prepareTaxaParamsAsync(formData) {
   var taxaval = formData.get('taxa').trim();
   if (taxaval) {
     var taxavals = taxaval.split(',');
@@ -72,101 +68,95 @@ function prepareTaxaParams(formData, callback) {
       }
       taxaArr.push(name);
     }
-    prepareTaxaData(function (res) {
-      if (taxaArr) {
-        var taxaCqlString = '';
-        var taxaSolrqString = '';
-        for (i in taxaArr) {
-          if (taxontype == 4) {
-            taxaCqlString = ' OR parenttid = ' + i;
-            taxaSolrqString = ' OR (parenttid:' + i + ')';
-          } else {
-            if (taxontype == 5) {
-              var famArr = [];
-              var scinameArr = [];
-              if (taxaArr[i]['families']) {
-                famArr = taxaArr[i]['families'];
-              }
-              if (famArr.length > 0) {
-                taxaSolrqString += ' OR (family:(' + famArr.join() + '))';
-                for (f in famArr) {
-                  taxaCqlString += " OR family = '" + famArr[f] + "'";
-                }
-              }
-              if (taxaArr[i]['scinames']) {
-                scinameArr = taxaArr[i]['scinames'];
-                if (scinameArr.length > 0) {
-                  for (s in scinameArr) {
-                    taxaSolrqString +=
-                      ' OR ((sciname:' +
-                      scinameArr[s].replace(/ /g, '\\ ') +
-                      ') OR (sciname:' +
-                      scinameArr[s].replace(/ /g, '\\ ') +
-                      '\\ *))';
-                    taxaCqlString +=
-                      " OR sciname LIKE '" + scinameArr[s] + "%'";
-                  }
-                }
-              }
-            } else {
-              if (
-                (taxontype == 2 || taxontype == 1) &&
-                (i.substr(i.length - 5) == 'aceae' ||
-                  i.substr(i.length - 4) == 'idae')
-              ) {
-                taxaSolrqString += ' OR (family:' + i + ')';
-                taxaCqlString += " OR family = '" + i + "'";
-              }
-              if (
-                (taxontype == 3 || taxontype == 1) &&
-                (i.substr(i.length - 5) != 'aceae' ||
-                  i.substr(i.length - 4) != 'idae')
-              ) {
-                taxaSolrqString +=
-                  ' OR ((sciname:' +
-                  i.replace(/ /g, '\\ ') +
-                  ') OR (sciname:' +
-                  i.replace(/ /g, '\\ ') +
-                  '\\ *))';
-                taxaCqlString += " OR sciname LIKE '" + i + "%'";
+    taxaArr = await prepareTaxaDataAsync(taxaArr);
+    if (taxaArr) {
+      var taxaCqlString = '';
+      var taxaSolrqString = '';
+      for (i in taxaArr) {
+        if (taxontype == 4) {
+          taxaCqlString = ' OR parenttid = ' + i;
+          taxaSolrqString = ' OR (parenttid:' + i + ')';
+        } else {
+          if (taxontype == 5) {
+            var famArr = [];
+            var scinameArr = [];
+            if (taxaArr[i]['families']) {
+              famArr = taxaArr[i]['families'];
+            }
+            if (famArr.length > 0) {
+              taxaSolrqString += ' OR (family:(' + famArr.join() + '))';
+              for (f in famArr) {
+                taxaCqlString += " OR family = '" + famArr[f] + "'";
               }
             }
-            if (taxaArr[i]['synonyms']) {
-              var synArr = [];
-              synArr = taxaArr[i]['synonyms'];
-              var tidArr = [];
-              if (taxontype == 1 || taxontype == 2 || taxontype == 5) {
-                for (syn in synArr) {
-                  if (
-                    synArr[syn].indexOf('aceae') !== -1 ||
-                    synArr[syn].indexOf('idae') !== -1
-                  ) {
-                    taxaSolrqString += ' OR (family:' + synArr[syn] + ')';
-                    taxaCqlString += " OR family = '" + synArr[syn] + "'";
-                  }
+            if (taxaArr[i]['scinames']) {
+              scinameArr = taxaArr[i]['scinames'];
+              if (scinameArr.length > 0) {
+                for (s in scinameArr) {
+                  taxaSolrqString +=
+                    ' OR ((sciname:' +
+                    scinameArr[s].replace(/ /g, '\\ ') +
+                    ') OR (sciname:' +
+                    scinameArr[s].replace(/ /g, '\\ ') +
+                    '\\ *))';
+                  taxaCqlString += " OR sciname LIKE '" + scinameArr[s] + "%'";
                 }
               }
-              for (syn in synArr) {
-                tidArr.push(syn);
-              }
+            }
+          } else {
+            if (
+              (taxontype == 2 || taxontype == 1) &&
+              (i.substr(i.length - 5) == 'aceae' ||
+                i.substr(i.length - 4) == 'idae')
+            ) {
+              taxaSolrqString += ' OR (family:' + i + ')';
+              taxaCqlString += " OR family = '" + i + "'";
+            }
+            if (
+              (taxontype == 3 || taxontype == 1) &&
+              (i.substr(i.length - 5) != 'aceae' ||
+                i.substr(i.length - 4) != 'idae')
+            ) {
               taxaSolrqString +=
-                ' OR (tidinterpreted:(' + tidArr.join(' ') + '))';
-              taxaCqlString +=
-                ' OR tidinterpreted IN(' + tidArr.join(' ') + ')';
+                ' OR ((sciname:' +
+                i.replace(/ /g, '\\ ') +
+                ') OR (sciname:' +
+                i.replace(/ /g, '\\ ') +
+                '\\ *))';
+              taxaCqlString += " OR sciname LIKE '" + i + "%'";
             }
           }
+          if (taxaArr[i]['synonyms']) {
+            var synArr = [];
+            synArr = taxaArr[i]['synonyms'];
+            var tidArr = [];
+            if (taxontype == 1 || taxontype == 2 || taxontype == 5) {
+              for (syn in synArr) {
+                if (
+                  synArr[syn].indexOf('aceae') !== -1 ||
+                  synArr[syn].indexOf('idae') !== -1
+                ) {
+                  taxaSolrqString += ' OR (family:' + synArr[syn] + ')';
+                  taxaCqlString += " OR family = '" + synArr[syn] + "'";
+                }
+              }
+            }
+            for (syn in synArr) {
+              tidArr.push(syn);
+            }
+            taxaSolrqString +=
+              ' OR (tidinterpreted:(' + tidArr.join(' ') + '))';
+            taxaCqlString += ' OR tidinterpreted IN(' + tidArr.join(' ') + ')';
+          }
         }
-        taxaCqlString = taxaCqlString.substr(4, taxaCqlString.length);
-        taxaSolrqString = taxaSolrqString.substr(4, taxaSolrqString.length);
-        cqlfrag = '((' + taxaCqlString + '))';
-        cqlArr.push(cqlfrag);
-        solrqfrag = '(' + taxaSolrqString + ')';
-        solrqArr.push(solrqfrag);
       }
-      callback(1);
-    });
-  } else {
-    callback(1);
+      taxaCqlString = taxaCqlString.substr(4, taxaCqlString.length);
+      taxaSolrqString = taxaSolrqString.substr(4, taxaSolrqString.length);
+      cqlfrag = '((' + taxaCqlString + '))';
+      cqlArr.push(cqlfrag);
+      solrqfrag = '(' + taxaSolrqString + ')';
+      solrqArr.push(solrqfrag);
+    }
   }
 }
 
@@ -512,11 +502,10 @@ const SOLRFields =
   'dateIdentified,typeStatus,recordedBy,recordNumber,eventDate,displayDate,coll_year,coll_month,coll_day,habitat,associatedTaxa,' +
   'cultivationStatus,country,StateProvince,county,municipality,locality,localitySecurity,localitySecurityReason,geo,minimumElevationInMeters,' +
   'maximumElevationInMeters,labelProject,InstitutionCode,CollectionCode,CollectionName,CollType,thumbnailurl,accFamily';
-function lazyLoadPoints(solrqString, index, callback) {
+async function lazyLoadPoints(solrqString, index) {
   var startindex = 0;
   loadingComplete = true;
   if (index > 1) startindex = (index - 1) * lazyLoadCount;
-  var http = new XMLHttpRequest();
   var url = '../../spatial/rpc/SOLRConnector.php';
   var params =
     solrqString +
@@ -528,14 +517,57 @@ function lazyLoadPoints(solrqString, index, callback) {
     SOLRFields +
     '&wt=geojson&action=lazyload';
   console.log('lazy ' + url + ' ' + params);
-  http.open('POST', url, true);
-  http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-  http.onreadystatechange = function () {
-    if (http.readyState == 4 && http.status == 200) {
-      // loadingComplete = false;
-      // setTimeout(checkLoading, loadingTimer);
-      callback(http.responseText);
+  const promise = fetch(url, {
+    method: 'POST',
+    headers: { 'Content-type': 'application/x-www-form-urlencoded' },
+    body: params,
+  });
+  // loadingComplete = false;
+  // setTimeout(checkLoading, loadingTimer);
+  const response = await promise;
+  return await response.json();
+}
+
+function convertSOLRResponse(res) {
+  const { features } = res;
+  const taxaArr = {};
+  const collArr = {};
+  const recordArr = features.map(({ geometry, properties }) => {
+    if (!(properties.tidinterpreted in taxaArr)) {
+      taxaArr[properties.tidinterpreted] = {
+        sn: properties.sciname,
+        tid: properties.tidinterpreted,
+        family: properties.family.toUpperCase(), // TODO: accFamily?
+        color: 'e69e67',
+      };
     }
+    if (!(properties.collid in collArr)) {
+      collArr[properties.collid] = {
+        name: properties.CollectionName,
+        collid: properties.collid,
+        color: 'e69e67',
+      };
+    }
+
+    return {
+      collid: properties.collid,
+      collname: properties.CollectionName,
+      family: properties.family.toUpperCase(), // TODO: accFamily?
+      host: '', // TODO: get
+      id: `${properties.recordedBy} ${properties.recordNumber}`,
+      lat: geometry.coordinates[1],
+      lng: geometry.coordinates[0],
+      occid: properties.occid,
+      tid: `${properties.tidinterpreted}`,
+      type: properties.CollType, // not exactly right
+    };
+  });
+
+  return {
+    taxaArr,
+    collArr,
+    recordArr,
+    origin: '', // TODO: get
+    query: '', // TODO: get
   };
-  http.send(params);
 }
