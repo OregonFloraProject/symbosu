@@ -928,9 +928,11 @@ if(isset($_REQUEST['llpoint'])) {
 				markers = [];
 
 				if(heatmapLayer) map.mapLayer.removeLayer(heatmapLayer);
+<?php if (!(isset($USE_SOLR_SEARCH) && $USE_SOLR_SEARCH === 1)) { ?>
 				getOccurenceRecords(formData).then(res => {
 					if (res) loadOccurenceRecords(res);
 				});
+<?php } ?>
 
 				let searches = [
 					searchCollections(formData).then(res => {
@@ -966,6 +968,11 @@ if(isset($_REQUEST['llpoint'])) {
 						const group = genMapGroups(search.recordArr, search.taxaArr, search.collArr, search.label)
 						group.origin = search.origin;
 						mapGroups.push(group);
+<?php if (isset($USE_SOLR_SEARCH) && $USE_SOLR_SEARCH === 1) { ?>
+						getOccurenceRecords(formData, search).then(res => {
+							if (res) loadOccurenceRecords(res);
+						});
+<?php } ?>
 					}
 					count++;
 				}
@@ -1758,7 +1765,7 @@ if(isset($_REQUEST['llpoint'])) {
 			}
 		}
 
-		async function getOccurenceRecords(body, host) {
+		async function getOccurenceRecords(body, searchData, host) {
 			const url = host? `${host}/collections/map/occurrencelist.php`: 'occurrencelist.php'
 			let response = await fetch(url, {
 				method: "POST",
@@ -1766,7 +1773,11 @@ if(isset($_REQUEST['llpoint'])) {
 				body: body
 			});
 
-			return response? await response.text(): '';
+			let html = response? await response.text(): '';
+<?php if (isset($USE_SOLR_SEARCH) && $USE_SOLR_SEARCH === 1) { ?>
+			html = renderOccurrenceRows(html, searchData);
+<?php } ?>
+			return html;
 		}
 
 		function loadOccurenceRecords(html, id="occurrencelist") {

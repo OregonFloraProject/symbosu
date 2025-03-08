@@ -560,6 +560,10 @@ function convertSOLRResponse(res) {
       occid: properties.occid,
       tid: `${properties.tidinterpreted}`,
       type: properties.CollType, // not exactly right
+      // TODO: these are for table, is there another way to keep them?
+      catnum: properties.catalogNumber,
+      eventdate: properties.eventDate,
+      sciname: properties.sciname,
     };
   });
 
@@ -570,4 +574,27 @@ function convertSOLRResponse(res) {
     origin: '', // TODO: get
     query: '', // TODO: get
   };
+}
+
+function renderOccurrenceRows(html, searchData) {
+  // TODO: need some way to determining which rows to render
+  let rowsHtml = '';
+  console.log(searchData);
+  for (let i = 0; i < Math.min(100, searchData.recordArr.length); i++) {
+    const { occid, host, sciname, eventdate, catnum, id } =
+      searchData.recordArr[i];
+    // TODO: find cat number
+    rowsHtml += `<tr ${i % 2 ? 'class="alt"' : ''} id="tr${occid}">`;
+    rowsHtml += `<td id="cat${occid}" >${catnum ?? ''}</td>`;
+    rowsHtml += `<td id="label${occid}" >`;
+    rowsHtml += `<a href="#" onclick="openRecord({occid:${occid}, host:\'${host}\'}); return false;">${
+      id ? id : 'Not available'
+    }</a>`;
+    rowsHtml += `</td>`;
+    rowsHtml += `<td id="e${occid}" >${eventdate}</td>`;
+    rowsHtml += `<td id="s${occid}" >${sciname}</td>`;
+    rowsHtml += `<td id="li${occid}" ><a href="#occid=${occid}" onclick="emit_occurrence_click(${occid})">See map point</a></td>`;
+    rowsHtml += `</tr>`;
+  }
+  return html.replace('{{ROWS_PLACEHOLDER}}', rowsHtml);
 }
