@@ -301,7 +301,7 @@ if(isset($_REQUEST['llpoint'])) {
 		<?php } ?>
 		</style>
 		<script type="text/javascript">
-			const USE_SOLR_SEARCH = true;
+			const USE_SOLR_SEARCH = <?php echo $USE_SOLR_SEARCH ? 'true' : 'false'; ?>;
 		//Clid
 		let recordArr = [];
 		let taxaMap = [];
@@ -1726,6 +1726,8 @@ if(isset($_REQUEST['llpoint'])) {
          sessionStorage.querystr = "";
 			try {
 				const url = host? `${host}/collections/map/rpc/searchCollections.php`: 'rpc/searchCollections.php'
+
+<?php if (isset($USE_SOLR_SEARCH) && $USE_SOLR_SEARCH === 1) { ?>
 				getCollectionParams(body);
 				await prepareTaxaParamsAsync(body);
 				getTextParams(body);
@@ -1736,24 +1738,21 @@ if(isset($_REQUEST['llpoint'])) {
 					solrqString = buildSOLRQString();
 				}
 				const response = await lazyLoadPoints(solrqString, 0);
-				console.log(response);
-				const converted = convertSOLRResponse(response);
-				console.log(converted);
-				return converted;
-
-			// 	let response = await fetch(url, {
-			// 		method: "POST",
-			// 		mode: "cors",
-			// 		body: body,
-			// });
-      //       if(response) {
-      //        const search = await response.json()
-			// 			 console.log('searchCollections response', search);
-      //          sessionStorage.querystr = search.query;
-      //          return search;
-      //       } else {
-      //          return emptyResponse;
-      //       }
+				return convertSOLRResponse(response);
+<?php } else { ?>
+				let response = await fetch(url, {
+					method: "POST",
+					mode: "cors",
+					body: body,
+				});
+				if (response) {
+					const search = await response.json()
+					sessionStorage.querystr = search.query;
+					return search;
+				} else {
+					return emptyResponse;
+				}
+<?php } ?>
 			} catch(e) {
 				return emptyResponse;
 			}
