@@ -12,7 +12,7 @@ ini_set('max_execution_time', 180); //180 seconds = 3 minutes
 $distFromMe = array_key_exists('distFromMe', $_REQUEST)?$_REQUEST['distFromMe']:'';
 $gridSize = array_key_exists('gridSizeSetting', $_REQUEST) && $_REQUEST['gridSizeSetting']?$_REQUEST['gridSizeSetting']:60;
 $minClusterSize = array_key_exists('minClusterSetting',$_REQUEST)&&$_REQUEST['minClusterSetting']?$_REQUEST['minClusterSetting']:10;
-$clusterOff = array_key_exists('clusterSwitch',$_REQUEST)&&$_REQUEST['clusterSwitch']? $_REQUEST['clusterSwitch']:'y';
+$clusterOff = array_key_exists('clusterSwitch',$_REQUEST)&&$_REQUEST['clusterSwitch']? $_REQUEST['clusterSwitch']:'n';
 $menuClosed = array_key_exists('menuClosed',$_REQUEST)? true: false;
 $recLimit = array_key_exists('recordlimit',$_REQUEST)?$_REQUEST['recordlimit']:15000;
 $catId = array_key_exists('catid',$_REQUEST)?$_REQUEST['catid']:0;
@@ -33,7 +33,7 @@ $obsIDs = $mapManager->getObservationIds();
 //Sanitation
 if(!is_numeric($gridSize)) $gridSize = 60;
 if(!is_numeric($minClusterSize)) $minClusterSize = 10;
-if(!is_string($clusterOff) || strlen($clusterOff) > 1) $clusterOff = 'y';
+if(!is_string($clusterOff) || strlen($clusterOff) > 1) $clusterOff = 'n';
 if(!is_numeric($recLimit)) $recLimit = 15000;
 if(!is_numeric($distFromMe)) $distFromMe = '';
 if(!is_numeric($catId)) $catId = 0;
@@ -328,7 +328,7 @@ if(isset($_REQUEST['llpoint'])) {
 		let portalLegendMap = {}
 
 		//Indciates if clustering should be drawn. Only comes into effect after redraw or refreshes
-		let clusteroff = true;
+		let clusteroff = false;
 
 		const colorChange = new Event("colorchange",  {
 			bubbles: true,
