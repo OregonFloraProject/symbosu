@@ -169,6 +169,7 @@ if(isset($_REQUEST['llpoint'])) {
 		<script src="../../js/jscolor/jscolor.js?ver=1" type="text/javascript"></script>
 		<!---	<script src="//maps.googleapis.com/maps/api/js?v=3.exp&libraries=drawing<?= (!empty($GOOGLE_MAP_KEY) && $GOOGLE_MAP_KEY != 'DEV' ? 'key=' . $GOOGLE_MAP_KEY : '') ?>&callback=Function.prototype" ></script> -->
 		<script src="../../js/symb/collections.map.index.js?ver=2" type="text/javascript"></script>
+		<script src="../../js/symb/collections.map.index.OregonFlora.js?ver=<?php echo filemtime($SERVER_ROOT . '/js/symb/collections.map.index.OregonFlora.js'); ?>" type="text/javascript"></script>
 
 		<?php
 		// Always use Leaflet Maps
@@ -300,6 +301,7 @@ if(isset($_REQUEST['llpoint'])) {
 		<?php } ?>
 		</style>
 		<script type="text/javascript">
+			const USE_SOLR_SEARCH = <?php echo (isset($USE_SOLR_SEARCH) && $USE_SOLR_SEARCH === 1) ? 'true' : 'false'; ?>;
 		//Clid
 		let recordArr = [];
 		let taxaMap = [];
@@ -926,9 +928,11 @@ if(isset($_REQUEST['llpoint'])) {
 				markers = [];
 
 				if(heatmapLayer) map.mapLayer.removeLayer(heatmapLayer);
+<?php if (!(isset($USE_SOLR_SEARCH) && $USE_SOLR_SEARCH === 1)) { ?>
 				getOccurenceRecords(formData).then(res => {
 					if (res) loadOccurenceRecords(res);
 				});
+<?php } ?>
 
 				let searches = [
 					searchCollections(formData).then(res => {
@@ -964,6 +968,11 @@ if(isset($_REQUEST['llpoint'])) {
 						const group = genMapGroups(search.recordArr, search.taxaArr, search.collArr, search.label)
 						group.origin = search.origin;
 						mapGroups.push(group);
+<?php if (isset($USE_SOLR_SEARCH) && $USE_SOLR_SEARCH === 1) { ?>
+						getOccurenceRecords(formData, search).then(res => {
+							if (res) loadOccurenceRecords(res, search);
+						});
+<?php } ?>
 					}
 					count++;
 				}
@@ -1725,42 +1734,73 @@ if(isset($_REQUEST['llpoint'])) {
 			try {
 				const url = host? `${host}/collections/map/rpc/searchCollections.php`: 'rpc/searchCollections.php'
 
+<?php if (isset($USE_SOLR_SEARCH) && $USE_SOLR_SEARCH === 1) { ?>
+				getCollectionParams(body);
+				await prepareTaxaParamsAsync(body);
+				getTextParams(body);
+				getGeographyParams(body);
+
+				let solrqString = '';
+				if(solrqArr.length > 0 || solrgeoqArr.length > 0){
+					solrqString = buildSOLRQString();
+				}
+				const { recordCount, hiddenFound } = await getRecordCountFromSOLR(solrqString);
+				if (hiddenFound) {
+					alert('You need to be logged in with rare species privileges to view the full distribution. Rare taxa in these search results are hidden unless you are logged in.');
+				}
+				const response = await loadPointsFromSOLR(solrqString, recordCount);
+				return convertSOLRResponse(response);
+<?php } else { ?>
 				let response = await fetch(url, {
 					method: "POST",
 					mode: "cors",
 					body: body,
-			});
-            if(response) {
-             const search = await response.json()
-               sessionStorage.querystr = search.query;
-               return search;
-            } else {
-               return emptyResponse;
-            }
+				});
+				if (response) {
+					const search = await response.json()
+					sessionStorage.querystr = search.query;
+					return search;
+				} else {
+					return emptyResponse;
+				}
+<?php } ?>
 			} catch(e) {
 				return emptyResponse;
 			}
 		}
 
-		async function getOccurenceRecords(body, host) {
+		async function getOccurenceRecords(body, searchData, host) {
 			const url = host? `${host}/collections/map/occurrencelist.php`: 'occurrencelist.php'
+<?php if (isset($USE_SOLR_SEARCH) && $USE_SOLR_SEARCH === 1) { ?>
+			body.set('recordcount', searchData.recordArr.length);
+<?php } ?>
 			let response = await fetch(url, {
 				method: "POST",
 				credentials: "same-origin",
 				body: body
 			});
 
-			return response? await response.text(): '';
+			let html = response? await response.text(): '';
+<?php if (isset($USE_SOLR_SEARCH) && $USE_SOLR_SEARCH === 1) { ?>
+			html = renderOccurrenceRows(html, searchData, body);
+<?php } ?>
+			return html;
 		}
 
-		function loadOccurenceRecords(html, id="occurrencelist") {
+		function loadOccurenceRecords(html, searchData, id="occurrencelist") {
 			document.getElementById(id).innerHTML = html;
 			$('.pagination a').click(async function(e){
+				e.preventDefault();
 				let response = await fetch(e.target.href, {
 					method: "GET",
 					credentials: "same-origin",
 				})
-				loadOccurenceRecords(await response.text(), id)
+				let html = await response.text();
+<?php if (isset($USE_SOLR_SEARCH) && $USE_SOLR_SEARCH === 1) { ?>
+				const params = new URLSearchParams(e.target.href);
+				html = renderOccurrenceRows(html, searchData, params);
+<?php } ?>
+				loadOccurenceRecords(html, searchData, id)
 				return false;
 			});
 		}
@@ -2036,7 +2076,7 @@ Record Limit:
 											<input type="hidden" id="clusterSwitch" name="clusterSwitch" value="<?php echo $clusterOff; ?>" />
 											<input type="hidden" id="pointlat" name="pointlat" value='<?php echo isset($pointLat)? $pointLat : "" ?>' />
 											<input type="hidden" id="pointlong" name="pointlong" value='<?php echo isset($pointLng)? $pointLng : "" ?>' />
-											<input type="hidden" id="pointunits" name="pointunits" value='<?php echo isset($pointUnit)? $pointUnit : "km" ?>' />
+											<input type="hidden" id="pointunits" name="pointunits" value='<?php echo isset($pointUnit)? $pointUnit : "mi" ?>' />
 											<input type="hidden" id="radius" name="radius" value='<?php echo isset($pointRad)? $pointRad : "" ?>' />
 											<input type="hidden" id="upperlat" name="upperlat" value='<?php echo isset($upperLat)? $upperLat : "" ?>' />
 											<input type="hidden" id="rightlong" name="rightlong" value='<?php echo isset($upperLng)? $upperLng : "" ?>' />
@@ -2194,10 +2234,12 @@ Record Limit:
 										<input data-role="none" type='checkbox' name='hasgenetic' value='1' <?php if($mapManager->getSearchTerm('hasgenetic')) echo "CHECKED"; ?> >
 										<?php echo (isset($LANG['LIMIT_GENETIC'])?$LANG['LIMIT_GENETIC']:'Limit to Specimens with Genetic Data Only'); ?>
 									</div>
+<?php if (!(isset($USE_SOLR_SEARCH) && $USE_SOLR_SEARCH === 1)) { /* SOLR search does not yet include this capability */ ?>
 									<div style="margin-top:5px;">
 										<input data-role="none" type='checkbox' name='includecult' value='1' <?php if($mapManager->getSearchTerm('includecult')) echo "CHECKED"; ?> >
 										<?php echo (isset($LANG['INCLUDE_CULTIVATED'])?$LANG['INCLUDE_CULTIVATED']:'Include cultivated/captive specimens'); ?>
 									</div>
+<?php } ?>
 									<div><hr></div>
 									<input type="hidden" name="reset" value="1" />
 								</div>

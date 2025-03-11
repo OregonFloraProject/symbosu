@@ -16,15 +16,24 @@ $cntPerPage = filter_var($cntPerPage, FILTER_SANITIZE_NUMBER_INT) ?? 100;
 $pageNumber = filter_var($pageNumber, FILTER_SANITIZE_NUMBER_INT) ?? 1;
 $recLimit = filter_var($recLimit, FILTER_SANITIZE_NUMBER_INT) ?? 15000;
 
-$mapManager = new OccurrenceMapManager();
-$searchVar = $mapManager->getQueryTermStr();
-$recCnt = $mapManager->getRecordCnt();
+$host = UtilityFunctions::getDomain() . $CLIENT_ROOT;
 $occArr = array();
 
-$host = UtilityFunctions::getDomain() . $CLIENT_ROOT;
+if (isset($USE_SOLR_SEARCH) && $USE_SOLR_SEARCH === 1) {
+	$recCnt = array_key_exists('recordcount',$_REQUEST) && is_numeric($_REQUEST['recordcount'])
+		? (filter_var($_REQUEST['recordcount'], FILTER_SANITIZE_NUMBER_INT) ?? 15000)
+		: 15000;
+	$hasResults = $recCnt > 0 && $recCnt <= $recLimit;
+	$searchVar = 'cntperpage=' . $cntPerPage . '&recordlimit=' . $recLimit . '&recordcount=' . $recCnt;
+} else {
+	$mapManager = new OccurrenceMapManager();
+	$searchVar = $mapManager->getQueryTermStr();
+	$recCnt = $mapManager->getRecordCnt();
 
-if(!$recLimit || $recCnt < $recLimit){
-	$occArr = $mapManager->getOccurrenceArr($pageNumber, $cntPerPage);
+	if(!$recLimit || $recCnt < $recLimit){
+		$occArr = $mapManager->getOccurrenceArr($pageNumber, $cntPerPage);
+	}
+	$hasResults = !!$occArr;
 }
 ?>
 <div id="queryrecordsdiv" style="font-size: 1rem">
@@ -89,7 +98,7 @@ if(!$recLimit || $recCnt < $recLimit){
 		$paginationStr .= '</div><div style="clear:both;"><hr/></div></div>';
 		echo $paginationStr;
 
-		if($occArr){
+		if($hasResults){
 			?>
 			<form name="selectform" id="selectform" action="" method="post" onsubmit="" target="_blank">
 				<table class="styledtable" style="font-size:.9rem;">
@@ -106,6 +115,12 @@ if(!$recLimit || $recCnt < $recLimit){
 						<th><?=$LANG['MAP_LINK']?></th>
 					</tr>
 					<?php
+					if (isset($USE_SOLR_SEARCH) && $USE_SOLR_SEARCH === 1) {
+						// if SOLR search is on, we generate the table rows dynamically in JS instead of in this file
+						// see renderOccurrenceRows in collections.map.index.OregonFlora.js
+						// this needs to be kept up to date if there are changes to the row HTML below
+						echo '{{ROWS_PLACEHOLDER}}';
+					}
 					$trCnt = 0;
 					foreach($occArr as $occId => $recArr){
 						$trCnt++;
