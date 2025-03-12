@@ -1738,7 +1738,7 @@ if(isset($_REQUEST['llpoint'])) {
 				const solrqString = await buildSOLRQString(body);
 				const { recordCount, hiddenFound } = await getRecordCountFromSOLR(solrqString);
 				if (hiddenFound) {
-					alert('You need to be logged in with rare species privileges to view the full distribution. Rare taxa in these search results are hidden unless you are logged in.');
+					alert('Search results for some rare taxa are hidden. To view all results, you must be logged into an account with rare species privileges.');
 				}
 				const response = await loadPointsFromSOLR(solrqString, recordCount);
 				return convertSOLRResponse(response);
