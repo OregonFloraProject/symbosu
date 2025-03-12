@@ -1735,15 +1735,7 @@ if(isset($_REQUEST['llpoint'])) {
 				const url = host? `${host}/collections/map/rpc/searchCollections.php`: 'rpc/searchCollections.php'
 
 <?php if (isset($USE_SOLR_SEARCH) && $USE_SOLR_SEARCH === 1) { ?>
-				getCollectionParams(body);
-				await prepareTaxaParamsAsync(body);
-				getTextParams(body);
-				getGeographyParams(body);
-
-				let solrqString = '';
-				if(solrqArr.length > 0 || solrgeoqArr.length > 0){
-					solrqString = buildSOLRQString();
-				}
+				const solrqString = await buildSOLRQString(body);
 				const { recordCount, hiddenFound } = await getRecordCountFromSOLR(solrqString);
 				if (hiddenFound) {
 					alert('You need to be logged in with rare species privileges to view the full distribution. Rare taxa in these search results are hidden unless you are logged in.');

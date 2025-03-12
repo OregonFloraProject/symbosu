@@ -1,16 +1,10 @@
 // OregonFlora extensions for using SOLR search on collections/map/index
 
-let cqlArr = [];
-let solrqArr = [];
-let solrgeoqArr = [];
-
 function getCollectionParams(formData) {
-  var dbs = formData.getAll('db[]');
-  var c = false;
-  var all = false;
-  var collid = '';
-  var cqlfrag = '';
-  var solrqfrag = '';
+  const dbs = formData.getAll('db[]');
+  let c = false;
+  let all = false;
+  let collid = '';
   for (const db of dbs) {
     if (db === 'all') {
       all = true;
@@ -21,23 +15,22 @@ function getCollectionParams(formData) {
     }
   }
   if (all == false && c == true) {
-    if (collid.substr(collid.length - 1, collid.length) == ',') {
-      collid = collid.substr(0, collid.length - 1);
+    if (collid.substring(collid.length - 1, collid.length) == ',') {
+      collid = collid.substring(0, collid.length - 1);
     }
-    cqlfrag = '(collid IN(' + collid + '))';
-    cqlArr.push(cqlfrag);
-    solrqfrag = '(collid:(' + collid + '))';
-    solrqArr.push(solrqfrag);
-    return true;
+    return {
+      cql: ['(collid IN(' + collid + '))'],
+      solrq: ['(collid:(' + collid + '))'],
+    };
   } else if (all == false && c == false) {
     alert('Please choose at least one collection');
-    return false;
+    return { error: true };
   } else {
-    return true;
+    return { cql: [], solrq: [] };
   }
 }
 
-async function prepareTaxaDataAsync(taxaArr) {
+async function prepareTaxaDataAsync(taxaArr, taxontype, thes) {
   const url = '../../spatial/rpc/gettaxalinks.php';
   const taxaArrStr = JSON.stringify(taxaArr);
   const params =
@@ -51,35 +44,33 @@ async function prepareTaxaDataAsync(taxaArr) {
 }
 
 async function prepareTaxaParamsAsync(formData) {
-  var taxaval = formData.get('taxa').trim();
+  const taxaval = formData.get('taxa').trim();
   if (taxaval) {
-    var taxavals = taxaval.split(',');
-    var taxaCqlString = '';
-    var taxaSolrqString = '';
-    taxaArr = [];
-    taxontype = formData.get('taxontype');
-    thes = formData.get('usethes') === '1';
+    const taxavals = taxaval.split(',');
+    let taxaCqlString = '';
+    let taxaSolrqString = '';
+    let taxonNames = [];
+    const taxontype = formData.get('taxontype');
+    const thes = formData.get('usethes') === '1';
     for (i in taxavals) {
-      var name = taxavals[i].trim();
+      let name = taxavals[i].trim();
       if (taxontype === '1') {
         // remove search type tag from autofill
         const splitArr = name.split(': ');
         name = splitArr[splitArr.length - 1];
       }
-      taxaArr.push(name);
+      taxonNames.push(name);
     }
-    taxaArr = await prepareTaxaDataAsync(taxaArr);
+    const taxaArr = await prepareTaxaDataAsync(taxonNames, taxontype, thes);
     if (taxaArr) {
-      var taxaCqlString = '';
-      var taxaSolrqString = '';
       for (i in taxaArr) {
         if (taxontype == 4) {
           taxaCqlString = ' OR parenttid = ' + i;
           taxaSolrqString = ' OR (parenttid:' + i + ')';
         } else {
           if (taxontype == 5) {
-            var famArr = [];
-            var scinameArr = [];
+            let famArr = [];
+            let scinameArr = [];
             if (taxaArr[i]['families']) {
               famArr = taxaArr[i]['families'];
             }
@@ -106,16 +97,16 @@ async function prepareTaxaParamsAsync(formData) {
           } else {
             if (
               (taxontype == 2 || taxontype == 1) &&
-              (i.substr(i.length - 5) == 'aceae' ||
-                i.substr(i.length - 4) == 'idae')
+              (i.substring(i.length - 5) == 'aceae' ||
+                i.substring(i.length - 4) == 'idae')
             ) {
               taxaSolrqString += ' OR (family:' + i + ')';
               taxaCqlString += " OR family = '" + i + "'";
             }
             if (
               (taxontype == 3 || taxontype == 1) &&
-              (i.substr(i.length - 5) != 'aceae' ||
-                i.substr(i.length - 4) != 'idae')
+              (i.substring(i.length - 5) != 'aceae' ||
+                i.substring(i.length - 4) != 'idae')
             ) {
               taxaSolrqString +=
                 ' OR ((sciname:' +
@@ -127,9 +118,8 @@ async function prepareTaxaParamsAsync(formData) {
             }
           }
           if (taxaArr[i]['synonyms']) {
-            var synArr = [];
-            synArr = taxaArr[i]['synonyms'];
-            var tidArr = [];
+            let synArr = taxaArr[i]['synonyms'];
+            let tidArr = [];
             if (taxontype == 1 || taxontype == 2 || taxontype == 5) {
               for (syn in synArr) {
                 if (
@@ -150,68 +140,65 @@ async function prepareTaxaParamsAsync(formData) {
           }
         }
       }
-      taxaCqlString = taxaCqlString.substr(4, taxaCqlString.length);
-      taxaSolrqString = taxaSolrqString.substr(4, taxaSolrqString.length);
-      cqlfrag = '((' + taxaCqlString + '))';
-      cqlArr.push(cqlfrag);
-      solrqfrag = '(' + taxaSolrqString + ')';
-      solrqArr.push(solrqfrag);
+      taxaCqlString = taxaCqlString.substring(4, taxaCqlString.length);
+      taxaSolrqString = taxaSolrqString.substring(4, taxaSolrqString.length);
+      return {
+        cql: ['((' + taxaCqlString + '))'],
+        solrq: ['(' + taxaSolrqString + ')'],
+      };
     }
   }
+  return { cql: [], solrq: [] };
 }
 
 function getTextParams(formData) {
-  var cqlfrag = '';
-  var solrqfrag = '';
-  var countryval = formData.get('country').trim();
-  var stateval = formData.get('state').trim();
-  var countyval = formData.get('county').trim();
-  var localityval = formData.get('local').trim();
-  var collectorval = formData.get('collector').trim();
-  var collnumval = formData.get('collnum').trim();
-  var colldate1 = formData.get('eventdate1').trim();
-  var colldate2 = formData.get('eventdate2').trim();
-  var catnumval = formData.get('catnum').trim();
-  var includeothercatnum = formData.get('includeothercatnum') === '1';
-  var typestatus = formData.get('typestatus') === '1';
-  var hasimages = formData.get('hasimages') === '1';
-  var hasgenetic = formData.get('hasgenetic') === '1';
-  // var includecult = formData.get('includecult') === '1'; // TODO: add this capability
+  let cqlArr = [];
+  let solrqArr = [];
+  const countryval = formData.get('country').trim();
+  const stateval = formData.get('state').trim();
+  const countyval = formData.get('county').trim();
+  const localityval = formData.get('local').trim();
+  const collectorval = formData.get('collector').trim();
+  const collnumval = formData.get('collnum').trim();
+  let colldate1 = formData.get('eventdate1').trim();
+  let colldate2 = formData.get('eventdate2').trim();
+  const catnumval = formData.get('catnum').trim();
+  const includeothercatnum = formData.get('includeothercatnum') === '1';
+  const typestatus = formData.get('typestatus') === '1';
+  const hasimages = formData.get('hasimages') === '1';
+  const hasgenetic = formData.get('hasgenetic') === '1';
+  // const includecult = formData.get('includecult') === '1'; // TODO: add this capability
 
   if (countryval) {
-    var countryvals = countryval.split(',');
-    var countryCqlString = '';
-    var countrySolrqString = '';
+    const countryvals = countryval.split(',');
+    let countryCqlString = '';
+    let countrySolrqString = '';
     for (i = 0; i < countryvals.length; i++) {
       if (countryCqlString) countryCqlString += ' OR ';
       if (countrySolrqString) countrySolrqString += ' OR ';
       countryCqlString += "(country = '" + countryvals[i] + "')";
       countrySolrqString += '(country:"' + countryvals[i] + '")';
     }
-    cqlfrag = '(' + countryCqlString + ')';
-    cqlArr.push(cqlfrag);
-    solrqfrag = '(' + countrySolrqString + ')';
-    solrqArr.push(solrqfrag);
+    cqlArr.push('(' + countryCqlString + ')');
+    solrqArr.push('(' + countrySolrqString + ')');
   }
   if (stateval) {
-    var statevals = stateval.split(',');
-    var stateCqlString = '';
-    var stateSolrqString = '';
+    const statevals = stateval.split(',');
+    let stateCqlString = '';
+    let stateSolrqString = '';
     for (i = 0; i < statevals.length; i++) {
       if (stateCqlString) stateCqlString += ' OR ';
       if (stateSolrqString) stateSolrqString += ' OR ';
       stateCqlString += "(StateProvince = '" + statevals[i] + "')";
       stateSolrqString += '(StateProvince:"' + statevals[i] + '")';
     }
-    cqlfrag = '(' + stateCqlString + ')';
-    cqlArr.push(cqlfrag);
-    solrqfrag = '(' + stateSolrqString + ')';
-    solrqArr.push(solrqfrag);
+    cqlArr.push('(' + stateCqlString + ')');
+    solrqArr.push('(' + stateSolrqString + ')');
   }
   if (countyval) {
-    var countyvals = countyval.split(',');
-    var countyCqlString = '';
-    var countySolrqString = '';
+    const countyvals = countyval.split(',');
+    let countyCqlString = '';
+    let countySolrqString = '';
     for (i = 0; i < countyvals.length; i++) {
       if (countyCqlString) countyCqlString += ' OR ';
       if (countySolrqString) countySolrqString += ' OR ';
@@ -219,24 +206,22 @@ function getTextParams(formData) {
       countySolrqString +=
         '(county:' + countyvals[i].replace(' ', '\\ ') + '*)';
     }
-    cqlfrag = '(' + countyCqlString + ')';
-    cqlArr.push(cqlfrag);
-    solrqfrag = '(' + countySolrqString + ')';
-    solrqArr.push(solrqfrag);
+    cqlArr.push('(' + countyCqlString + ')');
+    solrqArr.push('(' + countySolrqString + ')');
   }
   if (localityval) {
-    var localityvals = localityval.split(',');
-    var localityCqlString = '';
-    var localitySolrqString = '';
+    const localityvals = localityval.split(',');
+    let localityCqlString = '';
+    let localitySolrqString = '';
     for (i = 0; i < localityvals.length; i++) {
       if (localityCqlString) localityCqlString += ' OR ';
       if (localitySolrqString) localitySolrqString += ' OR ';
       localityCqlString += '(';
       localitySolrqString += '(';
       if (localityvals[i].indexOf(' ') !== -1) {
-        var templocalityCqlString = '';
-        var templocalitySolrqString = '';
-        var vals = localityvals[i].split(' ');
+        let templocalityCqlString = '';
+        let templocalitySolrqString = '';
+        const vals = localityvals[i].split(' ');
         for (i = 0; i < vals.length; i++) {
           if (templocalityCqlString) templocalityCqlString += ' AND ';
           if (templocalitySolrqString) templocalitySolrqString += ' AND ';
@@ -253,15 +238,13 @@ function getTextParams(formData) {
       localityCqlString += ')';
       localitySolrqString += ')';
     }
-    cqlfrag = '(' + localityCqlString + ')';
-    cqlArr.push(cqlfrag);
-    solrqfrag = '(' + localitySolrqString + ')';
-    solrqArr.push(solrqfrag);
+    cqlArr.push('(' + localityCqlString + ')');
+    solrqArr.push('(' + localitySolrqString + ')');
   }
   if (collectorval) {
-    var collectorvals = collectorval.split(',');
-    var collectorCqlString = '';
-    var collectorSolrqString = '';
+    const collectorvals = collectorval.split(',');
+    let collectorCqlString = '';
+    let collectorSolrqString = '';
     if (collectorvals.length == 1) {
       collectorCqlString = "(recordedBy LIKE '%" + collectorvals[0] + "%')";
       collectorSolrqString =
@@ -273,29 +256,29 @@ function getTextParams(formData) {
         collectorSolrqString +=
           ' OR (recordedBy:*' + collectorvals[i].replace(' ', '\\ ') + '*)';
       }
-      collectorCqlString = collectorCqlString.substr(
+      collectorCqlString = collectorCqlString.substring(
         4,
         collectorCqlString.length
       );
-      collectorSolrqString = collectorSolrqString.substr(
+      collectorSolrqString = collectorSolrqString.substring(
         4,
         collectorSolrqString.length
       );
     }
-    cqlfrag = '(' + collectorCqlString + ')';
-    cqlArr.push(cqlfrag);
-    solrqfrag = '(' + collectorSolrqString + ')';
-    solrqArr.push(solrqfrag);
+    cqlArr.push('(' + collectorCqlString + ')');
+    solrqArr.push('(' + collectorSolrqString + ')');
   }
   if (collnumval) {
-    var collnumvals = collnumval.split(',');
-    var collnumCqlString = '';
-    var collnumSolrqString = '';
+    const collnumvals = collnumval.split(',');
+    let collnumCqlString = '';
+    let collnumSolrqString = '';
     for (i in collnumvals) {
       if (collnumvals[i].indexOf(' - ') !== -1) {
-        var pos = collnumvals[i].indexOf(' - ');
-        var t1 = collnumvals[i].substr(0, pos).trim();
-        var t2 = collnumvals[i].substr(pos + 3, collnumvals[i].length).trim();
+        const pos = collnumvals[i].indexOf(' - ');
+        const t1 = collnumvals[i].substring(0, pos).trim();
+        const t2 = collnumvals[i]
+          .substring(pos + 3, collnumvals[i].length)
+          .trim();
         if (!isNaN(t1) && !isNaN(t2)) {
           collnumCqlString +=
             ' OR (recordNumber BETWEEN ' + t1 + ' AND ' + t2 + ')';
@@ -311,19 +294,17 @@ function getTextParams(formData) {
         collnumSolrqString += ' OR (recordNumber:"' + collnumvals[i] + '")';
       }
     }
-    collnumCqlString = collnumCqlString.substr(4, collnumCqlString.length);
-    collnumSolrqString = collnumSolrqString.substr(
+    collnumCqlString = collnumCqlString.substring(4, collnumCqlString.length);
+    collnumSolrqString = collnumSolrqString.substring(
       4,
       collnumSolrqString.length
     );
-    cqlfrag = '(' + collnumCqlString + ')';
-    cqlArr.push(cqlfrag);
-    solrqfrag = '(' + collnumSolrqString + ')';
-    solrqArr.push(solrqfrag);
+    cqlArr.push('(' + collnumCqlString + ')');
+    solrqArr.push('(' + collnumSolrqString + ')');
   }
   if (colldate1 || colldate2) {
-    var colldateCqlString = '';
-    var colldateSolrqString = '';
+    let colldateCqlString = '';
+    let colldateSolrqString = '';
     if (!colldate1 && colldate2) {
       colldate1 = colldate2;
       colldate2 = '';
@@ -342,23 +323,25 @@ function getTextParams(formData) {
         colldate2 +
         'T23:59:59.999Z])';
     } else {
-      if (colldate1.substr(colldate1.length - 5, colldate1.length) == '00-00') {
-        colldateCqlString += '(coll_year = ' + colldate1.substr(0, 4) + ')';
-        colldateSolrqString += '(coll_year:' + colldate1.substr(0, 4) + ')';
+      if (
+        colldate1.substring(colldate1.length - 5, colldate1.length) == '00-00'
+      ) {
+        colldateCqlString += '(coll_year = ' + colldate1.substring(0, 4) + ')';
+        colldateSolrqString += '(coll_year:' + colldate1.substring(0, 4) + ')';
       } else if (
-        colldate1.substr(colldate1.length - 2, colldate1.length) == '00'
+        colldate1.substring(colldate1.length - 2, colldate1.length) == '00'
       ) {
         colldateCqlString +=
           '((coll_year = ' +
-          colldate1.substr(0, 4) +
+          colldate1.substring(0, 4) +
           ') AND (coll_month = ' +
-          colldate1.substr(5, 7) +
+          colldate1.substring(5, 7) +
           '))';
         colldateSolrqString +=
           '((coll_year:' +
-          colldate1.substr(0, 4) +
+          colldate1.substring(0, 4) +
           ') AND (coll_month:' +
-          colldate1.substr(5, 7) +
+          colldate1.substring(5, 7) +
           '))';
       } else {
         colldateCqlString += "(eventDate = '" + colldate1 + "')";
@@ -370,15 +353,13 @@ function getTextParams(formData) {
           'T23:59:59.999Z])';
       }
     }
-    cqlfrag = colldateCqlString;
-    cqlArr.push(cqlfrag);
-    solrqfrag = '(' + colldateSolrqString + ')';
-    solrqArr.push(solrqfrag);
+    cqlArr.push(colldateCqlString);
+    solrqArr.push('(' + colldateSolrqString + ')');
   }
   if (catnumval) {
-    var catnumvals = catnumval.split(',');
-    var catnumCqlString = '';
-    var catnumSolrqString = '';
+    const catnumvals = catnumval.split(',');
+    let catnumCqlString = '';
+    let catnumSolrqString = '';
     for (i = 0; i < catnumvals.length; i++) {
       if (catnumCqlString) catnumCqlString += ' OR ';
       if (catnumSolrqString) catnumSolrqString += ' OR ';
@@ -391,38 +372,26 @@ function getTextParams(formData) {
           ' OR (otherCatalogNumbers:"' + catnumvals[i] + '")';
       }
     }
-    cqlfrag = '(' + catnumCqlString + ')';
-    cqlArr.push(cqlfrag);
-    solrqfrag = '(' + catnumSolrqString + ')';
-    solrqArr.push(solrqfrag);
+    cqlArr.push('(' + catnumCqlString + ')');
+    solrqArr.push('(' + catnumSolrqString + ')');
   }
   if (typestatus) {
-    var typestatusCqlString = "typeStatus LIKE '_%'";
-    var typestatusSolrqString = '(typeStatus:[* TO *])';
-    cqlfrag = '(' + typestatusCqlString + ')';
-    cqlArr.push(cqlfrag);
-    solrqfrag = '(' + typestatusSolrqString + ')';
-    solrqArr.push(solrqfrag);
+    cqlArr.push("(typeStatus LIKE '_%')");
+    solrqArr.push('((typeStatus:[* TO *]))');
   }
   if (hasimages) {
-    var hasimagesCqlString = "imgid LIKE '_%'";
-    var hasimagesSolrqString = '(imgid:[* TO *])';
-    cqlfrag = '(' + hasimagesCqlString + ')';
-    cqlArr.push(cqlfrag);
-    solrqfrag = '(' + hasimagesSolrqString + ')';
-    solrqArr.push(solrqfrag);
+    cqlArr.push("(imgid LIKE '_%')");
+    solrqArr.push('((imgid:[* TO *]))');
   }
   if (hasgenetic) {
-    var hasgeneticCqlString = "resourcename LIKE '_%'";
-    var hasgeneticSolrqString = '(resourcename:[* TO *])';
-    cqlfrag = '(' + hasgeneticCqlString + ')';
-    cqlArr.push(cqlfrag);
-    solrqfrag = '(' + hasgeneticSolrqString + ')';
-    solrqArr.push(solrqfrag);
+    cqlArr.push("(resourcename LIKE '_%')");
+    solrqArr.push('((resourcename:[* TO *]))');
   }
+  return { cql: cqlArr, solrq: solrqArr };
 }
 
 function getGeographyParams(formData) {
+  let solrgeoqArr = [];
   const polygon = formData.get('polycoords');
   if (polygon) {
     solrgeoqArr.push('"Intersects(' + polygon + ')"');
@@ -461,17 +430,154 @@ function getGeographyParams(formData) {
       `"Intersects(POLYGON((${leftlong} ${upperlat},${rightlong} ${upperlat},${rightlong} ${bottomlat},${leftlong} ${bottomlat},${leftlong} ${upperlat})))"`
     );
   }
+  return { solrgeoqArr };
 }
 
-function buildSOLRQString() {
-  var newsolrqString = 'q=';
-  var tempqStr = '';
-  var tempfqStr = '';
+function parseDate(dateStr) {
+  let y = 0;
+  let m = 0;
+  let d = 0;
+  try {
+    const validformat1 = /^\d{4}-\d{1,2}-\d{1,2}$/; //Format: yyyy-mm-dd
+    const validformat2 = /^\d{1,2}\/\d{1,2}\/\d{2,4}$/; //Format: mm/dd/yyyy
+    const validformat3 = /^\d{1,2} \D+ \d{2,4}$/; //Format: dd mmm yyyy
+    if (validformat1.test(dateStr)) {
+      const dateTokens = dateStr.split('-');
+      y = dateTokens[0];
+      m = dateTokens[1];
+      d = dateTokens[2];
+    } else if (validformat2.test(dateStr)) {
+      const dateTokens = dateStr.split('/');
+      m = dateTokens[0];
+      d = dateTokens[1];
+      y = dateTokens[2];
+      if (y.length == 2) {
+        if (y < 20) {
+          y = '20' + y;
+        } else {
+          y = '19' + y;
+        }
+      }
+    } else if (validformat3.test(dateStr)) {
+      const dateTokens = dateStr.split(' ');
+      d = dateTokens[0];
+      mText = dateTokens[1];
+      y = dateTokens[2];
+      if (y.length == 2) {
+        if (y < 15) {
+          y = '20' + y;
+        } else {
+          y = '19' + y;
+        }
+      }
+      mText = mText.substring(0, 3);
+      mText = mText.toLowerCase();
+      const mNames = new Array(
+        'jan',
+        'feb',
+        'mar',
+        'apr',
+        'may',
+        'jun',
+        'jul',
+        'aug',
+        'sep',
+        'oct',
+        'nov',
+        'dec'
+      );
+      m = mNames.indexOf(mText) + 1;
+    } else if (dateObj instanceof Date && dateObj != 'Invalid Date') {
+      const dateObj = new Date(dateStr);
+      y = dateObj.getFullYear();
+      m = dateObj.getMonth() + 1;
+      d = dateObj.getDate();
+    }
+  } catch (ex) {}
+  let retArr = [];
+  retArr['y'] = y.toString();
+  retArr['m'] = m.toString();
+  retArr['d'] = d.toString();
+  return retArr;
+}
+
+function formatCheckDate(dateStr) {
+  if (dateStr != '') {
+    let dateArr = parseDate(dateStr);
+    if (dateArr['y'] == 0) {
+      alert(
+        'Please use the following date formats: yyyy-mm-dd, mm/dd/yyyy, or dd mmm yyyy'
+      );
+      return false;
+    } else {
+      //Invalid format is month > 12
+      if (dateArr['m'] > 12) {
+        alert(
+          'Month cannot be greater than 12. Note that the format should be YYYY-MM-DD'
+        );
+        return false;
+      }
+
+      //Check to see if day is valid
+      if (dateArr['d'] > 28) {
+        if (
+          dateArr['d'] > 31 ||
+          (dateArr['d'] == 30 && dateArr['m'] == 2) ||
+          (dateArr['d'] == 31 &&
+            (dateArr['m'] == 4 ||
+              dateArr['m'] == 6 ||
+              dateArr['m'] == 9 ||
+              dateArr['m'] == 11))
+        ) {
+          alert('The Day (' + dateArr['d'] + ') is invalid for that month');
+          return false;
+        }
+      }
+
+      //Enter date into date fields
+      let mStr = dateArr['m'];
+      if (mStr.length == 1) {
+        mStr = '0' + mStr;
+      }
+      let dStr = dateArr['d'];
+      if (dStr.length == 1) {
+        dStr = '0' + dStr;
+      }
+      return dateArr['y'] + '-' + mStr + '-' + dStr;
+    }
+  }
+}
+
+async function buildSOLRQString(formData) {
+  const collParams = getCollectionParams(formData);
+  const taxaParams = await prepareTaxaParamsAsync(formData);
+  const textParams = getTextParams(formData);
+  const geoParams = getGeographyParams(formData);
+
+  if (
+    collParams.error ||
+    taxaParams.error ||
+    textParams.error ||
+    geoParams.error
+  ) {
+    return; // alert already shown
+  }
+
+  const solrqArr = collParams.solrq.concat(taxaParams.solrq, textParams.solrq);
+  const { solrgeoqArr } = geoParams;
+
+  if (!solrqArr.length && !solrgeoqArr.length) {
+    return; // alert already shown
+  }
+
+  let newsolrqString = 'q=';
+  let tempqStr = '';
+  let tempfqStr = '';
   if (solrqArr.length > 0) {
     for (i in solrqArr) {
       tempqStr += ' AND ' + solrqArr[i];
     }
-    tempqStr = tempqStr.substr(5, tempqStr.length);
+    tempqStr = tempqStr.substring(5, tempqStr.length);
     tempqStr +=
       ' AND (decimalLatitude:[* TO *] AND decimalLongitude:[* TO *] AND sciname:[* TO *])';
     newsolrqString += tempqStr;
@@ -483,7 +589,7 @@ function buildSOLRQString() {
     for (i in solrgeoqArr) {
       tempfqStr += ' OR geo:' + solrgeoqArr[i];
     }
-    tempfqStr = tempfqStr.substr(4, tempfqStr.length);
+    tempfqStr = tempfqStr.substring(4, tempfqStr.length);
     newsolrqString += '&fq=' + tempfqStr;
   }
   return newsolrqString;
@@ -571,7 +677,7 @@ function convertSOLRResponse(res) {
       catnum: properties.catalogNumber,
       eventdate:
         properties.eventDate &&
-        properties.eventDate.substr(0, properties.eventDate.indexOf('T')),
+        properties.eventDate.substring(0, properties.eventDate.indexOf('T')),
       sciname: properties.sciname,
     };
   });
