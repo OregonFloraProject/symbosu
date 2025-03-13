@@ -192,8 +192,7 @@ function addOverlays(map) {
 		.then(kmltext => addKMLLayer(kmltext, 'Ecoregions', map, false));
 }
 
-function addKMLLayer(text, name, map, visible = true) {
-	// Create new kml overlay
+function addKMLLayer(text, name, map, userAdded = true) {
 	const parser = new DOMParser();
 	const kml = parser.parseFromString(text, 'text/xml');
 	const layer = new L.KML(kml);
@@ -209,8 +208,17 @@ function addKMLLayer(text, name, map, visible = true) {
 	// Add to layer controls
 	map.mapLayer.layerControl.addOverlay(layer, name);
 
-	if (visible) {
-		// Add to map and adjust bounds to show the new layer
+	if (userAdded) {
+		// The user has added this file to the map themselves; we standardize the style before
+		// displaying it in case the default style is unhelpful or poorly defined.
+		layer.setStyle({
+			stroke: true,
+			color: '#000000',
+			weight: 3,
+			fill: true,
+			fillColor: '#aaaaaa',
+			fillOpacity: 0.3
+		});
 		layer.addTo(map.mapLayer);
 		map.mapLayer.fitBounds(layer.getBounds());
 	}
