@@ -40,7 +40,7 @@ function addOregonFlora(map, fitBounds = true){
 			
 	});
 
-	setUpDragAndDrop(map);
+	setUpUserFiles(map);
 }
 
 
@@ -224,8 +224,15 @@ function addKMLLayer(text, name, map, userAdded = true) {
 	}
 }
 
+function setUpUserFiles(map) {
+	// hook up file upload input to map object
+	document.addEventListener('fileinput', (event) => {
+		if (event?.detail?.file) {
+			processFile(event.detail.file, map);
+		}
+	});
 
-function setUpDragAndDrop(map) {
+	// set up drag & drop
 	document.getElementById('site-content').ondrop = (event) => {
 		event.preventDefault();
 
@@ -259,6 +266,15 @@ function processFile(file, map) {
 	}
 	// TODO: add geojson, shp, dbf support
 	return false;
+}
+
+// listener for file input form element
+function onFileInputChange(element) {
+	if (element?.files?.[0]) {
+		document.dispatchEvent(new CustomEvent('fileinput', { detail: { file: element.files[0] } }));
+		$('#tabs1').tabs('option', 'active', 1);
+		$('#kmlinstructions').show();
+	}
 }
 
 

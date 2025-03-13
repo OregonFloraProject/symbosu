@@ -96,7 +96,7 @@ button {
 }
 
 /* Map page styles */
-#mapsearchform, #mapoptions, #symbology, #maptaxalist {
+#mapsearchform, #mapoptions, #symbology, #maptaxalist, #kmlinput {
   font-size: .9rem;
 }
 
