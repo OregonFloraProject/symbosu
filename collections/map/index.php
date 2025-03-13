@@ -328,6 +328,10 @@ if(isset($_REQUEST['llpoint'])) {
 		//Indciates if clustering should be drawn. Only comes into effect after redraw or refreshes
 		let clusteroff = true;
 
+		// Indicates if the user has added a KML file with polygons; used to determine whether to show
+		// a confirmation alert if the user tries to search without having selected a polygon
+		let userAddedKML = false;
+
 		const colorChange = new Event("colorchange",  {
 			bubbles: true,
 			cancelable: true,
@@ -1990,6 +1994,7 @@ if(isset($_REQUEST['llpoint'])) {
 									<li><a href="#searchcollections"><span><?php echo htmlspecialchars($LANG['COLLECTIONS'], ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE); ?></span></a></li>
 									<li><a href="#searchcriteria"><span><?php echo htmlspecialchars($LANG['CRITERIA'], ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE); ?></span></a></li>
 									<li><a href="#mapoptions"><span><?php echo htmlspecialchars((isset($LANG['MAP_OPTIONS'])?$LANG['MAP_OPTIONS']:'Map Options'), ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE); ?></span></a></li>
+									<li><a href="#kmlinput"><span><?php echo htmlspecialchars((isset($LANG['KML_UPLOAD'])?$LANG['KML_UPLOAD']:'KML Upload'), ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE); ?></span></a></li>
 								</ul>
 								<div id="searchcollections">
 									<div >
@@ -2129,8 +2134,14 @@ Record Limit:
 									<div id="shapecriteria">
 										<div id="noshapecriteria" style="display:<?php echo ((!$mapManager->getSearchTerm('polycoords') && !$mapManager->getSearchTerm('upperlat'))?'block':'none'); ?>;">
 											<div id="geocriteria" style="display:<?php echo ((!$mapManager->getSearchTerm('polycoords') && !$distFromMe && !$mapManager->getSearchTerm('pointlat') && !$mapManager->getSearchTerm('upperlat'))?'block':'none'); ?>;">
-												<div>
+												<div id="shapetoolsinstructions">
 													<?php echo (isset($LANG['SHAPE_TOOLS'])?$LANG['SHAPE_TOOLS']:'Use the shape tools on the map to select occurrences within a given shape'); ?>.
+												</div>
+												<div id="kmlinstructions" style="margin-top:0.5rem;font-weight:600;display:none">
+													Click on a polygon to select occurrences within that polygon.
+													<div id="removekmllayer" style="margin-top:5px;">
+														<button data-role="none" type="button" onclick="document.dispatchEvent(new CustomEvent('clearkmllayers'));">Remove All KML Layers</button>
+													</div>
 												</div>
 											</div>
 											<div id="distancegeocriteria" style="display:<?php echo ($distFromMe?'block':'none'); ?>;">
@@ -2297,6 +2308,22 @@ Record Limit:
 										</div>
 									</div>
 								</fieldset>
+							</div>
+							<div id="kmlinput">
+								<div style="margin-top:0.5rem;margin-bottom:0.5rem">
+									<div>You can restrict your search to a polygon from a KML file.</div>
+									<div style="margin-top:0.5rem">Select a KML file from your computer to add polygons it contains to the map.</div>
+									<div style="margin-top:0.5rem">Then, click on a polygon to select it.</div>
+								</div>
+								<input
+									type="file"
+									name="kmlfileinput"
+									id="kmlfileinput"
+									accept=".kml,application/vnd.google-earth.kml+xml"
+									onchange="onFileInputChange(this);"
+									style="display:none;"
+								/>
+								<button onclick="document.getElementById('kmlfileinput').click()">Select File</button>
 							</div>
 							<form style="display:none;" name="csvcontrolform" id="csvcontrolform" action="csvdownloadhandler.php" method="post" onsubmit="">
 								<input data-role="none" name="selectionscsv" id="selectionscsv" type="hidden" value="" />

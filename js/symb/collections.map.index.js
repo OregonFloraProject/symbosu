@@ -266,9 +266,22 @@ function verifyCollForm(f) {
     f.catnum.value == ""
   ) {
     const message = (f.country.value == "" && f.state.value == "")
-      ? "Please fill in at least one search parameter!"
-      : "The parameters you have entered are too broad. Please refine your search.";
+      ? (userAddedKML
+          ? "Please select a polygon and/or fill in at least one search parameter!"
+          : "Please fill in at least one search parameter!")
+      : (userAddedKML
+          ? "The parameters you have entered are too broad. Please select a polygon or fill in more parameters to refine your search."
+          : "The parameters you have entered are too broad. Please refine your search.");
     alert(message);
+    return false;
+  } else if (
+    // if the user has added a KML file, but hasn't selected a polygon or shape, confirm this
+    userAddedKML &&
+    !document.getElementById("polycoords").value &&
+    !document.getElementById("pointlat").value &&
+    !document.getElementById("upperlat").value &&
+    !window.confirm("It looks like you've uploaded a KML file, but haven't selected any polygons to search. Would you like to search anyway?")
+  ) {
     return false;
   }
 
