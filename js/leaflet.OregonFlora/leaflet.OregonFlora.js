@@ -40,7 +40,7 @@ function addOregonFlora(map, fitBounds = true){
 			
 	});
 
-	setUpDragAndDrop(map);
+	setUpUserFiles(map);
 }
 
 
@@ -192,6 +192,8 @@ function addOverlays(map) {
 		.then(kmltext => addKMLLayer(kmltext, 'Ecoregions', map, false));
 }
 
+let _userAddedKMLLayers = [];
+
 function addKMLLayer(text, name, map, userAdded = true) {
 	const parser = new DOMParser();
 	const kml = parser.parseFromString(text, 'text/xml');
@@ -199,12 +201,14 @@ function addKMLLayer(text, name, map, userAdded = true) {
 
 	// Check all the layers in the KML and remove non-polygon layers.
 	// If there are no polygons in the KML, abort and alert the user
-	if (!checkKMLLayers(layer, userAdded)) {
+	if (!processLayersAndPopups(layer, userAdded)) {
 		alert('No polygons were present in the KML file. To search using a KML file, make sure it contains at least one polygon');
-		return;
+		return false;
 	}
 
-	layer.on('dblclick', (event) => {
+	// select on click for user-added polygons, on double-click for ours (since they have a popup)
+	const selectEvent = userAdded ? 'click' : 'dblclick';
+	layer.on(selectEvent, (event) => {
 		if (event.layer instanceof L.Polygon) {
 			map.clearMap();
 			map.drawShape({ type: 'polygon', latlngs: event.layer.getLatLngs()[0] });
@@ -228,25 +232,48 @@ function addKMLLayer(text, name, map, userAdded = true) {
 		});
 		layer.addTo(map.mapLayer);
 		map.mapLayer.fitBounds(layer.getBounds());
+		_userAddedKMLLayers.push(layer);
 	}
+
+	return true;
+}
+
+function clearKMLLayers(map) {
+	while (_userAddedKMLLayers.length) {
+		const layer = _userAddedKMLLayers.pop();
+		layer.remove();
+		map.mapLayer.layerControl.removeLayer(layer);
+	}
+	$('#kmlinstructions').hide();
+	$('#shapetoolsinstructions').show();
 }
 
 // Function to remove non-polygon layers from a KML LayerGroup
-function checkKMLLayers(layers, userAdded) {
+// and modify or remove the popups
+function processLayersAndPopups(layers, userAdded) {
 	let hasPolygon = false;
 	// Get an array of layers and iterate over it
 	layers.getLayers().forEach((layer) => {
 
 		// If it's a LayerGroup, recurse
 		if(layer instanceof L.LayerGroup) {
-			hasPolygon = checkKMLLayers(layer, userAdded);
+			hasPolygon = processLayersAndPopups(layer, userAdded);
 
 		// It's a polygon, so the KML has at least one polygon
 		} else if (layer instanceof L.Polygon) {
 			hasPolygon = true;
 
 			// Remove layer popup for user-added KML files
-			if (userAdded) layer.unbindPopup();
+			if (userAdded) {
+				layer.unbindPopup();
+			} else {
+				// for our KML files, add double-click instructions to popup
+				const popupContent = layer?.getPopup()?.getContent();
+				if (popupContent) {
+					const title = popupContent.substring(0, popupContent.indexOf('</h2>') + 5);
+					layer.setPopupContent(`${title}Double-click to search this polygon`);
+				}
+			}
 
 		// If it's not a layer group and not a polygon, remove it
 		} else {
@@ -256,7 +283,15 @@ function checkKMLLayers(layers, userAdded) {
 	return hasPolygon;
 }
 
-function setUpDragAndDrop(map) {
+function setUpUserFiles(map) {
+	// hook up file upload input to map object
+	document.addEventListener('fileinput', (event) => {
+		if (event?.detail?.file) {
+			processFile(event.detail.file, map);
+		}
+	});
+
+	// set up drag & drop
 	document.getElementById('site-content').ondrop = (event) => {
 		event.preventDefault();
 
@@ -273,11 +308,15 @@ function setUpDragAndDrop(map) {
 				processFile(file, map);
 			});
 		}
-	}
+	};
 
 	document.getElementById('site-content').ondragover = (event) => {
 		event.preventDefault();
-	}
+	};
+
+	document.addEventListener('clearkmllayers', () => {
+		clearKMLLayers(map);
+	});
 }
 
 function processFile(file, map) {
@@ -285,11 +324,32 @@ function processFile(file, map) {
 	const type = filenameComponents.pop();
 	const name = filenameComponents.join('');
 	if (type.toLowerCase() === 'kml') {
-		file.text().then((text) => addKMLLayer(text, name, map));
+		file.text().then((text) => {
+			const success = addKMLLayer(text, name, map);
+			if (success) {
+				userAddedKML = true;
+				changeSelectInstructions();
+			} else {
+				alert('The KML file you uploaded has no valid polygons.');
+			}
+		});
 		return true;
 	}
 	// TODO: add geojson, shp, dbf support
 	return false;
+}
+
+// listener for file input form element
+function onFileInputChange(element) {
+	if (element?.files?.[0]) {
+		document.dispatchEvent(new CustomEvent('fileinput', { detail: { file: element.files[0] } }));
+	}
+}
+
+function changeSelectInstructions() {
+	$('#tabs1').tabs('option', 'active', 1);
+	$('#shapetoolsinstructions').hide();
+	$('#kmlinstructions').show();
 }
 
 
