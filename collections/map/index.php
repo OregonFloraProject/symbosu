@@ -815,9 +815,17 @@ if(isset($_REQUEST['llpoint'])) {
 			}
 
 			function genMapGroups(records, tMap, cMap, origin) {
-				let taxon = new LeafletMapGroup("taxa", tMap);
-				let collections = new LeafletMapGroup("coll", cMap);
-				let portal = new LeafletMapGroup("portal", { [origin]: { name: origin, portalid: origin, color: generateRandColor()} });
+				/**
+				 * 2025-03-18(eric): switch to our custom LeafletSingleClusterMapGroup, which puts all
+				 * layers together in a single cluster instead of many per-layer clusters (which are
+				 * inaccessible in the Leaflet UI if perfectly overlapping).
+				 *
+				 * Since this new class is defined outside the scope of this outer method, we need to pass
+				 * references to the map object and heatmap state into the constructor.
+				 */
+				let taxon = new LeafletSingleClusterMapGroup("taxa", tMap, map, () => heatmap);
+				let collections = new LeafletSingleClusterMapGroup("coll", cMap, map, () => heatmap);
+				let portal = new LeafletSingleClusterMapGroup("portal", { [origin]: { name: origin, portalid: origin, color: generateRandColor()} }, map, () => heatmap);
 
 				for(let record of records) {
 					let marker = (record.type === "specimen"?
@@ -1051,7 +1059,7 @@ if(isset($_REQUEST['llpoint'])) {
 				cluster_type = type;
 
 				for (let {id_arr, color} of Object.values(colorMap)) {
-					updateColor(type, id_arr, color);
+					 updateColor(type, id_arr, color);
 				}
 			});
 
