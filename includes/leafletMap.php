@@ -67,7 +67,7 @@
 <script> window.jQuery || document.write('<script src="<?php echo $CLIENT_ROOT; ?>/js/jquery-3.7.1.min.js" type="text/javascript">\x3C/script>')</script>
 
 <!-- OregonFlora Leaflet Related Functions -->
-<script src= "<?php echo $CLIENT_ROOT?>/js/leaflet.OregonFlora/leaflet.OregonFlora.js" type="text/javascript"></script>
+<script src= "<?php echo $CLIENT_ROOT?>/js/leaflet.OregonFlora/leaflet.OregonFlora.js?<?php echo filemtime($SERVER_ROOT . '/js/leaflet.OregonFlora/leaflet.OregonFlora.js'); ?>" type="text/javascript"></script>
 
 <!-- Leaflet GoogleMutant Plugin for legal Google Maps -->
 <script src="https://maps.googleapis.com/maps/api/js?loading=async&key=<?php echo $GOOGLE_MAP_KEY ?>" async defer></script>
