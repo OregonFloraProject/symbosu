@@ -2342,7 +2342,11 @@ Record Limit:
 								</fieldset>
 							</div>
 							<div id="kmlinput">
-								<div style="margin-top:0.5rem;margin-bottom:0.5rem">Select a KML file to add to the map. You can then restrict your search to within a polygon by double-clicking it on the map.</div>
+								<div style="margin-top:0.5rem;margin-bottom:0.5rem">
+									<div>You can restrict your search to a polygon from a KML file.</div>
+									<div style="margin-top:0.5rem">Select a KML file from your computer to add polygons it contains to the map.</div>
+									<div style="margin-top:0.5rem">Then, double click on a polygon to select it.</div>
+								</div>
 								<input
 									type="file"
 									name="kmlfileinput"
