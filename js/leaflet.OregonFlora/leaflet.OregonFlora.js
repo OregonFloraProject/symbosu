@@ -356,6 +356,161 @@ function toggleMarkers(type){
 		}
 	})
 }
+
+/**
+ * Customized version of LeafletMapGroup that clusters all layers together in a single cluster
+ * instead of having overlapping, per-layer (e.g. per-taxon) clusters. This is meant to be a drop-in
+ * replacement for LeafletMapGroup and has the same API. It requires the `map` object to be passed
+ * in since it isn't available in the scope of the class declaration.
+ *
+ * Internally, it just holds a single layer group, rather than many layer groups consisting of a
+ * single layer each. The addLayer and removeLayer methods, instead of acting on individual layers,
+ * only act on the entire group (and are no-ops if no action is needed).
+ */
+class LeafletSingleClusterMapGroup {
+  markers = {};
+  group_name;
+  group_map;
+  map;
+  layerGroup;
+  cluster;
+
+  constructor(map, group_name, group_map) {
+    this.map = map;
+    this.group_name = group_name;
+    this.group_map = group_map;
+  }
+
+  addMarker(id, marker) {
+    if (!this.markers[id]) {
+      this.markers[id] = [marker];
+    } else {
+      this.markers[id].push(marker);
+    }
+  }
+
+  genLayer(id, cluster) {}
+
+  drawGroup() {
+    if (clusteroff) {
+      this.layerGroup.addTo(this.map.mapLayer);
+    } else if (!this.map.mapLayer.hasLayer(this.cluster)) {
+      this.cluster.addTo(this.map.mapLayer);
+    }
+  }
+
+  removeGroup() {
+    if (clusteroff) {
+      this.map.mapLayer.removeLayer(this.layerGroup);
+    } else {
+      this.map.mapLayer.removeLayer(this.cluster);
+    }
+  }
+
+  resetGroup() {
+    for (let id of Object.keys(this.group_map)) {
+      this.cluster.clearLayers();
+      this.layerGroup.clearLayers();
+      this.layerGroup = null;
+      this.markers[id] = [];
+    }
+  }
+
+  removeLayer(id) {
+    this.cluster.clearLayers();
+    this.map.mapLayer.removeLayer(this.cluster);
+    if (this.map.mapLayer.hasLayer(this.layerGroup)) {
+      this.map.mapLayer.removeLayer(this.layerGroup);
+    }
+    this.layerGroup = null;
+  }
+
+  addLayer(id) {
+    if (!this.layerGroup) {
+      const allMarkers = Object.values(this.markers).flat();
+      this.layerGroup = L.layerGroup(allMarkers);
+      this.cluster.addLayer(this.layerGroup);
+    }
+
+    if (clusteroff) {
+      if (!this.map.mapLayer.hasLayer(this.layerGroup)) {
+        this.map.mapLayer.addLayer(this.layerGroup);
+      }
+    } else if (!this.map.mapLayer.hasLayer(this.cluster)) {
+      this.cluster.addTo(this.map.mapLayer);
+    }
+  }
+
+  toggleClustering() {
+    if (clusteroff) {
+      if (this.map.mapLayer.hasLayer(this.cluster)) {
+        this.map.mapLayer.removeLayer(this.cluster);
+      }
+      this.map.mapLayer.addLayer(this.layerGroup);
+    } else {
+      this.map.mapLayer.removeLayer(this.layerGroup);
+      if (!this.map.mapLayer.hasLayer(this.cluster)) {
+        this.cluster.addTo(this.map.mapLayer);
+      }
+    }
+  }
+
+  genClusters() {
+    const clusterRendered =
+      this.cluster && this.map.mapLayer.hasLayer(this.cluster);
+    if (clusterRendered) {
+      this.map.mapLayer.removeLayer(this.cluster);
+    }
+
+    const firstId = Object.keys(this.group_map)[0]; // just use first taxon color
+    this.cluster = L.markerClusterGroup({
+      iconCreateFunction: (cluster) => {
+        // this has to be accessed inside the function in order to get changes from updateColor --
+        // which is very janky, but it works like this in the original LeafletMapGroup
+        const clusterColor = this.group_map[firstId].color;
+        let childCount = cluster.getChildCount();
+        cluster.bindTooltip(
+          `<div style="font-size:1rem">Click to expand</div>`
+        );
+        cluster.on('click', (e) => e.target.spiderfy());
+        return new L.DivIcon.CustomColor({
+          html:
+            `<div class="symbiota-cluster" style="background-color: #${clusterColor};"><span>` +
+            childCount +
+            '</span></div>',
+          className: `symbiota-cluster-div`,
+          iconSize: new L.Point(20, 20),
+          color: `#${clusterColor}77`,
+          mainColor: `#${clusterColor}`,
+        });
+      },
+      maxClusterRadius: cluster_radius,
+      zoomToBoundsOnClick: false,
+      chunkedLoading: true,
+    });
+
+    if (!this.layerGroup) {
+      const allMarkers = Object.values(this.markers).flat();
+      this.layerGroup = L.layerGroup(allMarkers);
+    }
+    this.cluster.addLayer(this.layerGroup);
+    if (!clusteroff && clusterRendered) {
+      this.cluster.addTo(this.map.mapLayer);
+    }
+  }
+
+  updateColor(id, color) {
+    this.group_map[id].color = color;
+
+    for (let marker of this.markers[id]) {
+      if (marker.options.icon && marker.options.icon.options.observation) {
+        marker.setIcon(getObservationSvg({ color: `#${color}`, size: 30 }));
+      } else {
+        marker.setStyle({ fillColor: `#${color}` });
+      }
+    }
+  }
+}
      
 // TODO:
 // - Highlight counties with points

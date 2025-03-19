@@ -808,9 +808,14 @@ if(isset($_REQUEST['llpoint'])) {
 			}
 
 			function genMapGroups(records, tMap, cMap, origin) {
-				let taxon = new LeafletMapGroup("taxa", tMap);
-				let collections = new LeafletMapGroup("coll", cMap);
-				let portal = new LeafletMapGroup("portal", { [origin]: { name: origin, portalid: origin, color: generateRandColor()} });
+				/**
+				 * 2025-03-18(eric): switch to our custom LeafletSingleClusterMapGroup, which puts all
+				 * layers together in a single cluster instead of many per-layer clusters (which are
+				 * entirely inaccessible if perfectly overlapping).
+				 */
+				let taxon = new LeafletSingleClusterMapGroup(map, "taxa", tMap);
+				let collections = new LeafletSingleClusterMapGroup(map, "coll", cMap);
+				let portal = new LeafletSingleClusterMapGroup(map, "portal", { [origin]: { name: origin, portalid: origin, color: generateRandColor()} });
 
 				for(let record of records) {
 					let marker = (record.type === "specimen"?
