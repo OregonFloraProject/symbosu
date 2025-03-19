@@ -639,6 +639,11 @@ async function lazyLoadPointsFromSOLR(solrqString, index) {
   return await response.json();
 }
 
+const SOLR_TYPE_TO_SYMBIOTA_TYPE = {
+  ['Observations']: 'observation',
+  ['Preserved Specimens']: 'specimen',
+};
+
 function convertSOLRResponse(res) {
   const { features } = res;
   const taxaArr = {};
@@ -672,7 +677,7 @@ function convertSOLRResponse(res) {
       lng: geometry.coordinates[0],
       occid: properties.occid,
       tid: `${properties.tidinterpreted}`,
-      type: properties.CollType, // not exactly right
+      type: SOLR_TYPE_TO_SYMBIOTA_TYPE[properties.CollType],
       // TODO: these are for table, is there another way to keep them?
       catnum: properties.catalogNumber,
       eventdate:
