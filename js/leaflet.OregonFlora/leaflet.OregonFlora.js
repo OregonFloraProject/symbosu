@@ -223,10 +223,10 @@ function addKMLLayer(text, name, map, userAdded = true) {
 		layer.setStyle({
 			stroke: true,
 			color: '#000000',
-			weight: 3,
+			weight: 1.5,
 			fill: true,
 			fillColor: '#aaaaaa',
-			fillOpacity: 0.3
+			fillOpacity: 0.2
 		});
 		layer.addTo(map.mapLayer);
 		map.mapLayer.fitBounds(layer.getBounds());

@@ -644,7 +644,7 @@ if(isset($_REQUEST['llpoint'])) {
 				polyline: false,
 				circlemarker: false,
 				marker: false,
-				drawColor: {opacity: 0.85, fillOpacity: 0.55, color: '#000' },
+				drawColor: {opacity: 0.85, fillOpacity: 0.25, color: '#000' },
 			}, setQueryShape);
 
 			let cluster_type = "taxa";
@@ -2253,7 +2253,7 @@ Record Limit:
 
 									<span style="display: flex; align-items:center">
 										<label for="cluster-radius"><?php echo (isset($LANG['CLUSTER_RADIUS'])? $LANG['CLUSTER_RADIUS']:'Radius') ?>: 1 </label>
-										<input style="margin: 0 1rem;"type="range" value="1" id="cluster-radius" name="cluster-radius" min="1" max="100">100
+										<input style="margin: 0 1rem;"type="range" value="20" id="cluster-radius" name="cluster-radius" min="1" max="100">100
 									</span>
 								</fieldset>
 								<br/>
