@@ -199,12 +199,14 @@ function addKMLLayer(text, name, map, userAdded = true) {
 
 	// Check all the layers in the KML and remove non-polygon layers.
 	// If there are no polygons in the KML, abort and alert the user
-	if (!checkKMLLayers(layer, userAdded)) {
+	if (!processLayersAndPopups(layer, userAdded)) {
 		alert('No polygons were present in the KML file. To search using a KML file, make sure it contains at least one polygon');
 		return;
 	}
 
-	layer.on('dblclick', (event) => {
+	// select on click for user-added polygons, on double-click for ours (since they have a popup)
+	const selectEvent = userAdded ? 'click' : 'dblclick';
+	layer.on(selectEvent, (event) => {
 		if (event.layer instanceof L.Polygon) {
 			map.clearMap();
 			map.drawShape({ type: 'polygon', latlngs: event.layer.getLatLngs()[0] });
@@ -232,21 +234,31 @@ function addKMLLayer(text, name, map, userAdded = true) {
 }
 
 // Function to remove non-polygon layers from a KML LayerGroup
-function checkKMLLayers(layers, userAdded) {
+// and modify or remove the popups
+function processLayersAndPopups(layers, userAdded) {
 	let hasPolygon = false;
 	// Get an array of layers and iterate over it
 	layers.getLayers().forEach((layer) => {
 
 		// If it's a LayerGroup, recurse
 		if(layer instanceof L.LayerGroup) {
-			hasPolygon = checkKMLLayers(layer, userAdded);
+			hasPolygon = processLayersAndPopups(layer, userAdded);
 
 		// It's a polygon, so the KML has at least one polygon
 		} else if (layer instanceof L.Polygon) {
 			hasPolygon = true;
 
 			// Remove layer popup for user-added KML files
-			if (userAdded) layer.unbindPopup();
+			if (userAdded) {
+				layer.unbindPopup();
+			} else {
+				// for our KML files, add double-click instructions to popup
+				const popupContent = layer?.getPopup()?.getContent();
+				if (popupContent) {
+					const title = popupContent.substring(0, popupContent.indexOf('</h2>') + 5);
+					layer.setPopupContent(`${title}Double-click to search this polygon`);
+				}
+			}
 
 		// If it's not a layer group and not a polygon, remove it
 		} else {
@@ -294,6 +306,7 @@ function processFile(file, map) {
 	const name = filenameComponents.join('');
 	if (type.toLowerCase() === 'kml') {
 		file.text().then((text) => addKMLLayer(text, name, map));
+		changeSelectInstructions();
 		return true;
 	}
 	// TODO: add geojson, shp, dbf support
@@ -305,8 +318,13 @@ function onFileInputChange(element) {
 	if (element?.files?.[0]) {
 		document.dispatchEvent(new CustomEvent('fileinput', { detail: { file: element.files[0] } }));
 		$('#tabs1').tabs('option', 'active', 1);
-		$('#kmlinstructions').show();
+		changeSelectInstructions();
 	}
+}
+
+function changeSelectInstructions() {
+	$('#shapetoolsinstructions').hide();
+	$('#kmlinstructions').show();
 }
 
 

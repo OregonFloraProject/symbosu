@@ -2167,11 +2167,11 @@ Record Limit:
 									<div id="shapecriteria">
 										<div id="noshapecriteria" style="display:<?php echo ((!$mapManager->getSearchTerm('polycoords') && !$mapManager->getSearchTerm('upperlat'))?'block':'none'); ?>;">
 											<div id="geocriteria" style="display:<?php echo ((!$mapManager->getSearchTerm('polycoords') && !$distFromMe && !$mapManager->getSearchTerm('pointlat') && !$mapManager->getSearchTerm('upperlat'))?'block':'none'); ?>;">
-												<div>
+												<div id="shapetoolsinstructions">
 													<?php echo (isset($LANG['SHAPE_TOOLS'])?$LANG['SHAPE_TOOLS']:'Use the shape tools on the map to select occurrences within a given shape'); ?>.
 												</div>
 												<div id="kmlinstructions" style="margin-top:0.5rem;font-weight:600;display:none">
-													Double-click to search within a polygon from within a KML file.
+													Click on a polygon to select occurrences within that polygon.
 												</div>
 											</div>
 											<div id="distancegeocriteria" style="display:<?php echo ($distFromMe?'block':'none'); ?>;">
@@ -2345,7 +2345,7 @@ Record Limit:
 								<div style="margin-top:0.5rem;margin-bottom:0.5rem">
 									<div>You can restrict your search to a polygon from a KML file.</div>
 									<div style="margin-top:0.5rem">Select a KML file from your computer to add polygons it contains to the map.</div>
-									<div style="margin-top:0.5rem">Then, double click on a polygon to select it.</div>
+									<div style="margin-top:0.5rem">Then, click on a polygon to select it.</div>
 								</div>
 								<input
 									type="file"
