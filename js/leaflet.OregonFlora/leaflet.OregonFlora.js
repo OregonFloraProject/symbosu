@@ -469,7 +469,7 @@ class LeafletSingleClusterMapGroup {
   removeLayer(id) {
     this.cluster.clearLayers();
     this.map.mapLayer.removeLayer(this.cluster);
-    if (this.map.mapLayer.hasLayer(this.layerGroup)) {
+    if (this.layerGroup && this.map.mapLayer.hasLayer(this.layerGroup)) {
       this.map.mapLayer.removeLayer(this.layerGroup);
     }
     this.layerGroup = null;

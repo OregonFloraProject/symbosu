@@ -653,7 +653,7 @@ function convertSOLRResponse(res) {
       taxaArr[properties.tidinterpreted] = {
         sn: properties.sciname,
         tid: properties.tidinterpreted,
-        family: properties.family.toUpperCase(), // TODO: accFamily?
+        family: properties.family?.toUpperCase(), // TODO: accFamily?
         color: 'e69e67',
       };
     }
@@ -668,7 +668,7 @@ function convertSOLRResponse(res) {
     return {
       collid: properties.collid,
       collname: properties.CollectionName,
-      family: properties.family.toUpperCase(), // TODO: accFamily?
+      family: properties.family?.toUpperCase(), // TODO: accFamily?
       host: '', // TODO: get
       id: `${properties.recordedBy ?? ''}${
         properties.recordedBy && properties.recordNumber ? ' ' : ''
@@ -680,9 +680,10 @@ function convertSOLRResponse(res) {
       type: SOLR_TYPE_TO_SYMBIOTA_TYPE[properties.CollType],
       // TODO: these are for table, is there another way to keep them?
       catnum: properties.catalogNumber,
-      eventdate:
-        properties.eventDate &&
-        properties.eventDate.substring(0, properties.eventDate.indexOf('T')),
+      eventdate: properties.eventDate?.substring(
+        0,
+        properties.eventDate.indexOf('T')
+      ),
       sciname: properties.sciname,
     };
   });
