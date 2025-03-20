@@ -195,7 +195,14 @@ function addOverlays(map) {
 function addKMLLayer(text, name, map, userAdded = true) {
 	const parser = new DOMParser();
 	const kml = parser.parseFromString(text, 'text/xml');
-	const layer = new L.KML(kml);
+	let layer = new L.KML(kml);
+
+	// Check all the layers in the KML and remove non-polygon layers.
+	// If there are no polygons in the KML, abort and alert the user
+	if (!checkKMLLayers(layer, userAdded)) {
+		alert('No polygons were present in the KML file. To search using a KML file, make sure it contains at least one polygon');
+		return;
+	}
 
 	// Add to layer controls
 	map.mapLayer.layerControl.addOverlay(layer, name);
@@ -216,6 +223,30 @@ function addKMLLayer(text, name, map, userAdded = true) {
 	}
 }
 
+// Function to remove non-polygon layers from a KML LayerGroup
+function checkKMLLayers(layers, userAdded) {
+	let hasPolygon = false;
+	// Get an array of layers and iterate over it
+	layers.getLayers().forEach((layer) => {
+
+		// If it's a LayerGroup, recurse
+		if(layer instanceof L.LayerGroup) {
+			hasPolygon = checkKMLLayers(layer, userAdded);
+
+		// It's a polygon, so the KML has at least one polygon
+		} else if (layer instanceof L.Polygon) {
+			hasPolygon = true;
+
+			// Remove layer popup for user-added KML files
+			if (userAdded) layer.unbindPopup();
+
+		// If it's not a layer group and not a polygon, remove it
+		} else {
+			layers.removeLayer(layer);
+		}
+	});
+	return hasPolygon;
+}
 
 function setUpDragAndDrop(map) {
 	document.getElementById('site-content').ondrop = (event) => {
