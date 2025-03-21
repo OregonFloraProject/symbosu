@@ -95,18 +95,21 @@ async function prepareTaxaParamsAsync(formData) {
               }
             }
           } else {
+            // taxontype 1, 2, 3
             if (
-              (taxontype == 2 || taxontype == 1) &&
-              (i.substring(i.length - 5) == 'aceae' ||
-                i.substring(i.length - 4) == 'idae')
+              taxontype == 3 ||
+              i.substring(i.length - 5) == 'aceae' ||
+              i.substring(i.length - 4) == 'idae'
             ) {
               taxaSolrqString += ' OR (family:' + i + ')';
               taxaCqlString += " OR family = '" + i + "'";
             }
             if (
-              (taxontype == 3 || taxontype == 1) &&
-              (i.substring(i.length - 5) != 'aceae' ||
-                i.substring(i.length - 4) != 'idae')
+              taxontype == 3 ||
+              !(
+                i.substring(i.length - 5) == 'aceae' ||
+                i.substring(i.length - 4) == 'idae'
+              )
             ) {
               taxaSolrqString +=
                 ' OR ((sciname:' +
