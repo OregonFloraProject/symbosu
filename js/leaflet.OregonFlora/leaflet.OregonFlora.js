@@ -449,6 +449,11 @@ class LeafletSingleClusterMapGroup {
 				this.layer_groups[id].addTo(this.map.mapLayer);
 			}
 		} else if (!this.map.mapLayer.hasLayer(this.cluster)) {
+			// 2025-03-21(eric): see below comment in `removeGroup`; the clearLayers() call there forces
+			// us to re-add all the layers here (e.g. when toggling heatmap)
+			for (let id in this.layer_groups) {
+				this.cluster.addLayer(this.layer_groups[id]);
+			}
 			this.cluster.addTo(this.map.mapLayer);
 		}
 	}
@@ -460,6 +465,8 @@ class LeafletSingleClusterMapGroup {
 			}
 		} else {
 			this.map.mapLayer.removeLayer(this.cluster);
+			// 2025-03-21(eric): this is necessary for the "reset symbology" buttons to work correctly,
+			// otherwise clusters sometimes double in size; I haven't yet figured out why
 			this.cluster.clearLayers();
 		}
 	}
