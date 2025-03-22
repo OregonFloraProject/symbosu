@@ -354,35 +354,35 @@ class LeafletMap {
                   toolbar: {
                      actions: {
                         save: {
-                           title: 'Save changes',
-                           text: 'Save'
+                           title: 'Save changes to selection',
+                           text: 'Save new selection'
                         },
                         cancel: {
                            title: 'Cancel editing, discards all changes',
-                           text: 'Cancel'
+                           text: 'Undo changes'
                         },
                         clearAll: {
-                           title: 'Clear all layers',
-                           text: 'Clear All'
+                           title: 'De-select everything',
+                           text: 'De-select everything'
                         }
                      },
                      buttons: {
-                        edit: 'Edit layers',
-                        editDisabled: 'No layers to edit',
-                        remove: 'Delete layers',
-                        removeDisabled: 'No layers to delete'
+                        edit: 'Edit selected shape',
+                        editDisabled: 'No selection to edit',
+                        remove: 'De-select shape',
+                        removeDisabled: 'No selection to remove'
                      }
                   },
                   handlers: {
                      edit: {
                         tooltip: {
-                           text: 'Drag handles or markers to edit features.',
+                           text: 'Drag handles or markers to edit selection.',
                            subtext: 'Click cancel to undo changes.'
                         }
                      },
                      remove: {
                         tooltip: {
-                           text: 'Click on a feature to remove.'
+                           text: 'Click on a shape to de-select.'
                         }
                      }
                   }

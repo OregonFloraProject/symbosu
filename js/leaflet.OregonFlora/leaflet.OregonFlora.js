@@ -144,6 +144,22 @@ function addBasemaps(map) {
 		}
 	};
 
+	// remove default expand/collapse handlers and add new ones with a timeout on mouseleave;
+	// otherwise it's too easy to collapse the control while trying to use it
+	L.DomEvent.off(map.mapLayer.layerControl.getContainer(), 'mouseenter');
+	L.DomEvent.off(map.mapLayer.layerControl.getContainer(), 'mouseleave');
+	let timeout;
+	L.DomEvent.on(map.mapLayer.layerControl.getContainer(), 'mouseenter', () => {
+		if (timeout) {
+			clearTimeout(timeout);
+			timeout = null;
+		}
+		map.mapLayer.layerControl.expand();
+	});
+	L.DomEvent.on(map.mapLayer.layerControl.getContainer(), 'mouseleave', () => {
+		timeout = setTimeout(() => map.mapLayer.layerControl.collapse(), 300);
+	});
+
 	// Bring macrostrat layer to the front so it's not behind the new basemaps
 	map.mapLayer.macro_strat.setZIndex(11);
 
