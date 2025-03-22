@@ -138,6 +138,12 @@ button {
   z-index: 1001 !important;
 }
 
+/* Leaflet: make disabled style for toolbar buttons more obvious */
+.leaflet-bar a.leaflet-disabled {
+  background-color: #d0d0d0 !important;
+  opacity: 0.9;
+}
+
 /* Collection Profiles (collections/misc/collprofiles.php) page styles */
 .collprofiles {
   --max-innertext-width: 1024px;
