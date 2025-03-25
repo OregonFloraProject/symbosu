@@ -66,7 +66,8 @@ if(!empty($MAPPING_BOUNDARIES)){
 $bounds = [ [$boundLatMax, $boundLngMax], [$boundLatMin, $boundLngMin] ];
 
 //Gets Coordinates
-$coordArr = $mapManager->getCoordinateMap(0,$recLimit);
+// $coordArr = $mapManager->getCoordinateMap(0,$recLimit);
+$coordArr = [];
 $taxaArr = [];
 $recordArr = [];
 $collArr = [];
