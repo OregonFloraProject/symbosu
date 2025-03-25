@@ -647,7 +647,7 @@ const SOLR_TYPE_TO_SYMBIOTA_TYPE = {
   ['Preserved Specimens']: 'specimen',
 };
 
-function convertSOLRResponse(res) {
+function convertSOLRResponse(res, host) {
   const { features } = res;
   const taxaArr = {};
   const collArr = {};
@@ -656,7 +656,7 @@ function convertSOLRResponse(res) {
       taxaArr[properties.tidinterpreted] = {
         sn: properties.sciname,
         tid: properties.tidinterpreted,
-        family: properties.family?.toUpperCase(), // TODO: accFamily?
+        family: properties.family?.toUpperCase(),
         color: 'e69e67',
       };
     }
@@ -671,8 +671,8 @@ function convertSOLRResponse(res) {
     return {
       collid: properties.collid,
       collname: properties.CollectionName,
-      family: properties.family?.toUpperCase(), // TODO: accFamily?
-      host: '', // TODO: get
+      family: properties.family?.toUpperCase(),
+      host,
       id: `${properties.recordedBy ?? ''}${
         properties.recordedBy && properties.recordNumber ? ' ' : ''
       }${properties.recordNumber ?? ''}`,
@@ -695,8 +695,8 @@ function convertSOLRResponse(res) {
     taxaArr,
     collArr,
     recordArr,
-    origin: '', // TODO: get
-    query: '', // TODO: get
+    origin: host,
+    query: '', // ignoring this for now
   };
 }
 

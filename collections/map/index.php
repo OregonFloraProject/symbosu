@@ -4,6 +4,9 @@ include_once($SERVER_ROOT.'/classes/OccurrenceMapManager.php');
 if($LANG_TAG == 'en' || !file_exists($SERVER_ROOT.'/content/lang/collections/map/index.' . $LANG_TAG . '.php')) include_once($SERVER_ROOT . '/content/lang/collections/map/index.en.php');
 else include_once($SERVER_ROOT . '/content/lang/collections/map/index.' . $LANG_TAG . '.php');
 
+// TODO(eric): remove this once we upgrade to PHP 8
+include_once($SERVER_ROOT . '/utilities/str_contains_polyfill.php');
+
 header('Content-Type: text/html; charset='.$CHARSET);
 header("Accept-Encoding: gzip, deflate, br");
 ob_start('ob_gzhandler');
@@ -1749,7 +1752,7 @@ if(isset($_REQUEST['llpoint'])) {
 					alert('Search results for some rare taxa are hidden. To view all results, you must be logged into an account with rare species privileges.');
 				}
 				const response = await loadPointsFromSOLR(solrqString, recordCount);
-				return convertSOLRResponse(response);
+				return convertSOLRResponse(response, host ?? <?php echo isset($SERVER_HOST) ? "'" . ((str_contains($SERVER_HOST, '127.0.0.1') || str_contains($SERVER_HOST, 'localhost')) ? "http://" : "https://") . $SERVER_HOST . $CLIENT_ROOT . "'" : 'false';?>);
 <?php } else { ?>
 				let response = await fetch(url, {
 					method: "POST",
