@@ -508,7 +508,7 @@ class SpecialChecklistApp extends React.Component {
   render() {
     const InfographicDropdown = getInfographicDropdownComponent(this.props.pageType);
     return (
-      <div id="rare-wrapper">
+      <div id={`${this.props.pageType}-wrapper`}>
         <Loading clientRoot={this.props.clientRoot} isLoading={this.state.isLoading} />
         <InfographicDropdown clientRoot={this.props.clientRoot} />
         {this.props.pageType === 'rare' && (
