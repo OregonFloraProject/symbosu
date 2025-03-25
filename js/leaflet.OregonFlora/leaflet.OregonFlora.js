@@ -201,7 +201,7 @@ function addKMLLayer(text, name, map, userAdded = true) {
 	// If there are no polygons in the KML, abort and alert the user
 	if (!processLayersAndPopups(layer, userAdded)) {
 		alert('No polygons were present in the KML file. To search using a KML file, make sure it contains at least one polygon');
-		return;
+		return false;
 	}
 
 	// select on click for user-added polygons, on double-click for ours (since they have a popup)
@@ -231,6 +231,8 @@ function addKMLLayer(text, name, map, userAdded = true) {
 		layer.addTo(map.mapLayer);
 		map.mapLayer.fitBounds(layer.getBounds());
 	}
+
+	return true;
 }
 
 // Function to remove non-polygon layers from a KML LayerGroup
@@ -305,8 +307,15 @@ function processFile(file, map) {
 	const type = filenameComponents.pop();
 	const name = filenameComponents.join('');
 	if (type.toLowerCase() === 'kml') {
-		file.text().then((text) => addKMLLayer(text, name, map));
-		changeSelectInstructions();
+		file.text().then((text) => {
+			const success = addKMLLayer(text, name, map);
+			if (success) {
+				userAddedKML = true;
+				changeSelectInstructions();
+			} else {
+				alert('The KML file you uploaded has no valid polygons.');
+			}
+		});
 		return true;
 	}
 	// TODO: add geojson, shp, dbf support
@@ -317,12 +326,11 @@ function processFile(file, map) {
 function onFileInputChange(element) {
 	if (element?.files?.[0]) {
 		document.dispatchEvent(new CustomEvent('fileinput', { detail: { file: element.files[0] } }));
-		$('#tabs1').tabs('option', 'active', 1);
-		changeSelectInstructions();
 	}
 }
 
 function changeSelectInstructions() {
+	$('#tabs1').tabs('option', 'active', 1);
 	$('#shapetoolsinstructions').hide();
 	$('#kmlinstructions').show();
 }

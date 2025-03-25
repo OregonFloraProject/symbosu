@@ -333,6 +333,10 @@ if(isset($_REQUEST['llpoint'])) {
 		//Indciates if clustering should be drawn. Only comes into effect after redraw or refreshes
 		let clusteroff = false;
 
+		// Indicates if the user has added a KML file with polygons; used to determine whether to show
+		// a confirmation alert if the user tries to search without having selected a polygon
+		let userAddedKML = false;
+
 		const colorChange = new Event("colorchange",  {
 			bubbles: true,
 			cancelable: true,
