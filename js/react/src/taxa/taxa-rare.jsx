@@ -270,7 +270,7 @@ function TaxaRareApp(props) {
               <button className="my-2 btn-primary">Core profile page</button>
             </a>
             {data.legacyFactSheetUrl && (
-              <a href={`${props.clientRoot}${data.legacyFactSheetUrl}`}>
+              <a href={`${props.clientRoot}${data.legacyFactSheetUrl}`} target="_blank" rel="noreferrer">
                 <button className="my-2 btn-primary">
                   <img
                     src={`${props.clientRoot}/images/pdf24.png`}
