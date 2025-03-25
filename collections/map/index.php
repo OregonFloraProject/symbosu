@@ -1772,6 +1772,7 @@ if(isset($_REQUEST['llpoint'])) {
 				}
 <?php } ?>
 			} catch(e) {
+				console.error('Failed to get search results.', e);
 				return emptyResponse;
 			}
 		}
