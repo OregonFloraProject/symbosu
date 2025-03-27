@@ -647,7 +647,7 @@ const SOLR_TYPE_TO_SYMBIOTA_TYPE = {
   ['Preserved Specimens']: 'specimen',
 };
 
-function convertSOLRResponse(res, host) {
+function convertSOLRResponse(res, query, host) {
   const { features } = res;
   const taxaArr = {};
   const collArr = {};
@@ -696,7 +696,7 @@ function convertSOLRResponse(res, host) {
     collArr,
     recordArr,
     origin: host,
-    query: '', // ignoring this for now
+    query,
   };
 }
 

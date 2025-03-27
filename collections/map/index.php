@@ -1751,13 +1751,30 @@ if(isset($_REQUEST['llpoint'])) {
 				const url = host? `${host}/collections/map/rpc/searchCollections.php`: 'rpc/searchCollections.php'
 
 <?php if (isset($USE_SOLR_SEARCH) && $USE_SOLR_SEARCH === 1) { ?>
+				// get query string for sessionStorage and copy link button
+				const queryPromise = fetch('rpc/searchCollections.php?queryOnly=true', {
+					method: 'POST',
+					body,
+				}).then(async (response) => {
+					const { query } = await response.json();
+					sessionStorage.querystr = query;
+					return query;
+				});
+
 				const solrqString = await buildSOLRQString(body);
 				const { recordCount, hiddenFound } = await getRecordCountFromSOLR(solrqString);
 				if (hiddenFound) {
 					alert('Search results for some rare taxa are hidden. To view all results, you must be logged into an account with rare species privileges.');
 				}
-				const response = await loadPointsFromSOLR(solrqString, recordCount);
-				return convertSOLRResponse(response, host ?? <?php echo isset($SERVER_HOST) ? "'" . ((str_contains($SERVER_HOST, '127.0.0.1') || str_contains($SERVER_HOST, 'localhost')) ? "http://" : "https://") . $SERVER_HOST . $CLIENT_ROOT . "'" : 'false';?>);
+				const [response, query] = await Promise.all([
+					loadPointsFromSOLR(solrqString, recordCount),
+					queryPromise,
+				]);
+				return convertSOLRResponse(
+					response,
+					query,
+					host ?? <?php echo isset($SERVER_HOST) ? "'" . ((str_contains($SERVER_HOST, '127.0.0.1') || str_contains($SERVER_HOST, 'localhost')) ? "http://" : "https://") . $SERVER_HOST . $CLIENT_ROOT . "'" : 'false';?>,
+				);
 <?php } else { ?>
 				let response = await fetch(url, {
 					method: "POST",

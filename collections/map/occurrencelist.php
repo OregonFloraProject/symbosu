@@ -19,15 +19,16 @@ $recLimit = filter_var($recLimit, FILTER_SANITIZE_NUMBER_INT) ?? 15000;
 $host = UtilityFunctions::getDomain() . $CLIENT_ROOT;
 $occArr = array();
 
+$mapManager = new OccurrenceMapManager();
+$searchVar = $mapManager->getQueryTermStr();
+
 if (isset($USE_SOLR_SEARCH) && $USE_SOLR_SEARCH === 1) {
 	$recCnt = array_key_exists('recordcount',$_REQUEST) && is_numeric($_REQUEST['recordcount'])
 		? (filter_var($_REQUEST['recordcount'], FILTER_SANITIZE_NUMBER_INT) ?? 15000)
 		: 15000;
 	$hasResults = $recCnt > 0 && $recCnt <= $recLimit;
-	$searchVar = 'cntperpage=' . $cntPerPage . '&recordlimit=' . $recLimit . '&recordcount=' . $recCnt;
+	$searchVar = $searchVar . '&recordcount=' . $recCnt;
 } else {
-	$mapManager = new OccurrenceMapManager();
-	$searchVar = $mapManager->getQueryTermStr();
 	$recCnt = $mapManager->getRecordCnt();
 
 	if(!$recLimit || $recCnt < $recLimit){

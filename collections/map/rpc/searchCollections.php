@@ -44,6 +44,11 @@ $obsIDs = $mapManager->getObservationIds();
 
 if($searchVar && $recLimit) $searchVar .= '&reclimit='.$recLimit;
 
+if (isset($_REQUEST["queryOnly"]) && $_REQUEST["queryOnly"]) {
+	echo json_encode(['query' => $searchVar]);
+	exit();
+}
+
 //Gets Coordinates
 $coordArr = $mapManager->getCoordinateMap(0,$recLimit);
 $taxaArr = [];
