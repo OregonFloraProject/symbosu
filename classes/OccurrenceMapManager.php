@@ -4,14 +4,13 @@ include_once('OccurrenceAccessStats.php');
 
 class OccurrenceMapManager extends OccurrenceManager {
 
-	private $recordCount = 0;
+	private $recordCount;
 	private $collArrIndex = 0;
 
 	public function __construct(){
 		parent::__construct();
 		$this->readGeoRequestVariables();
 		$this->setGeoSqlWhere();
-		$this->setRecordCnt();
 	}
 
 	public function __destruct(){
@@ -204,6 +203,9 @@ class OccurrenceMapManager extends OccurrenceManager {
 	}
 
 	public function getRecordCnt(){
+		if (!isset($this->recordCount)) {
+			$this->setRecordCnt();
+		}
 		return $this->recordCount;
 	}
 
