@@ -598,12 +598,6 @@ async function buildSOLRQString(formData) {
   return newsolrqString;
 }
 
-const SOLRFields =
-  'occid,collid,catalogNumber,otherCatalogNumbers,family,sciname,tidinterpreted,scientificNameAuthorship,identifiedBy,' +
-  'dateIdentified,typeStatus,recordedBy,recordNumber,eventDate,displayDate,coll_year,coll_month,coll_day,habitat,associatedTaxa,' +
-  'cultivationStatus,country,StateProvince,county,municipality,locality,localitySecurity,localitySecurityReason,geo,minimumElevationInMeters,' +
-  'maximumElevationInMeters,labelProject,InstitutionCode,CollectionCode,CollectionName,CollType,thumbnailurl,accFamily';
-
 async function getRecordCountFromSOLR(solrqString) {
   const response = await fetch('../../spatial/rpc/SOLRConnector.php', {
     method: 'POST',
@@ -617,29 +611,22 @@ async function getRecordCountFromSOLR(solrqString) {
   };
 }
 
-async function loadPointsFromSOLR(solrqString, recordCount) {
+const SOLR_FIELDS =
+  'occid,collid,catalogNumber,family,sciname,tidinterpreted,recordedBy,recordNumber,eventDate,' +
+  'geo,CollectionName,CollType';
+const MAX_RECORD_COUNT = 20000;
+
+async function loadPointsFromSOLR(solrqString, recordCount, host) {
   const response = await fetch('../../spatial/rpc/SOLRConnector.php', {
     method: 'POST',
     headers: { 'Content-type': 'application/x-www-form-urlencoded' },
-    body: `${solrqString}&rows=${recordCount}&start=0&fl=${SOLRFields}&wt=geojson&action=load`,
+    body: `${solrqString}&rows=${Math.min(
+      recordCount,
+      MAX_RECORD_COUNT
+    )}&start=0&fl=${SOLR_FIELDS}&wt=geojson&action=lazyload`,
   });
-  return await response.json();
-}
-
-const lazyLoadCount = 20000;
-async function lazyLoadPointsFromSOLR(solrqString, index) {
-  let startindex = 0;
-  // loadingComplete = true;
-  if (index > 1) startindex = (index - 1) * lazyLoadCount;
-  const promise = fetch('../../spatial/rpc/SOLRConnector.php', {
-    method: 'POST',
-    headers: { 'Content-type': 'application/x-www-form-urlencoded' },
-    body: `${solrqString}&rows=${lazyLoadCount}&start=${startindex}&fl=${SOLRFields}&wt=geojson&action=lazyload`,
-  });
-  // loadingComplete = false;
-  // setTimeout(checkLoading, loadingTimer);
-  const response = await promise;
-  return await response.json();
+  const data = await response.json();
+  return convertSOLRResponse(data, host);
 }
 
 const SOLR_TYPE_TO_SYMBIOTA_TYPE = {
@@ -647,7 +634,7 @@ const SOLR_TYPE_TO_SYMBIOTA_TYPE = {
   ['Preserved Specimens']: 'specimen',
 };
 
-function convertSOLRResponse(res, query, host) {
+function convertSOLRResponse(res, host) {
   const { features } = res;
   const taxaArr = {};
   const collArr = {};
@@ -681,7 +668,6 @@ function convertSOLRResponse(res, query, host) {
       occid: properties.occid,
       tid: `${properties.tidinterpreted}`,
       type: SOLR_TYPE_TO_SYMBIOTA_TYPE[properties.CollType],
-      // TODO: these are for table, is there another way to keep them?
       catnum: properties.catalogNumber,
       eventdate: properties.eventDate?.substring(
         0,
@@ -696,7 +682,6 @@ function convertSOLRResponse(res, query, host) {
     collArr,
     recordArr,
     origin: host,
-    query,
   };
 }
 

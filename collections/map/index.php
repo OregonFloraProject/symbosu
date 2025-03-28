@@ -17,7 +17,7 @@ $gridSize = array_key_exists('gridSizeSetting', $_REQUEST) && $_REQUEST['gridSiz
 $minClusterSize = array_key_exists('minClusterSetting',$_REQUEST)&&$_REQUEST['minClusterSetting']?$_REQUEST['minClusterSetting']:10;
 $clusterOff = array_key_exists('clusterSwitch',$_REQUEST)&&$_REQUEST['clusterSwitch']? $_REQUEST['clusterSwitch']:'n';
 $menuClosed = array_key_exists('menuClosed',$_REQUEST)? true: false;
-$recLimit = array_key_exists('recordlimit',$_REQUEST)?$_REQUEST['recordlimit']:15000;
+$recLimit = array_key_exists('recordlimit',$_REQUEST)?$_REQUEST['recordlimit']:20000;
 $catId = array_key_exists('catid',$_REQUEST)?$_REQUEST['catid']:0;
 $tabIndex = array_key_exists('tabindex',$_REQUEST)?$_REQUEST['tabindex']:0;
 $submitForm = array_key_exists('submitform',$_REQUEST)?$_REQUEST['submitform']:'';
@@ -1767,14 +1767,16 @@ if(isset($_REQUEST['llpoint'])) {
 					alert('Search results for some rare taxa are hidden. To view all results, you must be logged into an account with rare species privileges.');
 				}
 				const [response, query] = await Promise.all([
-					loadPointsFromSOLR(solrqString, recordCount),
+					loadPointsFromSOLR(
+						solrqString,
+						recordCount,
+						host ?? <?php echo isset($SERVER_HOST) ? "'" . ((str_contains($SERVER_HOST, '127.0.0.1') || str_contains($SERVER_HOST, 'localhost')) ? "http://" : "https://") . $SERVER_HOST . $CLIENT_ROOT . "'" : 'false';?>
+					),
 					queryPromise,
 				]);
-				return convertSOLRResponse(
-					response,
-					query,
-					host ?? <?php echo isset($SERVER_HOST) ? "'" . ((str_contains($SERVER_HOST, '127.0.0.1') || str_contains($SERVER_HOST, 'localhost')) ? "http://" : "https://") . $SERVER_HOST . $CLIENT_ROOT . "'" : 'false';?>,
-				);
+				response.query = query;
+				response.recordCount = recordCount;
+				return response;
 <?php } else { ?>
 				let response = await fetch(url, {
 					method: "POST",
@@ -1798,7 +1800,7 @@ if(isset($_REQUEST['llpoint'])) {
 		async function getOccurenceRecords(body, searchData, host) {
 			const url = host? `${host}/collections/map/occurrencelist.php`: 'occurrencelist.php'
 <?php if (isset($USE_SOLR_SEARCH) && $USE_SOLR_SEARCH === 1) { ?>
-			body.set('recordcount', searchData.recordArr.length);
+			body.set('recordcount', searchData.recordCount ?? searchData.recordArr.length);
 <?php } ?>
 			let response = await fetch(url, {
 				method: "POST",

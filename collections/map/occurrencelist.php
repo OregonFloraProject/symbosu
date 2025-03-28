@@ -9,12 +9,12 @@ header('Content-Type: text/html; charset=' . $CHARSET);
 
 $cntPerPage = array_key_exists('cntperpage', $_REQUEST) ? $_REQUEST['cntperpage'] : 100;
 $pageNumber = array_key_exists('page', $_REQUEST) ? $_REQUEST['page'] : 1;
-$recLimit = (array_key_exists('recordlimit',$_REQUEST) && is_numeric($_REQUEST['recordlimit']) ? $_REQUEST['recordlimit']:15000);
+$recLimit = (array_key_exists('recordlimit',$_REQUEST) && is_numeric($_REQUEST['recordlimit']) ? $_REQUEST['recordlimit']:20000);
 
 //Sanitation
 $cntPerPage = filter_var($cntPerPage, FILTER_SANITIZE_NUMBER_INT) ?? 100;
 $pageNumber = filter_var($pageNumber, FILTER_SANITIZE_NUMBER_INT) ?? 1;
-$recLimit = filter_var($recLimit, FILTER_SANITIZE_NUMBER_INT) ?? 15000;
+$recLimit = filter_var($recLimit, FILTER_SANITIZE_NUMBER_INT) ?? 20000;
 
 $host = UtilityFunctions::getDomain() . $CLIENT_ROOT;
 $occArr = array();
@@ -24,9 +24,9 @@ $searchVar = $mapManager->getQueryTermStr();
 
 if (isset($USE_SOLR_SEARCH) && $USE_SOLR_SEARCH === 1) {
 	$recCnt = array_key_exists('recordcount',$_REQUEST) && is_numeric($_REQUEST['recordcount'])
-		? (filter_var($_REQUEST['recordcount'], FILTER_SANITIZE_NUMBER_INT) ?? 15000)
-		: 15000;
-	$hasResults = $recCnt > 0 && $recCnt <= $recLimit;
+		? (filter_var($_REQUEST['recordcount'], FILTER_SANITIZE_NUMBER_INT) ?? 0)
+		: 0;
+	$hasResults = $recCnt > 0 && ($recCnt <= $recLimit || $pageNumber * $cntPerPage <= $recLimit);
 	$searchVar = $searchVar . '&recordcount=' . $recCnt;
 } else {
 	$recCnt = $mapManager->getRecordCnt();
@@ -100,6 +100,12 @@ if (isset($USE_SOLR_SEARCH) && $USE_SOLR_SEARCH === 1) {
 		echo $paginationStr;
 
 		if($hasResults){
+			if ($recCnt > $recLimit) {
+				?>
+				<div style="font-weight:bold;font-size:120%;">Record count exceeds limit; showing the first <?php echo $recLimit; ?> results</div>
+				<div style="clear:both;"><hr /></div>
+				<?php
+			}
 			?>
 			<form name="selectform" id="selectform" action="" method="post" onsubmit="" target="_blank">
 				<table class="styledtable" style="font-size:.9rem;">

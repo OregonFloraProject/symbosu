@@ -34,8 +34,8 @@ if(!is_numeric($recLimit)) $recLimit = 15000;
 */
 
 ob_start();
-$recLimit = array_key_exists('recordlimit',$_REQUEST)?$_REQUEST['recordlimit']:15000;
-if(!is_numeric($recLimit)) $recLimit = 15000;
+$recLimit = array_key_exists('recordlimit',$_REQUEST)?$_REQUEST['recordlimit']:20000;
+if(!is_numeric($recLimit)) $recLimit = 20000;
 
 $mapManager = new OccurrenceMapManager();
 $searchVar = $mapManager->getQueryTermStr();
