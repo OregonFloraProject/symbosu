@@ -2203,6 +2203,9 @@ Record Limit:
 												</div>
 												<div id="kmlinstructions" style="margin-top:0.5rem;font-weight:600;display:none">
 													Click on a polygon to select occurrences within that polygon.
+													<div id="removekmllayer" style="margin-top:5px;">
+														<button data-role="none" type="button" onclick="document.dispatchEvent(new CustomEvent('clearkmllayers'));">Remove All KML Layers</button>
+													</div>
 												</div>
 											</div>
 											<div id="distancegeocriteria" style="display:<?php echo ($distFromMe?'block':'none'); ?>;">
