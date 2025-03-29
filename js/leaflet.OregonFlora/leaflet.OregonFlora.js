@@ -192,6 +192,8 @@ function addOverlays(map) {
 		.then(kmltext => addKMLLayer(kmltext, 'Ecoregions', map, false));
 }
 
+let _userAddedKMLLayers = [];
+
 function addKMLLayer(text, name, map, userAdded = true) {
 	const parser = new DOMParser();
 	const kml = parser.parseFromString(text, 'text/xml');
@@ -230,9 +232,20 @@ function addKMLLayer(text, name, map, userAdded = true) {
 		});
 		layer.addTo(map.mapLayer);
 		map.mapLayer.fitBounds(layer.getBounds());
+		_userAddedKMLLayers.push(layer);
 	}
 
 	return true;
+}
+
+function clearKMLLayers(map) {
+	while (_userAddedKMLLayers.length) {
+		const layer = _userAddedKMLLayers.pop();
+		layer.remove();
+		map.mapLayer.layerControl.removeLayer(layer);
+	}
+	$('#kmlinstructions').hide();
+	$('#shapetoolsinstructions').show();
 }
 
 // Function to remove non-polygon layers from a KML LayerGroup
@@ -295,11 +308,15 @@ function setUpUserFiles(map) {
 				processFile(file, map);
 			});
 		}
-	}
+	};
 
 	document.getElementById('site-content').ondragover = (event) => {
 		event.preventDefault();
-	}
+	};
+
+	document.addEventListener('clearkmllayers', () => {
+		clearKMLLayers(map);
+	});
 }
 
 function processFile(file, map) {
