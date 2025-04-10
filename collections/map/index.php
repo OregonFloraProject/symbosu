@@ -1762,6 +1762,11 @@ if(isset($_REQUEST['llpoint'])) {
 				});
 
 				const solrqString = await buildSOLRQString(body);
+				// if our query includes a polygon, save solrqString so we can pass it to downloadhandler
+				// since SOLR search is way faster than MySQL with polygons
+				if (body.has('polycoords') || body.has('upperlat')) {
+					sessionStorage.setItem('solrqstring', solrqString);
+				}
 				const { recordCount, hiddenFound } = await getRecordCountFromSOLR(solrqString);
 				if (hiddenFound) {
 					alert('Search results for some rare taxa are hidden. To view all results, you must be logged into an account with rare species privileges.');
@@ -1801,6 +1806,7 @@ if(isset($_REQUEST['llpoint'])) {
 			const url = host? `${host}/collections/map/occurrencelist.php`: 'occurrencelist.php'
 <?php if (isset($USE_SOLR_SEARCH) && $USE_SOLR_SEARCH === 1) { ?>
 			body.set('recordcount', searchData.recordCount ?? searchData.recordArr.length);
+			body.set('solrqstring', sessionStorage.getItem('solrqstring'));
 <?php } ?>
 			let response = await fetch(url, {
 				method: "POST",
