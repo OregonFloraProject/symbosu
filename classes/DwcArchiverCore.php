@@ -103,7 +103,7 @@ class DwcArchiverCore extends Manager{
 		if (!$this->occurrenceFieldArr) $this->occurrenceFieldArr = $dwcOccurManager->getOccurrenceArr();
 		$sql = $dwcOccurManager->getSqlOccurrences($this->occurrenceFieldArr['fields'], false);
 		$sql .= $this->getTableJoins() . $this->conditionSql;
-		//if($this->schemaType != 'backup') $sql .= ' LIMIT 1000000';
+		//if($this->schemaType != 'backup') $sql .= ' LIMIT 250000';
 		if ($sql) {
 			$sql = 'SELECT COUNT(o.occid) as cnt ' . $sql;
 			$rs = $this->conn->query($sql);
@@ -685,7 +685,7 @@ class DwcArchiverCore extends Manager{
 		$sql = $dwcOccurManager->getSqlOccurrences($this->occurrenceFieldArr['fields']);
 		$sql .= $this->getTableJoins() . $this->conditionSql;
 		if (!$sql) return false;
-		$sql .= ' LIMIT 1000000';
+		$sql .= ' LIMIT 250000';
 		$fieldArr = $this->occurrenceFieldArr['fields'];
 		if ($this->schemaType == 'dwc' || $this->schemaType == 'pensoft') {
 			unset($fieldArr['localitySecurity']);
@@ -1611,7 +1611,7 @@ class DwcArchiverCore extends Manager{
 		if (!$this->conditionSql) return false;
 		$sql = $dwcOccurManager->getSqlOccurrences($this->occurrenceFieldArr['fields']);
 		$sql .= $this->getTableJoins() . $this->conditionSql;
-		if ($this->schemaType != 'backup') $sql .= ' LIMIT 1000000';
+		if ($this->schemaType != 'backup') $sql .= ' LIMIT 250000';
 		//Output header
 		$fieldArr = $this->occurrenceFieldArr['fields'];
 		if ($this->schemaType == 'dwc' || $this->schemaType == 'pensoft') {

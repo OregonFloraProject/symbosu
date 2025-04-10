@@ -209,7 +209,7 @@ $dwcManager = new DwcArchiverCore();
 						<img id="workingcircle" src="../../images/ajax-loader_sm.gif" style="margin-bottom:-4px;width:20px;display:none;" />
 					</div>
 					<div class="sectionDiv">
-						*  <?php echo (isset($LANG['LIMIT_NOTE']) ? $LANG['LIMIT_NOTE'] : 'There is a 1,000,000 record limit to occurrence downloads'); ?>
+						*  <?php echo (isset($LANG['LIMIT_NOTE']) ? $LANG['LIMIT_NOTE'] : 'There is a 250,000 record limit to occurrence downloads'); ?>
 					</div>
 				</fieldset>
 			</form>

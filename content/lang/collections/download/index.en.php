@@ -44,6 +44,6 @@ $LANG['UTF_8'] = 'UTF-8 (unicode)';
 $LANG['COMPRESSION'] = 'Compression';
 $LANG['COMPRESSED_ZIP'] = 'Compressed ZIP file';
 $LANG['DOWNLOAD_DATA'] = 'Download Data';
-$LANG['LIMIT_NOTE'] = '* There is a 1,000,000 record limit to occurrence downloads';
+$LANG['LIMIT_NOTE'] = '* There is a 250,000 record limit to occurrence downloads';
 
 ?>

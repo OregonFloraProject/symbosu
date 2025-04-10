@@ -44,6 +44,6 @@ $LANG['UTF_8'] = 'UTF-8 (unicode)';
 $LANG['COMPRESSION'] = 'Compresión';
 $LANG['COMPRESSED_ZIP'] = 'Archivo ZIP comprimido';
 $LANG['DOWNLOAD_DATA'] = 'Descargar datos';
-$LANG['LIMIT_NOTE'] = '* Hay un límite de 1.000.000 de registros para descargas de ocurrencias';
+$LANG['LIMIT_NOTE'] = '* Hay un límite de 250.000 de registros para descargas de ocurrencias';
 
 ?>
