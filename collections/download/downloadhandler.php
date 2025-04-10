@@ -14,7 +14,7 @@ if ($solrqString) {
 }
 
 function getOccIdWhereStringFromSOLR($solrqString) {
-	$occIds = getOccIdsFromSOLR($solrqString, 1000000);
+	$occIds = getOccIdsFromSOLR($solrqString, 250000);
 	return 'WHERE o.occid IN(' . implode(',', $occIds) . ')';
 }
 
