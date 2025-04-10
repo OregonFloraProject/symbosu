@@ -10,6 +10,7 @@ $downloadType = array_key_exists('dltype', $_REQUEST) ? $_REQUEST['dltype'] : 's
 $taxonFilterCode = array_key_exists('taxonFilterCode', $_REQUEST) ? filter_var($_REQUEST['taxonFilterCode'], FILTER_SANITIZE_NUMBER_INT) : 0;
 $displayHeader = array_key_exists('displayheader', $_REQUEST) ? filter_var($_REQUEST['displayheader'], FILTER_SANITIZE_NUMBER_INT) : 0;
 $searchVar = array_key_exists('searchvar', $_REQUEST) ? htmlspecialchars($_REQUEST['searchvar'], ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE| ENT_QUOTES) : '';
+$solrqString = array_key_exists('solrqstring', $_REQUEST) ? $_REQUEST['solrqstring'] : '';
 
 $dwcManager = new DwcArchiverCore();
 ?>
@@ -203,6 +204,7 @@ $dwcManager = new DwcArchiverCore();
 						<input name="taxonFilterCode" type="hidden" value="<?= $taxonFilterCode; ?>" />
 						<input name="sourcepage" type="hidden" value="<?= htmlspecialchars($sourcePage); ?>" />
 						<input name="searchvar" type="hidden" value="<?= $searchVar ?>" />
+						<input name="solrqstring" type="hidden" value='<?= $solrqString ?>' />
 						<button type="submit" name="submitaction"> <?= $LANG['DOWNLOAD_DATA'] ?></button>
 						<img id="workingcircle" src="../../images/ajax-loader_sm.gif" style="margin-bottom:-4px;width:20px;display:none;" />
 					</div>

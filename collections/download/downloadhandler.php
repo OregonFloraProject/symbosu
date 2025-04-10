@@ -3,10 +3,20 @@ include_once('../../config/symbini.php');
 include_once($SERVER_ROOT . '/classes/OccurrenceDownload.php');
 include_once($SERVER_ROOT . '/classes/OccurrenceMapManager.php');
 include_once($SERVER_ROOT . '/classes/DwcArchiverCore.php');
+include_once($SERVER_ROOT . '/collections/download/solr.php');
 
 $sourcePage = array_key_exists("sourcepage", $_REQUEST) ? $_REQUEST["sourcepage"] : "specimen";
 $schema = array_key_exists("schema", $_REQUEST) ? $_REQUEST["schema"] : "symbiota";
 $cSet = array_key_exists("cset", $_POST) ? $_POST["cset"] : '';
+$solrqString= array_key_exists('solrqstring', $_REQUEST) ? $_REQUEST['solrqstring'] : '';
+if ($solrqString) {
+	$solrqString = str_replace('&amp;', '&', $solrqString);
+}
+
+function getOccIdWhereStringFromSOLR($solrqString) {
+	$occIds = getOccIdsFromSOLR($solrqString, 1000000);
+	return 'WHERE o.occid IN(' . implode(',', $occIds) . ')';
+}
 
 if ($schema == 'backup') {
 	$collid = $_POST['collid'];
@@ -145,7 +155,13 @@ if ($schema == 'backup') {
 			if ($rareReaderArr) $dwcaHandler->setRareReaderArr($rareReaderArr);
 
 			if (array_key_exists('publicsearch', $_POST) && $_POST['publicsearch']) {
-				$dwcaHandler->setCustomWhereSql($occurManager->getSqlWhere());
+				if ($solrqString && isset($USE_SOLR_SEARCH) && $USE_SOLR_SEARCH === 1) {
+					// for polygon searches, get a list of occIds from SOLR and just select those directly
+					// this is way faster than using MySQL's ST_WITHIN
+					$dwcaHandler->setCustomWhereSql(getOccIdWhereStringFromSOLR($solrqString));
+				} else {
+					$dwcaHandler->setCustomWhereSql($occurManager->getSqlWhere());
+				}
 			} else {
 				//Request is coming from exporter.php for collection manager tools
 				if(isset($_POST['targetcollid'])) $dwcaHandler->setCollArr($_POST['targetcollid']);

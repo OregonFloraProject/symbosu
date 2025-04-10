@@ -28,6 +28,7 @@ if (isset($USE_SOLR_SEARCH) && $USE_SOLR_SEARCH === 1) {
 		: 0;
 	$hasResults = $recCnt > 0 && ($recCnt <= $recLimit || $pageNumber * $cntPerPage <= $recLimit);
 	$searchVar = $searchVar . '&recordcount=' . $recCnt;
+	$solrqString = array_key_exists('solrqstring', $_REQUEST) ? htmlspecialchars($_REQUEST['solrqstring'], ENT_HTML401 | ENT_SUBSTITUTE | ENT_NOQUOTES) : '';
 } else {
 	$recCnt = $mapManager->getRecordCnt();
 
@@ -46,12 +47,14 @@ if (isset($USE_SOLR_SEARCH) && $USE_SOLR_SEARCH === 1) {
 			<input name="reclimit" type="hidden" value="<?php echo $recLimit; ?>" />
 			<input name="sourcepage" type="hidden" value="map" />
 			<input name="searchvar" type="hidden" value="<?php echo $searchVar; ?>" />
+			<input name="solrqstring" type="hidden" value='<?php echo $solrqString; ?>' />
 			<input name="dltype" type="hidden" value="specimen" />
 		</form>
 		<form name="fullquerykmlform" action="<?= $host . '/collections/map/kmlhandler.php' ?>" method="post" target="_blank" style="float:left;">
 			<input name="reclimit" type="hidden" value="<?php echo $recLimit; ?>" />
 			<input name="sourcepage" type="hidden" value="map" />
 			<input name="searchvar" type="hidden" value="<?php echo $searchVar; ?>" />
+			<input name="solrqstring" type="hidden" value='<?php echo $solrqString; ?>' />
 			<button class="icon-button" name="submitaction" type="submit" class="button" title="Download KML file">
 					<svg style="width:1.3em" alt="<?php echo $LANG['IMG_DWNL_DATA']; ?>" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/></svg>
 					<span style="color: var(--light-color);">KML</span>

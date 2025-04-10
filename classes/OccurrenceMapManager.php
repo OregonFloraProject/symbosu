@@ -99,10 +99,14 @@ class OccurrenceMapManager extends OccurrenceManager {
 		return $coordArr;
 	}
 
-	public function getMappingData($recLimit, $extraFieldArr = null){
+	public function getMappingData($recLimit, $extraFieldArr = null, $occIds = null){
 		//Used for simple maps occurrence and taxon maps, and also KML download functions
 		$start = 0;
-		if(!$this->sqlWhere) $this->setSqlWhere();
+		if ($occIds) {
+			// in certain cases (polygon searches), it's much faster to use SOLR to do the actual search
+			// and then just pull data from the MySQL by occId
+			$this->sqlWhere = 'WHERE o.occid IN(' . implode(',', $occIds) . ')';
+		} else if(!$this->sqlWhere) $this->setSqlWhere();
 		$coordArr = array();
 		if($this->sqlWhere){
 			$statsManager = new OccurrenceAccessStats();
@@ -329,7 +333,7 @@ class OccurrenceMapManager extends OccurrenceManager {
 		return $queryShape;
 	}
 
-	public function writeKMLFile($recLimit, $extraFieldArr = null){
+	public function writeKMLFile($recLimit, $extraFieldArr = null, $occIds = null){
 		//Output data
 		$fileName = $GLOBALS['DEFAULT_TITLE'];
 		if($fileName){
@@ -351,7 +355,7 @@ class OccurrenceMapManager extends OccurrenceManager {
 
 		//Get and output data
 		$cnt = 0;
-		$coordArr = $this->getMappingData($recLimit, $extraFieldArr);
+		$coordArr = $this->getMappingData($recLimit, $extraFieldArr, $occIds);
 		if($coordArr){
 			$googleIconArr = array('pushpin/ylw-pushpin','pushpin/blue-pushpin','pushpin/grn-pushpin','pushpin/ltblu-pushpin',
 				'pushpin/pink-pushpin','pushpin/purple-pushpin', 'pushpin/red-pushpin','pushpin/wht-pushpin','paddle/blu-blank',
