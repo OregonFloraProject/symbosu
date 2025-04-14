@@ -651,7 +651,7 @@ if(isset($_REQUEST['llpoint'])) {
 				polyline: false,
 				circlemarker: false,
 				marker: false,
-				drawColor: {opacity: 0.85, fillOpacity: 0.55, color: '#000' },
+				drawColor: { opacity: 1, fillOpacity: 0.5, color: 'rgb(0,153,255)', fillColor: '#FFF', weight: 5 },
 			}, setQueryShape);
 
 			let cluster_type = "taxa";
