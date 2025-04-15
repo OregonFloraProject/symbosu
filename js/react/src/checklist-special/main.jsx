@@ -40,13 +40,12 @@ function getIncludedHeritageLists(characteristics) {
   return heritageChar.states.map((state) => capitalize(state.charstatename));
 }
 
-function getDefaultSearchResultsMessage(numTaxa, characteristics, pageType) {
+function getDefaultSearchResultsMessage(numTaxa, includedLists, pageType) {
   if (pageType === 'garden') {
     return 'No filters applied, so showing all native plants';
   } else if (pageType === 'rare') {
-    const listsOfTaxa = getIncludedHeritageLists(characteristics);
-    if (listsOfTaxa && listsOfTaxa.length) {
-      return `No filters applied, so showing ${numTaxa} ${listsOfTaxa.join(' and ')} taxa`;
+    if (includedLists && includedLists.length) {
+      return `No filters applied, so showing ${numTaxa} ${includedLists.join(' and ')} taxa`;
     }
   }
   return 'No filters applied';
@@ -110,6 +109,7 @@ class SpecialChecklistApp extends React.Component {
       searchResults: { familySort: [], taxonSort: [] },
       characteristics: [],
       cannedSearches: [],
+      includedLists: [],
       sortBy: 'sortBy' in queryParams ? queryParams['sortBy'] : getDefaultSortBy(this.props.pageType),
       viewType: 'viewType' in queryParams ? queryParams['viewType'] : 'grid',
       apiUrl: '',
@@ -142,6 +142,7 @@ class SpecialChecklistApp extends React.Component {
           apiUrl,
           currentTids: tids,
           characteristics: data.characteristics,
+          includedLists: getIncludedHeritageLists(data.characteristics),
         });
 
         const pageTitle = document.getElementsByTagName('title')[0];
@@ -535,7 +536,7 @@ class SpecialChecklistApp extends React.Component {
             <AboutDropdown
               hidden={!this.state.aboutGuideExpanded}
               numSpecies={this.state.searchResults.familySort.length}
-              lists={getIncludedHeritageLists(this.state.characteristics)}
+              lists={this.state.includedLists}
             />
           )}
           <div className="row">
@@ -612,7 +613,7 @@ class SpecialChecklistApp extends React.Component {
                           getStatesByCid={this.getStatesByCid}
                           defaultMessage={getDefaultSearchResultsMessage(
                             this.state.searchResults.familySort.length,
-                            this.state.characteristics,
+                            this.state.includedLists,
                             this.props.pageType,
                           )}
                         />
