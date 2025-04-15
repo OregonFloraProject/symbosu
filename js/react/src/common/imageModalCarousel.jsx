@@ -72,7 +72,7 @@ export default class ImageModalCarousel extends Component {
           infinite={true}
           lazyLoad={true}
           slidesToShow={1}
-          adaptiveHeight={true}
+          adaptiveHeight={false}
           initialSlide={this.props.currImage}
           /*beforeChange= { (current,next) => this.updateDetails(next) }*/
           className="images-main"
@@ -91,7 +91,7 @@ export default class ImageModalCarousel extends Component {
         >
           {this.props.images.map((image, index) => {
             return (
-              <div key={image.url} data-id={image.imgid}>
+              <div key={image.url} data-id={image.imgid} className="slide-inner-container">
                 <div className="slide-wrapper">
                   {/*<h4>From the {image.collectionname}</h4>*/}
                   <div className="image-wrapper">
