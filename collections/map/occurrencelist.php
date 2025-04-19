@@ -22,7 +22,7 @@ $occArr = array();
 $mapManager = new OccurrenceMapManager();
 $searchVar = $mapManager->getQueryTermStr();
 
-if (isset($USE_SOLR_SEARCH) && $USE_SOLR_SEARCH === 1) {
+if (isset($MAP_SOLR_SEARCH_FLAG) && $MAP_SOLR_SEARCH_FLAG === 1) {
 	$recCnt = array_key_exists('recordcount',$_REQUEST) && is_numeric($_REQUEST['recordcount'])
 		? (filter_var($_REQUEST['recordcount'], FILTER_SANITIZE_NUMBER_INT) ?? 0)
 		: 0;
@@ -125,7 +125,7 @@ if (isset($USE_SOLR_SEARCH) && $USE_SOLR_SEARCH === 1) {
 						<th><?=$LANG['MAP_LINK']?></th>
 					</tr>
 					<?php
-					if (isset($USE_SOLR_SEARCH) && $USE_SOLR_SEARCH === 1) {
+					if (isset($MAP_SOLR_SEARCH_FLAG) && $MAP_SOLR_SEARCH_FLAG === 1) {
 						// if SOLR search is on, we generate the table rows dynamically in JS instead of in this file
 						// see renderOccurrenceRows in collections.map.index.OregonFlora.js
 						// this needs to be kept up to date if there are changes to the row HTML below

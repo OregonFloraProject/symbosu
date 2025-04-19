@@ -155,7 +155,7 @@ if ($schema == 'backup') {
 			if ($rareReaderArr) $dwcaHandler->setRareReaderArr($rareReaderArr);
 
 			if (array_key_exists('publicsearch', $_POST) && $_POST['publicsearch']) {
-				if ($solrqString && isset($USE_SOLR_SEARCH) && $USE_SOLR_SEARCH === 1) {
+				if ($solrqString && isset($MAP_SOLR_SEARCH_FLAG) && $MAP_SOLR_SEARCH_FLAG === 1) {
 					// for polygon searches, get a list of occIds from SOLR and just select those directly
 					// this is way faster than using MySQL's ST_WITHIN
 					$dwcaHandler->setCustomWhereSql(getOccIdWhereStringFromSOLR($solrqString));
