@@ -40,7 +40,9 @@ function addOregonFlora(map, fitBounds = true){
 			
 	});
 
-	setUpUserFiles(map);
+	if (typeof MAP_KML_IMPORT_FLAG !== 'undefined' && MAP_KML_IMPORT_FLAG) {
+		setUpUserFiles(map);
+	}
 }
 
 
@@ -222,15 +224,17 @@ function addKMLLayer(text, name, map, userAdded = true) {
 		return false;
 	}
 
-	// select on click for user-added polygons, on double-click for ours (since they have a popup)
-	const selectEvent = userAdded ? 'click' : 'dblclick';
-	layer.on(selectEvent, (event) => {
-		if (event.layer instanceof L.Polygon) {
-			map.clearMap();
-			map.drawShape({ type: 'polygon', latlngs: event.layer.getLatLngs()[0] });
-			setQueryShape(getShapeCoords('polygon', event.layer));
-		}
-	});
+	if (typeof MAP_KML_IMPORT_FLAG !== 'undefined' && MAP_KML_IMPORT_FLAG) {
+		// select on click for user-added polygons, on double-click for ours (since they have a popup)
+		const selectEvent = userAdded ? 'click' : 'dblclick';
+		layer.on(selectEvent, (event) => {
+			if (event.layer instanceof L.Polygon) {
+				map.clearMap();
+				map.drawShape({ type: 'polygon', latlngs: event.layer.getLatLngs()[0] });
+				setQueryShape(getShapeCoords('polygon', event.layer));
+			}
+		});
+	}
 
 	// Add to layer controls
 	map.mapLayer.layerControl.addOverlay(layer, name);
@@ -282,7 +286,7 @@ function processLayersAndPopups(layers, userAdded) {
 			// Remove layer popup for user-added KML files
 			if (userAdded) {
 				layer.unbindPopup();
-			} else {
+			} else if (typeof MAP_KML_IMPORT_FLAG !== 'undefined' && MAP_KML_IMPORT_FLAG) {
 				// for our KML files, add double-click instructions to popup
 				const popupContent = layer?.getPopup()?.getContent();
 				if (popupContent) {

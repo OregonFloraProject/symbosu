@@ -305,7 +305,7 @@ if(isset($_REQUEST['llpoint'])) {
 		<?php } ?>
 		</style>
 		<script type="text/javascript">
-			const USE_SOLR_SEARCH = <?php echo (isset($USE_SOLR_SEARCH) && $USE_SOLR_SEARCH === 1) ? 'true' : 'false'; ?>;
+			const MAP_KML_IMPORT_FLAG = <?php echo (isset($MAP_KML_IMPORT_FLAG) && $MAP_KML_IMPORT_FLAG === 1) ? 'true' : 'false'; ?>;
 		//Clid
 		let recordArr = [];
 		let taxaMap = [];
@@ -944,7 +944,7 @@ if(isset($_REQUEST['llpoint'])) {
 				markers = [];
 
 				if(heatmapLayer) map.mapLayer.removeLayer(heatmapLayer);
-<?php if (!(isset($USE_SOLR_SEARCH) && $USE_SOLR_SEARCH === 1)) { ?>
+<?php if (!(isset($MAP_SOLR_SEARCH_FLAG) && $MAP_SOLR_SEARCH_FLAG === 1)) { ?>
 				getOccurenceRecords(formData).then(res => {
 					if (res) loadOccurenceRecords(res);
 				});
@@ -984,7 +984,7 @@ if(isset($_REQUEST['llpoint'])) {
 						const group = genMapGroups(search.recordArr, search.taxaArr, search.collArr, search.label)
 						group.origin = search.origin;
 						mapGroups.push(group);
-<?php if (isset($USE_SOLR_SEARCH) && $USE_SOLR_SEARCH === 1) { ?>
+<?php if (isset($MAP_SOLR_SEARCH_FLAG) && $MAP_SOLR_SEARCH_FLAG === 1) { ?>
 						getOccurenceRecords(formData, search).then(res => {
 							if (res) loadOccurenceRecords(res, search);
 						});
@@ -1750,7 +1750,7 @@ if(isset($_REQUEST['llpoint'])) {
 			try {
 				const url = host? `${host}/collections/map/rpc/searchCollections.php`: 'rpc/searchCollections.php'
 
-<?php if (isset($USE_SOLR_SEARCH) && $USE_SOLR_SEARCH === 1) { ?>
+<?php if (isset($MAP_SOLR_SEARCH_FLAG) && $MAP_SOLR_SEARCH_FLAG === 1) { ?>
 				// get query string for sessionStorage and copy link button
 				const queryPromise = fetch('rpc/searchCollections.php?queryOnly=true', {
 					method: 'POST',
@@ -1804,7 +1804,7 @@ if(isset($_REQUEST['llpoint'])) {
 
 		async function getOccurenceRecords(body, searchData, host) {
 			const url = host? `${host}/collections/map/occurrencelist.php`: 'occurrencelist.php'
-<?php if (isset($USE_SOLR_SEARCH) && $USE_SOLR_SEARCH === 1) { ?>
+<?php if (isset($MAP_SOLR_SEARCH_FLAG) && $MAP_SOLR_SEARCH_FLAG === 1) { ?>
 			body.set('recordcount', searchData.recordCount ?? searchData.recordArr.length);
 			body.set('solrqstring', sessionStorage.getItem('solrqstring'));
 <?php } ?>
@@ -1815,7 +1815,7 @@ if(isset($_REQUEST['llpoint'])) {
 			});
 
 			let html = response? await response.text(): '';
-<?php if (isset($USE_SOLR_SEARCH) && $USE_SOLR_SEARCH === 1) { ?>
+<?php if (isset($MAP_SOLR_SEARCH_FLAG) && $MAP_SOLR_SEARCH_FLAG === 1) { ?>
 			html = renderOccurrenceRows(html, searchData, body);
 <?php } ?>
 			return html;
@@ -1830,7 +1830,7 @@ if(isset($_REQUEST['llpoint'])) {
 					credentials: "same-origin",
 				})
 				let html = await response.text();
-<?php if (isset($USE_SOLR_SEARCH) && $USE_SOLR_SEARCH === 1) { ?>
+<?php if (isset($MAP_SOLR_SEARCH_FLAG) && $MAP_SOLR_SEARCH_FLAG === 1) { ?>
 				const params = new URLSearchParams(e.target.href);
 				html = renderOccurrenceRows(html, searchData, params);
 <?php } ?>
@@ -2064,7 +2064,9 @@ if(isset($_REQUEST['llpoint'])) {
 									<li><a href="#searchcollections"><span><?php echo htmlspecialchars($LANG['COLLECTIONS'], ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE); ?></span></a></li>
 									<li><a href="#searchcriteria"><span><?php echo htmlspecialchars($LANG['CRITERIA'], ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE); ?></span></a></li>
 									<li><a href="#mapoptions"><span><?php echo htmlspecialchars((isset($LANG['MAP_OPTIONS'])?$LANG['MAP_OPTIONS']:'Map Options'), ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE); ?></span></a></li>
+									<?php if (isset($MAP_KML_IMPORT_FLAG) && $MAP_KML_IMPORT_FLAG === 1) { ?>
 									<li><a href="#kmlinput"><span><?php echo htmlspecialchars((isset($LANG['KML_UPLOAD'])?$LANG['KML_UPLOAD']:'KML Upload'), ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE); ?></span></a></li>
+									<?php } ?>
 								</ul>
 								<div id="searchcollections">
 									<div >
@@ -2275,7 +2277,7 @@ Record Limit:
 										<input data-role="none" type='checkbox' name='hasgenetic' value='1' <?php if($mapManager->getSearchTerm('hasgenetic')) echo "CHECKED"; ?> >
 										<?php echo (isset($LANG['LIMIT_GENETIC'])?$LANG['LIMIT_GENETIC']:'Limit to Specimens with Genetic Data Only'); ?>
 									</div>
-<?php if (!(isset($USE_SOLR_SEARCH) && $USE_SOLR_SEARCH === 1)) { /* SOLR search does not yet include this capability */ ?>
+<?php if (!(isset($MAP_SOLR_SEARCH_FLAG) && $MAP_SOLR_SEARCH_FLAG === 1)) { /* SOLR search does not yet include this capability */ ?>
 									<div style="margin-top:5px;">
 										<input data-role="none" type='checkbox' name='includecult' value='1' <?php if($mapManager->getSearchTerm('includecult')) echo "CHECKED"; ?> >
 										<?php echo (isset($LANG['INCLUDE_CULTIVATED'])?$LANG['INCLUDE_CULTIVATED']:'Include cultivated/captive specimens'); ?>
@@ -2381,6 +2383,7 @@ Record Limit:
 									</div>
 								</fieldset>
 							</div>
+							<?php if (isset($MAP_KML_IMPORT_FLAG) && $MAP_KML_IMPORT_FLAG === 1) { ?>
 							<div id="kmlinput">
 								<div style="margin-top:0.5rem;margin-bottom:0.5rem">
 									<div>You can restrict your search to a polygon from a KML file.</div>
@@ -2397,6 +2400,7 @@ Record Limit:
 								/>
 								<button onclick="document.getElementById('kmlfileinput').click()">Select File</button>
 							</div>
+							<?php } ?>
 							<form style="display:none;" name="csvcontrolform" id="csvcontrolform" action="csvdownloadhandler.php" method="post" onsubmit="">
 								<input data-role="none" name="selectionscsv" id="selectionscsv" type="hidden" value="" />
 								<input data-role="none" name="starrcsv" id="starrcsv" type="hidden" value="" />
