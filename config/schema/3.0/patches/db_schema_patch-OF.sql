@@ -52,3 +52,8 @@ CREATE TABLE `taxonassociations` (
 -- a feature that James created that we use (though it is currently broken in base Symbiota).
 ALTER TABLE `institutions`
   CHANGE COLUMN `notes` `notes` varchar(19500) DEFAULT NULL;
+
+-- This determines the UI component used for this characteristic in the Identify / Grow Natives
+-- filter tools and was probably added during development of those tools.
+ALTER TABLE `kmcharacters`
+  ADD COLUMN `display` varchar(45) DEFAULT NULL AFTER `sortsequence`;
