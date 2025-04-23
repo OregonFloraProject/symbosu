@@ -140,6 +140,7 @@ export default class ImageModalCarousel extends Component {
           swipeToSlide={true}
           focusOnSelect={true}
           infinite={true}
+          lazyLoad={true}
           initialSlide={this.props.currImage}
           nextArrow={
             <SlickButtonFix>

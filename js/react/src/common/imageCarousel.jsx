@@ -18,6 +18,7 @@ function ImageCarousel(props) {
     autoplaySpeed: 8000,
     dots: false,
     infinite: props.imageCount > 5,
+    lazyLoad: true,
     slidesToShow: props.slideshowCount,
     slidesToScroll: props.slideshowCount,
     nextArrow: (
