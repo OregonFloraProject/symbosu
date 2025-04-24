@@ -1,6 +1,8 @@
 import React from 'react';
 import Slider from 'react-slick';
 
+import { getOnDemandLazySlides } from './imageCarouselUtils';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faChevronRight, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
@@ -31,6 +33,7 @@ function ImageCarousel(props) {
         <FontAwesomeIcon icon="chevron-left" />
       </SlickButtonFix>
     ),
+    getOnDemandLazySlides,
   };
   return (
     <Slider {...slickSettings} className="mx-auto" style={{ maxWidth: '90%' }}>

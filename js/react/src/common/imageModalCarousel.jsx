@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Slider from 'react-slick';
 import { getImageDetailPage } from '../common/taxaUtils';
+import { getOnDemandLazySlides } from './imageCarouselUtils';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -152,6 +153,7 @@ export default class ImageModalCarousel extends Component {
               <FontAwesomeIcon icon="chevron-left" />
             </SlickButtonFix>
           }
+          getOnDemandLazySlides={getOnDemandLazySlides}
           className="images-nav"
           style={{ maxWidth: '100%' }}
         >

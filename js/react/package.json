@@ -6,7 +6,8 @@
   "scripts": {
     "clean": "cd dist && find . ! -name '.gitkeep' -type f -exec rm -f {} + && cd ..",
     "build": "npm run clean && NODE_ENV=production webpack",
-    "devstart": "npm run clean && NODE_ENV=development webpack"
+    "devstart": "npm run clean && NODE_ENV=development webpack",
+    "postinstall": "patch-package"
   },
   "author": "",
   "license": "GPL-3.0-or-later",
@@ -38,12 +39,13 @@
     "lodash.throttle": "^4.1.1",
     "mini-css-extract-plugin": "^2.9.1",
     "papaparse": "^5.3.2",
+    "patch-package": "^8.0.0",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "react-google-maps": "^9.4.5",
     "react-modal-video": "^1.2.6",
     "react-scroll": "^1.8.2",
-    "react-slick": "^0.25.2",
+    "react-slick": "^0.30.3",
     "react-table": "^7.7.0",
     "react-tabs": "^3.2.2",
     "terser-webpack-plugin": "^5.3.10"
