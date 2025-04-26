@@ -126,6 +126,55 @@ if(isset($MAPPING_BOUNDARIES)){
 			font-size: 1.2rem !important;
 			font-weight: bold;
 		}
+		#service-container {
+			position: relative;
+		}
+		#panel {
+			height: 100%;
+			width: 20rem;
+			max-width: 100%;
+			position: absolute;
+			z-index: 20;
+			top: 0;
+			left: 0;
+			padding: 0.5rem;
+			background-color: #ffffff;
+			box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.16);
+			overflow: scroll;
+			transition: left 0.5s;
+			transition-timing-function: ease;
+		}
+		@media (max-width: 576px) {
+			#panel {
+				left: -20rem;
+			}
+		}
+		.panel-heading {
+			font-size: 1.5rem;
+			padding: 0.6rem 1rem 1rem 1rem;
+			color: #5fb021;
+			display: flex;
+		}
+		.panel-heading svg {
+			width: 0.875em;
+		}
+		.panel-heading a {
+			color: #5fb021 !important;
+		}
+		.panel-heading a:hover {
+			color: black !important;
+		}
+		.legend-button {
+			position: absolute;
+			left: 0;
+			margin: 10px;
+			z-index: 10;
+			gap: 0.2rem;
+			border: 2px solid rgba(0,0,0,0.2) !important;
+		}
+		#legend div {
+			text-indent: 1.7rem hanging;
+		}
 	</style>
 	<script type="text/javascript">
       let occurCoords;
@@ -146,9 +195,10 @@ if(isset($MAPPING_BOUNDARIES)){
          let bounds = new L.featureGroup();
 
          map = new LeafletMap('map_canvas');
+				 map.mapLayer.zoomControl.setPosition('topright');
 
-			// Add all the OregonFlora leaflet customizations
-			addOregonFlora(map);
+				// Add all the OregonFlora leaflet customizations
+				addOregonFlora(map);
 
          const checkLatLng = (latlng) => {
             return (
@@ -388,7 +438,7 @@ if(isset($MAPPING_BOUNDARIES)){
 
 	</script>
 </head>
-<body class="collapsed-header" style="width:100%; min-width: 900px" onload="initialize();">
+<body class="collapsed-header" style="width:100%" onload="initialize();">
 	<?php
 	//if($shouldUseMinimalMapHeader) include_once($SERVER_ROOT . '/includes/minimalheader.php');
 	include($SERVER_ROOT . '/includes/header.php');
@@ -417,17 +467,29 @@ if(isset($MAPPING_BOUNDARIES)){
       data-clid="<?= htmlspecialchars($clid) ?>"
       data-legend="<?= htmlspecialchars(json_encode($legendArr)) ?>"
    />
-<?php /* 2025-01-01(eric): adding a few extra divs for flexbox / page layout purposes;
-indentation levels are weird to avoid a big/unhelpful git diff */ ?>
-<div style="height:calc(100vh - 60px);display:flex;flex-direction:column;">
-	<div id="map_canvas" style="width:100%;height:100%;flex:1;min-height:50vh;"></div>
-<div style="display:flex;">
-	<div style="flex:1;">
+	 <div>
+			<button class="legend-button no-symbiota-placement" onclick="document.getElementById('panel').style.left='0';">
+				<span style="font-size:1.3rem;line-height:1rem;margin-top:-0.2rem">
+					&#9776;
+				</span>
+				<b>Open Legend and Controls</b>
+			</button>
+		</div>
+	<div id="map_canvas" style="width:100%;height:calc(100vh - 60px);z-index:1"></div>
+	<div id="panel">
+		<div class="panel-heading">
+			<div style="flex:1">Legend and Controls</div>
+			<a role="button" onclick="document.getElementById('panel').style.left='-20rem'">
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" role="img">
+					<path fill="currentColor" d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/>
+				</svg>
+			</a>
+		</div>
 		<fieldset>
             <legend>
                <?php echo (isset($LANG['LEGEND']) ? $LANG['LEGEND']: 'Legend') ?>
             </legend>
-			<div style="float: left; margin-right: 25px; margin-bottom: 10px">
+			<div id="legend" style="margin-bottom: 15px">
 				<?php
 				$tailItem = '';
 				foreach($legendArr as $subArr){
@@ -448,7 +510,7 @@ indentation levels are weird to avoid a big/unhelpful git diff */ ?>
 				echo $tailItem;
 				?>
 			</div>
-			<div style="float: left;">
+			<div>
 				<div>
 					<svg style="height:14px;width:14px;margin-bottom:-2px;">" xmlns="http://www.w3.org/2000/svg">
 						<g>
@@ -480,20 +542,14 @@ indentation levels are weird to avoid a big/unhelpful git diff */ ?>
 				</div>
 			</div>
 		</fieldset>
-	</div>
-	<div style="flex:1;">
-		<fieldset style="display:flex !important">
+		<fieldset style="margin-top:1rem;">
 			<legend>Points to Display</legend>
-			<div style="flex:1;">
-				<input type="checkbox" id="osc" checked onClick="toggleMarkers(this.id);"> OSU Herbarium Specimens<br/>
-				<input type="checkbox" id="spec" checked onClick="toggleMarkers(this.id);"> Other Herbarium Specimens
-			</div>
-			<div style="flex:1;">
-				<input type="checkbox" id="ofphoto" checked onClick="toggleMarkers(this.id);"> OregonFlora Photos<br/>
-				<input type="checkbox" id="obs" checked onClick="toggleMarkers(this.id);"> Unvouchered Observations
-			</div>
+			<input type="checkbox" id="osc" checked onClick="toggleMarkers(this.id);"> OSU Herbarium Specimens<br/>
+			<input type="checkbox" id="spec" checked onClick="toggleMarkers(this.id);"> Other Herbarium Specimens<br/>
+			<input type="checkbox" id="ofphoto" checked onClick="toggleMarkers(this.id);"> OregonFlora Photos<br/>
+			<input type="checkbox" id="obs" checked onClick="toggleMarkers(this.id);"> Unvouchered Observations
 		</fieldset>
-		<fieldset>
+		<fieldset style="margin-top:1rem">
             <legend>
                <?php echo (isset($LANG['ADD_REFERENCE_POINT']) ? $LANG['ADD_REFERENCE_POINT']: 'Add Point of Reference') ?>
             </legend>
@@ -507,15 +563,13 @@ indentation levels are weird to avoid a big/unhelpful git diff */ ?>
                      <div style="float:left;margin-right:5px">
                         <?php echo (isset($LANG['LATITUDE']) ? $LANG['LATITUDE']: 'Longitude') ?>
                         (<?php echo (isset($LANG['DECIMAL']) ? $LANG['DECIMAL']: 'Decimal') ?>):
-                        <input name='lat' id='lat' size='10' type='text' /> </div>
-						<div style="float:left;">eg: 34.57</div>
+                        <input name='lat' id='lat' size='10' type='text' placeholder='34.57' /> </div>
 					</div>
 					<div style="margin-top:5px;clear:both">
                      <div style="float:left;margin-right:5px">
                         <?php echo (isset($LANG['LONGITUDE']) ? $LANG['LONGITUDE']: 'Longitude') ?>
                         (<?php echo (isset($LANG['DECIMAL']) ? $LANG['DECIMAL']: 'Decimal') ?>):
-                        <input name='lng' id='lng' size='10' type='text' /> </div>
-						<div style="float:left;">eg: -112.38</div>
+                        <input name='lng' id='lng' size='10' type='text' placeholder='-112.38' /> </div>
 					</div>
 					<div style='font-size:80%;margin-top:5px;clear:both'>
                      <a href='#' onclick='toggleLatLongDivs();'> 
@@ -558,8 +612,6 @@ indentation levels are weird to avoid a big/unhelpful git diff */ ?>
 			</div>
 		</fieldset>
 	</div>
-</div>
-</div>
 </body>
 </html>
 
