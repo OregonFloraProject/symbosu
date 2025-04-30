@@ -194,13 +194,17 @@ if(isset($_REQUEST['llpoint'])) {
 			z-index: 9999999 !important;
 		}
 
+		/* Set up container for absolutely positioned sidepanel */
+		#site-content {
+			position: relative;
+		}
+
 		/* The sidepanel menu */
 		.sidepanel {
-			resize: horizontal;
-			border-left: 2px, solid, black;
 			height: 100%;
 			width: 29rem;
-			position: fixed;
+			max-width: 100%;
+			position: absolute;
 			z-index: 20;
 			top: 0;
 			left: 0;
@@ -208,6 +212,23 @@ if(isset($_REQUEST['llpoint'])) {
 			overflow: hidden;
 			transition: left 0.5s;
 			transition-timing-function: ease;
+			display: flex;
+			flex-direction: column;
+		}
+
+		.panel-content {
+			flex: 1;
+			overflow: hidden;
+		}
+
+		#mapinterface {
+			height: 100%;
+		}
+
+		#accordion {
+			height: 100%;
+			display: flex;
+			flex-direction: column;
 		}
 
 		.selectedrecord{
@@ -2016,7 +2037,7 @@ if(isset($_REQUEST['llpoint'])) {
 		</script>
 		<script src="../../js/symb/api.taxonomy.taxasuggest.js?ver=4" type="text/javascript"></script>
 	</head>
-	<body class="collapsed-header" style='width:100%;max-width:100%;min-width:500px;' <?php echo (!$activateGeolocation?'onload="initialize();"':''); ?>>
+	<body class="collapsed-header" style='width:100%;' <?php echo (!$activateGeolocation?'onload="initialize();"':''); ?>>
 		<?php
 		if($shouldUseMinimalMapHeader) include_once($SERVER_ROOT . '/includes/minimalheader.php');
 		include($SERVER_ROOT . '/includes/header.php');
@@ -2035,7 +2056,7 @@ if(isset($_REQUEST['llpoint'])) {
 		>
 		</div>
 		<div>
-			<button onclick="document.getElementById('defaultpanel').style.left='0';  " style="position:absolute;top:60px;left:0;margin:0px;z-index:10; gap: 0.2rem">
+			<button onclick="document.getElementById('defaultpanel').style.left='0';" style="position:absolute;margin:10px;z-index:10;gap:0.2rem;border: 2px solid rgba(0,0,0,0.2) !important;" class="no-symbiota-placement">
 				<span style="padding-bottom:0.2rem">
 					&#9776;
 				</span>
@@ -2043,7 +2064,7 @@ if(isset($_REQUEST['llpoint'])) {
 			</button>
 		</div>
 		<div id='map' style='width:100%;height:calc(100vh - 60px);z-index:1'></div>
-		<div id="defaultpanel" class="sidepanel"  <?= $menuClosed? 'style="left: -29rem"': ''?>>
+		<div id="defaultpanel" class="sidepanel" <?= $menuClosed? 'style="left: -29rem"': ''?>>
 			<div class="menu" style="display:flex; align-items: center; background-color: var(--darkest-color); height: 2rem">
 				<!-- OF: we don't need this
 				<a style="text-decoration: none; margin-left: 0.5rem; color: white !important" href="<?php echo htmlspecialchars($CLIENT_ROOT, ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE); ?>/index.php">

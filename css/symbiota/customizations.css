@@ -100,11 +100,6 @@ button {
   font-size: .9rem;
 }
 
-/* Account for header on map page */
-.sidepanel{
-  top: 60px !important;
-}
-
 /* Tab navigation */
 .ui-widget-header, .ui-accordion-header {
   background: var(--oregonflora-green) !important;

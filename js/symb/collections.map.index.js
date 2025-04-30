@@ -31,7 +31,7 @@ $(document).ready(function () {
 
   $("#accordion").accordion({
     collapsible: true,
-    heightStyle: "fill",
+    heightStyle: "content",
   });
 
   $("#loadingOverlay").popup({
@@ -53,9 +53,9 @@ $(document).on("pageloadfailed", function (event, data) {
 
 function setHeight() {
   var winHeight = window.innerHeight;
-  var mapInterface = document.getElementById("mapinterface");
+  // var mapInterface = document.getElementById("mapinterface");
   var loadingOverlay = document.getElementById("loadingOverlay");
-  if(mapInterface) mapInterface.style.height = winHeight + "px";
+  // if(mapInterface) mapInterface.style.height = winHeight + "px";
   if(loadingOverlay) loadingOverlay.style.height = winHeight + "px";
 }
 
