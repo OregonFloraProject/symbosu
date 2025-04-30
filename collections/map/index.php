@@ -209,6 +209,7 @@ if(isset($_REQUEST['llpoint'])) {
 			top: 0;
 			left: 0;
 			background-color: #ffffff;
+			box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.16);
 			overflow: hidden;
 			transition: left 0.5s;
 			transition-timing-function: ease;
@@ -2065,20 +2066,17 @@ if(isset($_REQUEST['llpoint'])) {
 		</div>
 		<div id='map' style='width:100%;height:calc(100vh - 60px);z-index:1'></div>
 		<div id="defaultpanel" class="sidepanel" <?= $menuClosed? 'style="left: -29rem"': ''?>>
-			<div class="menu" style="display:flex; align-items: center; background-color: var(--darkest-color); height: 2rem">
-				<!-- OF: we don't need this
-				<a style="text-decoration: none; margin-left: 0.5rem; color: white !important" href="<?php echo htmlspecialchars($CLIENT_ROOT, ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE); ?>/index.php">
-					<?php echo (isset($LANG['H_HOME'])?$LANG['H_HOME']:'Home'); ?>
-				</a>
-				-->
-				<span style="display: flex; flex-grow: 1; margin-right:1rem; justify-content: right">
-					<a style="color: white !important" onclick="document.getElementById('defaultpanel').style.left='-29rem'">Hide Panel</a>
-				</span>
-			</div>
 			<div class="panel-content">
 				<div id="mapinterface">
 					<div id="accordion">
-						<h3 style="margin-top:0"><?php echo (isset($LANG['SEARCH_CRITERIA'])?$LANG['SEARCH_CRITERIA']:'Search Criteria and Options'); ?></h3>
+						<h3 style="margin-top:0">
+							<?php echo (isset($LANG['SEARCH_CRITERIA'])?$LANG['SEARCH_CRITERIA']:'Search Criteria and Options'); ?>
+							<a role="button" onclick="event.stopPropagation();document.getElementById('defaultpanel').style.left='-29rem'" style="position:absolute;right:0;color:white !important;padding:1em;margin-top:-1em">
+								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" role="img" style="width:1em">
+									<path fill="currentColor" d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/>
+								</svg>
+							</a>
+						</h3>
 						<div id="tabs1" style="padding:0px;height:100%">
 							<form name="mapsearchform" id="mapsearchform" data-ajax="false">
 								<ul>
