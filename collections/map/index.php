@@ -2043,7 +2043,7 @@ if(isset($_REQUEST['llpoint'])) {
 		</script>
 		<script src="../../js/symb/api.taxonomy.taxasuggest.js?ver=4" type="text/javascript"></script>
 	</head>
-	<body class="collapsed-header" style='width:100%;' <?php echo (!$activateGeolocation?'onload="initialize();"':''); ?>>
+	<body class="collapsed-header" style='width:100%;overflow:hidden' <?php echo (!$activateGeolocation?'onload="initialize();"':''); ?>>
 		<?php
 		if($shouldUseMinimalMapHeader) include_once($SERVER_ROOT . '/includes/minimalheader.php');
 		include($SERVER_ROOT . '/includes/header.php');
