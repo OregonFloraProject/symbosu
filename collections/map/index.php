@@ -2064,7 +2064,7 @@ if(isset($_REQUEST['llpoint'])) {
 				<b>Open Search Panel</b>
 			</button>
 		</div>
-		<div id='map' style='width:100%;height:calc(100vh - 60px);z-index:1'></div>
+		<div id='map' style='width:100%;height:calc(100dvh - 60px);z-index:1'></div>
 		<div id="defaultpanel" class="sidepanel" <?= $menuClosed? 'style="left: -29rem"': ''?>>
 			<div class="panel-content">
 				<div id="mapinterface">

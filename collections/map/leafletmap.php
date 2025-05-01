@@ -475,7 +475,7 @@ if(isset($MAPPING_BOUNDARIES)){
 				<b>Open Legend and Controls</b>
 			</button>
 		</div>
-	<div id="map_canvas" style="width:100%;height:calc(100vh - 60px);z-index:1"></div>
+	<div id="map_canvas" style="width:100%;height:calc(100dvh - 60px);z-index:1"></div>
 	<div id="panel">
 		<div class="panel-heading">
 			<div style="flex:1">Legend and Controls</div>
