@@ -328,6 +328,7 @@ if(isset($_REQUEST['llpoint'])) {
 		</style>
 		<script type="text/javascript">
 			const MAP_KML_IMPORT_FLAG = <?php echo (isset($MAP_KML_IMPORT_FLAG) && $MAP_KML_IMPORT_FLAG === 1) ? 'true' : 'false'; ?>;
+			const MOBILE_BREAKPOINT = 576;
 		//Clid
 		let recordArr = [];
 		let taxaMap = [];
@@ -1089,6 +1090,10 @@ if(isset($_REQUEST['llpoint'])) {
 			document.addEventListener('occur_click', function(e) {
 				for (let i = 0; i < markers.length; i++) {
 					if(recordArr[i]['occid'] === e.detail.occid) {
+						if (window.innerWidth < MOBILE_BREAKPOINT) {
+							// if on mobile, close the search panel when the user clicks on See map point
+							document.getElementById('defaultpanel').style.left='-29rem';
+						}
 						const current_zoom = map.mapLayer.getZoom()
 						map.mapLayer.setView([recordArr[i]['lat'], recordArr[i]['lng']], current_zoom <= 12? 12: current_zoom)
 
