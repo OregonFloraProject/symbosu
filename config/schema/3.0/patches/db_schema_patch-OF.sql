@@ -57,3 +57,58 @@ ALTER TABLE `institutions`
 -- filter tools and was probably added during development of those tools.
 ALTER TABLE `kmcharacters`
   ADD COLUMN `display` varchar(45) DEFAULT NULL AFTER `sortsequence`;
+
+-- 2025-05-08:
+-- Triggers to automatically update `omoccurgeoindex` (used by dynamicmap)
+-- when `omoccurrences` is updated.
+-- This was previously done by a cronjob outside of symbiota, but the cronjob was not able to
+-- gracefully handle updates or deletes.
+--
+-- NOTE: definer here will be the user that runs the CREATE TRIGGER commands, unless DEFINER is explicity specified
+DELIMITER |
+CREATE TRIGGER `omoccurrences_insert_omoccurgeoindex` AFTER INSERT ON `omoccurrences`
+FOR EACH ROW BEGIN
+  IF (NEW.`decimalLatitude` BETWEEN -90 AND 90)
+    AND (NEW.`decimalLongitude` BETWEEN -180 AND 180)
+    AND NEW.`tidinterpreted` IS NOT NULL
+    AND (NEW.`cultivationStatus` IS NULL OR NEW.`cultivationStatus` = 0)
+    AND (NEW.`coordinateUncertaintyInMeters` IS NULL OR NEW.`coordinateUncertaintyInMeters` < 10000)
+  THEN
+    INSERT IGNORE INTO omoccurgeoindex (`tid`,`decimallatitude`,`decimallongitude`)
+    VALUES (NEW.`tidinterpreted`,ROUND(NEW.`decimallatitude`, 2),ROUND(NEW.`decimallongitude`, 2));
+  END IF;
+END;
+|
+
+CREATE TRIGGER `omoccurrences_update_omoccurgeoindex` AFTER UPDATE ON `omoccurrences`
+FOR EACH ROW BEGIN
+  IF (NEW.`decimalLatitude` BETWEEN -90 AND 90)
+    AND (NEW.`decimalLongitude` BETWEEN -180 AND 180)
+    AND NEW.`tidinterpreted` IS NOT NULL
+    AND (NEW.`cultivationStatus` IS NULL OR NEW.`cultivationStatus` = 0)
+    AND (NEW.`coordinateUncertaintyInMeters` IS NULL OR NEW.`coordinateUncertaintyInMeters` < 10000)
+  THEN
+    IF ((SELECT COUNT(`occid`) FROM `omoccurrences` WHERE `tidinterpreted` = OLD.`tidinterpreted` AND ROUND(`decimalLatitude`, 2) = ROUND(OLD.`decimalLatitude`, 2) AND ROUND(`decimalLongitude`, 2) = ROUND(OLD.`decimalLongitude`, 2) AND (`cultivationStatus` IS NULL OR `cultivationStatus` = 0) AND (`coordinateUncertaintyInMeters` IS NULL OR `coordinateUncertaintyInMeters` < 10000)) = 0) THEN
+      DELETE FROM omoccurgeoindex WHERE `tid` = OLD.`tidinterpreted` AND `decimalLatitude` = ROUND(OLD.`decimalLatitude`, 2) AND `decimalLongitude` = ROUND(OLD.`decimalLongitude`, 2);
+    END IF;
+
+    INSERT IGNORE INTO omoccurgeoindex (`tid`,`decimallatitude`,`decimallongitude`)
+    VALUES (NEW.`tidinterpreted`,ROUND(NEW.`decimallatitude`, 2),ROUND(NEW.`decimallongitude`, 2));
+  END IF;
+END;
+|
+
+CREATE TRIGGER `omoccurrences_delete_omoccurgeoindex` AFTER DELETE ON `omoccurrences`
+FOR EACH ROW BEGIN
+  IF (OLD.`decimalLatitude` BETWEEN -90 AND 90)
+    AND (OLD.`decimalLongitude` BETWEEN -180 AND 180)
+    AND OLD.`tidinterpreted` IS NOT NULL
+    AND (OLD.`cultivationStatus` IS NULL OR OLD.`cultivationStatus` = 0)
+    AND (OLD.`coordinateUncertaintyInMeters` IS NULL OR OLD.`coordinateUncertaintyInMeters` < 10000)
+    AND ((SELECT COUNT(`occid`) FROM `omoccurrences` WHERE `tidinterpreted` = OLD.`tidinterpreted` AND ROUND(`decimalLatitude`, 2) = ROUND(OLD.`decimalLatitude`, 2) AND ROUND(`decimalLongitude`, 2) = ROUND(OLD.`decimalLongitude`, 2) AND (`cultivationStatus` IS NULL OR `cultivationStatus` = 0) AND (`coordinateUncertaintyInMeters` IS NULL OR `coordinateUncertaintyInMeters` < 10000)) = 0)
+  THEN
+    DELETE FROM omoccurgeoindex WHERE `tid` = OLD.`tidinterpreted` AND `decimalLatitude` = ROUND(OLD.`decimalLatitude`, 2) AND `decimalLongitude` = ROUND(OLD.`decimalLongitude`, 2);
+  END IF;
+END;
+|
+DELIMITER ;
