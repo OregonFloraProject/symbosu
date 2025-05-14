@@ -22,7 +22,15 @@ $occArr = array();
 $mapManager = new OccurrenceMapManager();
 $searchVar = $mapManager->getQueryTermStr();
 
-if (isset($MAP_SOLR_SEARCH_FLAG) && $MAP_SOLR_SEARCH_FLAG === 1) {
+$USE_SOLR_SEARCH = (isset($MAP_SOLR_SEARCH_FLAG) && $MAP_SOLR_SEARCH_FLAG === 1) ? 1 : 0;
+// 2025-05-14(eric): I'm not sure to what extent non-vouchered checklist data is in SOLR (looks like
+// it only pulls from fmvouchers) so for now, if clid is nonnull, switch back to default MySQL
+// search instead of SOLR
+if ($mapManager->getSearchTerm('clid')) {
+	$USE_SOLR_SEARCH = 0;
+}
+
+if ($USE_SOLR_SEARCH) {
 	$recCnt = array_key_exists('recordcount',$_REQUEST) && is_numeric($_REQUEST['recordcount'])
 		? (filter_var($_REQUEST['recordcount'], FILTER_SANITIZE_NUMBER_INT) ?? 0)
 		: 0;
@@ -125,7 +133,7 @@ if (isset($MAP_SOLR_SEARCH_FLAG) && $MAP_SOLR_SEARCH_FLAG === 1) {
 						<th><?=$LANG['MAP_LINK']?></th>
 					</tr>
 					<?php
-					if (isset($MAP_SOLR_SEARCH_FLAG) && $MAP_SOLR_SEARCH_FLAG === 1) {
+					if ($USE_SOLR_SEARCH) {
 						// if SOLR search is on, we generate the table rows dynamically in JS instead of in this file
 						// see renderOccurrenceRows in collections.map.index.OregonFlora.js
 						// this needs to be kept up to date if there are changes to the row HTML below

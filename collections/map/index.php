@@ -33,6 +33,14 @@ if($searchVar && $recLimit) $searchVar .= '&reclimit='.$recLimit;
 
 $obsIDs = $mapManager->getObservationIds();
 
+$USE_SOLR_SEARCH = (isset($MAP_SOLR_SEARCH_FLAG) && $MAP_SOLR_SEARCH_FLAG === 1) ? 1 : 0;
+// 2025-05-14(eric): I'm not sure to what extent non-vouchered checklist data is in SOLR (looks like
+// it only pulls from fmvouchers) so for now, if clid is nonnull, switch back to default MySQL
+// search instead of SOLR
+if ($mapManager->getSearchTerm('clid')) {
+	$USE_SOLR_SEARCH = 0;
+}
+
 //Sanitation
 if(!is_numeric($gridSize)) $gridSize = 60;
 if(!is_numeric($minClusterSize)) $minClusterSize = 10;
@@ -967,7 +975,7 @@ if(isset($_REQUEST['llpoint'])) {
 				markers = [];
 
 				if(heatmapLayer) map.mapLayer.removeLayer(heatmapLayer);
-<?php if (!(isset($MAP_SOLR_SEARCH_FLAG) && $MAP_SOLR_SEARCH_FLAG === 1)) { ?>
+<?php if (!$USE_SOLR_SEARCH) { ?>
 				getOccurenceRecords(formData).then(res => {
 					if (res) loadOccurenceRecords(res);
 				});
@@ -1007,7 +1015,7 @@ if(isset($_REQUEST['llpoint'])) {
 						const group = genMapGroups(search.recordArr, search.taxaArr, search.collArr, search.label)
 						group.origin = search.origin;
 						mapGroups.push(group);
-<?php if (isset($MAP_SOLR_SEARCH_FLAG) && $MAP_SOLR_SEARCH_FLAG === 1) { ?>
+<?php if ($USE_SOLR_SEARCH) { ?>
 						getOccurenceRecords(formData, search).then(res => {
 							if (res) loadOccurenceRecords(res, search);
 						});
@@ -1777,7 +1785,7 @@ if(isset($_REQUEST['llpoint'])) {
 			try {
 				const url = host? `${host}/collections/map/rpc/searchCollections.php`: 'rpc/searchCollections.php'
 
-<?php if (isset($MAP_SOLR_SEARCH_FLAG) && $MAP_SOLR_SEARCH_FLAG === 1) { ?>
+<?php if ($USE_SOLR_SEARCH) { ?>
 				// get query string for sessionStorage and copy link button
 				const queryPromise = fetch('rpc/searchCollections.php?queryOnly=true', {
 					method: 'POST',
@@ -1831,7 +1839,7 @@ if(isset($_REQUEST['llpoint'])) {
 
 		async function getOccurenceRecords(body, searchData, host) {
 			const url = host? `${host}/collections/map/occurrencelist.php`: 'occurrencelist.php'
-<?php if (isset($MAP_SOLR_SEARCH_FLAG) && $MAP_SOLR_SEARCH_FLAG === 1) { ?>
+<?php if ($USE_SOLR_SEARCH) { ?>
 			body.set('recordcount', searchData.recordCount ?? searchData.recordArr.length);
 			body.set('solrqstring', sessionStorage.getItem('solrqstring'));
 <?php } ?>
@@ -1842,7 +1850,7 @@ if(isset($_REQUEST['llpoint'])) {
 			});
 
 			let html = response? await response.text(): '';
-<?php if (isset($MAP_SOLR_SEARCH_FLAG) && $MAP_SOLR_SEARCH_FLAG === 1) { ?>
+<?php if ($USE_SOLR_SEARCH) { ?>
 			html = renderOccurrenceRows(html, searchData, body);
 <?php } ?>
 			return html;
@@ -1857,7 +1865,7 @@ if(isset($_REQUEST['llpoint'])) {
 					credentials: "same-origin",
 				})
 				let html = await response.text();
-<?php if (isset($MAP_SOLR_SEARCH_FLAG) && $MAP_SOLR_SEARCH_FLAG === 1) { ?>
+<?php if ($USE_SOLR_SEARCH) { ?>
 				const params = new URLSearchParams(e.target.href);
 				html = renderOccurrenceRows(html, searchData, params);
 <?php } ?>
@@ -2301,7 +2309,7 @@ Record Limit:
 										<input data-role="none" type='checkbox' name='hasgenetic' value='1' <?php if($mapManager->getSearchTerm('hasgenetic')) echo "CHECKED"; ?> >
 										<?php echo (isset($LANG['LIMIT_GENETIC'])?$LANG['LIMIT_GENETIC']:'Limit to Specimens with Genetic Data Only'); ?>
 									</div>
-<?php if (!(isset($MAP_SOLR_SEARCH_FLAG) && $MAP_SOLR_SEARCH_FLAG === 1)) { /* SOLR search does not yet include this capability */ ?>
+<?php if (!$USE_SOLR_SEARCH) { /* SOLR search does not yet include this capability */ ?>
 									<div style="margin-top:5px;">
 										<input data-role="none" type='checkbox' name='includecult' value='1' <?php if($mapManager->getSearchTerm('includecult')) echo "CHECKED"; ?> >
 										<?php echo (isset($LANG['INCLUDE_CULTIVATED'])?$LANG['INCLUDE_CULTIVATED']:'Include cultivated/captive specimens'); ?>
