@@ -172,7 +172,7 @@ if(isset($_REQUEST['llpoint'])) {
 		<script src="../../js/jquery.popupoverlay.js" type="text/javascript"></script>
 		<script src="../../js/jscolor/jscolor.js?ver=1" type="text/javascript"></script>
 		<!---	<script src="//maps.googleapis.com/maps/api/js?v=3.exp&libraries=drawing<?= (!empty($GOOGLE_MAP_KEY) && $GOOGLE_MAP_KEY != 'DEV' ? 'key=' . $GOOGLE_MAP_KEY : '') ?>&callback=Function.prototype" ></script> -->
-		<script src="../../js/symb/collections.map.index.js?ver=2" type="text/javascript"></script>
+		<script src="../../js/symb/collections.map.index.js?ver=<?php echo filemtime($SERVER_ROOT . '/js/symb/collections.map.index.js'); ?>" type="text/javascript"></script>
 		<script src="../../js/symb/collections.map.index.OregonFlora.js?ver=<?php echo filemtime($SERVER_ROOT . '/js/symb/collections.map.index.OregonFlora.js'); ?>" type="text/javascript"></script>
 
 		<?php
