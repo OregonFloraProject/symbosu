@@ -1797,6 +1797,9 @@ if(isset($_REQUEST['llpoint'])) {
 				});
 
 				const solrqString = await buildSOLRQString(body);
+				if (!solrqString) {
+					throw new Error('Invalid query, not enough parameters were filled out');
+				}
 				// if our query includes a polygon, save solrqString so we can pass it to downloadhandler
 				// since SOLR search is way faster than MySQL with polygons
 				if (body.has('polycoords') || body.has('upperlat')) {

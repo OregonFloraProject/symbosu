@@ -264,7 +264,7 @@ function verifyCollForm(f) {
     f.collnum.value == "" &&
     f.eventdate1.value == "" &&
     f.catnum.value == "" &&
-    f.clid.value == ""
+    !f.clid?.value
   ) {
     const message = (f.country.value == "" && f.state.value == "")
       ? (userAddedKML
