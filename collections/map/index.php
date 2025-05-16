@@ -41,6 +41,31 @@ if ($mapManager->getSearchTerm('clid')) {
 	$USE_SOLR_SEARCH = 0;
 }
 
+// If a query parameter exists for at least one required search field, programmatically submit the
+// search form as soon as the page loads.
+// This is distinct from the way Symbiota's version of this page handles query parameters, which is
+// by loading search results synchronously from this page's OccurrenceMapManager, and which results
+// in two completely separate code paths for obtaining the same set of results.
+// With our method, we only need to worry about one code path for obtaining results (namely,
+// rpc/searchCollections.php), which is important as we are inserting a totally separate search
+// provider, SOLR.
+$SEARCH_ON_PAGE_LOAD = false;
+if (
+	$mapManager->getTaxaSearchTerm() ||
+	$mapManager->getSearchTerm('county') ||
+	$mapManager->getSearchTerm('local') ||
+	$mapManager->getSearchTerm('upperlat') ||
+	$mapManager->getSearchTerm('pointlat') ||
+	$mapManager->getSearchTerm('polycoords') ||
+	$mapManager->getSearchTerm('collector') ||
+	$mapManager->getSearchTerm('collnum') ||
+	$mapManager->getSearchTerm('eventdate1') ||
+	$mapManager->getSearchTerm('catnum') ||
+	$mapManager->getSearchTerm('clid')
+) {
+	$SEARCH_ON_PAGE_LOAD = true;
+}
+
 //Sanitation
 if(!is_numeric($gridSize)) $gridSize = 60;
 if(!is_numeric($minClusterSize)) $minClusterSize = 10;
@@ -958,13 +983,12 @@ if(isset($_REQUEST['llpoint'])) {
 				if(heatmapLayer) map.mapLayer.removeLayer(heatmapLayer);
 			})
 
-			document.getElementById("mapsearchform").addEventListener('submit', async e => {
-				e.preventDefault();
-				if(!verifyCollForm(e.target)) return false;
+			const submitForm = async formElement => {
+				if(!verifyCollForm(formElement)) return false;
 
 				showWorking();
 
-				let formData = new FormData(e.target);
+				let formData = new FormData(formElement);
 
 				mapGroups.forEach(group => {
 					group.taxonMapGroup.resetGroup();
@@ -1038,6 +1062,11 @@ if(isset($_REQUEST['llpoint'])) {
 				drawPoints();
 				fitMap();
 				hideWorking();
+			};
+
+			document.getElementById("mapsearchform").addEventListener('submit', (e) => {
+				e.preventDefault();
+				submitForm(e.target);
 			});
 
 			async function updateColor(type, id_arr, color) {
@@ -1205,6 +1234,11 @@ if(isset($_REQUEST['llpoint'])) {
 				});
 			}
 			fitMap();
+
+			// once map is initialized, programmatically submit form if query params are provided
+			if (<?php echo $SEARCH_ON_PAGE_LOAD ? 'true' : 'false'; ?>) {
+				submitForm(document.getElementById("mapsearchform"));
+			}
 		}
 
 		function googleInit() {
