@@ -173,20 +173,59 @@ function PolicyApp(props) {
               <FontAwesomeIcon icon="chevron-left" /> Back
             </a>
           </p>
-          <h2>Access Policy</h2>
+          <h2>Policy on Sharing of Sensitive Plant Taxon Information</h2>
           <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce egestas sem id lectus ultricies sollicitudin.
-            Aliquam tristique turpis ac ipsum rutrum ornare.
+            Access to detailed location data is currently limited to agency workers and researchers, in accordance with
+            practices of the organizations responsible for protecting these species. A snapshot of the distribution map
+            for each rare taxon is publicly accessible. To request access to sensitive locality data, please ensure you
+            have an OregonFlora account, which can be initiated from the &quot;
+            <a href={`${props.clientRoot}/profile/index.php`}>Login</a>&quot; link in the website banner. While logged
+            in, complete and submit the Sensitive Data Access Request form.
           </p>
           <p>
-            Sed congue consectetur venenatis. Ut blandit tellus nisi, et rhoncus purus blandit quis. Nunc dignissim quam
-            nisi, id dictum nisl accumsan et. Nullam ut euismod tortor. Suspendisse accumsan erat tortor, sit amet
-            aliquam purus luctus eu. Proin libero nisl, auctor non efficitur at, placerat vel odio.
+            Sensitive data is not to be redistributed or shared beyond the requester&apos;s department, agency, or
+            business, or for subsequent unrelated work without permission from the data owner. While OregonFlora and its
+            data partners make every effort to present accurate and up-to-date information about the taxonomy and
+            location of each record, the data are made available &quot;as- is&quot;. Errors or feedback should be
+            reported to the appropriate collection manager, which is indicated at the bottom of every occurrence profile
+            page.
           </p>
           <p>
-            Mauris dapibus finibus augue, a posuere mauris consequat non. Duis volutpat fermentum imperdiet. Curabitur
-            nec ex eros.{' '}
+            The OregonFlora dataset is dynamic, and we are continuously curating it to reflect current knowledge.
+            Consequently, delayed use or use of a static copy of any dataset can result in inaccuracies, and we strongly
+            recommend against this practice. Access to sensitive data will expire <b>six months</b> from the granting of
+            permissions; an email will be sent as a reminder to update your request according to your data needs.
           </p>
+          <p>
+            It is a matter of professional ethics to cite and acknowledge the work of other scientists that has resulted
+            in data used in subsequent research. We request that you cite both primary data sources and OregonFlora when
+            using these data in your reports, papers, and publications. This information helps us demonstrate
+            OregonFlora impact when applying for funding to support our program. Here are examples of recommended
+            citations:
+          </p>
+          <ul>
+            <li>
+              <i>(citing occurrence data from specific institution(s));</i> Biodiversity data published by: &lt;Name(s)
+              of Collection&gt;. Accessed via OregonFlora Portal, https://oregonflora.org, YYYY-MM-DD.
+              <ul>
+                <li>
+                  Example: Biodiversity data published by: Oregon State University Vascular Plant Collection,
+                  OregonFlora Field Photo, Oregon Biodiversity Information Center, Vascular Plants. Accessed via
+                  OregonFlora Portal, https://oregonflora.org, YYYY- MM-DD.
+                </li>
+                <li>
+                  Example (individual record): Oregon State University Vascular Plant Collection, Occurrence ID
+                  &#123;F9C31938-5F97-4DCA-92F8-7F35A9CE2050&#125;. Accessed via OregonFlora Portal,
+                  https://oregonflora.org, YYYY-MM-DD.
+                </li>
+              </ul>
+            </li>
+            <li>
+              <i>(citing the rare plant guide)</i> OregonFlora. Rare Plant Guide.
+              https://oregonflora.org/portal/rare/&lt;rare plant profile page&gt;, YYYY-MM-DD.
+            </li>
+          </ul>
+          <p className="updated-date">(May 2025)</p>
           <div className="py-4">
             {!shouldShowForm ? (
               isLoggedIn ? (
@@ -200,7 +239,7 @@ function PolicyApp(props) {
               )
             ) : (
               <>
-                <h5>To request access to restricted data, please fill out the following form:</h5>
+                <h3>Sensitive Data Access Request form</h3>
                 <form>
                   <FormElement
                     disabled={isLoading}
@@ -302,7 +341,7 @@ function PolicyApp(props) {
                     }
                   }}
                 >
-                  Update profile and submit request
+                  Submit Request
                 </button>
               </>
             )}
