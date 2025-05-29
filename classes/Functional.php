@@ -14,7 +14,7 @@ function resolve_img_path($dbPath) {
   if (substr($dbPath, 0, 4) !== "http") {
     if (isset($IMAGE_ROOT_URL)
       && $IMAGE_ROOT_URL !== ""
-      && strpos($dbPath, $IMAGE_ROOT_URL !== 0)) {
+      && strpos($dbPath, $IMAGE_ROOT_URL) !== 0) {
       $result = $IMAGE_ROOT_URL . $result;
     }
     if (isset($IMAGE_DOMAIN)
