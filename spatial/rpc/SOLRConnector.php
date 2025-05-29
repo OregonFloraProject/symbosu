@@ -5,6 +5,7 @@
 
 include_once('../../config/symbini.php');
 include_once($SERVER_ROOT.'/classes/SOLRManager.php');
+include_once($SERVER_ROOT.'/classes/ProfileManager.php');
 
 $pArr = Array();
 $pArr["q"] = (isset($_REQUEST["q"])?$_REQUEST["q"]:'*:*');
@@ -19,6 +20,7 @@ if(isset($_REQUEST["action"])) $pArr["action"] = $_REQUEST["action"];
 
 $solrManager = new SOLRManager();
 
+ProfileManager::refreshUserRights();
 $canReadRareSpp = false;
 if($GLOBALS['USER_RIGHTS']){
 		if($GLOBALS['IS_ADMIN'] || array_key_exists("CollAdmin", $GLOBALS['USER_RIGHTS']) || array_key_exists("RareSppAdmin", $GLOBALS['USER_RIGHTS']) || array_key_exists("RareSppReadAll", $GLOBALS['USER_RIGHTS'])){

@@ -1,6 +1,7 @@
 <?php
 include_once('OccurrenceManager.php');
 include_once('OccurrenceAccessStats.php');
+include_once($SERVER_ROOT.'/classes/ProfileManager.php');
 
 class OccurrenceMapManager extends OccurrenceManager {
 
@@ -216,6 +217,7 @@ class OccurrenceMapManager extends OccurrenceManager {
 	//SQL where functions
 	private function setGeoSqlWhere(){
 		global $USER_RIGHTS;
+		ProfileManager::refreshUserRights();
 		$sqlWhere = $this->getSqlWhere();
 		if($this->searchTermArr){
 			if(array_key_exists('clid',$this->searchTermArr) && $this->searchTermArr['clid']){

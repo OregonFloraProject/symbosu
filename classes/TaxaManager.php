@@ -3,6 +3,7 @@
 include_once("../../config/symbini.php");
 include_once("$SERVER_ROOT/classes/Functional.php");
 include_once("$SERVER_ROOT/config/SymbosuEntityManager.php");
+include_once("$SERVER_ROOT/classes/ProfileManager.php");
 
 class TaxaManager {
 
@@ -491,6 +492,7 @@ class TaxaManager {
 
       if ($matchingRows > 0) {
         global $USER_RIGHTS;
+        ProfileManager::refreshUserRights();
         if (!isset($USER_RIGHTS) || (
           !array_key_exists('SuperAdmin', $USER_RIGHTS) &&
           !array_key_exists('CollAdmin', $USER_RIGHTS) &&

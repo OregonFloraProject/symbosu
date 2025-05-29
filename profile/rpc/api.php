@@ -3,6 +3,8 @@ include_once("../../config/symbini.php");
 include_once("$SERVER_ROOT/classes/Functional.php");
 include_once("$SERVER_ROOT/classes/ProfileManager.php");
 
+ProfileManager::refreshUserRights();
+
 function loggedInUserHasAccess() {
   global $USER_RIGHTS;
   if (isset($USER_RIGHTS) &&

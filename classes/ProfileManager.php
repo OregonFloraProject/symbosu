@@ -1224,4 +1224,15 @@ class ProfileManager extends Manager{
             'INNER JOIN useraccesstokens AS ut ON u.uid = ut.uid '.
             'WHERE (ul.username = "'.$this->userName.'") AND (ut.token = "'.$this->token.'") ';
     }
+
+	// in lieu of rewriting symbiota's whole authentication system to check everything on the server,
+	// allow individual pages/endpoints to refresh the session userRights
+	public static function refreshUserRights() {
+		global $SYMB_UID;
+		if ($SYMB_UID) {
+			$pm = new static();
+			$pm->setUid($SYMB_UID);
+			$pm->setUserRights();
+		}
+	}
 }

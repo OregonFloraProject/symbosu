@@ -1,6 +1,7 @@
 <?php
 include_once("OccurrenceManager.php");
 include_once("OccurrenceAccessStats.php");
+include_once($SERVER_ROOT.'/classes/ProfileManager.php');
 
 class OccurrenceListManager extends OccurrenceManager{
 
@@ -17,6 +18,7 @@ class OccurrenceListManager extends OccurrenceManager{
 
 	public function getSpecimenMap($pageRequest,$cntPerPage){
 		$retArr = Array();
+		ProfileManager::refreshUserRights();
 		$isSecuredReader = false;
 		if($GLOBALS['USER_RIGHTS']){
 			if($GLOBALS['IS_ADMIN'] || array_key_exists('CollAdmin', $GLOBALS['USER_RIGHTS']) || array_key_exists('RareSppAdmin', $GLOBALS['USER_RIGHTS']) || array_key_exists('RareSppReadAll', $GLOBALS['USER_RIGHTS'])){

@@ -4,6 +4,7 @@ include_once($serverRoot.'/classes/OccurrenceDownload.php');
 include_once($serverRoot.'/classes/OccurrenceManager.php');
 include_once($serverRoot.'/classes/MapInterfaceManager.php');
 include_once($serverRoot.'/classes/DwcArchiverCore.php');
+include_once($SERVER_ROOT.'/classes/ProfileManager.php');
 header("Cache-Control: no-cache, must-revalidate");
 header("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); 
 
@@ -21,6 +22,7 @@ if($stArrJson){
 
 $extended = (array_key_exists('extended',$_POST)?$_POST['extended']:0);
 
+ProfileManager::refreshUserRights();
 $redactLocalities = 1;
 $rareReaderArr = array();
 if($IS_ADMIN || array_key_exists("CollAdmin", $userRights)){

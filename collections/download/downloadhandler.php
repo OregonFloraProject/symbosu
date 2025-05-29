@@ -4,6 +4,7 @@ include_once($SERVER_ROOT . '/classes/OccurrenceDownload.php');
 include_once($SERVER_ROOT . '/classes/OccurrenceMapManager.php');
 include_once($SERVER_ROOT . '/classes/DwcArchiverCore.php');
 include_once($SERVER_ROOT . '/collections/download/solr.php');
+include_once($SERVER_ROOT.'/classes/ProfileManager.php');
 
 $sourcePage = array_key_exists("sourcepage", $_REQUEST) ? $_REQUEST["sourcepage"] : "specimen";
 $schema = array_key_exists("schema", $_REQUEST) ? $_REQUEST["schema"] : "symbiota";
@@ -12,6 +13,8 @@ $solrqString= array_key_exists('solrqstring', $_REQUEST) ? $_REQUEST['solrqstrin
 if ($solrqString) {
 	$solrqString = str_replace('&amp;', '&', $solrqString);
 }
+
+ProfileManager::refreshUserRights();
 
 function getOccIdWhereStringFromSOLR($solrqString) {
 	$occIds = getOccIdsFromSOLR($solrqString, 250000);
