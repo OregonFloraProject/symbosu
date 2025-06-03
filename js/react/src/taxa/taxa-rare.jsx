@@ -17,6 +17,7 @@ const EMPTY_DATA = {
   sciName: null,
   vernacularNames: [],
   images: [],
+  herbariumImages: [],
   rankId: null,
   context: {
     related: [],
@@ -95,6 +96,7 @@ function TaxaRareApp(props) {
             sciName: res.sciname,
             vernacularNames: res.vernacular.names,
             images: res.imagesBasis.HumanObservation,
+            herbariumImages: res.imagesBasis.PreservedSpecimen,
             rankId: res.rankId,
             context: {
               Related: [res.sciname, parentUrl, childUrl],
@@ -211,8 +213,38 @@ function TaxaRareApp(props) {
                 <i>{data.sciName}</i> images
               </h3>
               <div className="slider-wrapper">
-                <ImageCarousel images={data.images} imageCount={length} slideshowCount={slideshowCount}>
+                <ImageCarousel images={data.images} imageCount={data.images.length} slideshowCount={slideshowCount}>
                   {data.images.map((image, index) => {
+                    return (
+                      <div key={image.url}>
+                        <div className="card" style={{ padding: '0.6em' }}>
+                          <div style={{ position: 'relative', width: '100%', height: '7em', borderRadius: '0.25em' }}>
+                            <img
+                              className="d-block"
+                              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                              src={image.thumbnailurl}
+                              alt={image.thumbnailurl}
+                              onClick={() => toggleImageModal(index)}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </ImageCarousel>
+              </div>
+            </div>
+          )}
+          {data.herbariumImages.length > 0 && (
+            <div className="mt-4 dashed-border taxa-slideshows">
+              <h3 className="font-weight-bold mt-2">Herbarium specimens</h3>
+              <div className="slider-wrapper">
+                <ImageCarousel
+                  images={data.herbariumImages}
+                  imageCount={data.herbariumImages.length}
+                  slideshowCount={slideshowCount}
+                >
+                  {data.herbariumImages.map((image, index) => {
                     return (
                       <div key={image.url}>
                         <div className="card" style={{ padding: '0.6em' }}>
