@@ -96,7 +96,8 @@ const Status = {
 };
 
 const StatusDisplayText = {
-  [Status.SENT]: 'Thanks! Your request has been received and will be reviewed by the OregonFlora team.',
+  [Status.SENT]:
+    'Thanks! Your request has been received and will be reviewed by the OregonFlora team. You will receive an email when your request has been processed.',
   [Status.ERROR]: (
     <>
       An error occurred. Please try again later or <a href="../pages/contact.php">contact us</a>.
