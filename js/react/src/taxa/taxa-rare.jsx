@@ -54,6 +54,7 @@ function TaxaRareApp(props) {
   const [glossary, setGlossary] = useState({});
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const [currImage, setCurrImage] = useState(0);
+  const [currImageBasis, setCurrImageBasis] = useState('HumanObservation');
   const [slideshowCount, setSlideshowCount] = useState(5);
 
   const tid = parseInt(props.tid);
@@ -159,9 +160,10 @@ function TaxaRareApp(props) {
     }
     setSlideshowCount(newSlideshowCount);
   };
-  const toggleImageModal = (_currImage) => {
-    setCurrImage(_currImage);
+  const toggleImageModal = (image, basis) => {
+    setCurrImage(image);
     setIsImageModalOpen(!isImageModalOpen);
+    setCurrImageBasis(basis);
   };
 
   return (
@@ -224,7 +226,7 @@ function TaxaRareApp(props) {
                               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                               src={image.thumbnailurl}
                               alt={image.thumbnailurl}
-                              onClick={() => toggleImageModal(index)}
+                              onClick={() => toggleImageModal(index, 'HumanObservation')}
                             />
                           </div>
                         </div>
@@ -254,7 +256,7 @@ function TaxaRareApp(props) {
                               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                               src={image.thumbnailurl}
                               alt={image.thumbnailurl}
-                              onClick={() => toggleImageModal(index)}
+                              onClick={() => toggleImageModal(index, 'PreservedSpecimen')}
                             />
                           </div>
                         </div>
@@ -269,7 +271,7 @@ function TaxaRareApp(props) {
         <ImageModal
           show={isImageModalOpen}
           currImage={currImage}
-          images={data.images}
+          images={currImageBasis === 'PreservedSpecimen' ? data.herbariumImages : data.images}
           onClose={toggleImageModal}
           clientRoot={props.clientRoot}
         >
