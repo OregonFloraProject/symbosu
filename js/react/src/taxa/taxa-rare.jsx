@@ -166,6 +166,12 @@ function TaxaRareApp(props) {
     setCurrImageBasis(basis);
   };
 
+  const profileImage = data.images.length
+    ? data.images[0]
+    : data.herbariumImages.length
+      ? data.herbariumImages[0]
+      : null;
+
   return (
     <div className="container mx-auto py-5" style={{ minHeight: '45em' }}>
       <Loading clientRoot={props.clientRoot} isLoading={isLoading} />
@@ -196,12 +202,12 @@ function TaxaRareApp(props) {
           <div className="profile-type pr-4">Rare Plant Profile</div>
           <hr />
 
-          {data.images.length > 0 && (
+          {profileImage !== null && (
             <figure>
               <div className="img-main-wrapper">
-                <img id="img-main" src={data.images[0].url} alt={data.sciName} />
+                <img id="img-main" src={profileImage.url} alt={data.sciName} />
               </div>
-              <figcaption>{data.images[0].photographer}</figcaption>
+              <figcaption>{profileImage.photographer}</figcaption>
             </figure>
           )}
 
