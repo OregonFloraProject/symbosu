@@ -20,15 +20,17 @@ function loggedInUserHasAccess() {
 }
 
 function getProfileDataForRequestingAccess($uid) {
-  if (loggedInUserHasAccess()) {
-    return ["accessGranted" => true];
-  }
-
   $pm = new ProfileManager();
   $pm->setUid($uid);
 
-  if ($pm->hasRequestedRareSpeciesAccess()) {
-    return ["accessRequested" => true];
+  // if access is expiring, allow to re-request access regardless of current state
+  if (!$pm->isRareSpeciesAccessExpiring()) {
+    if (loggedInUserHasAccess()) {
+      return ["accessGranted" => true];
+    }
+    if ($pm->hasRequestedRareSpeciesAccess()) {
+      return ["accessRequested" => true];
+    }
   }
 
   $person = $pm->getPerson();
@@ -43,12 +45,12 @@ function getProfileDataForRequestingAccess($uid) {
 }
 
 function updateProfileAndRequestAccess($uid, $params) {
-  if (loggedInUserHasAccess()) {
-    return ["accessGranted" => true];
-  }
-
   $pm = new ProfileManager();
   $pm->setUid($uid);
+
+  if (loggedInUserHasAccess() && !$pm->isRareSpeciesAccessExpiring()) {
+    return ["accessGranted" => true];
+  }
 
   /**
    * 2024-09-20(eric): for testing only, remove before deploying
