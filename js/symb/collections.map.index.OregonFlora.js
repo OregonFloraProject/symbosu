@@ -43,6 +43,16 @@ async function prepareTaxaDataAsync(taxaArr, taxontype, thes) {
   return await response.json();
 }
 
+function isFamilyName(taxonString) {
+  // if a taxon string ends with 'aceae' or 'idae' and is a single word, assume it's a family name
+  // the check for a single word is here to avoid false positives such as Corydalis aquae-gelidae
+  return (
+    (taxonString.substring(i.length - 5) == 'aceae' ||
+      taxonString.substring(i.length - 4) == 'idae') &&
+    !taxonString.trim().includes(' ')
+  );
+}
+
 async function prepareTaxaParamsAsync(formData) {
   const taxaval = formData.get('taxa').trim();
   if (taxaval) {
@@ -96,21 +106,11 @@ async function prepareTaxaParamsAsync(formData) {
             }
           } else {
             // taxontype 1, 2, 3
-            if (
-              taxontype == 3 ||
-              i.substring(i.length - 5) == 'aceae' ||
-              i.substring(i.length - 4) == 'idae'
-            ) {
+            if (taxontype == 3 || isFamilyName(i)) {
               taxaSolrqString += ' OR (family:' + i + ')';
               taxaCqlString += " OR family = '" + i + "'";
             }
-            if (
-              taxontype == 3 ||
-              !(
-                i.substring(i.length - 5) == 'aceae' ||
-                i.substring(i.length - 4) == 'idae'
-              )
-            ) {
+            if (taxontype == 3 || !isFamilyName(i)) {
               taxaSolrqString +=
                 ' OR ((sciname:' +
                 i.replace(/ /g, '\\ ') +
@@ -125,10 +125,7 @@ async function prepareTaxaParamsAsync(formData) {
             let tidArr = [];
             if (taxontype == 1 || taxontype == 2 || taxontype == 5) {
               for (syn in synArr) {
-                if (
-                  synArr[syn].indexOf('aceae') !== -1 ||
-                  synArr[syn].indexOf('idae') !== -1
-                ) {
+                if (isFamilyName(synArr[syn])) {
                   taxaSolrqString += ' OR (family:' + synArr[syn] + ')';
                   taxaCqlString += " OR family = '" + synArr[syn] + "'";
                 }
