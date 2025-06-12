@@ -44,14 +44,6 @@ function updateProfileAndRequestAccess($uid, $params) {
   $pm = new ProfileManager();
   $pm->setUid($uid);
 
-  /**
-   * 2024-09-20(eric): for testing only, remove before deploying
-   */
-  if (array_key_exists("delete", $params)) {
-    $pm->deleteRareSpeciesAccessRequest();
-    return [];
-  }
-
   if (loggedInUserHasAccess() && !$pm->isRareSpeciesAccessExpiring()) {
     return ["accessGranted" => true];
   }
