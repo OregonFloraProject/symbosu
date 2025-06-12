@@ -13,20 +13,18 @@ function loggedInUserHasAccess() {
     array_key_exists('RareSppAdmin', $USER_RIGHTS) ||
     array_key_exists('RareSppReadAll', $USER_RIGHTS))
   ) {
-    // TODO: check for specific collection IDs with CollEditor and RareSppReader?
     return true;
   }
   return false;
 }
 
 function getProfileDataForRequestingAccess($uid) {
-  if (loggedInUserHasAccess()) {
-    return ["accessGranted" => true];
-  }
-
   $pm = new ProfileManager();
   $pm->setUid($uid);
 
+  if (loggedInUserHasAccess() && !$pm->isRareSpeciesAccessExpiring()) {
+    return ["accessGranted" => true];
+  }
   if ($pm->hasRequestedRareSpeciesAccess()) {
     return ["accessRequested" => true];
   }
@@ -43,10 +41,6 @@ function getProfileDataForRequestingAccess($uid) {
 }
 
 function updateProfileAndRequestAccess($uid, $params) {
-  if (loggedInUserHasAccess()) {
-    return ["accessGranted" => true];
-  }
-
   $pm = new ProfileManager();
   $pm->setUid($uid);
 
@@ -56,6 +50,10 @@ function updateProfileAndRequestAccess($uid, $params) {
   if (array_key_exists("delete", $params)) {
     $pm->deleteRareSpeciesAccessRequest();
     return [];
+  }
+
+  if (loggedInUserHasAccess() && !$pm->isRareSpeciesAccessExpiring()) {
+    return ["accessGranted" => true];
   }
 
   if (

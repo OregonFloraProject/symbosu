@@ -103,7 +103,8 @@ const StatusDisplayText = {
       An error occurred. Please try again later or <a href="../pages/contact.php">contact us</a>.
     </>
   ),
-  [Status.ACCESS_REQUESTED]: 'Your request has been received and is pending review.',
+  [Status.ACCESS_REQUESTED]:
+    'Your request has been received and is pending review. You will receive an email when your request has been processed.',
   [Status.ACCESS_GRANTED]: 'You have been granted access by the OregonFlora team.',
 };
 

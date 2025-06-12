@@ -14,6 +14,8 @@ class ProfileManager extends Manager{
 	protected $userName;
 	protected $displayName;
 	protected $token;
+	protected $rareSpeciesAccessRequested;
+	protected $rareSpeciesAccessExpiring;
 
 	public function __construct($connType = 'readonly'){
 		parent::__construct(null, $connType);
@@ -631,24 +633,62 @@ class ProfileManager extends Manager{
 	 * 2024-09-19: OregonFlora is using the unused fields `users.accessrRights` and `users.notes` to
 	 * store data relating to requests for access to rare species data (see rare/policy.php);
 	 * `users.accessrRights` stores the user's written reason for requesting access, and `users.notes`
-	 * is used to track the time and status of requests.
+	 * is used to track the time and status of requests. `userroles.notes` is additionally used to
+	 * keep track of expiration times for access. These fields are updated and managed by the
+	 * rpg_access_expiration cronjob script.
 	 *
-	 * The following two helper functions get and set these fields and are used by
-	 * profile/rpc/api.php.
+	 * The following helper functions get and set these fields and are used by profile/rpc/api.php.
 	 */
-	public function hasRequestedRareSpeciesAccess(){
+	public function populateRareSpeciesAccessFields() {
 		$hasRequested = false;
-		if($this->uid){
-			$sqlStr = 'SELECT notes, accessrRights FROM users WHERE (uid = '.intval($this->uid).')';
+		$isExpiring = false;
+		if ($this->uid) {
+			$sqlStr = 'SELECT u.notes, u.accessrRights, r.initialTimestamp, r.notes AS expiration ' .
+				'FROM users u ' .
+				'LEFT JOIN userroles r ' .
+					'ON (u.uid = r.uid AND r.role = "RareSppReadAll") ' .
+				'WHERE (u.uid = '.intval($this->uid).')';
 			$rs = $this->conn->query($sqlStr);
-			if($r = $rs->fetch_object()){
-				if($r->accessrRights !== null || $r->notes !== null){
+			if ($r = $rs->fetch_object()) {
+				if ($r->accessrRights !== null || $r->notes !== null) {
 					$hasRequested = true;
+				}
+				if ($r->initialTimestamp && preg_match('/expiration=(\d+)/', $r->expiration, $match) && (int)$match[1]) {
+					$expirationDays = (int)$match[1];
+
+					$initialGrantTime = DateTime::createFromFormat(
+						'Y-m-d H:i:s',
+						$r->initialTimestamp,
+						new DateTimeZone('America/Los_Angeles')
+					);
+					$now = new DateTime('now', new DateTimeZone('America/Los_Angeles'));
+					$daysWithAccess = (int)$initialGrantTime->diff($now)->format('%a');
+
+					if ($expirationDays - $daysWithAccess <= 8) {
+						// access will expire in <7 days, so let the user re-request access by showing the form
+						// add an extra day just to be on the safe side, in case an email goes out early
+						$isExpiring = true;
+					}
 				}
 			}
 			$rs->free();
 		}
-		return $hasRequested;
+		$this->rareSpeciesAccessRequested = $hasRequested;
+		$this->rareSpeciesAccessExpiring = $isExpiring;
+	}
+
+	public function hasRequestedRareSpeciesAccess() {
+		if (!isset($this->rareSpeciesAccessRequested)) {
+			$this->populateRareSpeciesAccessFields();
+		}
+		return $this->rareSpeciesAccessRequested;
+	}
+
+	public function isRareSpeciesAccessExpiring() {
+		if (!isset($this->rareSpeciesAccessExpiring)) {
+			$this->populateRareSpeciesAccessFields();
+		}
+		return $this->rareSpeciesAccessExpiring;
 	}
 
 	/**
@@ -669,7 +709,7 @@ class ProfileManager extends Manager{
 			$this->resetConnection();
 			$sql = 'UPDATE users SET firstname = ?, lastname = ?, email = ?, title = ?, institution = ?, department = ?, notes = ?, accessrRights = ? WHERE (uid = ?)';
 			if($stmt = $this->conn->prepare($sql)) {
-				$notes = "rareSppAccessRequest={$timestamp}; emailed=false";
+				$notes = "rareSppAccessRequest={$timestamp};expiration=180;emailed=false";
 				$accessrRights = strip_tags($reason);
 
 				$stmt->bind_param('ssssssssi', $firstName, $lastName, $email, $title, $institution, $department, $notes, $accessrRights, $this->uid);
