@@ -32,6 +32,7 @@ class SpecUploadBase extends SpecUpload{
 	protected $imageSymbFields = array();
 	protected $filterArr = array();
 	private $targetFieldArr = array();
+	protected $iNatLinkbacks = array();
 
 	private $sourceCharset;
 	private $targetCharset = 'UTF-8';
@@ -130,6 +131,7 @@ class SpecUploadBase extends SpecUpload{
 				case $this->SYMBIOTA:
 				case $this->DIRECTUPLOAD:
 				case $this->SCRIPTUPLOAD:
+				case $this->INATURALIST:
 					$sql = 'SELECT sourcefield, symbspecfield FROM uploadspecmap WHERE (uspid = '.$this->uspid.')';
 					$rs = $this->conn->query($sql);
 					while($row = $rs->fetch_object()){
@@ -200,8 +202,8 @@ class SpecUploadBase extends SpecUpload{
 
 		//Associated Occurrence fields
 		// All-purpose fields
-		$this->symbFields[] = 'associatedOccurrences';
-		$this->symbFields[] = 'associatedOccurrence:associationType';
+		$this->symbFields[] = 'associatedOccurrences'; // needed for iNaturalist import
+	/*	$this->symbFields[] = 'associatedOccurrence:associationType';
 		$this->symbFields[] = 'associatedOccurrence:basisOfRecord';
 		$this->symbFields[] = 'associatedOccurrence:relationship';
 		$this->symbFields[] = 'associatedOccurrence:subType';
@@ -214,7 +216,7 @@ class SpecUploadBase extends SpecUpload{
 		$this->symbFields[] = 'associatedOccurrence:resourceUrl';
 		// genericObservation
 		$this->symbFields[] = 'associatedOccurrence:verbatimSciname';
-
+	*/
 		//Specify fields
 		$this->symbFields[] = 'specify:subspecies';
 		$this->symbFields[] = 'specify:subspecies_author';
@@ -257,6 +259,7 @@ class SpecUploadBase extends SpecUpload{
 			case $this->IPTUPLOAD:
 			case $this->SYMBIOTA:
 			case $this->RESTOREBACKUP:
+			case $this->INATURALIST:
 			case $this->DIRECTUPLOAD:
 				//Get identification metadata
 				$skipDetFields = array('detid','occid','tidinterpreted','idbyid','appliedstatus','sortsequence','initialtimestamp');
@@ -623,7 +626,7 @@ class SpecUploadBase extends SpecUpload{
 		$this->setImageTransferCount();
 	}
 
-	private function recordCleaningStage1(){
+	protected function recordCleaningStage1(){
 		$this->outputMsg('<li>Data cleaning:</li>');
 		$this->outputMsg('<li style="margin-left:10px;">Cleaning event dates...</li>');
 
@@ -1396,7 +1399,7 @@ class SpecUploadBase extends SpecUpload{
 		$rs->free();
 	}
 
-	private function cleanImages(){
+	protected function cleanImages(){
 		$sql = 'SELECT collid FROM uploadimagetemp WHERE collid = '.$this->collId.' LIMIT 1';
 		$rs = $this->conn->query($sql);
 		if($rs->num_rows){
@@ -1642,6 +1645,11 @@ class SpecUploadBase extends SpecUpload{
 							// Remove the internalOccurrence fields
 							unset($assoc['occidAssociate']);
 						}
+					}
+
+					// Add the object identifier and occid to an array to add Symbiota linkbacks for iNat
+					if ($this->INATURALIST && array_key_exists('objectID', $assoc)) {
+						$this->iNatLinkbacks[$r->occid] = $assoc['objectID'];
 					}
 
 					// First, try to update the association record if it already exists
@@ -2265,7 +2273,7 @@ class SpecUploadBase extends SpecUpload{
 	}
 
 	//Occurrence PK coordination functions
-	private function updateOccidMatchingDbpk(){
+	protected function updateOccidMatchingDbpk(){
 		$status = false;
 		$sql = 'UPDATE uploadspectemp u INNER JOIN omoccurrences o ON u.dbpk = o.dbpk AND u.collid = o.collid
 			SET u.occid = o.occid
