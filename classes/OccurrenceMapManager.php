@@ -112,7 +112,7 @@ class OccurrenceMapManager extends OccurrenceManager {
 		if($this->sqlWhere){
 			$statsManager = new OccurrenceAccessStats();
 			$sql = 'SELECT DISTINCT o.occid, CONCAT_WS(" ",o.recordedby,IFNULL(o.recordnumber,o.eventdate)) AS collector, o.sciname, o.tidinterpreted,
-				o.decimallatitude, o.decimallongitude, o.catalognumber, o.othercatalognumbers, c.institutioncode, c.collectioncode, c.colltype ';
+				o.decimallatitude, o.decimallongitude, o.catalognumber, o.othercatalognumbers, c.institutioncode, c.collectioncode, c.colltype, a.relationship ';
 			if(isset($extraFieldArr) && is_array($extraFieldArr)){
 				foreach($extraFieldArr as $fieldName){
 					$sql .= ', o.' . $fieldName . ' ';
@@ -120,6 +120,8 @@ class OccurrenceMapManager extends OccurrenceManager {
 			}
 			$sql .= 'FROM omoccurrences o INNER JOIN omcollections c ON o.collid = c.collid ';
 			$sql .= $this->getTableJoins($this->sqlWhere);
+			// Check for iNaturalist Observations
+			$sql .= "LEFT JOIN omoccurassociations a ON o.occid = a.occid AND a.relationship = 'iNaturalistObservation' ";
 			$sql .= $this->sqlWhere;
 			if(is_numeric($start) && $recLimit && is_numeric($recLimit)) $sql .= "LIMIT ".$start.",".$recLimit;
 			//echo '<div>SQL: ' . $sql . '</div>';
@@ -136,6 +138,7 @@ class OccurrenceMapManager extends OccurrenceManager {
 				if($r['catalognumber']) $coordArr[$sciname][$r['occid']]['catnum'] = $r['catalognumber'];
 				if($r['othercatalognumbers']) $coordArr[$sciname][$r['occid']]['ocatnum'] = $r['othercatalognumbers'];
 				if($r['tidinterpreted']) $coordArr[$sciname]['tid'] = $r['tidinterpreted'];
+				$coordArr[$sciname][$r['occid']]['inat'] = $r['relationship'] == 'iNaturalistObservation' ? 'true' : 'false';
 				$coordArr[$sciname][$r['occid']]['collector'] = $r['collector'];
 				$coordArr[$sciname][$r['occid']]['lat'] = $r['decimallatitude'];
 				$coordArr[$sciname][$r['occid']]['lng'] = $r['decimallongitude'];
@@ -194,7 +197,7 @@ class OccurrenceMapManager extends OccurrenceManager {
 
 	private function setRecordCnt(){
 		if($this->sqlWhere){
-			$sql = "SELECT COUNT(DISTINCT o.occid) AS cnt FROM omoccurrences o ".$this->getTableJoins($this->sqlWhere).$this->sqlWhere;
+			$sql = "SELECT COUNT(DISTINCT o.occid) AS cnt FROM omoccurrences o INNER JOIN omcollections c ON o.collid = c.collid ".$this->getTableJoins($this->sqlWhere).$this->sqlWhere;
 			//echo "<div>Count sql: ".$sql."</div>";
 
 			$result = $this->conn->query($sql);

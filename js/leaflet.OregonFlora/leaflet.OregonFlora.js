@@ -400,13 +400,12 @@ function getOregonFloraSvg(opts = {color: "#7A8BE7", size: 24, className: "", ic
 	if(opts.icon == 'osc') {
 		// Diamond
 		markerIcon = `<polygon class="${opts.className}" points="${half},0 ${opts.size},${half} ${half},${opts.size} 0,${half}" ${opts.size},${opts.size} style="fill:${opts.color};stroke:black;stroke-width:3" />`;
+	} else if(opts.icon == 'inat') {
+		// Plus
+		markerIcon = `<polygon class="${opts.className}" points="${opts.size/3},0 ${opts.size/3*2},0 ${opts.size/3*2},${opts.size/3} ${opts.size},${opts.size/3} ${opts.size},${opts.size/3*2} ${opts.size/3*2},${opts.size/3*2} ${opts.size/3*2},${opts.size} ${opts.size/3},${opts.size} ${opts.size/3},${opts.size/3*2} 0,${opts.size/3*2} 0,${opts.size/3} ${opts.size/3},${opts.size/3}" style="fill:${opts.color};stroke:black;stroke-width:3" />`;
 	} else { // icon == 'ofphoto'
 		// Square
 		markerIcon = `<polygon class="${opts.className}" points="0,0 ${opts.size},0 ${opts.size},${opts.size} 0,${opts.size}" ${opts.size},${opts.size} style="fill:${opts.color};stroke:black;stroke-width:3" />`;
-
-		// Plus
-		//markerIcon = `<polygon class="${opts.className}" points="${opts.size/3},0 ${opts.size/3*2},0 ${opts.size/3*2},${opts.size/3} ${opts.size},${opts.size/3} ${opts.size},${opts.size/3*2} ${opts.size/3*2},${opts.size/3*2} ${opts.size/3*2},${opts.size} ${opts.size/3},${opts.size} ${opts.size/3},${opts.size/3*2} 0,${opts.size/3*2} 0,${opts.size/3} ${opts.size/3},${opts.size/3}" style="fill:${opts.color};stroke:black;stroke-width:3" />`;
-
 	}
 
 	return L.divIcon({

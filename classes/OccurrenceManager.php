@@ -471,6 +471,11 @@ class OccurrenceManager extends OccurrenceTaxaManager {
 				$this->displaySearchArr[] = $this->LANG['INCLUDE_CULTIVATED'];
 			}
 		}
+		// For filtering out unvouchered iNat observations
+		if(array_key_exists("excludeinat",$this->searchTermArr)){
+			$sqlWhere .=  ' AND (a.relationship IS NULL OR c.collType = "Preserved Specimens") ';
+			//$sqlWhere .=  ' AND (a.relationship IS NULL) ';
+		}
 		if(array_key_exists('attr',$this->searchTermArr)){
 			$traitNameSql = 'SELECT t.traitName, s.stateName FROM tmtraits t JOIN tmstates s ON s.traitid = t.traitid WHERE s.stateid IN(' . $this->searchTermArr['attr'] . ')';
 			$rs = $this->conn->query($traitNameSql);
@@ -564,6 +569,10 @@ class OccurrenceManager extends OccurrenceTaxaManager {
 			}
 			if(strpos($sqlWhere,'ds.datasetid')){
 				$sqlJoin .= 'INNER JOIN omoccurdatasetlink ds ON o.occid = ds.occid ';
+			}
+			// For filtering out unvouchered iNat observations
+			if(strpos($sqlWhere,'a.relationship IS NULL')){
+				$sqlJoin .= 'LEFT JOIN omoccurassociations a ON o.occid = a.occid AND a.relationship = "iNaturalistObservation" ';
 			}
 			if(array_key_exists('polycoords',$this->searchTermArr) || strpos($sqlWhere,'p.point')){
 				$sqlJoin .= 'INNER JOIN omoccurpoints p ON o.occid = p.occid ';
@@ -911,6 +920,11 @@ class OccurrenceManager extends OccurrenceTaxaManager {
 		if(array_key_exists('includecult',$_REQUEST)){
 			if($_REQUEST['includecult']) $this->searchTermArr['includecult'] = true;
 			else unset($this->searchTermArr['includecult']);
+		}
+		// For filtering out unvouchered iNat observations
+		if(array_key_exists('excludeinat',$_REQUEST)){
+			if($_REQUEST['excludeinat']) $this->searchTermArr['excludeinat'] = true;
+			else unset($this->searchTermArr['excludeinat']);
 		}
 		if(array_key_exists('attr',$_REQUEST)){
 			//Occurrence trait attributed passed as stateIDs

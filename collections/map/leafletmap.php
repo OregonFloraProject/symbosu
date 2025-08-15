@@ -260,7 +260,6 @@ if(isset($MAPPING_BOUNDARIES)){
 						if(occur.collcode) displayStr += `-${occur.collcode}`;
 
 						if(!checkLatLng(latlng)) continue;
-
 						displayStr += '</div>';
 						if(occur.catnum) displayStr += `<div><strong>Catalog #: </strong>${occur.catnum}</div>`;
 						if(occur.ocatnum) displayStr += `<div><strong>Secondary Catalog #: </strong>${occur.ocatnum}</div>`;
@@ -294,7 +293,20 @@ if(isset($MAPPING_BOUNDARIES)){
 
 							// Add marker to markerGroup
 							map.markerGroups['ofphoto'][tid] = (map.markerGroups['ofphoto'][tid] || []).concat(marker);
+					<?php if ($ENABLE_INAT_SEARCH) { /* Show option to exclude iNat observations */ ?>
+						// iNaturalist Unvouchered Observation: plus
+						} else if (occur.inat == 'true' && occur.colltype == 'obs') {
+							marker = L.marker(latlng, {
+								icon: getOregonFloraSvg({
+									color: `#${colorGroup.c}`,
+									size: 30,
+									icon: 'inat'
+								})
+							});
 
+							// Add marker to markerGroup
+							map.markerGroups['inat'][tid] = (map.markerGroups['inat'][tid] || []).concat(marker);
+					<?php } ?>
 						// Other Herbarium Specimens: circle
 						} else if (occur.colltype == 'spec') {
 							marker = L.circleMarker(latlng, {
@@ -532,6 +544,15 @@ if(isset($MAPPING_BOUNDARIES)){
 						</g>
 					</svg> = OregonFlora Photo
 				</div>
+			<?php if ($ENABLE_INAT_SEARCH) { /* Show unvouchered iNat observations separately */ ?>
+				<div>
+					<svg style="height:14px;width:14px;margin-bottom:-2px;">" xmlns="http://www.w3.org/2000/svg">
+						<g>
+							<path stroke="#000000" d="m4,0l 4,0l 0,4l 4,0l 0,4l -4,0l 0,4l -4,0l 0,-4l -4,0l 0,-4l 4,0l 0,-4z" stroke-width="1px" fill="white"/>
+						</g>
+					</svg> = iNaturalist Observation
+				</div>
+			<?php } ?>
 				<div>
 					<svg style="height:14px;width:14px;margin-bottom:-2px;">" xmlns="http://www.w3.org/2000/svg">
 						<g>
@@ -547,6 +568,9 @@ if(isset($MAPPING_BOUNDARIES)){
 			<input type="checkbox" id="osc" checked onClick="toggleMarkers(this.id);"> OSU Herbarium Specimens<br/>
 			<input type="checkbox" id="spec" checked onClick="toggleMarkers(this.id);"> Other Herbarium Specimens<br/>
 			<input type="checkbox" id="ofphoto" checked onClick="toggleMarkers(this.id);"> OregonFlora Photos<br/>
+		<?php if ($ENABLE_INAT_SEARCH) { /* Show unvouchered iNat observations separately */ ?>
+			<input type="checkbox" id="inat" checked onClick="toggleMarkers(this.id);"> iNaturalist Observations<br/>
+		<?php } ?>
 			<input type="checkbox" id="obs" checked onClick="toggleMarkers(this.id);"> Unvouchered Observations
 		</fieldset>
 		<fieldset style="margin-top:1rem">

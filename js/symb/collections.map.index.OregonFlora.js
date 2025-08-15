@@ -167,7 +167,8 @@ function getTextParams(formData) {
   const typestatus = formData.get('typestatus') === '1';
   const hasimages = formData.get('hasimages') === '1';
   const hasgenetic = formData.get('hasgenetic') === '1';
-  // const includecult = formData.get('includecult') === '1'; // TODO: add this capability
+  const includecult = formData.get('includecult') === '1';
+  const excludeinat = formData.get('excludeinat') === '1';
 
   if (countryval) {
     const countryvals = countryval.split(',');
@@ -386,6 +387,15 @@ function getTextParams(formData) {
   if (hasgenetic) {
     cqlArr.push("(resourcename LIKE '_%')");
     solrqArr.push('((resourcename:[* TO *]))');
+  }
+  if (!includecult) {
+    cultivationStatus:0
+    cqlArr.push("(cultivationStatus != 1)");
+    solrqArr.push('NOT (cultivationStatus:1)');
+  }
+  if (excludeinat) {
+    cqlArr.push("(relationship IS NULL)");
+    solrqArr.push('NOT ((relationship:"iNaturalistObservation") AND NOT (CollType:"Preserved Specimens"))');
   }
   return { cql: cqlArr, solrq: solrqArr };
 }

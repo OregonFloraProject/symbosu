@@ -85,7 +85,8 @@ class LeafletMap {
       "osc": [],
       "ofphoto": [],
       "spec": [],
-      "obs": []
+      "obs": [],
+      "inat": []
    };
 
    constructor(map_id, map_options={}) {

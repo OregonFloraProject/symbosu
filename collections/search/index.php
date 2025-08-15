@@ -447,6 +447,12 @@ $obsArr = (isset($collList['obs'])?$collList['obs']:null);
 									<input type='checkbox' name='includecult' id='includecult' value='1' data-chip="<?php echo $LANG['INCLUDE_CULTIVATED'] ?>" <?php echo $SHOULD_INCLUDE_CULTIVATED_AS_DEFAULT ? 'checked' : '' ?> />
 									<label for="includecult"><?php echo $LANG['INCLUDE_CULTIVATED'] ?></label>
 								</div>
+							<?php if ($ENABLE_INAT_SEARCH) { /* Show option to exclude iNat observations */ ?>
+								<div>
+									<input type='checkbox' name='excludeinat' id='excludeinat' value='1' data-chip="Exclude iNaturalist Observations" />
+									<label for="includecult">Exclude iNaturalist Observations</label>
+								</div>
+							<?php } ?>
 							</div>
 							<?php
 								if($matSampleTypeArr = $collManager->getMaterialSampleTypeArr()){

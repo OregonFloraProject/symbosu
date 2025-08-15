@@ -18,6 +18,7 @@ let paramNames = [
   "hasgenetic",
   "hascoords",
   "includecult",
+  "excludeinat",
   "country",
   "state",
   "county",
@@ -903,6 +904,11 @@ function setSearchForm(frm) {
     if (typeof urlVar.includecult !== "undefined") {
       if (frm?.includecult) {
         frm.includecult.checked = true;
+      }
+    }
+    if (typeof urlVar.excludeinat !== "undefined") {
+      if (frm?.excludeinat) {
+        frm.excludeinat.checked = true;
       }
     }
     if (urlVar.db) {

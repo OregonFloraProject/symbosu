@@ -119,6 +119,12 @@ $SHOULD_USE_HARVESTPARAMS = false;
 
 $SHOULD_USE_MINIMAL_MAP_HEADER = false;
 
+// OregonFlora feature flags -- can be turned on per user by checking $SYMB_UID after the symbbase.php include below
+$RPG_FLAG = 1; // Enables Rare Plant Guide
+$MAP_KML_IMPORT_FLAG = 1; // Enables KML Import in the Mapping module
+$MAP_SOLR_SEARCH_FLAG = 1; // Uses SOLR search for the Mapping module (much faster with geo queries)
+$ENABLE_INAT_SEARCH=1; // Enables excluding iNat observations in maps and herbarium search
+
 //Individual page menu and navigation crumbs
 //Menu variables turn on and off the display of left menu 
 //Crumb variables allow the customization of the bread crumbs. A crumb variable with an empty value will cause crumbs to disappear

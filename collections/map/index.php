@@ -2346,12 +2346,16 @@ Record Limit:
 										<input data-role="none" type='checkbox' name='hasgenetic' value='1' <?php if($mapManager->getSearchTerm('hasgenetic')) echo "CHECKED"; ?> >
 										<?php echo (isset($LANG['LIMIT_GENETIC'])?$LANG['LIMIT_GENETIC']:'Limit to Specimens with Genetic Data Only'); ?>
 									</div>
-<?php if (!$USE_SOLR_SEARCH) { /* SOLR search does not yet include this capability */ ?>
 									<div style="margin-top:5px;">
 										<input data-role="none" type='checkbox' name='includecult' value='1' <?php if($mapManager->getSearchTerm('includecult')) echo "CHECKED"; ?> >
 										<?php echo (isset($LANG['INCLUDE_CULTIVATED'])?$LANG['INCLUDE_CULTIVATED']:'Include cultivated/captive specimens'); ?>
 									</div>
-<?php } ?>
+								<?php if ($ENABLE_INAT_SEARCH) { /* Show option to exclude iNat observations */ ?>
+									<div style="margin-top:5px;">
+										<input data-role="none" type='checkbox' name='excludeinat' value='1' <?php if($mapManager->getSearchTerm('excludeinat')) echo "CHECKED"; ?> >
+										<?php echo 'Exclude iNaturalist Observations' ?>
+									</div>
+								<?php } ?>
 									<div><hr></div>
 									<input type="hidden" name="reset" value="1" />
 								</div>
