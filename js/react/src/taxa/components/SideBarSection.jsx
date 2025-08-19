@@ -56,7 +56,10 @@ function OrderedObjectBorderedItem(props) {
         <ul className="list-unstyled p-0 m-0">
           {SUB_KEY_LIST_ORDERS[props.keyName].map((k) => (
             <li key={k}>
-              <span className="subheading-key">{KEY_NAMES[k] || k}</span>
+              <span
+                className="subheading-key"
+                dangerouslySetInnerHTML={{ __html: addGlossaryTooltips(KEY_NAMES[k] || k, props.glossary) }}
+              />
               <span
                 dangerouslySetInnerHTML={{
                   __html: addGlossaryTooltips(props.value[k] || props.defaultValue, props.glossary),
