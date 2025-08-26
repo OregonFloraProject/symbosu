@@ -26,8 +26,8 @@ class PluginsManager extends Manager {
 
 	public function initiateSlideShow($ssid,$numSlides,$numDays,$imageType,$clid,$dayInterval){
 		global $SERVER_ROOT;
-		$previousFile = $SERVER_ROOT.'/temp/slideshow/'.$ssid.'_previous.json';
-		$infoFile = $SERVER_ROOT.'/temp/slideshow/'.$ssid.'_info.json';
+		$previousFile = $SERVER_ROOT.'/content/slideshow/'.$ssid.'_previous.json';
+		$infoFile = $SERVER_ROOT.'/content/slideshow/'.$ssid.'_info.json';
 		$currentDate = date("Y-m-d");
 		$replace = false;
 		$lastCLID = '';
@@ -217,7 +217,7 @@ class PluginsManager extends Manager {
 
 	public function getImageList($ssid){
 		global $LANG;
-		$infoArr = json_decode(file_get_contents($GLOBALS['SERVER_ROOT'].'/temp/slideshow/'.$ssid.'_info.json'), true);
+		$infoArr = json_decode(file_get_contents($GLOBALS['SERVER_ROOT'].'/content/slideshow/'.$ssid.'_info.json'), true);
 		//echo json_encode($infoArr);
 		$imageArr = $infoArr['files'];
 		$html = '';

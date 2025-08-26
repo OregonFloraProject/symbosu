@@ -87,7 +87,7 @@ function exportChecklistToVendorCSV($checklist) {
 
 
 function exportChecklistToWord($checklist) {
-	global $SERVER_ROOT, $CLIENT_ROOT;
+	global $SERVER_ROOT, $CLIENT_ROOT, $TEMP_DIR_ROOT;
 
 	/*
 	using composer because need newer version (PHP7-compatible?); 
@@ -317,7 +317,7 @@ function exportChecklistToWord($checklist) {
 	$fileName = str_replace(' ','_',$checklist['title']);
 	$fileName = str_replace('/','_',$fileName);
 	$fileName = str_replace(':','',$fileName);
-	$targetFile = $SERVER_ROOT.'/temp/report/'.$fileName.'.'.$exportExtension;
+	$targetFile = $TEMP_DIR_ROOT.'/report/'.$fileName.'.'.$exportExtension;
 
 	#var_dump($targetFile);
 	#$phpWord->save($targetFile,$exportEngine);

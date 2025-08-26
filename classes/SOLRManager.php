@@ -581,9 +581,9 @@ class SOLRManager extends OccurrenceManager{
         $now = new DateTime();
         $now = $now->format('Y-m-d H:i:sP');
         $needsUpdate = false;
-
-        if(file_exists($SERVER_ROOT.'/temp/data/solr.json')){
-            $infoArr = json_decode(file_get_contents($SERVER_ROOT.'/temp/data/solr.json'), true);
+        
+        if(file_exists($TEMP_DIR_ROOT.'/data/solr.json')){
+            $infoArr = json_decode(file_get_contents($TEMP_DIR_ROOT.'/data/solr.json'), true);
             $lastDate = (isset($infoArr['lastFullImport'])?$infoArr['lastFullImport']:'');
             if($lastDate){
                 $lastDate = new DateTime($lastDate);
@@ -612,13 +612,13 @@ class SOLRManager extends OccurrenceManager{
         $now = $now->format('Y-m-d H:i:sP');
         $infoArr = Array();
 
-        if(file_exists($SERVER_ROOT.'/temp/data/solr.json')){
-            $infoArr = json_decode(file_get_contents($SERVER_ROOT.'/temp/data/solr.json'), true);
-            unlink($SERVER_ROOT.'/temp/data/solr.json');
+        if(file_exists($TEMP_DIR_ROOT.'/data/solr.json')){
+            $infoArr = json_decode(file_get_contents($TEMP_DIR_ROOT.'/data/solr.json'), true);
+            unlink($TEMP_DIR_ROOT.'/data/solr.json');
         }
         $infoArr['lastFullImport'] = $now;
 
-        $fp = fopen($SERVER_ROOT.'/temp/data/solr.json', 'w');
+        $fp = fopen($TEMP_DIR_ROOT.'/data/solr.json', 'w');
         fwrite($fp, json_encode($infoArr));
         fclose($fp);
     }

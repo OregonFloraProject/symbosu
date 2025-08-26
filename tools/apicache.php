@@ -5,8 +5,8 @@
  * than 24 hours ago), and false otherwise.
  */
 function readFromCache($key) {
-	global $SERVER_ROOT;
-  $cacheDir = $SERVER_ROOT . '/temp/api-caches/';
+	global $TEMP_DIR_ROOT;
+  	$cacheDir = $TEMP_DIR_ROOT . '/api-caches/';
 	$cacheFile = $cacheDir . $key . '.json';
 	$SECONDS_IN_24_HOURS = 86400;
 
@@ -30,8 +30,8 @@ function readFromCache($key) {
  * user).
  */
 function writeToCache($key, $data) {
-	global $SERVER_ROOT;
-  $cacheDir = $SERVER_ROOT . '/temp/api-caches/';
+	global $TEMP_DIR_ROOT;
+  $cacheDir = $TEMP_DIR_ROOT . '/api-caches/';
 	$cacheFile = $cacheDir . $key . '.json';
 
 	if (!is_dir($cacheDir)) {

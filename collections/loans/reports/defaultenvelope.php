@@ -54,7 +54,7 @@ if($outputMode == 'doc'){
 	$textrun->addTextBreak(1);
 	$textrun->addText(htmlspecialchars($invoiceArr['country']),'toAddressFont');
 
-	$targetFile = $SERVER_ROOT.'/temp/report/'.$PARAMS_ARR['un'].'_addressed_envelope.docx';
+	$targetFile = $TEMP_DIR_ROOT.'/report/'.$PARAMS_ARR['un'].'_addressed_envelope.docx';
 	$phpWord->save($targetFile, 'Word2007');
 
 	ob_start();

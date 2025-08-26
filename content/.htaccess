@@ -1,0 +1,4 @@
+<FilesMatch ".*.(php|php3|php4|php5|php6|php7|php8|phps|pl|py|pyc|pyo|jsp|asp|htm|html|shtml|phtml|sh|cgi)$">
+SetHandler None
+Require all denied
+</FilesMatch>

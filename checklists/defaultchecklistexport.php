@@ -270,7 +270,7 @@ else{
 
 $fileName = str_replace(' ','_',$clManager->getClName());
 $fileName = str_replace('/','_',$fileName);
-$targetFile = $serverRoot.'/temp/report/'.$fileName.'.'.$exportExtension;
+$targetFile = $TEMP_DIR_ROOT.'/report/'.$fileName.'.'.$exportExtension;
 $phpWord->save($targetFile, $exportEngine);
 
 header('Content-Description: File Transfer');
