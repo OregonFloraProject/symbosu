@@ -129,10 +129,10 @@ class OccurrenceImport extends UtilitiesFileImport{
 					continue;
 				}
 				if (empty($detArr['identifiedBy'])) {
-					$paramArr['identifiedBy'] = 'unknown';
+					$paramArr['identifiedBy'] = 'Unknown';
 				}
 				if (empty($detArr['dateIdentified'])) {
-					$paramArr['dateIdentified'] = 's.d.';
+					$paramArr['dateIdentified'] = '0000-00-00';
 				}
 				if($detManager->insertDetermination($detArr)){
 					$this->logOrEcho($LANG['DETERMINATION_ADDED'].': <a href="../editor/occurrenceeditor.php?occid='.$occid.'" target="_blank">'.$occid.'</a>', 1);
