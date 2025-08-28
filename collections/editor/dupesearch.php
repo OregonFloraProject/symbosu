@@ -104,9 +104,41 @@ if(!$IS_ADMIN){
 			}
 			?>
 
-			function transferRecord(occId,appendMode){
+			async function transferRecord(occId,appendMode){
 				var tArr = occArr[occId];
 				var openerForm = opener.document.fullform;
+
+				// Transfer determinations, media, or associated occurrences
+				let transfer = {};
+				if(document.getElementById("transferdeterm-"+occId).checked == true){
+					transfer.transferdeterm = 1;
+				}
+				if(document.getElementById("transfermedia-"+occId).checked == true){
+					transfer.transfermedia = 1;
+				}
+				if(document.getElementById("transferassoc-"+occId).checked == true){
+					transfer.transferassoc = 1;
+				}
+
+				// Check if at least one thing needs to be transferred
+				if(Object.keys(transfer).length > 0) {
+
+					// Add additional parameters
+					transfer.collid = <?php echo $collId; ?>;
+					transfer.occid = occId;
+					transfer.curroccid = <?php echo $curOccid; ?>;
+
+					// Convert to search parameters to pass via ajax
+					const body = new URLSearchParams(transfer);
+
+					// Send the data to the rpc to be processed
+					await fetch("rpc/dupetransfer.php", {
+						method: 'POST',
+						headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+						body: body.toString()
+					});
+				}
+
 				if(document.getElementById("linkdupe-"+occId).checked == true){
 					openerForm.linkdupe.value = occId;
 				}
@@ -366,9 +398,26 @@ if(!$IS_ADMIN){
 								</div>
 								<?php
 							}
+							?>
+							<div style="clear:both;">
+								<div style="float:left;">
+									<input id="transferdeterm-<?php echo $occId; ?>" type="checkbox" <?php echo ($dupeType == 'exact' && $occObj['collType'] == 'General Observations' ? 'checked' : ''); ?> />
+									<label for="transferdeterm-<?php echo $occId; ?>"><?php echo 'Transfer Determination History';//$LANG['LINK_DUPE']; ?></label>
+								</div>
+								<div style="margin-left:30px; float:left;">
+									<input id="transfermedia-<?php echo $occId; ?>" type="checkbox" <?php echo ($dupeType == 'exact' && $occObj['collType'] == 'General Observations' ? 'checked' : ''); ?> />
+									<label for="transfermedia-<?php echo $occId; ?>"><?php echo 'Transfer Media';//$LANG['LINK_DUPE']; ?></label>
+								</div>
+								<div style="margin-left:30px; float:left;">
+									<input id="transferassoc-<?php echo $occId; ?>" type="checkbox" <?php echo ($dupeType == 'exact' && $occObj['collType'] == 'General Observations' ? 'checked' : ''); ?> />
+									<label for="transferassoc-<?php echo $occId; ?>"><?php echo 'Transfer Linked Resources'; //$LANG['LINK_DUPE']; ?></label>
+								</div>
+							</div>
+							<div style="clear:both;">
+							<?php
 							if($collId == $occObj['collid']){
 								?>
-								<div style="margin-left:30px;float:left;">
+								<div style="float:left;">
 									<a href="occurrenceeditor.php?occid=<?php echo htmlspecialchars($occId, ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE); ?>">
 										<?php echo $LANG['GO_TO_RECORD']; ?>
 									</a>

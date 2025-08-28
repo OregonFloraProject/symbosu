@@ -348,7 +348,7 @@ class OccurrenceDuplicate {
 				'habitat', 'substrate', 'occurrenceRemarks', 'associatedTaxa', 'dynamicProperties',
 				'verbatimAttributes','reproductiveCondition', 'cultivationStatus', 'establishmentMeans', 'typeStatus');
 			$relArr = array();
-			$sql = 'SELECT c.collectionName, c.institutionCode, c.collectionCode, o.occid, o.collid, o.tidinterpreted, o.catalogNumber, o.otherCatalogNumbers, o.'.implode(',o.',$targetFields).
+			$sql = 'SELECT c.collectionName, c.institutionCode, c.collectionCode, c.collType, o.occid, o.collid, o.tidinterpreted, o.catalogNumber, o.otherCatalogNumbers, o.'.implode(',o.',$targetFields).
 				' FROM omcollections c INNER JOIN omoccurrences o ON c.collid = o.collid '.
 				'WHERE (o.occid IN('.$occidQuery.')) '.
 				'ORDER BY recordnumber LIMIT 20';
@@ -768,6 +768,114 @@ class OccurrenceDuplicate {
 		$newStr = preg_replace('/\s\s+/', ' ',$newStr);
 		$newStr = $this->conn->real_escape_string($newStr);
 		return $newStr;
+	}
+
+	// Transfer determinations from a duplicate record
+	public function transferDeterminations($occId, $currOccId) {
+
+		// Select all determinations that match the old occurrence ID
+		$sql = 'SELECT identifiedBy, dateIdentified, family, sciname, scientificNameAuthorship, tidInterpreted, identificationQualifier, isCurrent, appliedStatus, identificationReferences, identificationRemarks, recordID, sortSequence FROM omoccurdeterminations WHERE occid = ?';
+
+		// Run the query and get an array of results
+		if($stmt = $this->conn->prepare($sql)){
+			if($stmt->bind_param('i', $occId)){
+				$stmt->execute();
+				$result = $stmt->get_result();
+				$stmt->close();
+				$determs = $result->fetch_all();
+
+				// For each existing determination, add it to the new occurrence ID
+				if(!empty($determs)) {
+
+					$sqlInsert = 'INSERT IGNORE INTO omoccurdeterminations(occid, identifiedBy, dateIdentified, family, sciname, scientificNameAuthorship, tidInterpreted, identificationQualifier, isCurrent, appliedStatus, identificationReferences, identificationRemarks, recordID, sortSequence) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+
+					if ($stmt = $this->conn->prepare($sqlInsert)) {
+						foreach ($determs as $determ){
+
+							// Set a new GUID
+							$determ[11] = UuidFactory::getUuidV4();
+
+							// Run the insert query
+							$stmt->bind_param('isssssisiisssi', $currOccId, ...$determ);
+							$stmt->execute();
+						}
+						$stmt->close();
+					}
+				}
+			}
+		}
+	}
+
+	// Transfer media from a duplicate record
+	public function transferMedia($occId, $currOccId) {
+
+		// Select all media that match the old occurrence ID
+		$sql = 'SELECT tid, url, thumbnailUrl, originalUrl, archiveUrl, photographer, photographerUid, imageType, format, caption, owner, sourceUrl, referenceUrl, copyright, rights, accessRights, locality, notes, anatomy, username, sourceIdentifier, mediaMD5, dynamicProperties, defaultDisplay, recordID, sortSequence, sortOccurrence FROM images WHERE occid = ?';
+
+		// Run the query and get an array of media for the old occurrence ID
+		if($stmt = $this->conn->prepare($sql)){
+			if($stmt->bind_param('i', $occId)){
+				$stmt->execute();
+				$result = $stmt->get_result();
+				$stmt->close();
+				$media = $result->fetch_all();
+
+				// For each existing media, add it to the new occurrence ID
+				if(!empty($media)) {
+
+					$sqlInsert = 'INSERT IGNORE INTO images(occid, tid, url, thumbnailUrl, originalUrl, archiveUrl, photographer, photographerUid, imageType, format, caption, owner, sourceUrl, referenceUrl, copyright, rights, accessRights, locality, notes, anatomy, username, sourceIdentifier, mediaMD5, dynamicProperties, defaultDisplay, recordID, sortSequence, sortOccurrence) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+
+					if ($stmt = $this->conn->prepare($sqlInsert)) {
+						foreach ($media as $medium){
+
+							// Set a new GUID for recordID
+							$medium[24] = UuidFactory::getUuidV4();
+
+							// Run the insert query
+							$stmt->bind_param('iisssssissssssssssssssssisii', $currOccId, ...$medium);
+							$stmt->execute();
+						}
+						$stmt->close();
+					}
+				}
+			}
+		}
+	}
+
+	// Transfer associated occurrences from a duplicate record
+	public function transferAssociatedOccurrences($occId, $currOccId) {
+
+		// Select all associations that match the old occurrence ID
+		$sql = 'SELECT associationType, occidAssociate, relationship, relationshipID, subType, objectID, identifier, basisOfRecord, resourceUrl, verbatimSciname, tid, locationOnHost, conditionOfAssociate, establishedDate, imageMapJSON, dynamicProperties, notes, accordingTo, instanceID, sourceIdentifier, recordID, createdUid FROM omoccurassociations WHERE occid = ?';
+
+		// Run the query and get an array of associations for the old occurrence ID
+		if($stmt = $this->conn->prepare($sql)){
+			if($stmt->bind_param('i', $occId)){
+				$stmt->execute();
+				$result = $stmt->get_result();
+				$stmt->close();
+				$assocs = $result->fetch_all();
+
+				// For each existing association, add it to the new occurrence ID
+				if(!empty($assocs)) {
+
+					$sqlInsert = 'INSERT IGNORE INTO omoccurassociations(occid, associationType, occidAssociate, relationship, relationshipID, subType, objectID, identifier, basisOfRecord, resourceUrl, verbatimSciname, tid, locationOnHost, conditionOfAssociate, establishedDate, imageMapJSON, dynamicProperties, notes, accordingTo, instanceID, sourceIdentifier, recordID, createdUid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+
+					if ($stmt = $this->conn->prepare($sqlInsert)) {
+						foreach ($assocs as $assoc){
+
+							// Set a new GUID for recordID
+							//$assoc[20] = UuidFactory::getUuidV4();
+
+							// Run the insert query
+							$stmt->bind_param('isissssssssissssssssssi', $currOccId, ...$assoc);
+							$stmt->execute();
+						}
+						$stmt->close();
+					}
+				}
+			}
+		}
 	}
 }
 ?>
