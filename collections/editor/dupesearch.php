@@ -104,7 +104,7 @@ if(!$IS_ADMIN){
 			}
 			?>
 
-			function transferRecord(occId,appendMode){
+			async function transferRecord(occId,appendMode){
 				var tArr = occArr[occId];
 				var openerForm = opener.document.fullform;
 
@@ -132,7 +132,7 @@ if(!$IS_ADMIN){
 					const body = new URLSearchParams(transfer);
 
 					// Send the data to the rpc to be processed
-					fetch("rpc/dupetransfer.php", {
+					await fetch("rpc/dupetransfer.php", {
 						method: 'POST',
 						headers: {'Content-Type': 'application/x-www-form-urlencoded'},
 						body: body.toString()
