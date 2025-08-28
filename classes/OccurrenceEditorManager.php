@@ -1195,7 +1195,8 @@ class OccurrenceEditorManager {
 						}
 						//Deal with duplicate clusters
 						if(isset($postArr['linkdupe']) && $postArr['linkdupe']){
-							$dupTitle = $postArr['recordedby'].' '.$postArr['recordnumber'].' '.$postArr['eventdate'];
+							//$dupTitle = $postArr['recordedby'].' '.$postArr['recordnumber'].' '.$postArr['eventdate'];
+							$dupTitle = '';
 							$status .= $this->linkDuplicates($postArr['linkdupe'],$dupTitle);
 						}
 					}
@@ -1453,7 +1454,8 @@ class OccurrenceEditorManager {
 				}
 				//Deal with duplicate clustering
 				if(isset($postArr['linkdupe']) && $postArr['linkdupe']){
-					$dupTitle = $postArr['recordedby'].' '.$postArr['recordnumber'].' '.$postArr['eventdate'];
+					//$dupTitle = $postArr['recordedby'].' '.$postArr['recordnumber'].' '.$postArr['eventdate'];
+					$dupTitle = '';
 					$status .= $this->linkDuplicates($postArr['linkdupe'],$dupTitle);
 				}
 			}
