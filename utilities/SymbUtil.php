@@ -16,6 +16,8 @@ class SymbUtil {
 		if($major >= 8 && $minor >= 2) {
 			return mysqli_execute_query($conn, $sql, $params);
 		} else {
+			// Show any MySQL error message (JGM 2025-02-11: Let's see if this causes problems before committing)
+			mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 			$bind_params_str = '';
 			foreach($params as $param) {
 				//Could just bind string instead?
