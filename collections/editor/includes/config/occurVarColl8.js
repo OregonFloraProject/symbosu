@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		'establishmentmeans', 'language', 'processingstatus'];
 
 	// Processing statuses to enable vouchervision field colors etc.
-	let vvProcessingStatus = ['vouchervision qc'];
+	let vvProcessingStatus = ['vouchervision qc', 'unprocessed - fern project'];
 
 	// Add some customizations for VoucherVision processing statuses
 	if( vvProcessingStatus.includes($("select[name='processingstatus']").val())) {
