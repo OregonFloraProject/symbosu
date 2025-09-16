@@ -1,5 +1,59 @@
+# JGM: Most of this is from CCH2, 2025-08-29
+#####################################
+# For known search engines: allow with restrictions
+User-agent: Googlebot
+User-agent: Bingbot
+User-agent: Slurp
+User-agent: DuckDuckBot
+Crawl-delay: 120
+Allow: /
+
+# Checklists in Identify & Explore mode & Identify tool
+Disallow: */checklists/checklist.php?clid=*&
+Disallow: */checklists/dynamicmap.php
+Disallow: */ident/key.php?clid=*&
+
+# Individual specimen records
+Disallow: */collections/individual/
+
+# Herbarium search
+Disallow: */collections/search/
+Disallow: */collections/list.php
+
+# Mapping Module
+Disallow: */collections/map/
+
+# Individual collections
+Disallow: */collections/misc/collprofiles.php?collid=*&
+Disallow: */collections/datasets/emlhandler.php
+
+# Grow Natives & Rare Plant Guide
+Disallow: */garden/
+Disallow: */rare/
+
+# Taxonomic Tree
+Disallow: */taxa/taxonomy/
+
+# Taxon Profile Pages: main, garden, and rare
+# Allow crawling, for now
+#Disallow: */taxa/index.php?taxon=*&
+#Disallow: */taxa/garden.php?taxon=*&
+#Disallow: */taxa/rare.php?taxon=*&
+
+# Inventories
+# Allow crawling, for now
+#Disallow: */projects/index.php?pid=*&
+
+# Misc
+Disallow: */games/
+Disallow: *?*refurl=
+
+#####################################
+# For all other user agents, disallow
 User-agent: *
-Disallow: /collections/list.php
-Disallow: /collections/listtabledisplay.php
-Crawl-delay: 10
+Disallow: /
+# Old robots.txt setup from Eric
+#Disallow: /collections/list.php
+#Disallow: /collections/listtabledisplay.php
+#Crawl-delay: 10
 
