@@ -7,10 +7,10 @@
 
 
 // Choice of google (requires GOOGLE_MAP_KEY in symbini.php), or open-elevation (free, but 1000/month, 1/second)
-const elevAPI = "google";
+const elevAPI = "open-elevation";
 
 // Choice of google (requires GOOGLE_MAP_KEY in symbini.php), inat (much slower), or none
-const geocodeAPI = "google";
+const geocodeAPI = "inat";
 
 // Use iNaturalist's UUID as the associated occurence identifier (if false, uses the older numeric iNaturalist identifier)
 const identifierUUID = true
