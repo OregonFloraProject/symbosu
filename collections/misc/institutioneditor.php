@@ -44,6 +44,12 @@ $statusStr = '';
 if($IS_ADMIN){
 	$editorCode = 3;
 }
+
+// JGM - OSU-specific: Allow any collection admin to edit institutions
+if(array_key_exists('CollAdmin',$USER_RIGHTS)) {
+	$editorCode = 3;
+}
+
 elseif(array_key_exists('CollAdmin', $USER_RIGHTS)){
 	$editorCode = 1;
 	if($collList && array_intersect($USER_RIGHTS['CollAdmin'], array_keys($collList))){
@@ -170,6 +176,49 @@ if (!$view | $view != 'tab') include($SERVER_ROOT.'/includes/header.php');
 <script src="<?php echo $CLIENT_ROOT; ?>/js/jquery-3.7.1.min.js" type="text/javascript"></script>
 <script src="<?php echo $CLIENT_ROOT; ?>/js/jquery-ui.min.js" type="text/javascript"></script>
 <script src="../../js/symb/collections.grscicoll.js?ver=2" type="text/javascript"></script>
+<script>
+
+	$(document).ready(function() {
+
+		// Check form data for data field length
+		$('#insteditform, #instaddform').submit(function(event) {
+
+			// Define size limits for each column (from the database)
+			const sizeLimits = {
+				institutioncode: 45,
+				institutionname: 150,
+				institutionname2: 255,
+				address1: 150,
+				address2: 150,
+				city: 45,
+				stateprovince: 45,
+				postalcode: 45,
+				country: 45,
+				phone: 100,
+				contact: 255,
+				email: 255,
+				url: 250,
+				notes: 19500
+			};
+
+			let formId = $(this);
+
+			formId.find(':input').each(function() {
+
+				// Get the field name
+				let fieldName = $(this).attr('name');
+				let fieldLength = $(this).val().length;
+
+				// Check the size limits, and if a field is too long, prevent the form from being submitted
+				if(fieldLength > sizeLimits[fieldName]) {
+					alert('The ' + fieldName + ' field is too long (max ' + sizeLimits[fieldName] + ' characters).')
+					event.preventDefault();
+				}
+
+			});
+		});
+	});
+</script>
 <?php
 
 // Only show navigation if the page is not a tab in the loan management page
