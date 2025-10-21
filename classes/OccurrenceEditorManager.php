@@ -780,8 +780,10 @@ class OccurrenceEditorManager {
 		// Only add these joins on request, allows for skipping for queries that just count records
 		if ($last_modified) {
 
+			// Better version, no dependent subquery
+			$sql .=	'LEFT JOIN (SELECT occid, MAX(initialtimestamp) AS max_timestamp FROM omoccuredits GROUP BY occid) AS latest_edit ON o.occid = latest_edit.occid LEFT JOIN omoccuredits AS lastedit ON latest_edit.occid = lastedit.occid AND latest_edit.max_timestamp = lastedit.initialTimestamp ';
 			// NB: Is this the the most efficient query? Another option, below
-			$sql .=	'LEFT JOIN omoccuredits as lastedit ON o.occid = lastedit.occid AND lastedit.initialtimestamp = (SELECT MAX(initialtimestamp) FROM omoccuredits oe WHERE oe.occid = o.occid)';
+			//$sql .=	'LEFT JOIN omoccuredits as lastedit ON o.occid = lastedit.occid AND lastedit.initialtimestamp = (SELECT MAX(initialtimestamp) FROM omoccuredits oe WHERE oe.occid = o.occid)';
 			// This doesn't work, apparently o.datelastmodified is sometimes not modified by users, leading to blank last modified by fields
 			//$sql .=	'LEFT JOIN omoccuredits as lastedit ON o.occid = lastedit.occid AND o.datelastmodified = lastedit.initialtimestamp ';
 			$sql .= 'LEFT JOIN users as lastuser ON lastedit.uid = lastuser.uid ';
