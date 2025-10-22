@@ -269,7 +269,7 @@ if(isset($MAPPING_BOUNDARIES)){
 						//Add marker based on occurence type
 						// OSU herbarium specimen: diamond
 						let marker = {};
-						if(occur.instcode == 'OSU' && occur.colltype == 'spec') {
+						if(occur.instcode == 'OSC' && occur.colltype == 'spec') {
 							marker = L.marker(latlng, {
 								icon: getOregonFloraSvg({
 									color: `#${colorGroup.c}`,
