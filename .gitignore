@@ -12,10 +12,8 @@
 /config/auth_config.php
 vendor/
 !**/.gitkeep
-temp/proxies/
+temp/*
 .DS_Store
 */.DS_Store
 /webservices/dwc/rss.xml
-/temp/api-caches/*
-/temp/data/solr.json
 /js/react/src/less/config.less
