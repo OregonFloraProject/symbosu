@@ -13,6 +13,12 @@ ALTER TABLE `fmvouchers`
 -- See commit a00f621c66c69206faf944b4910e29353a151624
 ALTER TABLE images ADD INDEX Index_tid_sortsequence (tid, sortsequence);
 
+-- 2025-10-21(james): This speeds up finding the last modified user to display in the occurrence editor search 
+ALTER TABLE `omoccuredits` ADD INDEX `IX_occid_timestamp` (`occid`, `initialtimestamp`);
+
+-- 2025-10-21(james): This should speed up searching for otherCatalogNumbers (which happens across omoccuridentifiers and omoccurrences)
+ALTER TABLE `omoccurrences` ADD Index `IX_occurrences_collid_otherCatalogNumbers` (`collid`, `otherCatalogNumbers`);
+
 -- 2024-12-05:
 -- Add new table `taxonassociations` for storing relationships between taxa.
 CREATE TABLE `taxonassociations` (
