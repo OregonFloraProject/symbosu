@@ -102,6 +102,7 @@ function TaxaRareApp(props) {
             context: {
               Related: [res.sciname, parentUrl, childUrl],
               family: res.family,
+              synonyms: res.synonyms,
               status: res.characteristics.conservation_status,
               ecoregion: res.characteristics.ecoregion,
               counties: [], // TODO(eric): figure out how to get this data
