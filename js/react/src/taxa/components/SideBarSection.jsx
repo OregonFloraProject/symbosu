@@ -5,6 +5,7 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { faArrowCircleUp, faArrowCircleDown } from '@fortawesome/free-solid-svg-icons';
 import { addGlossaryTooltips } from '../../common/glossary';
 import { KEY_NAMES, RANK_FAMILY, SUB_KEY_LIST_ORDERS } from '../constants';
+import { SynonymItem } from './SynonymItem.jsx';
 import { showItem } from './utils';
 library.add(faArrowCircleUp, faArrowCircleDown);
 
@@ -127,6 +128,9 @@ function SideBarSection(props) {
               glossary={props.glossary}
             />
           );
+        }
+        if (key == 'synonyms') {
+          return <SynonymItem key={val} keyName={val} value={val} />;
         }
         return <BorderedItem key={key} keyName={key} value={val} glossary={props.glossary} />;
       })}
