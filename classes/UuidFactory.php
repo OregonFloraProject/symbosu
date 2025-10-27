@@ -43,6 +43,7 @@ class UuidFactory {
 					$this->echoStr('ERROR: '.$this->conn->error);
 				}
 				$recCnt++;
+				if($recCnt%1000 === 0) $this->echoStr($recCnt.' records processed');
 			}
 			$rs->free();
 		}
