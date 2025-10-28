@@ -118,3 +118,10 @@ FOR EACH ROW BEGIN
 END;
 |
 DELIMITER ;
+
+-- 2025-10-23 (Brian):
+-- This is used to speed up record cleaning process at specuploadprocessor
+-- Exist in to-be-released Symbiota 3.4
+ALTER TABLE `uploadspectemp`
+  ADD INDEX `IX_uploadspectemp_country` (`country` ASC),
+  ADD INDEX `IX_uploadspectemp_stateProvince` (`stateProvince` ASC);
