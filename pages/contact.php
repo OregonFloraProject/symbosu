@@ -85,8 +85,8 @@ Template for <a href="data/template-observation-submission.xlsx" download>observ
 							<a href="mailto:myersj8@oregonstate.edu">myersj8@oregonstate.edu</a>
 						</p>
             <p>
-              Eric Samelson, software developer<br />
-              <a href="mailto:eric.samelson@oregonstate.edu">eric.samelson@oregonstate.edu</a>
+              Brian Phan, Software Developer<br />
+              <a href="mailto:phanx@oregonstate.edu">phanx@oregonstate.edu</a>
 						</p>
 
           
