@@ -146,7 +146,7 @@ function getSubTaxa($parentTid) {#not sure this happens anymore
   return $results;
 }
   
-function taxaManagerToJSON($taxaObj,$queryType = "default",$minimalData = false) {
+function taxaManagerToJSON(TaxaManager $taxaObj,$queryType = "default",$minimalData = false) {
 	$result = TaxaManager::getEmptyTaxon();
   $taxaRepo = SymbosuEntityManager::getEntityManager()->getRepository("Taxa");
 
