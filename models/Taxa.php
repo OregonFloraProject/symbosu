@@ -171,6 +171,13 @@ class Taxa
  */
   private $images;
 
+  /**
+   * @var string|null
+   *
+   * @ORM\Column(name="nomenclaturalStatus", type="string", length=45, nullable=true)
+   */
+  private $nomenclaturalStatus;
+
   public function __construct() {
     $this->vernacularNames = new ArrayCollection();
     $this->images = new ArrayCollection();
@@ -653,11 +660,4 @@ class Taxa
   {
       return $this->modifieduid;
   }
-
-/**
- * @return ArrayCollection
- */
-public function getAttributes() {
-  return $this->attributes;
-}
 }
