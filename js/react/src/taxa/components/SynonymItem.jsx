@@ -47,6 +47,11 @@ export class SynonymItem extends React.Component {
                           <span key={key} className={'synonym-item'}>
                             <span className={'synonym-sciname'}>{obj.sciname}</span>
                             <span className={'synonym-author'}> {obj.author}</span>
+                            {
+                              obj.nomenclaturalStatus ?
+                              <span className={'synonym-author'}> ({obj.nomenclaturalStatus})</span> :
+                              null
+                            }
                           </span>
                         );
                       })
@@ -120,6 +125,11 @@ export class SynonymItem extends React.Component {
                           <span key={key} className={'synonym-item'}>
                             <span className={'synonym-sciname'}>{obj.sciname}</span>
                             <span className={'synonym-author'}> {obj.author}</span>
+                            {
+                              obj.nomenclaturalStatus ?
+                              <span className={'synonym-author'}> ({obj.nomenclaturalStatus})</span> :
+                              null
+                            }
                           </span>
                         );
                       })
