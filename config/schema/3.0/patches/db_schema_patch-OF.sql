@@ -125,3 +125,16 @@ DELIMITER ;
 ALTER TABLE `uploadspectemp`
   ADD INDEX `IX_uploadspectemp_country` (`country` ASC),
   ADD INDEX `IX_uploadspectemp_stateProvince` (`stateProvince` ASC);
+
+--- 2025-11-04 (Brian):
+--- From Symbiota 3.3:
+--- Synchronizes column sizes between temporary upload and target tables
+ALTER TABLE `omoccurdeterminations`
+  CHANGE COLUMN `taxonRemarks` `taxonRemarks` text,
+  CHANGE COLUMN `identificationReferences` `identificationReferences` text,
+  CHANGE COLUMN `identificationRemarks` `identificationRemarks` text;
+
+ALTER TABLE `uploaddetermtemp`
+  CHANGE COLUMN `taxonRemarks` `taxonRemarks` text,
+  CHANGE COLUMN `identificationReferences` `identificationReferences` text,
+  CHANGE COLUMN `identificationRemarks` `identificationRemarks` text;
