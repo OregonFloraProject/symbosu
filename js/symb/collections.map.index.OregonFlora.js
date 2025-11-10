@@ -34,7 +34,7 @@ async function prepareTaxaDataAsync(taxaArr, taxontype, thes) {
   const url = '../../spatial/rpc/gettaxalinks.php';
   const taxaArrStr = JSON.stringify(taxaArr);
   const params =
-    'taxajson=' + taxaArrStr + '&type=' + taxontype + '&thes=' + thes;
+    'taxajson=' + taxaArrStr + '&type=' + taxontype + (thes ? '&thes=' + thes : '');
   const response = await fetch(url, {
     method: 'POST',
     headers: { 'Content-type': 'application/x-www-form-urlencoded' },
