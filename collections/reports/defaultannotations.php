@@ -42,7 +42,7 @@ if($SYMB_UID){
 			.lheader {width:100%;margin-bottom:5px;text-align:center;font:bold 9pt arial,sans-serif;}
 			.scientificnamediv {clear:both;font-size:10pt;}
 			.subfielddiv {font-size:8pt;margin-top:5px;clear:both;}
-			.lfooter {clear:both;width:100%;text-align:center;font:bold 9pt arial,sans-serif;margin-top:10px;}
+			.lfooter {clear:both;width:100%;text-align:center;font:bold 8pt arial,sans-serif;margin-top:5px;}
 			.screen-reader-only {
 				position: absolute;
 				left: -10000px;
@@ -62,7 +62,7 @@ if($SYMB_UID){
 					}
 					$labelCnt = 0;
 					echo '<table class="labels">';
-					echo '<thead><tr><th></th>' . ($rowsPerPage == 2 ? '<th></th>' : $rowsPerPage == 3 ? '<th></th><th></th>' : '') . '</tr></thead>';
+					echo '<thead><tr><th></th>' . ($rowsPerPage == 2 ? '<th></th>' : ($rowsPerPage == 3 ? '<th></th><th></th>' : '')) . '</tr></thead>';
 					foreach($labelArr as $occid => $occArr){
 						$headerStr = trim($lHeader);
 						$footerStr = trim($lFooter);
@@ -117,7 +117,7 @@ if($SYMB_UID){
 											}
 											?>
 											<div>
-												Det: <?php echo $occArr['identifiedby']; ?>
+												<?php echo $occArr['identifiedby']; ?>
 											</div>
 										</div>
 										<?php
