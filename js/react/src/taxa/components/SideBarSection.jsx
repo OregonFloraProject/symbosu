@@ -104,6 +104,8 @@ function RelatedBorderedItem(props) {
 }
 
 function SideBarSection(props) {
+  // Flag to put SynonymItem at the bottom of Context sidebar for taxaRare
+  let synonymExist = false;
   let itemKeys = Object.keys(props.items);
   itemKeys = itemKeys.filter((k) => {
     const v = props.items[k];
@@ -129,11 +131,21 @@ function SideBarSection(props) {
             />
           );
         }
-        if (key == 'synonyms') {
-          return <SynonymItem key={val} keyName={val} value={val} />;
+        if (key === 'synonyms') {
+          if (props.isTaxaRare) {
+            synonymExist = true;
+            return null;
+          } else {
+            return <SynonymItem key={val} keyName={val} value={val} />;
+          }
         }
         return <BorderedItem key={key} keyName={key} value={val} glossary={props.glossary} />;
       })}
+      {
+        synonymExist && (
+          <SynonymItem key={props.items['synonyms']} keyName={props.items['synonyms']} value={props.items['synonyms']} />
+        )
+      }
       <span className="row dashed-border" />
     </div>
   );

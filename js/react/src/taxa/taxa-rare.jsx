@@ -287,7 +287,13 @@ function TaxaRareApp(props) {
           </h3>
         </ImageModal>
         <div className="col-md-4 sidebar-section">
-          <SideBarSection title="Context" items={data.context} rankId={data.rankId} glossary={glossary} />
+          <SideBarSection
+            title="Context"
+            items={data.context}
+            rankId={data.rankId}
+            glossary={glossary}
+            isTaxaRare
+          />
           <MapItem
             title={data.sciName}
             tid={tid}
