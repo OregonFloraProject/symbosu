@@ -32,7 +32,7 @@ header( "Content-Type: text/html; charset=" . $charset );
         <!-- place static page content here. -->
             <h2 class="subhead">Our mission is to increase awareness and knowledge of the plants of Oregon through publication of technically sound, accessible information for diverse audiences.</h2>
             <p>
-            OregonFlora has assembled a comprehensive guide to the ~4,750 vascular plants of Oregon that is shared through this website, the Flora of Oregon books,
+            OregonFlora has assembled a comprehensive guide to the ~4,800 vascular plants of Oregon that is shared through this website, the Flora of Oregon books,
              and our wildflower identification app. 
              Our foundational research supports diverse audiences &mdash; citizen scientists, students and gardeners, ecologists and land managers, 
              policy makers, university researchers and leaders &mdash; in the critical work of protecting biodiversity, managing natural resources, promoting sustainability, 
@@ -163,10 +163,10 @@ header( "Content-Type: text/html; charset=" . $charset );
             <div class="row two-col-row"> 
                 <div class="column-main col-md-8 order-2 order-md-1 pr-md-5">
                     <h2>Project Organization</h2>
-                    <p>OregonFlora is based in the <a href="https://bpp.oregonstate.edu/herbarium" target="_blank">Department of Botany & Plant Pathology</a> (BPP) at Oregon State University. We work closely with the <a href="https://bpp.oregonstate.edu/herbarium" target="_blank">OSU Herbarium</a>.  
+                    <p>OregonFlora is based in the <a href="https://bpp.oregonstate.edu/" target="_blank">Department of Botany & Plant Pathology</a> (BPP) at Oregon State University. We work closely with the <a href="https://bpp.oregonstate.edu/herbarium" target="_blank">OSU Herbarium</a>.  
                     BPP supports our program by providing indirect costs and office space. 
                     Grants and charitable donations fund 100% of the OregonFlora salaries, employee benefits, and direct operating expenses. 
-                    The <a href="npsoregon.org/" target="_blank">Native Plant Society of Oregon</a> has been a sponsor of OregonFlora since its inception in 1994. 
+                    The <a href="https://www.npsoregon.org/wp/" target="_blank">Native Plant Society of Oregon</a> has been a sponsor of OregonFlora since its inception in 1994. 
                     The <a href="https://agresearchfoundation.oregonstate.edu/" target="_blank">Agricultural Research Foundation</a>, a nonprofit 501(c)3 affiliated with OSU, serves as our fiscal agent. </p>
                 </div>                
             </div>

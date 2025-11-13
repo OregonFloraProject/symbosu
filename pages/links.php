@@ -49,16 +49,18 @@ header( "Content-Type: text/html; charset=" . $charset );
                 <span class="link-details">Natural Resources Digital Library, OSU Institute for Natural Resources</span></p>
 
             <h2>Regional, National</h2>
-            <p><a target="_blank" href="https://plants.sc.egov.usda.gov/java/">USDA PLANTS Database</a></p>
+            <p><a target="_blank" href="https://plants.sc.egov.usda.gov/">USDA PLANTS Database</a></p>
             <p>	<a target="_blank" href="https://www.fs.usda.gov/main/r6/plants-animals/plants">U.S. Forest Service Region 6 Plants</a></p>
             <p><a target="_blank" href="http://ucjeps.berkeley.edu/interchange.html">the Jepson Interchange</a>
                 <span class="link-details">California floristics data from the Jepson Herbarium, Univ. California Berkeley</span></p>
+            <p><a target="_blank" href="https://www.calflora.org/">Calflora</a>
+                <span class="link-details">Aggregated data about California wild plants</span></p>
             <p><a target="_blank" href="http://www.pnwherbaria.org/">Consortium of Pacific Northwest Herbaria</a>
                 <span class="link-details">Aggregation of herbarium specimens from the Pacific Northwest</span></p>
             <p><a target="_blank" href="http://intermountainbiota.org/portal/index.php">Intermountain Regional Herbarium Network</a></p>
             <p><a target="_blank" href="http://ibis.geog.ubc.ca/biodiversity/eflora/">E-flora BC</a>
                 <span class="link-details">Electronic atlas of the flora of British Columbia</span></p>
-            <p><a target="_blank" href="http://efloras.org/flora_page.aspx?flora_id=1">Flora of North America eFlora</a></p>
+            <p><a target="_blank" href="https://floranorthamerica.org/Main_Page">Flora of North America</a></p>
 
             <h2>Biodiversity Data Sharing</h2>
             <p><a target="_blank" href="http://symbiota.org/docs/">Symbiota</a>

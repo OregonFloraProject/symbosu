@@ -62,6 +62,14 @@ function obfuscate($email) {
             
             <h2>Staff</h2>
             <p>
+            	Joie Beasley-Bennett, Editor, Botanist<br />
+							<a href="mailto:beaslejo@oregonstate.edu">beaslejo@oregonstate.edu</a>
+						</p>
+            <p>
+            	Ash Gill, Taxonomist<br />
+							<a href="mailto:gilla@oregonstate.edu">gilla@oregonstate.edu</a>
+						</p>
+            <p>
             	Linda Hardison, Director<br />
 							<a href="mailto:linda.hardison@oregonstate.edu">linda.hardison@oregonstate.edu</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;541-737-4338 
 						</p>
@@ -72,10 +80,6 @@ function obfuscate($email) {
             <p>
             	Thea Jaster, Database manager, botanist<br />
 							<a href="mailto:theodora.jaster@oregonstate.edu">theodora.jaster@oregonstate.edu</a>
-						</p>
-            <p>
-            	Stephen Meyers, Taxonomic Director<br />
-							<a href="mailto:stephen.meyers@oregonstate.edu">stephen.meyers@oregonstate.edu</a>
 						</p>
             <p>
             	Katie Mitchell, Database manager, botanist<br />
@@ -89,9 +93,6 @@ function obfuscate($email) {
               Brian Phan, Software Developer<br />
               <a href="mailto:phanx@oregonstate.edu">phanx@oregonstate.edu</a>
 						</p>
-
-          
-            
         </div> <!-- .inner-content -->
     </section>
 </div> <!-- .info-page -->
