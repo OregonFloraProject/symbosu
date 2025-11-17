@@ -1,5 +1,6 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { addGlossaryTooltips } from '../../common/glossary';
 
 export class SynonymItem extends React.Component {
   constructor(props) {
@@ -15,6 +16,10 @@ export class SynonymItem extends React.Component {
   };
   toggleMisappliedNames = () => {
     this.setState({ showMisappliedNames: !this.state.showMisappliedNames });
+  };
+
+  _addGTooltips(text) {
+    return addGlossaryTooltips(text, this.props.glossary);
   };
 
   render() {
@@ -37,7 +42,8 @@ export class SynonymItem extends React.Component {
         {
           synonyms.length > 0 ? (
             <div className={'synonym-items row dashed-border py-1'}>
-              <div className="col font-weight-bold char-label">Synonyms</div>
+              <div className="col font-weight-bold char-label"
+                dangerouslySetInnerHTML={{ __html: this._addGTooltips('Synonyms')}} />
               <div className="synonym-list col">
                 <span className="short-list">
                   {visibleSyns.length > 0 &&
@@ -49,7 +55,9 @@ export class SynonymItem extends React.Component {
                             <span className={'synonym-author'}> {obj.author}</span>
                             {
                               obj.nomenclaturalStatus ?
-                              <span className={'synonym-author'}> ({obj.nomenclaturalStatus})</span> :
+                              <span className={'synonym-author'}
+                                dangerouslySetInnerHTML={{ __html: this._addGTooltips(` (${obj.nomenclaturalStatus})`)}}
+                              /> :
                               null
                             }
                           </span>
@@ -69,7 +77,9 @@ export class SynonymItem extends React.Component {
                             <span className={'synonym-author'}> {obj.author}</span>
                             {
                               obj.nomenclaturalStatus ?
-                              <span className={'synonym-author'}> ({obj.nomenclaturalStatus})</span> :
+                              <span className={'synonym-author'}
+                                dangerouslySetInnerHTML={{ __html: this._addGTooltips(` (${obj.nomenclaturalStatus})`)}}
+                              /> :
                               null
                             }
                           </span>
@@ -95,7 +105,8 @@ export class SynonymItem extends React.Component {
         {
           misappliedNames.length > 0 ? (
             <div className={'synonym-items row dashed-border py-1'}>
-              <div className="col font-weight-bold char-label">Misapplied Names</div>
+              <div className="col font-weight-bold char-label"
+                dangerouslySetInnerHTML={{ __html: this._addGTooltips('Misapplied Names')}} />
               <div className="synonym-list col">
                 <span className="short-list">
                   {visibleMisapplied.length > 0 &&
@@ -107,7 +118,9 @@ export class SynonymItem extends React.Component {
                             <span className={'synonym-author'}> {obj.author}</span>
                             {
                               obj.nomenclaturalStatus ?
-                              <span className={'synonym-author'}> ({obj.nomenclaturalStatus})</span> :
+                              <span className={'synonym-author'} 
+                                dangerouslySetInnerHTML={{ __html: this._addGTooltips(` (${obj.nomenclaturalStatus})`)}}
+                              /> :
                               null
                             }
                           </span>
@@ -127,7 +140,9 @@ export class SynonymItem extends React.Component {
                             <span className={'synonym-author'}> {obj.author}</span>
                             {
                               obj.nomenclaturalStatus ?
-                              <span className={'synonym-author'}> ({obj.nomenclaturalStatus})</span> :
+                              <span className={'synonym-author'}
+                                dangerouslySetInnerHTML={{ __html: this._addGTooltips(` (${obj.nomenclaturalStatus})`)}}
+                              /> :
                               null
                             }
                           </span>
