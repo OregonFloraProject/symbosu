@@ -143,7 +143,11 @@ function SideBarSection(props) {
       })}
       {
         synonymExist && (
-          <SynonymItem key={props.items['synonyms']} keyName={props.items['synonyms']} value={props.items['synonyms']} />
+          <SynonymItem
+            key={props.items['synonyms']}
+            value={props.items['synonyms']}
+            glossary={props.glossary}
+          />
         )
       }
       <span className="row dashed-border" />
