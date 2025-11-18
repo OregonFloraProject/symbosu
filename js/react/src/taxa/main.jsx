@@ -154,7 +154,7 @@ function SideBarSection(props) {
         } else if (key == 'More info') {
           return <MoreInfoItem key={key} keyName={key} value={val} clientRoot={props.clientRoot} />;
         } else if (key == 'Synonyms') {
-          return <SynonymItem key={val} keyName={val} value={val} />;
+          return <SynonymItem key={val} value={val} glossary={props.glossary} />;
         } else if (val) {
           return <BorderedItem key={key} keyName={key} value={val} />;
         }
@@ -265,6 +265,7 @@ class TaxaChooser extends React.Component {
               classes="highlights"
               rankId={res.rankId}
               clientRoot={this.props.clientRoot}
+              glossary={res.glossary}
             />
             <SideBarSection
               title="Web links"
@@ -464,6 +465,7 @@ class TaxaDetail extends React.Component {
               classes="highlights"
               rankId={res.rankId}
               clientRoot={this.props.clientRoot}
+              glossary={res.glossary}
             />
             <MapItem
               title={res.sciName}
@@ -594,8 +596,16 @@ class TaxaApp extends React.Component {
             moreInfo.push({ title: 'Garden Fact Sheet', url: gardenUrl });
           }
 
-          let web_links = res.taxalinks.map((link) => {
-            return (
+          let web_links = []
+          res.taxalinks.forEach((link) => {
+            // Filter IPNI, USDA link out
+            const filterTitles = ['ipni', 'usda'];
+            const linkTitle = link.title.toLowerCase();
+            // Check if linkTitle contains any of the substrings
+            if (filterTitles.some(sub => linkTitle.includes(sub))) {
+              return;
+            }
+            web_links.push(
               <div key={link.url}>
                 <a href={link.url} target="_blank" rel="noreferrer">
                   {link.title}
@@ -603,6 +613,17 @@ class TaxaApp extends React.Component {
               </div>
             );
           });
+
+          // Create a new IPNI
+          web_links.push(
+            (<div><a href={`https://www.ipni.org/search?q=${res.sciname}`} target="_blank" rel="noreferrer">
+                IPNI
+            </a></div>),
+            (<div><a href={`https://plants.usda.gov/`} target="_blank" rel="noreferrer">
+                USDA PLANTS Database
+            </a></div>),
+            
+          );
 
           let synonym = '';
           if (this.props.synonym) {
