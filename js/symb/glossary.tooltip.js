@@ -45,8 +45,10 @@ function showTooltip(tmp, id) {
     content += '<span>' + term.definition + '</span>';
 
     // Add the close button for mobile since they usually don't have tooltip
-    content += `<br/><span style="cursor: pointer;text-decoration:underline" 
-    onclick="closeTooltip(${tmp.id})">Close</span>`;
+    const isMobile = /Android|iPhone|iPad|iPod/.test(navigator.userAgent);
+    if (isMobile) {
+      content += `<br/><a onclick="closeTooltip(${tmp.id})">Close</a>`;
+    }
 
     // Construct the tooltip and add options
     $( "#" + tmp.id ).tooltip({
@@ -71,6 +73,12 @@ function showTooltip(tmp, id) {
 
       // Keep tooltip on when hover
       open: function (event, ui) {
+        // Restore underline styling in <a> tags
+        $(`#${ui.tooltip["0"].id} a`).css({
+          "text-decoration": "underline",
+          cursor: "pointer"
+        })
+
         // https://api.jquery.com/hover/
         // Bind two handlers to be executed when the mouse enters and leaves the element.
         ui.tooltip.hover(
