@@ -112,6 +112,7 @@ class TaxaApp extends React.Component {
             moreInfo.push({ title: 'Garden Fact Sheet', url: gardenUrl });
           }
 
+          // Create web links for sidebar section
           let web_links = []
           // Replace IPNI and USDA links with new ones
           const replacement_web_links = [
@@ -126,7 +127,7 @@ class TaxaApp extends React.Component {
           ];
 
           res.taxalinks.forEach((link) => {
-            // Filter IPNI, USDA link out
+            // Filter IPNI, USDA link out due to being outdate
             const filterTitles = ['ipni', 'usda'];
             const linkTitle = link.title.toLowerCase();
             // Check if linkTitle contains any of the substrings

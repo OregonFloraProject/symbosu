@@ -1,3 +1,8 @@
+// Close tooltip for mobile, on web it doesn't work, nor does it need to
+function closeTooltip(input) {
+  $( "#" + input.id ).tooltip("close");
+}
+
 // function to show glossary tooltips
 function showTooltip(tmp, id) {
 
@@ -39,6 +44,12 @@ function showTooltip(tmp, id) {
     // Add the definition
     content += '<span>' + term.definition + '</span>';
 
+    // Add the close button for mobile since they usually don't have tooltip
+    const isMobile = /Android|iPhone|iPad|iPod/.test(navigator.userAgent);
+    if (isMobile) {
+      content += `<br/><a onclick="closeTooltip(${tmp.id})">Close</a>`;
+    }
+
     // Construct the tooltip and add options
     $( "#" + tmp.id ).tooltip({
 
@@ -59,6 +70,36 @@ function showTooltip(tmp, id) {
 
       // Add content we created to the tooltip
       content: content,
+
+      // Keep tooltip on when hover
+      open: function (event, ui) {
+        // Restore underline styling in <a> tags
+        $(`#${ui.tooltip["0"].id} a`).css({
+          "text-decoration": "underline",
+          cursor: "pointer"
+        })
+
+        // https://api.jquery.com/hover/
+        // Bind two handlers to be executed when the mouse enters and leaves the element.
+        ui.tooltip.hover(
+          function () {
+            // https://api.jquery.com/stop/
+            // Stop current and queued animations
+            $(this).stop(true);
+          },
+          function () { 
+            // This function when the mouse leaves the tooltip
+            // will override close behavior of the tooltip
+            const fadeOutDuration = 500;
+            $(this).fadeOut(fadeOutDuration);
+            setTimeout(function () {
+              $( "#" + tmp.id ).tooltip("disable");
+
+              // Remove the tooltip element manually
+              ui.tooltip.remove();
+            }, fadeOutDuration) }
+        );
+      },
 
       // When the tooltip closes, disable it, this prevents it from subsequently popping up on hover
       close: function(event, ui) {
