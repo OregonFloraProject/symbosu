@@ -13,6 +13,9 @@ $gridSize = array_key_exists('gridSizeSetting',$_REQUEST)?$_REQUEST['gridSizeSet
 $minClusterSize = array_key_exists('minClusterSetting',$_REQUEST)?$_REQUEST['minClusterSetting']:50;
 
 $occurManager = new OccurrenceMapManager();
+// get coordinate Array from omoccurrence.
+// This is similar result to SOLR at collections/map/index.php
+// Each synonym gets one key and an object value for each occurrence
 $coordArr = $occurManager->getMappingData(0);
 
 //Build taxa mapping key
@@ -43,6 +46,10 @@ $spCnt = 0;
 $minLng = 180; $minLat = 90; $maxLng = -180; $maxLat = -90;
 $defaultColor = 'B2BEB5';
 $iconColors = array('FC6355','5781FC','FCf357','00E13C','E14f9E','55D7D7','FF9900','7E55FC');
+
+// Transfrom to legend Array: 1 tid -> many occurrence points: lists all the markers in objects.
+// Above are the main occurs, at the bottom are the synonym occurs.
+// They each have a key being an occurrence id in omoccurrence
 $legendArr = Array();
 foreach($coordArr as $sciName => $valueArr){
    $tid = 0;
@@ -177,7 +184,9 @@ if(isset($MAPPING_BOUNDARIES)){
 		}
 	</style>
 	<script type="text/javascript">
+	  // occurCoords = coordinate Array
       let occurCoords;
+	  // colorLegend = legend Array
       let colorLegend;
       let clid;
       let map;
@@ -207,6 +216,7 @@ if(isset($MAPPING_BOUNDARIES)){
             )
          }
 
+		 // go through each taxonId in legend Array
          for(let tid of Object.keys(colorLegend)) {
             let colorGroup = colorLegend[tid]
 
@@ -229,6 +239,7 @@ if(isset($MAPPING_BOUNDARIES)){
                maxClusterRadius: <?php echo $gridSize . ',' ?>
             });
 
+			// from taxonId go through each geo point
             for(let groupId of Object.keys(colorGroup.points)) {
                let taxaGroup = colorGroup.points[groupId];
                for(let occid of Object.keys(taxaGroup)) {
@@ -267,6 +278,7 @@ if(isset($MAPPING_BOUNDARIES)){
 						if(occur.collector) displayStr += `<div><strong>${recordedByType}: </strong>${occur.collector}</div>`;
 
 						//Add marker based on occurence type
+						// All the SVGs can be found at either js/symb/(leafletMap.js || leaflet.OregonFlora.js)
 						// OSU herbarium specimen: diamond
 						let marker = {};
 						if(occur.instcode == 'OSC' && occur.colltype == 'spec') {
@@ -309,14 +321,12 @@ if(isset($MAPPING_BOUNDARIES)){
 					<?php } ?>
 						// Other Herbarium Specimens: circle
 						} else if (occur.colltype == 'spec') {
-							marker = L.circleMarker(latlng, {
-								radius : 8,
-								color  : '#000000',
-								weight: 2,
-								fillColor: `#${colorGroup.c}`,
-								opacity: 1.0,
-								fillOpacity: 1.0
-							})
+							marker = L.marker(latlng, {
+								icon: getSpecimenSvg({
+									color: `#${colorGroup.c}`,
+									size: 8
+								})
+							});
 
 							// Add marker to markerGroup
 							map.markerGroups['spec'][tid] = (map.markerGroups['spec'][tid] || []).concat(marker);
@@ -334,22 +344,6 @@ if(isset($MAPPING_BOUNDARIES)){
 							map.markerGroups['obs'][tid] = (map.markerGroups['obs'][tid] || []).concat(marker);
 						}
 
-                  // let marker = (occur.colltype === "spec"?
-                  // L.circleMarker(latlng, {
-                  //    radius : 8,
-                  //    color  : '#000000',
-                  //    weight: 2,
-                  //    fillColor: `#${colorGroup.c}`,
-                  //    opacity: 1.0,
-                  //    fillOpacity: 1.0
-                  // }):
-                  // L.marker(latlng, {
-                  //    icon: getOregonFloraSvg({
-                  //       color: `#${colorGroup.c}`,
-                  //       size: 30
-                  //    })
-                  // }))
-
                   marker.bindTooltip(`<div style="font-size:1.2rem">${displayStr}</div>`)
                   .on('click', function() { openIndPU(occid, clid) })
 
@@ -357,11 +351,15 @@ if(isset($MAPPING_BOUNDARIES)){
                   bounds.addLayer(marker)
                }
             }
+
+			// map.mapLayer is L.map() from js/symb/leafletMap.js
             map.mapLayer.addLayer(taxaCluster);
 
             // Oregonflora Addition: save the taxa markerClusters for later manipulation
             map.taxaClusters[tid] = taxaCluster;
          }
+		 
+		 // Set center
          map.mapLayer.fitBounds(bounds.getBounds());
       }
 

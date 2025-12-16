@@ -4,10 +4,6 @@
 
 // Entrypoint function to add all OregonFlora customizations to the map
 function addOregonFlora(map, fitBounds = true){
-
-	// Show the map object
-	//console.log(map);
-
 	// Set the map zoom/center unless told not to
 	if (fitBounds) {
 		// Zoom/center to default place
@@ -410,16 +406,16 @@ function getOregonFloraSvg(opts = {color: "#7A8BE7", size: 24, className: "", ic
 
 	return L.divIcon({
     	html: `
-<svg
-width="${opts.size}"
-height="${opts.size}"
-viewBox="-10 -10 ${opts.size + 20} ${opts.size + 20}"
-version="1.1"
-preserveAspectRatio="none"
-xmlns="http://www.w3.org/2000/svg"
->
-${markerIcon}
-</svg>`,
+			<svg
+			width="${opts.size}"
+			height="${opts.size}"
+			viewBox="-10 -10 ${opts.size + 20} ${opts.size + 20}"
+			version="1.1"
+			preserveAspectRatio="none"
+			xmlns="http://www.w3.org/2000/svg"
+			>
+			${markerIcon}
+			</svg>`,
 		className: "",
 		observation: true,
 		iconSize: [opts.size, opts.size],
@@ -614,7 +610,7 @@ class LeafletSingleClusterMapGroup {
 			if (marker.options.icon && marker.options.icon.options.observation) {
 				marker.setIcon(getObservationSvg({ color: `#${color}`, size: 30 }));
 			} else {
-				marker.setStyle({ fillColor: `#${color}` });
+				marker.setIcon(getSpecimenSvg({color: `#${color}`, size: 8 }));
 			}
 		}
 	}

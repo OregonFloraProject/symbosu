@@ -727,155 +727,157 @@ if(isset($_REQUEST['llpoint'])) {
 			// OregonFlora customizations
 			addOregonFlora(map);
 
-			class LeafletMapGroup {
-				markers = {};
-				layer_groups = {};
-				group_name;
-				group_map;
+			// Deprecated: Switch to our custom LeafletSingleClusterMapGroup
+			// class LeafletMapGroup {
+			// 	markers = {};
+			// 	layer_groups = {};
+			// 	group_name;
+			// 	group_map;
 
-				constructor(group_name, group_map) {
-					this.group_name = group_name;
-					this.group_map = group_map;
-				}
+			// 	constructor(group_name, group_map) {
+			// 		this.group_name = group_name;
+			// 		this.group_map = group_map;
+			// 	}
 
-				addMarker(id, marker) {
-					if(!this.markers[id]) {
-						this.markers[id] = [marker]
-					} else {
-						this.markers[id].push(marker);
-					}
-				}
+			// 	addMarker(id, marker) {
+			// 		if(!this.markers[id]) {
+			// 			this.markers[id] = [marker]
+			// 		} else {
+			// 			this.markers[id].push(marker);
+			// 		}
+			// 	}
 
-				genLayer(id, cluster) {
-					this.group_map[id].cluster = cluster;
-					this.layer_groups[id] = L.layerGroup(this.markers[id]);
-					this.group_map[id].cluster.addLayer(this.layer_groups[id]);
-				}
+			// 	genLayer(id, cluster) {
+			// 		this.group_map[id].cluster = cluster;
+			// 		this.layer_groups[id] = L.layerGroup(this.markers[id]);
+			// 		this.group_map[id].cluster.addLayer(this.layer_groups[id]);
+			// 	}
 
-				drawGroup() {
-					for (let id of Object.keys(this.group_map)) {
-						if(clusteroff) {
-							this.layer_groups[id].addTo(map.mapLayer);
-						} else if(!map.mapLayer.hasLayer(this.group_map[id].cluster)) {
-							this.group_map[id].cluster.addTo(map.mapLayer)
-						}
-					}
-				}
+			// 	drawGroup() {
+			// 		for (let id of Object.keys(this.group_map)) {
+			// 			if(clusteroff) {
+			// 				this.layer_groups[id].addTo(map.mapLayer);
+			// 			} else if(!map.mapLayer.hasLayer(this.group_map[id].cluster)) {
+			// 				this.group_map[id].cluster.addTo(map.mapLayer)
+			// 			}
+			// 		}
+			// 	}
 
-				removeGroup() {
-					for (let id of Object.keys(this.group_map)) {
-						if(clusteroff) {
-							map.mapLayer.removeLayer(this.layer_groups[id])
-						} else {
-							map.mapLayer.removeLayer(this.group_map[id].cluster)
-						}
-					}
-				}
+			// 	removeGroup() {
+			// 		for (let id of Object.keys(this.group_map)) {
+			// 			if(clusteroff) {
+			// 				map.mapLayer.removeLayer(this.layer_groups[id])
+			// 			} else {
+			// 				map.mapLayer.removeLayer(this.group_map[id].cluster)
+			// 			}
+			// 		}
+			// 	}
 
-				resetGroup() {
-					for (let id of Object.keys(this.group_map)) {
-						this.group_map[id].cluster.clearLayers();
-						this.layer_groups[id].clearLayers();
-						this.markers[id] = [];
-					}
-				}
+			// 	resetGroup() {
+			// 		for (let id of Object.keys(this.group_map)) {
+			// 			this.group_map[id].cluster.clearLayers();
+			// 			this.layer_groups[id].clearLayers();
+			// 			this.markers[id] = [];
+			// 		}
+			// 	}
 
-				removeLayer(id) {
-					this.group_map[id].cluster.clearLayers();
-					map.mapLayer.removeLayer(this.group_map[id].cluster);
-				}
+			// 	removeLayer(id) {
+			// 		this.group_map[id].cluster.clearLayers();
+			// 		map.mapLayer.removeLayer(this.group_map[id].cluster);
+			// 	}
 
-				addLayer(id) {
-					//First Add layer for both regular layer group and for clustering
-					this.layer_groups[id] = L.layerGroup(this.markers[id]);
-					this.group_map[id].cluster.addLayer(this.layer_groups[id])
+			// 	addLayer(id) {
+			// 		//First Add layer for both regular layer group and for clustering
+			// 		this.layer_groups[id] = L.layerGroup(this.markers[id]);
+			// 		this.group_map[id].cluster.addLayer(this.layer_groups[id])
 
-					//Then Decide which is visible
-					if(!heatmap) {
-						if(clusteroff) {
-							map.mapLayer.addLayer(this.layer_groups[id]);
-						} else if(!map.mapLayer.hasLayer(this.group_map[id].cluster)) {
-							this.group_map[id].cluster.addTo(map.mapLayer);
-						}
-					}
-				}
+			// 		//Then Decide which is visible
+			// 		if(!heatmap) {
+			// 			if(clusteroff) {
+			// 				map.mapLayer.addLayer(this.layer_groups[id]);
+			// 			} else if(!map.mapLayer.hasLayer(this.group_map[id].cluster)) {
+			// 				this.group_map[id].cluster.addTo(map.mapLayer);
+			// 			}
+			// 		}
+			// 	}
 
-				toggleClustering() {
-					for(let id of Object.keys(this.group_map)) {
-						if(clusteroff) {
-							if(map.mapLayer.hasLayer(this.group_map[id].cluster)) {
-								map.mapLayer.removeLayer(this.group_map[id].cluster);
-							}
-							map.mapLayer.addLayer(this.layer_groups[id]);
-						} else {
-							map.mapLayer.removeLayer(this.layer_groups[id]);
-							if(!map.mapLayer.hasLayer(this.group_map[id].cluster)) {
-								this.group_map[id].cluster.addTo(map.mapLayer);
-							}
-						}
-					}
-				}
+			// 	toggleClustering() {
+			// 		for(let id of Object.keys(this.group_map)) {
+			// 			if(clusteroff) {
+			// 				if(map.mapLayer.hasLayer(this.group_map[id].cluster)) {
+			// 					map.mapLayer.removeLayer(this.group_map[id].cluster);
+			// 				}
+			// 				map.mapLayer.addLayer(this.layer_groups[id]);
+			// 			} else {
+			// 				map.mapLayer.removeLayer(this.layer_groups[id]);
+			// 				if(!map.mapLayer.hasLayer(this.group_map[id].cluster)) {
+			// 					this.group_map[id].cluster.addTo(map.mapLayer);
+			// 				}
+			// 			}
+			// 		}
+			// 	}
 
-				genClusters() {
-					for(let id in this.group_map) {
-						const cluster_rendered = this.group_map[id].cluster && map.mapLayer.hasLayer(this.group_map[id].cluster);
-						if(cluster_rendered) {
-							map.mapLayer.removeLayer(this.group_map[id].cluster);
-						}
-						const value = this.group_map[id];
-						const colorCluster = (cluster) => {
-							let childCount = cluster.getChildCount();
-							cluster.bindTooltip(`<div style="font-size:1rem"><?=$LANG['CLICK_TO_EXPAND']?></div>`);
-							cluster.on("click", e => e.target.spiderfy() )
-							return new L.DivIcon.CustomColor({
-								html: `<div class="symbiota-cluster" style="background-color: #${value.color};"><span>` + childCount + '</span></div>',
-								className: `symbiota-cluster-div`,
-								iconSize: new L.Point(20, 20),
-								color: `#${value.color}77`,
-								mainColor: `#${value.color}`,
-							});
-						}
+			// 	genClusters() {
+			// 		for(let id in this.group_map) {
+			// 			const cluster_rendered = this.group_map[id].cluster && map.mapLayer.hasLayer(this.group_map[id].cluster);
+			// 			if(cluster_rendered) {
+			// 				map.mapLayer.removeLayer(this.group_map[id].cluster);
+			// 			}
+			// 			const value = this.group_map[id];
+			// 			const colorCluster = (cluster) => {
+			// 				let childCount = cluster.getChildCount();
+			// 				cluster.bindTooltip(`<div style="font-size:1rem"><?=$LANG['CLICK_TO_EXPAND']?></div>`);
+			// 				cluster.on("click", e => e.target.spiderfy() )
+			// 				return new L.DivIcon.CustomColor({
+			// 					html: `<div class="symbiota-cluster" style="background-color: #${value.color};"><span>` + childCount + '</span></div>',
+			// 					className: `symbiota-cluster-div`,
+			// 					iconSize: new L.Point(20, 20),
+			// 					color: `#${value.color}77`,
+			// 					mainColor: `#${value.color}`,
+			// 				});
+			// 			}
 
-						let cluster = L.markerClusterGroup({
-							iconCreateFunction: colorCluster,
-							//cluster_radius is a global
-							maxClusterRadius: cluster_radius,
-							zoomToBoundsOnClick: false,
-							chunkedLoading: true
-						});
+			// 			let cluster = L.markerClusterGroup({
+			// 				iconCreateFunction: colorCluster,
+			// 				//cluster_radius is a global
+			// 				maxClusterRadius: cluster_radius,
+			// 				zoomToBoundsOnClick: false,
+			// 				chunkedLoading: true
+			// 			});
 
-						if(!this.layer_groups[id]) {
-							this.genLayer(id, cluster);
-						} else {
-							this.group_map[id].cluster = cluster;
-							this.group_map[id].cluster.addLayer(this.layer_groups[id]);
-						}
+			// 			if(!this.layer_groups[id]) {
+			// 				this.genLayer(id, cluster);
+			// 			} else {
+			// 				this.group_map[id].cluster = cluster;
+			// 				this.group_map[id].cluster.addLayer(this.layer_groups[id]);
+			// 			}
 
-						//Only Redraws if cluster of id was on map before regen
-						if(!clusteroff && cluster_rendered) {
-							this.group_map[id].cluster.addTo(map.mapLayer);
-						}
-					}
-				}
+			// 			//Only Redraws if cluster of id was on map before regen
+			// 			if(!clusteroff && cluster_rendered) {
+			// 				this.group_map[id].cluster.addTo(map.mapLayer);
+			// 			}
+			// 		}
+			// 	}
 
-				updateColor(id, color) {
-					this.group_map[id].color = color;
+			// 	updateColor(id, color) {
+			// 		this.group_map[id].color = color;
 
-					for (let marker of this.markers[id]) {
-						if(marker.options.icon && marker.options.icon.options.observation) {
-							marker.setIcon(getObservationSvg({color: `#${color}`, size:30 }))
-						} else {
-							marker.setStyle({fillColor: `#${color}`})
-						}
-					}
-				}
-			}
+			// 		for (let marker of this.markers[id]) {
+			// 			if(marker.options.icon && marker.options.icon.options.observation) {
+			// 				marker.setIcon(getObservationSvg({color: `#${color}`, size:30 }))
+			// 			} else {
+			// 				marker.setStyle({fillColor: `#${color}`})
+			// 			}
+			// 		}
+			// 	}
+			// }
 
 			function genMapGroups(records, tMap, cMap, origin) {
 				/**
 				 * 2025-03-18(eric): switch to our custom LeafletSingleClusterMapGroup, which puts all
 				 * layers together in a single cluster instead of many per-layer clusters (which are
-				 * inaccessible in the Leaflet UI if perfectly overlapping).
+				 * inaccessible in the Leaflet UI if perfectly overlapping). This is at
+				 * js/symb/leaflet.OregonFlora.js
 				 *
 				 * Since this new class is defined outside the scope of this outer method, we need to pass
 				 * references to the map object and heatmap state into the constructor.
@@ -884,17 +886,16 @@ if(isset($_REQUEST['llpoint'])) {
 				let collections = new LeafletSingleClusterMapGroup("coll", cMap, map, () => heatmap);
 				let portal = new LeafletSingleClusterMapGroup("portal", { [origin]: { name: origin, portalid: origin, color: generateRandColor()} }, map, () => heatmap);
 
+				// All the SVGs can be found at either js/(symb/leafletMap.js || leaflet.OregonFlora/leaflet.OregonFlora.js)
 				for(let record of records) {
 					let marker = (record.type === "specimen"?
-						L.circleMarker([record.lat, record.lng], {
-							radius : 8,
-							color  : '#000000',
-							weight: 2,
-							fillColor: `#${tMap[record['tid']].color}`,
-							opacity: 1.0,
-							fillOpacity: 1.0,
-							className: `coll-${record['collid']} taxa-${record['tid']}`
-						}):
+						 L.marker([record.lat, record.lng], {
+							icon: getSpecimenSvg({
+								color: `#${tMap[record['tid']].color}`,
+								size: 8,
+								className: `coll-${record['collid']} taxa-${record['tid']}`
+							})
+						}) :
 						L.marker([record.lat, record.lng], {
 							icon: getObservationSvg({
 								color: `#${tMap[record['tid']].color}`,
@@ -1026,7 +1027,7 @@ if(isset($_REQUEST['llpoint'])) {
 
 				}
 
-				//This is for handeling multiple portals
+				//This is for handling multiple portals
 				searches = await Promise.all(searches)
 
 				recordArr = [];
@@ -1100,7 +1101,7 @@ if(isset($_REQUEST['llpoint'])) {
 				const [type, id] = e.target.id.split("-");
 				const id_arr = id.split(",").map(part => part.split("*"));
 				const color = e.target.value;
-
+				// This is the above async function, NOT the updateColor from Leaflet(SingleCluster)MapGroup
 				updateColor(type, id_arr, color);
 			});
 
@@ -1241,566 +1242,567 @@ if(isset($_REQUEST['llpoint'])) {
 			}
 		}
 
-		function googleInit() {
-			let map = new GoogleMap('map')
-
-			let taxaClusters = {};
-			let taxaMarkers = {};
-
-			let collClusters = {};
-			let collMarkers = {};
-
-			let heatmapon = false;
-			let heatmapLayer;
-
-			let bounds;
-
-			let cluster_type = "taxa";
-
-			map.enableDrawing({}, setQueryShape);
-
-			//Add polygon bounding function
-			if (!google.maps.Polygon.prototype.getBounds) {
-				google.maps.Polygon.prototype.getBounds = function () {
-					var bounds = new google.maps.LatLngBounds();
-					this.getPath().forEach(function (element, index) { bounds.extend(element); });
-					return bounds;
-				}
-			}
-
-			class GoogleMapGroup {
-				markers = {};
-				group_name;
-				group_map;
-
-				constructor(group_name, group_map) {
-					this.group_name = group_name;
-					this.group_map = group_map;
-				}
-
-				addMarker(id, marker) {
-					if(!this.markers[id]) {
-						this.markers[id] = [marker]
-					} else {
-						this.markers[id].push(marker);
-					}
-				}
-
-				genLayer(id, cluster, oms) {
-					for(let m of this.markers[id]) {
-						oms.addMarker(m);
-					}
-					this.group_map[id].oms = oms;
-					cluster.addMarkers(this.markers[id]);
-					this.group_map[id].cluster = cluster;
-				}
-
-				drawGroup() {
-					for (let id of Object.keys(this.group_map)) {
-						this.addLayer(id);
-					}
-				}
-
-				removeGroup() {
-					for (let id of Object.keys(this.group_map)) {
-						this.removeLayer(id);
-					}
-				}
-
-				resetGroup() {
-					for (let id of Object.keys(this.group_map)) {
-						this.removeLayer(id);
-					}
-				}
-
-				removeLayer(id) {
-					if(clusteroff) {
-						for(let marker of Object.values(this.markers[id])) {
-							//marker.setMap(null)
-							this.group_map[id].oms.removeMarker(marker)
-						}
-					} else {
-						this.group_map[id].cluster.clearMarkers();
-						this.group_map[id].cluster.setMap(null);
-					}
-				}
-
-				addLayer(id) {
-					if(!heatmapon) {
-						if(clusteroff) {
-							for(let marker of Object.values(this.markers[id])) {
-								//marker.setMap(map.mapLayer)
-								this.group_map[id].oms.addMarker(marker)
-							}
-						} else {
-							this.group_map[id].cluster.addMarkers(this.markers[id])
-							this.group_map[id].cluster.setMap(map.mapLayer);
-						}
-					}
-				}
-
-				toggleClustering() {
-					for(let id of Object.keys(this.group_map)) {
-						if(clusteroff) this.group_map[id].cluster.setMap(null)
-						else this.addLayer(id)
-					}
-				}
-
-				updateColor(id, color) {
-					this.group_map[id].color = color;
-
-					for (let marker of this.markers[id]) {
-						marker.color = `#${color}`
-						marker.icon.fillColor = `#${color}`
-					}
-				}
-				updateGridSize(new_grid_size) {
-					for(let id in this.group_map) {
-						this.group_map[id].cluster.setMap(null);
-						this.group_map[id].cluster.gridSize_ = new_grid_size
-						this.group_map[id].cluster.setMap(map.mapLayer);
-					}
-				}
-			}
-
-			function genGroups(records, tMap, cMap, origin) {
-				if(records.length < 1) return;
-
-				let taxon = new GoogleMapGroup("taxa", tMap);
-				let collections = new GoogleMapGroup("coll", cMap);
-				let portals = new GoogleMapGroup("portal", { [origin]: { name: origin, portalid: origin, color: generateRandColor()} });
-
-				bounds = new google.maps.LatLngBounds();
-
-				for(let record of records) {
-					let marker = new google.maps.Marker({
-						position: new google.maps.LatLng(record['lat'], record['lng']),
-						text: "Test",
-						icon: record['type'] === "specimen"?
-							{
-								path: google.maps.SymbolPath.CIRCLE,
-								fillColor: `#${tMap[record['tid']].color}`,
-								fillOpacity: 1,
-								scale: 7,
-								strokeColor: "#000000",
-								strokeWeight: 1
-							}: {
-								path: "m6.70496,0.23296l-6.70496,13.48356l13.88754,0.12255l-7.18258,-13.60611z",
-								fillColor: `#${tMap[record['tid']].color}`,
-								fillOpacity: 1,
-								scale: 1,
-								strokeColor: "#000000",
-								strokeWeight: 1
-							},
-						selected: false,
-						color: `#${tMap[record['tid']].color}`,
-					})
-
-					bounds.extend(marker.getPosition());
-
-					const infoWin = new google.maps.InfoWindow({content:`<div>${record.id}</div>`});
-
-					google.maps.event.addListener(marker, 'mouseover', function() {
-						infoWin.open(map.mapLayer, marker);
-					})
-
-					google.maps.event.addListener(marker, 'mouseout', function() {
-						infoWin.close();
-					})
-
-					google.maps.event.addListener(marker, 'spider_click', function(e) {
-						openRecord(record);
-					})
-
-					if(clusteroff && !heatmapon) {
-						marker.setMap(map.mapLayer);
-					}
-
-					taxon.addMarker(record['tid'], marker);
-					collections.addMarker(record['collid'], marker);
-					portals.addMarker(origin, marker);
-				}
-
-				return { taxonMapGroup: taxon, collectionMapGroup: collections, portalMapGroup: portals};
-			}
-
-			function drawPoints() {
-
-				if(heatmapon) {
-					if(!heatmapLayer) initHeatmap();
-					else updateHeatmap();
-				} else {
-					mapGroups.forEach(g => {
-						if(cluster_type === "taxa") g.taxonMapGroup.drawGroup();
-						else if(cluster_type === "coll") g.collectionMapGroup.drawGroup();
-						else if(cluster_type === "portal") g.portalMapGroup.drawGroup();
-					})
-				}
-			}
-
-			function genClusters(legendMap, type) {
-				for(let val of Object.values(legendMap)) {
-
-					const cluster = new MarkerClusterer(null, [], {
-						styles: [{
-							color: val.color,
-						}],
-						maxZoom: 20,
-						gridSize: 60,
-						minimumClusterSize: 2
-					})
-
-					var oms = new OverlappingMarkerSpiderfier(map.mapLayer, {
-						markersWontMove: true,
-						markersWontHide: true,
-						basicFormatEvents: true
-					});
-
-					val.id_map.forEach(g=> {
-						if(type === "taxa") {
-							mapGroups[g.index].taxonMapGroup.genLayer(g.tid, cluster, oms);
-						} else if(type === "coll") {
-							mapGroups[g.index].collectionMapGroup.genLayer(g.collid, cluster, oms);
-						} else if(type === "portal") {
-							mapGroups[g.index].portalMapGroup.genLayer(g.portalid, cluster, oms);
-						}
-					});
-				}
-			}
-
-			function fitMap() {
-				if(map.activeShape) map.mapLayer.fitBounds(map.activeShape.layer.getBounds())
-				else if(bounds) map.mapLayer.fitBounds(bounds);
-				else if (map_bounds) {
-					const new_bounds = new google.maps.LatLngBounds()
-					new_bounds.extend(new google.maps.LatLng(parseFloat(map_bounds[0][0]), parseFloat(map_bounds[0][1])))
-					new_bounds.extend(new google.maps.LatLng(parseFloat(map_bounds[1][0]), parseFloat(map_bounds[1][1])))
-					map.mapLayer.fitBounds(new_bounds)
-				}
-			}
-
-			function initHeatmap() {
-				if(!heatmapon) return;
-
-				let radius_input = document.getElementById('heat-radius');
-
-				var cfg = {
-					"radius": (radius_input? parseFloat(radius_input.value): 50) / 100.00,
-					"maxOpacity": .9,
-					"scaleRadius": true,
-					"useLocalExtrema": false,
-					latField: 'lat',
-					lngField: 'lng',
-				};
-				heatmapLayer = new HeatmapOverlay(map.mapLayer, cfg);
-
-				updateHeatmap();
-			}
-
-			function updateHeatmap() {
-				let minDensityInput = document.getElementById('heat-min-density')
-				let maxDensityInput = document.getElementById('heat-max-density')
-
-				let heatMaxDensity = maxDensityInput? parseInt(maxDensityInput.value) : 3
-				let heatMinDensity = minDensityInput? parseInt(minDensityInput.value) : 1
-
-				heatmapLayer.setData({
-					max: heatMaxDensity || 3,
-					min: heatMinDensity || 1,
-					data: recordArr
-				});
-			}
-
-			document.addEventListener('resetMap', async e => {
-				setPanels(false);
-				mapGroups.forEach(group => {
-					group.taxonMapGroup.resetGroup();
-					group.collectionMapGroup.resetGroup();
-					group.portalMapGroup.resetGroup();
-				})
-
-				markers = [];
-				recordArr = [];
-
-				if(heatmapLayer) heatmapLayer.setData({data: []})
-			})
-
-			document.getElementById("mapsearchform").addEventListener('submit', async e => {
-				e.preventDefault();
-				if(!verifyCollForm(e.target)) return false;
-
-				showWorking();
-				let formData = new FormData(e.target);
-				mapGroups.map(group => {
-					group.taxonMapGroup.resetGroup();
-					group.collectionMapGroup.resetGroup();
-					group.portalMapGroup.resetGroup();
-				});
-
-				mapGroups = [];
-				recordArr = [];
-
-				if(heatmapLayer) heatmapLayer.setData({data: []})
-
-				getOccurenceRecords(formData).then(res => {
-					if (res) loadOccurenceRecords(res);
-				});
-
-				let searches = [
-               searchCollections(formData).then(res=>{
-                  res.label = "<?= $LANG['CURRENT_PORTAL']?>";
-                  return res;
-               }),
-            ]
-
-            //If Cross Portal Checkbox Enabled add cross portal search
-            if(formData.get('cross_portal_switch') && formData.get('cross_portal')) {
-               formData.set("taxa", formData.get('external-taxa-input'))
-               searches.push(searchCollections(formData, formData.get('cross_portal')).then(res => {
-                  res.label= formData.get('cross_portal_label')
-                  return res;
-               }))
-
-               getOccurenceRecords(formData, formData.get('cross_portal')).then(res => {
-                  if (res) loadOccurenceRecords(res, "external_occurrencelist");
-               });
-            }
-
-				//This is for handeling multiple portals
-				searches = await Promise.all(searches)
-
-				for(let search of searches) {
-					recordArr = recordArr.concat(search.recordArr);
-					const group = genGroups(search.recordArr, search.taxaArr, search.collArr, search.label)
-					group.origin = search.origin;
-					mapGroups.push(group);
-				}
-
-				buildPanels(formData.get('cross_portal_switch'));
-
-				//Must have build panels called b4
-				genClusters(taxaLegendMap, "taxa");
-				genClusters(collLegendMap, "coll");
-				genClusters(portalLegendMap, "portal");
-
-				autoColorTaxa();
-
-				drawPoints();
-				fitMap()
-				hideWorking();
-			});
-
-			document.addEventListener('deleteShape', e => {
-				clid_input = document.getElementById('clid');
-				if(clid_input) clid_input.value = '';
-
-				map.clearMap();
-				shape = null;
-			});
-
-			document.addEventListener('addReferencePoint', e => {
-				try {
-					var iconImg = new google.maps.MarkerImage( '../../images/google/arrow.png' );
-					let marker = new google.maps.Marker({
-						position: new google.maps.LatLng(
-							parseFloat(e.detail.lat),
-							parseFloat(e.detail.lng)
-						),
-						icon: iconImg,
-						zIndex: google.maps.Marker.MAX_ZINDEX
-					});
-
-					if(e.detail.title) {
-						const infoWin = new google.maps.InfoWindow({
-							content:`<div>${e.detail.title}</div>`
-						});
-
-						google.maps.event.addListener(marker, 'mouseover', () => {
-							infoWin.open(map.mapLayer, marker);
-						})
-
-						google.maps.event.addListener(marker, 'mouseout', () => {
-							infoWin.close();
-						})
-					}
-					marker.setMap(map.mapLayer);
-				} catch(e) {
-					console.log('failed to add point because: ' + e)
-				}
-			});
-
-			document.addEventListener('occur_click', function(e) {
-				for (let i = 0; i < recordArr.length; i++) {
-					if(recordArr[i]['occid'] === e.detail.occid) {
-						const current_zoom = map.mapLayer.getZoom();
-						map.mapLayer.setCenter(new google.maps.LatLng(recordArr[i]['lat'], recordArr[i]['lng']))
-						map.mapLayer.setZoom(current_zoom > 12? current_zoom: 12);
-						break;
-					}
-				}
-			});
-
-			async function updateColor(type, id_arr, color) {
-
-				const cluster = new MarkerClusterer(null, [], {
-					styles: [{
-						color: color,
-					}],
-					maxZoom: 14,
-					gridSize: 60,
-					minimumClusterSize: 2
-				})
-
-				const getIndex = v => v[0];
-				const getId = v => v[1];
-
-				id_arr.forEach(v => {
-					if(type === "taxa") {
-						mapGroups[getIndex(v)].taxonMapGroup.removeLayer(getId(v));
-					} else if (type === "coll") {
-						mapGroups[getIndex(v)].collectionMapGroup.removeLayer(getId(v));
-					} else if (type === "portal") {
-						mapGroups[getIndex(v)].portalMapGroup.removeLayer(getId(v));
-					}
-				});
-
-				id_arr.forEach(v => {
-					if(type === "taxa") {
-						mapGroups[getIndex(v)].taxonMapGroup.group_map[getId(v)].cluster = cluster;
-						mapGroups[getIndex(v)].taxonMapGroup.updateColor(getId(v), color);
-					} else if (type === "coll") {
-						mapGroups[getIndex(v)].collectionMapGroup.group_map[getId(v)].cluster = cluster;
-						mapGroups[getIndex(v)].collectionMapGroup.updateColor(getId(v), color);
-					} else if (type === "portal") {
-						mapGroups[getIndex(v)].portalMapGroup.group_map[getId(v)].cluster = cluster;
-						mapGroups[getIndex(v)].portalMapGroup.updateColor(getId(v), color);
-					}
-				})
-
-				id_arr.forEach(v => {
-					if(type === "taxa") {
-						mapGroups[getIndex(v)].taxonMapGroup.addLayer(getId(v));
-					} else if (type === "coll") {
-						mapGroups[getIndex(v)].collectionMapGroup.addLayer(getId(v));
-					} else if (type === "portal") {
-						mapGroups[getIndex(v)].portalMapGroup.addLayer(getId(v));
-					}
-				});
-			}
-
-			document.addEventListener('colorchange', function(e) {
-				const [type, id] = e.target.id.split("-");
-				const id_arr = id.split(",").map(part => part.split("*"));
-				const color = e.target.value;
-
-				updateColor(type, id_arr, color);
-			});
-
-			document.addEventListener('autocolor', async function(e) {
-				const {type, colorMap} = e.detail;
-
-				mapGroups.map(group => {
-					if(cluster_type === "coll" && type !== "coll") {
-						group.collectionMapGroup.removeGroup();
-					} else if(cluster_type === "taxa" && type !== "taxa") {
-						group.taxonMapGroup.removeGroup();
-					} else if(cluster_type === "portal" && type !== "portal") {
-						group.portalMapGroup.removeGroup();
-					}
-				})
-
-				cluster_type = type;
-
-				for (let {id_arr, color} of Object.values(colorMap)) {
-					await updateColor(type, id_arr, color);
-				}
-			});
-
-			document.getElementById('clusteroff').addEventListener('change', e => {
-				clusteroff = e.target.checked;
-				if(!heatmapon) {
-					if(cluster_type === "taxa") mapGroups.map(g => g.taxonMapGroup.toggleClustering());
-					else if(cluster_type === "coll") mapGroups.map(g => g.collectionMapGroup.toggleClustering());
-					else if(cluster_type === "portal") mapGroups.map(g => g.portalMapGroup.toggleClustering());
-				}
-			});
-
-			document.getElementById("cluster-radius").addEventListener('change', e => {
-				const radius = parseInt(e.target.value);
-				cluster_radius = radius;
-				mapGroups.forEach(group => {
-					group.taxonMapGroup.updateGridSize(radius);
-					group.collectionMapGroup.updateGridSize(radius);
-					group.portalMapGroup.updateGridSize(radius);
-				})
-			});
-
-			document.getElementById('heatmap_on').addEventListener('change', e => {
-				heatmapon = e.target.checked;
-
-				if(e.target.checked) {
-					//Clear points
-					if(cluster_type === "taxa") {
-						mapGroups.forEach(g => g.taxonMapGroup.resetGroup())
-					} else if(cluster_type === "coll") {
-						mapGroups.forEach(g => g.collectionMapGroup.resetGroup())
-					} else if(cluster_type === "portal") {
-						mapGroups.forEach(g => g.portalMapGroup.resetGroup())
-					}
-					if(!heatmapLayer) initHeatmap();
-					else updateHeatmap();
-				} else {
-					if(heatmapLayer) {
-						heatmapLayer.setData({data: []})
-					};
-
-					if(cluster_type == "taxa") {
-						mapGroups.forEach(g => g.taxonMapGroup.drawGroup())
-					} else if(cluster_type === "coll") {
-						mapGroups.forEach(g => g.collectionMapGroup.drawGroup())
-					} else if(cluster_type === "portal") {
-						mapGroups.forEach(g => g.portalMapGroup.drawGroup())
-					}
-				}
-			});
-
-			document.getElementById('heat-min-density').addEventListener('change', e => updateHeatmap())
-			document.getElementById('heat-radius').addEventListener('change', e => {
-				if(heatmapLayer) {
-					heatmapLayer.cfg.radius = parseFloat(e.target.value) / 100.00;
-					updateHeatmap();
-				}
-			})
-			document.getElementById('heat-max-density').addEventListener('change', e => updateHeatmap())
-
-			if(recordArr.length > 0) {
-				if(shape) map.drawShape(shape);
-				let formData = new FormData(document.getElementById("mapsearchform"));
-
-				const group = genGroups(recordArr, taxaMap, collArr, "<?= $LANG['CURRENT_PORTAL']?>");
-				group.origin = "<?= $SERVER_HOST . $CLIENT_ROOT?>";
-				mapGroups = [
-					group
-				]
-
-				getOccurenceRecords(formData).then(res => {
-					if(res) loadOccurenceRecords(res);
-					buildPanels(formData.get('cross_portal_switch'));
-
-					genClusters(taxaLegendMap, "taxa");
-					genClusters(collLegendMap, "coll");
-					genClusters(portalLegendMap, "portal");
-
-					autoColorTaxa();
-
-					drawPoints();
-
-					fitMap();
-				});
-			}
-
-			fitMap();
-		}
+		// Google Maps (not in use)
+		// function googleInit() {
+		// 	let map = new GoogleMap('map')
+
+		// 	let taxaClusters = {};
+		// 	let taxaMarkers = {};
+
+		// 	let collClusters = {};
+		// 	let collMarkers = {};
+
+		// 	let heatmapon = false;
+		// 	let heatmapLayer;
+
+		// 	let bounds;
+
+		// 	let cluster_type = "taxa";
+
+		// 	map.enableDrawing({}, setQueryShape);
+
+		// 	//Add polygon bounding function
+		// 	if (!google.maps.Polygon.prototype.getBounds) {
+		// 		google.maps.Polygon.prototype.getBounds = function () {
+		// 			var bounds = new google.maps.LatLngBounds();
+		// 			this.getPath().forEach(function (element, index) { bounds.extend(element); });
+		// 			return bounds;
+		// 		}
+		// 	}
+
+		// 	class GoogleMapGroup {
+		// 		markers = {};
+		// 		group_name;
+		// 		group_map;
+
+		// 		constructor(group_name, group_map) {
+		// 			this.group_name = group_name;
+		// 			this.group_map = group_map;
+		// 		}
+
+		// 		addMarker(id, marker) {
+		// 			if(!this.markers[id]) {
+		// 				this.markers[id] = [marker]
+		// 			} else {
+		// 				this.markers[id].push(marker);
+		// 			}
+		// 		}
+
+		// 		genLayer(id, cluster, oms) {
+		// 			for(let m of this.markers[id]) {
+		// 				oms.addMarker(m);
+		// 			}
+		// 			this.group_map[id].oms = oms;
+		// 			cluster.addMarkers(this.markers[id]);
+		// 			this.group_map[id].cluster = cluster;
+		// 		}
+
+		// 		drawGroup() {
+		// 			for (let id of Object.keys(this.group_map)) {
+		// 				this.addLayer(id);
+		// 			}
+		// 		}
+
+		// 		removeGroup() {
+		// 			for (let id of Object.keys(this.group_map)) {
+		// 				this.removeLayer(id);
+		// 			}
+		// 		}
+
+		// 		resetGroup() {
+		// 			for (let id of Object.keys(this.group_map)) {
+		// 				this.removeLayer(id);
+		// 			}
+		// 		}
+
+		// 		removeLayer(id) {
+		// 			if(clusteroff) {
+		// 				for(let marker of Object.values(this.markers[id])) {
+		// 					//marker.setMap(null)
+		// 					this.group_map[id].oms.removeMarker(marker)
+		// 				}
+		// 			} else {
+		// 				this.group_map[id].cluster.clearMarkers();
+		// 				this.group_map[id].cluster.setMap(null);
+		// 			}
+		// 		}
+
+		// 		addLayer(id) {
+		// 			if(!heatmapon) {
+		// 				if(clusteroff) {
+		// 					for(let marker of Object.values(this.markers[id])) {
+		// 						//marker.setMap(map.mapLayer)
+		// 						this.group_map[id].oms.addMarker(marker)
+		// 					}
+		// 				} else {
+		// 					this.group_map[id].cluster.addMarkers(this.markers[id])
+		// 					this.group_map[id].cluster.setMap(map.mapLayer);
+		// 				}
+		// 			}
+		// 		}
+
+		// 		toggleClustering() {
+		// 			for(let id of Object.keys(this.group_map)) {
+		// 				if(clusteroff) this.group_map[id].cluster.setMap(null)
+		// 				else this.addLayer(id)
+		// 			}
+		// 		}
+
+		// 		updateColor(id, color) {
+		// 			this.group_map[id].color = color;
+
+		// 			for (let marker of this.markers[id]) {
+		// 				marker.color = `#${color}`
+		// 				marker.icon.fillColor = `#${color}`
+		// 			}
+		// 		}
+		// 		updateGridSize(new_grid_size) {
+		// 			for(let id in this.group_map) {
+		// 				this.group_map[id].cluster.setMap(null);
+		// 				this.group_map[id].cluster.gridSize_ = new_grid_size
+		// 				this.group_map[id].cluster.setMap(map.mapLayer);
+		// 			}
+		// 		}
+		// 	}
+
+		// 	function genGroups(records, tMap, cMap, origin) {
+		// 		if(records.length < 1) return;
+
+		// 		let taxon = new GoogleMapGroup("taxa", tMap);
+		// 		let collections = new GoogleMapGroup("coll", cMap);
+		// 		let portals = new GoogleMapGroup("portal", { [origin]: { name: origin, portalid: origin, color: generateRandColor()} });
+
+		// 		bounds = new google.maps.LatLngBounds();
+
+		// 		for(let record of records) {
+		// 			let marker = new google.maps.Marker({
+		// 				position: new google.maps.LatLng(record['lat'], record['lng']),
+		// 				text: "Test",
+		// 				icon: record['type'] === "specimen"?
+		// 					{
+		// 						path: google.maps.SymbolPath.CIRCLE,
+		// 						fillColor: `#${tMap[record['tid']].color}`,
+		// 						fillOpacity: 1,
+		// 						scale: 7,
+		// 						strokeColor: "#000000",
+		// 						strokeWeight: 1
+		// 					}: {
+		// 						path: "m6.70496,0.23296l-6.70496,13.48356l13.88754,0.12255l-7.18258,-13.60611z",
+		// 						fillColor: `#${tMap[record['tid']].color}`,
+		// 						fillOpacity: 1,
+		// 						scale: 1,
+		// 						strokeColor: "#000000",
+		// 						strokeWeight: 1
+		// 					},
+		// 				selected: false,
+		// 				color: `#${tMap[record['tid']].color}`,
+		// 			})
+
+		// 			bounds.extend(marker.getPosition());
+
+		// 			const infoWin = new google.maps.InfoWindow({content:`<div>${record.id}</div>`});
+
+		// 			google.maps.event.addListener(marker, 'mouseover', function() {
+		// 				infoWin.open(map.mapLayer, marker);
+		// 			})
+
+		// 			google.maps.event.addListener(marker, 'mouseout', function() {
+		// 				infoWin.close();
+		// 			})
+
+		// 			google.maps.event.addListener(marker, 'spider_click', function(e) {
+		// 				openRecord(record);
+		// 			})
+
+		// 			if(clusteroff && !heatmapon) {
+		// 				marker.setMap(map.mapLayer);
+		// 			}
+
+		// 			taxon.addMarker(record['tid'], marker);
+		// 			collections.addMarker(record['collid'], marker);
+		// 			portals.addMarker(origin, marker);
+		// 		}
+
+		// 		return { taxonMapGroup: taxon, collectionMapGroup: collections, portalMapGroup: portals};
+		// 	}
+
+		// 	function drawPoints() {
+
+		// 		if(heatmapon) {
+		// 			if(!heatmapLayer) initHeatmap();
+		// 			else updateHeatmap();
+		// 		} else {
+		// 			mapGroups.forEach(g => {
+		// 				if(cluster_type === "taxa") g.taxonMapGroup.drawGroup();
+		// 				else if(cluster_type === "coll") g.collectionMapGroup.drawGroup();
+		// 				else if(cluster_type === "portal") g.portalMapGroup.drawGroup();
+		// 			})
+		// 		}
+		// 	}
+
+		// 	function genClusters(legendMap, type) {
+		// 		for(let val of Object.values(legendMap)) {
+
+		// 			const cluster = new MarkerClusterer(null, [], {
+		// 				styles: [{
+		// 					color: val.color,
+		// 				}],
+		// 				maxZoom: 20,
+		// 				gridSize: 60,
+		// 				minimumClusterSize: 2
+		// 			})
+
+		// 			var oms = new OverlappingMarkerSpiderfier(map.mapLayer, {
+		// 				markersWontMove: true,
+		// 				markersWontHide: true,
+		// 				basicFormatEvents: true
+		// 			});
+
+		// 			val.id_map.forEach(g=> {
+		// 				if(type === "taxa") {
+		// 					mapGroups[g.index].taxonMapGroup.genLayer(g.tid, cluster, oms);
+		// 				} else if(type === "coll") {
+		// 					mapGroups[g.index].collectionMapGroup.genLayer(g.collid, cluster, oms);
+		// 				} else if(type === "portal") {
+		// 					mapGroups[g.index].portalMapGroup.genLayer(g.portalid, cluster, oms);
+		// 				}
+		// 			});
+		// 		}
+		// 	}
+
+		// 	function fitMap() {
+		// 		if(map.activeShape) map.mapLayer.fitBounds(map.activeShape.layer.getBounds())
+		// 		else if(bounds) map.mapLayer.fitBounds(bounds);
+		// 		else if (map_bounds) {
+		// 			const new_bounds = new google.maps.LatLngBounds()
+		// 			new_bounds.extend(new google.maps.LatLng(parseFloat(map_bounds[0][0]), parseFloat(map_bounds[0][1])))
+		// 			new_bounds.extend(new google.maps.LatLng(parseFloat(map_bounds[1][0]), parseFloat(map_bounds[1][1])))
+		// 			map.mapLayer.fitBounds(new_bounds)
+		// 		}
+		// 	}
+
+		// 	function initHeatmap() {
+		// 		if(!heatmapon) return;
+
+		// 		let radius_input = document.getElementById('heat-radius');
+
+		// 		var cfg = {
+		// 			"radius": (radius_input? parseFloat(radius_input.value): 50) / 100.00,
+		// 			"maxOpacity": .9,
+		// 			"scaleRadius": true,
+		// 			"useLocalExtrema": false,
+		// 			latField: 'lat',
+		// 			lngField: 'lng',
+		// 		};
+		// 		heatmapLayer = new HeatmapOverlay(map.mapLayer, cfg);
+
+		// 		updateHeatmap();
+		// 	}
+
+		// 	function updateHeatmap() {
+		// 		let minDensityInput = document.getElementById('heat-min-density')
+		// 		let maxDensityInput = document.getElementById('heat-max-density')
+
+		// 		let heatMaxDensity = maxDensityInput? parseInt(maxDensityInput.value) : 3
+		// 		let heatMinDensity = minDensityInput? parseInt(minDensityInput.value) : 1
+
+		// 		heatmapLayer.setData({
+		// 			max: heatMaxDensity || 3,
+		// 			min: heatMinDensity || 1,
+		// 			data: recordArr
+		// 		});
+		// 	}
+
+		// 	document.addEventListener('resetMap', async e => {
+		// 		setPanels(false);
+		// 		mapGroups.forEach(group => {
+		// 			group.taxonMapGroup.resetGroup();
+		// 			group.collectionMapGroup.resetGroup();
+		// 			group.portalMapGroup.resetGroup();
+		// 		})
+
+		// 		markers = [];
+		// 		recordArr = [];
+
+		// 		if(heatmapLayer) heatmapLayer.setData({data: []})
+		// 	})
+
+		// 	document.getElementById("mapsearchform").addEventListener('submit', async e => {
+		// 		e.preventDefault();
+		// 		if(!verifyCollForm(e.target)) return false;
+
+		// 		showWorking();
+		// 		let formData = new FormData(e.target);
+		// 		mapGroups.map(group => {
+		// 			group.taxonMapGroup.resetGroup();
+		// 			group.collectionMapGroup.resetGroup();
+		// 			group.portalMapGroup.resetGroup();
+		// 		});
+
+		// 		mapGroups = [];
+		// 		recordArr = [];
+
+		// 		if(heatmapLayer) heatmapLayer.setData({data: []})
+
+		// 		getOccurenceRecords(formData).then(res => {
+		// 			if (res) loadOccurenceRecords(res);
+		// 		});
+
+		// 		let searches = [
+        //        searchCollections(formData).then(res=>{
+        //           res.label = "<?= $LANG['CURRENT_PORTAL']?>";
+        //           return res;
+        //        }),
+        //     ]
+
+        //     //If Cross Portal Checkbox Enabled add cross portal search
+        //     if(formData.get('cross_portal_switch') && formData.get('cross_portal')) {
+        //        formData.set("taxa", formData.get('external-taxa-input'))
+        //        searches.push(searchCollections(formData, formData.get('cross_portal')).then(res => {
+        //           res.label= formData.get('cross_portal_label')
+        //           return res;
+        //        }))
+
+        //        getOccurenceRecords(formData, formData.get('cross_portal')).then(res => {
+        //           if (res) loadOccurenceRecords(res, "external_occurrencelist");
+        //        });
+        //     }
+
+		// 		//This is for handeling multiple portals
+		// 		searches = await Promise.all(searches)
+
+		// 		for(let search of searches) {
+		// 			recordArr = recordArr.concat(search.recordArr);
+		// 			const group = genGroups(search.recordArr, search.taxaArr, search.collArr, search.label)
+		// 			group.origin = search.origin;
+		// 			mapGroups.push(group);
+		// 		}
+
+		// 		buildPanels(formData.get('cross_portal_switch'));
+
+		// 		//Must have build panels called b4
+		// 		genClusters(taxaLegendMap, "taxa");
+		// 		genClusters(collLegendMap, "coll");
+		// 		genClusters(portalLegendMap, "portal");
+
+		// 		autoColorTaxa();
+
+		// 		drawPoints();
+		// 		fitMap()
+		// 		hideWorking();
+		// 	});
+
+		// 	document.addEventListener('deleteShape', e => {
+		// 		clid_input = document.getElementById('clid');
+		// 		if(clid_input) clid_input.value = '';
+
+		// 		map.clearMap();
+		// 		shape = null;
+		// 	});
+
+		// 	document.addEventListener('addReferencePoint', e => {
+		// 		try {
+		// 			var iconImg = new google.maps.MarkerImage( '../../images/google/arrow.png' );
+		// 			let marker = new google.maps.Marker({
+		// 				position: new google.maps.LatLng(
+		// 					parseFloat(e.detail.lat),
+		// 					parseFloat(e.detail.lng)
+		// 				),
+		// 				icon: iconImg,
+		// 				zIndex: google.maps.Marker.MAX_ZINDEX
+		// 			});
+
+		// 			if(e.detail.title) {
+		// 				const infoWin = new google.maps.InfoWindow({
+		// 					content:`<div>${e.detail.title}</div>`
+		// 				});
+
+		// 				google.maps.event.addListener(marker, 'mouseover', () => {
+		// 					infoWin.open(map.mapLayer, marker);
+		// 				})
+
+		// 				google.maps.event.addListener(marker, 'mouseout', () => {
+		// 					infoWin.close();
+		// 				})
+		// 			}
+		// 			marker.setMap(map.mapLayer);
+		// 		} catch(e) {
+		// 			console.log('failed to add point because: ' + e)
+		// 		}
+		// 	});
+
+		// 	document.addEventListener('occur_click', function(e) {
+		// 		for (let i = 0; i < recordArr.length; i++) {
+		// 			if(recordArr[i]['occid'] === e.detail.occid) {
+		// 				const current_zoom = map.mapLayer.getZoom();
+		// 				map.mapLayer.setCenter(new google.maps.LatLng(recordArr[i]['lat'], recordArr[i]['lng']))
+		// 				map.mapLayer.setZoom(current_zoom > 12? current_zoom: 12);
+		// 				break;
+		// 			}
+		// 		}
+		// 	});
+
+		// 	async function updateColor(type, id_arr, color) {
+
+		// 		const cluster = new MarkerClusterer(null, [], {
+		// 			styles: [{
+		// 				color: color,
+		// 			}],
+		// 			maxZoom: 14,
+		// 			gridSize: 60,
+		// 			minimumClusterSize: 2
+		// 		})
+
+		// 		const getIndex = v => v[0];
+		// 		const getId = v => v[1];
+
+		// 		id_arr.forEach(v => {
+		// 			if(type === "taxa") {
+		// 				mapGroups[getIndex(v)].taxonMapGroup.removeLayer(getId(v));
+		// 			} else if (type === "coll") {
+		// 				mapGroups[getIndex(v)].collectionMapGroup.removeLayer(getId(v));
+		// 			} else if (type === "portal") {
+		// 				mapGroups[getIndex(v)].portalMapGroup.removeLayer(getId(v));
+		// 			}
+		// 		});
+
+		// 		id_arr.forEach(v => {
+		// 			if(type === "taxa") {
+		// 				mapGroups[getIndex(v)].taxonMapGroup.group_map[getId(v)].cluster = cluster;
+		// 				mapGroups[getIndex(v)].taxonMapGroup.updateColor(getId(v), color);
+		// 			} else if (type === "coll") {
+		// 				mapGroups[getIndex(v)].collectionMapGroup.group_map[getId(v)].cluster = cluster;
+		// 				mapGroups[getIndex(v)].collectionMapGroup.updateColor(getId(v), color);
+		// 			} else if (type === "portal") {
+		// 				mapGroups[getIndex(v)].portalMapGroup.group_map[getId(v)].cluster = cluster;
+		// 				mapGroups[getIndex(v)].portalMapGroup.updateColor(getId(v), color);
+		// 			}
+		// 		})
+
+		// 		id_arr.forEach(v => {
+		// 			if(type === "taxa") {
+		// 				mapGroups[getIndex(v)].taxonMapGroup.addLayer(getId(v));
+		// 			} else if (type === "coll") {
+		// 				mapGroups[getIndex(v)].collectionMapGroup.addLayer(getId(v));
+		// 			} else if (type === "portal") {
+		// 				mapGroups[getIndex(v)].portalMapGroup.addLayer(getId(v));
+		// 			}
+		// 		});
+		// 	}
+
+		// 	document.addEventListener('colorchange', function(e) {
+		// 		const [type, id] = e.target.id.split("-");
+		// 		const id_arr = id.split(",").map(part => part.split("*"));
+		// 		const color = e.target.value;
+
+		// 		updateColor(type, id_arr, color);
+		// 	});
+
+		// 	document.addEventListener('autocolor', async function(e) {
+		// 		const {type, colorMap} = e.detail;
+
+		// 		mapGroups.map(group => {
+		// 			if(cluster_type === "coll" && type !== "coll") {
+		// 				group.collectionMapGroup.removeGroup();
+		// 			} else if(cluster_type === "taxa" && type !== "taxa") {
+		// 				group.taxonMapGroup.removeGroup();
+		// 			} else if(cluster_type === "portal" && type !== "portal") {
+		// 				group.portalMapGroup.removeGroup();
+		// 			}
+		// 		})
+
+		// 		cluster_type = type;
+
+		// 		for (let {id_arr, color} of Object.values(colorMap)) {
+		// 			await updateColor(type, id_arr, color);
+		// 		}
+		// 	});
+
+		// 	document.getElementById('clusteroff').addEventListener('change', e => {
+		// 		clusteroff = e.target.checked;
+		// 		if(!heatmapon) {
+		// 			if(cluster_type === "taxa") mapGroups.map(g => g.taxonMapGroup.toggleClustering());
+		// 			else if(cluster_type === "coll") mapGroups.map(g => g.collectionMapGroup.toggleClustering());
+		// 			else if(cluster_type === "portal") mapGroups.map(g => g.portalMapGroup.toggleClustering());
+		// 		}
+		// 	});
+
+		// 	document.getElementById("cluster-radius").addEventListener('change', e => {
+		// 		const radius = parseInt(e.target.value);
+		// 		cluster_radius = radius;
+		// 		mapGroups.forEach(group => {
+		// 			group.taxonMapGroup.updateGridSize(radius);
+		// 			group.collectionMapGroup.updateGridSize(radius);
+		// 			group.portalMapGroup.updateGridSize(radius);
+		// 		})
+		// 	});
+
+		// 	document.getElementById('heatmap_on').addEventListener('change', e => {
+		// 		heatmapon = e.target.checked;
+
+		// 		if(e.target.checked) {
+		// 			//Clear points
+		// 			if(cluster_type === "taxa") {
+		// 				mapGroups.forEach(g => g.taxonMapGroup.resetGroup())
+		// 			} else if(cluster_type === "coll") {
+		// 				mapGroups.forEach(g => g.collectionMapGroup.resetGroup())
+		// 			} else if(cluster_type === "portal") {
+		// 				mapGroups.forEach(g => g.portalMapGroup.resetGroup())
+		// 			}
+		// 			if(!heatmapLayer) initHeatmap();
+		// 			else updateHeatmap();
+		// 		} else {
+		// 			if(heatmapLayer) {
+		// 				heatmapLayer.setData({data: []})
+		// 			};
+
+		// 			if(cluster_type == "taxa") {
+		// 				mapGroups.forEach(g => g.taxonMapGroup.drawGroup())
+		// 			} else if(cluster_type === "coll") {
+		// 				mapGroups.forEach(g => g.collectionMapGroup.drawGroup())
+		// 			} else if(cluster_type === "portal") {
+		// 				mapGroups.forEach(g => g.portalMapGroup.drawGroup())
+		// 			}
+		// 		}
+		// 	});
+
+		// 	document.getElementById('heat-min-density').addEventListener('change', e => updateHeatmap())
+		// 	document.getElementById('heat-radius').addEventListener('change', e => {
+		// 		if(heatmapLayer) {
+		// 			heatmapLayer.cfg.radius = parseFloat(e.target.value) / 100.00;
+		// 			updateHeatmap();
+		// 		}
+		// 	})
+		// 	document.getElementById('heat-max-density').addEventListener('change', e => updateHeatmap())
+
+		// 	if(recordArr.length > 0) {
+		// 		if(shape) map.drawShape(shape);
+		// 		let formData = new FormData(document.getElementById("mapsearchform"));
+
+		// 		const group = genGroups(recordArr, taxaMap, collArr, "<?= $LANG['CURRENT_PORTAL']?>");
+		// 		group.origin = "<?= $SERVER_HOST . $CLIENT_ROOT?>";
+		// 		mapGroups = [
+		// 			group
+		// 		]
+
+		// 		getOccurenceRecords(formData).then(res => {
+		// 			if(res) loadOccurenceRecords(res);
+		// 			buildPanels(formData.get('cross_portal_switch'));
+
+		// 			genClusters(taxaLegendMap, "taxa");
+		// 			genClusters(collLegendMap, "coll");
+		// 			genClusters(portalLegendMap, "portal");
+
+		// 			autoColorTaxa();
+
+		// 			drawPoints();
+
+		// 			fitMap();
+		// 		});
+		// 	}
+
+		// 	fitMap();
+		// }
 
 		function setPanels(show){
 			if(show){
@@ -1830,6 +1832,9 @@ if(isset($_REQUEST['llpoint'])) {
 					return query;
 				});
 
+				// find buildSOLRQString, getRecordCountFromSOLR, loadPointsFromSOLR
+				// at js/symb/collections.map.index.OregonFlora.js
+				
 				const solrqString = await buildSOLRQString(body);
 				if (!solrqString) {
 					throw new Error('Invalid query, not enough parameters were filled out');

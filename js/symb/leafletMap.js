@@ -1,3 +1,4 @@
+// Draw a triangle icon on the map
 function getObservationSvg(opts = {color: "#7A8BE7", size: 24, className:""}) {
    const default_ops = {color: "#7A8BE7", size: 24};
    opts = {...default_ops, ...opts};
@@ -5,16 +6,16 @@ function getObservationSvg(opts = {color: "#7A8BE7", size: 24, className:""}) {
 
    return L.divIcon({
       html: `
-<svg
-width="${opts.size}"
-height="${opts.size}"
-viewBox="-10 -10 ${opts.size + 20} ${opts.size + 20}"
-version="1.1"
-preserveAspectRatio="none"
-xmlns="http://www.w3.org/2000/svg"
->
-<polygon class="${opts.className}" points="${half},0 0,${opts.size} ${opts.size},${opts.size}" style="fill:${opts.color};stroke:black;stroke-width:3" />
-</svg>`,
+         <svg
+         width="${opts.size}"
+         height="${opts.size}"
+         viewBox="-10 -10 ${opts.size + 20} ${opts.size + 20}"
+         version="1.1"
+         preserveAspectRatio="none"
+         xmlns="http://www.w3.org/2000/svg"
+         >
+         <polygon class="${opts.className}" points="${half},0 0,${opts.size} ${opts.size},${opts.size}" style="fill:${opts.color};stroke:black;stroke-width:3" />
+         </svg>`,
       className: "",
       observation: true,
       iconSize: [opts.size, opts.size],
@@ -35,6 +36,36 @@ async function getMacroStratData(lat, lng, zoom) {
       }
       return json_data.success.data;
    })
+}
+
+// 2025-12-15 (Brian):
+// Ported from Symbiota 3.3.12:
+// Draw a circle icon on the map using DivIcon instead of CircleMarker (Vector Layer/Path)
+// CircleMarker and geoJSON overlay (counties overlay) have no priority like div with z-index.
+function getSpecimenSvg(opts = {color: "#7A8BE7", size: 24, className:""}) {
+	const default_ops = {color: "#7A8BE7", size: 24};
+	opts = {...default_ops, ...opts};
+	const stroke_width = 2;
+	const size_with_stroke = stroke_width * 2 + opts.size;
+	return L.divIcon({
+		html: `
+			<svg 
+			height="${size_with_stroke * 2}"
+			width="${size_with_stroke * 2}"
+			version="1.1"
+			preserveAspectRatio="none"
+			xmlns="http://www.w3.org/2000/svg"
+			>
+				<circle 
+					r="${opts.size}" 
+					cx="${size_with_stroke}" cy="${size_with_stroke}" 
+					fill="${opts.color}" stroke="black" stroke-width="${stroke_width}"
+				/>
+			</svg>`,
+		className: "",
+		iconSize: [size_with_stroke, size_with_stroke],
+		iconAnchor: [size_with_stroke, size_with_stroke],
+	});
 }
 
 class LeafletMap {
