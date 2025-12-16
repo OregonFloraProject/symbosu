@@ -54,7 +54,7 @@
 
 <!-- Importing Leaflet Related Functions--> 
 <script 
-   src= "<?php echo $CLIENT_ROOT?>/js/symb/leafletMap.js"
+   src= "<?php echo $CLIENT_ROOT?>/js/symb/leafletMap.js?<?php echo filemtime($SERVER_ROOT . '/js/symb/leafletMap.js'); ?>"
    type="text/javascript">
 </script>
 
