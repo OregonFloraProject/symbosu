@@ -15,6 +15,9 @@ foreach (glob("$SERVER_ROOT/models/*.php") as $file) {
   include_once($file);
 }
 
+foreach (glob("$SERVER_ROOT/classes/custom_dql_functions/*.php") as $file) {
+  include_once($file);
+}
 
 class SymbosuEntityManager {
 
@@ -47,6 +50,10 @@ $cache = null;
     #$factory = new DefaultCacheFactory(new RegionsConfiguration(), $cache);
     #$config->setSecondLevelCacheEnabled();
     #$config->getSecondLevelCacheConfiguration()->setCacheFactory($factory);
+
+    // Add custom DQL functions
+    $config->addCustomNumericFunction(MySqlCast::$dqlName, 'MysqlCast');
+    $config->addCustomStringFunction(MySqlRegexReplace::$dqlName, 'MySqlRegexReplace');
 
     return $config;
   }

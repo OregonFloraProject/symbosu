@@ -20,7 +20,7 @@ function getEmptyInventory() {
   ];
 }
 
-function inventoryManagerToJSON($inventoryObj) {
+function inventoryManagerToJSON(InventoryManager $inventoryObj) {
 
   $result = getEmptyInventory();
 

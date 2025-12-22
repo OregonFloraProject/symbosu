@@ -63,6 +63,8 @@ class InventoryManager {
 
 
   private static function populateChecklists($pid) {
+    // REGEXREPLACE would get the first number from the cl.name
+    // then CAST turns it into an unsigned int to sort
     $em = SymbosuEntityManager::getEntityManager();
     $checklists = $em->createQueryBuilder()
       ->select(["cl.clid, cl.name, cl.latcentroid, cl.longcentroid, cl.access"])
@@ -70,7 +72,9 @@ class InventoryManager {
       ->innerJoin("Fmchecklists", "cl", "WITH", "cpl.clid = cl.clid")
       ->where("cpl.pid = :pid")
       ->andWhere("cl.access != 'private'")
-			->orderBy("cl.sortsequence, cl.name")
+			->orderBy("cl.sortsequence")
+      ->addOrderBy("CAST(REGEXREPLACE(cl.name, '[0-9]+'), 'unsigned')")
+      ->addOrderBy("cl.name")
       ->setParameter("pid", $pid)
       ->getQuery()
       ->execute();
