@@ -100,12 +100,8 @@ class ExploreApp extends React.Component {
     });
   };
 
-  componentDidMount() {
-    // Load search results
-    //this.onSearch({ text: this.state.searchText });
-    let exportUrl = `${this.props.clientRoot}/ident/rpc/api.php`; //use identify api for export
-    let url = `${this.props.clientRoot}/checklists/rpc/api.php`; //?clid=${this.props.clid}&pid=${this.props.pid}`;
-    let identParams = new URLSearchParams();
+  getSearchParamForQuery() {
+    const identParams = new URLSearchParams();
     if (this.getClid() > -1) {
       identParams.append('clid', this.getClid());
     }
@@ -115,16 +111,33 @@ class ExploreApp extends React.Component {
     if (this.getDynclid() > -1) {
       identParams.append('dynclid', this.getDynclid());
     }
-    url = url + '?' + identParams.toString();
-    //console.log(url);
-    //console.log(this.state.showTaxaDetail);
-    httpGet(url)
+    if (this.state.filters.searchText) {
+      identParams.append('search', this.state.filters.searchText);
+    }
+    if (this.state.searchName) {
+      identParams.append('name', this.state.searchName);
+    }
+    if (this.state.searchSynonyms) {
+      identParams.append('synonyms', this.state.searchSynonyms);
+    }
+
+    return identParams.toString();
+  }
+
+  componentDidMount() {
+    // Load search results
+    //this.onSearch({ text: this.state.searchText });
+    const exportUrl = `${this.props.clientRoot}/ident/rpc/api.php`; //use identify api for export
+    let searchUrl = `${this.props.clientRoot}/checklists/rpc/api.php`; //?clid=${this.props.clid}&pid=${this.props.pid}`;
+
+    searchUrl = searchUrl + '?' + this.getSearchParamForQuery();
+    httpGet(searchUrl)
       .then((res) => {
         // /checklists/rpc/api.php?clid=3
         res = JSON.parse(res);
 
         let googleMapUrl = '';
-        let host = window.location.host;
+        const host = window.location.host;
 
         if (res.lat !== '' && res.lng !== '' && res.lat > 0 && res.lng != 0) {
           googleMapUrl += 'https://maps.google.com/maps/api/staticmap';
@@ -168,6 +181,7 @@ class ExploreApp extends React.Component {
           //exportUrlCsv: `${this.props.clientRoot}/checklists/rpc/export.php?clid=` + this.getClid() + `&pid=` + this.getPid(),
           //exportUrlWord: `${this.props.clientRoot}/checklists/defaultchecklistexport.php?cl=` + this.getClid() + `&pid=` + this.getPid()
           exportUrl: exportUrl,
+          searchUrl,
           exportUrlCsv:
             exportUrl +
             `?export=csv&clid=` +
@@ -202,39 +216,18 @@ class ExploreApp extends React.Component {
   }
   updateExportUrlCsv() {
     //let url = `${this.props.clientRoot}/checklists/rpc/export.php`;
-    let url = this.state.exportUrl;
-    let exportParams = new URLSearchParams();
-
-    exportParams.append('export', 'csv');
-    exportParams.append('clid', this.getClid());
-    exportParams.append('pid', this.getPid());
-    exportParams.append('dynclid', this.getDynclid());
-
-    /*TBD
-		if (this.state.searchName) {
-			exportParams.append("name",this.state.searchName);
-		}
-		if (this.state.searchSynonyms) {
-			exportParams.append("synonyms",this.state.searchSynonyms);
-		}
-		if (this.state.filters.searchText) {
-			exportParams.append("search",this.state.filters.searchText);
-		}*/
-    url += '?' + exportParams.toString();
-
+    const url = this.state.exportUrl + '?export=csv&' + this.getSearchParamForQuery();
     this.setState({
       exportUrlCsv: url,
     });
   }
+
   updateExportUrlWord() {
     //let url = `${this.props.clientRoot}/checklists/defaultchecklistexport.php`;
     let url = this.state.exportUrl;
-    let exportParams = new URLSearchParams();
+    const exportParams = new URLSearchParams();
 
     exportParams.append('export', 'word');
-    exportParams.append('clid', this.getClid());
-    exportParams.append('pid', this.getPid());
-    exportParams.append('dynclid', this.getDynclid());
     exportParams.append('showcommon', 1);
     if (this.state.filters.searchText) {
       exportParams.append('taxonfilter', this.state.filters.searchText);
@@ -258,18 +251,18 @@ class ExploreApp extends React.Component {
 			exportParams.append("showvouchers",1);
 		}*/
 
-    url += '?' + exportParams.toString();
+    url += '?' + exportParams.toString() + '&' + this.getSearchParamForQuery();
     this.setState({
       exportUrlWord: url,
     });
   }
+  
   clearTextSearch() {
     this.onFilterRemoved('searchText');
   }
 
   onFilterRemoved(key) {
     // TODO: This is clunky
-    //console.log(key);
     switch (key) {
       case 'searchText':
         this.setState(
@@ -286,7 +279,24 @@ class ExploreApp extends React.Component {
   }
 
   onSearchTextChanged(e) {
-    this.setState({ searchText: e.target.value });
+    this.setState({ filters: Object.assign({}, this.state.filters, { searchText: e.target.value }) });
+  }
+
+  doQuery() {
+    const url = this.state.searchUrl + '?' + this.getSearchParamForQuery();
+    httpGet(url)
+      .then((res) => {
+        let jres = JSON.parse(res);
+        this.onSearchResults(jres.tids);
+        this.updateTotals(jres.totals);
+        this.updateExportUrls();
+      })
+      .catch((err) => {
+        console.error(err);
+      })
+      .finally(() => {
+        this.setState({ isSearching: false });
+      });
   }
 
   // On search start
@@ -294,54 +304,9 @@ class ExploreApp extends React.Component {
     this.setState(
       {
         isSearching: true,
-        searchText: searchObj.text,
         filters: Object.assign({}, this.state.filters, { searchText: searchObj.text }),
       },
-      function () {
-        if (searchObj.text.length) {
-          let url = `${this.props.clientRoot}/checklists/rpc/api.php`;
-          let identParams = new URLSearchParams();
-          if (searchObj.text.length) {
-            identParams.append('search', searchObj.text);
-          }
-          if (this.state.searchName.length) {
-            identParams.append('name', this.state.searchName);
-          }
-          if (this.getDynclid() > -1) {
-            identParams.append('dynclid', this.state.dynclid);
-          }
-          if (this.getClid() > -1) {
-            identParams.append('clid', this.state.clid);
-          }
-          if (this.getPid() > -1) {
-            identParams.append('pid', this.state.pid);
-          }
-          if (this.state.searchSynonyms.length) {
-            identParams.append('synonyms', this.state.searchSynonyms);
-          }
-
-          url = url + '?' + identParams.toString();
-
-          httpGet(url)
-            .then((res) => {
-              let jres = JSON.parse(res);
-              this.onSearchResults(jres.tids);
-              this.updateTotals(jres.totals);
-              this.updateExportUrls();
-            })
-            .catch((err) => {
-              console.error(err);
-            })
-            .finally(() => {
-              this.setState({ isSearching: false });
-            });
-        } else {
-          //reset
-          this.setDefaultTids();
-          this.setState({ isSearching: false });
-          this.updateTotals(this.state.fixedTotals);
-        }
-      },
+      this.doQuery(),
     );
   }
 
@@ -373,7 +338,6 @@ class ExploreApp extends React.Component {
   sortResults(results) {
     //should receive taxa from API
     let newResults = {};
-    //console.log(results);
 
     let familySort = {};
     let tmp = {};
@@ -541,7 +505,6 @@ class ExploreApp extends React.Component {
             <div className="col-12 col-xl-4 col-md-5 sidebar-wrapper">
               {
                 <SideBar
-                  //ref={ this.sideBarRef }
                   clid={this.state.clid}
                   dynclid={this.state.dynclid}
                   style={{ background: '#DFEFD3' }}
@@ -549,7 +512,7 @@ class ExploreApp extends React.Component {
                   clientRoot={this.props.clientRoot}
                   totals={this.state.totals}
                   fixedTotals={this.state.fixedTotals}
-                  searchText={this.state.searchText}
+                  searchText={this.state.filters.searchText}
                   searchSuggestionUrl="./rpc/autofillsearch.php"
                   onSearch={this.onSearch}
                   onSearchTextChanged={this.onSearchTextChanged}

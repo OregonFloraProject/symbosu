@@ -114,6 +114,54 @@ class IdentifyApp extends React.Component {
     });
   };
 
+  getSearchParamForQuery() {
+    const identParams = new URLSearchParams();
+    if (this.getClid() > -1) {
+      identParams.append('clid', this.getClid());
+    }
+    if (this.getPid() > -1) {
+      identParams.append('pid', this.getPid());
+    }
+    if (this.getDynclid() > -1) {
+      identParams.append('dynclid', this.getDynclid());
+    }
+    if (this.state.filters.searchText) {
+      identParams.append('search', this.state.filters.searchText);
+      identParams.append('name', this.state.sortBy === 'vernacularName' ? 'commonname' : 'sciname');
+    }
+    
+    /* compare slider values vs characteristics and add to attr list;
+				adding each state as its own attr[] value makes the URL unacceptably long,
+				so we create a new range[] param for purposes of building the URL;
+				the API will convert this back into attrs for the DB calls
+		 */
+    Object.keys(this.state.filters.attrs).map((idx) => {
+      identParams.append('attr[]', idx);
+    });
+
+    Object.entries(this.state.filters.sliders).map((item) => {
+      let cid = item[0];
+      let slider = item[1];
+      let states = this.getStatesByCid(cid);
+      let min = states[0].cs;
+      let max = states.length > 1 ? states[1].cs : states[0].cs;
+      Object.keys(states).map((key) => {
+        let stateNum = Number(states[key].numval);
+        let stateCs = Number(states[key].cs);
+        if (stateNum == slider.range[0]) {
+          min = stateCs;
+        }
+        if (stateNum == slider.range[1]) {
+          max = stateCs;
+        }
+      });
+      identParams.append('range[]', cid + '-n-' + min);
+      identParams.append('range[]', cid + '-x-' + max);
+    });
+
+    return identParams.toString();
+  };
+
   componentDidMount() {
     // Get a list of glossary terms
     const glossaryPromise = httpGet('../glossary/rpc/getterms.php')
@@ -125,26 +173,12 @@ class IdentifyApp extends React.Component {
         return res;
       })
       .catch((err) => {
-        // TODO: Something's wrong
         console.error(err);
       });
 
     // Load search results
-    let apiUrl = `${this.props.clientRoot}/ident/rpc/api.php`;
-    let url = apiUrl;
-
-    let identParams = new URLSearchParams();
-    if (this.getClid() > -1) {
-      identParams.append('clid', this.getClid());
-    }
-    if (this.getPid() > -1) {
-      identParams.append('pid', this.getPid());
-    }
-    if (this.getDynclid() > -1) {
-      identParams.append('dynclid', this.getDynclid());
-    }
-    url = url + '?' + identParams.toString();
-    //console.log(url);
+    const apiUrl = `${this.props.clientRoot}/ident/rpc/api.php`;
+    const url = apiUrl + '?' + this.getSearchParamForQuery();
 
     const dataPromise = httpGet(url)
       .then((res) => {
@@ -190,9 +224,9 @@ class IdentifyApp extends React.Component {
           isMobile: isMobile,
           apiUrl: apiUrl,
           exportUrlCsv:
-            apiUrl + `?export=csv&clid=` + this.getClid() + `&pid=` + this.getPid() + `&dynclid=` + this.getDynclid(),
+            apiUrl + `?export=csv&` + this.getSearchParamForQuery(),
           exportUrlWord:
-            apiUrl + `?export=word&clid=` + this.getClid() + `&pid=` + this.getPid() + `&dynclid=` + this.getDynclid(),
+            apiUrl + `?export=word&` + this.getSearchParamForQuery(),
         });
         const pageTitle = document.getElementsByTagName('title')[0];
         pageTitle.innerHTML = `${pageTitle.innerHTML} ${res.title}`;
@@ -223,33 +257,21 @@ class IdentifyApp extends React.Component {
     let exportParams = new URLSearchParams();
 
     exportParams.append('export', 'csv');
-    exportParams.append('clid', this.getClid());
-    exportParams.append('pid', this.getPid());
-    exportParams.append('dynclid', this.getDynclid());
-
-    if (this.state.filters.searchText) {
-      exportParams.append('search', this.state.filters.searchText);
-    }
-    url += '?' + exportParams.toString();
-    //console.log(url);
+    url += '?' + exportParams.toString() + '&' + this.getSearchParamForQuery();
     this.setState({
       exportUrlCsv: url,
     });
   }
   updateExportUrlWord() {
     let url = this.state.apiUrl;
-    let exportParams = new URLSearchParams();
+    const exportParams = new URLSearchParams();
 
     exportParams.append('export', 'word');
-    exportParams.append('clid', this.getClid());
-    exportParams.append('pid', this.getPid());
-    exportParams.append('dynclid', this.getDynclid());
     exportParams.append('showcommon', 1);
     if (this.state.filters.searchText) {
       exportParams.append('taxonfilter', this.state.filters.searchText);
     }
-    url += '?' + exportParams.toString();
-    //console.log(url);
+    url += '?' + exportParams.toString() + '&' + this.getSearchParamForQuery();
     this.setState({
       exportUrlWord: url,
     });
@@ -304,7 +326,6 @@ class IdentifyApp extends React.Component {
   }
 
   onSearchTextChanged(e) {
-    //this.setState({ searchText: e.target.value });
     this.setState({ filters: Object.assign({}, this.state.filters, { searchText: e.target.value }) });
   }
 
@@ -312,7 +333,6 @@ class IdentifyApp extends React.Component {
   onSearch(searchObj) {
     this.setState(
       {
-        //searchText: searchObj.text,
         filters: Object.assign({}, this.state.filters, { searchText: searchObj.text }),
       },
       function () {
@@ -336,56 +356,10 @@ class IdentifyApp extends React.Component {
       //isLoading: true,
       isSearching: true,
     });
-    let url = this.state.apiUrl;
-    let identParams = new URLSearchParams();
-    if (this.getClid() > -1) {
-      identParams.append('clid', this.getClid());
-    }
-    if (this.getPid() > -1) {
-      identParams.append('pid', this.getPid());
-    }
-    if (this.getDynclid() > -1) {
-      identParams.append('dynclid', this.getDynclid());
-    }
-    if (this.state.filters.searchText) {
-      identParams.append('search', this.state.filters.searchText);
-      identParams.append('name', this.state.sortBy === 'vernacularName' ? 'commonname' : 'sciname');
-      //url += '&synonyms=off';
-    }
-    Object.keys(this.state.filters.attrs).map((idx) => {
-      identParams.append('attr[]', idx);
-    });
-    /* compare slider values vs characteristics and add to attr list;
-				adding each state as its own attr[] value makes the URL unacceptably long,
-				so we create a new range[] param for purposes of building the URL;
-				the API will convert this back into attrs for the DB calls
-		 */
 
-    Object.entries(this.state.filters.sliders).map((item) => {
-      let cid = item[0];
-      let slider = item[1];
-      let states = this.getStatesByCid(cid);
-      let min = states[0].cs;
-      let max = states.length > 1 ? states[1].cs : states[0].cs;
-      Object.keys(states).map((key) => {
-        let stateNum = Number(states[key].numval);
-        let stateCs = Number(states[key].cs);
-        if (stateNum == slider.range[0]) {
-          min = stateCs;
-        }
-        if (stateNum == slider.range[1]) {
-          max = stateCs;
-        }
-      });
-      identParams.append('range[]', cid + '-n-' + min);
-      identParams.append('range[]', cid + '-x-' + max);
-    });
-
-    url = url + '?' + identParams.toString();
-    //console.log(decodeURIComponent(url));
+    const url = this.state.apiUrl + '?' + this.getSearchParamForQuery();
     httpGet(url)
       .then((res) => {
-        //console.log(url);
         let jres = JSON.parse(res);
         this.onSearchResults(jres.taxa);
         this.onAttrResults(jres.characteristics);
@@ -673,7 +647,6 @@ class IdentifyApp extends React.Component {
             <div className="col-12 col-xl-4 col-md-5 col-sm-6 sidebar-wrapper">
               {(this.getDynclid() > 0 || this.getClid() > 0) && (
                 <SideBar
-                  //ref={ this.sideBarRef }
                   clid={this.state.clid}
                   dynclid={this.state.dynclid}
                   style={{ background: '#DFEFD3' }}
