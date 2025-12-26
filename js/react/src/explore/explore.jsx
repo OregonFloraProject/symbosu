@@ -522,6 +522,7 @@ class ExploreApp extends React.Component {
                   sortBy={this.state.sortBy}
                   showTaxaDetail={this.state.showTaxaDetail}
                   onSearchSynonymsClicked={this.onSearchSynonymsChanged}
+                  onSearchNameClicked={this.onSearchNameChanged}
                   onSortByClicked={this.onSortByChanged}
                   onViewTypeClicked={this.onViewTypeChanged}
                   onTaxaDetailClicked={this.onTaxaDetailChanged}
