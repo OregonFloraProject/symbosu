@@ -46,7 +46,7 @@ class IdentifyApp extends React.Component {
         attrs: {},
         sliders: {},
       },
-      //searchText: ("search" in queryParams ? queryParams["search"] : ViewOpts.DEFAULT_SEARCH_TEXT),
+      searchText: ("search" in queryParams ? queryParams["search"] : ViewOpts.DEFAULT_SEARCH_TEXT),
       searchResults: { familySort: {}, taxonSort: [] },
       characteristics: [],
       sortBy: 'sortBy' in queryParams ? queryParams['sortBy'] : 'sciName',
@@ -306,6 +306,7 @@ class IdentifyApp extends React.Component {
         this.setState(
           {
             filters: Object.assign({}, this.state.filters, { searchText: ViewOpts.DEFAULT_SEARCH_TEXT }),
+            searchText: ViewOpts.DEFAULT_SEARCH_TEXT
           },
           function () {
             this.doQuery();
@@ -326,7 +327,7 @@ class IdentifyApp extends React.Component {
   }
 
   onSearchTextChanged(e) {
-    this.setState({ filters: Object.assign({}, this.state.filters, { searchText: e.target.value }) });
+    this.setState({ searchText: e.target.value });
   }
 
   // On search start
@@ -556,7 +557,7 @@ class IdentifyApp extends React.Component {
   onSortByChanged(type) {
     this.setState({ sortBy: type }, function () {
       this.setState({ searchResults: this.sortByName(this.state.searchResults) }, function () {
-        this.updateExportUrls();
+        // this.updateExportUrls();
       });
     });
   }
@@ -655,7 +656,7 @@ class IdentifyApp extends React.Component {
                   totals={this.state.totals}
                   fixedTotals={this.state.fixedTotals}
                   characteristics={this.state.characteristics}
-                  searchText={this.state.filters.searchText}
+                  searchText={this.state.searchText}
                   searchSuggestionUrl={suggestionUrl}
                   onSearch={this.onSearch}
                   onSearchTextChanged={this.onSearchTextChanged}
