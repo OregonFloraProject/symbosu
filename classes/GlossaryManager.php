@@ -111,7 +111,7 @@ class GlossaryManager extends Manager {
 	public function remapDescriptionCrossLinks(&$termArr){
 		if(!empty($termArr['definition'])){
 			$subjectStr = $termArr['definition'];
-			$pattern = '/href=["\']*([A-Za-z -]+)["\']*/i';
+			$pattern = '/href=["\']*(?!http:|https:)([A-Za-z -]+)["\']*/i';
 			$replacement = 'href="' . $GLOBALS['CLIENT_ROOT'] . '/glossary/individual.php?term=${1}"';
 			$termArr['definition'] = preg_replace($pattern, $replacement, $subjectStr);
 		}
