@@ -130,8 +130,7 @@ class ExploreApp extends React.Component {
     const exportUrl = `${this.props.clientRoot}/ident/rpc/api.php`; //use identify api for export
     let searchUrl = `${this.props.clientRoot}/checklists/rpc/api.php`; //?clid=${this.props.clid}&pid=${this.props.pid}`;
 
-    searchUrl = searchUrl + '?' + this.getSearchParamForQuery();
-    httpGet(searchUrl)
+    httpGet(searchUrl + '?' + this.getSearchParamForQuery())
       .then((res) => {
         // /checklists/rpc/api.php?clid=3
         res = JSON.parse(res);
