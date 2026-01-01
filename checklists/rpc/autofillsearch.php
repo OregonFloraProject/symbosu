@@ -46,7 +46,7 @@ function searchSciNames() {
 			$sciName->setParameter(...$param);
 		}		
 		$sciName->groupBy(join(", ",$groupBy));
-    $sciName->setMaxResults(3);
+    $sciName->setMaxResults(10);
     $squery = $sciName->getQuery();
     $sciNameResults = $squery->getArrayResult();
   return $sciNameResults;
