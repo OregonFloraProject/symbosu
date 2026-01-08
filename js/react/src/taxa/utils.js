@@ -24,3 +24,11 @@ export function csRangeToString(obj, separator = 'to') {
   }
   return `${arr[0]} ${separator} ${arr[arr.length - 1]}`;
 }
+
+export function checkNullThumbnailUrl(imageArray, noThumbnailJpgUrl) {
+  const imageCount = imageArray.length;
+  for (let i = 0; i < imageCount; i++) {
+    const element = imageArray[i];
+    if (!element.thumbnailurl) element.thumbnailurl = noThumbnailJpgUrl;
+  }
+}

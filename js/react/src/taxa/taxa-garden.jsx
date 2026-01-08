@@ -10,7 +10,7 @@ import { getTaxaPage } from '../common/taxaUtils';
 import Loading from '../common/loading.jsx';
 import SideBarSection from './components/SideBarSection.jsx';
 import SideBarSectionVendor from './components/SideBarSectionVendor.jsx';
-import { csRangeToString, sortKeyedCharObject } from './utils';
+import { csRangeToString, sortKeyedCharObject, checkNullThumbnailUrl } from './utils';
 
 class TaxaApp extends React.Component {
   constructor(props) {
@@ -79,7 +79,6 @@ class TaxaApp extends React.Component {
         .then((res) => {
           // /taxa/rpc/api.php?taxon=2454
           res = JSON.parse(res);
-          //console.log(res.characteristics.features);
           let plantType = '';
           let foliageType = res.characteristics.foliage_type;
           plantType += foliageType.length > 0 ? `${foliageType[0]} ` : '';
@@ -118,12 +117,7 @@ class TaxaApp extends React.Component {
             moisture.push(`${csRangeToString(res.characteristics.summer_moisture)} summer water`);
           }
 
-          // Check for null thumbnailUrl
-          const imageCount = res.imagesBasis.HumanObservation.length;
-          for (let i = 0; i < imageCount; i++) {
-            const element = res.imagesBasis.HumanObservation[i];
-            if (!element.thumbnailurl) element.thumbnailurl = '../images/icons/no-thumbnail.jpg';
-          }
+          checkNullThumbnailUrl(res.imagesBasis.HumanObservation, '../images/icons/no-thumbnail.jpg');
 
           this.setState({
             sciName: res.sciname,

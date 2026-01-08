@@ -6,6 +6,7 @@ import { getUrlQueryParams } from '../../common/queryParams.js';
 import DescriptionTabs from './DescriptionTabs.jsx';
 import MapItem from './MapItem.jsx';
 import SideBarSection from './SideBarSectionForMain.jsx';
+import { checkNullThumbnailUrl } from '../utils.js';
 
 const queryParams = getUrlQueryParams(window.location.search);
 
@@ -55,6 +56,9 @@ export class TaxaChooser extends React.Component {
     const titleElement = document.getElementsByTagName('title')[0];
     const pageTitle = this.props.defaultTitle + ' ' + (res.sciName ? res.sciName : res.family);
     titleElement.innerHTML = pageTitle;
+    checkNullThumbnailUrl(res.images.HumanObservation, '../images/icons/no-thumbnail.jpg');
+    checkNullThumbnailUrl(res.images.PreservedSpecimen, '../images/icons/no-thumbnail.jpg');
+    
     return (
       <div className="container mx-auto py-5 taxa-detail" style={{ minHeight: '45em' }}>
         <Loading clientRoot={this.props.clientRoot} isLoading={res.isLoading} />

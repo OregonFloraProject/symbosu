@@ -11,7 +11,7 @@ import MapItem from './components/MapItem.jsx';
 import SideBarSection from './components/SideBarSection.jsx';
 import SideBarSectionLookalikesTable from './components/SideBarSectionLookalikesTable.jsx';
 import SideBarSectionSpeciesList from './components/SideBarSectionSpeciesList.jsx';
-import { csRangeToString } from './utils';
+import { csRangeToString, checkNullThumbnailUrl } from './utils';
 
 const EMPTY_DATA = {
   sciName: null,
@@ -93,6 +93,9 @@ function TaxaRareApp(props) {
             },
           ];
 
+          checkNullThumbnailUrl(res.imagesBasis.HumanObservation, '../images/icons/no-thumbnail.jpg');
+          checkNullThumbnailUrl(res.imagesBasis.PreservedSpecimen, '../images/icons/no-thumbnail.jpg');
+          
           setData({
             sciName: res.sciname,
             vernacularNames: res.vernacular.names,
