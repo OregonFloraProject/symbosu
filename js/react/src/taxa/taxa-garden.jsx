@@ -236,34 +236,13 @@ class TaxaApp extends React.Component {
               className="mt-4"
               dangerouslySetInnerHTML={{ __html: addGlossaryTooltips(this.state.description, this.state.glossary) }}
             />
-            <div className="mt-4 dashed-border taxa-slideshows">
-              <h3 className="text-light-green font-weight-bold mt-2">{this.state.vernacularNames[0]} images</h3>
-              <div className="slider-wrapper">
-                <ImageCarousel
-                  images={this.state.images}
-                  imageCount={this.state.length}
-                  slideshowCount={this.state.slideshowCount}
-                >
-                  {this.state.images.map((image, index) => {
-                    return (
-                      <div key={image.url}>
-                        <div className="card" style={{ padding: '0.6em' }}>
-                          <div style={{ position: 'relative', width: '100%', height: '7em', borderRadius: '0.25em' }}>
-                            <img
-                              className="d-block"
-                              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                              src={image.thumbnailurl}
-                              alt={image.thumbnailurl}
-                              onClick={() => this.toggleImageModal(index)}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </ImageCarousel>
-              </div>
-            </div>
+            <ImageCarousel
+              title={`${this.state.vernacularNames[0]} images`}
+              images={this.state.images}
+              imageCount={this.state.length}
+              slideshowCount={this.state.slideshowCount}
+              onClick={this.toggleImageModal}
+            />
           </div>
           <ImageModal
             show={this.state.isOpen}

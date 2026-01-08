@@ -220,62 +220,22 @@ function TaxaRareApp(props) {
           </div>
 
           {data.images.length > 0 && (
-            <div className="mt-4 dashed-border taxa-slideshows">
-              <h3 className="font-weight-bold mt-2">
-                <i>{data.sciName}</i> images
-              </h3>
-              <div className="slider-wrapper">
-                <ImageCarousel images={data.images} imageCount={data.images.length} slideshowCount={slideshowCount}>
-                  {data.images.map((image, index) => {
-                    return (
-                      <div key={image.url}>
-                        <div className="card" style={{ padding: '0.6em' }}>
-                          <div style={{ position: 'relative', width: '100%', height: '7em', borderRadius: '0.25em' }}>
-                            <img
-                              className="d-block"
-                              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                              src={image.thumbnailurl}
-                              alt={image.thumbnailurl}
-                              onClick={() => toggleImageModal(index, 'HumanObservation')}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </ImageCarousel>
-              </div>
-            </div>
+            <ImageCarousel
+              title={<span><i>{data.sciName}</i> images</span>}
+              images={data.images}
+              imageCount={data.images.length}
+              slideshowCount={slideshowCount}
+              onClick={(index) => toggleImageModal(index, 'HumanObservation')}
+            />
           )}
           {data.herbariumImages.length > 0 && (
-            <div className="mt-4 dashed-border taxa-slideshows">
-              <h3 className="font-weight-bold mt-2">Herbarium specimens</h3>
-              <div className="slider-wrapper">
-                <ImageCarousel
-                  images={data.herbariumImages}
-                  imageCount={data.herbariumImages.length}
-                  slideshowCount={slideshowCount}
-                >
-                  {data.herbariumImages.map((image, index) => {
-                    return (
-                      <div key={image.url}>
-                        <div className="card" style={{ padding: '0.6em' }}>
-                          <div style={{ position: 'relative', width: '100%', height: '7em', borderRadius: '0.25em' }}>
-                            <img
-                              className="d-block"
-                              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                              src={image.thumbnailurl}
-                              alt={image.thumbnailurl}
-                              onClick={() => toggleImageModal(index, 'PreservedSpecimen')}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </ImageCarousel>
-              </div>
-            </div>
+            <ImageCarousel
+              title={`Herbarium specimens`}
+              images={data.herbariumImages}
+              imageCount={data.herbariumImages.length}
+              slideshowCount={slideshowCount}
+              onClick={(index) => toggleImageModal(index, 'PreservedSpecimen')}
+            />
           )}
         </div>
         <ImageModal

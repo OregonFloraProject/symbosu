@@ -58,7 +58,7 @@ export class TaxaChooser extends React.Component {
     titleElement.innerHTML = pageTitle;
     checkNullThumbnailUrl(res.images.HumanObservation, '../images/icons/no-thumbnail.jpg');
     checkNullThumbnailUrl(res.images.PreservedSpecimen, '../images/icons/no-thumbnail.jpg');
-    
+
     return (
       <div className="container mx-auto py-5 taxa-detail" style={{ minHeight: '45em' }}>
         <Loading clientRoot={this.props.clientRoot} isLoading={res.isLoading} />
@@ -246,65 +246,23 @@ export class TaxaDetail extends React.Component {
             )}
 
             {res.images.HumanObservation.length > 0 && (
-              <div className="mt-4 dashed-border taxa-slideshows" id="photos">
-                <h3 className="text-light-green font-weight-bold mt-2">Photo images</h3>
-                <div className="slider-wrapper">
-                  <ImageCarousel
-                    images={res.images.HumanObservation}
-                    imageCount={res.images.HumanObservation.length}
-                    slideshowCount={res.slideshowCount}
-                  >
-                    {res.images.HumanObservation.map((image, index) => {
-                      return (
-                        <div key={image.url}>
-                          <div className="card" style={{ padding: '0.5em' }}>
-                            <div style={{ position: 'relative', width: '100%', height: '7em', borderRadius: '0.25em' }}>
-                              <img
-                                className="d-block"
-                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                                src={image.thumbnailurl}
-                                alt={image.thumbnailurl}
-                                onClick={() => this.toggleImageModal(index, 'HumanObservation')}
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </ImageCarousel>
-                </div>
-              </div>
+              <ImageCarousel
+                title={`Photo images`}
+                images={res.images.HumanObservation}
+                imageCount={res.images.HumanObservation.length}
+                slideshowCount={res.slideshowCount}
+                onClick={(index) => this.toggleImageModal(index, 'HumanObservation')}
+              />
             )}
 
             {res.images.PreservedSpecimen.length > 0 && (
-              <div className="mt-4 dashed-border taxa-slideshows" id="herbarium">
-                <h3 className="text-light-green font-weight-bold mt-2">Herbarium specimens</h3>
-                <div className="slider-wrapper">
-                  <ImageCarousel
-                    images={res.images.PreservedSpecimen}
-                    imageCount={res.images.PreservedSpecimen.length}
-                    slideshowCount={res.slideshowCount}
-                  >
-                    {res.images.PreservedSpecimen.map((image, index) => {
-                      return (
-                        <div key={image.url}>
-                          <div className="card" style={{ padding: '0.5em' }}>
-                            <div style={{ position: 'relative', width: '100%', height: '7em', borderRadius: '0.25em' }}>
-                              <img
-                                className="d-block"
-                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                                src={image.thumbnailurl}
-                                alt={image.thumbnailurl}
-                                onClick={() => this.toggleImageModal(index, 'PreservedSpecimen')}
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </ImageCarousel>
-                </div>
-              </div>
+              <ImageCarousel
+                title={`Herbarium specimens`}
+                images={res.images.PreservedSpecimen}
+                imageCount={res.images.PreservedSpecimen.length}
+                slideshowCount={res.slideshowCount}
+                onClick={(index) => this.toggleImageModal(index, 'PreservedSpecimen')}
+              />
             )}
           </div>
           <div className="col-md-4 sidebar sidebar-section">

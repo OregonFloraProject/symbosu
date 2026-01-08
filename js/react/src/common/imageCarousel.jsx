@@ -36,9 +36,30 @@ function ImageCarousel(props) {
     getOnDemandLazySlides,
   };
   return (
-    <Slider {...slickSettings} className="mx-auto" style={{ maxWidth: '90%' }}>
-      {props.children}
-    </Slider>
+    <div className="mt-4 dashed-border taxa-slideshows">
+      <h3 className="text-light-green font-weight-bold mt-2">{props.title}</h3>
+      <div className="slider-wrapper">
+        <Slider {...slickSettings} className="mx-auto" style={{ maxWidth: '90%' }}>
+          {props.images.map((image, index) => {
+            return (
+              <div key={image.url}>
+                <div className="card" style={{ padding: '0.6em' }}>
+                  <div style={{ position: 'relative', width: '100%', height: '7em', borderRadius: '0.25em' }}>
+                    <img
+                      className="d-block"
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      src={image.thumbnailurl}
+                      alt={image.thumbnailurl}
+                      onClick={() => props.onClick(index)}
+                    />
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </Slider>
+      </div>
+    </div>
   );
 }
 
