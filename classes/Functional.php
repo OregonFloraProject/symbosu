@@ -6,6 +6,8 @@ include_once($SERVER_ROOT . "/config/dbconnection.php");
  * @return string The path based on $IMAGE_ROOT_URL and $IMAGE_DOMAIN
  */
 function resolve_img_path($dbPath) {
+  if (!isset($dbPath)) return $dbPath;
+
   global  $IMAGE_ROOT_URL;
   global  $IMAGE_DOMAIN;
 

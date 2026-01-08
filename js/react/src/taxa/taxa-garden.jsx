@@ -118,6 +118,13 @@ class TaxaApp extends React.Component {
             moisture.push(`${csRangeToString(res.characteristics.summer_moisture)} summer water`);
           }
 
+          // Check for null thumbnailUrl
+          const imageCount = res.imagesBasis.HumanObservation.length;
+          for (let i = 0; i < imageCount; i++) {
+            const element = res.imagesBasis.HumanObservation[i];
+            if (!element.thumbnailurl) element.thumbnailurl = '../images/icons/no-thumbnail.jpg';
+          }
+
           this.setState({
             sciName: res.sciname,
             basename: res.vernacular.basename,
