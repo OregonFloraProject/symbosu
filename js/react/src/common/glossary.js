@@ -15,7 +15,7 @@ export function addGlossaryTooltips(text, glossary) {
   const re = new RegExp(
     '(?:<.*?>)|(\\b(' +
       Object.keys(glossary)
-        .map((key) => `${key}`)
+        .sort((a, b) => b.length - a.length)
         .join('|') +
       ')(es|s|ly)?\\b)',
     'gi',
