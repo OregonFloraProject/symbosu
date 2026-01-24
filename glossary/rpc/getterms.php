@@ -69,17 +69,7 @@ if ($id) {
 
 // No glossary term ID set, so return an object of all of them instead
 } else {
-	$cacheKey = 'glossary-terms';
-	$retStr = readFromCache($cacheKey);
-	if ($retStr === false) {
-		// cache miss, so we need to read from the db and write to the cache
-		$retArr = array_map(
-			function($v) { return array_key_first($v); },
-			$glosManager->getTermSearch('', '', 0)
-		);
-		$retStr = json_encode($retArr);
-		writeToCache($cacheKey, $retStr);
-	}
+	$retStr = $glosManager->getJsonStringFromCache();
 }
 
 // Return as JSON

@@ -1,5 +1,6 @@
 <?php
 include_once($SERVER_ROOT.'/config/dbconnection.php');
+include_once($SERVER_ROOT.'/tools/apicache.php');
 
 class GlossaryManager extends Manager {
 
@@ -30,6 +31,7 @@ class GlossaryManager extends Manager {
 	private $targetUrl;
 	private $fileName;
 	private $processUsingImageMagick = 0;
+	private $cacheKey = 'glossary-terms';
 
  	public function __construct(){
  		parent::__construct(null, 'write');
@@ -1584,6 +1586,28 @@ class GlossaryManager extends Manager {
 
 	public function setUseImageMagick($useIM){
 		$this->processUsingImageMagick = $useIM;
+	}
+
+	public function updateCache($returnStr = false) {
+		$retArr = array_map(
+			function($v) { return array_key_first($v); },
+			$this->getTermSearch('', '', 0)
+		);
+		$retStr = json_encode($retArr);
+		writeToCache($this->cacheKey, $retStr);
+		if ($returnStr) {
+			return $retStr;
+		}
+	}
+
+	public function getJsonStringFromCache() {
+		$retStr = readFromCache($this->cacheKey);
+		if ($retStr === false) {
+			// cache miss, so we need to read from the db and write to the cache
+			$retStr = $this->updateCache(true);
+		}
+
+		return $retStr;
 	}
 }
 ?>

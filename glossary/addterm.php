@@ -34,6 +34,9 @@ $statusStr = '';
 if($isEditor){
 	if($formSubmit == 'Create Term'){
 		if($glosManager->createTerm($_POST)){
+			// Update glossary cache from adding new term
+			$glosManager->updateCache();
+			
 			if(isset($_POST['tid']) && $_POST['tid']){
 				header('Location: termdetails.php?statusstr=successadd&glossid='.$glosManager->getGlossId());
 			}
