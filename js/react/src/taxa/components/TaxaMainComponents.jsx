@@ -246,7 +246,7 @@ export class TaxaDetail extends React.Component {
               </div>
             )}
             
-            {!ambiguousTaxon && (
+            {ambiguousTaxon && (
               <div className="mt-4 dashed-border" id="subspecies">
                 <h3 className="text-light-green font-weight-bold mt-2">Accepted {taxonWord}</h3>
                 <div className="spp-wrapper search-result-grid">
