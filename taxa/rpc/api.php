@@ -179,12 +179,19 @@ function taxaManagerToJSON(TaxaManager $taxaObj,$queryType = "default",$minimalD
 			}
 			$result["synonyms"] = $taxaObj->getSynonyms();
 			$result["acceptedSynonyms"] = $taxaObj->getAcceptedSynonyms();
-			$vernacular = [];#flatten the vernacular array
-			foreach ($result["acceptedSynonyms"] as $tid => $arr) {
-				if (empty($result['vernacular']['basename']) && !empty($arr['vernacular']['basename'])) {
-					$result['vernacular']['basename'] = $arr['vernacular']['basename'];
+			$vernacular = [];
+			foreach ($result["acceptedSynonyms"] as &$accepted) {
+				if (empty($result['vernacular']['basename']) && !empty($accepted['vernacular']['basename'])) {
+					$result['vernacular']['basename'] = $accepted['vernacular']['basename'];
 				}
-				$vernacular = array_merge($vernacular,$arr['vernacular']['names']);
+        // Flatten the vernacular array
+				$vernacular = array_merge($vernacular,$accepted['vernacular']['names']);
+
+        // Get image for each acceptedSynonym
+        $taxaModel = $taxaRepo->find($accepted["tid"]);
+				$taxa = TaxaManager::fromModel($taxaModel);
+				$tj = taxaManagerToJSON($taxa,$queryType,true);
+				$accepted = $tj;
 			}
     	$result['vernacular']['names'] = array_merge($result['vernacular']['names'],$vernacular);
 			$result['vernacular']['names'] = array_unique($result['vernacular']['names']);

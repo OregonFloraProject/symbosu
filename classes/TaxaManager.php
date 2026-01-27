@@ -370,10 +370,11 @@ class TaxaManager {
 			$em = SymbosuEntityManager::getEntityManager();
 			$rsArr = $em->createQueryBuilder()
 				->select(["ts.tid, tdb.tdbid, tdb.caption, tdb.language, tdb.source, tdb.sourceurl, tds.tdsid, tds.heading, tds.statement, tds.displayheader, tdb.tdprofileid"])#
-				->from("Taxstatus", "ts")
+				->distinct()
+        ->from("Taxstatus", "ts")
 				->innerJoin("Taxadescrblock", "tdb", "WITH", "ts.tid = tdb.tid")
 				->innerJoin("Taxadescrstmts", "tds", "WITH", "tds.tdbid = tdb.tdbid")
-				->where("ts.tidaccepted = :tid")
+				->where("ts.tid = :tid")
 				->andWhere("ts.taxauthid = 1")
 				->orderBy("tdb.displaylevel,tds.sortsequence")
 				->setParameter("tid", $tid)
@@ -587,32 +588,33 @@ class TaxaManager {
     return [];
   }
   private function populateAcceptedSynonyms($tid) {
-  	$return = [];
     $em = SymbosuEntityManager::getEntityManager();
+
+    // AND ts.tidaccepted <> t.tid to prevent already accepted taxon having acceptedSynonyms
+    // because in taxstatus: tidaccepted == taxa.tid is the accepted condition
     $acceptedSynonyms = $em->createQueryBuilder()
-      ->select(["t.sciname", "t.tid", "t2.sciname as synname","ts.tidaccepted"])
+      ->select(["t2.sciname as sciname","ts.tidaccepted"])
       ->from("taxstatus", "ts")
       ->innerJoin("taxa", "t", "WITH", "ts.tid = t.tid")
       ->leftJoin("taxa", "t2", "WITH", "ts.tidaccepted = t2.tid")
       ->andWhere("t.tid = :tid")
       ->andWhere("ts.taxauthid = 1")
+      ->andWhere("ts.tidaccepted <> t.tid")
       ->setParameter("tid", $tid)
-      ->orderBy("synname")->getQuery()->execute();
-    foreach ($acceptedSynonyms as $acceptedSynonym) {
-      if ($acceptedSynonym['sciname'] != $acceptedSynonym['synname']) {
-        $return[$acceptedSynonym['tidaccepted']] = array("sciname" => $acceptedSynonym['synname']);
-      }
-    } 
+      ->orderBy("sciname")->getQuery()->execute();
     $taxaRepo = SymbosuEntityManager::getEntityManager()->getRepository("Taxa");
-    foreach ($return as $tid => $arr) {
-      $taxaModel = $taxaRepo->find($tid);
+    foreach ($acceptedSynonyms as &$acceptedSynonym) {
+      $acceptedSynonym["tid"] = $acceptedSynonym["tidaccepted"];
+      unset($acceptedSynonym["tidaccepted"]);
+
+      $taxaModel = $taxaRepo->find(id: $acceptedSynonym["tid"]);
       $taxa = self::fromModel($taxaModel);
-      $return[$tid]['vernacular'] = [
+      $acceptedSynonym['vernacular'] = [
         "basename" => $taxa->getBasename(),
         "names" => $taxa->getVernacularNames()
       ];
     }
-    return $return;
+    return $acceptedSynonyms;
   
   }
   private function populateSynonyms($tid) {

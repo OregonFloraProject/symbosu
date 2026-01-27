@@ -165,16 +165,17 @@ export class TaxaDetail extends React.Component {
 
     /* handle unusual cases of ambiguous synonyms like 6617 */
     let otherH2 = '';
-    const numAcceptedSynonyms = Object.keys(res.acceptedSynonyms).length;
-    if (numAcceptedSynonyms > 0) {
-      const taxonWord = numAcceptedSynonyms === 1 ? 'taxon' : 'taxa';
-      otherH2 = `This name is a synonym for the following accepted ${taxonWord}: `;
+    const numAcceptedSynonyms = res.acceptedSynonyms.length;
+    const ambiguousTaxon = numAcceptedSynonyms > 0;
+    const taxonWord = numAcceptedSynonyms === 1 ? 'taxon' : 'taxa';
+    if (ambiguousTaxon) {
+      otherH2 = `In Oregon, this name is a synonym for the following accepted ${taxonWord}: `;
       h2class = 'ambiguous';
-      h2 = Object.keys(res.acceptedSynonyms)
-        .map((ampTid) => {
+      h2 = res.acceptedSynonyms
+        .map((accepted) => {
           return (
-            <a key={ampTid} href={`${this.props.clientRoot}/taxa/index.php?taxon=${ampTid}`}>
-              {res.acceptedSynonyms[ampTid]['sciname']}
+            <a key={accepted.tid} href={`${this.props.clientRoot}/taxa/index.php?taxon=${accepted.tid}`}>
+              {accepted.sciname}
             </a>
           );
         })
@@ -215,7 +216,7 @@ export class TaxaDetail extends React.Component {
         </div>
         <div className="row mt-2 row-cols-sm-2 main-wrapper">
           <div className="col-md-8 pr-4 main-section">
-            {allImages.length > 0 && (
+            {!ambiguousTaxon && allImages.length > 0 && (
               <figure>
                 <div className="img-main-wrapper">
                   <img id="img-main" src={allImages[0].url} alt={res.sciName} />
@@ -244,8 +245,19 @@ export class TaxaDetail extends React.Component {
                 </div>
               </div>
             )}
+            
+            {!ambiguousTaxon && (
+              <div className="mt-4 dashed-border" id="subspecies">
+                <h3 className="text-light-green font-weight-bold mt-2">Accepted {taxonWord}</h3>
+                <div className="spp-wrapper search-result-grid">
+                  {res.acceptedSynonyms.map((spp) => {
+                    return <SppItem item={spp} key={spp.tid} clientRoot={this.props.clientRoot} />;
+                  })}
+                </div>
+              </div>
+            )}
 
-            {res.images.HumanObservation.length > 0 && (
+            {!ambiguousTaxon && res.images.HumanObservation.length > 0 && (
               <ImageCarousel
                 title={`Photo images`}
                 images={res.images.HumanObservation}
@@ -255,7 +267,7 @@ export class TaxaDetail extends React.Component {
               />
             )}
 
-            {res.images.PreservedSpecimen.length > 0 && (
+            {!ambiguousTaxon && res.images.PreservedSpecimen.length > 0 && (
               <ImageCarousel
                 title={`Herbarium specimens`}
                 images={res.images.PreservedSpecimen}
@@ -266,20 +278,24 @@ export class TaxaDetail extends React.Component {
             )}
           </div>
           <div className="col-md-4 sidebar sidebar-section">
-            <SideBarSection
-              title="Context"
-              items={res.highlights}
-              classes="highlights"
-              rankId={res.rankId}
-              clientRoot={this.props.clientRoot}
-              glossary={res.glossary}
-            />
-            <MapItem
-              title={res.sciName}
-              tid={res.tid}
-              clientRoot={this.props.clientRoot}
-              needsPermission={res.accessRestricted}
-            />
+            {!ambiguousTaxon && 
+              (<>
+              <SideBarSection
+                title="Context"
+                items={res.highlights}
+                classes="highlights"
+                rankId={res.rankId}
+                clientRoot={this.props.clientRoot}
+                glossary={res.glossary}
+              />
+              <MapItem
+                title={res.sciName}
+                tid={res.tid}
+                clientRoot={this.props.clientRoot}
+                needsPermission={res.accessRestricted}
+              />
+              </>)
+            }
             <SideBarSection
               title="Web links"
               items={res.taxalinks}
