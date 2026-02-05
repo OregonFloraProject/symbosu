@@ -224,6 +224,18 @@ export class TaxaDetail extends React.Component {
                 <figcaption>{allImages[0].photographer}</figcaption>
               </figure>
             )}
+
+            {ambiguousTaxon && (
+              <div className="mb-4" id="subspecies">
+                <h3 className="text-light-green font-weight-bold mt-2">Accepted {taxonWord}</h3>
+                <div className="spp-wrapper search-result-grid">
+                  {res.acceptedSynonyms.map((spp) => {
+                    return <SppItem item={spp} key={spp.tid} clientRoot={this.props.clientRoot} />;
+                  })}
+                </div>
+              </div>
+            )}
+
             {/*
 				
                 Description includes HTML tags & URL-encoded characters in the db.
@@ -240,17 +252,6 @@ export class TaxaDetail extends React.Component {
                 <h3 className="text-light-green font-weight-bold mt-2">Subspecies and varieties</h3>
                 <div className="spp-wrapper search-result-grid">
                   {res.spp.map((spp) => {
-                    return <SppItem item={spp} key={spp.tid} clientRoot={this.props.clientRoot} />;
-                  })}
-                </div>
-              </div>
-            )}
-            
-            {ambiguousTaxon && (
-              <div className="mt-4 dashed-border" id="subspecies">
-                <h3 className="text-light-green font-weight-bold mt-2">Accepted {taxonWord}</h3>
-                <div className="spp-wrapper search-result-grid">
-                  {res.acceptedSynonyms.map((spp) => {
                     return <SppItem item={spp} key={spp.tid} clientRoot={this.props.clientRoot} />;
                   })}
                 </div>

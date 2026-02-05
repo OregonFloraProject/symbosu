@@ -326,9 +326,12 @@ $traitArr = $indManager->getTraitArr();
 </head>
 <body>
 	<?php
-	if($shouldUseMinimalMapHeader) include_once($SERVER_ROOT . '/includes/minimalheader.php');
-	?>
-	<header style="background-image: none;">
+      include("$SERVER_ROOT/header.php");
+    ?>
+	<!-- Include page style here to override anything in header -->
+    <link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/css/compiled/theme.css?<?php echo filemtime($SERVER_ROOT . '/css/compiled/theme.css'); ?>">    
+
+	<header style="background-image: none; margin-top: 3rem;">
 		<a class="screen-reader-only" href="#end-nav"><?php echo $LANG['SKIP_NAV'] ?></a>
 		<h1 class="page-heading screen-reader-only">
 			<?php echo $LANG['FULL_RECORD_DETAILS']; ?>
@@ -355,7 +358,7 @@ $traitArr = $indManager->getTraitArr();
 		}(document,"script","twitter-wjs"));
 	</script>
 	<!-- This is inner text! -->
-	<div id="popup-innertext">
+	<div id="popup-innertext" style="margin-bottom: 3rem;">
 		<?php
 		if($statusStr){
 			$statusColor = 'green';
@@ -1024,8 +1027,10 @@ $traitArr = $indManager->getTraitArr();
 										<?php
 										if($imgArr['caption']) echo '<div><i>'.$imgArr['caption'].'</i></div>';
 										if($imgArr['photographer']) echo '<div>'.(isset($LANG['AUTHOR'])?$LANG['AUTHOR']:'Author').': '.$imgArr['photographer'].'</div>';
-										if($imgArr['url'] && substr($thumbUrl,0,7)!='process' && $imgArr['url'] != $imgArr['lgurl']) echo '<div><a href="' . $imgArr['url'] . '" target="_blank">' . $LANG['OPEN_MEDIUM'] . '</a></div>';
-										if($imgArr['lgurl']) echo '<div><a href="' . $imgArr['lgurl'] . '" target="_blank">' . $LANG['OPEN_LARGE'] . '</a></div>';
+										if($imgArr['url'] && substr($thumbUrl,0,7)!='process' && $imgArr['url'] != $imgArr['lgurl']) {
+											echo '<div><a class="btn-primary" href="' . $imgArr['url'] . '" target="_blank">' . $LANG['OPEN_MEDIUM'] . '</a></div>';
+										}
+										if($imgArr['lgurl']) echo '<div><a class="btn-primary" href="' . $imgArr['lgurl'] . '" target="_blank">' . $LANG['OPEN_LARGE'] . '</a></div>';
 										if($imgArr['sourceurl']) echo '<div><a href="' . $imgArr['sourceurl'] . '" target="_blank">' . $LANG['OPEN_SOURCE'] . '</a></div>';
 										if($imgArr['copyright']) {
 											// Add a clickable link to the rights licence if it's a web address with http
@@ -1547,5 +1552,8 @@ $traitArr = $indManager->getTraitArr();
 		}
 		?>
 	</div>
+	<?php
+      include("$SERVER_ROOT/footer.php");
+    ?>
 </body>
 </html>
