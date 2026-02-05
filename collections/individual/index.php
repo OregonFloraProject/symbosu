@@ -1021,8 +1021,8 @@ $traitArr = $indManager->getTraitArr();
 									}
 									?>
 									<div id="thumbnail-div" class="thumbnail-div">
-										<a href='<?= $imgArr['url'] ?>' target="_blank">
-											<img border="1" src="<?= $thumbUrl; ?>" title="<?= $imgArr['caption']; ?>" style="max-width:21.9rem;" alt="thumbnail image of current specimen" />
+										<ahref='<?= $imgArr['url'] ?>' target="_blank">
+											<img style="margin-bottom: 0.5rem"  border="1" src="<?= $thumbUrl; ?>" title="<?= $imgArr['caption']; ?>" style="max-width:21.9rem;" alt="thumbnail image of current specimen" />
 										</a>
 										<?php
 										if($imgArr['caption']) echo '<div><i>'.$imgArr['caption'].'</i></div>';
