@@ -7,6 +7,7 @@ include_once($SERVER_ROOT . "/config/SymbosuEntityManager.php");
 $CLID_RARE_ALL = getRareClid();
 $RANK_GENUS = 180;
 $results = [];
+$maxLen = 10;
 
 if (array_key_exists("q", $_REQUEST)) {
   $em = SymbosuEntityManager::getEntityManager();
@@ -20,10 +21,11 @@ if (array_key_exists("q", $_REQUEST)) {
     ->andWhere("t.rankid > $RANK_GENUS")
     ->groupBy("t.tid")
     ->setParameter("search",  "%" . $_REQUEST["q"] . '%')
-    ->setMaxResults(3)
+    ->setMaxResults(maxResults: 5)
     ->getQuery()
     ->getArrayResult();
 
+  $resultLen = count($sciNameResults);
   $vernacularResults = $em->createQueryBuilder()
     ->select("v.vernacularname as text", "t.tid as value")
     ->from("Taxa", "t")
@@ -35,10 +37,10 @@ if (array_key_exists("q", $_REQUEST)) {
     ->groupBy("v.vernacularname")
     ->setParameter("search",  "%" . $_REQUEST["q"] . '%')
     ->orderBy("v.sortsequence")
-    ->setMaxResults(3)
+    ->setMaxResults($maxLen - $resultLen)
     ->getQuery()
     ->getArrayResult();
-
+  
   $results = array_merge($sciNameResults, $vernacularResults);
   usort($results, function ($a, $b) {
     return strcmp($a["text"], $b["text"]);

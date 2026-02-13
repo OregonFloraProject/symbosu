@@ -6,6 +6,7 @@ include_once($SERVER_ROOT . "/config/SymbosuEntityManager.php");
 
 $RANK_GENUS = 180;
 $results = [];
+$maxLen = 10;
 
 function searchSciNames() {
   $em = SymbosuEntityManager::getEntityManager();
@@ -20,11 +21,11 @@ function searchSciNames() {
   $params[] = array("search", "%" . $_REQUEST["q"] . '%');
   $groupBy[] = "t.tid";
   
-  if ($_REQUEST["clid"] > 0) {
+  if (array_key_exists("clid", $_REQUEST) && is_numeric($_REQUEST["clid"]) && $_REQUEST["clid"] > 0) {
 		$innerJoins[] = array("Fmchklsttaxalink", "tl", "WITH", "t.tid = tl.tid");
   	$wheres[] = "tl.clid = :clid";
   	$params[] = array("clid", $_REQUEST["clid"]);
-  }elseif($_REQUEST["dynclid"] > 0) {
+  }elseif(array_key_exists("dynclid", $_REQUEST) && is_numeric($_REQUEST["dynclid"]) && $_REQUEST["dynclid"] > 0) {
 		$innerJoins[] = array("Fmdyncltaxalink", "clk", "WITH", "t.tid = clk.tid");
   	$wheres[] = "clk.dynclid = :dynclid";
   	$params[] = array("dynclid", $_REQUEST["dynclid"]);
@@ -46,7 +47,8 @@ function searchSciNames() {
 			$sciName->setParameter(...$param);
 		}		
 		$sciName->groupBy(join(", ",$groupBy));
-    $sciName->setMaxResults(10);
+    global $maxLen;
+	$sciName->setMaxResults($maxLen);
     $squery = $sciName->getQuery();
     $sciNameResults = $squery->getArrayResult();
   return $sciNameResults;
@@ -65,11 +67,11 @@ function searchCommonNames() {
   $params[] = array("search", "%" . $_REQUEST["q"] . '%');
   $groupBy[] = "v.vernacularname";
   
-  if ($_REQUEST["clid"]) {
+  if (array_key_exists("clid", $_REQUEST) && is_numeric($_REQUEST["clid"]) && $_REQUEST["clid"] > 0) {
 		$innerJoins[] = array("Fmchklsttaxalink", "tl", "WITH", "t.tid = tl.tid");
   	$wheres[] = "tl.clid = :clid";
   	$params[] = array("clid", $_REQUEST["clid"]);
-  }elseif($_REQUEST["dynclid"]) {
+  }elseif(array_key_exists("dynclid", $_REQUEST) && is_numeric($_REQUEST["dynclid"]) && $_REQUEST["dynclid"] > 0) {
 		$innerJoins[] = array("Fmdyncltaxalink", "clk", "WITH", "t.tid = clk.tid");
   	$wheres[] = "clk.dynclid = :dynclid";
   	$params[] = array("dynclid", $_REQUEST["dynclid"]);
@@ -93,8 +95,8 @@ function searchCommonNames() {
 	
 	$vernacular->orderBy("v.sortsequence");
 	
-	
-	$vernacular->setMaxResults(3);
+	global $maxLen;
+	$vernacular->setMaxResults($maxLen);
 	$vquery = $vernacular->getQuery();
 	$vernacularResults = $vquery->getArrayResult();
   return $vernacularResults;
