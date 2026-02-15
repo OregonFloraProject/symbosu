@@ -19,3 +19,4 @@ temp/proxies/
 /temp/api-caches/*
 /temp/data/solr.json
 /js/react/src/less/config.less
+/.vscode
