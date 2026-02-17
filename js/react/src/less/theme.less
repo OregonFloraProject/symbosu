@@ -2012,7 +2012,7 @@ img {
                   color: white !important;
                 }
               }
-              @media (max-width: 650px) {
+              @media (max-width: 650px){
                 padding: 0 0;
                 width: 100%;
               }
@@ -2032,6 +2032,49 @@ img {
               }
               .image-details {
                 height: 30%;
+              }
+            }
+            @media (max-width: 460px) {
+              /*mobile device break point*/
+              /*Ensure the main container grows with the content */
+              .image-wrapper {
+                  height: auto ;
+                  min-height: 0 ;
+                  max-height: none ;
+                  overflow: visible ;
+                  display: block ;
+                  padding-bottom: 10px ;
+              }
+
+              /*Fix the details container so it doesn't "ceiling" the button */
+              .image-details {
+                  display: block ;
+                  height: auto ;
+                  min-height: min-content ;
+                  overflow: visible ;
+                  padding: 10px 5px ;
+                  margin-bottom: 5px ;
+              }
+
+                /*Fix the 'See full record' button/link clipping */
+                    .image-link, 
+              .image-details a {
+                  display: block ; /* Forces it to its own line */
+                  width: 100% ;
+                  white-space: normal; /* Allows text to wrap to 2+ lines */
+                  overflow: visible ;
+                  line-height: 1.5; /* Prevents bottom of letters from cutting */
+                  padding: 8px 0 ;
+                  word-wrap: break-word;
+              }
+
+              /*Reset the image to prevent it from overlapping text */
+              .image-wrapper img {
+                  float: none ; /* Removes side-by-side layout on mobile */
+                  display: block ;
+                  margin: 0 auto 10px auto ;
+                  max-width: 100% ;
+                  height: auto;
               }
             }
           }
