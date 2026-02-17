@@ -2012,7 +2012,7 @@ img {
                   color: white !important;
                 }
               }
-              @media (max-width: 650px) {
+              @media (max-width: 650px){
                 padding: 0 0;
                 width: 100%;
               }
@@ -2034,9 +2034,9 @@ img {
                 height: 30%;
               }
             }
-            @media (max-width: 768px) {
-    
-              /* 1. Ensure the main container grows with the content */
+            @media (max-width: 460px) {
+              /*mobile device break point*/
+              /*Ensure the main container grows with the content */
               .image-wrapper {
                   height: auto ;
                   min-height: 0 ;
@@ -2046,7 +2046,7 @@ img {
                   padding-bottom: 10px ;
               }
 
-              /* 2. Fix the details container so it doesn't "ceiling" the button */
+              /*Fix the details container so it doesn't "ceiling" the button */
               .image-details {
                   display: block ;
                   height: auto ;
@@ -2056,7 +2056,7 @@ img {
                   margin-bottom: 5px ;
               }
 
-                    /* 3. Fix the 'See full record' button/link clipping */
+                /*Fix the 'See full record' button/link clipping */
                     .image-link, 
               .image-details a {
                   display: block ; /* Forces it to its own line */
@@ -2068,7 +2068,7 @@ img {
                   word-wrap: break-word;
               }
 
-              /* 4. Reset the image to prevent it from overlapping text */
+              /*Reset the image to prevent it from overlapping text */
               .image-wrapper img {
                   float: none ; /* Removes side-by-side layout on mobile */
                   display: block ;
