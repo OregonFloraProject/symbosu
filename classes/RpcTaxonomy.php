@@ -22,11 +22,18 @@ class RpcTaxonomy extends RpcBase{
 		if(!is_numeric($rankHigh)) $rankHigh = 0;
 
 		if($term){
+			// Split queryString into multiple words for wildcard search
 			$term = $this->cleanInStr($term);
 			$termArr = explode(' ',$term);
+			// Remove query elements that are hybrid/graft indicators (×, †, or "x")
 			foreach($termArr as $k => $v){
-				if(mb_strlen($v) == 1) unset($termArr[$k]);
+				// Return the Unicode code point after removing surrounding whitespace
+				$ord = mb_ord(trim($v));
+				if($ord === 215 || $ord === 8224 || strtolower(trim($v)) === 'x') {
+					unset($termArr[$k]);
+				}
 			}
+
 			$sql = 'SELECT DISTINCT t.tid, t.sciname, t.author FROM taxa t INNER JOIN taxstatus ts ON t.tid = ts.tid '.
 			// Add whether each taxon belongs to any checklists
 			'LEFT JOIN `fmchklsttaxalink` as cl ON t.tid = cl.tid '.

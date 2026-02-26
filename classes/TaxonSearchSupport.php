@@ -28,6 +28,27 @@ class TaxonSearchSupport{
 	private function getTaxaSuggestByType(){
 		$retArr = Array();
 		if($this->queryString){
+			// Inspired by classes/RpcTaxonomy.php from Taxon Tree Viewer
+			// Split queryString into multiple words for wildcard search
+			$term = $this->cleanInStr(str: $this->queryString);
+			$termArr = explode(' ',$term);
+			// Remove query elements that are hybrid/graft indicators (×, †, or "x")
+			foreach($termArr as $k => $v){
+				// Return the Unicode code point after removing surrounding whitespace
+				$ord = mb_ord(trim($v));
+				if($ord === 215 || $ord === 8224 || strtolower(trim($v)) === 'x') {
+					unset($termArr[$k]);
+				}
+			}
+
+			// Generate sciname query
+			$sciNameQuery = '(t.sciname LIKE "'.$this->queryString.'%" ';
+			$sqlFrag = '';
+			if($unit1 = array_shift($termArr)) $sqlFrag =  't.unitname1 LIKE "'.$unit1.'%" ';
+			if($unit2 = array_shift($termArr)) $sqlFrag .=  'AND t.unitname2 LIKE "'.$unit2.'%" ';
+			if($sqlFrag) $sciNameQuery .= 'OR ('.$sqlFrag.')';
+			$sciNameQuery .= ') ';
+
 			$sql = "";
 			if($this->taxonType == TaxaSearchType::ANY_NAME){
 			    global $LANG;
@@ -44,7 +65,7 @@ class TaxonSearchSupport{
 			    "FROM taxa t ".
 			    // Restrict to taxa contained in the State of Oregon vascular plant checklist (clid=1)
 			    ($this->oregonTaxa ? 'LEFT JOIN `fmchklsttaxalink` as cl ON t.tid = cl.tid ' : '').
-			    "WHERE t.sciname LIKE '%".$this->queryString."%' AND t.rankid > 179 ".
+			    "WHERE ". $sciNameQuery." AND t.rankid > 179 ".
 			    ($this->oregonTaxa ? 'AND (cl.clid = 1) ' : '').
 
 			    "UNION ".
@@ -53,7 +74,7 @@ class TaxonSearchSupport{
 			    "FROM taxa t ".
 			    // Restrict to taxa contained in the State of Oregon vascular plant checklist (clid=1)
 			    ($this->oregonTaxa ? 'LEFT JOIN `fmchklsttaxalink` as cl ON t.tid = cl.tid ' : '').
-			    "WHERE t.sciname LIKE '".$this->queryString."%' AND t.rankid = 140 ".
+			    "WHERE ". $sciNameQuery." AND t.rankid = 140 ".
 			    ($this->oregonTaxa ? 'AND (cl.clid = 1) ' : '').
 
 			    "UNION ".
@@ -62,7 +83,7 @@ class TaxonSearchSupport{
 			    "FROM taxa t ".
 			    // Restrict to taxa contained in the State of Oregon vascular plant checklist (clid=1)
 			    ($this->oregonTaxa ? 'LEFT JOIN `fmchklsttaxalink` as cl ON t.tid = cl.tid ' : '').
-			    "WHERE t.sciname LIKE '".$this->queryString."%' AND t.rankid > 20 AND t.rankid < 180 AND t.rankid != 140 ".
+			    "WHERE ". $sciNameQuery. " AND t.rankid > 20 AND t.rankid < 180 AND t.rankid != 140 ".
 			    ($this->oregonTaxa ? 'AND (cl.clid = 1) ' : '');
 
 			}
@@ -71,7 +92,7 @@ class TaxonSearchSupport{
 
 				// Restrict to taxa contained in the State of Oregon vascular plant checklist (clid=1)
 			    ($this->oregonTaxa ? 'LEFT JOIN `fmchklsttaxalink` as cl ON t.tid = cl.tid ' : '').
-				'WHERE t.sciname LIKE "'.$this->queryString.'%" '.
+				'WHERE ' . $sciNameQuery.
 				($this->oregonTaxa ? 'AND (cl.clid = 1) ' : '').
 				'LIMIT 30';
 			}
@@ -80,7 +101,7 @@ class TaxonSearchSupport{
 
 				// Restrict to taxa contained in the State of Oregon vascular plant checklist (clid=1)
 			    ($this->oregonTaxa ? 'LEFT JOIN `fmchklsttaxalink` as cl ON t.tid = cl.tid ' : '').
-				'WHERE t.rankid = 140 AND t.sciname LIKE "'.$this->queryString.'%" '.
+				'WHERE t.rankid = 140 AND '. $sciNameQuery.
 				($this->oregonTaxa ? 'AND (cl.clid = 1) ' : '').
 				'LIMIT 30';
 			}
@@ -89,7 +110,7 @@ class TaxonSearchSupport{
 
 				// Restrict to taxa contained in the State of Oregon vascular plant checklist (clid=1)
 			    ($this->oregonTaxa ? 'LEFT JOIN `fmchklsttaxalink` as cl ON t.tid = cl.tid ' : '').
-				'WHERE t.rankid > 20 AND t.rankid < 180 AND t.sciname LIKE "'.$this->queryString.'%" '.
+				'WHERE t.rankid > 20 AND t.rankid < 180 AND '. $sciNameQuery.
 				($this->oregonTaxa ? 'AND (cl.clid = 1) ' : '').
 				'LIMIT 30';
 			}
@@ -109,11 +130,11 @@ class TaxonSearchSupport{
 
 				// Restrict to taxa contained in the State of Oregon vascular plant checklist (clid=1)
 			    ($this->oregonTaxa ? 'LEFT JOIN `fmchklsttaxalink` as cl ON t.tid = cl.tid ' : '').
-				'WHERE t.sciname LIKE "'.$this->queryString.'%" '
+				'WHERE '. $sciNameQuery.
 				($this->oregonTaxa ? 'AND (cl.clid = 1) ' : '').
 				'LIMIT 20';
 			}
-
+			
 			$rs = $this->conn->query($sql);
 			while ($r = $rs->fetch_object()) {
 				$retArr[] = array('id' => $r->tid, 'value' => $r->sciname);
