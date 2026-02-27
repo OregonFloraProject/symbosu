@@ -7,10 +7,10 @@
 
 
 // Choice of google (requires GOOGLE_MAP_KEY in symbini.php), or open-elevation (free, but 1000/month, 1/second)
-const elevAPI = "open-elevation";
+const elevAPI = "google";
 
 // Choice of google (requires GOOGLE_MAP_KEY in symbini.php), inat (much slower), or none
-const geocodeAPI = "inat";
+const geocodeAPI = "google";
 
 // Use iNaturalist's UUID as the associated occurence identifier (if false, uses the older numeric iNaturalist identifier)
 const identifierUUID = true
@@ -20,7 +20,7 @@ const identifierUUID = true
 const addTaxonomy = false;
 
 // Infraspecific abbreviations to use for scientificName
-const infraAbbrev = {ssp: "subsp.", var: "var.", form: "f."}
+const infraAbbrev = {ssp: "ssp.", var: "var.", form: "f."}
 
 // Set the number of observations to get per page/API callback
 // 200 is the max, but slower. Users can scroll to load another page
