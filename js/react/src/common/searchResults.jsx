@@ -86,10 +86,10 @@ function CardSearchResult(props) {
           <div className={useGrid ? '' : 'card-body'}>
             <img
               className={useGrid ? 'card-img-top grid-image' : 'd-inline-block mr-2 list-image'}
-              alt={props.title}
+              alt={"Image of " + props.sciName}
               src={props.src}
             />
-            <div className={(useGrid ? 'card-body' : 'd-inline py-1') + ' px-0'} style={{ overflow: 'hidden' }}>
+            <div className={(useGrid ? 'card-body' : 'd-inline py-1') + ' px-0'} style={{ overflow: 'hidden' }} role="listitem">
               <div className={'card-text' + (useGrid ? '' : ' d-inline')}>
                 <span className={classFirst}>{nameFirst}</span>
                 {useGrid ? <br /> : ' - '}
@@ -108,7 +108,7 @@ function CardSearchResult(props) {
 function CardSearchContainer(props) {
   const getTaxaPage = props.taxaPage === 'rare' ? getRareTaxaPage : getGardenTaxaPage;
   return (
-    <div id="search-results" className={'mt-4 w-100' + (props.viewType === 'grid' ? ' search-result-grid' : '')}>
+    <div id="search-results" className={'mt-4 w-100' + (props.viewType === 'grid' ? ' search-result-grid' : '')} role="list">
       <Searching clientRoot={props.clientRoot} isSearching={props.isSearching} />
       {props.searchResults.taxonSort.map((result) => {
         let display = props.currentTids.indexOf(result.tid) > -1;
@@ -200,13 +200,13 @@ class ExploreSearchResult extends React.Component {
             {useGrid && (
               <img
                 className={useGrid ? 'card-img-top grid-image' : 'd-inline-block mr-1 list-image'}
-                alt={this.props.title}
+                alt={'Image of ' + this.props.sciName}
                 src={this.props.src}
               />
             )}
             {!useGrid && <FontAwesomeIcon icon="square" />}
             <div className={(useGrid ? 'card-body' : 'd-inline py-1') + ' px-0'} style={{ overflow: 'hidden' }}>
-              <div className={'card-text' + (useGrid ? '' : ' d-inline')}>
+              <div className={'card-text' + (useGrid ? '' : ' d-inline')} role="listitem">
                 <a
                   href={this.props.href}
                   className="text-decoration-none"
@@ -374,7 +374,7 @@ function ExploreSearchContainer(props) {
               return (
                 <div key={family} className="family-group">
                   <h4>{family}</h4>
-                  <div className={props.viewType === 'grid' ? ' search-result-grid' : ''}>
+                  <div className={props.viewType === 'grid' ? ' search-result-grid' : ''} role="list">
                     {results.map((result) => {
                       let display = props.currentTids.indexOf(result.tid) > -1;
                       return (
@@ -439,13 +439,13 @@ function IdentifySearchResult(props) {
           {useGrid && (
             <img
               className={useGrid ? 'card-img-top grid-image' : 'd-inline-block mr-2 list-image'}
-              alt={props.title}
+              alt={'Image of ' + props.sciName}
               src={props.src}
             />
           )}
           {!useGrid && <FontAwesomeIcon icon="square" />}
           <div className={(useGrid ? 'card-body' : 'd-inline py-1') + ' px-0'} style={{ overflow: 'hidden' }}>
-            <div className={'card-text' + (useGrid ? '' : ' d-inline')}>
+            <div className={'card-text' + (useGrid ? '' : ' d-inline')} role="listitem">
               <span className={`sci-name${classFirst}`}>{nameFirst}</span>
               {useGrid && <span className={`sci-name${classSecond}`}>{nameSecond}</span>}
             </div>
@@ -465,7 +465,7 @@ function IdentifySearchContainer(props) {
           return (
             <div key={family} className="family-group">
               <h4>{family}</h4>
-              <div className={useGrid ? ' search-result-grid' : ''}>
+              <div className={useGrid ? ' search-result-grid' : ''} role="list">
                 {results.map((result) => {
                   return (
                     <IdentifySearchResult
