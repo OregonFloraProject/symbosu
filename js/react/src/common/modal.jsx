@@ -24,6 +24,7 @@ class ImageModal extends React.Component {
 
           <ImageModalCarousel
             images={this.props.images}
+            altname={this.props.altname}
             currImage={this.props.currImage}
             clientRoot={this.props.clientRoot}
           ></ImageModalCarousel>

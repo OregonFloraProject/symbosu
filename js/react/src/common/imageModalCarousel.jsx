@@ -99,7 +99,7 @@ export default class ImageModalCarousel extends Component {
                     <img
                       className=""
                       src={image.url}
-                      alt={image.collectionname}
+                      alt={this.props.altname}
                       /*onLoad={this.onImgLoad}
 										data-key={index}*/
                     />
@@ -157,7 +157,7 @@ export default class ImageModalCarousel extends Component {
           className="images-nav"
           style={{ maxWidth: '100%' }}
         >
-          {this.props.images.map((image) => {
+          {this.props.images.map((image, idx) => {
             return (
               <div key={image.url} className={''}>
                 <div className="card">
@@ -166,7 +166,7 @@ export default class ImageModalCarousel extends Component {
                       className="d-block"
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                       src={image.thumbnailurl}
-                      alt={image.thumbnailurl}
+                      alt={`Image of ${this.props.altname} ${idx + 1}`}
                     />
                   </div>
                 </div>

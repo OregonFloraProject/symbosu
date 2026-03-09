@@ -263,6 +263,7 @@ export class TaxaDetail extends React.Component {
                 title={`Photo images`}
                 images={res.images.HumanObservation}
                 imageCount={res.images.HumanObservation.length}
+                altname={"Photo of " + res.sciName}
                 slideshowCount={res.slideshowCount}
                 onClick={(index) => this.toggleImageModal(index, 'HumanObservation')}
               />
@@ -273,6 +274,7 @@ export class TaxaDetail extends React.Component {
                 title={`Herbarium specimens`}
                 images={res.images.PreservedSpecimen}
                 imageCount={res.images.PreservedSpecimen.length}
+                altname={"Herbarium specimen of " + res.sciName}
                 slideshowCount={res.slideshowCount}
                 onClick={(index) => this.toggleImageModal(index, 'PreservedSpecimen')}
               />
@@ -310,6 +312,7 @@ export class TaxaDetail extends React.Component {
           show={this.state.isOpen}
           currImage={this.state.currImage}
           images={this.state.currImageBasis}
+          altname={res.sciName}
           onClose={this.toggleImageModal}
           clientRoot={this.props.clientRoot}
         >

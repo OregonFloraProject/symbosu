@@ -54,7 +54,7 @@ class CannedSearchResult extends React.Component {
                 className="d-block"
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 src={this.props.src}
-                alt={this.props.src}
+                alt={this.props.description}
                 onMouseOver={this.onMouseOver}
               />
               <div

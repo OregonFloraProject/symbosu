@@ -224,6 +224,7 @@ function TaxaRareApp(props) {
               title={<span><i>{data.sciName}</i> images</span>}
               images={data.images}
               imageCount={data.images.length}
+              altname={"Photo of " + data.sciName}
               slideshowCount={slideshowCount}
               onClick={(index) => toggleImageModal(index, 'HumanObservation')}
             />
@@ -233,6 +234,7 @@ function TaxaRareApp(props) {
               title={`Herbarium specimens`}
               images={data.herbariumImages}
               imageCount={data.herbariumImages.length}
+              altname={"Herbarium specimen of " + data.sciName}
               slideshowCount={slideshowCount}
               onClick={(index) => toggleImageModal(index, 'PreservedSpecimen')}
             />
@@ -242,6 +244,7 @@ function TaxaRareApp(props) {
           show={isImageModalOpen}
           currImage={currImage}
           images={currImageBasis === 'PreservedSpecimen' ? data.herbariumImages : data.images}
+          altname={data.sciName}
           onClose={toggleImageModal}
           clientRoot={props.clientRoot}
         >

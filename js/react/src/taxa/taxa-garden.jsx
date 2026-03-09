@@ -239,6 +239,7 @@ class TaxaApp extends React.Component {
             <ImageCarousel
               title={`${this.state.vernacularNames[0]} images`}
               images={this.state.images}
+              altname={"Photo of " + this.state.vernacularNames[0]}
               imageCount={this.state.length}
               slideshowCount={this.state.slideshowCount}
               onClick={this.toggleImageModal}
@@ -248,6 +249,7 @@ class TaxaApp extends React.Component {
             show={this.state.isOpen}
             currImage={this.state.currImage}
             images={this.state.images}
+            altname={this.state.vernacularNames[0]}
             onClose={this.toggleImageModal}
             clientRoot={this.props.clientRoot}
           >

@@ -49,7 +49,7 @@ function ImageCarousel(props) {
                       className="d-block"
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                       src={image.thumbnailurl}
-                      alt={image.thumbnailurl}
+                      alt={props.altname + ` ${index + 1}`}
                       onClick={() => props.onClick(index)}
                     />
                   </div>
