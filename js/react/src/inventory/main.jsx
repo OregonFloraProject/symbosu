@@ -321,9 +321,18 @@ class InventoryChooser extends React.Component {
   } //componentDidMount
   render() {
     let inventoryImages = {
-      1: 'botanical_diversity.jpg',
-      2: 'species_list.jpg',
-      3: 'garden_with_natives.jpg',
+      1: {
+        file: "botanical_diversity.jpg",
+        description: "A field of wildflowers with a Flora of Oregon book on the right corner"
+      },
+      2: {
+        file: "species_list.jpg",
+        description: "A sand dune with beachgrass fluttering in the wind"
+      },
+      3: {
+        file: "garden_with_natives.jpg",
+        description: "Pacific waterleaf"
+      }
     };
 
     return (
@@ -394,7 +403,8 @@ class InventoryChooser extends React.Component {
                           <h2>{project.projname}</h2>
                           <img
                             className="img-fluid"
-                            src={this.props.clientRoot + '/images/inventory/' + inventoryImages[project.pid]}
+                            src={this.props.clientRoot + '/images/inventory/' + inventoryImages[project.pid].file}
+                            alt={inventoryImages[project.pid].description}
                           />
                         </div>
                         <div className="col-12 col-md-4 p-0 project-other">
