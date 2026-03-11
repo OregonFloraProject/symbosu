@@ -1006,7 +1006,9 @@ $traitArr = $indManager->getTraitArr();
 							<fieldset>
 								<legend><?php echo $LANG['SPECIMEN_IMAGES']; ?></legend>
 								<?php
+								$imgCount = 0;
 								foreach($iArr as $imgArr){
+									$imgCount += 1;
 									$thumbUrl = $imgArr['tnurl'];
 									if(!$thumbUrl || substr($thumbUrl, 0, 7) == 'process'){
 										if($imgArr['lgurl']){
@@ -1021,8 +1023,8 @@ $traitArr = $indManager->getTraitArr();
 									}
 									?>
 									<div id="thumbnail-div" class="thumbnail-div">
-										<ahref='<?= $imgArr['url'] ?>' target="_blank">
-											<img style="margin-bottom: 0.5rem"  border="1" src="<?= $thumbUrl; ?>" title="<?= $imgArr['caption']; ?>" style="max-width:21.9rem;" alt="thumbnail image of current specimen" />
+										<a href='<?= $imgArr['url'] ?>' target="_blank">
+											<img style="margin-bottom: 0.5rem"  border="1" src="<?= $thumbUrl; ?>" title="<?= $imgArr['caption']; ?>" style="max-width:21.9rem;" alt="Thumbnail image of <?= $occArr['sciname'] . " " . $imgCount ?>" />
 										</a>
 										<?php
 										if($imgArr['caption']) echo '<div><i>'.$imgArr['caption'].'</i></div>';
