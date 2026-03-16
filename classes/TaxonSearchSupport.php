@@ -44,8 +44,21 @@ class TaxonSearchSupport{
 			// Generate sciname query
 			$sciNameQuery = '(t.sciname LIKE "'.$this->queryString.'%" ';
 			$sqlFrag = '';
-			if($unit1 = array_shift($termArr)) $sqlFrag =  't.unitname1 LIKE "'.$unit1.'%" ';
-			if($unit2 = array_shift($termArr)) $sqlFrag .=  'AND t.unitname2 LIKE "'.$unit2.'%" ';
+			$termArrLen = count($termArr);
+			// Strategy 1: unit1 = "term[0] term[1]", unit2 = <the rest of termArr>  (for two-word unit name)
+			if ($termArrLen >= 3) {
+				$unit1Combined = $termArr[0] . ' ' . $termArr[1];
+				$sqlFrag = 't.unitname1 LIKE "' . $unit1Combined . '%"';
+				// Assemble the rest of the contents from termArr
+				$unit2Combined = implode(' ', array_slice($termArr, 2));
+    			$sqlFrag .= ' AND t.unitname2 LIKE "' . $unit2Combined . '%"';
+			}
+			// Strategy 2: unit1 = term[0], unit2 = term[1]  (works for simple names)
+			else {
+				if($unit1 = array_shift($termArr)) $sqlFrag =  't.unitname1 LIKE "'.$unit1.'%" ';
+				if($unit2 = array_shift($termArr)) $sqlFrag .=  'AND t.unitname2 LIKE "'.$unit2.'%" ';
+			}
+			
 			if($sqlFrag) $sciNameQuery .= 'OR ('.$sqlFrag.')';
 			$sciNameQuery .= ') ';
 
