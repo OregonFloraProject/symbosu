@@ -332,6 +332,10 @@ class InventoryChooser extends React.Component {
       3: {
         file: "garden_with_natives.jpg",
         description: "Pacific waterleaf"
+      },
+      4: {
+        file: "",
+        description: ""
       }
     };
 
