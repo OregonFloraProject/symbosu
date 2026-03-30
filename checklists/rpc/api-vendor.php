@@ -9,7 +9,15 @@ include_once("$SERVER_ROOT/classes/ExploreManager.php");
 include_once("$SERVER_ROOT/classes/InventoryManager.php");
 include_once("$SERVER_ROOT/classes/TaxaManager.php");
 include_once("$SERVER_ROOT/classes/IdentManager.php");
-		
+
+// Status code constants for previewSPP classification
+define('CODE_ACCEPTED', 'Accepted');
+define('CODE_SYNONYM', 'Synonym');
+define('CODE_AMBIGUOUS', 'Ambiguous');
+define('CODE_UNRECOGNIZED', 'Unrecognized');
+define('CODE_DUPLICATE', 'Duplicate');
+define('CODE_NON_NATIVE', 'Non-native');
+
 $result = [];
 
 
@@ -218,249 +226,217 @@ function handleColumnNames($obj,$target) {
 }
 */
 
-function previewSPP() {
-	$result = [];
-	$success = 0;
-	$error = 0;
-	$csvURL = '';
+/**
+ * Run a batched LIKE query for multiple scientific names in chunks of 50.
+ * Returns an associative array: searchName => [matched DB rows], with exact matches sorted first.
+ */
+function batchScinameQuery($em, $searchNames, $RANK_GENUS, $batchSize) {
+	$results = [];
+	foreach ($searchNames as $name) {
+		$results[$name] = [];
+	}
 
-	$CLID_GARDEN_ALL = getGardenClid();
-	$RANK_GENUS = 180;
-
-	$acceptedNativities = [
-		"endemic to Oregon",
-		"native",
-		"native and exotic",
-		"native?"
-	];
-	$arr = json_decode( preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $_REQUEST['upload']), true );
-	#var_dump($arr);exit;
-	$firstArr = [];
-	#compile verified list to update, then delete existing, then add new
-	#more forgiving of empty columns in csv
-	#standardize formatting
-	$em = SymbosuEntityManager::getEntityManager();
+	// Split searchNames into batch for quicker
+	$chunks = array_chunk($searchNames, $batchSize);
 	$expr = $em->getExpressionBuilder();
-	$q = $em->createQueryBuilder();
-	foreach ($arr as $key => $obj) {
-		$temp = [];
-		$obj['sciname'] = trim($obj['sciname']);
-		$temp['sciname'] = $obj['sciname'];// = handleColumnNames($obj,'sciname');#store orig in $obj['sciname']
-		$temp['notes'] = [];//$obj['notes'] = handleColumnNames($obj,'notes');#store orig in $obj['notes'];
-		if (isset($obj['notes'])) {
-			if (is_array($obj['notes'])) {
-				$temp['notes'] = $obj['notes'];
-			}else{
-				$temp['notes'][] = $obj['notes'];
-			}
-		}
-		$searchSciname = $obj['sciname'];
-		$searchSciname = str_replace("subsp.","ssp.",$searchSciname);
-		$temp['searchSciname'] = $searchSciname;
-		#$searchParts = explode(' ',$searchSciname);
-		#$searchTerm = '%' . join('% %',$searchParts) .'%';
-		$searchTerm = '%' . $searchSciname .'%';
-	
-		#echo $obj['sciname'] . ":<br>";
-		#echo $searchTerm;
-	
-		$sciNameQuery = $em->createQueryBuilder()
-			->select("t.sciname as text", "t.tid as value","ts.tidaccepted","tl.clid","tl.nativity")
+
+	foreach ($chunks as $chunk) {
+		$qb = $em->createQueryBuilder()
+			->select("t.sciname as taxaname", "t.tid", "ts.tidaccepted", "tl.nativity")
 			->from("Taxa", "t")
 			->innerJoin("Taxstatus", "ts", "WITH", "t.tid = ts.tid")
 			->innerJoin("Fmchklsttaxalink", "tl", "WITH", "t.tid = tl.tid")
 			->where("tl.clid = 1")
-			#->andWhere("t.sciname LIKE :search")
-			->andWhere(
-				$expr->orX(
-					$expr->eq("t.sciname",":search"),
-					$expr->like("t.sciname",":search"),
-				)
-			)
-			->andWhere("t.rankid > $RANK_GENUS")
-			->orderBy('LOCATE(:searchTermLocate,t.sciname)')#put exact match first - https://stackoverflow.com/questions/52052712/select-exact-match-first-in-doctrine-query-builder
-			#->groupBy("t.tid")
-			->setParameter("search",  $searchTerm)
-			->setParameter("searchTermLocate",$searchSciname)#without %%
-			#->setParameter("omit",$omit)
-			#->setMaxResults(3)
-			->getQuery();
+			->andWhere("t.rankid > $RANK_GENUS");
+
+		$orConditions = $expr->orX();
+		// Build OR conditions of multiple names from the excel file
+		foreach ($chunk as $i => $name) {
+			$paramName = "s$i";
+			$orConditions->add($expr->eq("t.sciname", ":$paramName"));
+			$qb->setParameter($paramName, $name);
+		}
+		$qb->andWhere($orConditions);
+
+		$dbRows = $qb->getQuery();
+		$dbRows = $dbRows->getArrayResult();
+
+		foreach ($chunk as $name) {
+			foreach ($dbRows as $dbRow) {
+				// Find each name from the excel file and match its record on database
+				if (strpos($dbRow['taxaname'], $name) !== false) {
+					$results[$name][] = $dbRow;
+				}
+			}
+		}
+	}
+
+	return $results;
+}
+
+/**
+ * Classify a single row based on its DB query results.
+ * Sets code to Accepted, Synonym, Ambiguous, or Unrecognized.
+ * If $snr['tidaccepted'] === $snr['tid'], it is a normal taxon.
+ * If $snr['tidaccepted'] !== $snr['tid'] and there is only one $snr['tidaccepted']
+ * => Synonym
+ * If multiple $snr['tidaccepted'] => Ambiguous
+ */
+function classifyRow(&$row, $sciNameResults) {
+	if (empty($sciNameResults)) {
+		$row['code'] = CODE_UNRECOGNIZED;
+		$row['feedback'][] = 'This name is not found in our database of Oregon plants. Please check the spelling.';
+		return;
+	}
+
+	$row['results'] = $sciNameResults;
+	$tidaccepteds = [];
+
+	foreach ($sciNameResults as $snr) {
+		$row['tid'] = $snr['tid'];
 		
-		$sciNameResults = $sciNameQuery->getArrayResult();
-		
-		#usort($sciNameResults, function ($a, $b) {
-		#	return strcmp($a["text"], $b["text"]);
-		#});
-				
-		$temp['results'] = $sciNameResults;
-		$temp['query'] = $sciNameQuery;
-		$temp['tid'] = null;
-		$temp['tidaccepted'] = null;
-		$temp['code'] = null;
-		$temp['feedback'] = [];
-	
-		#initially set codes, to be tweaked below
-		if(sizeof($sciNameResults) == 0) {
-			$temp['code'] = 'Unrecognized';
-			$temp['feedback'][] = 'This name is not found in our database of Oregon plants. Please check the spelling.';
-		}else {
-			$tidaccepteds = [];
-			$provisional = [];
-			foreach ($sciNameResults as $snr) {
-				if ($snr['tidaccepted'] === $snr['value']) {
-					$provisional[$snr['text']] = [
-						'name' => $snr['text'],
-						'code' => 'Accepted',
-						'tid' => $snr['value'],
-						'tidaccepted' => $snr['value']
-					];
-				}else{
-					$tidaccepteds[$snr['tidaccepted']] = null;
-				}
-			}
-			if ($provisional) {//check best name match of the accepteds
-				$bestMatch = null;
-				if (sizeof($provisional) == 1) {//only one to choose from
-					$bestMatch = array_shift($provisional);
-				}else{
-					foreach ($provisional as $p) {
-						if ($temp['searchSciname'] == $p['name']) {//exact name match
-							$bestMatch = $p;
-						}
-					}
-					if (!$bestMatch) {//fallback ?
-						$bestMatch = array_shift($provisional);
-					}
-				}
-				if ($bestMatch) {
-					$temp['code'] = $bestMatch['code'];
-					$temp['tid'] = $bestMatch['tid'];
-					$temp['tidaccepted'] = $bestMatch['tidaccepted'];
-				}					
-			}
-			if ($temp['code'] === null) {
-				if (sizeof($tidaccepteds) > 1) {
-					$temp['code'] = 'Ambiguous';
-				}else {
-					$temp['code'] = 'Synonym';
-				}
-				$temp['tid'] = $sciNameResults[0]['value'];//arbitrarily assign the first value, b/c this won't be used
-				$temp['tidaccepted'] = $sciNameResults[0]['tidaccepted'];//arbitrarily assign the first value, b/c this won't be used
-			}
-		}
-		#check for ambiguous - Mimulus guttatus, Convolvulus sepium
-		/*if ($temp['tid'] != $temp['tidaccepted']) {
-			$tidaccepteds = [];
-			foreach ($sciNameResults as $res) {
-				$tidaccepteds[$res['tidaccepted']] = null;
-			}
-			if (sizeof($tidaccepteds) > 1) {
-				$temp['code'] = 'Ambiguous';
-			}
-		}	*/			
-		switch ($temp['code']) {
-			case 'Synonym':
-				$temp['feedback'][] = 'This is a synonym for another species and will be translated (see OF sciname column).';
-				break;
-			case 'Ambiguous':
-				$temp['feedback'][] = 'This is a synonym for more than one species and cannot be automatically translated. Look up the name in the Search all plants box for possible translations.';
-				break;
-		}		
-		if ($obj['sciname'] !== $searchSciname) {#we changed it
-			$temp['feedback'][] = 'OregonFlora uses ssp. instead of subsp.';
-		}
-	
-	
-		$firstArr[] = $temp;
-		#echo "<br>";
-		#$em->flush();
-		#exit;
-	}
-
-	#var_dump($firstArr);exit;
-
-	$tids = [];#uses key from $firstArr
-	foreach ($firstArr as $key => $entry) {
-		if ($entry['code'] == 'Accepted') {#put on list so we can check for dupes
-			if (	($this_key = array_search($entry['tid'],$tids)) != false) {#duplicate tid
-				if (isset($entry['notes'])) {
-					$firstArr[$this_key]['notes'] = array_merge($firstArr[$this_key]['notes'],$entry['notes']);#copy notes to first tid match
-				}
-				$firstArr[$key]['feedback'][]  = 'This is a duplicate entry for ' . $firstArr[$this_key]['sciname'] . ' and will be removed';
-				$firstArr[$key]['code'] = 'Duplicate';
-			}else{
-				$tids[$key] = $entry['tid'];
-			}
-		}
-	
-		if ($entry['code'] == 'Unrecognized') {#do another query to check for x
-			$parts = explode(" ",$entry['sciname']);
-			array_splice($parts,1,0,'x');
-			$secondQuery = $entry['query'];
-			$tempSciname = join(' ',$parts);
-			$secondQuery->setParameter("search", $tempSciname);
-			$secondResults = $secondQuery->getArrayResult();
-			if (sizeof($secondResults) > 0) {
-
-				$firstArr[$key]['searchSciname'] = $tempSciname;
-				$firstArr[$key]['results'] = $secondResults;
-				if ($secondResults[0]['tidaccepted'] === $secondResults[0]['value']) {
-					$firstArr[$key]['code'] = 'Accepted';
-					$firstArr[$key]['tid'] = $secondResults[0]['value'];
-					$firstArr[$key]['tidaccepted'] = $secondResults[0]['value'];
-				}else {
-					$firstArr[$key]['code'] = 'Synonym';
-					$firstArr[$key]['tid'] = $secondResults[0]['value'];
-					$firstArr[$key]['tidaccepted'] = $secondResults[0]['tidaccepted'];
-				}
-			}
+		// Match taxon name of the excel file and the name on record
+		// If they match tid === tidaccepted, normal taxon
+		if ($row['searchSciname'] === $snr['taxaname'] &&
+		  $snr['tidaccepted'] === $snr['tid']) {
+			$row['code'] = CODE_ACCEPTED;
+			$row['tidaccepted'] = $snr['tidaccepted'];
+			$row['nativity'] = $snr['nativity'];
+		} else {
+			$tidaccepteds[$snr['tidaccepted']] = null;
 		}
 	}
 
-	$taxaRepo = $em->getRepository("Taxa");
-	#make another pass now that $tids is fully populated
-	foreach ($firstArr as $key => $entry) {
-		if ($entry['code'] == 'Synonym') {#catch synonym dupes
-			if (	($this_key = array_search($entry['tidaccepted'],$tids)) != false) {#synonym is duplicated elsewhere as perfect match
-				if (isset($entry['notes'])) {
-					$firstArr[$this_key]['notes'] = array_merge($firstArr[$this_key]['notes'],$entry['notes']);#copy notes to first tid match
+	if ($row['code'] === null) {
+		if (count($tidaccepteds) > 1) {
+			$row['code'] = CODE_AMBIGUOUS;
+			$row['feedback'][] = 'This is a synonym for more than one species and cannot be automatically translated. Look up the name in the Search all plants box for possible translations.';
+		} else {
+			$row['code'] = CODE_SYNONYM;
+			$row['tidaccepted'] = $sciNameResults[0]['tidaccepted'];
+			$row['feedback'][] = 'This is a synonym for another species and will be translated (see OF sciname column).';
+			$row['nativity'] = $snr['nativity'];
+		}
+	}
+}
+
+/**
+ * Mark synonym duplicates and non-native species.
+ * Batch-fetches taxa scinames instead of one query per row.
+ */
+function markNonNativeAndSynonymDupes(&$rows, $em, $acceptedNativities) {
+	// Batch fetch scinames for all tidaccepted values
+	$tidacceptedValues = [];
+	foreach ($rows as $entry) {
+		if ($entry['code'] === CODE_ACCEPTED || $entry['code'] === CODE_SYNONYM) {
+			$tidacceptedValues[$entry['tidaccepted']] = true;
+		}
+	}
+
+	// Extract all tids
+	$tids = [];
+	foreach ($rows as $key => $entry) {
+		if ($entry['tid'] !== null) {
+			$tids[$key] = $entry['tid'];
+		}
+	}
+
+	$taxaScinames = [];
+	if (!empty($tidacceptedValues)) {
+		$sciResults = $em->createQueryBuilder()
+			->select("t.tid", "t.sciname")
+			->from("Taxa", "t")
+			->where("t.tid IN (:tids)")
+			->setParameter("tids", array_keys($tidacceptedValues))
+			->getQuery()
+			->getArrayResult();
+		foreach ($sciResults as $t) {
+			$taxaScinames[$t['tid']] = $t['sciname'];
+		}
+	}
+
+	foreach ($rows as $key => &$entry) {
+		// Sometimes the actual taxon and its synonym exist in the same excel table
+		// So we treat the synonym as the duplicate
+		if ($entry['code'] === CODE_SYNONYM) {
+			$this_key = array_search($entry['tidaccepted'], $tids);
+			if ($this_key !== false) {
+				if (!empty($entry['notes'])) {
+					$rows[$this_key]['notes'] = array_merge($rows[$this_key]['notes'], $entry['notes']);
 				}
-				$firstArr[$key]['feedback'][]  = 'This is a duplicate entry for ' . $firstArr[$this_key]['sciname'] . ' and will be removed';
-				$firstArr[$key]['code'] = 'Duplicate';
+				$entry['feedback'][] = 'This is a duplicate entry for ' . $rows[$this_key]['sciname'] . ' and will be removed';
+				$entry['code'] = CODE_DUPLICATE;
 			}
 		}
-		#set vars and check nativity
-		if ($firstArr[$key]['code'] == 'Synonym' || $firstArr[$key]['code'] == 'Accepted') {
-			#$firstArr[$key]['OFsciname'] = $firstArr[$key]['results'][0]['text'];
-			$taxaModel = $taxaRepo->find($entry['tidaccepted']);
-			$taxa = TaxaManager::fromModel($taxaModel);
-			$firstArr[$key]['OFsciname'] = $taxa->getSciname();
-		
-			if (!in_array($firstArr[$key]['results'][0]['nativity'],$acceptedNativities)) {#check nativity
-				$firstArr[$key]['feedback'][]  = 'This is not a native Oregon plant species and will not be included.';
-				$firstArr[$key]['code'] = 'Non-native';
-			}else{
-				if ($firstArr[$key]['results'][0]['nativity'] == 'native and exotic') {
-					$firstArr[$key]['feedback'][]  = 'This taxon has both native and exotic populations in Oregon.';
-				}
+
+		if ($entry['code'] === CODE_SYNONYM || $entry['code'] === CODE_ACCEPTED) {
+			$entry['OFsciname'] = $taxaScinames[$entry['tidaccepted']] ?? '';
+
+			if (!in_array($entry['nativity'], $acceptedNativities)) {
+				$entry['feedback'][] = 'This is not a native Oregon plant species and will not be included.';
+				$entry['code'] = CODE_NON_NATIVE;
+			} elseif ($entry['nativity'] === 'native and exotic') {
+				$entry['feedback'][] = 'This taxon has both native and exotic populations in Oregon.';
 			}
-		}		
+		}
 	}
-	foreach ($firstArr as $key => $entry) {
-		unset($firstArr[$key]['query']);#removing for debugging
+	unset($entry);
+}
+
+function previewSPP() {
+	$RANK_GENUS = 180;
+	$acceptedNativities = ["endemic to Oregon", "native", "native and exotic", "native?"];
+
+	$input_array = json_decode(preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $_REQUEST['upload']), true);
+	$em = SymbosuEntityManager::getEntityManager();
+
+	// Normalize all names and collect unique search terms
+	$rows = [];
+	$searchNames = [];
+	foreach ($input_array as $key => $input) {
+		$sciname = trim($input['sciname']);
+		$searchSciname = str_replace("subsp.", "ssp.", $sciname);
+		$notes = [];
+		if (isset($input['notes'])) {
+			$notes = is_array($input['notes']) ? $input['notes'] : [$input['notes']];
+		}
+		$rows[$key] = [
+			'sciname' => $sciname,
+			'searchSciname' => $searchSciname,
+			'notes' => $notes,
+			'tid' => null,
+			'tidaccepted' => null,
+			'code' => null,
+			'nativity' => null,
+			'feedback' => [],
+			'results' => [],
+		];
+		if ($sciname !== $searchSciname) {
+			$rows[$key]['feedback'][] = 'OregonFlora uses ssp. instead of subsp.';
+		}
+		if (!in_array($searchSciname, $searchNames)) {
+			$searchNames[] = $searchSciname;
+		}
 	}
-	#var_dump($firstArr);
-	#$csvURL = SPPtoCSV($firstArr);
-	
-	$result = [
-		"status" => (sizeof($firstArr)? "success" : 'notfound'),
-		"results" => $firstArr,
-		"csvURL"		=> $csvURL
+
+	// Batch query m names at once — O(N/m) queries instead of O(N)
+	$batch_size = 300;
+	$allDbResults = batchScinameQuery($em, $searchNames, $RANK_GENUS, $batch_size);
+
+	// Classify each row based on query results
+	foreach ($rows as &$row) {
+		classifyRow($row, $allDbResults[$row['searchSciname']] ?? []);
+	}
+	unset($row);
+
+	// Check synonym dupes + nativity (batched taxa fetch)
+	markNonNativeAndSynonymDupes($rows, $em, $acceptedNativities);
+
+	return [
+		"status" => (!empty($rows) ? "success" : "notfound"),
+		"results" => $rows,
+		"csvURL" => ""
 	];
-	#$result = $firstArr;
-	#var_dump($result);
-	#exit;
-	return $result;
 }
 
 function getVendorsByTaxa($tid) {
