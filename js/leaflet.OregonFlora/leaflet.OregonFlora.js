@@ -204,6 +204,30 @@ function addOverlays(map) {
 	fetch(clientRoot + 'js/leaflet.OregonFlora/layers/ecoregions.kml')
 		.then(res => res.text())
 		.then(kmltext => addKMLLayer(kmltext, 'Ecoregions', map, false));
+
+	// Add BLM land ownership layer (hidden by default)
+	fetch(clientRoot + 'js/leaflet.OregonFlora/layers/blm_coordinates.geojson')
+		.then(response => response.json())
+		.then(data => {
+			let blmLayer = L.geoJson(data, {
+				style: {
+					color: '#f5a623',
+					weight: 1,
+					opacity: 0.8,
+					fillColor: '#f5a623',
+					fillOpacity: 0.4
+				},
+				onEachFeature: function(feature, layer) {
+					let p = feature.properties;
+					layer.bindPopup(
+						'<strong>' + (p.FeeTitleHolder || 'Unknown') + '</strong><br>' +
+						'Land Manager: BLM'
+					);
+				}
+			});
+			// Not added to map — hidden by default, user toggles via layer control
+			map.mapLayer.layerControl.addOverlay(blmLayer, 'BLM Land');
+		});
 }
 
 let _userAddedKMLLayers = [];
