@@ -174,33 +174,59 @@ function addOverlays(map) {
 	let thisScript = document.querySelector('script[src*="leaflet.OregonFlora.js"]');
 	let clientRoot = thisScript.src.substring(window.location.origin.length).split('js/leaflet.OregonFlora')[0];
    
-   	// Get counties geoJSON and add to map
+	// Add counties layer, on by default; DOM cleared when unchecked, data kept in memory
+	let countiesGroup = L.layerGroup();
+	let countiesData = null;  // cached after first fetch, kept across toggles
+	
+	const countiesLayerOptions = {
+		// Style the polygon and borders
+		style: {
+			"color": "#3c641e",
+			"weight": 3,
+			"opacity": 0.8,
+			"fillOpacity": 0
+		},
+		// Add county name in center of county
+		onEachFeature: function(feature, layer) {
+			// Add county names as tooltips
+			layer.bindTooltip(feature.properties.Name, {permanent: true, direction: "center", className: "county-labels"});
+		}
+	};
+
+	map.mapLayer.on('overlayadd', function(e) {
+		if (e.layer !== countiesGroup) return;
+		if (countiesData) {
+			// Data already fetched, just re-render into the group
+			L.geoJson(countiesData, countiesLayerOptions).addTo(countiesGroup);
+			return;
+		}
+		fetch(clientRoot + 'js/leaflet.OregonFlora/layers/oregon.counties.json')
+			.then(response => response.json())
+			.then(data => {
+				countiesData = data;
+				L.geoJson(countiesData, countiesLayerOptions).addTo(countiesGroup);
+			});
+	});
+
+	map.mapLayer.on('overlayremove', function(e) {
+		if (e.layer !== countiesGroup) return;
+		countiesGroup.clearLayers();  // free DOM; countiesData stays in memory
+	});
+
+	// Add to map first (so it appears checked), then to layer control
+	countiesGroup.addTo(map.mapLayer);
+	map.mapLayer.layerControl.addOverlay(countiesGroup, "Counties");
+
+	// Load counties data immediately for the default-on state
 	fetch(clientRoot + 'js/leaflet.OregonFlora/layers/oregon.counties.json')
 		.then(response => response.json())
-		.then(counties => {
-			let countiesLayer = L.geoJson(counties, {
-
-				// Style the polygon and borders
-				style: {
-					"color": "#3c641e",
-					"weight": 3,
-					"opacity": 0.8,
-      				"fillOpacity": 0
-      			},
-      			// Add county name in center of county
-				onEachFeature: function(feature, layer) {
-
-               		// Add county names as tooltips
-					layer.bindTooltip(feature.properties. Name, {permanent: true, direction: "center", className: "county-labels"});
-				}
-			// Add to the map
-			}).addTo(map.mapLayer);
-
-			// Add the counties layer to the layer controls 
-			map.mapLayer.layerControl.addOverlay(countiesLayer, "Counties");
+		.then(data => {
+			countiesData = data;
+			L.geoJson(countiesData, countiesLayerOptions).addTo(countiesGroup);
 		});
 
-	// Add ecoregions layer, lazy loaded on first toggle-on
+	// Add ecoregions layer from KML using the KML plugin if not on the dynamicMap page.
+	// Lazy loaded on first toggle-on
 	let ecoregionsGroup = L.layerGroup();
 	let ecoregionsText = null;  // cached KML text after first fetch
 
