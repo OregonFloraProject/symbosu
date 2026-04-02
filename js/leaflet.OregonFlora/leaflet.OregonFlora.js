@@ -166,6 +166,58 @@ function addBasemaps(map) {
 	USGS_Topo.addTo(map.mapLayer);
 }
 
+function addLandOwnershipOverlays(map, clientRoot) {
+	const lands = [
+		{ label: 'BLM Land', file: 'blm_coordinates.geojson', color: '#f5e723' },
+		{ label: 'USFS Land', file: 'USFS_coordinates.geojson', color: '#23f52e' },
+		{ label: 'OR Land',  file: 'OR_coordinates.geojson',  color: '#23e7f5' },
+	];
+
+	lands.forEach(function({ label, file, color }) {
+		// Add overlay that is lazy-loaded on first toggle-on
+		let group = L.layerGroup();
+		let data = null;  // cached after first fetch, kept in memory across toggles
+
+		const layerOptions = {
+			style: {
+				color: color,
+				weight: 2,
+				opacity: 0.8,
+				fillColor: color,
+				fillOpacity: 0.4
+			},
+			onEachFeature: function(feature, layer) {
+				let p = feature.properties;
+				layer.bindPopup(
+					'<strong>' + (p.FeeTitleHolder || 'Unknown') + '</strong><br>' +
+					'Land Manager: ' + label
+				);
+			}
+		};
+
+		map.mapLayer.on('overlayadd', function(e) {
+			if (e.layer !== group) return;
+			if (data) {
+				// Data already fetched: just re-render into the group
+				L.geoJson(data, layerOptions).addTo(group);
+				return;
+			}
+			fetch(clientRoot + 'js/leaflet.OregonFlora/layers/' + file)
+				.then(response => response.json())
+				.then(function(fetched) {
+					data = fetched;
+					L.geoJson(data, layerOptions).addTo(group);
+				});
+		});
+
+		map.mapLayer.on('overlayremove', function(e) {
+			if (e.layer !== group) return;
+			group.clearLayers();  // free Leaflet/DOM objects; data stays in memory
+		});
+
+		map.mapLayer.layerControl.addOverlay(group, label);
+	});
+}
 
 // Add any overlay layers
 function addOverlays(map) {
@@ -257,48 +309,7 @@ function addOverlays(map) {
 
 	map.mapLayer.layerControl.addOverlay(ecoregionsGroup, 'Ecoregions');
 
-	// Add BLM land ownership layer, lazy loaded on first toggle-on
-	let blmGroup = L.layerGroup();
-	let blmData = null;  // cached after first fetch, kept in memory across toggles
-
-	map.mapLayer.on('overlayadd', function(e) {
-		if (e.layer !== blmGroup) return;
-		if (blmData) {
-			// Data already fetched — just re-render into the group
-			L.geoJson(blmData, blmLayerOptions).addTo(blmGroup);
-			return;
-		}
-		fetch(clientRoot + 'js/leaflet.OregonFlora/layers/blm_coordinates.geojson')
-			.then(response => response.json())
-			.then(data => {
-				blmData = data;
-				L.geoJson(blmData, blmLayerOptions).addTo(blmGroup);
-			});
-	});
-
-	map.mapLayer.on('overlayremove', function(e) {
-		if (e.layer !== blmGroup) return;
-		blmGroup.clearLayers();  // free Leaflet/DOM objects; blmData stays in memory
-	});
-
-	const blmLayerOptions = {
-		style: {
-			color: '#f5a623',
-			weight: 1,
-			opacity: 0.8,
-			fillColor: '#f5a623',
-			fillOpacity: 0.4
-		},
-		onEachFeature: function(feature, layer) {
-			let p = feature.properties;
-			layer.bindPopup(
-				'<strong>' + (p.FeeTitleHolder || 'Unknown') + '</strong><br>' +
-				'Land Manager: BLM'
-			);
-		}
-	};
-
-	map.mapLayer.layerControl.addOverlay(blmGroup, 'BLM Land');
+	addLandOwnershipOverlays(map, clientRoot);
 }
 
 let _userAddedKMLLayers = [];
