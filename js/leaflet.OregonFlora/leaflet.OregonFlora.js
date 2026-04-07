@@ -168,10 +168,12 @@ function addBasemaps(map) {
 
 function addLandOwnershipOverlays(map, clientRoot) {
 	const lands = [
-		{ label: 'BLM Land', file: 'blm_coordinates.geojson', color: '#f5e723' },
-		{ label: 'USFS Land', file: 'USFS_coordinates.geojson', color: '#23f52e' },
-		{ label: 'OR Land',  file: 'OR_coordinates.geojson',  color: '#23e7f5' },
+		{ label: 'BLM', file: 'blm_coordinates.geojson', color: '#f5e723' },
+		{ label: 'USFS', file: 'USFS_coordinates.geojson', color: '#23f52e' },
+		{ label: 'OR',  file: 'OR_coordinates.geojson',  color: '#23e7f5' },
 	];
+
+	const groups = {};  // label -> layerGroup mapping for grouping function
 
 	lands.forEach(function({ label, file, color }) {
 		// Add overlay that is lazy-loaded on first toggle-on
@@ -216,7 +218,137 @@ function addLandOwnershipOverlays(map, clientRoot) {
 		});
 
 		map.mapLayer.layerControl.addOverlay(group, label);
+		groups[label] = group;
 	});
+
+	// Group the three land layers under a "Land Owner" parent checkbox
+	groupLandLayers(map, groups);
+}
+
+// Group land ownership layers under a "Land Owner" parent checkbox
+function groupLandLayers(map, groups) {
+	const control = map.mapLayer.layerControl;
+
+	// Function to apply grouping to the current DOM state
+	function applyLandOwnerGrouping() {
+		const overlaysList = control._overlaysList;
+		if (!overlaysList) return;  // control not yet rendered
+
+		// Get the land ownership layers to a separate list landOwnLayers
+		// for state tracking
+		const landOwnLayers = {};
+		overlaysList.querySelectorAll('label').forEach(label => {
+			const span = label.querySelector('span');
+			if (span) {
+				const text = span.textContent.trim();
+				if (groups[text]) {
+					landOwnLayers[text] = label;
+				}
+			}
+		});
+
+		// Check if grouping already applied (look for existing parent)
+		if (overlaysList.querySelector('.leaflet-land-owner-parent-checkbox')) {
+			return;
+		}
+
+		// Create parent checkbox row: "Land Owner" with checkbox (match other overlays structure)
+		const parentLabel = document.createElement('label');
+		const parentCheckbox = document.createElement('input');
+		parentCheckbox.type = 'checkbox';
+		parentCheckbox.className = 'leaflet-control-layers-selector leaflet-land-owner-parent-checkbox';
+		parentCheckbox.checked = false;
+
+		const parentSpan = document.createElement('span');
+		parentSpan.textContent = ' Land Owner';
+
+		parentLabel.appendChild(parentCheckbox);
+		parentLabel.appendChild(parentSpan);
+
+		// Create indented container for child checkboxes
+		const childrenDiv = document.createElement('div');
+		childrenDiv.className = 'leaflet-land-owner-children';
+
+		// Move land layer <label> elements into children container, in defined order
+		Object.keys(landOwnLayers).forEach(name => {
+			childrenDiv.appendChild(landOwnLayers[name]);
+		});
+
+		// Insert parent and children at end of overlays list
+		overlaysList.appendChild(parentLabel);
+		overlaysList.appendChild(childrenDiv);
+
+		// Update parent checkbox state based on which child layers are currently on the map
+		function updateParentCheckboxState() {
+			const landLayerNames = Object.keys(groups);
+			const checkedCount = landLayerNames.filter(name => map.mapLayer.hasLayer(groups[name])).length;
+			const totalCount = landLayerNames.length;
+
+			if (checkedCount === 0) {
+				parentCheckbox.checked = false;
+				parentCheckbox.indeterminate = false;
+			} else if (checkedCount === totalCount) {
+				parentCheckbox.checked = true;
+				parentCheckbox.indeterminate = false;
+			} else {
+				parentCheckbox.checked = false;
+				parentCheckbox.indeterminate = true;
+			}
+		}
+
+		// Listen for overlayadd/overlayremove on land layers to update parent state
+		map.mapLayer.on('overlayadd overlayremove', function(e) {
+			if (Object.values(groups).includes(e.layer)) {
+				updateParentCheckboxState();
+			}
+		});
+
+		// Wire up parent checkbox: toggle all three child layers
+		parentCheckbox.addEventListener('click', function(e) {
+			e.stopPropagation();
+			const shouldAdd = this.checked;
+
+			Object.entries(landOwnLayers).forEach(([name, childCheckbox]) => {
+				if (shouldAdd) {
+					groups[name].addTo(map.mapLayer);
+					childCheckbox.checked = true;
+				} else {
+					map.mapLayer.removeLayer(groups[name]);
+					childCheckbox.checked = false;
+				}
+			});
+		});
+		
+		// Initial state
+		updateParentCheckboxState();
+	}
+
+	// Override the layer control's _update method to reapply grouping after Leaflet rebuilds
+	// Prevent "Land Owner" checkbox from disappearing when clicked on
+	const originalUpdate = control._update.bind(control);
+	control._update = function() {
+		originalUpdate();
+		applyLandOwnerGrouping();
+	};
+
+	// Inject CSS for indentation (only once)
+	// Id "leaflet-land-owner-styles" avoids duplicating head CSS
+	if (!document.getElementById('leaflet-land-owner-styles')) {
+		const style = document.createElement('style');
+		style.id = 'leaflet-land-owner-styles';
+		style.textContent = `
+			.leaflet-land-owner-children {
+				padding-left: 15px;
+			}
+			.leaflet-land-owner-parent-checkbox {
+				cursor: pointer;
+			}
+		`;
+		document.head.appendChild(style);
+	}
+
+	// Apply initial grouping
+	applyLandOwnerGrouping();
 }
 
 // Add any overlay layers
