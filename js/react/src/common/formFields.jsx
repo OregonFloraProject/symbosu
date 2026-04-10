@@ -14,7 +14,7 @@ export default class TextField extends React.Component {
   }
 
   handleBlur(e) {
-    let obj = { name: e.target.name, value: e.target.value, section: e.target.getAttribute('section') };
+    let obj = { name: e.target.name, value: e.target.value, section: this.state.section };
     this.updateChange(obj);
   }
   handleChange(e) {

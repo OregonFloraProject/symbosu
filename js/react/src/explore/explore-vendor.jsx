@@ -116,19 +116,21 @@ class ExploreApp extends React.Component {
   };
   toggleEditing(section) {
     let isEditing = this.state.isEditing;
-    let newVal;
+    let newVal = true;
     if (this.state.isEditing[section] == true) {
       if (Object.keys(this.state.updatedData[section]).length > 0) {
-        if (confirm('You have unsaved changes.  Proceed?') == true) {
+        if (confirm('You have unsaved changes. Proceed?') === true) {
+          // Reset state.updatedData when stop editing mid-change
+          this.setState({
+            updatedData: Object.assign({}, this.state.updatedData, {
+              [section]: {}
+            }),
+          });
           newVal = false;
-        } else {
-          newVal = true;
         }
       } else {
         newVal = false;
       }
-    } else {
-      newVal = true;
     }
     isEditing[section] = newVal;
     this.setState({
