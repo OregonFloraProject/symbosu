@@ -6,7 +6,7 @@
   "scripts": {
     "clean": "cd dist && find . ! -name '.gitkeep' -type f -exec rm -f {} + && cd ..",
     "build": "npm run clean && NODE_ENV=production webpack",
-    "devstart": "npm run clean && NODE_ENV=development webpack",
+    "dev": "npm run clean && NODE_ENV=development webpack",
     "postinstall": "patch-package"
   },
   "author": "",

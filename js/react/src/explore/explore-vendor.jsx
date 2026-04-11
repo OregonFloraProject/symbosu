@@ -339,14 +339,18 @@ class ExploreApp extends React.Component {
           msg = jres.success + ' field' + (jres.success > 1 ? 's' : '') + ' updated';
         }
 
-        //clear updatedData
+        // update new value to show
+        this.setState({ ...this.state.updatedData[section] });
+
+        // clear updatedData
         let stateData = this.state.updatedData;
         stateData[section] = [];
         this.setState({
           updatedData: Object.assign(this.state.updatedData, stateData),
         });
 
-        //show msg
+        // close editing and show msg
+        this.toggleEditing(section);
         var id = section + '-msg';
         var msgDiv = document.getElementById(id);
         msgDiv.classList.add('display');
@@ -354,7 +358,7 @@ class ExploreApp extends React.Component {
         setTimeout(function () {
           msgDiv.classList.remove('display');
           msgDiv.innerHTML = '';
-        }, 2000);
+        }, 1500);
       });
       /*});*/
     }
