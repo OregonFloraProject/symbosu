@@ -113,6 +113,10 @@ class SideBarVendor extends React.Component {
                       className="btn btn-primary"
                       name={label}
                       value={'Add ' + label + '?'}
+                      // eslint-disable-next-line
+                      tid={this.props.spp[label]}
+                      // eslint-disable-next-line
+                      section="spp"
                       action={'add'}
                       onClick={this.handleAddSPP.bind(this)}
                     ></input>
