@@ -195,7 +195,7 @@ class ExploreSearchResult extends React.Component {
     //console.log(this.props);
     if (this.props.display) {
       return (
-        <div className={'card search-result ' + (useGrid ? 'grid-result' : 'list-result')}>
+        <div id={`tid-${this.props.tid}`} className={'card search-result ' + (useGrid ? 'grid-result' : 'list-result')}>
           <div className={useGrid ? '' : 'card-body'}>
             {useGrid && (
               <img

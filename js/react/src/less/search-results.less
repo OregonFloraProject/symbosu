@@ -12,6 +12,16 @@
   }
 }
 
+// Animation to highlight newly added search results by blinking the same green as hover
+@keyframes blink-highlight {
+  0%, 100% {
+    background: transparent;
+  }
+  25%, 75% {
+    background: #dfefd3; // matches :hover color
+  }
+}
+
 .search-result-link-container {
   text-decoration: none !important;
   max-width: 185px;
@@ -25,6 +35,10 @@
     &:hover {
       background: #dfefd3 !important;
     }
+  }
+  // Applied when a new plant is added via updateSPP; blinks twice to draw attention
+  &.glow-highlight {
+    animation: blink-highlight 0.5s ease-out 2;
   }
   &.grid-result {
     width: 100%;

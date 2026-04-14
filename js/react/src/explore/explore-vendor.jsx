@@ -79,6 +79,7 @@ class ExploreApp extends React.Component {
       },
       isUploadOpen: false, //vendorUploadModal
       uploadResponse: {},
+      lastAddedTid: null,
     };
     this.getPid = this.getPid.bind(this);
     this.getClid = this.getClid.bind(this);
@@ -283,8 +284,12 @@ class ExploreApp extends React.Component {
         .then((res) => {
           let jres = JSON.parse(res);
           var msg = '';
-          if (jres.success > 0) {
-            msg = jres.success + ' plant' + (jres.success > 1 ? 's' : '') + ' ' + actionStr;
+          if (jres.status > 0) {
+            msg = jres.status + ' plant' + (jres.status > 1 ? 's' : '') + ' ' + actionStr;
+          }
+
+          if (action === 'add') {
+            this.setState({ lastAddedTid: value });
           }
 
           //clear updatedData
@@ -302,10 +307,9 @@ class ExploreApp extends React.Component {
           setTimeout(function () {
             msgDiv.classList.remove('display');
             msgDiv.innerHTML = '';
-          }, 2000);
+          }, 5000);
         })
         .catch((err) => {
-          //window.location = "/";
           console.error(err);
         })
         .finally(() => {
@@ -370,6 +374,20 @@ class ExploreApp extends React.Component {
   };
   componentDidMount() {
     this.getChecklist();
+  }
+
+  // Scroll to and highlight newly added plant after page finishes loading
+  // prevState is the second parameter, so we need to include _prevProps first.
+  componentDidUpdate(_prevProps, prevState) {
+    if (prevState.isLoading && !this.state.isLoading && this.state.lastAddedTid) {
+      const el = document.getElementById(`tid-${this.state.lastAddedTid}`);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        el.classList.add('glow-highlight'); // triggers blink animation in search-results.less
+        setTimeout(() => el.classList.remove('glow-highlight'), 2000);
+      }
+      this.setState({ lastAddedTid: null });
+    }
   }
   getChecklist() {
     // Load search results
