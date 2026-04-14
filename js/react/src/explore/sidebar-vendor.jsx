@@ -35,7 +35,6 @@ class SideBarVendor extends React.Component {
     if (this.props.totals['taxa'] < this.props.fixedTotals['taxa']) {
       showFixedTotals = true;
     }
-    //console.log(this.props.spp);
     return (
       <div id="sidebar" className="m-1 rounded-border" style={this.props.style}>
         <div className="currently-displayed">

@@ -97,6 +97,9 @@ class ExploreApp extends React.Component {
     this.previewSPPlist = this.previewSPPlist.bind(this);
     this.updateSPPlist = this.updateSPPlist.bind(this);
     this.clearUpload = this.clearUpload.bind(this);
+
+    // Flag to prevent updating app title
+    this.titleUpdated = false;
   }
 
   getClid() {
@@ -149,14 +152,10 @@ class ExploreApp extends React.Component {
     this.setState(
       {
         updatedData: Object.assign(this.state.updatedData, stateData),
-      },
-      function () {
-        //console.log(this.state.updatedData);
-      },
+      }
     );
   }
   previewSPPlist(arr) {
-    //console.log(arr);
     this.setUploadUpdating(true);
     let url = `${this.props.clientRoot}/checklists/rpc/api-vendor.php`;
     let mapParams = new URLSearchParams();
@@ -166,8 +165,6 @@ class ExploreApp extends React.Component {
     mapParams.append('clid', this.props.clid);
     mapParams.append('upload', JSON.stringify(arr));
     let mapParamString = mapParams.toString();
-    //console.log(url);
-    //console.log(mapParams);
 
     httpPost(url, mapParamString)
       .then((res) => {
@@ -203,10 +200,10 @@ class ExploreApp extends React.Component {
       mapParams.append('upload', JSON.stringify(this.state.uploadResponse.results));
       mapParams.append('tids', JSON.stringify(this.state.currentTids));
       let mapParamString = mapParams.toString();
-      //console.log(this.state.uploadResponse.results);
+
       //url += '?' + mapParams.toString();
-      //console.log(url);///checklists/rpc/api-vendor.php?update=info&pid=4&clid=14920&locality=alt+locality2&notes=alt+notes2
-      //httpGet(url)
+      //checklists/rpc/api-vendor.php?update=info&pid=4&clid=14920&locality=alt+locality2&notes=alt+notes2
+
       httpPost(url, mapParamString)
         .then((res) => {
           let jres = JSON.parse(res);
@@ -233,6 +230,9 @@ class ExploreApp extends React.Component {
   }
 
   updateSPP(obj) {
+    // Turn on load spinner
+    this.setState({ isLoading: true });
+    
     let section = obj.section;
     let name = obj.name;
     let value = obj.value;
@@ -274,8 +274,7 @@ class ExploreApp extends React.Component {
         mapParams.append(key, value);
       });
       url += '?' + mapParams.toString();
-      //console.log(url);
-      //return;
+
       ///checklists/rpc/api-vendor.php?update=spp&action=delete&pid=4&clid=14920&spp[]=3249
       ///checklists/rpc/api-vendor.php?update=spp&action=add&pid=4&clid=14920&spp[]=3549
       ///checklists/rpc/api-vendor.php?update=spp&action=edit&pid=4&clid=14920&spp=3277&notes=My+notes
@@ -331,7 +330,7 @@ class ExploreApp extends React.Component {
         mapParams.append(key, value);
       });
       url += '?' + mapParams.toString();
-      //console.log(url);///checklists/rpc/api-vendor.php?update=info&pid=4&clid=14920&locality=alt+locality2&notes=alt+notes2
+      ///checklists/rpc/api-vendor.php?update=info&pid=4&clid=14920&locality=alt+locality2&notes=alt+notes2
       httpGet(url).then((res) => {
         let jres = JSON.parse(res);
         var msg = '';
@@ -376,7 +375,6 @@ class ExploreApp extends React.Component {
     // Load search results
     let url = `${this.props.clientRoot}/checklists/rpc/api.php?clid=${this.props.clid}&pid=${this.props.pid}`;
     let exportUrl = `${this.props.clientRoot}/ident/rpc/api.php`; //use identify api for export
-    //console.log(url);
     httpGet(url)
       .then((res) => {
         // /checklists/rpc/api.php?clid=3
@@ -433,8 +431,12 @@ class ExploreApp extends React.Component {
           exportUrlCsv: exportUrl + `?export=vendorcsv&clid=` + this.getClid() + `&pid=` + this.getPid(), // + `&dynclid=` + this.getDynclid(),
           //exportUrlWord: exportUrl + `?export=word&clid=` + this.getClid() + `&pid=` + this.getPid(),// + `&dynclid=` + this.getDynclid()
         });
-        const pageTitle = document.getElementsByTagName('title')[0];
-        pageTitle.innerHTML = `${pageTitle.innerHTML} ${res.title}`;
+        if (!this.titleUpdated) {
+          const pageTitle = document.getElementsByTagName('title')[0];
+          pageTitle.innerHTML = `${pageTitle.innerHTML} ${res.title}`;
+          this.titleUpdated = true;
+        }
+        
       })
       .catch((err) => {
         //window.location = "/";
@@ -472,7 +474,6 @@ class ExploreApp extends React.Component {
 
   onFilterRemoved(key) {
     // TODO: This is clunky
-    //console.log(key);
     switch (key) {
       case 'searchText':
         this.setState(
@@ -498,7 +499,14 @@ class ExploreApp extends React.Component {
     newObj.name = searchObj.text;
     newObj.value = searchObj.tidaccepted;
 
-    this.updateField(newObj);
+    // Reset state.updatedData to only allow adding 1 plant
+    // Since setState is asynchronous, add the updateField function
+    // as callback
+    this.setState({
+      updatedData: Object.assign({}, this.state.updatedData, {
+        [newObj.section]: []
+      }),
+    }, () => this.updateField(newObj));
   }
   updateTotals(totals) {
     this.setState({
@@ -509,7 +517,6 @@ class ExploreApp extends React.Component {
   sortResults(results) {
     //should receive taxa from API
     let newResults = {};
-    //console.log(results);
 
     let familySort = {};
     let tmp = {};
