@@ -96,6 +96,7 @@ export default class vendorUploadModal extends Component {
     }
   }
   handleCancel() {
+      this.setState({ previewReady: false, uploadedFile: null, errorMsg: '' });
     this.props.clearUpload('cancel');
   }
   handleSubmit() {
