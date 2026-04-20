@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import Papa from 'papaparse';
 
 import { VendorUploadContainer } from '../common/searchResults.jsx';
 //import httpGet from "../common/httpGet.js";
@@ -15,125 +14,63 @@ export default class vendorUploadModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      previewReady: false,
+      uploadedFile: null,
       errorMsg: '',
-      //isSearching: false,
     };
 
     this.onToggleUploadClick = this.props.onToggleUploadClick.bind(this);
     this.setUploadUpdating = this.props.setUploadUpdating.bind(this);
     this.handleUpload = this.handleUpload.bind(this);
-    this.storeUpload = this.storeUpload.bind(this);
     this.processUpload = this.processUpload.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   handleUpload = (file) => {
-    this.setState({ errorMsg: '' });
-    let isCSV = true;
-    let mimeTypes = 'text/csv, application/vnd.ms-excel'; //text/csv, .csv, application/vnd.ms-excel
-    if (window.Blob) {
-      if (mimeTypes.indexOf(file.type) == -1) {
-        isCSV = false;
-      }
-    }
-    if (isCSV) {
-      const config = {
-        skipEmptyLines: true,
-        header: true,
-        transformHeader: function (h) {
-          //transformHeader is not well-documented, and only works with this anonymous function, not with a named function
-          let ret = h;
-          let acceptable = {
-            sciname: [
-              'sciname',
-              'scientificname',
-              'sci name',
-              'scientific name',
-              'sci_name',
-              'scientific_name',
-              'sci-name',
-              'scientific-name',
-            ],
-            notes: ['notes', 'mynotes', 'my-notes', 'my_notes'],
-          };
+    const allowedMimes = [
+      'text/csv',
+      'application/vnd.ms-excel',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    ];
+    const allowedExts = ['.csv', '.xls', '.xlsx'];
+    const fileExt = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
 
-          Object.keys(acceptable).forEach((columnName) => {
-            if (acceptable[columnName].indexOf(h.toLowerCase()) > -1) {
-              ret = columnName;
-            }
-          });
-          return ret;
-        },
-        complete: (results) => {
-          this.storeUpload(results);
-          this.setState({ previewReady: true });
-        },
-      };
-      Papa.parse(file, config);
-    } else {
-      this.setState({ errorMsg: 'Your file must be a .csv file.' });
-    }
-  };
-  storeUpload = (res) => {
-    //console.log(res.meta);
-    if (res.meta.fields.indexOf('sciname') != -1) {
-      //transformed above, so this works
-      this.setState({ uploadedFile: res.data });
-    } else {
+    if (!allowedMimes.includes(file.type) && !allowedExts.includes(fileExt)) {
       this.setState({
-        errorMsg:
-          'Your CSV file must contain a header row with column headings "ScientificName" (required) and "Notes" (optional).',
+        errorMsg: 'File must be a .csv, .xls, or .xlsx file.',
+        uploadedFile: null
       });
+      return;
     }
+    this.setState({ errorMsg: '', uploadedFile: file });
   };
   processUpload() {
     if (this.state.uploadedFile) {
       this.props.previewSPPlist(this.state.uploadedFile);
-    } else {
-      console.log('file is null');
     }
   }
   handleCancel() {
+    this.setState({ uploadedFile: null, errorMsg: '' });
     this.props.clearUpload('cancel');
   }
   handleSubmit() {
     this.props.updateSPPlist();
   }
-  /*
-  componentDidMount() {
-		if (this.props.clid > -1) {
-			httpGet(`${this.props.clientRoot}/checklists/rpc/api.php?clid=${this.props.clid}&pid=${this.props.pid}`)
-				.then((res) => {
-					// /checklists/rpc/api.php?clid=3&pid=1
-					res = JSON.parse(res);
 
-					this.setState({
-						title: res.title,
-      			intro: res.intro,
-			      iconUrl: res.iconUrl,
-						authors: res.authors,
-						abstract: res.abstract,
-						totals: res.totals,
-					});
-				})
-				.catch((err) => {
-					//window.location = "/";
-					console.error(err);
-				})
-				.finally(() => {
-					this.setState({ isLoading: false });
-				});
-			}
+  showErrorFromUpload() {
+    if (this.props.uploadResponse && this.props.uploadResponse.status === 'error') {
+      return <div className="error">Error: {this.props.uploadResponse.message}</div>
+    } else if (this.state.errorMsg) {
+      return <div className="error">Error: {this.state.errorMsg}</div>
+    }
+    return null;
   }
-*/
 
   render() {
     if (!this.props.show) {
       return null;
     }
-    let disabledStatus = this.state.previewReady ? '' : 'disabled';
+    let disabledStatus = this.state.uploadedFile ? '' : 'disabled';
     return (
       <div className="modal-backdrop vendor-upload-modal">
         <div className="modal-content container mx-auto">
@@ -147,7 +84,7 @@ export default class vendorUploadModal extends Component {
 
                 <div className="vendor-upload-header">
                   <h1>Inventory Manager</h1>
-                  <div className="close-modal" onClick={this.props.onToggleUploadClick}>
+                  <div className="close-modal" onClick={this.handleCancel}>
                     <FontAwesomeIcon icon="times-circle" size="2x" />
                   </div>
                   {this.props.uploadResponse && this.props.uploadResponse.status == 'success' ? (
@@ -198,7 +135,7 @@ export default class vendorUploadModal extends Component {
                           <input
                             name="vendor-upload"
                             type="file"
-                            accept="text/csv, application/vnd.ms-excel"
+                            accept=".csv,.xls,.xlsx"
                             onChange={(e) => {
                               this.handleUpload(e.target.files[0]);
                             }}
@@ -218,7 +155,7 @@ export default class vendorUploadModal extends Component {
                 </div>
 
                 <div className="col-12 vendor-upload-main">
-                  {this.state.errorMsg && <div className="error">Error: {this.state.errorMsg}</div>}
+                  {this.showErrorFromUpload()}
                   <VendorUploadContainer
                     uploadResponse={this.props.uploadResponse}
                     isSearching={this.props.isUploadUpdating}

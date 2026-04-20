@@ -10,6 +10,9 @@ include_once("$SERVER_ROOT/classes/InventoryManager.php");
 include_once("$SERVER_ROOT/classes/TaxaManager.php");
 include_once("$SERVER_ROOT/classes/IdentManager.php");
 
+require_once($SERVER_ROOT . '/vendor/autoload.php');
+use PhpOffice\PhpSpreadsheet\IOFactory;
+
 // Status code constants for previewSPP classification
 define('CODE_ACCEPTED', 'Accepted');
 define('CODE_SYNONYM', 'Synonym');
@@ -383,11 +386,86 @@ function markNonNativeAndSynonymDupes(&$rows, $em, $acceptedNativities) {
 	unset($entry);
 }
 
+function parseUploadedFile($tmpPath) {
+	$spreadsheet = IOFactory::load($tmpPath);
+	$sheet = $spreadsheet->getActiveSheet();
+	$rows = $sheet->toArray(null, true, true, false);
+
+	if (empty($rows)) {
+		return null;
+	}
+
+	$headers = $rows[0];
+	$normalizedHeaders = [];
+	$sciNameKey = null;
+
+	// Getting the header of the datasheet
+	foreach ($headers as $key => $header) {
+		$lower = strtolower($header);
+		if (in_array($lower, ['sciname', 'scientificname', 'sci name', 'scientific name', 'sci_name', 'scientific_name', 'sci-name', 'scientific-name'])) {
+			$normalizedHeaders[$key] = 'sciname';
+			$sciNameKey = $key;
+		} elseif (in_array($lower, ['notes', 'mynotes', 'my-notes', 'my_notes'])) {
+			$normalizedHeaders[$key] = 'notes';
+		} else {
+			$normalizedHeaders[$key] = $header;
+		}
+	}
+
+	// Require row ScientificName
+	if ($sciNameKey === null) {
+		return null;
+	}
+
+	// Getting plant from each row, ignoring blank rows
+	$result = [];
+	for ($i = 1; $i < count($rows); $i++) {
+		$row = $rows[$i];
+		$isBlank = true;
+		foreach ($row as $cell) {
+			if ($cell !== null && $cell !== '') {
+				$isBlank = false;
+				break;
+			}
+		}
+		if ($isBlank) {
+			continue;
+		}
+
+		$assocRow = [];
+		foreach ($row as $key => $value) {
+			if (isset($normalizedHeaders[$key])) {
+				$assocRow[$normalizedHeaders[$key]] = trim($value ?? '');
+			}
+		}
+		$result[] = $assocRow;
+	}
+
+	return $result;
+}
+
 function previewSPP() {
 	$RANK_GENUS = 180;
 	$acceptedNativities = ["endemic to Oregon", "native", "native and exotic", "native?"];
 
-	$input_array = json_decode(preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $_REQUEST['upload']), true);
+	$input_array = null;
+
+	if (isset($_FILES['upload']) && $_FILES['upload']['error'] === UPLOAD_ERR_OK) {
+		$input_array = parseUploadedFile($_FILES['upload']['tmp_name']);
+		if ($input_array === null) {
+			return [
+				'status' => 'error',
+				'message' => 'Your file must contain a header row with "ScientificName" (required) and "Notes" (optional).'
+			];
+		}
+	} elseif (!empty($_REQUEST['upload'])) {
+		$input_array = json_decode(preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $_REQUEST['upload']), true);
+	}
+
+	if (empty($input_array)) {
+		return ['status' => 'error', 'message' => 'No data received.'];
+	}
+
 	$em = SymbosuEntityManager::getEntityManager();
 
 	// Normalize all names and collect unique search terms

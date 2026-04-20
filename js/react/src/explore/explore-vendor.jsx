@@ -156,26 +156,27 @@ class ExploreApp extends React.Component {
       }
     );
   }
-  previewSPPlist(arr) {
+  previewSPPlist(file) {
     this.setUploadUpdating(true);
-    let url = `${this.props.clientRoot}/checklists/rpc/api-vendor.php`;
-    let mapParams = new URLSearchParams();
-    mapParams.append('update', 'spp');
-    mapParams.append('action', 'preview');
-    mapParams.append('pid', this.props.pid);
-    mapParams.append('clid', this.props.clid);
-    mapParams.append('upload', JSON.stringify(arr));
-    let mapParamString = mapParams.toString();
+    const url = `${this.props.clientRoot}/checklists/rpc/api-vendor.php`;
 
-    httpPost(url, mapParamString)
-      .then((res) => {
-        let jres = JSON.parse(res);
+    const formData = new FormData();
+    formData.append('update', 'spp');
+    formData.append('action', 'preview');
+    formData.append('pid', this.props.pid);
+    formData.append('clid', this.props.clid);
+    formData.append('upload', file);
+
+    // fetch instead of httpPost: FormData requires multipart/form-data,
+    // but httpPost.js hardcodes Content-type: application/x-www-form-urlencoded
+    fetch(url, { method: 'POST', body: formData })
+      .then((res) => res.json())
+      .then((jres) => {
         this.setState({
           uploadResponse: jres,
         });
       })
       .catch((err) => {
-        //window.location = "/";
         console.error(err);
       })
       .finally(() => {
@@ -567,7 +568,6 @@ class ExploreApp extends React.Component {
         <VendorUploadModal
           //key={this.state.currClid}
           show={this.state.isUploadOpen}
-          onToggleUploadClick={this.toggleUploadModal}
           setUploadUpdating={this.setUploadUpdating}
           isUploadUpdating={this.state.isUpdating['sppList']}
           previewSPPlist={this.previewSPPlist}
