@@ -96,7 +96,7 @@ elseif($uploadType == $DIRECTUPLOAD || $uploadType == $STOREDPROCEDURE || $uploa
 			$maxUpload = ini_get('upload_max_filesize');
 			$maxUpload = str_replace("M", "000000", $maxUpload);
 			$maxUpload = str_replace("G", "000000000", $maxUpload);
-			if($maxUpload > 100000000) $maxUpload = 100000000;
+			if($maxUpload > 1000000000) $maxUpload = 1000000000;
 			echo 'var maxUpload = '.$maxUpload.";\n";
 			?>
 			var file = inputObj.files[0];

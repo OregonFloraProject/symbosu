@@ -129,7 +129,7 @@ $duManager->loadFieldMap(true);
 			<?php
 			$maxUpload = ini_get('upload_max_filesize');
 			$maxUpload = str_replace("M", "000000", $maxUpload);
-			if($maxUpload > 100000000) $maxUpload = 100000000;
+			if($maxUpload > 10000000000) $maxUpload = 10000000000;
 			echo 'var maxUpload = '.$maxUpload.";\n";
 			?>
 			var file = inputObj.files[0];
