@@ -173,13 +173,16 @@ function addLandOwnershipOverlays(map, clientRoot) {
 		{ label: 'State of OR',  file: 'OR_coordinates.geojson',  color: '#23e7f5' },
 		{ label: 'Local Govt',  file: 'Local_Govt_coordinates.geojson',  color: '#A9D5B8' },
 		{ label: 'Other Federal',  file: 'Other_Federal_coordinates.geojson',  color: '#1A9B8E' },
-		{ label: 'Tribal',  file: 'Tribal_coordinates.geojson',  color: '#4B0082' },
-		// { label: 'Private',  file: 'Private_coordinates.geojson',  color: '#C1666B' },
+		{ label: 'Tribal',  file: 'Tribal_coordinates.geojson',  color: '#ceabe0' },
+		{ label: 'Private',
+		  file:  'PrivateOwnership2.geojson',
+		  color: '#fff'
+		},
 	];
 
 	const groups = {};  // label -> layerGroup mapping for grouping function
 
-	lands.forEach(function({ label, file, color }) {
+	lands.forEach(function({ label, file, files, color }) {
 		// Add overlay that is lazy-loaded on first toggle-on
 		let group = L.layerGroup();
 		let data = null;  // cached after first fetch, kept in memory across toggles
@@ -188,32 +191,43 @@ function addLandOwnershipOverlays(map, clientRoot) {
 			style: {
 				color: color,
 				weight: 2,
-				opacity: 0.8,
+				opacity: 1,
 				fillColor: color,
-				fillOpacity: label !== 'Private' ? 0.4 : 0
+				fillOpacity: 0.4
 			},
 			onEachFeature: function(feature, layer) {
 				let p = feature.properties;
 				layer.bindPopup(
-					'<strong>' + (p.FeeTitleHolder || 'Unknown') + '</strong><br>' +
+					'<strong>' + (p.FeeTitleHolder || 
+						(label === 'Private' ? 'Private' : 'Unknown')) 
+						+ '</strong><br>' +
 					'Land Owner: ' + label
 				);
 			}
 		};
 
-		map.mapLayer.on('overlayadd', function(e) {
+		map.mapLayer.on('overlayadd', async function(e) {
 			if (e.layer !== group) return;
 			if (data) {
 				// Data already fetched: just re-render into the group
 				L.geoJson(data, layerOptions).addTo(group);
 				return;
 			}
-			fetch(clientRoot + 'js/leaflet.OregonFlora/layers/' + file)
-				.then(response => response.json())
-				.then(function(fetched) {
-					data = fetched;
-					L.geoJson(data, layerOptions).addTo(group);
-				});
+
+			// Private layer gets split into multiple files because of GitHub
+			// upload size limit 100MB
+			if (files && files.length > 0) {
+				let chunk_combined = '';
+				for (const f of files) {
+					const chunk = await fetch(clientRoot + 'js/leaflet.OregonFlora/layers/' + f);
+					chunk_combined += await chunk.text();
+				}
+				data = JSON.parse(chunk_combined);
+			} else {
+				const response = await fetch(clientRoot + 'js/leaflet.OregonFlora/layers/' + file);
+				data = await response.json();
+			}
+			L.geoJson(data, layerOptions).addTo(group);
 		});
 
 		map.mapLayer.on('overlayremove', function(e) {
