@@ -170,7 +170,11 @@ function addLandOwnershipOverlays(map, clientRoot) {
 	const lands = [
 		{ label: 'BLM', file: 'blm_coordinates.geojson', color: '#f5e723' },
 		{ label: 'USFS', file: 'USFS_coordinates.geojson', color: '#23f52e' },
-		{ label: 'OR',  file: 'OR_coordinates.geojson',  color: '#23e7f5' },
+		{ label: 'State of OR',  file: 'OR_coordinates.geojson',  color: '#23e7f5' },
+		{ label: 'Local Govt',  file: 'Local_Govt_coordinates.geojson',  color: '#A9D5B8' },
+		{ label: 'Other Federal',  file: 'Other_Federal_coordinates.geojson',  color: '#1A9B8E' },
+		{ label: 'Tribal',  file: 'Tribal_coordinates.geojson',  color: '#4B0082' },
+		// { label: 'Private',  file: 'Private_coordinates.geojson',  color: '#C1666B' },
 	];
 
 	const groups = {};  // label -> layerGroup mapping for grouping function
@@ -186,13 +190,13 @@ function addLandOwnershipOverlays(map, clientRoot) {
 				weight: 2,
 				opacity: 0.8,
 				fillColor: color,
-				fillOpacity: 0.4
+				fillOpacity: label !== 'Private' ? 0.4 : 0
 			},
 			onEachFeature: function(feature, layer) {
 				let p = feature.properties;
 				layer.bindPopup(
 					'<strong>' + (p.FeeTitleHolder || 'Unknown') + '</strong><br>' +
-					'Land Manager: ' + label
+					'Land Owner: ' + label
 				);
 			}
 		};
