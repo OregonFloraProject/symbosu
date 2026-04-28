@@ -426,7 +426,15 @@ function addOverlays(map) {
 			countiesData = data;
 			L.geoJson(countiesData, countiesLayerOptions).addTo(countiesGroup);
 		});
-
+	
+	/* 2026-04-28 (Brian): Keeping for old reference. Haven't worked on dbclick
+	 * event in the lazy-load version
+	 */ 
+	// Add ecoregions from KML using the KML plugin if not on the dynamicMap page:
+	// fetch(clientRoot + 'js/leaflet.OregonFlora/layers/ecoregions.kml')
+	// 	.then(res => res.text())
+	// 	.then(kmltext => addKMLLayer(kmltext, 'Ecoregions', map, false));
+	
 	// Add ecoregions layer from KML using the KML plugin if not on the dynamicMap page.
 	// Lazy loaded on first toggle-on
 	let ecoregionsGroup = L.layerGroup();
@@ -543,7 +551,12 @@ function processLayersAndPopups(layers, userAdded) {
 				const popupContent = layer?.getPopup()?.getContent();
 				if (popupContent) {
 					const title = popupContent.substring(0, popupContent.indexOf('</h2>') + 5);
-					layer.setPopupContent(`${title}Double-click to search this polygon`);
+					/* 2026-04-28 (Brian): Keeping for old reference. Haven't worked on dbclick
+					 * event in the lazy-load version. Reactivate the commented code when you
+					 * did
+					 */ 
+					// layer.setPopupContent(`${title}Double-click to search this polygon`);
+					layer.setPopupContent(`${title}`);
 				}
 			}
 
