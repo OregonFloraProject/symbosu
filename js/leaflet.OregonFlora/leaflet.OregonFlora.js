@@ -441,22 +441,37 @@ function addOverlays(map) {
 	let ecoregionsText = null;  // cached KML text after first fetch
 
 	map.mapLayer.on('overlayadd', function(e) {
-		if (e.layer !== ecoregionsGroup) return;
-		if (ecoregionsText) {
+		function importKML(ecoregionsText) {
 			const kml = new DOMParser().parseFromString(ecoregionsText, 'text/xml');
 			let layer = new L.KML(kml);
-			processLayersAndPopups(layer, false);
+			// Check all the layers in the KML and remove non-polygon layers.
+			// If there are no polygons in the KML, abort and alert the user
+			if (!processLayersAndPopups(layer, false)) {
+				alert('No polygons were present in the KML file. To search using a KML file, make sure it contains at least one polygon');
+				return;
+			}
+			// if (typeof MAP_KML_IMPORT_FLAG !== 'undefined' && MAP_KML_IMPORT_FLAG) {
+			// 	layer.on('dblclick', (event) => {
+			// 		if (event.layer instanceof L.Polygon) {
+			// 			map.clearMap();
+			// 			map.drawShape({ type: 'polygon', latlngs: event.layer.getLatLngs()[0] });
+			// 			setQueryShape(getShapeCoords('polygon', event.layer));
+			// 		}
+			// 	});
+			// }
 			layer.addTo(ecoregionsGroup);
+		}
+
+		if (e.layer !== ecoregionsGroup) return;
+		if (ecoregionsText) {
+			importKML(ecoregionsText);
 			return;
 		}
 		fetch(clientRoot + 'js/leaflet.OregonFlora/layers/ecoregions.kml')
 			.then(res => res.text())
 			.then(kmltext => {
 				ecoregionsText = kmltext;
-				const kml = new DOMParser().parseFromString(ecoregionsText, 'text/xml');
-				let layer = new L.KML(kml);
-				processLayersAndPopups(layer, false);
-				layer.addTo(ecoregionsGroup);
+				importKML(ecoregionsText);
 			});
 	});
 
