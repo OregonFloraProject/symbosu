@@ -332,6 +332,8 @@ if(isset($geojson['features']) && is_array($geojson['features'])){
 			);
 		}
 
+		if(!$tid || !isset($taxaArr[$tid])) continue;
+
 		$lat = $geom['coordinates'][1];
 		$lng = $geom['coordinates'][0];
 		$collType = $props['CollType'] ?? '';

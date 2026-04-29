@@ -1,5 +1,6 @@
 // OregonFlora extensions for using SOLR search on collections/map/index
 
+// Deprecated: moved to spatial/rpc/solrSearch.php
 function getCollectionParams(formData) {
   const dbs = formData.getAll('db[]');
   let c = false;
@@ -30,6 +31,7 @@ function getCollectionParams(formData) {
   }
 }
 
+// Deprecated: moved to spatial/rpc/solrSearch.php
 async function prepareTaxaDataAsync(taxaArr, taxontype, thes) {
   const url = '../../spatial/rpc/gettaxalinks.php';
   const taxaArrStr = JSON.stringify(taxaArr);
@@ -43,6 +45,7 @@ async function prepareTaxaDataAsync(taxaArr, taxontype, thes) {
   return await response.json();
 }
 
+// Deprecated: moved to spatial/rpc/solrSearch.php
 function isFamilyName(taxonString) {
   // if a taxon string ends with 'aceae' or 'idae' and is a single word, assume it's a family name
   // the check for a single word is here to avoid false positives such as Corydalis aquae-gelidae
@@ -53,6 +56,7 @@ function isFamilyName(taxonString) {
   );
 }
 
+// Deprecated: moved to spatial/rpc/solrSearch.php
 async function prepareTaxaParamsAsync(formData) {
   const taxaval = formData.get('taxa').trim();
   if (taxaval) {
@@ -151,6 +155,7 @@ async function prepareTaxaParamsAsync(formData) {
   return { cql: [], solrq: [] };
 }
 
+// Deprecated: moved to spatial/rpc/solrSearch.php
 function getTextParams(formData) {
   let cqlArr = [];
   let solrqArr = [];
@@ -400,6 +405,7 @@ function getTextParams(formData) {
   return { cql: cqlArr, solrq: solrqArr };
 }
 
+// Deprecated: moved to spatial/rpc/solrSearch.php
 function getGeographyParams(formData) {
   let solrgeoqArr = [];
   const polygon = formData.get('polycoords');
@@ -451,6 +457,7 @@ function getGeographyParams(formData) {
   return { solrgeoqArr };
 }
 
+// Deprecated: moved to spatial/rpc/solrSearch.php
 function parseDate(dateStr) {
   let y = 0;
   let m = 0;
@@ -519,6 +526,7 @@ function parseDate(dateStr) {
   return retArr;
 }
 
+// Deprecated: moved to spatial/rpc/solrSearch.php
 function formatCheckDate(dateStr) {
   if (dateStr != '') {
     let dateArr = parseDate(dateStr);
@@ -566,6 +574,7 @@ function formatCheckDate(dateStr) {
   }
 }
 
+// Deprecated: moved to spatial/rpc/solrSearch.php
 async function buildSOLRQString(formData) {
   const collParams = getCollectionParams(formData);
   const taxaParams = await prepareTaxaParamsAsync(formData);
@@ -613,6 +622,7 @@ async function buildSOLRQString(formData) {
   return newsolrqString;
 }
 
+// Deprecated: moved to spatial/rpc/solrSearch.php
 async function getRecordCountFromSOLR(solrqString) {
   const response = await fetch('../../spatial/rpc/SOLRConnector.php', {
     method: 'POST',
@@ -626,11 +636,13 @@ async function getRecordCountFromSOLR(solrqString) {
   };
 }
 
+// Deprecated: moved to spatial/rpc/solrSearch.php
 const SOLR_FIELDS =
   'occid,collid,catalogNumber,family,sciname,tidinterpreted,recordedBy,recordNumber,eventDate,' +
   'geo,CollectionName,CollType';
 const MAX_RECORD_COUNT = 20000;
 
+// Deprecated: moved to spatial/rpc/solrSearch.php
 async function loadPointsFromSOLR(solrqString, recordCount, host) {
   const response = await fetch('../../spatial/rpc/SOLRConnector.php', {
     method: 'POST',
@@ -644,11 +656,13 @@ async function loadPointsFromSOLR(solrqString, recordCount, host) {
   return convertSOLRResponse(data, host);
 }
 
+// Deprecated: moved to spatial/rpc/solrSearch.php
 const SOLR_TYPE_TO_SYMBIOTA_TYPE = {
   ['Observations']: 'observation',
   ['Preserved Specimens']: 'specimen',
 };
 
+// Deprecated: moved to spatial/rpc/solrSearch.php
 function convertSOLRResponse(res, host) {
   const { features } = res;
   const taxaArr = {};
