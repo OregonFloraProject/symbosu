@@ -1822,43 +1822,18 @@ if(isset($_REQUEST['llpoint'])) {
 				const url = host? `${host}/collections/map/rpc/searchCollections.php`: 'rpc/searchCollections.php'
 
 <?php if ($USE_SOLR_SEARCH) { ?>
-				// get query string for sessionStorage and copy link button
-				const queryPromise = fetch('rpc/searchCollections.php?queryOnly=true', {
+				const response = await fetch('../../spatial/rpc/solrSearch.php', {
 					method: 'POST',
+					credentials: 'same-origin',
 					body,
-				}).then(async (response) => {
-					const { query } = await response.json();
-					sessionStorage.querystr = query;
-					return query;
 				});
-
-				// find buildSOLRQString, getRecordCountFromSOLR, loadPointsFromSOLR
-				// at js/symb/collections.map.index.OregonFlora.js
-				
-				const solrqString = await buildSOLRQString(body);
-				if (!solrqString) {
-					throw new Error('Invalid query, not enough parameters were filled out');
-				}
-				// if our query includes a polygon, save solrqString so we can pass it to downloadhandler
-				// since SOLR search is way faster than MySQL with polygons
-				if (body.has('polycoords') || body.has('upperlat')) {
-					sessionStorage.setItem('solrqstring', solrqString);
-				}
-				const { recordCount, hiddenFound } = await getRecordCountFromSOLR(solrqString);
-				if (hiddenFound) {
+				const search = await response.json();
+				sessionStorage.querystr = search.query ?? '';
+				if (search.hiddenFound) {
 					alert('Search results for some rare taxa are hidden. To view all results, you must be logged into an account with rare species privileges.');
 				}
-				const [response, query] = await Promise.all([
-					loadPointsFromSOLR(
-						solrqString,
-						recordCount,
-						host ?? <?php echo isset($SERVER_HOST) ? "'" . ((str_contains($SERVER_HOST, '127.0.0.1') || str_contains($SERVER_HOST, 'localhost')) ? "http://" : "https://") . $SERVER_HOST . $CLIENT_ROOT . "'" : 'false';?>
-					),
-					queryPromise,
-				]);
-				response.query = query;
-				response.recordCount = recordCount;
-				return response;
+				search.recordCount = search.recordCount ?? search.recordArr.length;
+				return search;
 <?php } else { ?>
 				let response = await fetch(url, {
 					method: "POST",
