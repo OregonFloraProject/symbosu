@@ -13,7 +13,6 @@
 vendor/
 !**/.gitkeep
 temp/*
-.DS_Store
-*/.DS_Store
+**/.DS_Store
 /webservices/dwc/rss.xml
 /js/react/src/less/config.less
