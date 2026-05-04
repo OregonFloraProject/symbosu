@@ -176,7 +176,7 @@ function addLandOwnershipOverlays(map, clientRoot) {
 		{ label: 'Tribal',  file: 'Tribal_coordinates.geojson',  color: '#ceabe0' },
 		{ label: 'Private',
 		  file:  'PrivateOwnership2.geojson',
-		  color: '#fff'
+		  color: '#bbb'
 		},
 	];
 
