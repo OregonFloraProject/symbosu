@@ -134,7 +134,7 @@ export default class ImageModalCarousel extends Component {
           })}
         </Slider>
 
-        <Slider
+        {/* <Slider
           asNavFor={this.state.nav1}
           ref={(slider) => (this.slider2 = slider)}
           slidesToShow={this.state.slideshowCount}
@@ -173,7 +173,7 @@ export default class ImageModalCarousel extends Component {
               </div>
             );
           })}
-        </Slider>
+        </Slider> */}
       </div>
     );
   }
