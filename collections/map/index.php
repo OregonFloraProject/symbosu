@@ -1822,18 +1822,30 @@ if(isset($_REQUEST['llpoint'])) {
 				const url = host? `${host}/collections/map/rpc/searchCollections.php`: 'rpc/searchCollections.php'
 
 <?php if ($USE_SOLR_SEARCH) { ?>
-				const response = await fetch('../../spatial/rpc/solrSearch.php', {
+				// get query string for sessionStorage and copy link button
+				const query = await fetch('rpc/searchCollections.php?queryOnly=true', {
 					method: 'POST',
-					credentials: 'same-origin',
 					body,
-				});
-				const search = await response.json();
-				sessionStorage.querystr = search.query ?? '';
+				}).json();
+				sessionStorage.querystr = query;
+
+				const response = await fetch('/spatial/rpc/solrSearch.php', {
+					method: 'POST',
+					body,
+				}).json();
+				// if our query includes a polygon, save solrqString so we can pass it to downloadhandler
+				// since SOLR search is way faster than MySQL with polygons
+				if (body.has('polycoords') || body.has('upperlat')) {
+					sessionStorage.setItem('solrqstring', response.solrQuery);
+				}
+
 				if (search.hiddenFound) {
 					alert('Search results for some rare taxa are hidden. To view all results, you must be logged into an account with rare species privileges.');
 				}
-				search.recordCount = search.recordCount ?? search.recordArr.length;
-				return search;
+
+				response.query = query;
+				response.recordCount = response.recordCount;
+				return response;
 <?php } else { ?>
 				let response = await fetch(url, {
 					method: "POST",
