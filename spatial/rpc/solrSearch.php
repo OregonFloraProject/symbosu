@@ -49,445 +49,11 @@ $rightlong = isset($_POST['rightlong']) ? trim($_POST['rightlong']) : '';
 $bottomlat = isset($_POST['bottomlat']) ? trim($_POST['bottomlat']) : '';
 $leftlong = isset($_POST['leftlong']) ? trim($_POST['leftlong']) : '';
 
-$solrqArr = array();
-$solrgeoqArr = array();
-
-// Build collection params
-if(is_array($db) && !empty($db)){
-	$all = false;
-	$collid = '';
-	foreach($db as $d){
-		if($d === 'all'){
-			$all = true;
-			break;
-		}
-	}
-	if(!$all){
-		$collid = implode(' ', $db);
-		if(!empty($collid)){
-			$solrqArr[] = '(collid:(' . $collid . '))';
-		}
-	}
-}
-
-// Build taxa params
-if($taxa){
-	$taxavals = array_map('trim', explode(',', $taxa));
-	$taxonNames = array();
-	foreach($taxavals as $name){
-		if($taxontype === '1'){
-			$splitArr = explode(': ', $name);
-			$name = end($splitArr);
-		}
-		$taxonNames[] = $name;
-	}
-
-	$taxaArr = getTaxaData($con, $spatialManager, $taxonNames, $taxontype, $usethes);
-
-	if($taxaArr){
-		$taxaSolrqString = '';
-		foreach($taxaArr as $key => $valueArray){
-			if($taxontype == 4){
-				$taxaSolrqString .= ' OR (parenttid:' . $key . ')';
-			}
-			else{
-				if($taxontype == 5){
-					$famArr = array();
-					$scinameArr = array();
-					if(isset($valueArray['families'])){
-						$famArr = $valueArray['families'];
-					}
-					if(!empty($famArr)){
-						$taxaSolrqString .= ' OR (family:(' . implode(' ', $famArr) . '))';
-					}
-					if(isset($valueArray['scinames'])){
-						$scinameArr = $valueArray['scinames'];
-						if(!empty($scinameArr)){
-							foreach($scinameArr as $s){
-								$sciEscaped = str_replace(' ', '\\ ', $s);
-								$taxaSolrqString .= ' OR ((sciname:' . $sciEscaped . ') OR (sciname:' . $sciEscaped . '\\ *))';
-							}
-						}
-					}
-				}
-				else{
-					// taxontype 1, 2, 3
-					if($taxontype == 3 || isFamilyName($key)){
-						$taxaSolrqString .= ' OR (family:' . $key . ')';
-					}
-					if($taxontype == 3 || !isFamilyName($key)){
-						$keyEscaped = str_replace(' ', '\\ ', $key);
-						$taxaSolrqString .= ' OR ((sciname:' . $keyEscaped . ') OR (sciname:' . $keyEscaped . '\\ *))';
-					}
-				}
-				if(isset($valueArray['synonyms'])){
-					$synArr = $valueArray['synonyms'];
-					$tidArr = array();
-					if($taxontype == 1 || $taxontype == 2 || $taxontype == 5){
-						foreach($synArr as $synTid => $synName){
-							if(isFamilyName($synName)){
-								$taxaSolrqString .= ' OR (family:' . $synName . ')';
-							}
-						}
-					}
-					foreach($synArr as $synTid => $synName){
-						$tidArr[] = $synTid;
-					}
-					if(!empty($tidArr)){
-						$taxaSolrqString .= ' OR (tidinterpreted:(' . implode(' ', $tidArr) . '))';
-					}
-				}
-			}
-		}
-		if(!empty($taxaSolrqString)){
-			$taxaSolrqString = substr($taxaSolrqString, 4);
-			$solrqArr[] = '(' . $taxaSolrqString . ')';
-		}
-	}
-}
-
-// Build text params
-buildTextParams($country, $state, $county, $local, $collector, $collnum, $eventdate1, $eventdate2,
-	$catnum, $includeothercatnum, $typestatus, $hasimages, $hasgenetic, $includecult, $excludeinat,
-	$solrqArr);
-
-// Build geography params
-buildGeographyParams($polycoords, $pointlat, $pointlong, $radius, $pointunits,
-	$upperlat, $rightlong, $bottomlat, $leftlong, $solrgeoqArr);
-
-// Assemble SOLR query
-$q = '';
-if(!empty($solrqArr)){
-	$q = implode(' AND ', $solrqArr);
-	$q .= ' AND (decimalLatitude:[* TO *] AND decimalLongitude:[* TO *] AND sciname:[* TO *])';
-}
-else{
-	$q = '(sciname:[* TO *])';
-}
-
-$fq = '';
-if(!empty($solrgeoqArr)){
-	$fq = implode(' OR geo:', $solrgeoqArr);
-	$fq = 'geo:' . $fq;
-}
-
-// Store original query for returning to client
-$originalQ = $q;
-
-// Get record count (before security applied)
-$pArrCount = array(
-	'q' => $q,
-	'rows' => 0,
-	'start' => 0,
-	'wt' => 'json',
-	'action' => 'getsolrreccnt'
-);
-if(!empty($fq)) $pArrCount['fq'] = $fq;
-
-$headers = array(
-	'Content-Type: application/x-www-form-urlencoded',
-	'Accept: application/json',
-	'Cache-Control: no-cache',
-	'Pragma: no-cache',
-	'Content-Length: '.strlen(http_build_query($pArrCount))
-);
-
-$ch = curl_init();
-$options = array(
-	CURLOPT_URL => $SOLR_URL.'/select',
-	CURLOPT_POST => true,
-	CURLOPT_HTTPHEADER => $headers,
-	CURLOPT_TIMEOUT => 90,
-	CURLOPT_POSTFIELDS => http_build_query($pArrCount),
-	CURLOPT_RETURNTRANSFER => true
-);
-curl_setopt_array($ch, $options);
-$result = curl_exec($ch);
-curl_close($ch);
-$fullJSON = $result;
-$full = json_decode($fullJSON, true);
-$hiddenFound = 0;
-
-// Apply security and get filtered count if needed
-$qSecure = $q;
-if(!$canReadRareSpp){
-	if($qSecure == '*:*'){
-		$qSecure = '(localitySecurity:0)';
-	}
-	else{
-		$qSecure .= ' AND (localitySecurity:0)';
-	}
-}
-
-if(!$canReadRareSpp && $qSecure !== $q){
-	$pArrSecure = array(
-		'q' => $qSecure,
-		'rows' => 0,
-		'start' => 0,
-		'wt' => 'json',
-		'action' => 'getsolrreccnt'
-	);
-	if(!empty($fq)) $pArrSecure['fq'] = $fq;
-
-	$headers = array(
-		'Content-Type: application/x-www-form-urlencoded',
-		'Accept: application/json',
-		'Cache-Control: no-cache',
-		'Pragma: no-cache',
-		'Content-Length: '.strlen(http_build_query($pArrSecure))
-	);
-
-	$ch = curl_init();
-	$options = array(
-		CURLOPT_URL => $SOLR_URL.'/select',
-		CURLOPT_POST => true,
-		CURLOPT_HTTPHEADER => $headers,
-		CURLOPT_TIMEOUT => 90,
-		CURLOPT_POSTFIELDS => http_build_query($pArrSecure),
-		CURLOPT_RETURNTRANSFER => true
-	);
-	curl_setopt_array($ch, $options);
-	$partialJSON = curl_exec($ch);
-	curl_close($ch);
-	$partial = json_decode($partialJSON, true);
-
-	if($full['response']['numFound'] > $partial['response']['numFound']){
-		$hiddenFound = $full['response']['numFound'] - $partial['response']['numFound'];
-	}
-	$recordCount = $partial['response']['numFound'];
-}
-else{
-	$recordCount = $full['response']['numFound'];
-}
-
-// Execute main SOLR query with security
-$MAX_RECORD_COUNT = 20000;
-$SOLR_FIELDS = 'occid,collid,catalogNumber,family,sciname,tidinterpreted,recordedBy,recordNumber,eventDate,geo,CollectionName,CollType';
-
-$pArr = array(
-	'q' => $qSecure,
-	'rows' => min($recordCount, $MAX_RECORD_COUNT),
-	'start' => 0,
-	'fl' => $SOLR_FIELDS,
-	'wt' => 'geojson',
-	'geojson.field' => 'geo',
-	'omitHeader' => 'true'
-);
-if(!empty($fq)) $pArr['fq'] = $fq;
-
-$headers = array(
-	'Content-Type: application/x-www-form-urlencoded',
-	'Accept: application/json',
-	'Cache-Control: no-cache',
-	'Pragma: no-cache',
-	'Content-Length: '.strlen(http_build_query($pArr))
-);
-
-$ch = curl_init();
-$options = array(
-	CURLOPT_URL => $SOLR_URL.'/select',
-	CURLOPT_POST => true,
-	CURLOPT_HTTPHEADER => $headers,
-	CURLOPT_TIMEOUT => 90,
-	CURLOPT_POSTFIELDS => http_build_query($pArr),
-	CURLOPT_RETURNTRANSFER => true
-);
-curl_setopt_array($ch, $options);
-$result = curl_exec($ch);
-curl_close($ch);
-
-$geojson = json_decode($result, true);
-
-// Convert GeoJSON response
-$taxaArr = array();
-$collArr = array();
-$recordArr = array();
-
-$SOLR_TYPE_TO_SYMBIOTA_TYPE = array(
-	'Observations' => 'observation',
-	'Preserved Specimens' => 'specimen'
-);
-
-if(isset($geojson['features']) && is_array($geojson['features'])){
-	foreach($geojson['features'] as $feature){
-		$props = $feature['properties'];
-		$geom = $feature['geometry'];
-
-		$tid = isset($props['tidinterpreted']) ? $props['tidinterpreted'] : '';
-		if($tid && !isset($taxaArr[$tid])){
-			$taxaArr[$tid] = array(
-				'sn' => $props['sciname'] ?? '',
-				'tid' => $tid,
-				'family' => isset($props['family']) ? strtoupper($props['family']) : '',
-				'color' => 'e69e67'
-			);
-		}
-
-		$collid = isset($props['collid']) ? $props['collid'] : '';
-		if($collid && !isset($collArr[$collid])){
-			$collArr[$collid] = array(
-				'name' => $props['CollectionName'] ?? '',
-				'collid' => $collid,
-				'color' => 'e69e67'
-			);
-		}
-
-		if(!$tid || !isset($taxaArr[$tid])) continue;
-
-		$lat = $geom['coordinates'][1];
-		$lng = $geom['coordinates'][0];
-		$collType = $props['CollType'] ?? '';
-		$type = isset($SOLR_TYPE_TO_SYMBIOTA_TYPE[$collType]) ? $SOLR_TYPE_TO_SYMBIOTA_TYPE[$collType] : '';
-
-		$recordedBy = $props['recordedBy'] ?? '';
-		$recordNumber = $props['recordNumber'] ?? '';
-		$id = ($recordedBy && $recordNumber ? $recordedBy . ' ' . $recordNumber : ($recordedBy ?: $recordNumber ?: ''));
-
-		$eventDate = isset($props['eventDate']) ? substr($props['eventDate'], 0, strpos($props['eventDate'], 'T')) : '';
-
-		$recordArr[] = array(
-			'occid' => $props['occid'] ?? '',
-			'collid' => $collid,
-			'collname' => $props['CollectionName'] ?? '',
-			'family' => isset($props['family']) ? strtoupper($props['family']) : '',
-			'lat' => $lat,
-			'lng' => $lng,
-			'tid' => (string)$tid,
-			'type' => $type,
-			'catnum' => $props['catalogNumber'] ?? '',
-			'eventdate' => $eventDate,
-			'sciname' => $props['sciname'] ?? '',
-			'id' => $id
-		);
-	}
-}
-
-$con->close();
-
-// Return response
-$response = array(
-	'taxaArr' => $taxaArr,
-	'collArr' => $collArr,
-	'recordArr' => $recordArr,
-	'recordCount' => $recordCount,
-	'hiddenFound' => $hiddenFound,
-	'query' => $originalQ . (empty($fq) ? '' : '&fq=' . urlencode($fq))
-);
-
-echo json_encode($response);
-
 // Helper functions
 
-function getTaxaData($con, $spatialManager, $taxonNames, $taxontype, $useThes){
-	$tempTaxaArr = array();
-	$taxaArr = array();
-
-	foreach($taxonNames as $name){
-		if(is_numeric($name)){
-			$sql = 'SELECT sciname FROM taxa WHERE (TID = '.(int)$name.')';
-			$rs = $con->query($sql);
-			if($row = $rs->fetch_object()){
-				$taxaStr = $row->sciname;
-				if($taxaStr) $taxaArr[$taxaStr] = array();
-			}
-			$rs->close();
-		}
-		else{
-			if($taxontype != 5) $name = ucfirst($name);
-			$taxaArr[$name] = array();
-		}
-	}
-
-	if($taxontype == 5){
-		$sql = "SELECT DISTINCT v.VernacularName, t.tid, t.sciname, ts.family, t.rankid ".
-			"FROM (taxstatus AS ts INNER JOIN taxavernaculars AS v ON ts.TID = v.TID) ".
-			"INNER JOIN taxa AS t ON t.TID = ts.tidaccepted ";
-		$whereStr = "";
-		foreach($taxaArr as $key => $value){
-			$whereStr .= "OR v.VernacularName = '".$con->real_escape_string($key)."' ";
-		}
-		$sql .= "WHERE (ts.taxauthid = 1) AND (".substr($whereStr,3).") ORDER BY t.rankid LIMIT 20";
-		$result = $con->query($sql);
-		if($result && $result->num_rows){
-			while($row = $result->fetch_object()){
-				$vernName = strtolower($row->VernacularName);
-				if($row->rankid < 140){
-					if(!isset($taxaArr[$vernName]['tid'])){
-						$taxaArr[$vernName]['tid'] = array();
-					}
-					$taxaArr[$vernName]['tid'][] = $row->tid;
-				}
-				elseif($row->rankid == 140){
-					if(!isset($taxaArr[$vernName]['families'])){
-						$taxaArr[$vernName]['families'] = array();
-					}
-					$taxaArr[$vernName]['families'][] = $row->sciname;
-				}
-				else{
-					if(!isset($taxaArr[$vernName]['scinames'])){
-						$taxaArr[$vernName]['scinames'] = array();
-					}
-					$taxaArr[$vernName]['scinames'][] = $row->sciname;
-				}
-			}
-			$result->free();
-		}
-		else{
-			$taxaArr["no records"]["scinames"][] = "no records";
-		}
-	}
-	elseif($useThes){
-		foreach($taxaArr as $key => $value){
-			if(isset($value['scinames'])){
-				if(!in_array("no records",$value['scinames'])){
-					$synArr = $spatialManager->getSynonyms(array($value['scinames']));
-					if($synArr) $taxaArr[$key]['synonyms'] = $synArr;
-				}
-			}
-			else{
-				$synArr = $spatialManager->getSynonyms(array($key));
-				if($synArr) $taxaArr[$key]['synonyms'] = $synArr;
-			}
-		}
-	}
-
-	foreach($taxaArr as $key => $valueArray){
-		if($taxontype == 4){
-			$rs1 = $con->query("SELECT ts.tidaccepted FROM taxa AS t LEFT JOIN taxstatus AS ts ON t.TID = ts.tid WHERE (t.sciname = '".$con->real_escape_string($key)."')");
-			if($r1 = $rs1->fetch_object()){
-				$taxaArr[$r1->tidaccepted] = $taxaArr[$key];
-				unset($taxaArr[$key]);
-			}
-		}
-		elseif($taxontype == 5){
-			$famArr = array();
-			if(isset($valueArray['families'])){
-				$famArr = $valueArray['families'];
-			}
-			if(isset($valueArray['tid'])){
-				$tidArr = $valueArray['tid'];
-				$sql = 'SELECT DISTINCT t.sciname '.
-					'FROM taxa t INNER JOIN taxaenumtree e ON t.tid = e.tid '.
-					'WHERE t.rankid = 140 AND e.taxauthid = 1 AND e.parenttid IN('.implode(',',$tidArr).')';
-				$rs = $con->query($sql);
-				if($rs){
-					while($r = $rs->fetch_object()){
-						$famArr[] = $r->sciname;
-					}
-					$rs->close();
-				}
-				if(!empty($famArr)){
-					$famArr = array_unique($famArr);
-					$taxaArr[$key]['families'] = $famArr;
-				}
-			}
-		}
-	}
-
-	return $taxaArr;
-}
-
 function isFamilyName($taxonString){
+	// if a taxon string ends with 'aceae' or 'idae' and is a single word, assume it's a family name
+  	// the check for a single word is here to avoid false positives such as Corydalis aquae-gelidae
 	$len = strlen($taxonString);
 	$ends_aceae = $len >= 5 && substr($taxonString, -5) === 'aceae';
 	$ends_idae = $len >= 4 && substr($taxonString, -4) === 'idae';
@@ -552,10 +118,16 @@ function formatCheckDate($dateStr){
 
 	$dateArr = parseDate($dateStr);
 	if($dateArr['y'] == 0){
+		// Missing alert(
+    	// 'Please use the following date formats: yyyy-mm-dd, mm/dd/yyyy, or dd mmm yyyy'
+    	// );
 		return false;
 	}
 
 	if($dateArr['m'] > 12){
+		// Missing alert(
+        //   'Month cannot be greater than 12. Note that the format should be YYYY-MM-DD'
+        // );
 		return false;
 	}
 
@@ -563,7 +135,8 @@ function formatCheckDate($dateStr){
 		if($dateArr['d'] > 31 ||
 		   ($dateArr['d'] == 30 && $dateArr['m'] == 2) ||
 		   ($dateArr['d'] == 31 && in_array($dateArr['m'], array(4, 6, 9, 11)))){
-			return false;
+			// Missing alert('The Day (' + dateArr['d'] + ') is invalid for that month');	
+		   return false;
 		}
 	}
 
@@ -573,6 +146,108 @@ function formatCheckDate($dateStr){
 	if(strlen($dStr) == 1) $dStr = '0' . $dStr;
 
 	return $dateArr['y'] . '-' . $mStr . '-' . $dStr;
+}
+
+function getTaxaData($taxonNames, $taxontype, $useThes){
+	global $CLIENT_ROOT;
+
+	$params = array(
+		'taxajson' => json_encode($taxonNames),
+		'type' => $taxontype,
+		'thes' => $useThes ? 1 : 0
+	);
+
+	$protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https' : 'http';
+	$url = $protocol . '://' . $_SERVER['HTTP_HOST'] . $CLIENT_ROOT . '/spatial/rpc/gettaxalinks.php';
+
+	$ch = curl_init();
+	curl_setopt_array($ch, array(
+		CURLOPT_URL => $url,
+		CURLOPT_POST => true,
+		CURLOPT_POSTFIELDS => http_build_query($params),
+		CURLOPT_RETURNTRANSFER => true,
+		CURLOPT_TIMEOUT => 30
+	));
+	$result = curl_exec($ch);
+
+	return json_decode($result);
+}
+
+function buildTaxaParams($taxa, $taxontype, $usethes, &$solrqArr){
+	if($taxa){
+		$taxavals = array_map('trim', explode(',', $taxa));
+		$taxonNames = array();
+		foreach($taxavals as $name){
+			if($taxontype === '1'){
+				$splitArr = explode(': ', $name);
+				$name = end($splitArr);
+			}
+			$taxonNames[] = $name;
+		}
+
+		$taxaArr = getTaxaData($taxonNames, $taxontype, $usethes);
+
+		if($taxaArr){
+			$taxaSolrqString = '';
+			foreach($taxaArr as $key => $valueArray){
+				if($taxontype == 4){
+					$taxaSolrqString .= ' OR (parenttid:' . $key . ')';
+				}
+				else{
+					if($taxontype == 5){
+						$famArr = array();
+						$scinameArr = array();
+						if(isset($valueArray['families'])){
+							$famArr = $valueArray['families'];
+						}
+						if(!empty($famArr)){
+							$taxaSolrqString .= ' OR (family:(' . implode(' ', $famArr) . '))';
+						}
+						if(isset($valueArray['scinames'])){
+							$scinameArr = $valueArray['scinames'];
+							if(!empty($scinameArr)){
+								foreach($scinameArr as $s){
+									$sciEscaped = str_replace(' ', '\\ ', $s);
+									$taxaSolrqString .= ' OR ((sciname:' . $sciEscaped . ') OR (sciname:' . $sciEscaped . '\\ *))';
+								}
+							}
+						}
+					}
+					else{
+						// taxontype 1, 2, 3
+						if($taxontype == 3 || isFamilyName($key)){
+							$taxaSolrqString .= ' OR (family:' . $key . ')';
+						}
+						if($taxontype == 3 || !isFamilyName($key)){
+							$keyEscaped = str_replace(' ', '\\ ', $key);
+							$taxaSolrqString .= ' OR ((sciname:' . $keyEscaped . ') OR (sciname:' . $keyEscaped . '\\ *))';
+						}
+					}
+					if(isset($valueArray['synonyms'])){
+						$synArr = $valueArray['synonyms'];
+						$tidArr = array();
+						if($taxontype == 1 || $taxontype == 2 || $taxontype == 5){
+							foreach($synArr as $synTid => $synName){
+								if(isFamilyName($synName)){
+									$taxaSolrqString .= ' OR (family:' . $synName . ')';
+								}
+							}
+						}
+						foreach($synArr as $synTid => $synName){
+							$tidArr[] = $synTid;
+						}
+						if(!empty($tidArr)){
+							$taxaSolrqString .= ' OR (tidinterpreted:(' . implode(' ', $tidArr) . '))';
+						}
+					}
+				}
+			}
+			if(!empty($taxaSolrqString)){
+				$taxaSolrqString = substr($taxaSolrqString, 4);
+				$solrqArr[] = '(' . $taxaSolrqString . ')';
+			}
+		}
+	}
 }
 
 function buildTextParams($country, $state, $county, $local, $collector, $collnum, $eventdate1, $eventdate2,
@@ -647,8 +322,8 @@ function buildTextParams($country, $state, $county, $local, $collector, $collnum
 		$collnumSolrqString = '';
 		foreach($collnumvals as $val){
 			if($collnumSolrqString) $collnumSolrqString .= ' OR ';
-			if(strpos($val, ' - ') !== false){
-				$pos = strpos($val, ' - ');
+			$pos = strpos($val, ' - ');
+			if($pos !== false){
 				$t1 = trim(substr($val, 0, $pos));
 				$t2 = trim(substr($val, $pos + 3));
 				if(is_numeric($t1) && is_numeric($t2)){
@@ -730,6 +405,7 @@ function buildGeographyParams($polycoords, $pointlat, $pointlong, $radius, $poin
 	$upperlat, $rightlong, $bottomlat, $leftlong, &$solrgeoqArr){
 
 	if($polycoords){
+		// SOLR expects the coordinates in long-lat format, whereas the rest of the site uses lat-long so we reverse the coordinates here and reconstruct the string
 		$polygonLatLngs = substr($polycoords, 10, -2);
 		$coordPairs = explode(',', $polygonLatLngs);
 		$reversedPairs = array();
@@ -743,6 +419,7 @@ function buildGeographyParams($polycoords, $pointlat, $pointlong, $radius, $poin
 		$solrgeoqArr[] = '"Intersects(POLYGON ((' . $polygonLngLats . ')))"';
 	}
 
+	// Circle
 	if($pointlat !== '' && $pointlong !== '' && $radius !== ''){
 		$radiusKm = $radius;
 		if($pointunits === 'mi'){
@@ -751,10 +428,258 @@ function buildGeographyParams($polycoords, $pointlat, $pointlong, $radius, $poin
 		$solrgeoqArr[] = '{!geofilt sfield=geo pt=' . $pointlat . ',' . $pointlong . ' d=' . $radiusKm . '}';
 	}
 
+	// Rectangle
 	if($upperlat !== '' && $rightlong !== '' && $bottomlat !== '' && $leftlong !== ''){
 		$rectWKT = '"Intersects(POLYGON((' . $leftlong . ' ' . $upperlat . ',' . $rightlong . ' ' . $upperlat . ',' . $rightlong . ' ' . $bottomlat . ',' . $leftlong . ' ' . $bottomlat . ',' . $leftlong . ' ' . $upperlat . ')))"';
 		$solrgeoqArr[] = $rectWKT;
 	}
 }
 
+$solrqArr = array();
+$solrgeoqArr = array();
+
+// Build collection params
+if(is_array($db) && !empty($db)){
+	$all = false;
+	$collid = '';
+	foreach($db as $d){
+		if($d === 'all'){
+			$all = true;
+			break;
+		}
+	}
+	if(!$all){
+		$collid = implode(' ', $db);
+		if(!empty($collid)){
+			$solrqArr[] = '(collid:(' . $collid . '))';
+		}
+	}
+}
+
+buildTaxaParams($taxa, $taxontype, $usethes, $solrqArr);
+
+buildTextParams($country, $state, $county, $local, $collector, $collnum, $eventdate1, $eventdate2,
+	$catnum, $includeothercatnum, $typestatus, $hasimages, $hasgenetic, $includecult, $excludeinat,
+	$solrqArr);
+
+buildGeographyParams($polycoords, $pointlat, $pointlong, $radius, $pointunits,
+	$upperlat, $rightlong, $bottomlat, $leftlong, $solrgeoqArr);
+
+// Assemble SOLR query
+$q = '';
+if(!empty($solrqArr)){
+	$q = implode(' AND ', $solrqArr);
+	$q .= ' AND (decimalLatitude:[* TO *] AND decimalLongitude:[* TO *] AND sciname:[* TO *])';
+}
+else{
+	$q = '(sciname:[* TO *])';
+}
+
+$fq = '';
+if(!empty($solrgeoqArr)){
+	$fq = implode(' OR geo:', $solrgeoqArr);
+	$fq = 'geo:' . $fq;
+	$q .= '&fq=' . $fq;
+}
+
+// Store original query for returning to client
+$originalQ = $q;
+
+// Get record count (before security applied)
+$pArrCount = array(
+	'q' => $q,
+	'rows' => 0,
+	'start' => 0,
+	'wt' => 'json',
+	'action' => 'getsolrreccnt'
+);
+if(!empty($fq)) $pArrCount['fq'] = $fq;
+
+$headers = array(
+	'Content-Type: application/x-www-form-urlencoded',
+	'Accept: application/json',
+	'Cache-Control: no-cache',
+	'Pragma: no-cache',
+	'Content-Length: '.strlen(http_build_query($pArrCount))
+);
+
+$ch = curl_init();
+$options = array(
+	CURLOPT_URL => $SOLR_URL.'/select',
+	CURLOPT_POST => true,
+	CURLOPT_HTTPHEADER => $headers,
+	CURLOPT_TIMEOUT => 90,
+	CURLOPT_POSTFIELDS => http_build_query($pArrCount),
+	CURLOPT_RETURNTRANSFER => true
+);
+curl_setopt_array($ch, $options);
+$result = curl_exec($ch);
+$fullJSON = $result;
+$full = json_decode($fullJSON, true);
+$hiddenFound = 0;
+
+// Apply security and get filtered count if needed
+$qSecure = $q;
+if(!$canReadRareSpp){
+	if($qSecure == '*:*'){
+		$qSecure = '(localitySecurity:0)';
+	}
+	else{
+		$qSecure .= ' AND (localitySecurity:0)';
+	}
+}
+
+if(!$canReadRareSpp && $qSecure !== $q){
+	$pArrSecure = array(
+		'q' => $qSecure,
+		'rows' => 0,
+		'start' => 0,
+		'wt' => 'json',
+		'action' => 'getsolrreccnt'
+	);
+	if(!empty($fq)) $pArrSecure['fq'] = $fq;
+
+	$headers = array(
+		'Content-Type: application/x-www-form-urlencoded',
+		'Accept: application/json',
+		'Cache-Control: no-cache',
+		'Pragma: no-cache',
+		'Content-Length: '.strlen(http_build_query($pArrSecure))
+	);
+
+	$ch = curl_init();
+	$options = array(
+		CURLOPT_URL => $SOLR_URL.'/select',
+		CURLOPT_POST => true,
+		CURLOPT_HTTPHEADER => $headers,
+		CURLOPT_TIMEOUT => 90,
+		CURLOPT_POSTFIELDS => http_build_query($pArrSecure),
+		CURLOPT_RETURNTRANSFER => true
+	);
+	curl_setopt_array($ch, $options);
+	$partialJSON = curl_exec($ch);
+	$partial = json_decode($partialJSON);
+
+	if($full['response']['numFound'] > $partial['response']['numFound']){
+		$hiddenFound = $full['response']['numFound'] - $partial['response']['numFound'];
+	}
+	$recordCount = $partial['response']['numFound'];
+}
+else{
+	$recordCount = $full['response']['numFound'];
+}
+
+// Execute main SOLR query with security
+$SOLR_FIELDS = 'occid,collid,catalogNumber,family,sciname,tidinterpreted,recordedBy,recordNumber,eventDate,geo,CollectionName,CollType';
+
+$pArr = array(
+	'q' => $qSecure,
+	'rows' => $recordCount,
+	'start' => 0,
+	'fl' => $SOLR_FIELDS,
+	'wt' => 'geojson',
+	'geojson.field' => 'geo',
+	'omitHeader' => 'true'
+);
+if(!empty($fq)) $pArr['fq'] = $fq;
+
+$headers = array(
+	'Content-Type: application/x-www-form-urlencoded',
+	'Accept: application/json',
+	'Cache-Control: no-cache',
+	'Pragma: no-cache',
+	'Content-Length: '.strlen(http_build_query($pArr))
+);
+
+$ch = curl_init();
+$options = array(
+	CURLOPT_URL => $SOLR_URL.'/select',
+	CURLOPT_POST => true,
+	CURLOPT_HTTPHEADER => $headers,
+	CURLOPT_TIMEOUT => 90,
+	CURLOPT_POSTFIELDS => http_build_query($pArr),
+	CURLOPT_RETURNTRANSFER => true
+);
+curl_setopt_array($ch, $options);
+$result = curl_exec($ch);
+
+$geojson = json_decode($result);
+
+// Convert GeoJSON response
+$taxaArr = array();
+$collArr = array();
+$recordArr = array();
+
+$SOLR_TYPE_TO_SYMBIOTA_TYPE = array(
+	'Observations' => 'observation',
+	'Preserved Specimens' => 'specimen'
+);
+
+if(isset($geojson['features']) && is_array($geojson['features'])){
+	foreach($geojson['features'] as $feature){
+		$props = $feature['properties'];
+		$geom = $feature['geometry'];
+
+		$tid = isset($props['tidinterpreted']) ? $props['tidinterpreted'] : '';
+		if($tid && !isset($taxaArr[$tid])){
+			$taxaArr[$tid] = array(
+				'sn' => $props['sciname'] ?? '',
+				'tid' => $tid,
+				'family' => isset($props['family']) ? strtoupper($props['family']) : '',
+				'color' => 'e69e67'
+			);
+		}
+
+		$collid = isset($props['collid']) ? $props['collid'] : '';
+		if($collid && !isset($collArr[$collid])){
+			$collArr[$collid] = array(
+				'name' => $props['CollectionName'] ?? '',
+				'collid' => $collid,
+				'color' => 'e69e67'
+			);
+		}
+
+		if(!$tid || !isset($taxaArr[$tid])) continue;
+
+		$lat = $geom['coordinates'][1];
+		$lng = $geom['coordinates'][0];
+		$collType = $props['CollType'] ?? '';
+		$type = isset($SOLR_TYPE_TO_SYMBIOTA_TYPE[$collType]) ? $SOLR_TYPE_TO_SYMBIOTA_TYPE[$collType] : '';
+
+		$recordedBy = $props['recordedBy'] ?? '';
+		$recordNumber = $props['recordNumber'] ?? '';
+		$id = ($recordedBy && $recordNumber ? $recordedBy . ' ' . $recordNumber : ($recordedBy ?: $recordNumber ?: ''));
+
+		$eventDate = isset($props['eventDate']) ? substr($props['eventDate'], 0, strpos($props['eventDate'], 'T')) : '';
+
+		$recordArr[] = array(
+			'occid' => $props['occid'] ?? '',
+			'collid' => $collid,
+			'collname' => $props['CollectionName'] ?? '',
+			'family' => isset($props['family']) ? strtoupper($props['family']) : '',
+			'lat' => $lat,
+			'lng' => $lng,
+			'tid' => (string)$tid,
+			'type' => $type,
+			'catnum' => $props['catalogNumber'] ?? '',
+			'eventdate' => $eventDate,
+			'sciname' => $props['sciname'] ?? '',
+			'id' => $id
+		);
+	}
+}
+
+$con->close();
+
+// Return response
+$response = array(
+	'taxaArr' => $taxaArr,
+	'collArr' => $collArr,
+	'recordArr' => $recordArr,
+	'recordCount' => $recordCount,
+	'hiddenFound' => $hiddenFound,
+	'solrQuery' => $originalQ . (empty($fq) ? '' : '&fq=' . urlencode($fq))
+);
+
+echo json_encode($response);
 ?>
