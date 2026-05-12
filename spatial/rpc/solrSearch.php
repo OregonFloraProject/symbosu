@@ -9,6 +9,7 @@ header("Content-Type: application/json; charset=utf-8");
 
 $con = MySQLiConnectionFactory::getCon("readonly");
 $solrManager = new SOLRManager();
+$spatialManager = new SpatialModuleManager();
 
 ProfileManager::refreshUserRights();
 $canReadRareSpp = $solrManager->getCanReadRareSpp();
@@ -149,32 +150,115 @@ function formatCheckDate($dateStr){
 	return $dateArr['y'] . '-' . $mStr . '-' . $dStr;
 }
 
-function getTaxaData($taxonNames, $taxontype, $useThes){
-	global $CLIENT_ROOT;
+function getTaxaData($con, $spatialManager, $taxonNames, $taxontype, $useThes){
+	$taxaArr = array();
 
-	$params = array(
-		'taxajson' => json_encode($taxonNames),
-		'type' => $taxontype,
-		'thes' => $useThes ? 1 : 0
-	);
+	foreach($taxonNames as $name){
+		if(is_numeric($name)){
+			$sql = 'SELECT sciname FROM taxa WHERE (TID = '.(int)$name.')';
+			$rs = $con->query($sql);
+			if($row = $rs->fetch_object()){
+				$taxaStr = $row->sciname;
+				if($taxaStr) $taxaArr[$taxaStr] = array();
+			}
+			$rs->close();
+		}
+		else{
+			if($taxontype != 5) $name = ucfirst($name);
+			$taxaArr[$name] = array();
+		}
+	}
 
-	$protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https' : 'http';
-	$url = $protocol . '://' . $_SERVER['HTTP_HOST'] . $CLIENT_ROOT . '/spatial/rpc/gettaxalinks.php';
+	if($taxontype == 5){
+		$sql = "SELECT DISTINCT v.VernacularName, t.tid, t.sciname, ts.family, t.rankid ".
+			"FROM (taxstatus AS ts INNER JOIN taxavernaculars AS v ON ts.TID = v.TID) ".
+			"INNER JOIN taxa AS t ON t.TID = ts.tidaccepted ";
+		$whereStr = "";
+		foreach($taxaArr as $key => $value){
+			$whereStr .= "OR v.VernacularName = '".$con->real_escape_string($key)."' ";
+		}
+		$sql .= "WHERE (ts.taxauthid = 1) AND (".substr($whereStr,3).") ORDER BY t.rankid LIMIT 20";
+		$result = $con->query($sql);
+		if($result && $result->num_rows){
+			while($row = $result->fetch_object()){
+				$vernName = strtolower($row->VernacularName);
+				if($row->rankid < 140){
+					if(!isset($taxaArr[$vernName]['tid'])){
+						$taxaArr[$vernName]['tid'] = array();
+					}
+					$taxaArr[$vernName]['tid'][] = $row->tid;
+				}
+				elseif($row->rankid == 140){
+					if(!isset($taxaArr[$vernName]['families'])){
+						$taxaArr[$vernName]['families'] = array();
+					}
+					$taxaArr[$vernName]['families'][] = $row->sciname;
+				}
+				else{
+					if(!isset($taxaArr[$vernName]['scinames'])){
+						$taxaArr[$vernName]['scinames'] = array();
+					}
+					$taxaArr[$vernName]['scinames'][] = $row->sciname;
+				}
+			}
+			$result->free();
+		}
+		else{
+			$taxaArr["no records"]["scinames"][] = "no records";
+		}
+	}
+	elseif($useThes){
+		foreach($taxaArr as $key => $value){
+			if(array_key_exists("scinames",$value)){
+                if(!in_array("no records",$value["scinames"])){
+                    $synArr = $spatialManager->getSynonyms($value["scinames"]);
+                    if($synArr) $taxaArr[$key]["synonyms"] = $synArr;
+                }
+            }
+            else{
+                $synArr = $spatialManager->getSynonyms($key);
+                if($synArr) $taxaArr[$key]["synonyms"] = $synArr;
+            }
+		}
+	}
 
-	$ch = curl_init();
-	curl_setopt_array($ch, array(
-		CURLOPT_URL => $url,
-		CURLOPT_POST => true,
-		CURLOPT_POSTFIELDS => http_build_query($params),
-		CURLOPT_RETURNTRANSFER => true,
-		CURLOPT_TIMEOUT => 30
-	));
-	$result = curl_exec($ch);
+	foreach($taxaArr as $key => $valueArray){
+		if($taxontype == 4){
+			$rs1 = $con->query("SELECT ts.tidaccepted FROM taxa AS t LEFT JOIN taxstatus AS ts ON t.TID = ts.tid WHERE (t.sciname = '".$con->real_escape_string($key)."')");
+			if($r1 = $rs1->fetch_object()){
+				$taxaArr[$r1->tidaccepted] = $taxaArr[$key];
+				unset($taxaArr[$key]);
+			}
+		}
+		elseif($taxontype == 5){
+			$famArr = Array();
+			if(isset($valueArray['families'])){
+				$famArr = $valueArray['families'];
+			}
+			if(isset($valueArray['tid'])){
+				$tidArr = $valueArray['tid'];
+				$sql = 'SELECT DISTINCT t.sciname '.
+					'FROM taxa t INNER JOIN taxaenumtree e ON t.tid = e.tid '.
+					'WHERE t.rankid = 140 AND e.taxauthid = 1 AND e.parenttid IN('.implode(',',$tidArr).')';
+				$rs = $con->query($sql);
+				if($rs){
+					while($r = $rs->fetch_object()){
+						$famArr[] = $r->sciname;
+					}
+					$rs->close();
+				}
+				if(!empty($famArr)){
+					$famArr = array_unique($famArr);
+					$taxaArr[$key]['families'] = $famArr;
+				}
+			}
+		}
+	}
 
-	return json_decode($result);
+	return $taxaArr;
 }
 
-function buildTaxaParams($taxa, $taxontype, $usethes, &$solrQArr){
+function buildTaxaParams($con, $spatialManager, $taxa, $taxontype, $usethes, &$solrQArr){
 	if($taxa){
 		$taxavals = array_map('trim', explode(',', $taxa));
 		$taxonNames = array();
@@ -186,7 +270,7 @@ function buildTaxaParams($taxa, $taxontype, $usethes, &$solrQArr){
 			$taxonNames[] = $name;
 		}
 
-		$taxaArr = getTaxaData($taxonNames, $taxontype, $usethes);
+		$taxaArr = getTaxaData($con, $spatialManager, $taxonNames, $taxontype, $usethes);
 
 		if($taxaArr){
 			$taxaSolrqString = '';
@@ -251,14 +335,8 @@ function buildTaxaParams($taxa, $taxontype, $usethes, &$solrQArr){
 	}
 }
 
-function buildTextParams($country, $state, $county, $local, $collector, $collnum, $eventdate1, $eventdate2,
-	$catnum, $includeothercatnum, $typestatus, $hasimages, $hasgenetic, $includecult, $excludeinat,
-	&$solrQArr){if ($errorBody['error']) {
-	echo json_encode($errorBody);
-	return;
-}
-
-
+function buildTextParams($country, $state, $county, $local, $collector, $collnum, $eventdate1, 
+	$eventdate2, $catnum, $includeothercatnum, $typestatus, $hasimages, $hasgenetic, $includecult, $excludeinat, &$solrQArr){
 	if($country){
 		$countryvals = array_map('trim', explode(',', $country));
 		$countrySolrqString = '';
@@ -487,7 +565,7 @@ if(is_array($db) && !empty($db)){
 	}
 }
 
-buildTaxaParams($taxa, $taxontype, $usethes, $solrQArr);
+buildTaxaParams($con, $spatialManager, $taxa, $taxontype, $usethes, $solrQArr);
 
 buildTextParams($country, $state, $county, $local, $collector, $collnum, $eventdate1, $eventdate2,
 	$catnum, $includeothercatnum, $typestatus, $hasimages, $hasgenetic, $includecult, $excludeinat,
