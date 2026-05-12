@@ -26,6 +26,16 @@ class SOLRManager extends OccurrenceManager{
  		parent::__destruct();
 	}
 
+    public function getCanReadRareSpp() {
+        $canReadRareSpp = false;
+        if($GLOBALS['USER_RIGHTS']){
+            if($GLOBALS['IS_ADMIN'] || array_key_exists("CollAdmin", $GLOBALS['USER_RIGHTS']) || array_key_exists("RareSppAdmin", $GLOBALS['USER_RIGHTS']) || array_key_exists("RareSppReadAll", $GLOBALS['USER_RIGHTS'])){
+                $canReadRareSpp = true;
+            }
+        }
+        return $canReadRareSpp;
+    }
+
     public function getMaxCnt($geo = false){
         global $SOLR_URL;
         $maxCnt = 0;
@@ -147,13 +157,7 @@ class SOLRManager extends OccurrenceManager{
     }
 
     public function checkQuerySecurity($q){
-        $canReadRareSpp = false;
-        if($GLOBALS['USER_RIGHTS']){
-            if($GLOBALS['IS_ADMIN'] || array_key_exists("CollAdmin", $GLOBALS['USER_RIGHTS']) || array_key_exists("RareSppAdmin", $GLOBALS['USER_RIGHTS']) || array_key_exists("RareSppReadAll", $GLOBALS['USER_RIGHTS'])){
-                $canReadRareSpp = true;
-            }
-        }
-        if(!$canReadRareSpp){
+        if(!$this->getCanReadRareSpp()){
             if($q == '*:*'){
                 $q = '(localitySecurity:0)';
             }
@@ -168,12 +172,7 @@ class SOLRManager extends OccurrenceManager{
     public function translateSOLRRecList($sArr){
         global $imageDomain;
  	    $returnArr = Array();
-        $canReadRareSpp = false;
-        if($GLOBALS['USER_RIGHTS']){
-            if($GLOBALS['IS_ADMIN'] || array_key_exists("CollAdmin", $GLOBALS['USER_RIGHTS']) || array_key_exists("RareSppAdmin", $GLOBALS['USER_RIGHTS']) || array_key_exists("RareSppReadAll", $GLOBALS['USER_RIGHTS'])){
-                $canReadRareSpp = true;
-            }
-        }
+        $canReadRareSpp = $this->getCanReadRareSpp();
         foreach($sArr as $k){
             $occId = $k['occid'];
             $collId = $k['collid'];
@@ -237,12 +236,7 @@ class SOLRManager extends OccurrenceManager{
 
     public function translateSOLRMapRecList($sArr){
         $returnArr = Array();
-        $canReadRareSpp = false;
-        if($GLOBALS['USER_RIGHTS']){
-            if($GLOBALS['IS_ADMIN'] || array_key_exists("CollAdmin", $GLOBALS['USER_RIGHTS']) || array_key_exists("RareSppAdmin", $GLOBALS['USER_RIGHTS']) || array_key_exists("RareSppReadAll", $GLOBALS['USER_RIGHTS'])){
-                $canReadRareSpp = true;
-            }
-        }
+        $canReadRareSpp = $this->getCanReadRareSpp();
         foreach($sArr as $k){
             $occId = $k['occid'];
             $collId = $k['collid'];
@@ -289,7 +283,7 @@ class SOLRManager extends OccurrenceManager{
             $collid = $this->xmlentities($k['collid']);
             $localitySecurity = $k['localitySecurity'];
             if($GLOBALS['USER_RIGHTS']){
-                if($GLOBALS['IS_ADMIN'] || array_key_exists("CollAdmin",$GLOBALS['USER_RIGHTS']) || array_key_exists("RareSppAdmin",$GLOBALS['USER_RIGHTS']) || array_key_exists("RareSppReadAll",$GLOBALS['USER_RIGHTS'])){
+                if($this->getCanReadRareSpp()){
                     $canReadRareSpp = true;
                 }
                 elseif(array_key_exists("RareSppReader",$userRights) && in_array($collid,$GLOBALS['USER_RIGHTS']["RareSppReader"])){
@@ -363,7 +357,7 @@ class SOLRManager extends OccurrenceManager{
             $collid = $k['collid'];
             $localitySecurity = $k['localitySecurity'];
             if($GLOBALS['USER_RIGHTS']){
-                if($GLOBALS['IS_ADMIN'] || array_key_exists("CollAdmin",$GLOBALS['USER_RIGHTS']) || array_key_exists("RareSppAdmin",$GLOBALS['USER_RIGHTS']) || array_key_exists("RareSppReadAll",$GLOBALS['USER_RIGHTS'])){
+                if($this->getCanReadRareSpp()){
                     $canReadRareSpp = true;
                 }
                 elseif(array_key_exists("RareSppReader",$userRights) && in_array($collid,$GLOBALS['USER_RIGHTS']["RareSppReader"])){
