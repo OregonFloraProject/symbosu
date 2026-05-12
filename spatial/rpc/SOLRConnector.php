@@ -21,12 +21,7 @@ if(isset($_REQUEST["action"])) $pArr["action"] = $_REQUEST["action"];
 $solrManager = new SOLRManager();
 
 ProfileManager::refreshUserRights();
-$canReadRareSpp = false;
-if($GLOBALS['USER_RIGHTS']){
-		if($GLOBALS['IS_ADMIN'] || array_key_exists("CollAdmin", $GLOBALS['USER_RIGHTS']) || array_key_exists("RareSppAdmin", $GLOBALS['USER_RIGHTS']) || array_key_exists("RareSppReadAll", $GLOBALS['USER_RIGHTS'])){
-				$canReadRareSpp = true;
-		}
-}
+$canReadRareSpp = $solrManager->getCanReadRareSpp();
 
 /*
 SOLRManager.php handles filtering results by security level, while giving no indication that it's doing so.
