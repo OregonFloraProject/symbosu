@@ -1008,6 +1008,7 @@ if(isset($_REQUEST['llpoint'])) {
 
 				let searches = [
 					searchCollections(formData).then(res => {
+						if (!res) return;
 						res.label = "<?= $LANG['CURRENT_PORTAL']?>";
 						return res;
 					})
@@ -1029,6 +1030,12 @@ if(isset($_REQUEST['llpoint'])) {
 
 				//This is for handling multiple portals
 				searches = await Promise.all(searches)
+				// Filter any undefined searches and prevent showing results if there are no valid search
+				searches = searches.filter((s) => s);
+				if (searches.length === 0) {
+					hideWorking();
+					return;
+				}
 
 				recordArr = [];
 				mapGroups = [];
@@ -1823,29 +1830,35 @@ if(isset($_REQUEST['llpoint'])) {
 
 <?php if ($USE_SOLR_SEARCH) { ?>
 				// get query string for sessionStorage and copy link button
-				const query = await (await fetch('rpc/searchCollections.php?queryOnly=true', {
+				const searchCollections = await (await fetch('rpc/searchCollections.php?queryOnly=true', {
 					method: 'POST',
 					body,
 				})).json();
-				sessionStorage.querystr = query;
+				sessionStorage.querystr = searchCollections.query;
 
 				const response = await (await fetch('../../spatial/rpc/solrSearch.php', {
 					method: 'POST',
 					body,
 				})).json();
+
+				// Catch error from solrSearch and stop execution
+				if (response.error) {
+					alert(response.message);
+					hideWorking();
+					return;
+				}
+
 				// if our query includes a polygon, save solrqString so we can pass it to downloadhandler
 				// since SOLR search is way faster than MySQL with polygons
 				if (body.has('polycoords') || body.has('upperlat')) {
-					sessionStorage.setItem('solrqstring', response.solrQuery);
+					sessionStorage.setItem('solrqstring', response.query);
 				}
 
-				if (search.hiddenFound) {
+				if (response.hiddenFound) {
 					alert('Search results for some rare taxa are hidden. To view all results, you must be logged into an account with rare species privileges.');
 				}
-
-				response.query = query;
-				response.recordCount = response.recordCount;
-				return response;
+				
+				return convertSOLRResponse(response, host ?? <?php echo isset($SERVER_HOST) ? "'" . ((str_contains($SERVER_HOST, '127.0.0.1') || str_contains($SERVER_HOST, 'localhost')) ? "http://" : "https://") . $SERVER_HOST . $CLIENT_ROOT . "'" : 'false';?>);
 <?php } else { ?>
 				let response = await fetch(url, {
 					method: "POST",
