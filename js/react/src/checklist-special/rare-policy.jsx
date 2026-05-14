@@ -206,7 +206,7 @@ function PolicyApp(props) {
           </p>
           <ul>
             <li>
-              <i>(citing occurrence data from specific institution(s));</i> Biodiversity data published by: &lt;Name(s)
+              <i>(citing occurrence data from specific institution(s))</i> Biodiversity data published by: &lt;Name(s)
               of Collection&gt;. Accessed via OregonFlora Portal, https://oregonflora.org, YYYY-MM-DD.
               <ul>
                 <li>
@@ -226,7 +226,7 @@ function PolicyApp(props) {
               https://oregonflora.org/portal/rare/&lt;rare plant profile page&gt;, YYYY-MM-DD.
             </li>
           </ul>
-          <p className="updated-date">(May 2025)</p>
+          <p className="updated-date">(May 2026)</p>
           <div className="py-4">
             {!shouldShowForm ? (
               isLoggedIn ? (
