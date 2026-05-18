@@ -616,6 +616,30 @@ class SOLRManager extends OccurrenceManager{
         fwrite($fp, json_encode($infoArr));
         fclose($fp);
     }
+
+    public function callingSOLR(&$postBody) {
+        global $SOLR_URL;
+        $headers = array(
+            'Content-Type: application/x-www-form-urlencoded',
+            'Accept: application/json',
+            'Cache-Control: no-cache',
+            'Pragma: no-cache',
+            'Content-Length: '.strlen(http_build_query($postBody))
+        );
+
+        $ch = curl_init();
+        $options = array(
+            CURLOPT_URL => $SOLR_URL.'/select',
+            CURLOPT_POST => true,
+            CURLOPT_HTTPHEADER => $headers,
+            CURLOPT_TIMEOUT => 90,
+            CURLOPT_POSTFIELDS => http_build_query($postBody),
+            CURLOPT_RETURNTRANSFER => true
+        );
+        curl_setopt_array($ch, $options);
+        $result = curl_exec($ch);
+        return json_decode($result, true);
+    }
 	
 	public function getSOLRWhere(){
         $solrWhere = '';
