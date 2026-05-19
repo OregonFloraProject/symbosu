@@ -1,0 +1,11 @@
+{
+  "name": "symbosu",
+  "version": "0.0.1",
+  "description": "",
+  "private": true,
+  "scripts": {
+    "build": "npm -C js/react run build",
+    "dev": "npm -C js/react run dev"
+  },
+  "author": ""
+}

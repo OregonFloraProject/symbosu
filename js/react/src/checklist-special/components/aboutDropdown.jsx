@@ -25,7 +25,7 @@ function AboutDropdown(props) {
         <div className="about-guide-header">
           <h4>Scope</h4>
         </div>
-        We present {props.numSpecies} species with a {props.lists.join(' or ')} NatureServe (Heritage) program ranking.
+        We present {props.numSpecies} species with a {props.lists.join(' or ')} NatureServe (Heritage) program ranking. By spring 2027, we intend to have rare plant profiles of all List 1 taxa except for a few currently under taxonomic review. 
         Filtering options include plant features and conservation management actions.
       </div>
       <div className="col-md mb-4">
