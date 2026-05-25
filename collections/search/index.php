@@ -84,6 +84,36 @@ $obsArr = (isset($collList['obs'])?$collList['obs']:null);
 		.full-width-pcnt {
 			width: 100%;
 		}
+		.osu-toggle-container {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+		}
+		#osu-only-toggle {
+			position: relative;
+			width: 48px;
+			height: 26px;
+			padding: 3px;
+			border-radius: 4px;
+			background-color: var(--medium-color) !important;
+			cursor: pointer;
+			transition: background-color 0.2s ease;
+		}
+		#osu-only-toggle.toggle-on {
+			background-color: var(--oregonflora-green) !important;
+		}
+		.toggle-thumb {
+			display: block;
+			width: 20px;
+			height: 20px;
+			background-color: white;
+			border-radius: 2px;
+			transition: transform 0.2s ease;
+			transform: translateX(0);
+		}
+		#osu-only-toggle.toggle-on .toggle-thumb {
+			transform: translateX(22px);
+		}
 	</style>
 </head>
 
@@ -560,6 +590,10 @@ $obsArr = (isset($collList['obs'])?$collList['obs']:null);
 					<label for="table-button"><?php echo $LANG['TABLE'] ?></label>
 				</div>
 			</fieldset>
+				<div class="osu-toggle-container">
+					<button type="button" id="osu-only-toggle" class="toggle-on" aria-label="Only OSU herbarium toggle"><span class="toggle-thumb"></span></button>
+					<span>Only OSU herbarium</span>
+				</div>
 				<button id="search-btn" onclick="simpleSearch()"><?php echo $LANG['SEARCH'] ?></button>
 				<button id="reset-btn"><?php echo $LANG['RESET'] ?></button>
 				<h2><?php echo $LANG['CRITERIA'] ?></h2>
@@ -622,6 +656,25 @@ $obsArr = (isset($collList['obs'])?$collList['obs']:null);
 			id: 'county',
 		},
 	})
+
+	// Set collection filter by default to be only OSU herbarium
+	const allCollectionCheckbox = document.getElementById('dballcb');
+	const OSUCollectionCheckbox = document.getElementById('cat-4-5-Specimens--Input');
+	allCollectionCheckbox.click();
+	OSUCollectionCheckbox.click();
+
+	// Event for the OSU Only Toggle: ON for OSU, OFF for all
+	const osuOnlyToggle = document.getElementById('osu-only-toggle');
+	osuOnlyToggle.addEventListener('click', function() {
+		const isOn = this.classList.toggle('toggle-on');
+		if (isOn) {
+			allCollectionCheckbox.click();
+			OSUCollectionCheckbox.click();
+		} else {
+			OSUCollectionCheckbox.click();
+			allCollectionCheckbox.click();
+		}
+	});
 </script>
 
 </html>
