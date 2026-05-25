@@ -659,7 +659,7 @@ $obsArr = (isset($collList['obs'])?$collList['obs']:null);
 
 	// Set collection filter by default to be only OSU herbarium
 	const allCollectionCheckbox = document.getElementById('dballcb');
-	const OSUCollectionCheckbox = document.getElementById('cat-4-5-Specimens--Input');
+	const OSUCollectionCheckbox = document.getElementById('OSU-Specimens--Input');
 	allCollectionCheckbox.click();
 	OSUCollectionCheckbox.click();
 
