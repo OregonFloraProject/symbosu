@@ -933,6 +933,7 @@ function setSearchForm(frm) {
 
 function parseUrlVariables(varStr) {
   var result = {};
+  if (!varStr) return result;
   varStr.split("&").forEach(function (part) {
     if (!part) return;
     part = part.split("+").join(" ");
@@ -964,6 +965,19 @@ document
       }
     }
     updateChip();
+
+    // Check for toggle on of OSU herbarium only, reset to ON position
+    const allCollectionCheckbox = document.getElementById('dballcb');
+	  const OSUCollectionCheckbox = document.getElementById('OSU-Specimens--Input');
+    const osuOnlyToggle = document.getElementById('osu-only-toggle');
+    if (!osuOnlyToggle.classList.contains('toggle-on')) {
+      osuOnlyToggle.classList.add('toggle-on');
+    }
+
+    // Click twice if "All collections" checkbox is not on, to reset collection list
+    if (!allCollectionCheckbox.checked) allCollectionCheckbox.click();
+      allCollectionCheckbox.click();
+	    OSUCollectionCheckbox.click();
   });
 // When checking "all neon collections" box, toggle checkboxes in modal
 $("#all-neon-colls-quick").click(function () {

@@ -216,17 +216,17 @@ class Home extends React.Component {
 
                   <div className="row link-card">
                     <p className="link-text">
-                      <a href={this.props.clientRoot + '/collections/search/index.php?db[]=5,8,238,239,240'}>
+                      <a href={this.props.clientRoot + '/collections/search/index.php'}>
                         <img src={this.props.clientRoot + '/images/slide-explore.png'} />
                       </a>
-                      <a href={this.props.clientRoot + '/collections/search/index.php?db[]=5,8,238,239,240'}>
+                      <a href={this.props.clientRoot + '/collections/search/index.php'}>
                         <strong>Explore</strong>
                       </a>{' '}
                       the collections of the OSU Herbarium.
                     </p>
                     <p className="link-desc">
                       Explore{' '}
-                      <a href={this.props.clientRoot + '/collections/search/index.php?db[]=5,8,238,239,240'}>
+                      <a href={this.props.clientRoot + '/collections/search/index.php'}>
                         <strong>OSU Herbarium</strong>
                       </a>{' '}
                       plants, mosses, lichens, algae, and fungi.

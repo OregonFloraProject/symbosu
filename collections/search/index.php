@@ -641,7 +641,7 @@ $obsArr = (isset($collList['obs'])?$collList['obs']:null);
 	const sanitizedCollectionSource = collectionSource.replace('db=','');
 	if (collectionSource) {
 		uncheckEverything();
-		checkTheCollectionsThatShouldBeChecked(sanitizedCollectionSource);
+		checkTheCollectionsThatShouldBeChecked([sanitizedCollectionSource]);
 		updateChip();
 	}
 
