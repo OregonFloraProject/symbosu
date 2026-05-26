@@ -148,22 +148,27 @@ class SpecUpload{
 	}
 
 	public function validateSecurityKey($k){
+		if(!is_string($k) || $k === '') return false;
 		if(!$this->collId){
-			$sql = 'SELECT collid FROM omcollections WHERE securitykey = "'.$k.'"';
-			//echo $sql;
-			$rs = $this->conn->query($sql);
+			$stmt = $this->conn->prepare('SELECT collid FROM omcollections WHERE securitykey = ? LIMIT 1');
+			$stmt->bind_param('s', $k);
+			$stmt->execute();
+			$rs = $stmt->get_result();
 			if($r = $rs->fetch_object()){
 				$this->setCollId($r->collid);
 			}
 			else{
+				$stmt->close();
 				return false;
 			}
 			$rs->free();
+			$stmt->close();
 		}
 		elseif(!isset($this->collMetadataArr["securitykey"])){
 			$this->setCollInfo();
 		}
-		if($k == $this->collMetadataArr["securitykey"]){
+		if(!empty($this->collMetadataArr["securitykey"])
+			&& hash_equals((string)$this->collMetadataArr["securitykey"], (string)$k)){
 			return true;
 		}
 		return false;
