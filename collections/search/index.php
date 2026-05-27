@@ -668,11 +668,31 @@ $obsArr = (isset($collList['obs'])?$collList['obs']:null);
 	osuOnlyToggle.addEventListener('click', function() {
 		const isOn = this.classList.toggle('toggle-on');
 		if (isOn) {
-			allCollectionCheckbox.click();
+			uncheckEverything();
 			OSUCollectionCheckbox.click();
 		} else {
-			OSUCollectionCheckbox.click();
 			allCollectionCheckbox.click();
+		}
+	});
+
+	// Synchronize "All collections" and "OSU collection" checkbox to the toggle
+	allCollectionCheckbox.addEventListener('click', function() {
+		if (this.checked) {
+			osuOnlyToggle.classList.remove('toggle-on');
+		}
+	});
+
+	OSUCollectionCheckbox.addEventListener('click', function() {
+		// Check other categories so none are checked for OSU to be checked
+		const categoryCollections = Array.from(
+			document.querySelectorAll(`#search-form-colls input[name="cat[]"]:checked`)
+		).filter(col => col.id !== 'OSU-Specimens--Input');
+		const categoryChecked = categoryCollections.length > 0;
+
+		if (this.checked && !allCollectionCheckbox.checked && !categoryChecked) {
+			osuOnlyToggle.classList.add('toggle-on');
+		} else {
+			osuOnlyToggle.classList.remove('toggle-on');
 		}
 	});
 </script>
