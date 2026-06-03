@@ -20,6 +20,10 @@ $collectionSearchPage = $SHOULD_USE_HARVESTPARAMS ? '/collections/index.php' : '
 
 <link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/css/compiled/theme.css?<?php echo filemtime($SERVER_ROOT . '/css/compiled/theme.css'); ?>"> 
 <link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/css/compiled/header.css?<?php echo filemtime($SERVER_ROOT . '/css/compiled/header.css'); ?>"> 
+<link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/css/media-viewer.css?<?php echo filemtime($SERVER_ROOT . '/css/media-viewer.css'); ?>">
+
+<!-- Lightbox styles -->
+<link rel="stylesheet" href="https://unpkg.com/react-image-lightbox@5.1.4/style.css">
 
  <!--   
 <script
@@ -32,6 +36,7 @@ $collectionSearchPage = $SHOULD_USE_HARVESTPARAMS ? '/collections/index.php' : '
 
 <!-- Use Symbiota's version of jQuery, and only load it if it is not already loaded in <head> by the page, checking first. -->
 <script> window.jQuery || document.write('<script src="<?php echo $CLIENT_ROOT; ?>/js/jquery-3.7.1.min.js" type="text/javascript">\x3C/script>')</script>
+<script src="<?php echo $CLIENT_ROOT; ?>/js/media-viewer.js?<?php echo filemtime($SERVER_ROOT . '/js/media-viewer.js'); ?>" type="text/javascript"></script>
 
 <!-- Render header -->
 <div
