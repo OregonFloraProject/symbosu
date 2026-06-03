@@ -609,8 +609,7 @@ class TaxaManager {
     foreach ($acceptedSynonyms as &$acceptedSynonym) {
       $acceptedSynonym["tid"] = $acceptedSynonym["tidaccepted"];
       unset($acceptedSynonym["tidaccepted"]);
-
-      $taxaModel = $taxaRepo->find(id: $acceptedSynonym["tid"]);
+      $taxaModel = $taxaRepo->find($acceptedSynonym["tid"]);
       $taxa = self::fromModel($taxaModel);
       $acceptedSynonym['vernacular'] = [
         "basename" => $taxa->getBasename(),
