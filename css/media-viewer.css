@@ -1,0 +1,138 @@
+.symb-media-viewer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 999999;
+  display: flex;
+  flex-direction: column;
+  background-color: #000;
+  color: #eee;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.symb-media-viewer.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.symb-mv-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.9);
+  z-index: -1;
+}
+
+.symb-mv-close {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 40px;
+  color: #fff;
+  cursor: pointer;
+  z-index: 9999;
+  line-height: 1;
+  text-shadow: 0 0 10px rgba(0,0,0,0.5);
+  transition: color 0.2s;
+}
+
+.symb-mv-close:hover {
+  color: #ccc;
+}
+
+.symb-mv-image-container {
+  flex: 1 1 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  position: relative;
+  background-color: #111;
+  height: 70vh; /* fallback */
+}
+
+.symb-mv-image {
+  max-width: 95%;
+  max-height: 95%;
+  object-fit: contain;
+  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
+
+.symb-mv-panel {
+  flex: 0 0 auto;
+  background-color: #222;
+  color: #ddd;
+  padding: 20px 40px;
+  max-height: 30vh;
+  overflow-y: auto;
+  border-top: 1px solid #333;
+  box-shadow: 0 -5px 15px rgba(0,0,0,0.5);
+}
+
+.symb-mv-title {
+  font-size: 1.5rem;
+  margin: 0 0 10px 0;
+  color: #fff;
+  font-weight: 300;
+}
+
+.symb-mv-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 15px;
+}
+
+.symb-mv-meta-item {
+  font-size: 0.9rem;
+}
+
+.symb-mv-meta-item strong {
+  color: #aaa;
+  display: block;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 2px;
+}
+
+.symb-mv-meta-item a {
+  color: #66b3ff;
+  text-decoration: none;
+}
+
+.symb-mv-meta-item a:hover {
+  text-decoration: underline;
+}
+
+.symb-mv-loader {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 4px solid rgba(255,255,255,0.1);
+  border-left-color: #fff;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: symb-spin 1s linear infinite;
+  display: none;
+}
+
+.symb-media-viewer.loading .symb-mv-loader {
+  display: block;
+}
+
+.symb-media-viewer.loading .symb-mv-image {
+  opacity: 0.5;
+}
+
+@keyframes symb-spin {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}

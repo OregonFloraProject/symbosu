@@ -159,7 +159,7 @@ class TaxonProfile extends Manager {
 			}
 			if($imgObj['occid']) $imgAnchor = '../collections/individual/index.php?occid='.$imgObj['occid'];
 			if($useThumbnail) if($imgObj['thumbnailurl']) $imgUrl = $imgThumbnail;
-			echo '<div class="tptnimg"><a href="#" onclick="openPopup(\'' . htmlspecialchars($imgAnchor, ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE) . '\');return false;">';
+			echo '<div class="tptnimg"><a href="#" onclick=\'if(window.symbMediaViewer){ symbMediaViewer.open({url: "'.htmlspecialchars($imgObj['url']??'', ENT_QUOTES).'", lgurl: "'.htmlspecialchars($imgObj['lgurl']??'', ENT_QUOTES).'", caption: "'.htmlspecialchars($imgObj['caption']??'', ENT_QUOTES).'", photographer: "'.htmlspecialchars($imgObj['photographer']??'', ENT_QUOTES).'", copyright: "'.htmlspecialchars($imgObj['copyright']??'', ENT_QUOTES).'", sourceurl: "'.htmlspecialchars($imgObj['sourceurl']??'', ENT_QUOTES).'", title: "'.htmlspecialchars($imgObj['sciname']??'', ENT_QUOTES).'"}); return false; } else { openPopup("' . htmlspecialchars($imgAnchor, ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE) . '"); return false; }\'>';
 			$titleStr = $imgObj['caption'];
 			if($imgObj['sciname'] != $this->taxonName) $titleStr .= ' (linked from '.$imgObj['sciname'].')';
 			echo '<img src="'.$imgUrl.'" title="'.$titleStr.'" alt="'.$this->taxonName.' image" />';
@@ -191,7 +191,7 @@ class TaxonProfile extends Manager {
 			$rs1->free();
 
 			$tidStr = implode(",",$tidArr);
-			$sql = 'SELECT t.sciname, i.imgid, i.url, i.thumbnailurl, i.originalurl, i.caption, i.occid, i.photographer, CONCAT_WS(" ",u.firstname,u.lastname) AS photographerLinked '.
+			$sql = 'SELECT t.sciname, i.imgid, i.url, i.thumbnailurl, i.originalurl, i.caption, i.occid, i.photographer, i.copyright, i.sourceurl, CONCAT_WS(" ",u.firstname,u.lastname) AS photographerLinked '.
 				'FROM images i LEFT JOIN users u ON i.photographeruid = u.uid '.
 				'INNER JOIN taxstatus ts ON i.tid = ts.tid '.
 				'INNER JOIN taxa t ON i.tid = t.tid '.
@@ -218,6 +218,9 @@ class TaxonProfile extends Manager {
 				if(!$imgUrl) continue;
 				$this->imageArr[$row->imgid]['url'] = $imgUrl;
 				$this->imageArr[$row->imgid]['thumbnailurl'] = $row->thumbnailurl;
+				$this->imageArr[$row->imgid]['lgurl'] = $row->originalurl;
+				$this->imageArr[$row->imgid]['copyright'] = $row->copyright;
+				$this->imageArr[$row->imgid]['sourceurl'] = $row->sourceurl;
 				if($row->photographerLinked) $this->imageArr[$row->imgid]['photographer'] = $row->photographerLinked;
 				else $this->imageArr[$row->imgid]['photographer'] = $row->photographer;
 				$this->imageArr[$row->imgid]['caption'] = $row->caption;

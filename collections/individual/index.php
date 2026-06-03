@@ -1023,7 +1023,23 @@ $traitArr = $indManager->getTraitArr();
 									}
 									?>
 									<div id="thumbnail-div" class="thumbnail-div">
-										<a href='<?= $imgArr['url'] ?>' target="_blank">
+										<a href='<?= $imgArr['url'] ?>'
+										   data-url='<?= htmlspecialchars($imgArr['url'] ?? '', ENT_QUOTES) ?>'
+										   data-lgurl='<?= htmlspecialchars($imgArr['lgurl'] ?? '', ENT_QUOTES) ?>'
+										   data-caption='<?= htmlspecialchars($imgArr['caption'] ?? '', ENT_QUOTES) ?>'
+										   data-photographer='<?= htmlspecialchars($imgArr['photographer'] ?? '', ENT_QUOTES) ?>'
+										   data-copyright='<?= htmlspecialchars($imgArr['copyright'] ?? '', ENT_QUOTES) ?>'
+										   data-sourceurl='<?= htmlspecialchars($imgArr['sourceurl'] ?? '', ENT_QUOTES) ?>'
+										   data-title='<?= htmlspecialchars($occArr['sciname'] ?? '', ENT_QUOTES) ?>'
+										   onclick='if(window.symbMediaViewer){ symbMediaViewer.open({
+											   url: this.getAttribute("data-url"),
+											   lgurl: this.getAttribute("data-lgurl"),
+											   caption: this.getAttribute("data-caption"),
+											   photographer: this.getAttribute("data-photographer"),
+											   copyright: this.getAttribute("data-copyright"),
+											   sourceurl: this.getAttribute("data-sourceurl"),
+											   title: this.getAttribute("data-title")
+										   }); return false; }'>
 											<img style="margin-bottom: 0.5rem"  border="1" src="<?= $thumbUrl; ?>" title="<?= $imgArr['caption']; ?>" style="max-width:21.9rem;" alt="Thumbnail image of <?= $occArr['sciname'] . " " . $imgCount ?>" />
 										</a>
 										<?php
