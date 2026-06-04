@@ -373,15 +373,50 @@ if($action == 'batchAssignTag'){
 								}
 								?>
 								<div class="tndiv" style="margin-bottom:15px;margin-top:15px;">
+									<?php
+									$sciname = $imgArr['sciname'];
+									if(!$sciname && $imgArr['occid'] && $occArr[$imgArr['occid']]['sciname']) $sciname = $occArr[$imgArr['occid']]['sciname'];
+									
+									$photoAuthor = '';
+									if($imgArr['uid']){
+										$photoAuthor = $uidList[$imgArr['uid']];
+										if(strlen($photoAuthor) > 23){
+											$nameArr = explode(',', $photoAuthor);
+											$photoAuthor = array_shift($nameArr);
+										}
+									}
+									if($imgArr['occid'] && !$photoAuthor){
+										if($occArr[$imgArr['occid']]['recordedby']) $photoAuthor = $occArr[$imgArr['occid']]['recordedby'];
+										else{
+											if(strpos($occArr[$imgArr['occid']]['catnum'], $collArr[$occArr[$imgArr['occid']]['collid']]) !== 0)
+												$photoAuthor = $collArr[$occArr[$imgArr['occid']]['collid']] . ': ';
+											$photoAuthor .=  $occArr[$imgArr['occid']]['catnum'];
+										}
+									}
+									if(!$photoAuthor && $imgArr['photographer']) $photoAuthor = $imgArr['photographer'];
+									
+									$fullUrl = $imgArr['url'] ?? '';
+									$fullLgUrl = $imgArr['originalurl'] ?? '';
+									if(isset($IMAGE_DOMAIN) && $IMAGE_DOMAIN){
+										if(substr($fullUrl,0,1) == '/') $fullUrl = $IMAGE_DOMAIN . $fullUrl;
+										if(substr($fullLgUrl,0,1) == '/') $fullLgUrl = $IMAGE_DOMAIN . $fullLgUrl;
+									}
+									
+									$mediaViewerArgs = '{url: "'.htmlspecialchars($fullUrl, ENT_QUOTES).'", lgurl: "'.htmlspecialchars($fullLgUrl, ENT_QUOTES).'", caption: "'.htmlspecialchars($imgArr['caption']??'', ENT_QUOTES).'", photographer: "'.htmlspecialchars($photoAuthor??'', ENT_QUOTES).'", copyright: "'.htmlspecialchars($imgArr['copyright']??'', ENT_QUOTES).'", sourceurl: "'.htmlspecialchars($imgArr['sourceurl']??'', ENT_QUOTES).'", title: "'.htmlspecialchars($sciname??'', ENT_QUOTES).'", imgid: "'.htmlspecialchars($imgId??'', ENT_QUOTES).'", occid: "'.htmlspecialchars($imgArr['occid']??'', ENT_QUOTES).'"}';
+									
+									$fallbackOnclick = '';
+									if($imgArr['occid']){
+										$fallbackOnclick = 'openIndPU(' . $imgArr['occid'] . ')';
+									}
+									else{
+										$fallbackOnclick = 'openImagePopup(' . $imgId . ')';
+									}
+									
+									$onclickStr = 'if(window.symbMediaViewer){ window.symbMediaViewer.open(' . $mediaViewerArgs . '); return false; } else { ' . $fallbackOnclick . '; return false; }';
+									$anchorLink = '<a href="#" onclick=\'' . $onclickStr . '\'>';
+									?>
 									<div class="tnimg">
 										<?php
-										$anchorLink = '';
-										if($imgArr['occid']){
-											$anchorLink = '<a href="#" onclick="openIndPU(' . $imgArr['occid'] . ');return false;">';
-										}
-										else{
-											$anchorLink = '<a href="#" onclick="openImagePopup(' . $imgId . ');return false;">';
-										}
 										echo $anchorLink . '<img src="' . $imgUrl . '" /></a>';
 										?>
 									</div>
@@ -409,37 +444,17 @@ if($action == 'batchAssignTag'){
 											$isEditorOfAtLeastOne = true;
 											echo '<div class="editor-div" style="display:none;margin-top:3px;"><input name="imgid[]" type="checkbox" value="' . $imgId . '"></div>';
 										}
-										$sciname = $imgArr['sciname'];
-										if(!$sciname && $imgArr['occid'] && $occArr[$imgArr['occid']]['sciname']) $sciname = $occArr[$imgArr['occid']]['sciname'];
+										
 										if($sciname){
-											if(strpos($imgArr['sciname'], ' ')) $sciname = '<i>' . $sciname . '</i>';
+											$scinameDisp = $sciname;
+											if(strpos($imgArr['sciname'], ' ')) $scinameDisp = '<i>' . $scinameDisp . '</i>';
 											if($imgArr['tid']) echo '<a href="#" onclick="openTaxonPopup(' . $imgArr['tid'] . ');return false;" >';
-											echo $sciname;
+											echo $scinameDisp;
 											if($imgArr['tid']) echo '</a>';
 											echo '<br />';
 										}
-										$photoAuthor = '';
-										$authorLink = '';
-										if($imgArr['uid']){
-											$photoAuthor = $uidList[$imgArr['uid']];
-											if(strlen($photoAuthor) > 23){
-												$nameArr = explode(',', $photoAuthor);
-												$photoAuthor = array_shift($nameArr);
-											}
-										}
-										if($imgArr['occid']){
-											$authorLink = '<a href="#" onclick="openIndPU(' . $imgArr['occid'] . ');return false;">';
-											if(!$photoAuthor){
-												if($occArr[$imgArr['occid']]['recordedby']) $photoAuthor = $occArr[$imgArr['occid']]['recordedby'];
-												else{
-													if(strpos($occArr[$imgArr['occid']]['catnum'], $collArr[$occArr[$imgArr['occid']]['collid']]) !== 0)
-														$photoAuthor = $collArr[$occArr[$imgArr['occid']]['collid']] . ': ';
-													$photoAuthor .=  $occArr[$imgArr['occid']]['catnum'];
-												}
-											}
-										}
-										if(!$authorLink) $authorLink = $anchorLink;
-										echo $authorLink . $photoAuthor . '</a>';
+										
+										echo $anchorLink . $photoAuthor . '</a>';
 										?>
 									</div>
 								</div>

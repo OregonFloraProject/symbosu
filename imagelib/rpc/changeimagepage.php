@@ -78,12 +78,36 @@ if($view == 'thumb'){
 			}
 			$recordListHtml .= '<div class="tndiv" style="margin-bottom:15px;margin-top:15px;">';
 			$recordListHtml .= '<div class="tnimg">';
+			
+			$photoAuthor = '';
+			if($imgArr['lastname']){
+				$pName = $imgArr['firstname'].' '.$imgArr['lastname'];
+				if(strlen($pName) < 20) $photoAuthor = $pName;
+				else $photoAuthor = $imgArr['lastname'];
+			}
+			if(!$photoAuthor && $imgArr['imgphotographer']) $photoAuthor = $imgArr['imgphotographer'];
+
+			$fullUrl = $imgArr['url'] ?? '';
+			$fullLgUrl = $imgArr['originalurl'] ?? '';
+			if(isset($imageDomain) && $imageDomain){
+				if(substr($fullUrl,0,1) == '/') $fullUrl = $imageDomain . $fullUrl;
+				if(substr($fullLgUrl,0,1) == '/') $fullLgUrl = $imageDomain . $fullLgUrl;
+			}
+			
+			$mediaViewerArgs = '{url: "'.htmlspecialchars($fullUrl, ENT_QUOTES).'", lgurl: "'.htmlspecialchars($fullLgUrl, ENT_QUOTES).'", caption: "'.htmlspecialchars($imgArr['caption']??'', ENT_QUOTES).'", photographer: "'.htmlspecialchars($photoAuthor??'', ENT_QUOTES).'", copyright: "'.htmlspecialchars($imgArr['copyright']??'', ENT_QUOTES).'", sourceurl: "'.htmlspecialchars($imgArr['sourceurl']??'', ENT_QUOTES).'", title: "'.htmlspecialchars($imgArr['sciname']??'', ENT_QUOTES).'", imgid: "'.htmlspecialchars($imgId??'', ENT_QUOTES).'", occid: "'.htmlspecialchars($imgArr['occid']??'', ENT_QUOTES).'"}';
+
+			$fallbackOnclick = '';
 			if($imgArr['occid']){
-				$recordListHtml .= '<a href="#" onclick="openIndPU('.$imgArr['occid'].');return false;">';
+				$fallbackOnclick = 'openIndPU(' . $imgArr['occid'] . ')';
 			}
 			else{
-				$recordListHtml .= '<a href="#" onclick="openImagePopup('.$imgId.');return false;">';
+				$fallbackOnclick = 'openImagePopup(' . $imgId . ')';
 			}
+
+			$onclickStr = 'if(window.symbMediaViewer){ window.symbMediaViewer.open(' . $mediaViewerArgs . '); return false; } else { ' . $fallbackOnclick . '; return false; }';
+			$anchorLink = '<a href="#" onclick=\'' . $onclickStr . '\'>';
+
+			$recordListHtml .= $anchorLink;
 			$recordListHtml .= '<img src="'.$imgUrl.'" />';
 			$recordListHtml .= '</a>';
 			$recordListHtml .= '</div>';

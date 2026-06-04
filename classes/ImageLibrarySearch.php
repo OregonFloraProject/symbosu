@@ -36,7 +36,7 @@ class ImageLibrarySearch extends OccurrenceTaxaManager{
 		$retArr = Array();
 		$this->setSqlWhere();
 		$this->setRecordCnt();
-		$sql = 'SELECT i.imgid, i.tid, IFNULL(t.sciname,o.sciname) as sciname, i.url, i.thumbnailurl, i.originalurl, i.photographeruid, i.caption, i.occid ';
+		$sql = 'SELECT i.imgid, i.tid, IFNULL(t.sciname,o.sciname) as sciname, i.url, i.thumbnailurl, i.originalurl, i.photographeruid, i.photographer, i.caption, i.occid, i.copyright, i.sourceurl ';
 		/*
 		$sql = 'SELECT DISTINCT i.imgid, o.tidinterpreted, t.tid, t.sciname, i.url, i.thumbnailurl, i.originalurl, i.photographeruid, i.caption, '.
 			'o.occid, o.stateprovince, o.catalognumber, CONCAT_WS("-",c.institutioncode, c.collectioncode) as instcode ';
@@ -62,8 +62,11 @@ class ImageLibrarySearch extends OccurrenceTaxaManager{
 			$retArr[$imgId]['thumbnailurl'] = $r->thumbnailurl;
 			$retArr[$imgId]['originalurl'] = $r->originalurl;
 			$retArr[$imgId]['uid'] = $r->photographeruid;
+			$retArr[$imgId]['photographer'] = $r->photographer;
 			$retArr[$imgId]['caption'] = $r->caption;
 			$retArr[$imgId]['occid'] = $r->occid;
+			$retArr[$imgId]['copyright'] = $r->copyright;
+			$retArr[$imgId]['sourceurl'] = $r->sourceurl;
 			//$retArr[$imgId]['stateprovince'] = $r->stateprovince;
 			//$retArr[$imgId]['catalognumber'] = $r->catalognumber;
 			//$retArr[$imgId]['instcode'] = $r->instcode;

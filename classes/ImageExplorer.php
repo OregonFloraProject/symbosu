@@ -191,7 +191,8 @@ class ImageExplorer{
 		}
 
 		$sqlStr = 'SELECT DISTINCT i.imgid, ts.tidaccepted, i.url, i.thumbnailurl, i.originalurl, '.
-			'u.uid, CONCAT_WS(", ",u.lastname,u.firstname) as photographer, i.caption, '.
+			'u.uid, CONCAT_WS(", ",u.lastname,u.firstname) as photographer, i.photographer AS imgphotographer, i.caption, '.
+			'i.copyright, i.sourceurl, '.
 			'o.occid, o.stateprovince, o.catalognumber, CONCAT_WS("-",c.institutioncode, c.collectioncode) as instcode, '.
 			'i.initialtimestamp '.
 			'FROM images i LEFT JOIN taxa t ON i.tid = t.tid '.

@@ -7,7 +7,8 @@ import DescriptionTabs from './DescriptionTabs.jsx';
 import MapItem from './MapItem.jsx';
 import SideBarSection from './SideBarSectionForMain.jsx';
 import { checkNullThumbnailUrl } from '../utils.js';
-import Lightbox from 'react-image-lightbox';
+import SharedLightbox from '../../common/SharedLightbox.jsx';
+import { getTaxaPage } from '../../common/taxaUtils';
 
 const queryParams = getUrlQueryParams(window.location.search);
 
@@ -159,68 +160,6 @@ export class TaxaDetail extends React.Component {
     const photoIndex = this.state.currImage || 0;
     const currentImg = images[photoIndex];
     const res = this.props.res;
-
-    let lightboxCaption = null;
-    if (currentImg) {
-      const recordLink = currentImg.occid 
-        ? `${this.props.clientRoot}/collections/individual/index.php?occid=${currentImg.occid}`
-        : `${this.props.clientRoot}/imagelib/imgdetails.php?imgid=${currentImg.imgid}`;
-
-      lightboxCaption = (
-        <div className="lightbox-caption-container">
-          
-          <div className="lightbox-caption-name">
-            <span className="font-italic">{res.sciName}</span>
-          </div>
-
-          <div className="lightbox-caption-loc desktop-only">
-            {currentImg.fulldate && <span>{currentImg.fulldate} </span>}
-            {currentImg.locality && (
-              <span>
-                in <a href={recordLink} target="_blank" rel="noopener noreferrer">{currentImg.locality}</a>
-              </span>
-            )}
-          </div>
-
-          <div className="lightbox-caption-middle desktop-only">
-            {currentImg.photographer && <div>&copy; {currentImg.photographer}</div>}
-            {currentImg.collectionname && <div>Courtesy of {currentImg.collectionname}</div>}
-            {currentImg.copyright && <div>License: {currentImg.copyright}</div>}
-          </div>
-
-          <details className="lightbox-mobile-details mobile-only">
-            <summary className="lightbox-mobile-summary">More Info</summary>
-            
-            <div className="lightbox-caption-loc">
-              {currentImg.fulldate && <span>{currentImg.fulldate} </span>}
-              {currentImg.locality && (
-                <span>
-                  in <a href={recordLink} target="_blank" rel="noopener noreferrer">{currentImg.locality}</a>
-                </span>
-              )}
-            </div>
-
-            <div className="lightbox-caption-middle">
-              {currentImg.photographer && <div>&copy; {currentImg.photographer}</div>}
-              {currentImg.collectionname && <div>Courtesy of {currentImg.collectionname}</div>}
-              {currentImg.copyright && <div>License: {currentImg.copyright}</div>}
-            </div>
-          </details>
-
-          <div className="lightbox-caption-right">
-            <a 
-              href={recordLink} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="lightbox-caption-btn"
-            >
-              Full Record &#x2197;
-            </a>
-          </div>
-
-        </div>
-      );
-    }
     const pageTitle = this.props.defaultTitle + ' ' + res.sciName;
     const titleElement = document.getElementsByTagName('title')[0];
     titleElement.innerHTML = pageTitle;
@@ -374,48 +313,15 @@ export class TaxaDetail extends React.Component {
             />
           </div>
         </div>
-        {this.state.isOpen && currentImg && (
-          <Lightbox
-            mainSrc={images[photoIndex].url}
-            nextSrc={images.length > 1 ? images[(photoIndex + 1) % images.length].url : undefined}
-            prevSrc={images.length > 1 ? images[(photoIndex + images.length - 1) % images.length].url : undefined}
-            imagePadding={typeof window !== 'undefined' && window.innerWidth <= 768 ? 10 : 85}
-            onCloseRequest={() => this.setState({ isOpen: false })}
-            onMovePrevRequest={() =>
-              this.setState({
-                currImage: (photoIndex + images.length - 1) % images.length,
-              })
-            }
-            onMoveNextRequest={() =>
-              this.setState({
-                currImage: (photoIndex + 1) % images.length,
-              })
-            }
-            imageCaption={lightboxCaption}
-            toolbarButtons={[
-              <div key="counter" style={{ color: '#bbb', fontSize: '1.2rem', paddingRight: '20px', lineHeight: '50px' }}>
-                {photoIndex + 1} of {images.length}
-              </div>,
-              <button
-                key="fullscreen"
-                type="button"
-                className="ril__toolbarItemChild ril__builtinButton"
-                title="Toggle Fullscreen"
-                style={{
-                  background: 'url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCI+PGcgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjIiIGZpbGw9Im5vbmUiPjxwYXRoIGQ9Ik0yIDdWMmg1Ii8+PHBhdGggZD0iTTE4IDdWMmgtNSIvPjxwYXRoIGQ9Ik0yIDEzdjVoNSIvPjxwYXRoIGQ9Ik0xOCAxM3Y1aC01Ii8+PC9nPjwvc3ZnPg==") no-repeat center'
-                }}
-                onClick={() => {
-                  if (!document.fullscreenElement) {
-                    document.documentElement.requestFullscreen().catch(() => {});
-                  } else {
-                    document.exitFullscreen();
-                  }
-                }}
-              />
-            ]}
-            reactModalStyle={{ overlay: { zIndex: 100001 } }}
-          />
-        )}
+        <SharedLightbox
+          isOpen={this.state.isOpen}
+          photoIndex={photoIndex}
+          images={images}
+          sciName={res.sciName}
+          onClose={() => this.setState({ isOpen: false })}
+          onNavigate={(index) => this.setState({ currImage: index })}
+          clientRoot={this.props.clientRoot}
+        />
       </div>
     );
   }

@@ -152,14 +152,16 @@ class TaxonProfile extends Manager {
 			$imgUrl = $imgObj['url'];
 			$imgAnchor = '../imagelib/imgdetails.php?imgid='.$imgId;
 			$imgThumbnail = $imgObj['thumbnailurl'];
+			$imgLgUrl = $imgObj['lgurl'] ?? '';
 			if(array_key_exists('IMAGE_DOMAIN',$GLOBALS)){
 				//Images with relative paths are on another server
 				if(substr($imgUrl,0,1)=="/") $imgUrl = $GLOBALS['IMAGE_DOMAIN'].$imgUrl;
 				if(substr($imgThumbnail,0,1)=="/") $imgThumbnail = $GLOBALS['IMAGE_DOMAIN'].$imgThumbnail;
+				if(substr($imgLgUrl,0,1)=="/") $imgLgUrl = $GLOBALS['IMAGE_DOMAIN'].$imgLgUrl;
 			}
 			if($imgObj['occid']) $imgAnchor = '../collections/individual/index.php?occid='.$imgObj['occid'];
 			if($useThumbnail) if($imgObj['thumbnailurl']) $imgUrl = $imgThumbnail;
-			echo '<div class="tptnimg"><a href="#" onclick=\'if(window.symbMediaViewer){ symbMediaViewer.open({url: "'.htmlspecialchars($imgObj['url']??'', ENT_QUOTES).'", lgurl: "'.htmlspecialchars($imgObj['lgurl']??'', ENT_QUOTES).'", caption: "'.htmlspecialchars($imgObj['caption']??'', ENT_QUOTES).'", photographer: "'.htmlspecialchars($imgObj['photographer']??'', ENT_QUOTES).'", copyright: "'.htmlspecialchars($imgObj['copyright']??'', ENT_QUOTES).'", sourceurl: "'.htmlspecialchars($imgObj['sourceurl']??'', ENT_QUOTES).'", title: "'.htmlspecialchars($imgObj['sciname']??'', ENT_QUOTES).'"}); return false; } else { openPopup("' . htmlspecialchars($imgAnchor, ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE) . '"); return false; }\'>';
+			echo '<div class="tptnimg"><a href="#" onclick=\'if(window.symbMediaViewer){ window.symbMediaViewer.open({url: "'.htmlspecialchars($imgUrl, ENT_QUOTES).'", lgurl: "'.htmlspecialchars($imgLgUrl, ENT_QUOTES).'", caption: "'.htmlspecialchars($imgObj['caption']??'', ENT_QUOTES).'", photographer: "'.htmlspecialchars($imgObj['photographer']??'', ENT_QUOTES).'", copyright: "'.htmlspecialchars($imgObj['copyright']??'', ENT_QUOTES).'", sourceurl: "'.htmlspecialchars($imgObj['sourceurl']??'', ENT_QUOTES).'", title: "'.htmlspecialchars($imgObj['sciname']??'', ENT_QUOTES).'", imgid: "'.htmlspecialchars($imgId??'', ENT_QUOTES).'", occid: "'.htmlspecialchars($imgObj['occid']??'', ENT_QUOTES).'"}); return false; } else { openPopup("' . htmlspecialchars($imgAnchor, ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE) . '"); return false; }\'>';
 			$titleStr = $imgObj['caption'];
 			if($imgObj['sciname'] != $this->taxonName) $titleStr .= ' (linked from '.$imgObj['sciname'].')';
 			echo '<img src="'.$imgUrl.'" title="'.$titleStr.'" alt="'.$this->taxonName.' image" />';
@@ -191,7 +193,7 @@ class TaxonProfile extends Manager {
 			$rs1->free();
 
 			$tidStr = implode(",",$tidArr);
-			$sql = 'SELECT t.sciname, i.imgid, i.url, i.thumbnailurl, i.originalurl, i.caption, i.occid, i.photographer, i.copyright, i.sourceurl, CONCAT_WS(" ",u.firstname,u.lastname) AS photographerLinked '.
+			$sql = 'SELECT t.sciname, i.imgid, i.url, i.thumbnailurl, i.originalurl, i.caption, i.occid, i.photographer, i.copyright, i.owner, i.rights, i.accessRights, i.sourceurl, CONCAT_WS(" ",u.firstname,u.lastname) AS photographerLinked '.
 				'FROM images i LEFT JOIN users u ON i.photographeruid = u.uid '.
 				'INNER JOIN taxstatus ts ON i.tid = ts.tid '.
 				'INNER JOIN taxa t ON i.tid = t.tid '.
@@ -220,6 +222,9 @@ class TaxonProfile extends Manager {
 				$this->imageArr[$row->imgid]['thumbnailurl'] = $row->thumbnailurl;
 				$this->imageArr[$row->imgid]['lgurl'] = $row->originalurl;
 				$this->imageArr[$row->imgid]['copyright'] = $row->copyright;
+				$this->imageArr[$row->imgid]['owner'] = $row->owner;
+				$this->imageArr[$row->imgid]['rights'] = $row->rights;
+				$this->imageArr[$row->imgid]['accessRights'] = $row->accessRights;
 				$this->imageArr[$row->imgid]['sourceurl'] = $row->sourceurl;
 				if($row->photographerLinked) $this->imageArr[$row->imgid]['photographer'] = $row->photographerLinked;
 				else $this->imageArr[$row->imgid]['photographer'] = $row->photographer;
