@@ -68,6 +68,45 @@
                             {
                                 "fieldBlock": [
                                     {
+                                        "field": "identifiedby",
+                                        "className": "font-family-times text-base",
+                                        "prefix": "Det: "
+                                    },
+                                    {
+                                        "field": "dateidentified",
+                                        "className": "font-family-times text-base"
+                                    }
+                                ],
+                                "delimiter": " ",
+                                "className": "ml-2 mt-3 mb-2"
+                            },
+                            {
+                                "fieldBlock": [
+                                    {
+                                        "field": "identificationreferences",
+                                        "className": "font-family-times text-base"
+                                    }
+                                ],
+                                "delimiter": " ",
+                                "className": "mt-3 mb-2 ml-2"
+                            },
+                            {
+                                "fieldBlock": [
+                                    {
+                                        "field": "identificationqualifier",
+                                        "className": "font-family-times text-base"
+                                    },
+                                    {
+                                        "field": "identificationremarks",
+                                        "className": "font-family-times text-base"
+                                    }
+                                ],
+                                "delimiter": " ",
+                                "className": "mt-3 mb-2 ml-2"
+                            },
+                            {
+                                "fieldBlock": [
+                                    {
                                         "field": "county",
                                         "className": "font-family-times",
                                         "suffix": " Co.,"
@@ -262,6 +301,30 @@
                                 ],
                                 "delimiter": " ",
                                 "className": "mb-2 text-align-left ml-2"
+                            },
+                            {
+                                "fieldBlock": [
+                                    {
+                                        "field": "identificationreferences",
+                                        "className": "text-sm font-family-arial"
+                                    }
+                                ],
+                                "delimiter": " ",
+                                "className": "mb-2 ml-2 text-align-left"
+                            },
+                            {
+                                "fieldBlock": [
+                                    {
+                                        "field": "identificationqualifier",
+                                        "className": "text-sm font-family-arial"
+                                    },
+                                    {
+                                        "field": "identificationremarks",
+                                        "className": "font-family-arial text-sm"
+                                    }
+                                ],
+                                "delimiter": " ",
+                                "className": "text-align-left mb-2 ml-2"
                             },
                             {
                                 "fieldBlock": [
