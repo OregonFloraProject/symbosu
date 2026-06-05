@@ -93,5 +93,5 @@ if (isset($SYMB_UID) && $SYMB_UID) {
 
 array_walk_recursive($result, 'cleanWindowsRecursive'); #replace Windows characters
 header("Content-Type: application/json; charset=utf-8");
-echo json_encode($result, JSON_NUMERIC_CHECK | JSON_INVALID_UTF8_SUBSTITUTE);
+echo json_encode($result, JSON_INVALID_UTF8_SUBSTITUTE);
 ?>
