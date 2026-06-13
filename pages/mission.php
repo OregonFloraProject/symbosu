@@ -51,7 +51,7 @@ header( "Content-Type: text/html; charset=" . $charset );
                 </div>
                 <div class="column-main col-md-8 order-2 order-md-1 pr-md-5">
                     <h2>&nbsp;Scope of Project</h2>
-                    <p>OregonFlora addresses the ~4,750 vascular plant species, subspecies, and varieties (taxa) of Oregon that grow in the wild without cultivation. These include:</p>
+                    <p>OregonFlora addresses the ~4,790 vascular plant species, subspecies, and varieties (taxa) of Oregon that grow in the wild without cultivation. These include:</p>
                     <ul>
                         <li>all extant native taxa</li>
                         <li>native taxa thought to have gone extinct in Oregon in historical times</li>
@@ -153,8 +153,8 @@ header( "Content-Type: text/html; charset=" . $charset );
 
                     <h3>2020-present</h3>
 										<p>Two milestones were reached in 2020: publication of Volume 2 of the <i>Flora of Oregon</i>, and the launching of OregonFlora's new website based on the Symbiota platform. This introduced the Grow Natives tool - specialized content for gardeners and landscapers using native species. </p>
-<p> Development of a new interactive rare plant guide began in late 2022; it will function similar to the Grow Natives tool when launched on the OregonFlora website.</p>
 <p> OregonFlora became a charter member (2022) of The Oregon Native Plant Conservation Coalition (ONPCC), a diverse, regional coalition composed of federal and state agencies, academic institutions, and nonprofits with a history of plant conservation, restoration, and ecological research in Oregon.</p>
+<p> The interactive Rare Plant Guide was launched in Spring 2026, featuring Oregon's most imperiled species. It provides detailed resources for conservation specialists and land managers, as well as accessible information for plant enthusiasts.</p>
 <p>Publication of Volume 3 of the <i>Flora of Oregon</i> remains the priority for OregonFlora. The knowledge gained from this floristic project will drive far-reaching research initiatives, land management practices and activities by people and organizations nationwide.</p>
                 </div>
 
