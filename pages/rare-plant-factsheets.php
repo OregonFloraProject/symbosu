@@ -59,7 +59,8 @@ header( "Content-Type: text/html; charset=" . $charset );
 					<?php
 					echo '<h2 class="temp">Please visit our interactive <a href="' . $CLIENT_ROOT . '/rare/index.php">Rare Plant Guide</a>!</h2>';
 					?>
-					<h2>We offer this archive of printable fact sheets of 100 rare taxa in Oregon. Fact sheets were produced from 2007 to 2019 and are no longer kept up to date. For updated and more detailed information in an interactive, interconnected format, please visit our <a href="/rare/index.php">Rare Plant Guide</a>.</h2>
+					<h2>We offer this archive of printable fact sheets of 100 rare taxa in Oregon. Fact sheets were produced from 2007 to 2019 and are no longer kept up to date. For updated and more detailed information in an interactive, interconnected format, please visit our <?php echo '<a href="' . $CLIENT_ROOT . '/rare/index.php">Rare Plant Guide</a>.</h2>';
+					?>
 					<div class="inset index">
 						<?php /* <h3>Index</h3> */ ?>
 						<p><em>Jump to a section:</em></p>
