@@ -48,7 +48,7 @@ header( "Content-Type: text/html; charset=" . $charset );
 <div class="info-page page2022 rare-plant-factsheets">
     <section id="titlebackground" class="title-publications">
         <div class="inner-content">
-            <h1>Rare Plant Fact Sheets</h1>
+            <h1>Rare Plant Fact Sheet Archives</h1>
         </div>
     </section>
     <section>
@@ -59,7 +59,7 @@ header( "Content-Type: text/html; charset=" . $charset );
 					<?php
 					echo '<h2 class="temp">Please visit our interactive <a href="' . $CLIENT_ROOT . '/rare/index.php">Rare Plant Guide</a>!</h2>';
 					?>
-					<h2>We offer this archive of printable fact sheets of 100 rare taxa in Oregon. Fact sheets were produced from 2007 to 2019 and are no longer kept up to date. For updated and more detailed information in an interactive, interconnected format, please visit our <a href="' . $CLIENT_ROOT . '/rare/index.php">Rare Plant Guide</a>.</h2>
+					<h2>We offer this archive of printable fact sheets of 100 rare taxa in Oregon. Fact sheets were produced from 2007 to 2019 and are no longer kept up to date. For updated and more detailed information in an interactive, interconnected format, please visit our <a href="/rare/index.php">Rare Plant Guide</a>.</h2>
 					<div class="inset index">
 						<?php /* <h3>Index</h3> */ ?>
 						<p><em>Jump to a section:</em></p>
