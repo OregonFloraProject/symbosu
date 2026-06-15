@@ -29,7 +29,7 @@ header( "Content-Type: text/html; charset=" . $charset );
 ?>
 <html>
 <head>
-    <title><?php echo $defaultTitle ?> Rare Plant Fact Sheets</title>
+    <title><?php echo $defaultTitle ?> Rare Plant Fact Sheet Archives</title>
     <meta charset="UTF-8">
 		<link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/css/base.css?<?php echo filemtime($SERVER_ROOT . '/css/base.css'); ?>">    
 		<link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/css/main.css?<?php echo filemtime($SERVER_ROOT . '/css/main.css'); ?>">   
@@ -57,9 +57,9 @@ header( "Content-Type: text/html; charset=" . $charset );
         <div class="inner-content">
 					<!-- place static page content here. -->
 					<?php
-					echo '<h2 class="temp">Coming soon to oregonflora.org: an <a href="' . $CLIENT_ROOT . '/pages/rare-plant-guide.php">interactive Rare Plant Guide</a>!</h2>';
+					echo '<h2 class="temp">Please visit our interactive <a href="' . $CLIENT_ROOT . '/rare/index.php">Rare Plant Guide</a>!</h2>';
 					?>
-					<h2>Here are printable factsheets to help identify 100 rare taxa in Oregon. Each has features such as ‘look-alike’ species, best survey times, and illustrations highlighting important characters.</h2>
+					<h2>We offer this archive of printable fact sheets of 100 rare taxa in Oregon. Fact sheets were produced from 2007 to 2019 and are no longer kept up to date. For updated and more detailed information in an interactive, interconnected format, please visit our <a href="' . $CLIENT_ROOT . '/rare/index.php">Rare Plant Guide</a>.</h2>
 					<div class="inset index">
 						<?php /* <h3>Index</h3> */ ?>
 						<p><em>Jump to a section:</em></p>
