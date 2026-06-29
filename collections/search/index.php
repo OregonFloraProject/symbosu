@@ -89,11 +89,16 @@ $obsArr = (isset($collList['obs'])?$collList['obs']:null);
 			align-items: center;
 			gap: 8px;
 		}
+		.osu-only-label {
+			width: 12vw;
+		}
 		#osu-only-toggle {
+			--toggle-pad: 2px;
+			--thumb-size: 20px;
 			position: relative;
 			width: 48px;
 			height: 26px;
-			padding: 3px;
+			padding: var(--toggle-pad);
 			border-radius: 4px;
 			background-color: var(--medium-color) !important;
 			cursor: pointer;
@@ -104,15 +109,15 @@ $obsArr = (isset($collList['obs'])?$collList['obs']:null);
 		}
 		.toggle-thumb {
 			display: block;
-			width: 20px;
-			height: 20px;
+			width: var(--thumb-size);
+			height: var(--thumb-size);
 			background-color: white;
 			border-radius: 2px;
 			transition: transform 0.2s ease;
 			transform: translateX(0);
 		}
 		#osu-only-toggle.toggle-on .toggle-thumb {
-			transform: translateX(15px);
+			transform: translateX(calc(var(--thumb-size) + 2 * var(--toggle-pad)));
 		}
 	</style>
 </head>
@@ -592,7 +597,7 @@ $obsArr = (isset($collList['obs'])?$collList['obs']:null);
 			</fieldset>
 				<div class="osu-toggle-container">
 					<button type="button" id="osu-only-toggle" class="toggle-on" aria-label="Only search OSU herbarium collections toggle"><span class="toggle-thumb"></span></button>
-					<span>Only search OSU Herbarium Collections</span>
+					<span class="osu-only-label">Only search OSU Herbarium Collections</span>
 				</div>
 				<button id="search-btn" onclick="simpleSearch()"><?php echo $LANG['SEARCH'] ?></button>
 				<button id="reset-btn"><?php echo $LANG['RESET'] ?></button>
