@@ -112,7 +112,7 @@ $obsArr = (isset($collList['obs'])?$collList['obs']:null);
 			transform: translateX(0);
 		}
 		#osu-only-toggle.toggle-on .toggle-thumb {
-			transform: translateX(22px);
+			transform: translateX(15px);
 		}
 	</style>
 </head>
@@ -591,8 +591,8 @@ $obsArr = (isset($collList['obs'])?$collList['obs']:null);
 				</div>
 			</fieldset>
 				<div class="osu-toggle-container">
-					<button type="button" id="osu-only-toggle" class="toggle-on" aria-label="Only OSU herbarium toggle"><span class="toggle-thumb"></span></button>
-					<span>Only OSU herbarium</span>
+					<button type="button" id="osu-only-toggle" class="toggle-on" aria-label="Only search OSU herbarium collections toggle"><span class="toggle-thumb"></span></button>
+					<span>Only search OSU Herbarium Collections</span>
 				</div>
 				<button id="search-btn" onclick="simpleSearch()"><?php echo $LANG['SEARCH'] ?></button>
 				<button id="reset-btn"><?php echo $LANG['RESET'] ?></button>
