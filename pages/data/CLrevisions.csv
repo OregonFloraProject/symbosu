@@ -23,7 +23,7 @@
 "v 2.4","Caryophyllaceae","Silene hookeri ssp. serpentinicola","Accepted (terminal)","Synonym of Silene serpentinicola",5/26/2026 0:00:00
 "v 2.4","Caryophyllaceae","Silene serpentinicola","Synonym of Silene hookeri ssp. serpentinicola","Accepted (terminal)",5/26/2026 0:00:00
 "v 2.4","Cyperaceae","Carex mesochorea","Accepted (terminal)","Excluded",5/26/2026 0:00:00
-"v 2.4","Ericaceae","Pyrola dentata","Synonym of ","Accepted (terminal)",5/26/2026 0:00:00
+"v 2.4","Ericaceae","Pyrola dentata","Synonym of Pyrola picta","Accepted (terminal)",5/26/2026 0:00:00
 "v 2.4","Ericaceae","Pyrola picta","Accepted","Accepted or a synonym (in part) of P. dentata or P. aphylla",5/26/2026 0:00:00
 "v 2.4","Fabaceae","Astragalus reventiformis","Excluded","Accepted (terminal)",5/26/2026 0:00:00
 "v 2.4","Fabaceae","Astragalus tegetarioides var. tegetarioides","Accepted (terminal)","Synonym of Astragalus tegetarioides",5/26/2026 0:00:00
@@ -34,7 +34,7 @@
 "v 2.4","Lamiaceae","Mentha × verticillata","Under evaluation","Accepted (terminal)",5/26/2026 0:00:00
 "v 2.4","Montiaceae","Claytonia serpenticola","Excluded","Accepted (terminal)",5/26/2026 0:00:00
 "v 2.4","Orobanchaceae","Aphyllon corymbosum ssp. mutabile","Accepted (terminal)","Excluded",5/26/2026 0:00:00
-"v 2.4","Orobanchaceae","Castilleja × wallowensis","Synonym","Accepted (terminal)",5/26/2026 0:00:00
+"v 2.4","Orobanchaceae","Castilleja × wallowensis","Synonym of either Castilleja rhexiifolia or R. chrysantha","Accepted (terminal)",5/26/2026 0:00:00
 "v 2.4","Orobanchaceae","Castilleja septentrionalis","Synonym of Castilleja rhexiifolia","Accepted (terminal)",5/26/2026 0:00:00
 "v 2.4","Phrymaceae","Diplacus cusickioides","Accepted (terminal)","Synonym of Diplacus cusickii",5/26/2026 0:00:00
 "v 2.4","Plantaginaceae","Penstemon attenuatus var. militaris","Excluded","Accepted (terminal)",5/26/2026 0:00:00
@@ -221,11 +221,10 @@
 "v 2.4","Rosaceae","Crataegus heterophylla","Accepted (terminal)","Excluded",5/26/2026 0:00:00
 "v 2.4","Rosaceae","Drymocallis arguta","Accepted (terminal)","Misapplied to Drymocallis convallaria",5/26/2026 0:00:00
 "v 2.4","Rosaceae","Duchesnea indica","Accepted (terminal)","Synonym of Potentilla indica",5/26/2026 0:00:00
-"v 2.4","Rosaceae","Fragaria × ananassa","Accepted (not terminal)","Synonym of Fragaria chiloensis ssp. pacifica",5/26/2026 0:00:00
+"v 2.4","Rosaceae","Fragaria × ananassa","Accepted (not terminal)","Excluded",5/26/2026 0:00:00
 "v 2.4","Rosaceae","Fragaria × ananassa ssp. ananassa","Accepted (terminal)","Excluded",5/26/2026 0:00:00
 "v 2.4","Rosaceae","Fragaria × ananassa ssp. cuneifolia","Accepted (terminal)","Synonym of Fragaria chiloensis ssp. pacifica",5/26/2026 0:00:00
 "v 2.4","Rosaceae","Fragaria vesca ssp. bracteata","Accepted (terminal)","Synonym of Fragaria vesca ssp. californica",5/26/2026 0:00:00
-"v 2.4","Rosaceae","Fragaria vesca ssp. californica","Accepted (terminal)","Accepted (terminal)",5/26/2026 0:00:00
 "v 2.4","Rosaceae","Horkelia congesta","Accepted (not terminal)","Synonym of Potentilla congesta",5/26/2026 0:00:00
 "v 2.4","Rosaceae","Horkelia congesta var. congesta","Accepted (terminal)","Synonym of Potentilla congesta var. congesta",5/26/2026 0:00:00
 "v 2.4","Rosaceae","Horkelia congesta var. nemorosa","Accepted (terminal)","Synonym of Potentilla congesta var. nemorosa",5/26/2026 0:00:00
@@ -276,7 +275,7 @@
 "v 2.4","Rosaceae","Potentilla jepsonii","Accepted (terminal)","Accepted (not terminal)",5/26/2026 0:00:00
 "v 2.4","Rosaceae","Potentilla jepsonii var. jepsonii","Synonym of Potentilla jepsonii","Accepted (terminal)",5/26/2026 0:00:00
 "v 2.4","Rosaceae","Potentilla rhypara","Synonym of Ivesia rhypara","Accepted (terminal)",5/26/2026 0:00:00
-"v 2.4","Rosaceae","Potentilla sericata","Synonym of ","Accepted (terminal)",5/26/2026 0:00:00
+"v 2.4","Rosaceae","Potentilla sericata","Synonym of Horkelia sericata","Accepted (terminal)",5/26/2026 0:00:00
 "v 2.4","Rosaceae","Potentilla shockleyi","Synonym of Ivesia shockleyi","Accepted (not terminal)",5/26/2026 0:00:00
 "v 2.4","Rosaceae","Potentilla shockleyi var. shockleyi","Synonym of Ivesia shockleyi var. shockleyi","Accepted (terminal)",5/26/2026 0:00:00
 "v 2.4","Rosaceae","Potentilla tilingii","Synonym of Horkelia tridentata","Accepted (not terminal)",5/26/2026 0:00:00
@@ -304,7 +303,7 @@
 "v 2.4","Rosaceae","Rubus leucodermis","Accepted (not terminal)","Accepted (terminal)",5/26/2026 0:00:00
 "v 2.4","Rosaceae","Rubus leucodermis var. leucodermis","Accepted (terminal)","Synonym of Rubus leucodermis",5/26/2026 0:00:00
 "v 2.4","Rosaceae","Rubus praecox","Accepted (terminal)","Misapplied to Rubus procerus",5/26/2026 0:00:00
-"v 2.4","Rosaceae","Rubus procerus","Synonym","Accepted (terminal)",5/26/2026 0:00:00
+"v 2.4","Rosaceae","Rubus procerus","Misapplied to either Castilleja praecox or C. armeniacus","Accepted (terminal)",5/26/2026 0:00:00
 "v 2.4","Rosaceae","Rubus strigosus","Accepted (terminal)","Synonym of Rubus idaeus ssp. strigosus",5/26/2026 0:00:00
 "v 2.4","Rosaceae","Spiraea tomentosa","Accepted (terminal)","Accepted (not terminal)",5/26/2026 0:00:00
 "v 2.4","Rosaceae","Spiraea tomentosa var. rosea","Synonym of Spiraea tomentosa","Accepted (terminal)",5/26/2026 0:00:00
