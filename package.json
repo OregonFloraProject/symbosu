@@ -4,6 +4,7 @@
   "description": "",
   "private": true,
   "scripts": {
+    "frontend-install": "npm -C js/react i",
     "build": "npm -C js/react run build",
     "dev": "npm -C js/react run dev"
   },
