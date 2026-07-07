@@ -1,7 +1,10 @@
 <?php
 include_once('../config/symbini.php');
 include_once($SERVER_ROOT.'/classes/GlossaryManager.php');
-include_once($SERVER_ROOT.'/content/lang/glossary/termdetails.'.$LANG_TAG.'.php');
+include_once($SERVER_ROOT . '/classes/utilities/Language.php');
+
+Language::load('glossary/termdetails');
+
 header("Content-Type: text/html; charset=".$CHARSET);
 
 if(!$SYMB_UID) header('Location: ../profile/index.php?refurl='.$CLIENT_ROOT.'/glossary/termdetails.php?'.htmlspecialchars($_SERVER['QUERY_STRING'], ENT_QUOTES));
@@ -230,7 +233,7 @@ if($glossId){
 									<b><?php echo (isset($LANG['DEFINITION'])?$LANG['DEFINITION']:'Definition'); ?>: </b>
 								</div>
 								<div style="float:left;margin-left:10px;width:95%;">
-									<textarea name="definition" id="definition" rows="10" maxlength="2000" style="width:100%;height:200px;" ><?php echo $termArr['definition']; ?></textarea>
+									<textarea name="definition" id="definition" rows="10" maxlength="5000" style="width:100%;height:200px;" ><?php echo $termArr['definition']; ?></textarea>
 								</div>
 							</div>
 							<div style="clear:both;padding-top:4px;float:left;">
@@ -543,7 +546,7 @@ if($glossId){
 									}
 									?>
 									<div style="float:right;margin:5px;" title="<?php echo (isset($LANG['EDIT_T_DAT'])?$LANG['EDIT_T_DAT']:'Edit Term Data'); ?>">
-										<a href="termdetails.php?glossid=<?php echo ≈; ?>">
+										<a href="termdetails.php?glossid=<?php echo $transGlossId; ?>">
 											<img style="border:0px;width:1.3em;" src="../images/edit.png" />
 										</a>
 									</div>
@@ -656,9 +659,9 @@ if($glossId){
 										<div style="float:left;">
 											<?php
 											$imgUrl = $imgArr["url"];
-											if(array_key_exists('IMAGE_DOMAIN', $GLOBALS)){
+											if(array_key_exists('MEDIA_DOMAIN', $GLOBALS)){
 												if(substr($imgUrl,0,1)=="/"){
-													$imgUrl = $GLOBALS['IMAGE_DOMAIN'] . $imgUrl;
+													$imgUrl = $GLOBALS['MEDIA_DOMAIN'] . $imgUrl;
 												}
 											}
 											$displayUrl = $imgUrl;

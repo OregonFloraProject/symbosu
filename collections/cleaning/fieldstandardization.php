@@ -1,8 +1,9 @@
 <?php
 include_once('../../config/symbini.php');
 include_once($SERVER_ROOT.'/classes/OccurrenceCleaner.php');
-if($LANG_TAG != 'en' && file_exists($SERVER_ROOT.'/content/lang/collections/cleaning/fieldstandardization.' . $LANG_TAG . '.php')) include_once($SERVER_ROOT.'/content/lang/collections/cleaning/fieldstandardization.' . $LANG_TAG . '.php');
-else include_once($SERVER_ROOT . '/content/lang/collections/cleaning/fieldstandardization.en.php');
+include_once($SERVER_ROOT . '/classes/utilities/Language.php');
+
+Language::load('collections/cleaning/fieldstandardization');
 
 header("Content-Type: text/html; charset=".$CHARSET);
 
@@ -58,7 +59,7 @@ if($collMap['colltype'] == 'General Observations' && $obsUid !== 0){
 	
 	<!-- inner text -->
 	<div role="main" id="innertext">
-		<h1 class="page-heading">Field Standardization</h1>
+		<h1 class="page-heading"><?php echo $LANG['FIELD_STANDARDIZATION']; ?></h1>
 		<?php
 		if($statusStr){
 			?>

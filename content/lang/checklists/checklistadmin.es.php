@@ -7,6 +7,7 @@ Language: Español (Spanish)
 
 include_once('checklist.es.php');
 
+$LANG['MANAGE_CHECKLIST'] = 'Administrar lista de verificación';
 $LANG['NO_PERMISSIONS'] = 'No tienes permiso para crear una lista. Por favor contacte a un administrador.';
 $LANG['ERR_DELETING_CHECKLIST'] = 'ERROR al eliminar la lista';
 $LANG['ERR_ADDING_CHILD'] = 'ERROR al agregar el enlace de la lista infantil';
@@ -19,7 +20,6 @@ $LANG['RETURNCHECK'] = 'Volver al Listado de Comprobación';
 $LANG['ADMIN'] = 'Admin';
 $LANG['DESCRIPTION'] = 'Descripción';
 $LANG['RELATEDCHECK'] = 'Listados de Comprobación Relacionados';
-$LANG['ERROR'] = 'ERROR';
 $LANG['ADDIMGVOUCHER'] = 'Agregar Imágen Voucher';
 $LANG['NOEDITOR'] = 'Nadie ha sido asignado explícitamente como un editor';
 $LANG['ADDNEWUSER'] = 'Agregar Usuario Nuevo';
@@ -54,9 +54,8 @@ $LANG['SPECIES'] = 'Especies:';
 $LANG['LATCENT'] = 'Latitud';
 $LANG['LONGCENT'] = 'Longitud';
 $LANG['POINTRAD'] = 'Punto Radio (metros)';
-$LANG['POLYFOOT'] = 'Huella de Polígono';
-$LANG['POLYGON_DEFINED'] = 'Polígono definida<br/>Haga clic en globo para ver / editar';
-$LANG['POLYGON_NOT_DEFINED'] = 'Polígono definida<br/>Haga clic en globo para crear';
+$LANG['GEOJSON_FOOTPRINT'] = 'Polígono (formato GeoJSON)';
+$LANG['ERROR_INVALID_JSON'] = 'ERROR: El polígono no tiene un formato JSON válido';
 $LANG['CREATE_EDIT_POLYGON'] = 'Crear/Editar Polígono';
 $LANG['POLYGON_READY'] = 'Polígono cambiado y listas para guardar';
 $LANG['DEFAULTDISPLAY'] = 'Ajustes de Vista por Defecto';

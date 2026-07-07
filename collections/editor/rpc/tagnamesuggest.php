@@ -9,6 +9,4 @@ $editorManager = new RpcOccurrenceEditor();
 $retArr = $editorManager->getTagName($_REQUEST['collid'], $_REQUEST['term']);
 
 echo json_encode($retArr);
-
-
 ?>

@@ -1,6 +1,9 @@
 <?php
 include_once('../../config/symbini.php');
 include_once($SERVER_ROOT.'/classes/OccurrenceLabel.php');
+include_once($SERVER_ROOT . '/classes/utilities/Language.php');
+
+Language::load('collections/reports/labeldynamic');
 
 $collid = $_POST['collid'];
 $hPrefix = $_POST['hprefix'];
@@ -45,7 +48,7 @@ if($outputType == 'word'){
 	header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
 	header("content-disposition: attachment;filename=labels.doc");
 }
-elseif($action == 'Export to CSV'){
+elseif($action == 'csvExport'){
 	$labelManager->exportLabelCsvFile($_POST);
 	exit;
 }
@@ -65,8 +68,12 @@ if($SYMB_UID){
 <!DOCTYPE html>
 <html lang="<?php echo $LANG_TAG ?>">
 	<head>
-		<title><?php echo $DEFAULT_TITLE; ?> Labels</title>
+		<title><?php echo $DEFAULT_TITLE . ' ' . $LANG['LABELS']; ?></title>
+
+		<link rel="stylesheet" type="text/css" href="<?= $CSS_BASE_PATH ?>/symbiota/collections/reports/labelhelpers.css">
+
 		<style type="text/css">
+			.field-block{ clear:both; }
 			.row { display: flex; flex-wrap: nowrap; margin-left: auto; margin-right: auto;}
 			.label { page-break-before: auto; page-break-inside: avoid; }
 			.screen-reader-only {
@@ -112,13 +119,6 @@ if($SYMB_UID){
 			@media print { .controls { display: none; } }
 		</style>
 		<?php
-		if(isset($targetLabelFormatArr['defaultCss']) && $targetLabelFormatArr['defaultCss']){
-			$cssPath = $targetLabelFormatArr['defaultCss'];
-			if(substr($cssPath,0,1) == '/' && !file_exists($cssPath)){
-				if(file_exists($SERVER_ROOT.$targetLabelFormatArr['defaultCss'])) $cssPath = $CLIENT_ROOT.$targetLabelFormatArr['defaultCss'];
-			}
-			echo '<link href="' . htmlspecialchars($cssPath, ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE) . '" type="text/css" rel="stylesheet" />'."\n";
-		}
 		if(isset($targetLabelFormatArr['customCss']) && $targetLabelFormatArr['customCss']){
 			$cssPath = $targetLabelFormatArr['customCss'];
 			if(substr($cssPath,0,1) == '/' && !file_exists($cssPath)){
@@ -134,7 +134,7 @@ if($SYMB_UID){
 		</style>
 	</head>
 	<body style="background-color:#ffffff;">
-		<h1 class="page-heading screen-reader-only">Labels</h1>
+		<h1 class="page-heading screen-reader-only"><?php echo $LANG['LABELS']; ?></h1>
 		<?php
 		echo '<div class="body'.(isset($targetLabelFormatArr['pageSize'])?' '.$targetLabelFormatArr['pageSize']:'').'">'  ;
 		if($targetLabelFormatArr && $isEditor){
@@ -242,12 +242,12 @@ if($SYMB_UID){
 				}
 			}
 			echo '</div>'; //Closing row
-			if(!$labelCnt) echo '<div style="font-weight:bold;text-size: 120%">No records were retrieved. Perhaps the quantity values were all set to 0?</div>';
+			if(!$labelCnt) echo '<div style="font-weight:bold;text-size: 120%">' . $LANG['NO_RECORDS_RETRIEVED'] . '</div>';
 		}
 		else{
 			echo '<div style="font-weight:bold;text-size: 120%">';
-			if($targetLabelFormatArr) echo 'ERROR: Unable to parse JSON that defines the label format profile ';
-			else 'ERROR: Permissions issue';
+			if($targetLabelFormatArr) echo $LANG['UNABLE_PARSE_JSON'];
+			else $LANG['ERROR_PERMISSIONS'];
 			echo '</div>';
 		}
 		echo '</div>';

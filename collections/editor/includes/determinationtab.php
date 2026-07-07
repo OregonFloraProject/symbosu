@@ -1,8 +1,10 @@
 <?php
 include_once('../../../config/symbini.php');
 include_once($SERVER_ROOT.'/classes/OccurrenceEditorDeterminations.php');
-if($LANG_TAG != 'en' && file_exists($SERVER_ROOT.'/content/lang/collections/editor/includes/determinationtab.'.$LANG_TAG.'.php')) include_once($SERVER_ROOT.'/content/lang/collections/editor/includes/determinationtab.'.$LANG_TAG.'.php');
-else include_once($SERVER_ROOT.'/content/lang/collections/editor/includes/determinationtab.en.php');
+include_once($SERVER_ROOT . '/classes/utilities/Language.php');
+
+Language::load('collections/editor/includes/determinationtab');
+
 header("Content-Type: text/html; charset=".$CHARSET);
 
 $occId = $_GET['occid'];
@@ -103,7 +105,7 @@ else{
 						<input type="hidden" name="occindex" value="<?php echo $occIndex; ?>" />
 						<input type="hidden" name="csmode" value="<?php echo $crowdSourceMode; ?>" />
 						<input type="hidden" name="ovsid" value="<?php echo ($idRanking?$idRanking['ovsid']:''); ?>" />
-						<button type="submit" name="submitaction" value="Submit Verification Edits"><?php echo $LANG['SUBMIT_VERIFY_EDITS']; ?></button>
+						<button type="submit" name="submitaction" class="button" value="Submit Verification Edits"><?php echo $LANG['SUBMIT_VERIFY_EDITS']; ?></button>
 					</div>
 				</form>
 			</div>
@@ -187,14 +189,14 @@ else{
 							<input type="text" name="identificationqualifier" />
 						</div>
 						<div style='margin:3px;' title="<?php echo (defined('SCIENTIFICNAMETIP') ? SCIENTIFICNAMETIP : ''); ?>">
-							<b><?php echo (defined('SCIENTIFICNAMELABEL')?SCIENTIFICNAMELABEL:(isset($LANG['SCI_NAME'])?$LANG['SCI_NAME']:'Scientific Name')); ?>:</b>
-							<input type="text" id="dafsciname" name="sciname" style="background-color:lightyellow;width:350px;" onfocus="initDetAutocomplete(this.form)" />
+							<label for="dafsciname"><b><?= (defined('SCIENTIFICNAMELABEL')?SCIENTIFICNAMELABEL:(isset($LANG['SCI_NAME'])?$LANG['SCI_NAME']:'Scientific Name')); ?></b></label>:
+							<input type="text" id="dafsciname" name="sciname" required style="width:350px;" onfocus="initDetAutocomplete(this.form)" />
 							<input type="hidden" id="daftidtoadd" name="tidtoadd" value="" />
 							<input type="hidden" name="family" value="" />
 						</div>
 						<div style='margin:3px;' title="<?php echo (defined('SCIENTIFICNAMEAUTHORSHIPTIP') ? SCIENTIFICNAMEAUTHORSHIPTIP : ''); ?>">
-							<b><?php echo (defined('SCIENTIFICNAMEAUTHORSHIPLABEL')?SCIENTIFICNAMEAUTHORSHIPLABEL:(isset($LANG['AUTHOR'])?$LANG['AUTHOR']:'Author')); ?>:</b>
-							<input type="text" name="scientificnameauthorship" style="width:200px;" />
+							<label for="add_scientificnameauthorship"><b><?= (defined('SCIENTIFICNAMEAUTHORSHIPLABEL')?SCIENTIFICNAMEAUTHORSHIPLABEL:$LANG['AUTHOR']) ?></b></label>:
+							<input id="add_scientificnameauthorship" type="text" name="scientificnameauthorship" style="width:200px;" />
 						</div>
 						<div style='margin:3px;' title="<?php echo (defined('IDCONFIDENCETIP') ? IDCONFIDENCETIP : ''); ?>">
 							<b><?php echo (defined('IDCONFIDENCELABEL')?IDCONFIDENCELABEL:(isset($LANG['CONFIDENCE_IN_DET'])?$LANG['CONFIDENCE_IN_DET']:'Confidence of Determination')); ?>:</b>
@@ -205,12 +207,12 @@ else{
 							</select>
 						</div>
 						<div style='margin:3px;' title="<?php echo (defined('IDENTIFIEDBYTIP') ? IDENTIFIEDBYTIP : ''); ?>">
-							<b><?php echo (defined('IDENTIFIEDBYLABEL')?IDENTIFIEDBYLABEL:(isset($LANG['DETERMINER'])?$LANG['DETERMINER']:'Determiner')); ?>:</b>
-							<input type="text" name="identifiedby" style="background-color:lightyellow;width:200px;" />
+							<label for="add_identifiedby"><b><?= (defined('IDENTIFIEDBYLABEL')?IDENTIFIEDBYLABEL:$LANG['DETERMINER']); ?></b></label>:
+							<input id="add_identifiedby" type="text" name="identifiedby" required style="width:200px;" />
 						</div>
 						<div style='margin:3px;' title="<?php echo (defined('DATEIDENTIFIEDTIP') ? DATEIDENTIFIEDTIP : ''); ?>">
-							<b><?php echo (defined('DATEIDENTIFIEDLABEL')?DATEIDENTIFIEDLABEL:(isset($LANG['DATE'])?$LANG['DATE']:'Date')); ?>:</b>
-							<input type="text" name="dateidentified" style="background-color:lightyellow;" onchange="detDateChanged(this.form);" />
+							<label for="add_dateidentified"><b><?= (defined('DATEIDENTIFIEDLABEL')?DATEIDENTIFIEDLABEL:$LANG['DATE']); ?></b></label>:
+							<input id="add_dateidentified" type="text" name="dateidentified" required onchange="detDateChanged(this.form);" />
 						</div>
 						<div style='margin:3px;' title="<?php echo (defined('IDENTIFICATIONREFERENCETIP') ? IDENTIFICATIONREFERENCETIP : ''); ?>">
 							<b><?php echo (defined('IDENTIFICATIONREFERENCELABEL')?IDENTIFICATIONREFERENCELABEL:(isset($LANG['REFERENCE'])?$LANG['REFERENCE']:'Reference')); ?>:</b>
@@ -234,9 +236,10 @@ else{
 							<input type="hidden" name="catalognumber" value="<?php echo $catalognumber; ?>" />
 							<input type="hidden" name="institutioncode" value="<?php echo $institutioncode; ?>" />
 							<input type="hidden" name="csmode" value="<?php echo $crowdSourceMode; ?>" />
-							<div style="float:left;">
-								<button type="submit" name="submitaction" value="submitDetermination" ><?php echo $LANG['SUBMIT_DET']; ?></button>
+							<div>
+								<button type="submit" name="submitaction" class="button" value="submitDetermination" ><?php echo $LANG['SUBMIT_DET']; ?></button>
 							</div>
+							<p><?php include('requiredFieldInstruction.php') ?></p>
 						</div>
 					</fieldset>
 				</form>
@@ -250,7 +253,10 @@ else{
 					<div>
 						<?php
 						if($detRec['identificationqualifier']) echo $detRec['identificationqualifier'].' ';
-						echo '<b><i>'.$detRec['sciname'].'</i></b> '.$detRec['scientificnameauthorship'];
+							$nonItalicized = ' ';
+							if (!empty($detRec['nonItalicized']))
+								$nonItalicized .= $detRec['nonItalicized'];
+							echo '<b><i>' . $detRec['sciname'] . '</i>' . $nonItalicized .'</b> ' . $detRec['scientificnameauthorship'];
 						if($detRec['iscurrent']){
 							if($detRec['appliedstatus']){
 								echo '<span style="margin-left:10px;color:red;">'.$LANG['CURRENT_DET'].'</span>';
@@ -311,9 +317,9 @@ else{
 									<b><?php echo (defined('IDENTIFICATIONQUALIFIERLABEL')?IDENTIFICATIONQUALIFIERLABEL:(isset($LANG['ID_QUALIFIER'])?$LANG['ID_QUALIFIER']:'Identification Qualifier')); ?>:</b>
 									<input type="text" name="identificationqualifier" value="<?php echo $detRec['identificationqualifier']; ?>" />
 								</div>
-								<div style='margin:3px;' title="<?php echo (defined('SCIENTIFICNAMETIP') ? SCIENTIFICNAMETIP : ''); ?>">
-									<b><?php echo (defined('SCIENTIFICNAMELABEL')?SCIENTIFICNAMELABEL:(isset($LANG['SCI_NAME'])?$LANG['SCI_NAME']:'Scientific Name')); ?>:</b>
-									<input type="text" id="defsciname-<?php echo $detId;?>" name="sciname" value="<?php echo $detRec['sciname']; ?>" style="background-color:lightyellow;width:350px;" onfocus="initDetAutocomplete(this.form)" />
+								<div style='margin:3px;'>
+									<label for="defsciname"><b><?= $LANG['SCI_NAME']; ?></b></label>:
+									<input type="text" id="defsciname-<?php echo $detId;?>" name="sciname" value="<?php echo $detRec['sciname']; ?>" required style="width:350px;" onfocus="initDetAutocomplete(this.form)" />
 									<input type="hidden" id="deftidtoadd" name="tidtoadd" value="" />
 									<input type="hidden" name="family" value="" />
 								</div>
@@ -322,12 +328,12 @@ else{
 									<input type="text" name="scientificnameauthorship" value="<?php echo $detRec['scientificnameauthorship']; ?>" style="width:200px;" />
 								</div>
 								<div style='margin:3px;' title="<?php echo (defined('IDENTIFIEDBYTIP') ? IDENTIFIEDBYTIP : ''); ?>">
-									<b><?php echo (defined('IDENTIFIEDBYLABEL')?IDENTIFIEDBYLABEL:(isset($LANG['DETERMINER'])?$LANG['DETERMINER']:'Determiner')); ?>:</b>
-									<input type="text" name="identifiedby" value="<?php echo $detRec['identifiedby']; ?>" style="background-color:lightyellow;width:200px;" />
+									<label for="edit_identifiedby"><b><?= (defined('IDENTIFIEDBYLABEL')?IDENTIFIEDBYLABEL:$LANG['DETERMINER']); ?></b></label>:
+									<input id="edit_identifiedby" type="text" name="identifiedby" value="<?php echo $detRec['identifiedby']; ?>" required style="width:200px;" />
 								</div>
-								<div style='margin:3px;' title="<?php echo (defined('DATEIDENTIFIEDTIP') ? DATEIDENTIFIEDTIP : ''); ?>">
-									<b><?php echo (defined('DATEIDENTIFIEDLABEL')?DATEIDENTIFIEDLABEL:(isset($LANG['DATE'])?$LANG['DATE']:'Date')); ?>:</b>
-									<input type="text" name="dateidentified" value="<?php echo $detRec['dateidentified']; ?>" style="background-color:lightyellow;" />
+								<div style='margin:3px;'  title="<?php echo (defined('DATEIDENTIFIEDTIP') ? DATEIDENTIFIEDTIP : ''); ?>">
+									<label for="edit_identifiedby"><b><?= (defined('DATEIDENTIFIEDLABEL')?DATEIDENTIFIEDLABEL:$LANG['DATE']); ?></b></label>:
+									<input id="edit_identifiedby" type="text" name="dateidentified" value="<?php echo $detRec['dateidentified']; ?>" required />
 								</div>
 								<div style='margin:3px;' title="<?php echo (defined('IDENTIFICATIONREFERENCETIP') ? IDENTIFICATIONREFERENCETIP : ''); ?>">
 									<b><?php echo (defined('IDENTIFICATIONREFERENCELABEL')?IDENTIFICATIONREFERENCELABEL:(isset($LANG['REFERENCE'])?$LANG['REFERENCE']:'Reference')); ?>:</b>
@@ -349,13 +355,14 @@ else{
 									<input type="hidden" name="detid" value="<?php echo $detId; ?>" />
 									<input type="hidden" name="occindex" value="<?php echo $occIndex; ?>" />
 									<input type="hidden" name="csmode" value="<?php echo $crowdSourceMode; ?>" />
-									<button type="submit" name="submitaction" value="submitDeterminationEdit"><?php echo $LANG['SUBMIT_DET_EDITS']; ?></button>
+									<button type="submit" name="submitaction" class="button" value="submitDeterminationEdit"><?php echo $LANG['SUBMIT_DET_EDITS']; ?></button>
+									<p><?php include('requiredFieldInstruction.php') ?></p>
 								</div>
 							</form>
 							<?php
 							if($editMode < 3 && !$detRec['iscurrent']){
 								?>
-								<div style="padding:15px;background-color:lightgreen;width:280px;margin:15px;">
+								<div>
 									<form name="detremapform" action="occurrenceeditor.php" method="post">
 										<input type="hidden" name="occid" value="<?php echo $occId; ?>" />
 										<input type="hidden" name="detid" value="<?php echo $detId; ?>" />
@@ -364,7 +371,7 @@ else{
 										<?php
 										if($detRec['appliedstatus']){
 											?>
-											<button type="submit" name="submitaction" value="Make Determination Current" title="<?php echo (defined('MAKECURRENTDETERMINATIONTIP') ? MAKECURRENTDETERMINATIONTIP : ''); ?>" ><?php echo $LANG['MAKE_DET_CURRENT']; ?></button>
+											<button type="submit" name="submitaction" class="button" value="Make Determination Current" title="<?php echo (defined('MAKECURRENTDETERMINATIONTIP') ? MAKECURRENTDETERMINATIONTIP : ''); ?>" ><?php echo $LANG['MAKE_DET_CURRENT']; ?></button>
 											<?php
 										}
 										else{
@@ -379,13 +386,13 @@ else{
 								<?php
 							}
 							?>
-							<div style="padding:15px;background-color:lightblue;width:155px;margin:15px;">
+							<div style="width:155px;margin:15px;">
 								<form name="detdelform" action="occurrenceeditor.php" method="post" onsubmit="return window.confirm('<?php echo $LANG['SURE_DELETE']; ?>');">
 									<input type="hidden" name="occid" value="<?php echo $occId; ?>" />
 									<input type="hidden" name="detid" value="<?php echo $detId; ?>" />
 									<input type="hidden" name="occindex" value="<?php echo $occIndex; ?>" />
 									<input type="hidden" name=" <?php echo $crowdSourceMode; ?>" />
-									<button class="button-danger" type="submit" name="submitaction" value="Delete Determination" ><?php echo $LANG['DELETE_DET']; ?></button>
+									<button class="button button-danger" type="submit" name="submitaction" value="Delete Determination" ><?php echo $LANG['DELETE_DET']; ?></button>
 								</form>
 							</div>
 						</fieldset>

@@ -1,17 +1,14 @@
 <?php
 include_once('../../config/symbini.php');
-header('Content-Type: text/html; charset=' . $CHARSET);
-if($LANG_TAG == 'en' || !file_exists($SERVER_ROOT.'/content/lang/collections/tools/mapaids.' . $LANG_TAG . '.php')) include_once($SERVER_ROOT . '/content/lang/collections/tools/mapaids.en.php');
-else include_once($SERVER_ROOT . '/content/lang/collections/tools/mapaids.' . $LANG_TAG . '.php');
+include_once($SERVER_ROOT . '/classes/utilities/MappingUtil.php');
+include_once($SERVER_ROOT . '/classes/utilities/Language.php');
 
-if($MAPPING_BOUNDARIES){
-	$boundaryArr = explode(";",$MAPPING_BOUNDARIES);
-	$latCenter = ($boundaryArr[0]>$boundaryArr[2]?((($boundaryArr[0]-$boundaryArr[2])/2)+$boundaryArr[2]):((($boundaryArr[2]-$boundaryArr[0])/2)+$boundaryArr[0]));
-	$lngCenter = ($boundaryArr[1]>$boundaryArr[3]?((($boundaryArr[1]-$boundaryArr[3])/2)+$boundaryArr[3]):((($boundaryArr[3]-$boundaryArr[1])/2)+$boundaryArr[1]));
-} else{
-	$latCenter = 42.877742;
-	$lngCenter = -97.380979;
-}
+Language::load('collections/tools/mapaids');
+
+header("Content-Type: text/html; charset=".$CHARSET);
+
+$bounds = MappingUtil::getMappingBoundary();
+$centerPoint = MappingUtil::getBoundsCentroid($bounds); 
 
 $errMode = array_key_exists("errmode",$_REQUEST)?$_REQUEST["errmode"]:1;
 $shouldUseMinimalMapHeader = $SHOULD_USE_MINIMAL_MAP_HEADER ?? false;
@@ -26,7 +23,9 @@ $shouldUseMinimalMapHeader = $SHOULD_USE_MINIMAL_MAP_HEADER ?? false;
 		include_once($SERVER_ROOT.'/includes/leafletMap.php');
 		include_once($SERVER_ROOT.'/includes/googleMap.php');
 		?>
-
+		<style>
+			html, body, #map_canvas { width:100%; height: 100%; padding:0; margin:0}
+		</style>
 		<script type="text/javascript">
 		var map;
 
@@ -37,6 +36,7 @@ $shouldUseMinimalMapHeader = $SHOULD_USE_MINIMAL_MAP_HEADER ?? false;
 		//Map Center
 		let latCenter;
 		let lngCenter;
+		let mapBounds;
 
 		//Inputs
 		let radiusInput;
@@ -72,12 +72,6 @@ $shouldUseMinimalMapHeader = $SHOULD_USE_MINIMAL_MAP_HEADER ?? false;
 			document.getElementById("errRadius").value = "";
 		}
 
-		//Function For Submission
-		function SubmitCoordinates(lat, lng) {
-			opener.document.getElementById("decimallatitude").value = lat;
-			opener.document.getElementById("decimallongitude").value = lng;
-		}
-
 		function errRadiusChanged(e) {
 			try {
 				errRadius = parseFloat(e.value);
@@ -95,11 +89,19 @@ $shouldUseMinimalMapHeader = $SHOULD_USE_MINIMAL_MAP_HEADER ?? false;
 
 		function leafletInit() {
 			//Setup Map Canvas
-			map = new LeafletMap('map_canvas', {
+			let map_options = {
 				center: [latCenter, lngCenter],
-				zoom: 15,
-				lang: "<?php echo $LANG_TAG; ?>"
-			});
+				lang: "<?php echo $LANG_TAG; ?>",
+			}
+
+			if(mapBounds) {
+				map_options.defaultBounds = mapBounds;
+			}
+
+			map = new LeafletMap('map_canvas',
+				map_options,
+				JSON.parse(`<?= json_encode($GEO_JSON_LAYERS ?? []) ?>`)
+			);
 
 			// OregonFlora customizations
 			addOregonFlora(map, false);
@@ -279,13 +281,13 @@ $shouldUseMinimalMapHeader = $SHOULD_USE_MINIMAL_MAP_HEADER ?? false;
 					const lat = e.layer._latlng.lat;
 					const lng = e.layer._latlng.lng;
 					createMarker(lat, lng)
-
-				}
+				} 
 			})
 
 			//Draw marker if one exists
 			if(latlng) {
 				createMarker(latlng[0], latlng[1]);
+				map.mapLayer.setZoom(10);
 			} else if(markerControl) {
 				markerControl.click();
 			}
@@ -369,7 +371,7 @@ $shouldUseMinimalMapHeader = $SHOULD_USE_MINIMAL_MAP_HEADER ?? false;
 			lngInput.addEventListener("change", onFormChange);
 
 			//Draw marker if one exists
-		if(latlng) {
+         if(latlng) {
 				createMarker(latlng[0], latlng[1]);
 				map.mapLayer.setCenter(marker.getPosition());
 			}
@@ -387,10 +389,7 @@ $shouldUseMinimalMapHeader = $SHOULD_USE_MINIMAL_MAP_HEADER ?? false;
 			let lat = opener.document.getElementById("decimallatitude").value;
 			let lng = opener.document.getElementById("decimallongitude").value;
 
-			const data = document.getElementById('service-container');
-			latCenter = parseFloat(data.getAttribute('data-lat'));
-			lngCenter = parseFloat(data.getAttribute('data-lng'));
-
+         const data = document.getElementById('service-container');
 			radiusInput = document.getElementById("errRadius");
 			latInput = document.getElementById("latbox");
 			lngInput = document.getElementById("lngbox");
@@ -403,6 +402,12 @@ $shouldUseMinimalMapHeader = $SHOULD_USE_MINIMAL_MAP_HEADER ?? false;
 				} else {
 					alert(`Error: Not Coordinates lat: ${lat}, lng: ${lng}`);
 				}
+				latCenter = parseFloat(lat);
+				lngCenter = parseFloat(lng);
+			} else {
+				latCenter = parseFloat(data.getAttribute('data-lat'));
+				lngCenter = parseFloat(data.getAttribute('data-lng'));
+				mapBounds = JSON.parse(data.getAttribute('data-map-bounds'));
 			}
 
 			// Always use Leaflet maps
@@ -416,6 +421,7 @@ $shouldUseMinimalMapHeader = $SHOULD_USE_MINIMAL_MAP_HEADER ?? false;
 		function updateParentForm(f) {
 			opener.document.getElementById("decimallatitude").value = f.latbox.value;
 			opener.document.getElementById("decimallongitude").value = f.lngbox.value;
+
 			try{
 				if(opener.document.getElementById("coordinateuncertaintyinmeters")){
 					opener.document.getElementById("coordinateuncertaintyinmeters").value = f.errRadius.value;
@@ -424,6 +430,10 @@ $shouldUseMinimalMapHeader = $SHOULD_USE_MINIMAL_MAP_HEADER ?? false;
 				if(opener.document.getElementById("geodeticdatum")){
 					opener.document.getElementById("geodeticdatum").value = "WGS84";
 					opener.document.getElementById("geodeticdatum").onchange();
+				}
+				let coordinateWrapper = opener.document.getElementById("coordinateWrapper");
+				if(coordinateWrapper) {
+					coordinateWrapper.onchange();
 				}
 				opener.document.getElementById("decimallatitude").onchange();
 				opener.document.getElementById("decimallongitude").onchange();
@@ -456,12 +466,13 @@ $shouldUseMinimalMapHeader = $SHOULD_USE_MINIMAL_MAP_HEADER ?? false;
 		<?php
 		if($shouldUseMinimalMapHeader) include_once($SERVER_ROOT . '/includes/minimalheader.php');
 		?>
-		<h1 class="page-heading screen-reader-only">Point-Radius Aid</h1>
+		<h1 class="page-heading screen-reader-only"><?php echo $LANG['POINT_RADIUS_AID']; ?></h1>
 		<div
 			id="service-container"
 			class="service-container"
-			data-lat="<?= htmlspecialchars($latCenter)?>"
-			data-lng="<?= htmlspecialchars($lngCenter)?>"
+			data-map-bounds="<?=htmlspecialchars(json_encode(MappingUtil::getMappingBoundary()))?>"
+			data-lat="<?= htmlspecialchars($centerPoint['lat'])?>"
+			data-lng="<?= htmlspecialchars($centerPoint['lng'])?>"
 			>
 		</div>
 		<form class="minimal-header-margin" style="padding:0.5rem" name="coordform" action="" method="post" onsubmit="return false">

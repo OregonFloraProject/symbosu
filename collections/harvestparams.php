@@ -6,9 +6,8 @@ include_once($SERVER_ROOT.'/classes/OccurrenceAttributeSearch.php');
 header("Content-Type: text/html; charset=".$CHARSET);
 
 $collManager = new OccurrenceManager();
+$paleoTimes = $collManager->getPaleoTimes();
 $searchVar = $collManager->getQueryTermStr();
-$SHOULD_INCLUDE_CULTIVATED_AS_DEFAULT = $SHOULD_INCLUDE_CULTIVATED_AS_DEFAULT ?? false;
-
 ?>
 <!DOCTYPE html>
 <html lang="<?php echo $LANG_TAG ?>">
@@ -21,19 +20,17 @@ $SHOULD_INCLUDE_CULTIVATED_AS_DEFAULT = $SHOULD_INCLUDE_CULTIVATED_AS_DEFAULT ??
 	<link href="<?php echo $CSS_BASE_PATH; ?>/jquery-ui.css" type="text/css" rel="stylesheet">
 	<script src="<?php echo $CLIENT_ROOT; ?>/js/jquery-3.7.1.min.js" type="text/javascript"></script>
 	<script src="<?php echo $CLIENT_ROOT; ?>/js/jquery-ui.min.js" type="text/javascript"></script>
-	<script src="../js/symb/collections.harvestparams.js?ver=3" type="text/javascript"></script>
+	<script src="<?= $CLIENT_ROOT ?>/js/symb/searchform.js?ver=3" type="text/javascript"></script>
+	<script src="<?php echo $CLIENT_ROOT; ?>/js/symb/collections.list.js?ver=2" type="text/javascript"></script>
+	<script src="../js/symb/collections.harvestparams.js?ver=5" type="text/javascript"></script>
+	<script src="<?= $CLIENT_ROOT ?>/js/symb/mapAidUtils.js?ver=1" type="text/javascript"></script>
 	<script src="../js/symb/collections.traitsearch.js?ver=8" type="text/javascript"></script> <!-- Contains search-by-trait modifications -->
 	<script src="../js/symb/wktpolygontools.js?ver=1c" type="text/javascript"></script>
 	<script type="text/javascript">
+		const paleoTimes = <?= json_encode($paleoTimes ?? []) ?>;
 		var clientRoot = "<?php echo $CLIENT_ROOT; ?>";
 		$(document).ready(function() {
-			<?php
-			if($searchVar || array_key_exists('db',$_REQUEST)){
-				?>
-				sessionStorage.querystr = "<?php echo $searchVar; ?>";
-				<?php
-			}
-			?>
+			setSessionQueryStr();
 			setHarvestParamsForm(document.harvestparams);
 		});
 	</script>
@@ -51,6 +48,10 @@ $SHOULD_INCLUDE_CULTIVATED_AS_DEFAULT = $SHOULD_INCLUDE_CULTIVATED_AS_DEFAULT ??
 	</style>
 </head>
 <body>
+<div id="service-container" data-search-var="<?= $searchVar; ?>"></div>
+<div id="all_collections_parent_container" data-config='<?= json_encode([
+	'CURRENT_URL' => $_SERVER['REQUEST_URI'],
+]) ?>'></div>
 <?php
 	$displayLeftMenu = (isset($collections_harvestparamsMenu)?$collections_harvestparamsMenu:false);
 	include($SERVER_ROOT.'/includes/header.php');
@@ -75,7 +76,7 @@ $SHOULD_INCLUDE_CULTIVATED_AS_DEFAULT = $SHOULD_INCLUDE_CULTIVATED_AS_DEFAULT ??
 	<div role="main" id="innertext">
 		<h1 class="page-heading bottom-breathing-room-rel top-breathing-room-rel">Search the digitized collections of the Oregon State University Herbarium</h1>
 		<p>This feature gives access to all the digitized collections housed in the Oregon State University Herbarium at Corvallis, which includes specimens originating at University of Oregon (ORE) and Willamette University (WILLU) as well as Oregon State University (OSC).  Collections represented are the vascular plants, algae, bryophytes, fungi, and lichens.  As part of its work to produce the Flora of Oregon in printed and digital formats, OregonFlora aligns the taxonomy of the Oregon vascular plants presented on this website with the Flora of Oregon's taxonomic framework.</p>
-		<form name="harvestparams" id="harvestparams" action="list.php" method="post" onsubmit="return checkHarvestParamsForm(this)">
+		<form name="harvestparams" id="harvestparams" action="list.php" method="post" onsubmit="return checkHarvestParamsForm(this, '<?php echo $_SERVER['REQUEST_URI']; ?>');">
 			<hr/>
 			<div>
 				<div style="float:left">
@@ -149,7 +150,7 @@ $SHOULD_INCLUDE_CULTIVATED_AS_DEFAULT = $SHOULD_INCLUDE_CULTIVATED_AS_DEFAULT ??
 						<?php echo $LANG['LL_BOUND_TEXT']; ?>
 					</div>
 					<div class="iconDiv">
-						<a href="#" onclick="openCoordAid('rectangle');return false;"><img src="../images/map.png" title="<?php echo htmlspecialchars((isset($LANG['MAP_AID'])?$LANG['MAP_AID']:'Mapping Aid'), ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE); ?>" /></a>
+						<a href="#" onclick="openCoordAid({map_mode: MAP_MODES.RECTANGLE, client_root: '<?= $CLIENT_ROOT?>'});return false;"><img src="../images/map.png" title="<?php echo htmlspecialchars((isset($LANG['MAP_AID'])?$LANG['MAP_AID']:'Mapping Aid'), ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE); ?>" /></a>
 					</div>
 					<div class="elemDiv">
 						<div>
@@ -197,10 +198,10 @@ $SHOULD_INCLUDE_CULTIVATED_AS_DEFAULT = $SHOULD_INCLUDE_CULTIVATED_AS_DEFAULT ??
 						</label>
 					</div>
 					<div class="iconDiv">
-						&nbsp;<a href="#" onclick="openCoordAid('polygon');return false;"><img src="../images/map.png" title="<?php echo htmlspecialchars((isset($LANG['MAP_AID'])?$LANG['MAP_AID']:'Mapping Aid'), ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE); ?>" /></a>
+						&nbsp;<a href="#" onclick="openCoordAid({map_mode: MAP_MODES.POLYGON, polygon_text_type: POLYGON_TEXT_TYPES.GEOJSON, client_root: '<?= $CLIENT_ROOT?>'});return false;"><img src="../images/map.png" title="<?php echo htmlspecialchars((isset($LANG['MAP_AID'])?$LANG['MAP_AID']:'Mapping Aid'), ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE); ?>" /></a>
 					</div>
 					<div class="elemDiv">
-						<textarea id="footprintwkt" name="footprintwkt" onchange="this.value = validatePolygon(this.value)" style="zIndex:999;width:100%;height:90px"></textarea>
+						<textarea id="footprintwkt" name="footprintGeoJson" style="zIndex:999;width:100%;height:90px" onchange="cleanPolygon(this)"></textarea>
 					</div>
 				</div>
 				<div class="coordBoxDiv">
@@ -208,7 +209,7 @@ $SHOULD_INCLUDE_CULTIVATED_AS_DEFAULT = $SHOULD_INCLUDE_CULTIVATED_AS_DEFAULT ??
 						<?php echo $LANG['LL_P-RADIUS_TEXT']; ?>
 					</div>
 					<div class="iconDiv">
-						<a href="#" onclick="openCoordAid('circle');return false;"><img src="../images/map.png" title="<?php echo (isset($LANG['MAP_AID'])?$LANG['MAP_AID']:'Mapping Aid'); ?>" /></a>
+						<a href="#" onclick="openCoordAid({map_mode: MAP_MODES.CIRCLE, client_root: '<?= $CLIENT_ROOT?>'});return false;"><img src="../images/map.png" title="<?php echo (isset($LANG['MAP_AID'])?$LANG['MAP_AID']:'Mapping Aid'); ?>" /></a>
 					</div>
 					<div class="elemDiv">
 						<section class="flex-form">
@@ -315,11 +316,78 @@ $SHOULD_INCLUDE_CULTIVATED_AS_DEFAULT = $SHOULD_INCLUDE_CULTIVATED_AS_DEFAULT ??
 					<label for="hascoords"><?php echo isset($LANG['HAS_COORDS'])?$LANG['HAS_COORDS']:'Limit to Specimens with Geocoordinates Only'; ?></label>
 				</div>
 				<div>
-					<input type='checkbox' name='includecult' id='includecult' value='1' <?php echo $SHOULD_INCLUDE_CULTIVATED_AS_DEFAULT ? 'checked' : '' ?> />
+					<input type='checkbox' name='includecult' id='includecult' value='1' <?= !empty($SHOULD_INCLUDE_CULTIVATED_AS_DEFAULT) ? 'checked' : '' ?> />
 					<label for="includecult"><?php echo isset($LANG['INCLUDE_CULTIVATED'])?$LANG['INCLUDE_CULTIVATED']:'Include cultivated/captive occurrences'; ?></label>
 				</div>
 			</div>
 			<?php
+			if(!empty($ACTIVATE_PALEO)) {
+				$gtsTermArr = $collManager->getPaleoGtsTerms();
+				?>
+				<hr/>
+				<div id="searchFormPaleo" style="float:left">
+					<div>
+						<div class="catHeaderDiv bottom-breathing-room-rel-sm"><?php echo $LANG['GEO_CONTEXT']; ?></div>
+					</div>
+					<div>
+						<div>
+							<div>
+								<div>
+									<label for="lateInterval"><?php echo $LANG['LATE_INT'] ?>:</label>
+									<select name="lateInterval" type="text" id="lateInterval">
+										<option value=""></option>
+										<?php
+										$lateIntervalTerm = '';
+										if(isset($occArr['lateInterval'])) $lateIntervalTerm = $occArr['lateInterval'];
+										if($lateIntervalTerm && !array_key_exists($lateIntervalTerm, $gtsTermArr)){
+											echo '<option value="'.$lateIntervalTerm.'" SELECTED>'.$lateIntervalTerm.' - mismatched term</option>';
+											echo '<option value="">---------------------------</option>';
+										}
+										foreach($gtsTermArr as $term => $rankid){
+											echo '<option value="'.$term.'" '.($lateIntervalTerm==$term?'SELECTED':'').'>'.$term.'</option>';
+										}
+										?>
+									</select>
+								</div>
+								<label for="earlyInterval"><?php echo $LANG['EARLY_INT'] ?>:</label>
+									<select name="earlyInterval" type="text" id="earlyInterval">
+										<option value=""></option>
+										<?php
+										$earlyIntervalTerm = '';
+										if(isset($occArr['earlyInterval'])) $earlyIntervalTerm = $occArr['earlyInterval'];
+										if($earlyIntervalTerm && !array_key_exists($earlyIntervalTerm, $gtsTermArr)){
+											echo '<option value="'.$earlyIntervalTerm.'" SELECTED>'.$earlyIntervalTerm.' - mismatched term</option>';
+											echo '<option value="">---------------------------</option>';
+										}
+										foreach($gtsTermArr as $term => $rankid){
+											echo '<option value="'.$term.'" '.($earlyIntervalTerm==$term?'SELECTED':'').'>'.$term.'</option>';
+										}
+										?>
+									</select>
+								</div>
+						</div>
+						<div>
+							<div>
+								<label for="lithogroup"><?php echo $LANG['LITHOGROUP']?>:</label>
+									<input type="text" name="lithogroup" id="lithogroup"/>
+							</div>
+							<div>
+								<label for="formation"> <?php echo $LANG['FORMATION']?>:</label>
+									<input type="text" name="formation" id="formation"/>
+							</div>
+							<div>
+								<label for="member"><?php echo $LANG['MEMBER']?>:</label>
+									<input type="text" name="member" id="member"/>
+							</div>
+							<div>
+								<label for="bed"><?php echo $LANG['BED']?>:</label>
+									<input type="text" name="bed" id="bed"/>
+							</div>
+						</div>
+					</div>
+				</div>
+				<?php
+			}
 			if(!empty($SEARCH_BY_TRAITS)) {
 				$attribSearch = new OccurrenceAttributeSearch();
 				$traitArr = $attribSearch->getTraitSearchArr($SEARCH_BY_TRAITS);
@@ -357,6 +425,7 @@ $SHOULD_INCLUDE_CULTIVATED_AS_DEFAULT = $SHOULD_INCLUDE_CULTIVATED_AS_DEFAULT ??
 				}
 			}
 			?>
+
 			<div style="float:right;">
 				<div><button type="submit" style="width:100%"><?php echo isset($LANG['BUTTON_NEXT_LIST'])?$LANG['BUTTON_NEXT_LIST']:'List Display'; ?></button></div>
 				<div><button type="button" style="width:100%" onclick="displayTableView(this.form)"><?php echo isset($LANG['BUTTON_NEXT_TABLE'])?$LANG['BUTTON_NEXT_TABLE']:'Table Display'; ?></button></div>
@@ -364,8 +433,7 @@ $SHOULD_INCLUDE_CULTIVATED_AS_DEFAULT = $SHOULD_INCLUDE_CULTIVATED_AS_DEFAULT ??
 			</div>
 			<div>
 				<input name="comingFrom" type="hidden" value="harvestparams" >
-				<input type="hidden" name="reset" value="1" />
-				<input type="hidden" name="db" value="<?php echo $collManager->getSearchTerm('db'); ?>" />
+				<input type="hidden" name="db" value="<?php echo $collManager->getSearchTerm('db', $_SERVER['REQUEST_URI']); ?>" />
 			</div>
 			<hr/>
 		</form>

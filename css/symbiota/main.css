@@ -1,6 +1,7 @@
 /* Style and Font imports
   ========================================================================== */
 @import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans&display=swap");
 @import "normalize.slim.css";
 @import "variables.css";
 
@@ -172,6 +173,15 @@ span[class="link"]:hover {
   padding-top: 1.5rem;
 }
 
+.fieldset-like-box {
+  position: relative;
+  border: 0.2rem solid;
+  margin: 2rem 0 1rem 1rem;
+  padding: 0.8rem;
+  padding-top: 1.5rem;
+  background-color: var(--light-color);
+}
+
 .fieldset-like h1,
 .fieldset-like h2,
 .fieldset-like h3 {
@@ -235,6 +245,10 @@ span[class="link"]:hover {
   max-width: 100%;
 }
 
+#service-container, #all_collections_parent_container {
+  display: none;
+}
+
 #tabs {
   font-family: var(--body-font-family);
   font-size: var(--body-font-size);
@@ -261,6 +275,10 @@ ul {
   margin-inline-start: 0px;
   margin-inline-end: 0px;
   padding-inline-start: 40px;
+}
+
+main ul li {
+  margin-bottom: 0.5em;
 }
 
 p {
@@ -320,6 +338,11 @@ fieldset {
   border-image: initial;
 }
 
+form label:has(+ input[required]):after {
+  color: red;
+  content: '*';
+}
+
 /* Base Button Button CSS
 ========================================================================== */
 button {
@@ -373,7 +396,7 @@ button.icon-button {
   border-color: buttonborder;
 }
 
-button.icon-button > svg {
+button.icon-button svg {
   fill: var(--light-color);
 }
 
@@ -455,6 +478,12 @@ button.inverse-color {
   padding: 0.5rem 0.9rem;
 }
 
+.button-form{
+	display: inline;
+	margin: 0px;
+	padding: 0px;
+}
+
 /* image thumbnails */
 #img-container {
   width: 80%;
@@ -464,7 +493,7 @@ button.inverse-color {
   float: left;
   text-align: center;
   width: 165px;
-  height: 230px;
+  min-height: 230px;
   page-break-before: auto;
   page-break-inside: avoid;
 }
@@ -522,7 +551,7 @@ table.styledtable tr.alt td {
 ========================================================================== */
 .text-huge {
   font-size: 4rem;
-  font-family: var(--title-font-family);
+  font-family: var(--heading-font-family);
   margin: 0;
 }
 
@@ -605,7 +634,7 @@ table.styledtable tr.alt td {
 @media screen and (min-width: 2560px) {
   .text-huge {
     font-size: 5rem;
-    font-family: var(--title-font-family);
+    font-family: var(--heading-font-family);
     margin: 0;
   }
 

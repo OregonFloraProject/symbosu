@@ -37,19 +37,19 @@ class Manager  {
 		}
 	}
 
-	protected function getConfigAttribute($attrName){
-		$attrValue = '';
-		if($attrName){
-			$sql = 'SELECT attributeValue FROM adminconfig WHERE attributeName = ?';
+	protected function getConfigAttribute($propName){
+		$propValue = '';
+		if($propName){
+			$sql = 'SELECT propName FROM adminproperties WHERE propName = ?';
 			if($stmt = $this->conn->prepare($sql)){
-				$stmt->bind_param('s', $attrName);
+				$stmt->bind_param('s', $propName);
 				$stmt->execute();
-				$stmt->bind_result($attrValue);
+				$stmt->bind_result($propValue);
 				$stmt->fetch();
 				$stmt->close();
 			}
 		}
-		return $attrValue;
+		return $propValue;
 	}
 
 	protected function setLogFH($logPath){
@@ -90,21 +90,6 @@ class Manager  {
 		return $this->warningArr;
 	}
 
-	public function getDomain(){
-		$domain = 'http://';
-		if((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443) $domain = 'https://';
-		if(!empty($GLOBALS['SERVER_HOST'])){
-			if(substr($GLOBALS['SERVER_HOST'], 0, 4) == 'http') $domain = $GLOBALS['SERVER_HOST'];
-			else $domain .= $GLOBALS['SERVER_HOST'];
-		}
-		else $domain .= $_SERVER['SERVER_NAME'];
-		if($_SERVER['SERVER_PORT'] && $_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 443 && !strpos($domain, ':'.$_SERVER['SERVER_PORT'])){
-			$domain .= ':'.$_SERVER['SERVER_PORT'];
-		}
-		$domain = filter_var($domain, FILTER_SANITIZE_URL);
-		return $domain;
-	}
-
 	public function sanitizeInt($int){
 		return filter_var($int, FILTER_SANITIZE_NUMBER_INT);
 	}
@@ -131,12 +116,12 @@ class Manager  {
 	}
 
 	protected function cleanInStr($str){
-		$newStr = trim($str);
-		if($newStr){
-			$newStr = preg_replace('/\s\s+/', ' ',$newStr);
-			$newStr = $this->conn->real_escape_string($newStr);
+		if($str){
+			$str = trim($str);
+			$str = preg_replace('/\s\s+/', ' ', $str);
+			$str = $this->conn->real_escape_string($str);
 		}
-		return $newStr;
+		return $str;
 	}
 
 	protected function cleanInArray($arr){
@@ -163,7 +148,7 @@ class Manager  {
 			$fixedwordchars=array("'", "'", '"', '"', '-', '...');
 			$retStr = str_replace($badwordchars, $fixedwordchars, $retStr);
 			if($retStr){
-				$retStr = mb_convert_encoding($retStr, $charsetOut, mb_detect_encoding($retStr));
+				$retStr = mb_convert_encoding($retStr, $charsetOut, mb_detect_encoding($retStr, 'UTF-8,ISO-8859-1,ISO-8859-15'));
 	 		}
 		}
 		return $retStr;

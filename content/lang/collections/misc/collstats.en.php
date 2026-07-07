@@ -67,10 +67,11 @@ $LANG['OBSERVATION_COLLECTIONS'] = 'Observation Collections';
 $LANG['SPECIMEN_COLLECTIONS'] = 'Specimen Collections';
 $LANG['EXPAND'] = 'Expand';
 $LANG['CONDENSE'] = 'Condense';
-$LANG['OBSERVATION'] = 'Observation';
-$LANG['SPECIMEN'] = 'Specimen';
+$LANG['OBSERVATION'] = 'Observations';
+$LANG['SPECIMEN'] = 'Specimens';
 $LANG['SAVE_CSV'] = 'Save CSV';
 $LANG['GENERAL_STATISTICS'] = 'General Statistics';
 $LANG['STATS_PER_COL'] = 'Statistics per Collection';
+$LANG['PERSONAL_OBSERVATION_COLLECTIONS'] = 'Personal Observation Management Collections';
 
 ?>

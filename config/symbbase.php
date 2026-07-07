@@ -1,18 +1,28 @@
 <?php
 header('X-Frame-Options: DENY');
 header('Cache-control: private'); // IE 6 FIX
+if($GLOBALS['HTTPS_ONLY'] ?? true) {
+	header('strict-transport-security: max-age=600');
+}
 date_default_timezone_set('America/Phoenix');
-$CODE_VERSION = '3.1.5.1';
+$CODE_VERSION = '3.4.9';
 
 set_include_path(get_include_path() . PATH_SEPARATOR . $SERVER_ROOT . PATH_SEPARATOR . $SERVER_ROOT.'/config/' . PATH_SEPARATOR . $SERVER_ROOT.'/classes/');
 
-session_start(array('gc_maxlifetime'=>3600,'cookie_path'=>$CLIENT_ROOT,'cookie_secure'=>(isset($COOKIE_SECURE)&&$COOKIE_SECURE?true:false),'cookie_httponly'=>true));
+session_start(array('gc_maxlifetime'=>3600,'cookie_path'=>$CLIENT_ROOT,'cookie_secure'=>$GLOBALS['HTTPS_ONLY'] ?? true,'cookie_httponly'=>true, 'use_only_cookies' => true));
 
-include_once($SERVER_ROOT.'/classes/Encryption.php');
-include_once($SERVER_ROOT.'/classes/ProfileManager.php');
+include_once($SERVER_ROOT . '/classes/utilities/Encryption.php');
+include_once($SERVER_ROOT . '/classes/ProfileManager.php');
 
-$pHandler = new ProfileManager();
 //Check session data to see if signed in
+
+if (isset($_SESSION['force_logout'])){
+	if(!isset($pHandler)) $pHandler = new ProfileManager();
+	$pHandler->reset();
+	unset($_SESSION['force_logout']);
+}
+$pHandler = null;
+
 $PARAMS_ARR = Array();				//params => 'un=egbot&dn=Edward&uid=301'
 $USER_RIGHTS = Array();
 if(isset($_SESSION['userparams'])) $PARAMS_ARR = $_SESSION['userparams'];
@@ -20,6 +30,7 @@ if(isset($_SESSION['userrights'])) $USER_RIGHTS = $_SESSION['userrights'];
 if(isset($_COOKIE['SymbiotaCrumb']) && !$PARAMS_ARR){
 	$tokenArr = json_decode(Encryption::decrypt($_COOKIE['SymbiotaCrumb']), true);
 	if($tokenArr){
+		if($pHandler === null) $pHandler = new ProfileManager();
 		if((isset($_REQUEST['submit']) && $_REQUEST['submit'] == 'logout') || isset($_REQUEST['loginas'])){
 	        $pHandler->deleteToken($pHandler->getUid($tokenArr[0]),$tokenArr[1]);
 		}
@@ -46,14 +57,44 @@ $USERNAME = (array_key_exists('un',$PARAMS_ARR)?$PARAMS_ARR['un']:0);
 $SYMB_UID = (array_key_exists('uid',$PARAMS_ARR)?intval($PARAMS_ARR['uid']):0);
 $IS_ADMIN = (array_key_exists('SuperAdmin',$USER_RIGHTS)?1:0);
 
+
+$PORTAL_PRIVATE = $PRIVATE_VIEWING_ONLY ?? false;
+if (!$SYMB_UID && $PORTAL_PRIVATE){
+	$PRIVATE_VIEWING_OVERRIDES = $PRIVATE_VIEWING_OVERRIDES ?? [];
+	$public_pages = [...$PRIVATE_VIEWING_OVERRIDES, ...['/profile/newprofile.php', '/profile/index.php']];
+	if(!empty($CLIENT_ROOT)){
+		$requested_url = explode($CLIENT_ROOT, $_SERVER['PHP_SELF'])[1];
+	}
+	else $requested_url = $_SERVER['PHP_SELF'];
+	if (!in_array($requested_url, $public_pages)){
+		$referringUrl =  $_SERVER['PHP_SELF'] . (!empty($_SERVER['QUERY_STRING']) ? urlencode( '?' . $_SERVER['QUERY_STRING']) : '');
+		header('Location: ' . $CLIENT_ROOT . '/profile/index.php?refurl=' . $referringUrl);
+	}
+}
+
+
+function alias(&$new, &$old) {
+	if(!isset($new) && isset($old)) {
+		$new = $old;
+	}
+}
+
+alias($PUBLIC_MEDIA_UPLOAD_ROOT, $PUBLIC_IMAGE_UPLOAD_ROOT);
+alias($MEDIA_DOMAIN, $IMAGE_DOMAIN);
+alias($MEDIA_ROOT_URL, $IMAGE_ROOT_URL);
+alias($MEDIA_ROOT_PATH, $IMAGE_ROOT_PATH);
+alias($MEDIA_FILE_SIZE_LIMIT, $IMG_FILE_SIZE_LIMIT);
+
 //Set accessibilty variables
 $ACCESSIBILITY_ACTIVE = false;
 if($SYMB_UID){
+	if($pHandler === null) $pHandler = new ProfileManager();
 	$isAccessiblePreferred = $pHandler->getAccessibilityPreference($SYMB_UID);
 	if($isAccessiblePreferred){
 		$ACCESSIBILITY_ACTIVE = true;
 	}
 }
+if($pHandler !== null) $pHandler->closeConnection();
 
 // OregonFlora Compatibility block
 $SOLR_MODE = ((isset($SOLR_URL) && $SOLR_URL)?true:false);
@@ -141,7 +182,11 @@ $AVAILABLE_LANGS = array('en','es','fr','pt');
 $LANG_TAG = 'en';
 if(isset($_REQUEST['lang']) && $_REQUEST['lang']){
 	$LANG_TAG = $_REQUEST['lang'];
-	setcookie('lang', $LANG_TAG, time() + (3600 * 24 * 30),'/');
+	setcookie('lang', $LANG_TAG, [
+		'domain' => '/',
+		'expires' => time() + (3600 * 24 * 30),
+		'secure' => false
+	]);
 }
 else if(isset($_COOKIE['lang']) && $_COOKIE['lang']){
 	$LANG_TAG = $_COOKIE['lang'];
@@ -188,5 +233,24 @@ $RIGHTS_TERMS_DEFS = array(
 );
 
 $CSS_VERSION = '16';
+
+// Used for what media is allowed to be uploaded. Does not restrict external links
+$ALLOWED_MEDIA_MIME_TYPES = [
+	// Supported Image Types
+	"image/jpeg", "image/png", "image/gif", 'image/bmp',
+	// Supported Audio Types
+	"audio/mpeg", "audio/wav", "audio/ogg",
+	// Supported Other Types
+	"application/pdf"
+];
+
+$MIME_FALL_BACK = 'image/jpeg';
+
+if(!empty($GEO_JSON_LAYERS)) {
+	/* Load GeoJSON Paths */
+	for($i = 0; $i < count($GEO_JSON_LAYERS); $i++) {
+		$GEO_JSON_LAYERS[$i]['filepath'] = $CLIENT_ROOT . '/content/geoJSON/' . $GEO_JSON_LAYERS[$i]['filename'];
+	}
+}
 
 ?>

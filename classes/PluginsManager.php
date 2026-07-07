@@ -1,6 +1,7 @@
 <?php
-include_once($SERVER_ROOT.'/classes/Manager.php');
-include_once($SERVER_ROOT.'/classes/ImageShared.php');
+include_once($SERVER_ROOT . '/classes/Manager.php');
+include_once($SERVER_ROOT . '/classes/ImageShared.php');
+include_once($SERVER_ROOT . '/classes/utilities/GeneralUtil.php');
 
 class PluginsManager extends Manager {
 
@@ -24,7 +25,7 @@ class PluginsManager extends Manager {
 		return $showHtml;
 	}
 
-	public function initiateSlideShow($ssid,$numSlides,$numDays,$imageType,$clid,$dayInterval){
+	private function initiateSlideShow($ssid,$numSlides,$numDays,$imageType,$clid,$dayInterval){
 		global $SERVER_ROOT;
 		$previousFile = $SERVER_ROOT.'/content/slideshow/'.$ssid.'_previous.json';
 		$infoFile = $SERVER_ROOT.'/content/slideshow/'.$ssid.'_info.json';
@@ -84,29 +85,29 @@ class PluginsManager extends Manager {
 			$ssIdInfo['imagetype'] = $imageType;
 
 			$files = Array();
-			$sql = 'SELECT i.imgid, i.tid, i.occid, i.url, i.photographer, i.`owner`, t.sciname, o.sciname AS occsciname, '.
-				'CONCAT_WS(" ",u.firstname,u.lastname) AS photographerName, '.
+			$sql = 'SELECT m.mediaID, m.tid, m.occid, m.url, m.creator, m.`owner`, t.sciname, o.sciname AS occsciname, '.
+				'CONCAT_WS(" ",u.firstname,u.lastname) AS creatorName, '.
 				'CONCAT_WS("; ",o.sciname, o.catalognumber, CONCAT_WS(" ",o.recordedby,IFNULL(o.recordnumber,o.eventdate))) AS identifier '.
-				'FROM images i LEFT JOIN users u ON i.photographeruid = u.uid '.
-				'LEFT JOIN omoccurrences o ON i.occid = o.occid '.
-				'LEFT JOIN taxa t ON i.tid = t.tid ';
+				'FROM media m LEFT JOIN users u ON m.creatorUid = u.uid '.
+				'LEFT JOIN omoccurrences o ON m.occid = o.occid '.
+				'LEFT JOIN taxa t ON m.tid = t.tid ';
 			if($clid){
-				$sql .= 'INNER JOIN fmchklsttaxalink cl ON i.tid = cl.tid WHERE cl.clid IN('.$clid.') ';
+				$sql .= 'INNER JOIN fmchklsttaxalink cl ON m.tid = cl.tid WHERE cl.clid IN('.$clid.') ';
 			}
 			else{
-				$sql .= 'WHERE i.InitialTimeStamp < "'.$sinceDate.'" AND i.tid IS NOT NULL ';
+				$sql .= 'WHERE m.InitialTimeStamp < "'.$sinceDate.'" AND m.tid IS NOT NULL ';
 			}
-			$sql .= 'AND i.sortsequence < 500 ';
+			$sql .= 'AND m.sortsequence < 500 ';
 			if($imageType == 'specimen'){
-				$sql .= 'AND i.occid IS NOT NULL ';
+				$sql .= 'AND m.occid IS NOT NULL ';
 			}
 			elseif($imageType == 'field'){
-				$sql .= 'AND i.occid IS NULL ';
+				$sql .= 'AND m.occid IS NULL ';
 			}
-			$sql .= 'ORDER BY i.sortsequence LIMIT 200 ';
+			$sql .= 'ORDER BY m.sortsequence LIMIT 200 ';
 			//echo '<div>'.$sql.'</div>';
 			//Set local domain
-			$localDomain = $this->getDomain();
+			$localDomain = GeneralUtil::getDomain();
 			//Get records
 			$cnt = 1;
  			$conn = MySQLiConnectionFactory::getCon("readonly");
@@ -115,24 +116,24 @@ class PluginsManager extends Manager {
 				$file = $row->url;
 				if (substr($row->url, 0, 1) == '/'){
 					//If imageDomain variable is set within symbini file, image
-					if(!empty($GLOBALS['IMAGE_DOMAIN'])) $file = $GLOBALS['IMAGE_DOMAIN'] . $row->url;
+					if(!empty($GLOBALS['MEDIA_DOMAIN'])) $file = $GLOBALS['MEDIA_DOMAIN'] . $row->url;
 					else $file = $localDomain.$row->url;
 				}
 
 				if($size = ImageShared::getImgDim(str_replace(' ', '%20', $file))){
 					$width = $size[0];
 					$height = $size[1];
-					$files[$row->imgid]['url'] = $file;
-					$files[$row->imgid]['width'] = $width;
-					$files[$row->imgid]['height'] = $height;
-					$files[$row->imgid]['tid'] = $row->tid;
-					$files[$row->imgid]['occid'] = $row->occid;
-					$files[$row->imgid]['photographer'] = $row->photographer;
-					$files[$row->imgid]['owner'] = $row->owner;
-					$files[$row->imgid]['sciname'] = $row->sciname;
-					$files[$row->imgid]['occsciname'] = $row->occsciname;
-					$files[$row->imgid]['photographerName'] = $row->photographerName;
-					$files[$row->imgid]['identifier'] = $row->identifier;
+					$files[$row->mediaID]['url'] = $file;
+					$files[$row->mediaID]['width'] = $width;
+					$files[$row->mediaID]['height'] = $height;
+					$files[$row->mediaID]['tid'] = $row->tid;
+					$files[$row->mediaID]['occid'] = $row->occid;
+					$files[$row->mediaID]['creator'] = $row->creator;
+					$files[$row->mediaID]['owner'] = $row->owner;
+					$files[$row->mediaID]['sciname'] = $row->sciname;
+					$files[$row->mediaID]['occsciname'] = $row->occsciname;
+					$files[$row->mediaID]['creatorName'] = $row->creatorName;
+					$files[$row->mediaID]['identifier'] = $row->identifier;
 					$cnt++;
 				}
 			}
@@ -154,17 +155,19 @@ class PluginsManager extends Manager {
 
 			//Save data to slideshow history/configuration files
 			if($clid){
-				$fp = fopen($previousFile, 'w');
-				fwrite($fp, json_encode($previousArr));
+				if($fp = fopen($previousFile, 'w')){
+					fwrite($fp, json_encode($previousArr));
+					fclose($fp);
+				}
+			}
+			if($fp = fopen($infoFile, 'w')){
+				fwrite($fp, json_encode($ssIdInfo));
 				fclose($fp);
 			}
-			$fp = fopen($infoFile, 'w');
-			fwrite($fp, json_encode($ssIdInfo));
-			fclose($fp);
 		}
 	}
 
-	public function getSlideshowStyle($width){
+	private function getSlideshowStyle($width){
 		$html = '<link rel="stylesheet" href="' . htmlspecialchars($GLOBALS['CLIENT_ROOT'], ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE) . '/css/slideshowstyle.css">
 			<style>
 				@font-face{
@@ -197,7 +200,7 @@ class PluginsManager extends Manager {
 		return $html;
 	}
 
-	public function getSlideshowScript($width,$interval){
+	private function getSlideshowScript($width,$interval){
 		$html = '<script type="text/javascript">
 				$(function() {
 					$("#slides").slidesjs({
@@ -215,7 +218,7 @@ class PluginsManager extends Manager {
 		return $html;
 	}
 
-	public function getImageList($ssid){
+	private function getImageList($ssid){
 		global $LANG;
 		$infoArr = json_decode(file_get_contents($GLOBALS['SERVER_ROOT'].'/content/slideshow/'.$ssid.'_info.json'), true);
 		//echo json_encode($infoArr);
@@ -235,13 +238,13 @@ class PluginsManager extends Manager {
 			$hideCaptionClick = "$('.slideshowCaptionDiv').hide();$('.slideshowShowLink').show();return false;";
 			$html .= '<div class="slideshowBaseDiv">
 				<div class="slideshowCaptionDiv">
-					<a class="slideshowHideLink" href="#" onclick="' . $hideCaptionClick . '">' . htmlspecialchars((isset($LANG['HIDE_CAPTION'])?$LANG['HIDE_CAPTION']:'HIDE CAPTION'), ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE) . '</a>';
+					<a class="slideshowHideLink" href="#" onclick="' . $hideCaptionClick . '">' . (isset($LANG['HIDE_CAPTION'])?$LANG['HIDE_CAPTION']:'HIDE CAPTION') . '</a>';
 			$html .= '<div class="slideshowCitationDiv">';
 			if($imgIdArr["sciname"] || $imgIdArr["identifier"]){
 				$html .= '<a href="' . htmlspecialchars($linkUrl, ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE) . '" target="_blank">' . htmlspecialchars(($imgIdArr["identifier"]?$imgIdArr["identifier"]:$imgIdArr["sciname"]), ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE) . '</a>. ';
 			}
-			if($imgIdArr["photographer"] || $imgIdArr["photographerName"]){
-				$html .= (isset($LANG['IMAGE_BY'])?$LANG['IMAGE_BY']:'Image by').': '.($imgIdArr["photographer"]?$imgIdArr["photographer"]:$imgIdArr["photographerName"]).'. ';
+			if($imgIdArr["creator"] || $imgIdArr["creatorName"]){
+				$html .= (isset($LANG['IMAGE_BY'])?$LANG['IMAGE_BY']:'Image by').': '.($imgIdArr["creator"]?$imgIdArr["creator"]:$imgIdArr["creatorName"]).'. ';
 			}
 			if($imgIdArr["owner"]){
 				$html .= (isset($LANG['COURTESY_OF'])?$LANG['COURTESY_OF']:'Courtesy of').': '.$imgIdArr["owner"].'. ';

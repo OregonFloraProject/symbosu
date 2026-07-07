@@ -1,6 +1,9 @@
 <?php
 include_once('../../../config/symbini.php');
 include_once($SERVER_ROOT.'/classes/OccurrenceDuplicate.php');
+include_once($SERVER_ROOT . '/classes/utilities/Language.php');
+
+Language::load('collections/editor/rpc/editor_rpc');
 
 $dupid = array_key_exists('dupid',$_REQUEST)?$_REQUEST['dupid']:'';
 $occid = array_key_exists('occid',$_REQUEST)?$_REQUEST['occid']:'';
@@ -19,10 +22,10 @@ if($IS_ADMIN || $isEditor){
 		}
 	}
 	else{
-		echo 'ERROR unknown [1]';
+		echo $LANG['ERROR_1'];
 	}
 }
 else{
-	echo 'ERROR unknown [2]';
+	echo $LANG['ERROR_2'];
 }
 ?>
