@@ -45,8 +45,6 @@ $mapManager = new OccurrenceMapManager();
 $searchVar = $mapManager->getQueryTermStr();
 if($searchVar && $recLimit) $searchVar .= '&reclimit='.$recLimit;
 
-$obsIDs = $mapManager->getObservationIds();
-
 $USE_SOLR_SEARCH = (isset($MAP_SOLR_SEARCH_FLAG) && $MAP_SOLR_SEARCH_FLAG === 1) ? 1 : 0;
 // 2025-05-14(eric): I'm not sure to what extent non-vouchered checklist data is in SOLR (looks like
 // it only pulls from fmvouchers) so for now, if clid is nonnull, switch back to default MySQL
@@ -156,7 +154,6 @@ $serverHost = GeneralUtil::getDomain();
 		//} else {
 			//include_once($SERVER_ROOT.'/includes/googleMap.php');
 		//}
-		?>
 
 		include_once($SERVER_ROOT.'/includes/javascript_lang_tags.php');
 		?>
@@ -998,7 +995,7 @@ $serverHost = GeneralUtil::getDomain();
 				if(!validateCollections()) return false;
 
 				showWorking();
-				storeFormDataInSessionStorage(e.target);
+				storeFormDataInSessionStorage(formElement.target);
 
 				let formData = new FormData(formElement);
 
@@ -2327,14 +2324,14 @@ $serverHost = GeneralUtil::getDomain();
 			<div class="panel-content">
 				<div id="mapinterface">
 					<div id="accordion">
-						<h3 id="search_criteria" style="margin-top:0"><?= $LANG['SEARCH_CRITERIA'] ?><
+						<h3 id="search_criteria" style="margin-top:0"><?= $LANG['SEARCH_CRITERIA'] ?>
 							<a role="button" onclick="event.stopPropagation();document.getElementById('defaultpanel').style.left='-29rem'" style="position:absolute;right:0;color:white !important;padding:1em;margin-top:-1em">
 								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" role="img" style="width:1em">
 									<path fill="currentColor" d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/>
 								</svg>
 							</a>
 						</h3>
-						<form style="width: 39rem;" name="params-form" id="params-form" data-ajax="false">
+						<form name="params-form" id="params-form" data-ajax="false">
 							<div id="tabs1" class="content" style="padding:0px;height:100%">
 								<ul>
 									<li><a href="#search-form-colls"><span><?php echo htmlspecialchars($LANG['COLLECTIONS'], ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE); ?></span></a></li>

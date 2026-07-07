@@ -10,6 +10,7 @@ ob_start();
 
 $mapManager = new OccurrenceMapManager();
 $searchArray = $mapManager->getQueryTermArr();
+$searchVar = $mapManager->getQueryTermStr();
 
 if (isset($_REQUEST["queryOnly"]) && $_REQUEST["queryOnly"]) {
 	echo json_encode(['query' => $searchVar]);

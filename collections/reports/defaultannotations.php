@@ -64,7 +64,7 @@ if($SYMB_UID){
 					}
 					$labelCnt = 0;
 					echo '<table class="labels">';
-					echo '<thead><tr><th></th>' . ($rowsPerPage == 2 ? '<th></th>' : ($rowsPerPage == 3 ? '<th></th><th></th>' : '')) . '</tr></thead>';
+					echo '<thead><tr><th></th>' . ($columnsPerPage == 2 ? '<th></th>' : ($columnsPerPage == 3 ? '<th></th><th></th>' : '')) . '</tr></thead>';
 					foreach($labelArr as $occid => $occArr){
 						$headerStr = trim($lHeader);
 						$footerStr = trim($lFooter);

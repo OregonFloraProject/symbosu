@@ -9,9 +9,7 @@ header( "Content-Type: text/html; charset=" . $charset );
     <title><?php echo $defaultTitle ?>News and Events</title>
     <meta charset="UTF-8">
     <meta name='keywords' content=''/>
-    <script type="text/javascript">
-		<?php include_once( $serverRoot . '/config/googleanalytics.php' ); ?>
-    </script>
+    <?php include_once($SERVER_ROOT.'/includes/googleanalytics.php'); ?>
 
 </head>
 <body>

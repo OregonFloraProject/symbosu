@@ -80,6 +80,9 @@ $creators = Media::getCreatorArray();
 <html lang="<?= $LANG_TAG ?>">
 <head>
 	<title><?= $DEFAULT_TITLE . ' ' . $LANG['IMAGE_SEARCH'] ?> </title>
+	<!-- JGM: Moved these css files above head.php to allow for customizations.css to overload them -->
+	<link href="<?= $CSS_BASE_PATH ?>/searchStyles.css?ver=1" type="text/css" rel="stylesheet">
+	<link href="<?= $CSS_BASE_PATH ?>/searchStylesInner.css" type="text/css" rel="stylesheet">
 	<?php
 	include_once($SERVER_ROOT . '/includes/head.php');
 	include_once($SERVER_ROOT . '/includes/googleanalytics.php');
@@ -87,8 +90,6 @@ $creators = Media::getCreatorArray();
 	<link href="<?= $CSS_BASE_PATH ?>/jquery-ui.min.css" type="text/css" rel="stylesheet">
 	<link href="<?= $CSS_BASE_PATH; ?>/symbiota/collections/listdisplay.css" type="text/css" rel="stylesheet" />
 	<link href="<?= $CSS_BASE_PATH; ?>/symbiota/collections/sharedCollectionStyling.css" type="text/css" rel="stylesheet" />
-	<link href="<?= $CSS_BASE_PATH ?>/searchStyles.css?ver=1" type="text/css" rel="stylesheet">
-	<link href="<?= $CSS_BASE_PATH ?>/searchStylesInner.css" type="text/css" rel="stylesheet">
 	<style>
 		fieldset{ padding: 15px }
 		fieldset legend{ font-weight:bold }

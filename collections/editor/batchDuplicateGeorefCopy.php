@@ -119,6 +119,16 @@ if(array_key_exists('missingLatLng',$_REQUEST)) {
 	$missingLatLng = false;
 }
 
+// Add collection customization variables
+if($collId  && file_exists('includes/config/occurVarColl' . $collId . '.php')){
+	//Specific to particular collection
+	include('includes/config/occurVarColl' . $collId . '.php');
+}
+elseif(file_exists('includes/config/occurVarDefault.php')){
+	//Specific to Default values for portal
+	include('includes/config/occurVarDefault.php');
+}
+
 function copyOccurrenceInfo($targetOccId, $sourceOccId, $harvestFields) {
 	$sql = 'Update omoccurrences target
 		INNER JOIN omoccurrences source on target.occid = ? and source.occid = ?

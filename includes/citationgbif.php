@@ -1,1 +1,6 @@
-<?php echo ($DEFAULT_TITLE) ? $DEFAULT_TITLE : "Name of people or institutional reponsible for maintaining the portal"; ?> (<?php echo date('Y'); ?>). Biodiversity data published by: <?php echo $collData['gbiftitle']; ?>. Occurrence dataset <a href="https://doi.org/<?php echo $collData['doi']; ?>">https://doi.org/<?php echo $collData['doi']; ?></a> accessed via the <?php echo ($DEFAULT_TITLE) ? $DEFAULT_TITLE : "Custom title for the portal"; ?> Portal, <?php echo $SERVER_HOST . $CLIENT_ROOT; ?> on <?php echo date('Y-m-d'); ?>.
+<?php
+if(!isset($collData) && isset($this->collArr)) $collData = $this->collArr;
+?>
+<?php echo ($DEFAULT_TITLE) ? $DEFAULT_TITLE : "Name of people or institutional responsible for maintaining the portal"; ?> (<?php echo date('Y'); ?>). Biodiversity data published by: <?php echo $collData['gbiftitle']; ?>. Occurrence dataset <a href="https://doi.org/<?php echo $collData['doi']; ?>">https://doi.org/<?php echo $collData['doi']; ?></a>  accessed via the <?php echo ($DEFAULT_TITLE) ? $DEFAULT_TITLE : "Custom title for the portal"; ?> Portal, <?php echo $SERVER_HOST . $CLIENT_ROOT; ?> on <?php echo date('Y-m-d'); ?>.
+
+

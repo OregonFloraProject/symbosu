@@ -129,6 +129,7 @@ $LANG['DATE_LAST_MODIFIED'] = 'Date Last Modified';
 $LANG['LABEL_PROJECT'] = 'Label Project';
 $LANG['PROCESS_STATUS'] = 'Processing Status';
 $LANG['RECORD_ENTERED_BY'] = 'Entered By';
+$LANG['RECORD_MODIFIED_BY'] = 'Last Modified By';
 $LANG['DBPK'] = 'dbpk';
 $LANG['BASIS_REC'] = 'Basis Of Record';
 $LANG['LANG'] = 'Language';

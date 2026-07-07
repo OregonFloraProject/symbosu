@@ -46,6 +46,11 @@ This stylesheet is defined last and will override all previously loaded sheets. 
   /* Green color used for buttons, footer, etc on OregonFlora */
   --oregonflora-green: #74B147;
   --oregonflora-light-green: #dfefd3;
+
+  /* Use these fonts instead of Open Sans */
+  --body-font-family: "Arial", sans-serif;
+  --heading-font-family: "Roboto", sans-serif;
+
 }
 
 .navpath{
@@ -68,13 +73,76 @@ button {
   &:not(.no-symbiota-placement) {
     padding-left: 0.5em;
     padding-right: 0.5em;
-    margin: 4px 0px !important;
+    /* margin: 4px 0px !important; */
     display: inline;
   }
 }
 
+/* Queryform */
+
+/* Standardize queryform font size */
+#querydiv{
+  font-size: 12px !important;
+}
+
+/* Larger record entered by field */
+#querydiv #q_recordenteredby {
+  max-width: 100px;
+}
+
+/* Occurrence editor buttons */
+
+#edittable .button:not(:disabled), #edittable button:not(:disabled){
+  background-color: var(--oregonflora-green);
+  border: none;
+  font-size: 14px;
+  margin: 0px;
+}
+
+/* Queryform buttons */
+
+#querydiv button, #querySymbolDiv .button-toggle, #titleDiv button, #batchUpdateButton{
+  color: #fff;
+  padding: 0.5em 0.5em;
+  border: none;
+  font-size: 14px;
+}
+
+/* Queryform copy link & download buttons */
+
+#querydiv .icon-button {
+  width: 30px !important;
+  height: 30px !important;
+  margin: 0;
+  display: inline-flex;
+}
+
+/* Queryform copy link button */
+
+#querydiv .icon-button span svg {
+  margin-right: 0px !important;
+}
+
+/* Queryform download button */
+
+#querydiv form .icon-button svg {
+  height: 1.7em !important;
+}
+
+/* Queryform CU button */
+#querydiv button[onclick="enteredByCurrentUser()"] {
+  font-size: 90% !important;
+}
+
+/* Queryform and occurrence editor button hover */
+
+#querydiv button:hover, #edittable button:hover {
+  background-color: var(--medium-color);
+  color: var(--light-color);
+}
+
 /* <a> buttons */
-.button-primary {
+.button-primary{
   background-color: var(--oregonflora-green);
 }
 
@@ -158,6 +226,29 @@ button {
 
   .fieldGroupDiv {
     margin-bottom: 0.3rem !important;
+  }
+}
+
+/* 
+2025-01-28(eric): replacing height: 100vh with align-self: start 
+keeps sticky behavior while fixing footer issue if content overflows 100vh  
+(james): This was originally in collections/search/index.php (l578), and the 
+relevant style is from css/searchStylesInner.css:
+*/
+.criteria-panel {
+  align-self: start
+}
+
+/* Adjustments to the quicksearch box for the collections admin page to work with OregonFlora header */
+@media (min-width: 1425px) {
+  #quicksearch-box {
+    top: 2rem;
+  }
+}
+
+@media (min-width: 1880px) {
+  #quicksearch-box {
+    width: 20vw !important;
   }
 }
 

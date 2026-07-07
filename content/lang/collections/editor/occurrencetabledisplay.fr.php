@@ -129,6 +129,7 @@ $LANG['DATE_LAST_MODIFIED'] = 'Date de dernière modification';
 $LANG['LABEL_PROJECT'] = 'Étiquette du projet';
 $LANG['PROCESS_STATUS'] = 'État du traitement';
 $LANG['RECORD_ENTERED_BY'] = 'Saisi par';
+$LANG['RECORD_MODIFIED_BY'] = 'Dernière modification par';
 $LANG['DBPK'] = 'dbpk';
 $LANG['BASIS_REC'] = 'Base d\'enregistrement';
 $LANG['LANG'] = 'Langue';

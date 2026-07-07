@@ -1,6 +1,6 @@
 <?php
-include_once('../shared/getTaxaData.php');
 include_once('../../config/symbini.php');
+include_once('../shared/getTaxaData.php');
 include_once('../../config/dbconnection.php');
 include_once($SERVER_ROOT.'/classes/SOLRManager.php');
 include_once($SERVER_ROOT.'/classes/ProfileManager.php');

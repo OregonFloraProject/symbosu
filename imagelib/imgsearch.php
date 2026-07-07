@@ -69,9 +69,7 @@ $imageExplorer = new ImageExplorer();
             display: block;
         }
     </style>
-    <script type="text/javascript">
-        <?php include_once($serverRoot.'/config/googleanalytics.php'); ?>
-    </script>
+    <?php include_once($SERVER_ROOT.'/includes/googleanalytics.php'); ?>
     <script type="text/javascript">
         <?php
             $pList = array();

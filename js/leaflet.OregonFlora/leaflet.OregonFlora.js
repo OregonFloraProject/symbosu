@@ -4,6 +4,7 @@
 
 // Entrypoint function to add all OregonFlora customizations to the map
 function addOregonFlora(map, fitBounds = true){
+
 	// Set the map zoom/center unless told not to
 	if (fitBounds) {
 		// Zoom/center to default place
@@ -40,7 +41,6 @@ function addOregonFlora(map, fitBounds = true){
 		setUpUserFiles(map);
 	}
 }
-
 
 // Add/rename/reorder basemap layers
 function addBasemaps(map) {
@@ -113,19 +113,19 @@ function addBasemaps(map) {
 	map.mapLayer.layerControl.addBaseLayer(USGS_Imagery, "USGS Satellite");
 
 	// Rename existing layers
-	map.mapLayer.layerControl._layers[0].name = "Google Terrain";
-	map.mapLayer.layerControl._layers[1].name = "OpenStreetMap";
-	map.mapLayer.layerControl._layers[2].name = "OpenTopoMap";
-	map.mapLayer.layerControl._layers[3].name = "ESRI Satellite";
+	getLayerByName(map, "Terrain").name = "Google Terrain";
+	getLayerByName(map, "Basic").name = "OpenStreetMap";
+	getLayerByName(map, "Topo").name = "OpenTopoMap";
+	getLayerByName(map, "Satellite").name = "ESRI Satellite";
 
 	// Fix Google Terrain attribution
-	map.mapLayer.layerControl._layers[0].layer.options.attribution = "Google";
+	getLayerByName(map, "Google Terrain").layer.options.attribution = "Google";
 
 	// Add sort order to the existing layers
-	map.mapLayer.layerControl._layers[0].layer.options.sort = 2;
-	map.mapLayer.layerControl._layers[1].layer.options.sort = 8;
-	map.mapLayer.layerControl._layers[2].layer.options.sort = 9;
-	map.mapLayer.layerControl._layers[3].layer.options.sort = 5;
+	getLayerByName(map, "Google Terrain").layer.options.sort = 2;
+	getLayerByName(map, "OpenStreetMap").layer.options.sort = 8;
+	getLayerByName(map, "OpenTopoMap").layer.options.sort = 9;
+	getLayerByName(map, "ESRI Satellite").layer.options.sort = 5;
 
 	// Set layercontrol options
 	map.mapLayer.layerControl.options = {
@@ -158,8 +158,8 @@ function addBasemaps(map) {
 		timeout = setTimeout(() => map.mapLayer.layerControl.collapse(), 300);
 	});
 
-	// Bring macrostrat layer to the front so it's not behind the new basemaps
-	map.mapLayer.macro_strat.setZIndex(11);
+	// Bring macrostrat layer to the front so it's not behind the basemaps
+	getLayerByName(map, "Geology").layer.setZIndex(10);
 
 	// Change the default layer: first remove the old default, then re-add a layer.
 	map.mapLayer.layerControl._layers[0].layer.remove();
@@ -417,7 +417,7 @@ function addOverlays(map) {
 
 	// Add to map first (so it appears checked), then to layer control
 	countiesGroup.addTo(map.mapLayer);
-	map.mapLayer.layerControl.addOverlay(countiesGroup, "Counties");
+	map.mapLayer.layerControl.addOverlay(countiesGroup, "OR Counties");
 
 	// Load counties data immediately for the default-on state
 	fetch(clientRoot + 'js/leaflet.OregonFlora/layers/oregon.counties.json')
@@ -665,6 +665,11 @@ function onZoom(e, zoomLevel) {
 	}
 }
 
+// Helper function to return a layerControl and layer by name
+function getLayerByName(map, name){
+	const found = map.mapLayer.layerControl._layers.find(obj => obj.name === name);
+	return found ? found : null;
+}
 
 // Function to create custom SVG icons for points on the map (e.g., square, diamond)
 // Copied in part from what Symbiota does for the observations icon

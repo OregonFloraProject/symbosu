@@ -174,7 +174,7 @@ const fieldProps = [
   {
     block: 'labelBlock',
     name: 'Description',
-    id: 'verbatimAttributes',
+    id: 'verbatimattributes',
     group: 'specimen',
   },
   { block: "labelBlock", name: "Behavior", id: "behavior", group: "specimen" },

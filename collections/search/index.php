@@ -940,8 +940,8 @@ $requestSuppliedCatChk = (array_key_exists('catChk', $_REQUEST) && $collectionFo
 	})
 
 	// Set collection filter by default to be only OSU herbarium
-	const allCollectionCheckbox = document.getElementById('dballcb');
-	const OSUCollectionCheckbox = document.getElementById('OSU-Specimens--Input');
+	const allCollectionCheckbox = document.getElementById('all_collections');
+	const OSUCollectionCheckbox = document.getElementById('<?php echo (isset($CATCHK) && count($CATCHK) > 0 ? $CATCHK[0] : 'Specimens_5') ?>');
 	allCollectionCheckbox.click();
 	OSUCollectionCheckbox.click();
 
@@ -950,7 +950,7 @@ $requestSuppliedCatChk = (array_key_exists('catChk', $_REQUEST) && $collectionFo
 	osuOnlyToggle.addEventListener('click', function() {
 		const isOn = this.classList.toggle('toggle-on');
 		if (isOn) {
-			uncheckEverything();
+			uncheckEverythingInCollections();
 			OSUCollectionCheckbox.click();
 		} else {
 			allCollectionCheckbox.click();

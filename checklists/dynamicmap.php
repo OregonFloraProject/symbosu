@@ -273,14 +273,14 @@ if(!$zoomInt){
          <h1 class="page-heading screen-reader-only"><?php echo $LANG['DYNAMIC_MAP']; ?></h1>
 			<div style="margin-left: 2rem; margin-bottom: 1rem;">
 				<h3>An easy-to-use plant identification tool based on the plant features you recognize.
-				<span id="moredetails" style="cursor:pointer;color:blue;font-size:70%;font-weight:normal;" onclick="this.style.display='none';document.getElementById('moreinfo').style.display='inline';document.getElementById('lessdetails').style.display='inline';">
+				<span id="moredetails" style="cursor:pointer;color:blue;font-size:70%;font-weight:normal;" onclick="this.style.display='none';document.getElementById('moreinfo').style.display='inline';document.getElementById('lessdetails').style.display='inline-block';">
 					<?php echo $LANG['MORE_DETAILS']; ?>
 				</span>
                 </h3>
 				<span id="moreinfo" style="display:none;">
 					<?php echo $LANG['RADIUS_DESCRIPTION']; ?>
 				</span>
-				<span id="lessdetails" style="cursor:pointer;color:blue;display:none;" onclick="this.style.display='none';document.getElementById('moreinfo').style.display='none';document.getElementById('moredetails').style.display='inline';">
+				<span id="lessdetails" style="cursor:pointer;color:blue;display:none; margin-bottom: 1em;" onclick="this.style.display='none';document.getElementById('moreinfo').style.display='none';document.getElementById('moredetails').style.display='inline';">
 					<?php echo $LANG['LESS_DETAILS']; ?>
 				</span>
                 <ul>
