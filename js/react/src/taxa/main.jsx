@@ -177,6 +177,7 @@ class TaxaApp extends React.Component {
               'Common Names': res.vernacular.names,
               Synonyms: res.synonyms,
               Origin: res.origin,
+              Status: res.characteristics.noxious_weed,
               'More info': moreInfo,
             },
             taxalinks: {

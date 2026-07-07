@@ -4,19 +4,21 @@ import { Link } from 'react-scroll';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { SynonymItem } from './SynonymItem.jsx';
 import { RANK_FAMILY } from '../constants/index.js';
+import { addGlossaryTooltips } from '../../common/glossary';
 
 function BorderedItem(props) {
   let value = props.value;
-  const isArray = Array.isArray(value);
 
-  if (isArray) {
+  if (Array.isArray(value)) {
     value = (
       <ul className="border-item list-unstyled p-0 m-0">
         {props.value.map((v) => (
-          <li key={v}>{v}</li>
+          <li key={v} dangerouslySetInnerHTML={{ __html: addGlossaryTooltips(v, props.glossary) }} />
         ))}
       </ul>
     );
+  } else {
+    value = <span dangerouslySetInnerHTML={{ __html: addGlossaryTooltips(value, props.glossary) }} />;
   }
 
   return (
@@ -138,7 +140,7 @@ function SideBarSection(props) {
         } else if (key == 'Synonyms') {
           return <SynonymItem key={val} value={val} glossary={props.glossary} />;
         } else if (val) {
-          return <BorderedItem key={key} keyName={key} value={val} />;
+          return <BorderedItem key={key} keyName={key} value={val} glossary={props.glossary} />;
         }
       })}
       <span className="row dashed-border" />

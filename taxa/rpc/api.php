@@ -207,9 +207,7 @@ function taxaManagerToJSON(TaxaManager $taxaObj,$queryType = "default",$minimalD
 					$result["associations"] = $taxaObj->getAssociations();
 				}
 			}
-			if ($queryType !== 'default') {
-				$result["characteristics"] = $taxaObj->getCharacteristics($queryType);
-			}
+      $result["characteristics"] = $taxaObj->getCharacteristics($queryType);
 			$taxaObj->setSpecialChecklists();
 			$result["specialChecklists"] = $taxaObj->getSpecialChecklists();
 			$result["descriptions"] = $taxaObj->getDescriptions();
