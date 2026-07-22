@@ -218,6 +218,9 @@ include($SERVER_ROOT.'/includes/header.php');
 		} else {
 		?>
 		<div class="container">
+			<div id="dialog" title="" style="display: none;">
+				<div id="dialogmsg"></div>
+			</div>
 			<fieldset id="auth">
 				<legend><b><?php echo $LANG['STATUS_FIELDSET'];?></b></legend>
 				<div>

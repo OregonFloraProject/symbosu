@@ -63,9 +63,13 @@ class SpecUploadINat extends SpecUploadBase{
 		if(is_array($this->iNatData)) {
 			foreach ($this->iNatData as $record) {
 
-				// TODO: may be able to skip this and assume all images will have all the same data
-				foreach ($record['images'] as $image) {
-					$headerArr = array_merge($headerArr, array_diff(array_keys($image), $headerArr));
+				// Make sure that images exist first
+				if(isset($record['images'])){
+
+					// TODO: may be able to skip this and assume all images will have all the same data
+					foreach ($record['images'] as $image) {
+						$headerArr = array_merge($headerArr, array_diff(array_keys($image), $headerArr));
+					}
 				}
 			}
 		}

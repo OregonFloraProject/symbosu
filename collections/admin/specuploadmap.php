@@ -772,7 +772,7 @@ include($SERVER_ROOT.'/includes/header.php');
 				<?php
 				if($uploadType == $INATURALIST) {
 				?>
-				<input type="hidden" name="inatdata" value='<?php echo $iNatData;?>' />
+				<input type="hidden" name="inatdata" value="<?php echo htmlspecialchars($iNatData, ENT_QUOTES, 'UTF-8');?>" />
 				<input type="hidden" name="apitoken"value="<?php echo $apiToken;?>" />
 				<input type="hidden" name="addlink"value="<?php echo $addLink;?>" />
 				<input type="hidden" name="fullimport"value="<?php echo $fullImport;?>" />
