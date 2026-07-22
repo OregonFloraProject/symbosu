@@ -1,8 +1,10 @@
 <?php
 include_once('../../../config/symbini.php');
 include_once($SERVER_ROOT.'/classes/OccurrenceCrowdSource.php');
-if($LANG_TAG != 'en' && file_exists($SERVER_ROOT.'/content/lang/collections/specprocessor/crowdsource/review.'.$LANG_TAG.'.php')) include_once($SERVER_ROOT.'/content/lang/collections/specprocessor/crowdsource/review.'.$LANG_TAG.'.php');
-else include_once($SERVER_ROOT.'/content/lang/collections/specprocessor/crowdsource/review.en.php');
+include_once($SERVER_ROOT . '/classes/utilities/Language.php');
+
+Language::load('collections/specprocessor/crowdsource/review');
+
 header("Content-Type: text/html; charset=".$CHARSET);
 
 if(!$SYMB_UID) header('Location: ../../../profile/index.php?refurl=../collections/specprocessor/index.php?tabindex=1?'.htmlspecialchars($_SERVER['QUERY_STRING'], ENT_QUOTES));
@@ -15,7 +17,7 @@ $limit = array_key_exists('limit',$_REQUEST)?$_REQUEST['limit']:500;
 $action = array_key_exists('action',$_REQUEST)?$_REQUEST['action']:'';
 
 $csManager = new OccurrenceCrowdSource();
-//If collid is null, it will be assumed that current user wants to review their own specimens (they can still edit pending, closed specimen can't be editted)
+//If collid is null, it will be assumed that current user wants to review their own specimens (they can still edit pending, closed specimen can't be edited)
 $csManager->setCollid($collid);
 
 $isEditor = 0;
@@ -96,7 +98,7 @@ $projArr = $csManager->getProjectDetails();
 		</div>
 	</div>
 	<div style="margin:10px;">
-		<h1 class="page-heading">Review Crowdsourced Records</h1>
+		<h1 class="page-heading"><?php echo $LANG['REVIEW_CROWDSOURCING_RECORDS']; ?></h1>
 		<?php
 		if($statusStr){
 			?>
@@ -259,7 +261,7 @@ $projArr = $csManager->getProjectDetails();
 										<?php
 										foreach($header as $v){
 											$displayStr = $rArr[$v];
-											if(strlen($displayStr) > 40){
+											if($displayStr && strlen($displayStr) > 40){
 												$displayStr = substr($displayStr,0,40).'...';
 											}
 											echo '<td>'.$displayStr.'</td>'."\n";

@@ -4,31 +4,49 @@
 include_once('../../config/symbini.php');
 include_once($SERVER_ROOT . '/classes/CollectionMetadata.php');
 include_once($SERVER_ROOT . '/classes/DatasetsMetadata.php');
-include_once($SERVER_ROOT.'/classes/OccurrenceManager.php');
-include_once($SERVER_ROOT.'/classes/OccurrenceAttributeSearch.php');
-if($LANG_TAG == 'en' || !file_exists($SERVER_ROOT . '/content/lang/collections/search/index.' . $LANG_TAG . '.php')) include_once($SERVER_ROOT.'/content/lang/collections/search/index.en.php');
-else include_once($SERVER_ROOT . '/content/lang/collections/search/index.' . $LANG_TAG . '.php');
+include_once($SERVER_ROOT . '/classes/OccurrenceManager.php');
+include_once($SERVER_ROOT . '/classes/OccurrenceAttributeSearch.php');
+include_once($SERVER_ROOT . '/classes/AssociationManager.php');
+include_once($SERVER_ROOT . '/classes/utilities/Language.php');
+include_once($SERVER_ROOT . '/classes/CollectionFormManager.php');
+
+Language::load('collections/search/index');
+
 header('Content-Type: text/html; charset=' . $CHARSET);
 
-$dbsWithBracketsRemoved = array_key_exists("db",$_GET) ?  str_replace(array('[',']'), '', $_GET["db"]) : '';
+$JS_LANG_FILENAME = file_exists($SERVER_ROOT . '/js/symb/' . $LANG_TAG . '.js') ? $CLIENT_ROOT . '/js/symb/' . $LANG_TAG . '.js' : $CLIENT_ROOT . '/js/symb/en.js';
+
+$dbsWithBracketsRemoved = array_key_exists("db", $_GET) ?  str_replace(array('[', ']'), '', $_GET["db"]) : '';
 $explodable = $dbsWithBracketsRemoved;
-if(is_array($dbsWithBracketsRemoved)){
+if (is_array($dbsWithBracketsRemoved)) {
 	$explodable = $dbsWithBracketsRemoved[0];
 }
-$collIdsFromUrl = array_key_exists("db",$_GET) ? explode(",", $explodable) : '';
+$collIdsFromUrl = array_key_exists("db", $_GET) ? explode(",", $explodable) : '';
 
 $collManager = new OccurrenceManager();
 $collectionSource = $collManager->getQueryTermStr();
 
-$SHOULD_INCLUDE_CULTIVATED_AS_DEFAULT = $SHOULD_INCLUDE_CULTIVATED_AS_DEFAULT ?? false;
+$gtsTermArr = $collManager->getPaleoGtsTerms();
+$paleoTimes = $collManager->getPaleoTimes();
+
 $collData = new CollectionMetadata();
 $siteData = new DatasetsMetadata();
 
 $catId = array_key_exists("catid",$_REQUEST)?$_REQUEST["catid"]:'';
 if($catId == '' && isset($DEFAULTCATID)) $catId = $DEFAULTCATID;
 $collList = $collManager->getFullCollectionList($catId);
-$specArr = (isset($collList['spec'])?$collList['spec']:null);
-$obsArr = (isset($collList['obs'])?$collList['obs']:null);
+$polygonList = $collManager->getSearchablePolygons();
+$specArr = (isset($collList['spec']) ? $collList['spec'] : null);
+$obsArr = (isset($collList['obs']) ? $collList['obs'] : null);
+$associationManager = new AssociationManager();
+$characters = $collManager->getCharacters();
+$relationshipTypes = $associationManager->getRelationshipTypes();
+
+$collectionFormManager = new CollectionFormManager();
+$requestSuppliedCatOrd = (array_key_exists('catOrd', $_REQUEST) && $collectionFormManager->areCollectionIdsValid($_REQUEST['catOrd'])) ? explode(',', $_REQUEST['catOrd']) : null;
+$requestSuppliedCatExpnd = (array_key_exists('catExpnd', $_REQUEST) && $collectionFormManager->areCollectionCategoriesValid($_REQUEST['catExpnd'])) ? explode(',', $_REQUEST['catExpnd']) : null;
+$requestSuppliedCatChk = (array_key_exists('catChk', $_REQUEST) && $collectionFormManager->areCollectionCategoriesValid($_REQUEST['catChk'])) ? explode(',', $_REQUEST['catChk']) : null;
+
 ?>
 <!DOCTYPE html>
 <html lang="<?php echo $LANG_TAG ?>">
@@ -37,23 +55,30 @@ $obsArr = (isset($collList['obs'])?$collList['obs']:null);
 	<title><?php echo $DEFAULT_TITLE; ?> - <?php echo $LANG['SAMPLE_SEARCH'] ?></title>
 	<link href="<?= $CSS_BASE_PATH ?>/jquery-ui.css" type="text/css" rel="stylesheet">
 	<!-- JGM: Moved these css files above head.php to allow for customizations.css to overload them -->
-	<link href="<?= $CLIENT_ROOT ?>/collections/search/css/searchStyles.css?ver=1" type="text/css" rel="stylesheet">
-	<link href="<?= $CLIENT_ROOT ?>/collections/search/css/searchStylesInner.css" type="text/css" rel="stylesheet">
-	<link href="<?= $CLIENT_ROOT ?>/collections/search/css/tables.css" type="text/css" rel="stylesheet">
+	<link href="<?= $CSS_BASE_PATH ?>/searchStyles.css?ver=1" type="text/css" rel="stylesheet">
+	<link href="<?= $CSS_BASE_PATH ?>/searchStylesInner.css" type="text/css" rel="stylesheet">
+	<link href="<?= $CSS_BASE_PATH ?>/tables.css" type="text/css" rel="stylesheet">
 	<link href="<?= $CSS_BASE_PATH ?>/symbiota/collections/sharedCollectionStyling.css" type="text/css" rel="stylesheet">
 	<?php
 	include_once($SERVER_ROOT . '/includes/head.php');
 	?>
 	<script src="<?= $CLIENT_ROOT ?>/js/jquery-3.7.1.min.js" type="text/javascript"></script>
-	<script src="<?php echo $CLIENT_ROOT . '/js/jquery-ui.min.js'; ?>" type="text/javascript"></script>
-	<script src="../../js/symb/localitySuggest.js" type="text/javascript"></script>
+	<script src="<?= $CLIENT_ROOT ?>/js/symb/mapAidUtils.js?ver=1" type="text/javascript"></script>
+	<script src="<?= $CLIENT_ROOT ?>/js/jquery-ui.min.js" type="text/javascript"></script>
+	<script src="<?= $CLIENT_ROOT ?>/js/symb/domManipulationUtils.js" type="text/javascript"></script>
+	<script src="<?= $CLIENT_ROOT ?>/js/symb/localitySuggest.js" type="text/javascript"></script>
+	<script src="<?= $CLIENT_ROOT ?>/js/symb/collections.list.js?ver=20251002>" type="text/javascript"></script>
 	<script>
 		const clientRoot = '<?php echo $CLIENT_ROOT; ?>';
+		const paleoTimes = <?= json_encode($paleoTimes ?? []) ?>;
 		const handleAccordionExpand = () => {
 			const accordions = document.querySelectorAll('input[class="accordion-selector"]');
+			const accordionIds = [];
 			accordions.forEach(accordion => {
 				accordion.checked = true;
+				accordionIds.push(accordion.id);
 			});
+			localStorage.setItem("accordionIds", accordionIds);
 
 			const expandButton = document.getElementById("expand-all-button");
 			expandButton.setAttribute('style', 'display: none;');
@@ -61,17 +86,31 @@ $obsArr = (isset($collList['obs'])?$collList['obs']:null);
 			collapseButton.removeAttribute('style', 'display: none;');
 		};
 
-		const handleAccordionCollapse = ()=>{
+		const handleAccordionCollapse = () => {
 			const accordions = document.querySelectorAll('input[class="accordion-selector"]');
 			accordions.forEach(accordion => {
-				accordion.checked=false;
-			})
-
+				accordion.checked = false;
+			});
+			localStorage.setItem("accordionIds", []);
 			const collapseButton = document.getElementById("collapse-all-button");
 			collapseButton.setAttribute('style', 'display: none;');
 			const expandButton = document.getElementById("expand-all-button");
 			expandButton.removeAttribute('style', 'display: none;');
 		};
+
+		document.addEventListener('DOMContentLoaded', () => {			
+			document.querySelectorAll('.accordion-header').forEach(accordionHeader => {
+				accordionHeader.addEventListener('keydown', (e) => {
+					if (e.key === 'Enter' || e.key === ' ') {
+						if (e.key === ' ') {
+							e.preventDefault();
+						}
+						const selector = accordionHeader.previousElementSibling;
+						selector.checked = !selector.checked;
+					}
+				});
+			});
+		});
 	</script>
 
 	<?php include_once($SERVER_ROOT . '/includes/googleanalytics.php'); ?>
@@ -81,6 +120,7 @@ $obsArr = (isset($collList['obs'])?$collList['obs']:null);
 		.bounding-box-form__header {
 			font-size: 1.3rem;
 		}
+
 		.full-width-pcnt {
 			width: 100%;
 		}
@@ -123,14 +163,13 @@ $obsArr = (isset($collList['obs'])?$collList['obs']:null);
 </head>
 
 <body>
+	<div id="service-container" data-search-var="<?= $collectionSource; ?>"></div>
 	<?php
 	include($SERVER_ROOT . '/includes/header.php');
 	?>
 	<!-- This is inner text! -->
 	<div role="main" id="innertext" class="inner-search" style="max-width: 1920px; margin-top: 20px;">
-
-
-		<h1 class="page-heading"><?php echo $LANG['SAMPLE_SEARCH'] ?></h1>
+		<h1 class="page-heading"><?php echo $LANG['SAMPLE_SEARCH'] ?> <a href="https://docs.symbiota.org/User_Guide/searching_records" target="_blank" title="<?= $LANG['HOW_TO_SEARCH'] ?>" alt="<?= $LANG['HOW_TO_SEARCH'] ?>"><img class="docimg" src="../../images/qmark.png" /></a></h1>
 		<div style="display: grid; grid-template-columns: 3fr 1fr; margin-bottom: 10px;">
 			This feature gives access to all the digitized collections housed in the Oregon State University Herbarium at Corvallis, which includes specimens originating at University of Oregon (ORE) and Willamette University (WILLU) as well as Oregon State University (OSC). Collections represented are the vascular plants, algae, bryophytes, fungi, and lichens. As part of its work to produce the Flora of Oregon in printed and digital formats, OregonFlora aligns the taxonomy of the Oregon vascular plants presented on this website with the Flora of Oregon's taxonomic framework.
 		</div>
@@ -139,7 +178,7 @@ $obsArr = (isset($collList['obs'])?$collList['obs']:null);
 			<button onClick="handleAccordionExpand()" class="inner-search button" id="expand-all-button" type="button" style="display: none; font-size: 1rem;"><?= $LANG['EXPAND_ALL_SECTIONS']; ?></button>
 			<button onClick="handleAccordionCollapse()" class="inner-search button" id="collapse-all-button" type="button" style="font-size: 1rem;"><?= $LANG['COLLAPSE_ALL_SECTIONS']; ?></button>
 		</div>
-		<form id="params-form" action="javascript:void(0);">
+		<form id="params-form" method="POST" action="<?php echo $CLIENT_ROOT . "/collections/list.php"; ?>">
 			<!-- Criteria forms -->
 			<div class="accordions">
 				<!-- Taxonomy -->
@@ -148,35 +187,38 @@ $obsArr = (isset($collList['obs'])?$collList['obs']:null);
 					<input type="checkbox" id="taxonomy" class="accordion-selector" checked />
 
 					<!-- Accordion header -->
-					<label for="taxonomy" class="accordion-header"><?php echo $LANG['TAXONOMY'] ?></label>
+					<label for="taxonomy" class="accordion-header" tabindex="0" role="button"><?php echo $LANG['TAXONOMY'] ?></label>
 
 					<!-- Taxonomy -->
-					<div id="search-form-taxonomy" class="content">
-						<div id="taxa-text" class="input-text-container">
-							<label for="taxa" class="input-text--outlined">
-								<span class="screen-reader-only"><?php echo $LANG['TAXON'] ?></span>
-								<input type="text" name="taxa" id="taxa" data-chip="<?php echo $LANG['TAXON'] ?>" />
-								<span class="inset-input-label"><?php echo $LANG['TAXON'] ?></span>
-							</label>
-							<span class="assistive-text"><?php echo $LANG['TYPE_CHAR_FOR_SUGGESTIONS'] ?></span>
-						</div>
-							<div style="padding-top:14px">
-						<div class="select-container" style="position: relative">
-							<label for="taxontype" class="screen-reader-only"><?php echo $LANG['TAXON_TYPE'] ?></label>
-							<select name="taxontype" id="taxontype" style="margin-top:0;padding-top:0; margin-bottom: 0.5rem">
-								<option id="taxontype-scientific" value="2" data-chip="<?php echo $LANG['TAXON'] . ': ' . $LANG['SCIENTIFIC_NAME'] ?>"><?php echo $LANG['SCIENTIFIC_NAME'] ?></option>
-								<option id="taxontype-family" value="3" data-chip="<?php echo $LANG['TAXON'] . ': ' . $LANG['FAMILY'] ?>"><?php echo $LANG['FAMILY'] ?></option>
-								<option id="taxontype-group" value="4" data-chip="<?php echo $LANG['TAXON'] . ': ' . $LANG['TAXONOMIC_GROUP'] ?>"><?php echo $LANG['TAXONOMIC_GROUP'] ?></option>
-								<option id="taxontype-common" value="5" data-chip="<?php echo $LANG['TAXON'] . ': ' . $LANG['COMMON_NAME'] ?>"><?php echo $LANG['COMMON_NAME'] ?></option>
-							</select>
-							<span class="inset-input-label"><?php echo $LANG['TAXON_TYPE'] ?></span>
-						</div>
+					<div class="content">
+						<div id="search-form-taxonomy">
+							<div id="taxa-text" class="input-text-container">
+								<label for="taxa" class="input-text--outlined">
+									<span class="screen-reader-only"><?php echo $LANG['TAXON'] ?></span>
+									<input type="text" name="taxa" id="taxa" data-chip="<?php echo $LANG['TAXON'] ?>" />
+									<span class="inset-input-label"><?php echo $LANG['TAXON'] ?></span>
+								</label>
 							</div>
-						<div>
-							<input type="checkbox" name="usethes" id="usethes" data-chip="<?php echo $LANG['INCLUDE_SYNONYMS'] ?>" value="1" checked />
-							<label for="usethes">
-								<span class="ml-1"><?php echo $LANG['INCLUDE_SYNONYMS'] ?></span>
-							</label>
+							<span class="assistive-text"><?php echo $LANG['TYPE_CHAR_FOR_SUGGESTIONS'] ?></span>
+							<div style="padding-top:14px">
+								<div class="select-container" style="position: relative">
+									<label for="taxontype" class="screen-reader-only"><?php echo $LANG['TAXON_TYPE'] ?></label>
+									<select name="taxontype" id="taxontype" style="margin-top:0;padding-top:0; margin-bottom: 0.5rem">
+										<option id="taxontype-scientific" value="2" data-chip="<?php echo $LANG['TAXON']?>"><?php echo $LANG['SCIENTIFIC_NAME'] ?></option>
+										<option id="taxontype-family" value="3" data-chip="<?php echo $LANG['TAXON']?>"><?php echo $LANG['FAMILY'] ?></option>
+										<option id="taxontype-group" value="4" data-chip="<?php echo $LANG['TAXON']?>"><?php echo $LANG['TAXONOMIC_GROUP'] ?></option>
+										<option id="taxontype-common" value="5" data-chip="<?php echo $LANG['TAXON']?>"><?php echo $LANG['COMMON_NAME'] ?></option>
+									</select>
+									<span class="inset-input-label"><?php echo $LANG['TAXON_TYPE'] ?></span>
+								</div>
+							</div>
+							<div>
+								<input type="checkbox" name="usethes" id="usethes" data-chip="<?php echo $LANG['INCLUDE_SYNONYMS'] ?>" value="1" checked />
+								<label for="usethes">
+									<span class="ml-1"><?php echo $LANG['INCLUDE_SYNONYMS'] ?></span>
+								</label>
+								<img src="../../images/info.png" style="width:1em; margin-left:1px;" alt="<?php echo $LANG['SYNONYM_NOTE'] ?>" title="<?php echo $LANG['SYNONYM_NOTE'] ?>" onclick="alert('<?php echo addslashes($LANG['SYNONYM_NOTE']) ?>')"/>
+							</div>
 						</div>
 					</div>
 				</section>
@@ -186,7 +228,7 @@ $obsArr = (isset($collList['obs'])?$collList['obs']:null);
 					<!-- Accordion selector -->
 					<input type="checkbox" id="locality" name="locality" class="accordion-selector" checked />
 					<!-- Accordion header -->
-					<label for="locality" class="accordion-header"><?php echo $LANG['LOCALITY'] ?></label>
+					<label for="locality" class="accordion-header" tabindex="0" role="button"><?php echo $LANG['LOCALITY'] ?></label>
 					<!-- Accordion content -->
 					<div class="content">
 						<div id="search-form-locality">
@@ -197,7 +239,6 @@ $obsArr = (isset($collList['obs'])?$collList['obs']:null);
 										<input type="text" name="country" id="country" data-chip="<?php echo $LANG['COUNTRY'] ?>" />
 										<span class="inset-input-label"><?php echo $LANG['COUNTRY'] ?></span>
 									</label>
-									<span class="assistive-text"><?php echo $LANG['SEPARATE_MULTIPLE_W_COMMA'] ?></span>
 								</div>
 								<div class="input-text-container">
 									<label for="state" class="input-text--outlined">
@@ -205,7 +246,6 @@ $obsArr = (isset($collList['obs'])?$collList['obs']:null);
 										<input type="text" name="state" id="state" data-chip="<?php echo $LANG['STATE'] ?>" />
 										<span class="inset-input-label"><?php echo $LANG['STATE'] ?></span>
 									</label>
-									<span class="assistive-text"><?php echo $LANG['SEPARATE_MULTIPLE_W_COMMA'] ?></span>
 								</div>
 								<div class="input-text-container">
 									<label for="county" class="input-text--outlined">
@@ -213,17 +253,15 @@ $obsArr = (isset($collList['obs'])?$collList['obs']:null);
 										<input type="text" name="county" id="county" data-chip="<?php echo $LANG['COUNTY'] ?>" />
 										<span class="inset-input-label"><?php echo $LANG['COUNTY'] ?></span>
 									</label>
-									<span class="assistive-text"><?php echo $LANG['SEPARATE_MULTIPLE_W_COMMA'] ?></span>
 								</div>
 							</div>
-<div>
+							<div>
 								<div class="input-text-container">
 									<label for="local" class="input-text--outlined">
 										<span class="screen-reader-only"><?php echo $LANG['LOCALITY_LOCALITIES'] ?></span>
-										 <input type="text" name="local" id="local" data-chip="<?php echo $LANG['LOCALITY'] ?>" />
+										<input type="text" name="local" id="local" data-chip="<?php echo $LANG['LOCALITY'] ?>" />
 										<span class="inset-input-label"><?php echo $LANG['LOCALITY_LOCALITIES'] ?></span>
 									</label>
-									<span class="assistive-text"><?php echo $LANG['SEPARATE_MULTIPLE_W_COMMA'] ?></span>
 								</div>
 								<div class="grid grid--half">
 									<div class="input-text-container">
@@ -232,7 +270,6 @@ $obsArr = (isset($collList['obs'])?$collList['obs']:null);
 											<input type="number" step="any" name="elevlow" id="elevlow" data-chip="<?php echo $LANG['MIN_ELEVATION'] ?>" />
 											<span class="inset-input-label"><?php echo $LANG['MINIMUM_ELEVATION'] ?></span>
 										</label>
-										<span class="assistive-text"><?php echo $LANG['NUMBER_IN_METERS'] ?></span>
 									</div>
 									<div class="input-text-container">
 										<label for="elevhigh" class="input-text--outlined">
@@ -240,10 +277,25 @@ $obsArr = (isset($collList['obs'])?$collList['obs']:null);
 											<input type="number" step="any" name="elevhigh" id="elevhigh" data-chip="<?php echo $LANG['MAX_ELEVATION'] ?>" />
 											<span class="inset-input-label"><?php echo $LANG['MAXIMUM_ELEVATION'] ?></span>
 										</label>
-										<span class="assistive-text"><?php echo $LANG['NUMBER_IN_METERS'] ?></span>
 									</div>
 								</div>
 							</div>
+							<?php if (!empty($polygonList)): ?>
+							<div class="input-text-container">
+								<label for="polygons" class="input-text--outlined">
+									<span class="screen-reader-only"><?php echo $LANG['POLYGONS'] ?></span>
+									<select style="padding: 0.5rem;" name="polygons[]" id="polygons" data-chip="<?php echo $LANG['POLYGONS'] ?>"> {{/*  add 'multiple' to allow several polygons  */}}
+										<option value=""></option>
+										<?php
+										foreach($polygonList as $row){
+											echo '<option value="'.$row['geoThesID'].'" data-chip="'.$LANG['POLYGONS'].'">'.htmlspecialchars($row['geoterm']).'</option>';
+										}
+										?>
+									</select>
+									<span class="inset-input-label"><?php echo $LANG['POLYGONS'] ?></span>
+								</label>
+							</div>
+							<?php endif; ?>
 						</div>
 					</div>
 				</section>
@@ -253,124 +305,120 @@ $obsArr = (isset($collList['obs'])?$collList['obs']:null);
 					<!-- Accordion selector -->
 					<input type="checkbox" id="lat-long" class="accordion-selector" />
 					<!-- Accordion header -->
-					<label for="lat-long" class="accordion-header"><?php echo $LANG['LATITUDE_LONGITUDE'] ?></label>
+					<label for="lat-long" class="accordion-header" tabindex="0" role="button"><?php echo $LANG['LATITUDE_LONGITUDE'] ?></label>
 					<!-- Accordion content -->
 					<div class="content">
+						<p class="assistive-text"><?= $LANG['LAT_LONG_SEARCH_EXPLAIN'] ?></p>
 						<div id="search-form-latlong">
 							<div id="bounding-box-form">
 								<h1 class="bounding-box-form__header"><?php echo $LANG['BOUNDING_BOX'] ?></h1>
-
-								<button type="button" onclick="openCoordAid('rectangle');"><?php echo $LANG['SELECT_IN_MAP'] ?></button>
+								<button type="button" onclick="openCoordAid({map_mode: MAP_MODES.RECTANGLE, client_root: '<?= $CLIENT_ROOT ?>'});return false;"><?php echo $LANG['SELECT_IN_MAP'] ?></button>
 								<div class="input-text-container">
-										<label for="upperlat" class="input-text--outlined">
-											<span class="screen-reader-only"><?php echo $LANG['NORTHERN_LATITUDE'] ?></span>
-											<input type="number" step="any" min="-90" max="90" id="upperlat" name="upperlat" data-chip="<?php echo $LANG['UPPER_LAT'] ?>" />
-											<span class="inset-input-label"><?php echo $LANG['NORTHERN_LATITUDE'] ?></span>
-											<span class="assistive-text"><?php echo $LANG['VALUE_BETWEEN_NUM'] ?></span>
-										</label>
+									<label for="upperlat" class="input-text--outlined">
+										<span class="screen-reader-only"><?php echo $LANG['NORTHERN_LATITUDE'] ?></span>
+										<input type="number" step="any" min="0" max="90" id="upperlat" name="upperlat" data-chip="<?php echo $LANG['UPPER_LAT'] ?>" />
+										<span class="inset-input-label"><?php echo $LANG['NORTHERN_LATITUDE'] ?></span>
+										<span class="assistive-text"><?php echo $LANG['VALUE_BETWEEN_NUM'] ?></span>
+									</label>
 
-										<label for="upperlat_NS" class="input-text--outlined">
-											<span class="screen-reader-only"><?php echo $LANG['SELECT_UPPER_LAT_DIRECTION_NORTH_SOUTH'] ?></span>
-											<select class="mt-1" id="upperlat_NS" name="upperlat_NS">
-												<option value=""><?php echo $LANG['SELECT_NORTH_SOUTH'] ?></option>
-												<option id="ulN" value="N"><?php echo $LANG['NORTH'] ?></option>
-												<option id="ulS" value="S"><?php echo $LANG['SOUTH'] ?></option>
-											</select>
-										</label>
+									<label for="upperlat_NS" class="input-text--outlined">
+										<span class="screen-reader-only"><?php echo $LANG['SELECT_UPPER_LAT_DIRECTION_NORTH_SOUTH'] ?></span>
+										<select class="mt-1" id="upperlat_NS" name="upperlat_NS">
+											<option value=""><?php echo $LANG['SELECT_NORTH_SOUTH'] ?></option>
+											<option id="ulN" value="N" data-chip="<?php echo $LANG['UPPER_HEMI'] ?>"><?php echo $LANG['NORTH'] ?></option>
+											<option id="ulS" value="S" data-chip="<?php echo $LANG['UPPER_HEMI'] ?>"><?php echo $LANG['SOUTH'] ?></option>
+										</select>
+									</label>
 								</div>
 								<div class="input-text-container">
 									<label for="bottomlat" class="input-text--outlined">
 										<span class="screen-reader-only"><?php echo $LANG['SOUTHERN_LATITUDE'] ?></span>
-										<input type="number" step="any" min="-90" max="90" id="bottomlat" name="bottomlat" data-chip="<?php echo $LANG['BOTTOM_LAT'] ?>" />
+										<input type="number" step="any" min="0" max="90" id="bottomlat" name="bottomlat" data-chip="<?php echo $LANG['BOTTOM_LAT'] ?>" />
 										<span class="inset-input-label"><?php echo $LANG['SOUTHERN_LATITUDE'] ?></span>
-										<span class="assistive-text"><?php echo $LANG['VALUE_BETWEEN_NUM'] ?></span>
 									</label>
 									<label for="bottomlat_NS">
 										<span class="screen-reader-only"><?php echo $LANG['SELECT_BOTTOM_LAT_DIREC_NORTH_SOUTH'] ?></span>
 										<select class="mt-1" id="bottomlat_NS" name="bottomlat_NS">
 											<option value=""><?php echo $LANG['SELECT_NORTH_SOUTH'] ?></option>
-											<option id="blN" value="N"><?php echo $LANG['NORTH'] ?></option>
-											<option id="blS" value="S"><?php echo $LANG['SOUTH'] ?></option>
+											<option id="blN" value="N" data-chip="<?php echo $LANG['BOTTOM_HEMI'] ?>"><?php echo $LANG['NORTH'] ?></option>
+											<option id="blS" value="S" data-chip="<?php echo $LANG['BOTTOM_HEMI'] ?>"><?php echo $LANG['SOUTH'] ?></option>
 										</select>
 									</label>
 								</div>
 								<div class="input-text-container">
 									<label for="leftlong" class="input-text--outlined">
 										<span class="screen-reader-only"><?php echo $LANG['LEFT_LONGITUDE'] ?></span>
-										<input type="number" step="any" min="-180" max="180" id="leftlong" name="leftlong" data-chip="<?php echo $LANG['LEFT_LONG'] ?>" />
+										<input type="number" step="any" min="0" max="180" id="leftlong" name="leftlong" data-chip="<?php echo $LANG['LEFT_LONG'] ?>" />
 										<span class="inset-input-label"><?php echo $LANG['WESTERN_LONGITUDE'] ?></span>
-										<span class="assistive-text"><?php echo $LANG['VALUES_BETWEEN_NEG180_TO_180'] ?></span>
+										<span class="assistive-text"><?php echo $LANG['VALUES_BETWEEN_0_TO_180'] ?></span>
 									</label>
 									<label for="leftlong_EW" class="input-text--outlined">
 										<span class="screen-reader-only"><?php echo $LANG['SELECT_LEFT_LONG_DIREC_WEST_EAST'] ?></span>
 										<select class="mt-1" id="leftlong_EW" name="leftlong_EW">
 											<option value=""><?php echo $LANG['SELECT_WEST_EAST'] ?></option>
-											<option id="llW" value="W"><?php echo $LANG['WEST'] ?></option>
-											<option id="llE" value="E"><?php echo $LANG['EAST'] ?></option>
+											<option id="llW" value="W" data-chip="<?php echo $LANG['LEFT_HEMI'] ?>"><?php echo $LANG['WEST'] ?></option>
+											<option id="llE" value="E" data-chip="<?php echo $LANG['LEFT_HEMI'] ?>"><?php echo $LANG['EAST'] ?></option>
 										</select>
 									</label>
 								</div>
 								<div class="input-text-container">
 									<label for="rightlong" class="input-text--outlined">
 										<span class="screen-reader-only"><?php echo $LANG['RIGHT_LONGITUDE'] ?></span>
-										<input type="number" step="any" min="-180" max="180" id="rightlong" name="rightlong" data-chip="<?php echo $LANG['RIGHT_LONG'] ?>" />
+										<input type="number" step="any" min="0" max="180" id="rightlong" name="rightlong" data-chip="<?php echo $LANG['RIGHT_LONG'] ?>" />
 										<span class="inset-input-label"><?php echo $LANG['EASTERN_LONGITUDE'] ?></span>
-										<span class="assistive-text"><?php echo $LANG['VALUES_BETWEEN_NEG180_TO_180'] ?></span>
 									</label>
-										<label for="rightlong_EW" class="input-text--outlined">
-											<span class="screen-reader-only"><?php echo $LANG['SELECT_RIGHT_LONG_DIREC_WEST_EAST'] ?></span>
-											<select class="mt-1" id="rightlong_EW" name="rightlong_EW">
-												<option value=""><?php echo $LANG['SELECT_WEST_EAST'] ?></option>
-												<option id="rlW" value="W"><?php echo $LANG['WEST'] ?></option>
-												<option id="rlE" value="E"><?php echo $LANG['EAST'] ?></option>
-											</select>
-										</label>
+									<label for="rightlong_EW" class="input-text--outlined">
+										<span class="screen-reader-only"><?php echo $LANG['SELECT_RIGHT_LONG_DIREC_WEST_EAST'] ?></span>
+										<select class="mt-1" id="rightlong_EW" name="rightlong_EW">
+											<option value=""><?php echo $LANG['SELECT_WEST_EAST'] ?></option>
+											<option id="rlW" value="W" data-chip="<?php echo $LANG['RIGHT_HEMI'] ?>"><?php echo $LANG['WEST'] ?></option>
+											<option id="rlE" value="E" data-chip="<?php echo $LANG['RIGHT_HEMI'] ?>"><?php echo $LANG['EAST'] ?></option>
+										</select>
+									</label>
 								</div>
 							</div>
 							<div id="polygon-form">
-								<h1 class="bounding-box-form__header"><?php echo $LANG['POLYGON_WKT_FOOTPRINT'] ?></h1>
-								<button type="button" onclick="openCoordAid('polygon')"><?php echo $LANG['SELECT_MAP_POLYGON'] ?></button>
+								<h1 class="bounding-box-form__header"><?php echo $LANG['POLYGON'] ?></h1>
+								<button type="button" onclick="openCoordAid({map_mode: MAP_MODES.POLYGON, polygon_text_type: POLYGON_TEXT_TYPES.GEOJSON, client_root: '<?= $CLIENT_ROOT ?>'});return false;"><?php echo $LANG['SELECT_MAP_POLYGON'] ?></button>
 								<div class="text-area-container">
 									<label for="footprintwkt" class="text-area--outlined">
 										<span class="screen-reader-only"><?php echo $LANG['POLYGON'] ?></span>
-										<textarea id="footprintwkt" name="footprintwkt" class="full-width-pcnt" rows="5"></textarea>
+										<textarea id="footprintwkt" name="footprintGeoJson" class="full-width-pcnt" rows="5" onchange="cleanPolygon(this)"></textarea>
 										<span class="inset-input-label"><?php echo $LANG['POLYGON'] ?></span>
+										<span class="assistive-text"><?= $LANG['GEOJSON_FORMAT'] ?></span>
 									</label>
-									<span class="assistive-text"><?php echo $LANG['SELECT_MAP_BUTTON_PASTE'] ?></span>
 								</div>
 							</div>
 							<div id="point-radius-form">
 								<h1 class="bounding-box-form__header"><?php echo $LANG['POINT_RADIUS'] ?></h1>
-								<button type="button" onclick="openCoordAid('circle');"><?php echo $LANG['SELECT_MAP_PR'] ?></button>
+								<button type="button" onclick="openCoordAid({map_mode: MAP_MODES.CIRCLE, client_root: '<?= $CLIENT_ROOT ?>'});return false;"><?php echo $LANG['SELECT_MAP_PR'] ?></button>
 								<div class="input-text-container">
 									<label for="pointlat" class="input-text--outlined">
 										<span class="screen-reader-only"><?php echo $LANG['POINT_LATITUDE'] ?></span>
-										<input type="number" step="any" min="-90" max="90" id="pointlat" name="pointlat" data-chip="<?php echo $LANG['POINT_LAT'] ?>" />
+										<input type="number" step="any" min="0" max="90" id="pointlat" name="pointlat" data-chip="<?php echo $LANG['POINT_LAT'] ?>" />
 										<span class="inset-input-label"><?php echo $LANG['LATITUDE'] ?></span>
-										<span class="assistive-text"><?php echo $LANG['VALUE_BETWEEN_NUM'] ?></span>
 									</label>
 									<label for="pointlat_NS" class="input-text--outlined">
 										<span class="screen-reader-only"><?php echo $LANG['POINT_LAT_DIREC_NORTH_SOUTH'] ?></span>
 										<select class="mt-1" id="pointlat_NS" name="pointlat_NS">
 											<option value=""><?php echo $LANG['SELECT_NORTH_SOUTH'] ?></option>
-											<option id="N" value="N"><?php echo $LANG['NORTH'] ?></option>
-											<option id="S" value="S"><?php echo $LANG['SOUTH'] ?></option>
+											<option id="N" value="N" data-chip="<?php echo $LANG['POINT_LAT_HEMI'] ?>"><?php echo $LANG['NORTH'] ?></option>
+											<option id="S" value="S" data-chip="<?php echo $LANG['POINT_LAT_HEMI'] ?>"><?php echo $LANG['SOUTH'] ?></option>
 										</select>
 									</label>
 								</div>
 								<div class="input-text-container">
 									<label for="pointlong" class="input-text--outlined">
 										<span class="screen-reader-only"><?php echo $LANG['POINT_LONGITUDE'] ?></span>
-										<input type="number" step="any" min="-180" max="180" id="pointlong" name="pointlong" data-chip="<?php echo $LANG['POINT_LONG'] ?>" />
+										<input type="number" step="any" min="0" max="180" id="pointlong" name="pointlong" data-chip="<?php echo $LANG['POINT_LONG'] ?>" />
 										<span class="inset-input-label"><?php echo $LANG['LONGITUDE'] ?></span>
-										<span class="assistive-text"><?php echo $LANG['VALUES_BETWEEN_NEG180_TO_180'] ?></span>
 									</label>
 									<label for="pointlong_EW" class="input-text--outlined">
 										<span class="screen-reader-only"><?php echo $LANG['POINT_LONGITUDE_DIREC_EAST_WEST'] ?></span>
 										<select class="mt-1" id="pointlong_EW" name="pointlong_EW">
 											<option value=""><?php echo $LANG['SELECT_WEST_EAST'] ?></option>
-											<option id="W" value="W"><?php echo $LANG['WEST'] ?></option>
-											<option id="E" value="E"><?php echo $LANG['EAST'] ?></option>
+											<option id="W" value="W" data-chip="<?php echo $LANG['POINT_LONG_HEMI'] ?>"><?php echo $LANG['WEST'] ?></option>
+											<option id="E" value="E" data-chip="<?php echo $LANG['POINT_LONG_HEMI'] ?>"><?php echo $LANG['EAST'] ?></option>
 										</select>
 									</label>
 								</div>
@@ -379,7 +427,6 @@ $obsArr = (isset($collList['obs'])?$collList['obs']:null);
 										<span class="screen-reader-only"><?php echo $LANG['RADIUS'] ?></span>
 										<input type="number" min="0" step="any" id="radius" name="radius" data-chip="<?php echo $LANG['RADIUS'] ?>" />
 										<span class="inset-input-label"><?php echo $LANG['RADIUS'] ?></span>
-										<span class="assistive-text"><?php echo $LANG['ANY_POSITIVE_VALUES'] ?></span>
 									</label>
 									<label for="radiusunits" class="input-text--outlined">
 										<span class="screen-reader-only"><?php echo $LANG['SELECT_RADIUS_UNITS'] ?></span>
@@ -400,38 +447,38 @@ $obsArr = (isset($collList['obs'])?$collList['obs']:null);
 					<!-- Accordion selector -->
 					<input type="checkbox" id="coll-event" class="accordion-selector" checked />
 					<!-- Accordion header -->
-					<label for="coll-event" class="accordion-header"><?php echo $LANG['COLLECTING_EVENT'] ?></label>
+					<label for="coll-event" class="accordion-header" tabindex="0" role="button"><?php echo $LANG['COLLECTING_EVENT'] ?></label>
 					<!-- Accordion content -->
 					<div class="content">
 						<div id="search-form-coll-event">
 							<div class="input-text-container">
 								<label for="eventdate1" class="input-text--outlined">
 									<span class="screen-reader-only"><?php echo $LANG['COLLECTION_START_DATE'] ?></span>
-									<input type="text" name="eventdate1" id="eventdate1" data-chip="<?php echo $LANG['EVENT_DATE_START'] ?>" />
+									<input type="text" name="eventdate1" id="eventdate1" placeholder="<?= $LANG['DATE_FORMAT'] ?>" data-chip="<?php echo $LANG['EVENT_DATE_START'] ?>" />
 									<span class="inset-input-label"><?php echo $LANG['COLLECTION_START_DATE'] ?></span>
 								</label>
-								<span class="assistive-text"><?php echo $LANG['SINGLE_DATE_START_DATE'] ?></span>
 							</div>
 							<div class="input-text-container">
 								<label for="eventdate2" class="input-text--outlined">
 									<span class="screen-reader-only"><?php echo $LANG['COLLECTION_END_DATE'] ?></span>
-									<input type="text" name="eventdate2" id="eventdate2" data-chip="<?php echo $LANG['EVENT_DATE_END'] ?>" />
+									<input type="text" name="eventdate2" id="eventdate2" placeholder="<?= $LANG['DATE_FORMAT'] ?>" data-chip="<?php echo $LANG['EVENT_DATE_END'] ?>" />
 									<span class="inset-input-label"><?php echo $LANG['COLLECTION_END_DATE'] ?></span>
 								</label>
-								<span class="assistive-text"><?php echo $LANG['SINGLE_DATE_END_DATE'] ?></span>
 							</div>
 							<div class="input-text-container">
 								<label for="collector" class="input-text--outlined">
-									<span class="screen-reader-only"><?php echo $LANG['COLLECTOR_LAST_NAME'] ?></span>
-									<input type="text" id="collector" size="32" name="collector" value="" title="<?php echo $LANG['SEPARATE_MULTIPLE']; ?>" data-chip="<?php echo $LANG['COLLECTOR_LAST'] ?>" />
-									<span class="inset-input-label"><?php echo $LANG['COLLECTOR_LASTNAME']; ?>:</span>
+									<span class="screen-reader-only"><?php echo $LANG['COLLECTOR_NAME'] ?></span>
+									<input type="text" id="collector" size="32" name="collector" value="" data-chip="<?php echo $LANG['COLLECTOR_NAME'] ?>" />
+									<span class="inset-input-label"><?php echo $LANG['COLLECTOR_NAME']; ?></span>
+									<span class="assistive-text"><?= $LANG['SEPARATE_MULTIPLE'] ?></span>
 								</label>
 							</div>
 							<div class="input-text-container">
 								<label for="collnum" class="input-text--outlined">
 									<span class="screen-reader-only"><?php echo $LANG['COLLECTOR_NUMBER_'] ?></span>
-									<input type="text" id="collnum" size="31" name="collnum" value="" title="<?php echo htmlspecialchars($LANG['TITLE_TEXT_2'], ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE); ?>" data-chip="<?php echo $LANG['COLLECTOR_NUMBER'] ?>" />
-									<span class="inset-input-label"><?php echo $LANG['COLLECTOR_NUMBER']; ?>:</span>
+									<input type="text" id="collnum" size="31" name="collnum" value="" data-chip="<?php echo $LANG['COLLECTOR_NUMBER'] ?>" />
+									<span class="inset-input-label"><?php echo $LANG['COLLECTOR_NUMBER']; ?></span>
+									<span class="assistive-text"><?= htmlspecialchars($LANG['TITLE_TEXT_2'], ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE); ?></span>
 								</label>
 							</div>
 						</div>
@@ -443,7 +490,7 @@ $obsArr = (isset($collList['obs'])?$collList['obs']:null);
 					<!-- Accordion selector -->
 					<input type="checkbox" id="sample" class="accordion-selector" checked />
 					<!-- Accordion header -->
-					<label for="sample" class="accordion-header"><?php echo $LANG['SAMPLE_PROPERTIES'] ?></label>
+					<label for="sample" class="accordion-header" tabindex="0" role="button"><?php echo $LANG['SAMPLE_PROPERTIES'] ?></label>
 					<!-- Accordion content -->
 					<div class="content">
 						<div id="search-form-sample">
@@ -467,8 +514,12 @@ $obsArr = (isset($collList['obs'])?$collList['obs']:null);
 									<label for="typestatus"><?php echo $LANG['TYPE'] ?></label>
 								</div>
 								<div>
-									<input type="checkbox" name="hasimages" id="hasimages" value=1 data-chip="<?php echo $LANG['ONLY_WITH_IMAGES'] ?>" />
+									<input type="checkbox" name="hasimages" id="hasimages" value='1' data-chip="<?php echo $LANG['ONLY_WITH_IMAGES'] ?>" />
 									<label for="hasimages"><?php echo $LANG['LIMIT_TO_SPECIMENS_W_IMAGES'] ?></label>
+								</div>
+								<div>
+									<input type="checkbox" name="hasaudio" id="hasaudio" value='1' data-chip="<?php echo $LANG['ONLY_WITH_AUDIO'] ?>" />
+									<label for="hasaudio"><?php echo $LANG['LIMIT_TO_SPECIMENS_W_AUDIO'] ?></label>
 								</div>
 								<div>
 									<input type="checkbox" name="hasgenetic" id="hasgenetic" value=1 data-chip="<?php echo $LANG['ONLY_WITH_GENETIC'] ?>" />
@@ -479,32 +530,32 @@ $obsArr = (isset($collList['obs'])?$collList['obs']:null);
 									<label for="hascoords"><?php echo $LANG['HAS_COORDS'] ?></label>
 								</div>
 								<div>
-									<input type='checkbox' name='includecult' id='includecult' value='1' data-chip="<?php echo $LANG['INCLUDE_CULTIVATED'] ?>" <?php echo $SHOULD_INCLUDE_CULTIVATED_AS_DEFAULT ? 'checked' : '' ?> />
+									<input type='checkbox' name='includecult' id='includecult' value='1' data-chip="<?php echo $LANG['INCLUDE_CULTIVATED'] ?>" <?= !empty($SHOULD_INCLUDE_CULTIVATED_AS_DEFAULT) ? 'checked' : '' ?> />
 									<label for="includecult"><?php echo $LANG['INCLUDE_CULTIVATED'] ?></label>
 								</div>
 							<?php if ($ENABLE_INAT_SEARCH) { /* Show option to exclude iNat observations */ ?>
 								<div>
 									<input type='checkbox' name='excludeinat' id='excludeinat' value='1' data-chip="Exclude iNaturalist Observations" />
-									<label for="includecult">Exclude iNaturalist Observations</label>
+									<label for="excludeinat">Exclude iNaturalist Observations</label>
 								</div>
 							<?php } ?>
 							</div>
 							<?php
-								if($matSampleTypeArr = $collManager->getMaterialSampleTypeArr()){
-								?>
+							if ($matSampleTypeArr = $collManager->getMaterialSampleTypeArr()) {
+							?>
 								<div class="select-container">
 									<label for="materialsampletype"><?= $LANG['MATERIAL_SAMPLE_TYPE'] ?></label>
 									<select name="materialsampletype" id="materialsampletype">
 										<option id="materialsampletype-none" data-chip="<?php echo $LANG['MATERIAL_SAMPLE'] . ': ---' ?>" value="">---------------</option>
-										<option id="materialsampletype-all-ms" data-chip="<?php echo $LANG['MATERIAL_SAMPLE'] . ': ' . $LANG['ALL_MATERIAL_SAMPLE'] ?>" value="all-ms"><?= $LANG['ALL_MATERIAL_SAMPLE'] ?></option>
+										<option id="materialsampletype-all-ms" data-chip="<?php echo $LANG['MATERIAL_SAMPLE']?>" value="all-ms"><?= $LANG['ALL_MATERIAL_SAMPLE'] ?></option>
 										<?php
-										foreach($matSampleTypeArr as $matSampeType){
-											echo '<option id="materialsampletype-' . $matSampeType . '" data-chip="' . $LANG['MATERIAL_SAMPLE'] . ': ' . $matSampeType . '" value="' . $matSampeType . '">' . $matSampeType . '</option>';
+										foreach ($matSampleTypeArr as $matSampeType) {
+											echo '<option id="materialsampletype-' . $matSampeType . '" data-chip="' . $LANG['MATERIAL_SAMPLE'] . '" value="' . $matSampeType . '">' . $matSampeType . '</option>';
 										}
 										?>
 									</select>
 								</div>
-								<?php
+							<?php
 							}
 							?>
 						</div>
@@ -513,64 +564,279 @@ $obsArr = (isset($collList['obs'])?$collList['obs']:null);
 
 				<!-- Traits -->
 				<?php
-					if(!empty($SEARCH_BY_TRAITS)) {
-						$attribSearch = new OccurrenceAttributeSearch();
-						$traitArr = $attribSearch->getTraitSearchArr($SEARCH_BY_TRAITS);
-						if($traitArr){
-							?>
-							<section>
-								<!-- Accordion selector -->
-								<input type="checkbox" id="trait" class="accordion-selector" checked />
-								<!-- Accordion header -->
-								<label for="trait" class="accordion-header"><?php echo $LANG['TRAIT_CRITERIA'] ?></label>
-								<!-- Accordion content -->
-								<div class="content">
-									<div id="search-form-trait">
+				if (!empty($SEARCH_BY_TRAITS)) {
+					$attribSearch = new OccurrenceAttributeSearch();
+					$traitArr = $attribSearch->getTraitSearchArr($SEARCH_BY_TRAITS);
+					if ($traitArr) {
+				?>
+						<section>
+							<!-- Accordion selector -->
+							<input type="checkbox" id="trait" class="accordion-selector" checked />
+							<!-- Accordion header -->
+							<label for="trait" class="accordion-header" tabindex="0" role="button"><?php echo $LANG['TRAIT_CRITERIA'] ?> <a href="https://docs.symbiota.org/User_Guide/traits" target="_blank" title="<?= $LANG['MORE_INFO'] ?>" alt="<?= $LANG['MORE_INFO'] ?>"><img class="docimg" src="../../images/qmark.png" /></a></label>
+							<!-- Accordion content -->
+							<div class="content">
+								<div id="search-form-trait">
+									<div>
 										<div>
 											<div>
-												<div>
-													<div class="bottom-breathing-room-rel"><?php echo $LANG['TRAIT_DESCRIPTION']; ?></div>
-													<input type="hidden" id="SearchByTraits" value="true" />
-												</div>
-												<?php
-												foreach($traitArr as $traitID => $traitData){
-													if(!isset($traitData['dependentTrait'])) {
-														?>
-														<fieldset class="bottom-breathing-room-rel">
-															<legend><?= $LANG['TRAIT']; ?>: <?php echo $traitData['name']; ?></legend>
-															<div>
-															</div>
-															<div class="traitDiv">
-																<?php $attribSearch->echoTraitSearchForm($traitID); ?>
-															</div>
-														</fieldset>
-														<?php
-														}
-													}
-												?>
+												<div class="bottom-breathing-room-rel"><?php echo $LANG['TRAIT_DESCRIPTION']; ?></div>
+												<input type="hidden" id="SearchByTraits" value="true" />
 											</div>
+											<?php
+											foreach ($traitArr as $traitID => $traitData) {
+												if (!isset($traitData['dependentTrait'])) {
+											?>
+													<fieldset class="bottom-breathing-room-rel">
+														<legend><?= $LANG['TRAIT']; ?>: <?php echo $traitData['name']; ?></legend>
+														<div>
+														</div>
+														<div class="traitDiv">
+															<?php $attribSearch->echoTraitSearchForm($traitID); ?>
+														</div>
+													</fieldset>
+											<?php
+												}
+											}
+											?>
 										</div>
 									</div>
 								</div>
-							</section>
-							<?php
-						}
+							</div>
+						</section>
+				<?php
 					}
+				}
 				?>
+
+				<!-- Associations -->
+				<section>
+					<!-- Accordion selector -->
+					<input type="checkbox" id="associations" class="accordion-selector" />
+
+					<!-- Accordion header -->
+					<label for="associations" class="accordion-header" tabindex="0" role="button"><?php echo $LANG['ASSOCIATIONS'] ?> <a href="https://docs.symbiota.org/User_Guide/associations" target="_blank" title="<?= $LANG['MORE_INFO'] ?>" alt="<?= $LANG['MORE_INFO'] ?>"><img class="docimg" src="../../images/qmark.png" /></a></label>
+
+					<!-- Taxonomy -->
+					<div id="search-form-associations" class="content">
+						<div>
+							<p><?= $LANG['ASSOCIATION_DESCRIPTION']; ?>: </p>
+						</div>
+						<div style="padding-top:14px;">
+							<div class="select-container" style="margin-left: 1rem; position: relative; width: 40vw;">
+								<label for="association-type" class="screen-reader-only"><?php echo $LANG['ASSOCIATION_TYPE'] ?></label>
+								<select name="association-type" id="association-type" style="margin-top:0;padding-top:0; margin-bottom: 0.5rem">
+									<option id="association-type-none" value="none" data-chip="<?php echo $LANG['ASSOCIATIONS']?>">Not Specified</option>
+									<option id="association-type-any" value="any" data-chip="<?php echo $LANG['ASSOCIATIONS'] . '' ?>">Any</option>
+									<?php
+									$relationshipTypes = $associationManager->getRelationshipTypes();
+									foreach ($relationshipTypes as $relationshipKey => $relationshipType) {
+									?>
+										<option id="association-type-<?php echo $relationshipKey . '-' . $relationshipType ?>" value="<?php echo $relationshipType ?>" data-chip="<?php echo $LANG['ASSOCIATIONS']?>"><?php echo $relationshipType; ?></option>
+									<?php
+									}
+									?>
+								</select>
+								<span class="inset-input-label"><?php echo $LANG['ASSOCIATION_TYPE'] ?></span>
+							</div>
+						</div>
+						<div>
+							<p><?= $LANG['ASSOCIATION_DESCRIPTION_2']; ?>: </p>
+						</div>
+						<div style="display: flex;">
+							<div id="associated-taxa-text" class="input-text-container" style="margin-left: 1rem; margin-right: 1rem; width: 40vw;">
+								<label for="associated-taxa" class="input-text--outlined">
+									<span class="screen-reader-only"><?php echo $LANG['TAXON'] ?></span>
+									<input type="text" name="associated-taxa" id="associated-taxa" data-chip="<?php echo $LANG['ASSOCIATIONS'] . "-" . $LANG['TAXON']?>" />
+									<span class="inset-input-label"><?php echo $LANG['TAXON'] ?></span>
+								</label>
+							</div>
+							<div style="padding-top:14px">
+								<div class="select-container" style="position: relative; width: 13vw;">
+									<label for="taxontype-association" class="screen-reader-only"><?php echo $LANG['TAXON_TYPE'] ?></label>
+									<select name="taxontype-association" id="taxontype-association" style="margin-top:0;padding-top:0; margin-bottom: 0.5rem">
+										<option id="taxontype-association-scientific" value="2" data-chip="<?php echo $LANG['ASSOCIATIONS'] . '-' . $LANG['TAXON_TYPE']?>"><?php echo $LANG['SCIENTIFIC_NAME'] ?></option>
+										<option id="taxontype-association-family" value="3" data-chip="<?php echo $LANG['ASSOCIATIONS'] . '-' . $LANG['TAXON_TYPE']?>"><?php echo $LANG['FAMILY'] ?></option>
+										<option id="taxontype-association-group" value="4" data-chip="<?php echo $LANG['ASSOCIATIONS'] . '-' . $LANG['TAXON_TYPE']?>"><?php echo $LANG['TAXONOMIC_GROUP'] ?></option>
+										<option id="taxontype-association-common" value="5" data-chip="<?php echo $LANG['ASSOCIATIONS'] . '-' . $LANG['TAXON_TYPE']?>"><?php echo $LANG['COMMON_NAME'] ?></option>
+									</select>
+									<span class="inset-input-label"><?php echo $LANG['TAXON_TYPE'] ?></span>
+								</div>
+							</div>
+						</div>
+
+						<div>
+							<input type="checkbox" name="usethes-associations" id="usethes-associations" data-chip="<?php echo $LANG['ASSOCIATIONS'] . '-' . $LANG['INCLUDE_SYNONYMS'] ?>" value="1" checked />
+							<label for="usethes-associations">
+								<span class="ml-1"><?php echo $LANG['ASSOCIATIONS'] . '-' . $LANG['INCLUDE_SYNONYMS'] ?></span>
+							</label>
+						</div>
+					</div>
+				</section>
+
+				<!-- Character Search -->
+				<?php if (!empty($characters)): ?>
+				<section>
+					<!-- Character selector -->
+					<input type="checkbox" id="characters" class="accordion-selector" />
+
+					<!-- Character header -->
+					<label for="characters" class="accordion-header" tabindex="0" role="button"><?php echo $LANG['CHARACTERS'] ?> <a href="https://docs.symbiota.org/User_Guide/searching_records/#taxon-character-criteria" target="_blank" title="<?= $LANG['MORE_INFO'] ?>" alt="<?= $LANG['MORE_INFO'] ?>"><img class="docimg" src="../../images/qmark.png" /></a></label>
+
+					<div id="search-form-characters" class="content">
+						<div>
+							<?php if (!empty($characters)): ?>
+								<div><?= $LANG['CHARACTER_NOTE'] ?><br></br></div>
+								<?php
+								$grouped = [];
+								foreach ($characters as $cid => $char) {
+									$heading = $char['heading'] ?: 'Other';
+									$grouped[$heading][$cid] = $char;
+								}
+								?>
+
+								<?php foreach ($grouped as $heading => $charGroup): ?>
+									<?php
+										$idStr = preg_replace('/[^a-zA-Z0-9]+/', '-', strtolower($heading));
+									?>
+
+									<div class="char-headings">
+										<a href="#" onclick="toggleCharacterGroup('<?php echo $idStr; ?>'); return false;" class="condense-expand">
+											<span class="heading-text"><?php echo htmlspecialchars($heading); ?></span>
+											<span class="icon-wrapper">
+												<img id="plus-<?php echo $idStr; ?>" src="../../images/plus.png" alt="Expand" style="display:none; width:1em;">
+												<img id="minus-<?php echo $idStr; ?>" src="../../images/minus.png" alt="Collapse" style="display:inline; width:1em;">
+											</span>
+										</a>
+									</div>
+
+									<div id="char-block-<?php echo $idStr; ?>" style="display:block;">
+									<?php foreach ($charGroup as $cid => $char): ?>
+										<div class="character-block">
+											<div class="char-names"><?php echo htmlspecialchars($char['charName']); ?></div>
+											<div class="char-states">
+												<?php foreach ($char['states'] as $state): ?>
+													<?php
+													$charChip = htmlspecialchars($char['heading']) . " [" .
+																htmlspecialchars($char['charName']) . "]: " .
+																htmlspecialchars($state['charStateName']);
+													?>
+													<label>
+														<input type="checkbox" name="characters[]" data-chip="<?php echo $charChip; ?>" value="<?php echo $cid . ':' . htmlspecialchars($state['cs']); ?>">
+														<?php echo htmlspecialchars($state['charStateName']); ?>
+													</label><br>
+												<?php endforeach; ?>
+											</div>
+										</div>
+									<?php endforeach; ?>
+								</div>
+								<?php endforeach; ?>
+							<?php else: ?>
+								<p><?php echo $LANG['NOCHARFOUND'] ?></p>
+							<?php endif; ?>
+						</div>
+					</div>
+				</section>
+				<?php endif; ?>
+
+				<!-- Geological Context -->
+				<?php
+				if (!empty($GLOBALS['ACTIVATE_PALEO'])) { ?>
+					<section>
+						<!-- Accordion selector -->
+						<input type="checkbox" id="geocontext" class="accordion-selector" />
+
+						<!-- Accordion header -->
+						<label for="geocontext" class="accordion-header" tabindex="0" role="button"><?php echo $LANG['GEO_CONTEXT'] ?> <a href="https://docs.symbiota.org//User_Guide/searching_records#geological-context" target="_blank" title="<?= $LANG['MORE_INFO'] ?>" alt="<?= $LANG['MORE_INFO'] ?>"><img class="docimg" src="../../images/qmark.png" /></a></label>
+
+						<!-- Content -->
+						<div id="search-form-geocontext" class="content">
+							<div class="top-breathing-room-rel" style="display: grid;grid-template-columns: 1fr 1fr;gap: 10px;">
+								<div class="select-container" style="position: relative;">
+									<label for="earlyInterval" class="screen-reader-only"><?php echo $LANG['EARLY_INT'] ?></label>
+									<select name="earlyInterval" id="earlyInterval" onchange="earlyIntervalChanged(this.form)" data-chip="<?php echo $LANG['EARLY_INT'] ?>" style="margin-top:0;padding-top:0; margin-bottom: 0.5rem">
+										<option value=""></option>
+										<?php
+										$earlyIntervalTerm = '';
+										if(isset($occArr['earlyInterval'])) $earlyIntervalTerm = $occArr['earlyInterval'];
+										if($earlyIntervalTerm && !array_key_exists($earlyIntervalTerm, $gtsTermArr)){
+											echo '<option value="'.$earlyIntervalTerm.'" SELECTED> data-chip="'.$LANG['EARLY_INT'].'">'.$earlyIntervalTerm.' - mismatched term</option>';
+											echo '<option value="">---------------------------</option>';
+										}
+										foreach($gtsTermArr as $term => $rankid){
+											echo '<option value="'.$term.'" '.($earlyIntervalTerm==$term?'SELECTED':'').' data-chip="'.$LANG['EARLY_INT'].'">'.$term.'</option>';
+										}
+										?>
+									</select>
+									<span class="inset-input-label"><?php echo $LANG['EARLY_INT'] ?></span>
+								</div>
+								<div class="select-container" style="position: relative;">
+									<label for="lateInterval" class="screen-reader-only"><?php echo $LANG['LATE_INT'] ?></label>
+									<select name="lateInterval" id="lateInterval" onchange="lateIntervalChanged(this.form)" style="margin-top:0;padding-top:0; margin-bottom: 0.5rem">
+										<option value=""></option>
+										<?php
+										$lateIntervalTerm = '';
+										if(isset($occArr['lateInterval'])) $lateIntervalTerm = $occArr['lateInterval'];
+										if($lateIntervalTerm && !array_key_exists($lateIntervalTerm, $gtsTermArr)){
+											echo '<option value="'.$lateIntervalTerm.'" SELECTED> data-chip="'.$LANG['LATE_INT'].'">'.$lateIntervalTerm.' - mismatched term</option>';
+											echo '<option value="">---------------------------</option>';
+										}
+										foreach($gtsTermArr as $term => $rankid){
+											echo '<option value="'.$term.'" '.($lateIntervalTerm==$term?'SELECTED':'').' data-chip="'.$LANG['LATE_INT'].'">'.$term.'</option>';
+										}
+										?>
+									</select>
+									<span class="inset-input-label"><?php echo $LANG['LATE_INT'] ?></span>
+								</div>
+							</div>
+							<div style="display: grid; grid-template-columns: 1fr 1fr; grid-gap: 10px;">
+								<div class="input-text-container">
+									<label for="lithogroup" class="input-text--outlined">
+										<span class="screen-reader-only"><?php echo $LANG['LITHOGROUP'] ?></span>
+											<input type="text" name="lithogroup" id="lithogroup" data-chip="<?php echo $LANG['LITHOGROUP'] ?>" />
+										<span class="inset-input-label"><?php echo $LANG['LITHOGROUP'] ?></span>
+									</label>
+								</div>
+								<div class="input-text-container">
+									<label for="formation" class="input-text--outlined">
+										<span class="screen-reader-only"><?php echo $LANG['FORMATION'] ?></span>
+											<input type="text" name="formation" id="formation" data-chip="<?php echo $LANG['FORMATION'] ?>" />
+										<span class="inset-input-label"><?php echo $LANG['FORMATION'] ?></span>
+									</label>
+								</div>
+								<div class="input-text-container">
+									<label for="member" class="input-text--outlined">
+										<span class="screen-reader-only"><?php echo $LANG['MEMBER'] ?></span>
+											<input type="text" name="member" id="member" data-chip="<?php echo $LANG['MEMBER'] ?>" />
+										<span class="inset-input-label"><?php echo $LANG['MEMBER'] ?></span>
+									</label>
+								</div>
+								<div class="input-text-container">
+									<label for="bed" class="input-text--outlined">
+										<span class="screen-reader-only"><?php echo $LANG['BED'] ?></span>
+											<input type="text" name="bed" id="bed" data-chip="<?php echo $LANG['BED'] ?>" />
+										<span class="inset-input-label"><?php echo $LANG['BED'] ?></span>
+									</label>
+								</div>
+							</div>
+						</div>
+					</section>
+				<?php
+					} ?>
 
 				<!-- Collections -->
 				<section>
 					<!-- Accordion selector -->
 					<input type="checkbox" id="collections" class="accordion-selector" />
 					<!-- Accordion header -->
-					<label for="collections" class="accordion-header"><?php echo $LANG['COLLECTIONS'] ?></label>
+					<label for="collections" class="accordion-header" tabindex="0" role="button"><?php echo $LANG['COLLECTIONS'] ?></label>
 					<!-- Accordion content -->
 					<div class="content">
 						<div id="search-form-colls">
 							<!-- Open Collections modal -->
 							<div id="specobsdiv">
 								<?php
-								include_once('./collectionContent.php');
+								include($SERVER_ROOT . '/collections/collectionForm.php');
 								?>
 							</div>
 						</div>
@@ -580,29 +846,31 @@ $obsArr = (isset($collList['obs'])?$collList['obs']:null);
 			</div>
 
 			<!-- Criteria panel -->
-<?php /* 2025-01-28(eric): replacing height: 100vh with align-self: start keeps sticky behavior while fixing footer issue if content overflows 100vh  */ ?>
-			<div id="criteria-panel" style="position: sticky; top: 0; align-self: start;">
-			<fieldset class="bottom-breathing-room-rel">
-				<legend>
-					<?php echo $LANG['DISPLAY_FORMAT']; ?>
-				</legend>
-				<div style="display: flex; align-items: center;" class="bottom-breathing-room-rel">
-					<input style="margin-bottom:0; margin-right: 0.5rem;" name="display-format-pref" id="list-button" type="radio" value="list" checked />
-					<label for="list-button"><?php echo $LANG['LIST'] ?></label>
-				</div>
-				<div style="display: flex; align-items: center;">
-					<input style="margin-bottom:0; margin-right: 0.5rem;" name="display-format-pref" id="table-button" type="radio" value="table" />
-					<label for="table-button"><?php echo $LANG['TABLE'] ?></label>
-				</div>
-			</fieldset>
+			<div id="criteria-panel" class="criteria-panel" style="overflow-y:clip">
+				<fieldset class="bottom-breathing-room-rel">
+					<legend>
+						<?php echo $LANG['DISPLAY_FORMAT']; ?>
+					</legend>
+					<div style="display: flex; align-items: center;" class="bottom-breathing-room-rel">
+						<input style="margin-bottom:0; margin-right: 0.5rem;" name="display-format-pref" id="list-button" type="radio" value="list" checked />
+						<label for="list-button"><?php echo $LANG['LIST'] ?></label>
+					</div>
+					<div style="display: flex; align-items: center;">
+						<input style="margin-bottom:0; margin-right: 0.5rem;" name="display-format-pref" id="table-button" type="radio" value="table" />
+						<label for="table-button"><?php echo $LANG['TABLE'] ?></label>
+					</div>
+				</fieldset>
 				<div class="osu-toggle-container">
 					<button type="button" id="osu-only-toggle" class="toggle-on" aria-label="Only search OSU herbarium collections toggle"><span class="toggle-thumb"></span></button>
 					<span class="osu-only-label">Only search OSU Herbarium Collections</span>
 				</div>
-				<button id="search-btn" onclick="simpleSearch()"><?php echo $LANG['SEARCH'] ?></button>
-				<button id="reset-btn"><?php echo $LANG['RESET'] ?></button>
+
+				<button id="search-btn" type="submit"><?php echo $LANG['SEARCH'] ?></button>
+				<button id="reset-btn" type="button"><?php echo $LANG['RESET'] ?></button>
 				<h2><?php echo $LANG['CRITERIA'] ?></h2>
-				<div id="chips"></div>
+				<div class="criteria-panel">
+					<div id="chips"></div>
+				</div>
 			</div>
 		</form>
 	</div>
@@ -610,20 +878,30 @@ $obsArr = (isset($collList['obs'])?$collList['obs']:null);
 	include($SERVER_ROOT . '/includes/footer.php');
 	?>
 </body>
-<script src="js/searchform.js?ver=1" type="text/javascript"></script>
-<script src="<?php echo $CLIENT_ROOT . '/collections/search/js/alerts.js?v=202107'; ?>" type="text/javascript"></script>
-<script src="<?php echo $CLIENT_ROOT . '/js/symb/api.taxonomy.taxasuggest.js'; ?>" type="text/javascript"></script>
-<script src="<?php echo $CLIENT_ROOT . '/js/symb/collections.index.js?ver=20171215' ?>" type="text/javascript"></script>
+<script src="<?= $JS_LANG_FILENAME ?>" type="text/javascript"></script>
+<script src="<?= $CLIENT_ROOT ?>/js/symb/searchform.js?ver=2" type="text/javascript"></script>
+<script src="<?= $CLIENT_ROOT ?>/js/alerts.js?v=202107" type="text/javascript"></script>
+<script src="<?= $CLIENT_ROOT ?>/js/symb/api.taxonomy.taxasuggest.js" type="text/javascript"></script>
+<script src="<?= $CLIENT_ROOT ?>/js/symb/collections.index.js?ver=20171215>" type="text/javascript"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
-		<?php
-		if($collectionSource){
-			?>
-			sessionStorage.querystr = "<?php echo $collectionSource; ?>";
-			<?php
-		}
-		?>
+		setSessionQueryStr();
 		setSearchForm(document.getElementById("params-form"));
+		toggleAccordionsFromSessionStorage(localStorage?.accordionIds?.split(",") || []);
+		document.getElementById("params-form").addEventListener("submit", function(event) {
+			event.preventDefault();
+			simpleSearch();
+		});
+		document.getElementById("reset-btn").addEventListener("click", function (event) {
+			document.getElementById("params-form").reset();
+			// sessionStorage.clear();
+			// localStorage.clear();
+			clearPageSpecificSessionStorageItems();
+			checkTheCollectionsThatShouldBeCheckedBasedOnConfig();
+			closeAllCategories();
+			expandCategoriesBasedOnConfig();
+			updateChip(event, isInitialConfig=true);
+		});
 	});
 </script>
 <script>
@@ -633,20 +911,24 @@ $obsArr = (isset($collList['obs'])?$collList['obs']:null);
 	handleAlerts(alerts, 3000);
 
 	// resize the autocomplete window width to match the input width (from https://stackoverflow.com/questions/5643767/jquery-ui-autocomplete-width-not-set-correctly)
-	jQuery.ui.autocomplete.prototype._resizeMenu = function () {
+	jQuery.ui.autocomplete.prototype._resizeMenu = function() {
 		var ul = this.menu.element;
 		ul.outerWidth(this.element.outerWidth());
 	}
 	const collectionSource = <?php echo isset($collectionSource) ? json_encode($collectionSource) : 'null'; ?>;
 	const collIdsFromUrl = <?php echo isset($collIdsFromUrl) ? json_encode($collIdsFromUrl) : 'null'; ?>;
 	if (collIdsFromUrl && Array.isArray(collIdsFromUrl) && collIdsFromUrl.length > 0) {
-		uncheckEverything();
+		uncheckEverythingInCollections();
 		checkTheCollectionsThatShouldBeChecked(collIdsFromUrl);
+		closeAllCategories();
+        expandCategoriesWithSomeCheckedChildren();
 	}
-	const sanitizedCollectionSource = collectionSource.replace('db=','');
+	const sanitizedCollectionSource = collectionSource.replace('db=', '');
 	if (collectionSource) {
-		uncheckEverything();
+		uncheckEverythingInCollections();
 		checkTheCollectionsThatShouldBeChecked([sanitizedCollectionSource]);
+		closeAllCategories();
+        expandCategoriesWithSomeCheckedChildren();
 		updateChip();
 	}
 
@@ -663,8 +945,8 @@ $obsArr = (isset($collList['obs'])?$collList['obs']:null);
 	})
 
 	// Set collection filter by default to be only OSU herbarium
-	const allCollectionCheckbox = document.getElementById('dballcb');
-	const OSUCollectionCheckbox = document.getElementById('OSU-Specimens--Input');
+	const allCollectionCheckbox = document.getElementById('all_collections');
+	const OSUCollectionCheckbox = document.getElementById('<?php echo (isset($CATCHK) && count($CATCHK) > 0 ? $CATCHK[0] : 'Specimens_5') ?>');
 	allCollectionCheckbox.click();
 	OSUCollectionCheckbox.click();
 
@@ -673,7 +955,7 @@ $obsArr = (isset($collList['obs'])?$collList['obs']:null);
 	osuOnlyToggle.addEventListener('click', function() {
 		const isOn = this.classList.toggle('toggle-on');
 		if (isOn) {
-			uncheckEverything();
+			uncheckEverythingInCollections();
 			OSUCollectionCheckbox.click();
 		} else {
 			allCollectionCheckbox.click();

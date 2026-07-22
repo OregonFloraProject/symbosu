@@ -7,6 +7,7 @@ Language: Français (French)
 
 include_once('checklist.fr.php');
 
+$LANG['MANAGE_CHECKLIST'] = 'Gérer la liste de contrôle';
 $LANG['NO_PERMISSIONS'] = 'Vous n\'êtes pas autorisé à créer une liste. Veuillez contacter un administrateur.';
 $LANG['ERR_DELETING_CHECKLIST'] = 'ERREUR lors de la suppression de la liste';
 $LANG['ERR_ADDING_CHILD'] = 'ERREUR lors de l\'ajout du lien vers la liste des enfants';
@@ -16,7 +17,6 @@ $LANG['TARGET_CHECKLIST'] = 'Liste cible';
 $LANG['PARENT_CHECKLIST'] = 'Liste des parents';
 $LANG['SELECTPROJECT'] = 'Sélectionner un Projet';
 $LANG['RETURNCHECK'] = 'Retour &agrave; Liste';
-$LANG['ERREUR'] = 'ERREUR';
 $LANG['ADMIN'] = 'Admin';
 $LANG['DESCRIPTION'] = 'Description';
 $LANG['RELATEDCHECK'] = 'Listes Connexes';
@@ -54,9 +54,8 @@ $LANG['SPECIES'] = 'Espéce:';
 $LANG['LATCENT'] = 'Latitude';
 $LANG['LONGCENT'] = 'Longitude';
 $LANG['POINTRAD'] = 'Rayon de Points (m&egrave;tre)';
-$LANG['POLYFOOT'] = 'Empreinte polygone';
-$LANG['POLYGON_DEFINED'] = 'Empreinte polygone d&acute;finie<br/>Cliquez Globe pour Afficher/Modifier';
-$LANG['POLYGON_NOT_DEFINED'] = 'Empreinte polygone non d&acute;finie<br/>Cliquez Globe pour Créer Polygone';
+$LANG['GEOJSON_FOOTPRINT'] = 'Polygone (format GeoJSON)';
+$LANG['ERROR_INVALID_JSON'] = 'ERREUR : Le format JSON de Polygon n\'est pas valide';
 $LANG['CREATE_EDIT_POLYGON'] = 'Créer/Modifier un Polygone';
 $LANG['POLYGON_READY'] = 'Polygone changé/enlevé<br/>et pr&ecirc;t &agrave; &ecirc;tre sauvé';
 $LANG['DEFAULTDISPLAY'] = 'Param&egrave;tres d\'affichage par défaut';

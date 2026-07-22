@@ -1,3 +1,28 @@
+
+/config/dbconnection.php
+/config/symbini.php
+/config/auth_config.php
+
+# Don't ignore the following for OregonFlora, track them
+#/footer.php
+#/header.php
+#/leftmenu.php
+#/index.php
+#includes/header.php
+#includes/minimalheader.php
+#includes/footer.php
+#includes/head.php
+#includes/leftmenu.php
+#includes/spprofilehead.php
+#includes/usagepolicy.php
+#includes/citationgbif.php
+#includes/citationcollection.php
+#includes/citationdataset.php
+#includes/citationportal.php
+#includes/donationButton.php
+temp/cap_storage.json
+
+# OregonFlora-specific
 .settings/org.eclipse.wst.jsdt.ui.superType.name
 .settings/.jsdtscope
 .project
@@ -7,9 +32,6 @@
 .settings/org.eclipse.php.core.prefs
 .buildpath
 .idea/
-/config/dbconnection.php
-/config/symbini.php
-/config/auth_config.php
 vendor/
 !**/.gitkeep
 temp/*

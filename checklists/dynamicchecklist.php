@@ -1,8 +1,10 @@
 <?php
 include_once('../config/symbini.php');
 include_once($SERVER_ROOT . '/classes/DynamicChecklistManager.php');
-if($LANG_TAG != 'en' && file_exists($SERVER_ROOT.'/content/lang/checklists/checklist.' . $LANG_TAG . '.php')) include_once($SERVER_ROOT . '/content/lang/checklists/checklist.' . $LANG_TAG . '.php');
-else include_once($SERVER_ROOT.'/content/lang/checklists/checklist.en.php');
+include_once($SERVER_ROOT . '/classes/utilities/Language.php');
+
+Language::load('checklists/checklist');
+
 header('Content-Type: text/html; charset=' . $CHARSET);
 
 $lat = filter_var($_POST['lat'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
@@ -10,7 +12,7 @@ $lng = filter_var($_POST['lng'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW
 $radius = filter_var($_POST['radius'], FILTER_SANITIZE_NUMBER_INT);
 $radiusUnits = $_POST['radiusunits'];
 $dynamicRadius = isset($DYN_CHECKLIST_RADIUS) ? $DYN_CHECKLIST_RADIUS : (isset($dynKeyRadius) ? $dynKeyRadius : 5);
-// $dynamicRadius = isset($DYN_CHECKLIST_RADIUS) ? $DYN_CHECKLIST_RADIUS : 10;
+// $dynamicRadius = $DYN_CHECKLIST_RADIUS ?? 10;
 $taxa = $_POST['taxa'];
 $tid = filter_var($_POST['tid'], FILTER_SANITIZE_NUMBER_INT);
 $interface = $_POST['interface'];
@@ -25,17 +27,12 @@ $dynClid = 0;
 if($radius) $dynClid = $dynClManager->createChecklist($lat, $lng, $radius, $radiusUnits, $tid);
 else $dynClid = $dynClManager->createDynamicChecklist($lat, $lng, $dynamicRadius, $tid);
 if($dynClid){
-if($interface == "key"){
+	if($interface == "key"){
 		header("Location: ".$CLIENT_ROOT."/ident/key.php?dynclid=".$dynClid."&taxon=All Species");
-	#echo $url;exit;
-	//header("Location: ". $url);
-}
-else{
+	}else{
 		header("Location: ".$CLIENT_ROOT."/checklists/checklist.php?dynclid=".$dynClid);
 	}
 }
 else echo $LANG['ERROR_GEN_CHECK'];
-ob_flush();
-flush();
 $dynClManager->removeOldChecklists();
 ?>

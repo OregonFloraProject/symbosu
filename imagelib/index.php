@@ -1,8 +1,10 @@
 <?php
 include_once('../config/symbini.php');
 include_once($SERVER_ROOT.'/classes/ImageLibraryBrowser.php');
-if($LANG_TAG != 'en' && file_exists($SERVER_ROOT.'/content/lang/imagelib/index.'.$LANG_TAG.'.php')) include_once($SERVER_ROOT.'/content/lang/imagelib/index.'.$LANG_TAG.'.php');
-else include_once($SERVER_ROOT.'/content/lang/imagelib/index.en.php');
+include_once($SERVER_ROOT . '/classes/utilities/Language.php');
+
+Language::load('imagelib/index');
+
 header("Content-Type: text/html; charset=".$CHARSET);
 
 $taxon = array_key_exists('taxon', $_REQUEST) ? $_REQUEST['taxon'] : '';
@@ -65,7 +67,7 @@ $imgManager->setSearchTerm($taxon);
 		<div class="sciname-search-container">
 			<div style="margin:10px 0px 0px 0px;">
 				<form name="searchform1" action="index.php" method="post">
-					<fieldset style="background-color:#FFFFCC;padding:10px;">
+					<fieldset class="fieldset-like-box">
 						<legend style="font-weight:bold;"><?= $LANG['SCINAME_SEARCH'] ?></legend>
 						<label for="taxon">Taxon: </label>
 						<input type="text" name="taxon" value="<?= $imgManager->cleanOutStr($taxon) ?>" title="<?= $LANG['ENTER_TAXON_NAME'] ?>" placeholder="<?= $LANG['ENTER_TAXON_NAME'] ?>" >

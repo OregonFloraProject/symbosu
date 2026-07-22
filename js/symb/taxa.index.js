@@ -6,7 +6,7 @@ $(document).ready(function() {
 	$("#desctabs").show();
 
 	var imgDiv = document.getElementById("img-div");
-	if(imgDiv.scrollHeight > imgDiv.clientHeight) document.getElementById("img-tab-div").style.display = 'block'; 
+	if(imgDiv && imgDiv.scrollHeight > imgDiv.clientHeight) document.getElementById("img-tab-div").style.display = 'block'; 
 
 });
 
@@ -97,8 +97,12 @@ function expandExtraImages(){
 	document.getElementById("img-tab-div").style.display = "none";
 }
 
-function openMapPopup(taxonVar,clid,leaflet=false){
-	var popupMap = window.open(`../collections/map/${leaflet?'leafletmap.php': 'googlemap.php'}?usethes=1&taxa=${taxonVar}`,'gmap','toolbar=0,scrollbars=1,width=950,height=700,left=20,top=20');
+function openMapPopup(taxonVar,clid, leaflet=false){
+	let url = '../collections/map/index.php';
+
+	url += `?menuClosed&usethes=1&taxa=${taxonVar}`;
+
+	var popupMap = window.open(url, 'Interactive Taxon Map','toolbar=0,scrollbars=1,width=950,height=700,left=20,top=20');
     if (popupMap.opener == null) popupMap.opener = self;
     popupMap.focus();
 }

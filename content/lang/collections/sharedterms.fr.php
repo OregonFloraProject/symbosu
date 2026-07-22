@@ -14,6 +14,8 @@ $LANG['TAB_OCCURRENCES'] = 'Occurrences';
 $LANG['TAB_MAP'] = 'Cartes';
 
 $LANG['SPECIMEN_COLLECTIONS'] = 'Collections de Spécimens';
+$LANG['OBSERVATION_COLLECTIONS'] = 'Collections d\'observation';
+
 $LANG['EXPAND'] = 'Développer';
 $LANG['CONDENSE'] = 'Condenser';
 
@@ -23,6 +25,7 @@ $LANG['ALL_COLLECTIONS_CAP'] = 'Toutes les Collections';
 $LANG['SELECT_DESELECT_ALL_SPECIMENS'] = 'Sélectionner/Désélectionner Tous les Spécimens';
 $LANG['SELECT_DESELECT_ALL_OBSERVATIONS'] = 'Sélectionner/Désélectionner Toutes les Observations';
 
+$LANG['DISPLAY_SORT'] = 'Afficher le panneau de tri';
 $LANG['DOWNLOAD_SPECIMEN_DATA'] = "Télécharger les données de l'échantillon";
 $LANG['COPY_TO_CLIPBOARD'] = "Copier l'URL dans le presse-papiers";
 
@@ -31,4 +34,8 @@ $LANG['SEARCH'] = 'Rechercher';
 $LANG['DISPLAY_FORMAT'] = 'Format d\'Affichage des Résultats';
 $LANG['LIST'] = 'Liste';
 $LANG['TABLE'] = 'Tableau de Données';
+$LANG['COLLECTION_LIST'] = 'Liste des Collections';
+$LANG['ALL_SPECIMEN_COLLECTIONS'] = 'Toutes les collections de spécimens';
+$LANG['ALL_OBSERVATION_COLLECTIONS'] = 'Toutes les collections d\'observations';
+$LANG['ALL_COLLECTIONS'] = 'Toutes les collections';
 ?>

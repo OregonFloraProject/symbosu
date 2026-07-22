@@ -7,6 +7,7 @@ Language: English
 
 include_once('sharedterms.en.php');
 
+$LANG['SEARCH'] = 'Search';
 $LANG['PAGE_TITLE'] = 'Collection Search Parameters';
 $LANG['PAGE_HEADER'] = 'Enter Search Parameters';
 $LANG['TAXON_HEADER'] = 'Taxonomic Criteria';
@@ -63,13 +64,19 @@ $LANG['HAS_GENETIC'] = 'Limit to Specimens with Genetic Data';
 $LANG['HAS_COORDS'] = 'Limit to Specimens with Geocoordinates';
 $LANG['INCLUDE_CULTIVATED'] = 'Include Cultivated/Captive Occurrences';
 $LANG['TRAIT_HEADER'] = 'Trait Criteria';
-$LANG['TRAIT_DESCRIPTION'] = 'Selecting multiple traits will return all records with at least one of those traits';
 $LANG['TRAIT_DESCRIPTION'] = 'Selecting multiple traits will return all records with <b>at least one</b> of those traits';
 $LANG['TYPE_TAXON'] = 'Taxon name';
 $LANG['SELECT_TAXON_TYPE'] = 'Select taxon type';
 $LANG['DIRECTION'] = 'Direction';
 $LANG['DISTANCE_UNIT'] = 'Unit of distance';
 $LANG['MATERIAL_SAMPLE'] = 'Material Sample';
+$LANG['GEO_CONTEXT'] = 'Geological Context';
+$LANG['EARLY_INT'] = 'Early Interval';
+$LANG['LATE_INT'] = 'Late Interval';
+$LANG['LITHOGROUP'] = 'Group';
+$LANG['FORMATION'] = 'Formation';
+$LANG['MEMBER'] = 'Member';
+$LANG['BED'] = 'Bed';
 
 // For compatibility with OregonFlora
 $LANG['GENERAL_TEXT_1'] = 'Fill in one or more of the following query criteria and click &quot;Search&quot; to view your results.';

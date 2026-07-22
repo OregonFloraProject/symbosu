@@ -1,7 +1,13 @@
 <?php
 include_once('../../config/symbini.php');
 include_once($SERVER_ROOT.'/classes/OccurrenceEditorManager.php');
-include_once($SERVER_ROOT.'/content/lang/collections/editor/occurrencetabledisplay.'.$LANG_TAG.'.php');
+include_once($SERVER_ROOT . '/classes/utilities/Language.php');
+
+Language::load([
+	'collections/editor/occurrencetabledisplay',
+	'collections/list'
+]);
+
 header('Content-Type: text/html; charset='.$CHARSET);
 
 $collId = array_key_exists('collid',$_REQUEST) ? filter_var($_REQUEST['collid'], FILTER_SANITIZE_NUMBER_INT) : false;
@@ -79,72 +85,95 @@ if($SYMB_UID){
 		}
 	}
 
+
 	$headerMapBase = array(
-		'institutioncode'=>defined('INSTITUTIONCODELABEL')?INSTITUTIONCODELABEL:'Institution Code (override)',
-		'collectioncode'=>defined('COLLECTIONCODELABEL')?COLLECTIONCODELABEL:'Collection Code (override)',
-		'ownerinstitutioncode'=> defined('OWNERINSTITUTIONCODELABEL')?OWNERINSTITUTIONCODELABEL:'Owner Code (override)',
-		'catalognumber' => defined('CATALOGNUMBERLABEL')?CATALOGNUMBERLABEL:'Catalog Number',
-		'othercatalognumbers' => defined('OTHERCATALOGNUMBERSLABEL')?OTHERCATALOGNUMBERSLABEL:'Other Catalog #',
-		'family' => defined('FAMILYLABEL')?FAMILYLABEL:'Family',
-		'identificationqualifier' => defined('IDENTIFICATIONQUALIFIERLABEL')?IDENTIFICATIONQUALIFIERLABEL:'ID Qualifier',
-		'sciname' => defined('SCIENTIFICNAMELABEL')?SCIENTIFICNAMELABEL:'Scientific Name',
-		'scientificnameauthorship' => defined('SCIENTIFICNAMEAUTHORSHIPLABEL')?SCIENTIFICNAMEAUTHORSHIPLABEL:'Author',
-		'recordedby' => defined('RECORDEDBYLABEL')?RECORDEDBYLABEL:'Collector',
-		'recordnumber' => defined('RECORDNUMBERLABEL')?RECORDNUMBERLABEL:'Number',
-		'associatedcollectors' => defined('ASSOCIATEDCOLLECTORSLABEL')?ASSOCIATEDCOLLECTORSLABEL:'Associated Collectors',
-		'eventdate' => defined('EVENTDATELABEL')?EVENTDATELABEL:'Event Date',
-		'verbatimeventdate' => defined('VERBATIMEVENTDATELABEL')?VERBATIMEVENTDATELABEL:'Verbatim Date',
-		'identificationremarks' => defined('IDENTIFICATIONREMARKSLABEL')?IDENTIFICATIONREMARKSLABEL:'Identification Remarks',
-		'taxonremarks' => defined('TAXONREMARKSLABEL')?TAXONREMARKSLABEL:'Taxon Remarks',
-		'identifiedby' => defined('IDENTIFIEDBYLABEL')?IDENTIFIEDBYLABEL:'Identified By',
-		'dateidentified' => defined('DATEIDENTIFIEDLABEL')?DATEIDENTIFIEDLABEL:'Date Identified',
-		'identificationreferences' => defined('IDENTIFICATIONREFERENCELABEL')?IDENTIFICATIONREFERENCELABEL:'Identification References',
-		'country' => defined('COUNTRYLABEL')?COUNTRYLABEL:'Country',
-		'stateprovince' => defined('STATEPROVINCELABEL')?STATEPROVINCELABEL:'State/Province',
-		'county' => defined('COUNTYLABEL')?COUNTYLABEL:'County',
-		'municipality' => defined('MUNICIPALITYLABEL')?MUNICIPALITYLABEL:'Municipality',
-		'locality' => defined('LOCALITYLABEL')?LOCALITYLABEL:'Locality',
-		'decimallatitude' => defined('DECIMALLATITUDELABEL')?DECIMALLATITUDELABEL:'Latitude',
-		'decimallongitude' => defined('DECIMALLONGITUDELABEL')?DECIMALLONGITUDELABEL:'Longitude',
-		'coordinateuncertaintyinmeters' => defined('COORDINATEUNCERTAINITYINMETERSLABEL')?COORDINATEUNCERTAINITYINMETERSLABEL:'Uncertainty In Meters',
-		'verbatimcoordinates' => defined('VERBATIMCOORDINATESLABEL')?VERBATIMCOORDINATESLABEL:'Verbatim Coordinates',
-		'geodeticdatum' => defined('GEODETICDATUMLABEL')?GEODETICDATUMLABEL:'Datum',
-		'georeferencedby' => defined('GEOREFERENCEBYLABEL')?GEOREFERENCEBYLABEL:'Georeferenced By',
-		'georeferenceprotocol' => defined('GEOREFERENCEPROTOCOLLABEL')?GEOREFERENCEPROTOCOLLABEL:'Georeference Protocol',
-		'georeferencesources' => defined('GEOREFERENCESOURCESLABEL')?GEOREFERENCESOURCESLABEL:'Georeference Sources',
-		'georeferenceverificationstatus' => defined('GEOREFERENCEVERIFICATIONSTATUSLABEL')?GEOREFERENCEVERIFICATIONSTATUSLABEL:'Georef Verification Status',
-		'georeferenceremarks' => defined('GEOREFERENCEREMARKSLABEL')?GEOREFERENCEREMARKSLABEL:'Georef Remarks',
-		'minimumelevationinmeters' => 'Elev. Min. (m)',
-		'maximumelevationinmeters' => 'Elev. Max. (m)',
-		'verbatimelevation' => defined('VERBATIMELEVATIONLABEL')?VERBATIMELEVATIONLABEL:'Verbatim Elev.',
-		'minimumdepthinmeters' => 'Depth. Min. (m)',
-		'maximumdepthinmeters' => 'Depth. Max. (m)',
-		'verbatimdepth' => defined('VERBATIMDEPTHLABEL')?VERBATIMDEPTHLABEL:'Verbatim Depth',
-		'habitat' => defined('HABITATLABEL')?HABITATLABEL:'Habitat',
-		'substrate' => defined('SUBSTRATELABEL')?SUBSTRATELABEL:'Substrate',
-		'occurrenceremarks' => defined('FAMILYLABEL')?FAMILYLABEL:'Notes (Occurrence Remarks)',
-		'associatedtaxa' => defined('ASSOCIATEDTAXALABEL')?ASSOCIATEDTAXALABEL:'Associated Taxa',
-		'verbatimattributes' => defined('VERBATIMATTRIBUTESLABEL')?VERBATIMATTRIBUTESLABEL:'Description',
-		'lifestage' => defined('LIFESTAGELABEL')?LIFESTAGELABEL:'Life Stage',
-		'sex' => defined('SEXLABEL')?SEXLABEL:'Sex',
-		'individualcount' => defined('INDIVIDUALCOUNTLABEL')?INDIVIDUALCOUNTLABEL:'Individual Count',
-		'samplingprotocol' => defined('SAMPLINGPROTOCOLLABEL')?SAMPLINGPROTOCOLLABEL:'Sampling Protocol',
-		'preparations' => defined('PREPARATIONSLABEL')?PREPARATIONSLABEL:'Preparations',
-		'reproductivecondition' => defined('REPRODUCTIVECONDITIONLABEL')?REPRODUCTIVECONDITIONLABEL:'Reproductive Condition',
-		'typestatus' => defined('TYPESTATUSLABEL')?TYPESTATUSLABEL:'Type Status',
-		'cultivationstatus' => defined('CULTIVATIONSTATUSLABEL')?CULTIVATIONSTATUSLABEL:'Cultivation Status',
-		'establishmentmeans' => defined('ESTABLISHMENTMEANSLABEL')?ESTABLISHMENTMEANSLABEL:'Establishment Means',
-		'datageneralizations' => defined('DATAGENERALIZATIONSLABEL')?DATAGENERALIZATIONSLABEL:'Data Generalizations',
-		'disposition' => defined('DISPOSITIONLABEL')?DISPOSITIONLABEL:'Disposition',
-		'duplicatequantity' => defined('DUPLICATEQUANTITYCOUNTLABEL')?DUPLICATEQUANTITYCOUNTLABEL:'Duplicate Qty',
-		'datelastmodified' => 'Date Last Modified',
-		'labelproject' => defined('LABELPROJECTLABEL')?LABELPROJECTLABEL:'Label Project',
-		'processingstatus' => defined('PROCESSINGSTATUSLABEL')?PROCESSINGSTATUSLABEL:'Processing Status',
-		'recordenteredby' => 'Entered By',
-		'recordmodifiedby' => 'Last Modified By',
-		'dbpk' => 'dbpk',
-		'basisofrecord' => defined('BASISOFRECORDLABEL')?BASISOFRECORDLABEL:'Basis Of Record',
-		'language' => defined('LANGUAGELABEL')?LANGUAGELABEL:'Language');
+		'institutioncode' => defined('INSTITUTIONCODELABEL') ? INSTITUTIONCODELABEL : $LANG['INSTITUTION_CODE'], 
+		'collectioncode' => defined('COLLECTIONCODELABEL') ? COLLECTIONCODELABEL : $LANG['COLLEC_CODE'],
+		'ownerinstitutioncode' => defined('OWNERINSTITUTIONCODELABEL') ? OWNERINSTITUTIONCODELABEL : $LANG['OWNER_CODE'], 
+		'catalognumber' => defined('CATALOGNUMBERLABEL') ? CATALOGNUMBERLABEL : $LANG['CATALOG_NUM'], 
+		'othercatalognumbers' => defined('OTHERCATALOGNUMBERSLABEL') ? OTHERCATALOGNUMBERSLABEL : $LANG['OTHER_CAT_NUMS'],
+		'family' => defined('FAMILYLABEL') ? FAMILYLABEL : $LANG['FAMILY'], 
+		'identificationqualifier' => defined('IDENTIFICATIONQUALIFIERLABEL') ? IDENTIFICATIONQUALIFIERLABEL : $LANG['ID_QUALIFIER'],
+		'sciname' => defined('SCIENTIFICNAMELABEL') ? SCIENTIFICNAMELABEL : $LANG['SCI_NAME'], 
+		'scientificnameauthorship' => defined('SCIENTIFICNAMEAUTHORSHIPLABEL') ? SCIENTIFICNAMEAUTHORSHIPLABEL : $LANG['SCI_NAME_AUTHOR'], 
+		'recordedby' => defined('RECORDEDBYLABEL') ? RECORDEDBYLABEL : $LANG['RECORD_COLLEC'], 
+		'recordnumber' => defined('RECORDNUMBERLABEL') ? RECORDNUMBERLABEL : $LANG['RECORD_NUM'],
+		'associatedcollectors' => defined('ASSOCIATEDCOLLECTORSLABEL') ? ASSOCIATEDCOLLECTORSLABEL : $LANG['ASSOC_COLLEC'], 
+		'eventdate' => defined('EVENTDATELABEL') ? EVENTDATELABEL : $LANG['EVENT_DATE'], 
+		'verbatimeventdate' => defined('VERBATIMEVENTDATELABEL') ? VERBATIMEVENTDATELABEL : $LANG['VERB_EVENT_DATE'],
+		'identificationremarks' => defined('IDENTIFICATIONREMARKSLABEL') ? IDENTIFICATIONREMARKSLABEL : $LANG['ID_REMARKS'], 
+		'taxonremarks' => defined('TAXONREMARKSLABEL') ? TAXONREMARKSLABEL : $LANG['TAXON_REMARKS'], 
+		'identifiedby' => defined('IDENTIFIEDBYLABEL') ? IDENTIFIEDBYLABEL : $LANG['ID_BY'],
+		'dateidentified' => defined('DATEIDENTIFIEDLABEL') ? DATEIDENTIFIEDLABEL : $LANG['DATE_IDENTIFIED'], 
+		'identificationreferences' => defined('IDENTIFICATIONREFERENCELABEL') ? IDENTIFICATIONREFERENCELABEL : $LANG['ID_REF'],
+		'country' => defined('COUNTRYLABEL') ? COUNTRYLABEL : $LANG['COUNTRY'], 
+		'stateprovince' => defined('STATEPROVINCELABEL') ? STATEPROVINCELABEL : $LANG['STATE_PROVINCE'], 
+		'county' => defined('COUNTYLABEL') ? COUNTYLABEL : $LANG['COUNTY'], 
+		'municipality' => defined('MUNICIPALITYLABEL') ? MUNICIPALITYLABEL : $LANG['MUNICIPALITY'],
+	 	'locality' => defined('LOCALITYLABEL') ? LOCALITYLABEL : $LANG['LOCALITY'], 
+	 	'decimallatitude' => defined('DECIMALLATITUDELABEL') ? DECIMALLATITUDELABEL : $LANG['LATITUDE'], 
+	 	'decimallongitude' => defined('DECIMALLONGITUDELABEL') ? DECIMALLONGITUDELABEL : $LANG['LONGITUDE'],
+		'identifierName' => $LANG['ID_TAG_NAME'], 
+		'identifierValue' => $LANG['ID_TAG_VAL'],
+		'coordinateuncertaintyinmeters' => defined('COORDINATEUNCERTAINITYINMETERSLABEL') ? COORDINATEUNCERTAINITYINMETERSLABEL : $LANG['UNCERTAINTY_METERS'], 
+		'verbatimcoordinates' => defined('VERBATIMCOORDINATESLABEL') ? VERBATIMCOORDINATESLABEL : $LANG['VERB_COORDINATES'], 
+		'geodeticdatum' => defined('GEODETICDATUMLABEL') ? GEODETICDATUMLABEL : $LANG['DATUM'],
+		'georeferencedby' => defined('GEOREFERENCEBYLABEL') ? GEOREFERENCEBYLABEL : $LANG['GEOREF_BY'], 
+		'georeferenceprotocol' => defined('GEOREFERENCEPROTOCOLLABEL') ? GEOREFERENCEPROTOCOLLABEL : $LANG['GEOREF_PROTOCOL'], 
+		'georeferencesources' => defined('GEOREFERENCESOURCESLABEL') ? GEOREFERENCESOURCESLABEL : $LANG['GEOREF_SOURCE'],
+		'georeferenceverificationstatus' => defined('GEOREFERENCEVERIFICATIONSTATUSLABEL') ? GEOREFERENCEVERIFICATIONSTATUSLABEL : $LANG['GEOREF_VERIF_STATUS'], 
+		'georeferenceremarks' => defined('GEOREFERENCEREMARKSLABEL') ? GEOREFERENCEREMARKSLABEL : $LANG['GEOREF_REMARKS'],
+		'minimumelevationinmeters' => $LANG['ELEV_MIN_METERS'], 
+		'maximumelevationinmeters' => $LANG['ELEV_MAX_METERS'], 
+		'verbatimelevation' => defined('VERBATIMELEVATIONLABEL') ? VERBATIMELEVATIONLABEL : $LANG['VERB_ELEV'],
+		'minimumdepthinmeters' => $LANG['DEPTH_MIN_METERS'], 
+		'maximumdepthinmeters' => $LANG['DEPTH_MAX_METERS'], 
+		'verbatimdepth' => defined('VERBATIMDEPTHLABEL') ? VERBATIMDEPTHLABEL : $LANG['VERB_DEPTH'],
+		'habitat' => defined('HABITATLABEL') ? HABITATLABEL : $LANG['HABITAT'], 
+		'substrate' => defined('SUBSTRATELABEL') ? SUBSTRATELABEL : $LANG['SUBSTRATE'], 
+		'storageLocation' => defined('') ?  : $LANG['STORAGE_LOC'],
+		'occurrenceremarks' => defined('OCCURRENCEREMARKSLABEL') ? OCCURRENCEREMARKSLABEL : $LANG['OCCURR_REMARKS'], 
+		'associatedtaxa' => defined('ASSOCIATEDTAXALABEL') ? ASSOCIATEDTAXALABEL : $LANG['ASSOC_TAXA'],
+		'verbatimattributes' => defined('VERBATIMATTRIBUTESLABEL') ? VERBATIMATTRIBUTESLABEL : $LANG['VERB_ATTRIBUTES'], 
+		'lifestage' => defined('LIFESTAGELABEL') ? LIFESTAGELABEL : $LANG['LIFE_STAGE'], 
+		'sex' => defined('SEXLABEL') ? SEXLABEL : $LANG['SEX'], 
+		'individualcount' => defined('INDIVIDUALCOUNTLABEL') ? INDIVIDUALCOUNTLABEL : $LANG['COUNT'],
+		'samplingprotocol' => defined('SAMPLINGPROTOCOLLABEL') ? SAMPLINGPROTOCOLLABEL : $LANG['SAMPLE_PROTOCOL'], 
+		'preparations' => defined('PREPARATIONSLABEL') ? PREPARATIONSLABEL : $LANG['PREPARATIONS'], 
+		'reproductivecondition' => defined('REPRODUCTIVECONDITIONLABEL') ? REPRODUCTIVECONDITIONLABEL : $LANG['REPRODUCTIVE_CONDITION'],
+		'typestatus' => defined('TYPESTATUSLABEL') ? TYPESTATUSLABEL : $LANG['TYPE_STATUS'], 
+		'cultivationstatus' => defined('CULTIVATIONSTATUSLABEL') ? CULTIVATIONSTATUSLABEL : $LANG['CULTIVATION_STATUS'], 
+		'establishmentmeans' => defined('ESTABLISHMENTMEANSLABEL') ? ESTABLISHMENTMEANSLABEL : $LANG['ESTABLISHMENT_MEANS'], 
+		'datageneralizations' => defined('DATAGENERALIZATIONSLABEL') ? DATAGENERALIZATIONSLABEL : $LANG['DATA_GENERALIZATIONS'],
+		'disposition' => defined('DISPOSITIONLABEL') ? DISPOSITIONLABEL : $LANG['DISPOSITION'], 
+		'duplicatequantity' => defined('DUPLICATEQUANTITYCOUNTLABEL') ? DUPLICATEQUANTITYCOUNTLABEL : $LANG['DUPE_QUANTITY'], 
+		'datelastmodified' => defined('') ?  : $LANG['DATE_LAST_MODIFIED'], 
+		'labelproject' => defined('LABELPROJECTLABEL') ? LABELPROJECTLABEL : $LANG['LABEL_PROJECT'],
+		'processingstatus' => defined('PROCESSINGSTATUSLABEL') ? PROCESSINGSTATUSLABEL : $LANG['PROCESS_STATUS'], 
+		'recordenteredby' => defined('') ?  : $LANG['RECORD_ENTERED_BY'], 
+		'recordmodifiedby' => $LANG['RECORD_MODIFIED_BY'],
+		'dbpk' => defined('') ?  : $LANG['DBPK'], 
+		'basisofrecord' => defined('BASISOFRECORDLABEL') ? BASISOFRECORDLABEL : $LANG['BASIS_REC'],
+		'language' => defined('LANGUAGELABEL') ? LANGUAGELABEL : $LANG['LANG'], 
+		'continent' => $LANG['CONTINENT'], 
+		'islandgroup' => $LANG['ISLAND_GROUP'], 
+		'island' => $LANG['ISLAND'], 
+		'waterbody' => $LANG['WATER_BODY']
+	);
+
+	//paleo fields
+	$headerMapPaleoBase = array(
+		'earlyInterval' => $LANG['INTERVAL_EARLY'], 
+		'lateInterval' => $LANG['INTERVAL_LATE'],
+		'lithogroup' => $LANG['GROUP'],
+		'formation' => $LANG['FORMATION'], 
+		'member' => $LANG['MEMBER'], 
+		'bed' => $LANG['BED']
+	);
+
+
+	if ($collMap && $collMap['colltype'] == 'Fossil Specimens')
+		$headerMapBase = array_merge($headerMapBase, $headerMapPaleoBase);
 
 	if(array_key_exists('bufieldname',$_POST)){
 		$occManager->setQueryVariables();
@@ -192,10 +221,12 @@ else{
 	<link href="<?php echo $CSS_BASE_PATH; ?>/jquery-ui.css" type="text/css" rel="stylesheet">
 	<?php
 	include_once($SERVER_ROOT.'/includes/head.php');
+	include_once($SERVER_ROOT.'/includes/javascript_lang_tags.php');
 	?>
 	<link href="<?php echo htmlspecialchars($CLIENT_ROOT, ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE); ?>/js/datatables/datatables.min.css" type="text/css" rel="stylesheet">
 	<script src="<?php echo $CLIENT_ROOT; ?>/js/jquery-3.7.1.min.js" type="text/javascript"></script>
 	<script src="<?php echo $CLIENT_ROOT; ?>/js/jquery-ui.min.js" type="text/javascript"></script>
+	<script src="<?php echo $CLIENT_ROOT; ?>/js/symb/collections.list.js" type="text/javascript"></script>
 	<script src="../../js/datatables/datatables.min.js?ver=1" type="text/javascript"></script>
 	<script type="text/javascript">
 		$(document).ready(
@@ -210,14 +241,14 @@ else{
 			}
 		);
 	</script>
-	<script src="../../js/symb/collections.editor.table.js?ver=2" type="text/javascript" ></script>
-	<script src="../../js/symb/collections.editor.query.js?ver=6" type="text/javascript" ></script>
+	<script defer src="../../js/symb/collections.editor.table.js?ver=7" type="text/javascript" ></script>
+	<script defer src="../../js/symb/collections.editor.query.js?ver=7" type="text/javascript" ></script>
 	<style>
 		#titleDiv{margin-bottom: 1rem}
 		table.styledtable td { white-space: nowrap; }
 		fieldset{ padding:15px }
 		fieldset > legend{ font-weight:bold }
-		.fieldGroupDiv { 
+		.fieldGroupDiv {
 			display: flex;
 			align-items: center;
 			gap: 0.75rem;
@@ -229,15 +260,15 @@ else{
 				display: flex;
 			}
 		}
-		.fieldDiv{ 
+		.fieldDiv{
 			display: inline;
 		}
 		#innertext{ background-color: white; margin: 0px 10px; }
 
-		#record-viewer-innertext { 
+		#record-viewer-innertext {
 			margin-left: 2em;
 			width: calc(100vw - 4em);
-			background-color: white; 
+			background-color: white;
 		}
 		.editimg{ width: 15px; }
 		.table-scroll {
@@ -251,13 +282,13 @@ else{
 
 		/* JGM: Use OregonFlora styles
 		.button-toggle {
-			background-color: transparent; 
-			color: var(--body-text-color); 
+			background-color: transparent;
+			color: var(--body-text-color);
 			border: 2px solid var(--darkest-color);
 
 			&.active {
-				background-color: var(--darkest-color); 
-				color: white; 
+				background-color: var(--darkest-color);
+				color: white;
 			}
 
 			&:hover {
@@ -271,7 +302,7 @@ else{
 <body style="margin-left: 0px; margin-right: 0px;background-color:white;">
 	<a class="screen-reader-only" href="#skip-search"><?php echo $LANG['SKIP_SEARCH'] ?></a>
 	<div id="record-viewer-innertext">
-		<h1 class="page-heading screen-reader-only">Occurrence Table Display</h1>
+		<h1 class="page-heading screen-reader-only"><?php echo $LANG['TABLE_DISPLAY']; ?></h1>
 		<?php
 		if(($isEditor || $crowdSourceMode)){
 			?>
@@ -330,7 +361,7 @@ else{
 				foreach($recArr as $id => $occArr){
 					foreach($occArr as $k => $v){
 						if(!is_array($v)){
-							if($v && trim($v) && !array_key_exists($k,$headerArr)){
+							if((trim($v ?? '') || $v === 0) && !array_key_exists($k,$headerArr)){
 								$headerArr[$k] = $k;
 							}
 						}
@@ -350,6 +381,8 @@ else{
 			//if($isEditor == 1 || $isGenObs){
 			if($isEditor || $isGenObs){
 				$buFieldName = (array_key_exists('bufieldname',$_REQUEST)?$_REQUEST['bufieldname']:'');
+				$batchUpdateHeaderMapBase = $headerMapBase;
+				unset($batchUpdateHeaderMapBase['othercatalognumbers']);
 				?>
 				<div id="batchupdatediv" style="width:600px;clear:both;display:<?php echo ($buFieldName?'block':'none'); ?>;">
 					<form name="batchupdateform" action="occurrencetabledisplay.php" method="post" onsubmit="return false;">
@@ -362,8 +395,8 @@ else{
 										<option value=""><?php echo (isset($LANG['SELECT_FIELD'])?$LANG['SELECT_FIELD']:'Select Field Name'); ?></option>
 										<option value="">----------------------</option>
 										<?php
-										asort($headerMapBase);
-										foreach($headerMapBase as $k => $v){
+										asort($batchUpdateHeaderMapBase);
+										foreach($batchUpdateHeaderMapBase as $k => $v){
 											//Scientific name fields are excluded because batch updates will not update tidinterpreted index and authors
 											//Scientific name updates should happen within
 											if($k != 'scientificnameauthorship' && $k != 'sciname'){
@@ -429,7 +462,7 @@ else{
 									<input name="collid" type="hidden" value="<?php echo $collId; ?>" />
 									<input name="occid" type="hidden" value="0" />
 									<input name="occindex" type="hidden" value="0" />
-									<button name="submitaction" type="submit" value="Batch Update Field" onclick="submitBatchUpdate(this.form); return false;"><?php echo (isset($LANG['BATCH_UP_FIELD'])?$LANG['BATCH_UP_FIELD']:'Batch Update Field'); ?></button>
+									<button id="batchUpdateButton" name="submitaction" type="submit" value="Batch Update Field" onclick="submitBatchUpdate(this.form); return false;"><?php echo (isset($LANG['BATCH_UP_FIELD'])?$LANG['BATCH_UP_FIELD']:'Batch Update Field'); ?></button>
 								</div>
 							</div>
 						</fieldset>
@@ -440,7 +473,7 @@ else{
 			?>
 			<div style="display:flex;width:850px;clear:both;">
 				<?php echo $navStr; ?>
-				
+
 			</div>
 			<?php
 			if($recArr){
@@ -487,7 +520,7 @@ else{
 											$displayStr = substr($displayStr,0,60).'...';
 										}
 									}
-									else $displayStr = '&nbsp;';
+									elseif($displayStr === '') $displayStr = '&nbsp;';
 									echo '<td>'.$displayStr.'</td>'."\n";
 								}
 								echo "</tr>\n";

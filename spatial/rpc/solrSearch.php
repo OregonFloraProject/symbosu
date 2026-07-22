@@ -1,6 +1,6 @@
 <?php
-include_once('../shared/getTaxaData.php');
 include_once('../../config/symbini.php');
+include_once('../shared/getTaxaData.php');
 include_once('../../config/dbconnection.php');
 include_once($SERVER_ROOT.'/classes/SOLRManager.php');
 include_once($SERVER_ROOT.'/classes/ProfileManager.php');
@@ -38,7 +38,6 @@ $hasimages = isset($_POST['hasimages']) ? ($_POST['hasimages'] === '1') : false;
 $hasgenetic = isset($_POST['hasgenetic']) ? ($_POST['hasgenetic'] === '1') : false;
 $includecult = isset($_POST['includecult']) ? ($_POST['includecult'] === '1') : false;
 $excludeinat = isset($_POST['excludeinat']) ? ($_POST['excludeinat'] === '1') : false;
-$polycoords = isset($_POST['polycoords']) ? $_POST['polycoords'] : '';
 $pointlat = isset($_POST['pointlat']) ? trim($_POST['pointlat']) : '';
 $pointlong = isset($_POST['pointlong']) ? trim($_POST['pointlong']) : '';
 $radius = isset($_POST['radius']) ? trim($_POST['radius']) : '';
@@ -47,6 +46,10 @@ $upperlat = isset($_POST['upperlat']) ? trim($_POST['upperlat']) : '';
 $rightlong = isset($_POST['rightlong']) ? trim($_POST['rightlong']) : '';
 $bottomlat = isset($_POST['bottomlat']) ? trim($_POST['bottomlat']) : '';
 $leftlong = isset($_POST['leftlong']) ? trim($_POST['leftlong']) : '';
+
+# convert footprintGeoJson to geoJson
+$footprintGeoJson = isset($_POST['footprintGeoJson']) ? $_POST['footprintGeoJson'] : '';
+$geoJson = json_decode($footprintGeoJson);
 
 function isFamilyName($taxonString){
 	// if a taxon string ends with 'aceae' or 'idae' and is a single word, assume it's a family name
@@ -365,22 +368,19 @@ function buildTextParams($country, $state, $county, $local, $collector, $collnum
 	}
 }
 
-function buildGeographyParams($polycoords, $pointlat, $pointlong, $radius, $pointunits,
+function buildGeographyParams($geoJson, $pointlat, $pointlong, $radius, $pointunits,
 	$upperlat, $rightlong, $bottomlat, $leftlong, &$solrGeoQArr){
 
-	if($polycoords){
-		// SOLR expects the coordinates in long-lat format, whereas the rest of the site uses lat-long so we reverse the coordinates here and reconstruct the string
-		$polygonLatLngs = substr($polycoords, 10, -2);
-		$coordPairs = explode(',', $polygonLatLngs);
-		$reversedPairs = array();
-		foreach($coordPairs as $pair){
-			$parts = explode(' ', trim($pair));
-			if(count($parts) == 2){
-				$reversedPairs[] = $parts[1] . ' ' . $parts[0];
+	if($geoJson && isset($geoJson->geometry->coordinates[0]) && is_array($geoJson->geometry->coordinates[0])){
+		$lngLatPairs = array();
+		foreach($geoJson->geometry->coordinates[0] as $pair){
+			if(is_array($pair) && count($pair) == 2){
+				$lngLatPairs[] = $pair[0] . ' ' . $pair[1];
 			}
 		}
-		$polygonLngLats = implode(',', $reversedPairs);
-		$solrGeoQArr[] = '"Intersects(POLYGON ((' . $polygonLngLats . ')))"';
+		if(!empty($lngLatPairs)){
+			$solrGeoQArr[] = '"Intersects(POLYGON ((' . implode(',', $lngLatPairs) . ')))"';
+		}
 	}
 
 	// Circle
@@ -429,7 +429,7 @@ try {
 		$catnum, $includeothercatnum, $typestatus, $hasimages, $hasgenetic, $includecult, $excludeinat,
 		$solrQArr);
 
-	buildGeographyParams($polycoords, $pointlat, $pointlong, $radius, $pointunits,
+	buildGeographyParams($geoJson, $pointlat, $pointlong, $radius, $pointunits,
 		$upperlat, $rightlong, $bottomlat, $leftlong, $solrGeoQArr);
 
 	// Assemble SOLR query

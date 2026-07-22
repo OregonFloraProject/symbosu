@@ -4,7 +4,9 @@ include_once($SERVER_ROOT.'/classes/SpecUploadDirect.php');
 include_once($SERVER_ROOT.'/classes/SpecUploadFile.php');
 include_once($SERVER_ROOT.'/classes/SpecUploadDwca.php');
 include_once($SERVER_ROOT.'/classes/SpecUploadINat.php');
-include_once($SERVER_ROOT.'/content/lang/collections/admin/specupload.'.$LANG_TAG.'.php');
+include_once($SERVER_ROOT . '/classes/utilities/Language.php');
+
+Language::load('collections/admin/specupload');
 
 header('Content-Type: text/html; charset='.$CHARSET);
 ini_set('max_execution_time', 3600);
@@ -263,6 +265,7 @@ include($SERVER_ROOT.'/includes/header.php');
 						<input type="hidden" name="sourceindex" value="<?php echo $sourceIndex;?>" >
 						<input type="hidden" name="publicationGuid" value="<?php echo $publicationGuid;?>" >
 						<input type="hidden" name="fieldlist" value="<?php echo $duManager->getTargetFieldStr(); ?>" >
+						<input type="hidden" name="paleofieldlist" value="<?php echo $duManager->getPaleoTargetFieldStr(); ?>" >
 						<input type="hidden" name="apitoken"value='<?php echo $apiToken;?>' />
 						<input type="hidden" name="addlink"value='<?php echo $addLink;?>' />
 						<input type="hidden" name="fullimport"value='<?php echo $fullImport;?>' />
@@ -277,6 +280,7 @@ include($SERVER_ROOT.'/includes/header.php');
 		elseif($action == 'activateOccurrences' || $finalTransfer){
 			echo '<ul>';
 			$duManager->setTargetFieldArr($_POST['fieldlist']);
+			$duManager->setPaleoTargetFieldArr($_POST['paleofieldlist']);
 			$duManager->finalTransfer();
 			echo '</ul>';
 		}

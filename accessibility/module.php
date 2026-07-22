@@ -1,7 +1,8 @@
 <?php
-if($LANG_TAG == 'en' || !file_exists($SERVER_ROOT.'/content/lang/templates/accessibility.' . $LANG_TAG . '.php'))
-	include_once($SERVER_ROOT . '/content/lang/templates/accessibility.en.php');
-else include_once($SERVER_ROOT . '/content/lang/templates/accessibility.' . $LANG_TAG . '.php');
+include_once($SERVER_ROOT . '/classes/utilities/Language.php');
+
+Language::load('templates/accessibility');
+
 ?>
 <dialog id="accessibility-modal" class="accessibility-dialog" aria-label="<?= $LANG['A_ACCESSIBILITY_OPTIONS']; ?>">
 	<h1><?= $LANG['A_ACCESSIBILITY_OPTIONS']; ?></h1>
@@ -27,17 +28,4 @@ else include_once($SERVER_ROOT . '/content/lang/templates/accessibility.' . $LAN
 	const clientRootPath = "<?= $CLIENT_ROOT ?>";
 </script>
 <link href="<?= $CSS_BASE_PATH ?>/symbiota/accessibility-controls.css?ver=<?= $CSS_VERSION ?>" type="text/css" rel="stylesheet">
-<?php
-if($ACCESSIBILITY_ACTIVE){
-	?>
-	<link href="<?= $CSS_BASE_PATH ?>/symbiota/accessibility-compliant.css?ver=<?= $CSS_VERSION ?>" type="text/css" rel="stylesheet" data-accessibility-link="accessibility-css-link" >
-	<link href="<?= $CSS_BASE_PATH ?>/symbiota/condensed.css?ver=<?= $CSS_VERSION ?>" type="text/css" rel="stylesheet" data-accessibility-link="accessibility-css-link" disabled >
-	<?php
-} else{
-	?>
-	<link href="<?= $CSS_BASE_PATH ?>/symbiota/accessibility-compliant.css?ver=<?= $CSS_VERSION ?>" type="text/css" rel="stylesheet" data-accessibility-link="accessibility-css-link" disabled >
-	<link href="<?= $CSS_BASE_PATH ?>/symbiota/condensed.css?ver=<?= $CSS_VERSION ?>" type="text/css" rel="stylesheet" data-accessibility-link="accessibility-css-link" >
-	<?php
-}
-?>
 <script src="<?= $CLIENT_ROOT ?>/js/symb/accessibilityUtils.js?ver=1b" type="text/javascript"></script>

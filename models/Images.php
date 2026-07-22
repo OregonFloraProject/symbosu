@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Images
  * @ORM\Cache("READ_ONLY")
- * @ORM\Table(name="images", indexes={@ORM\Index(name="FK_images_occ", columns={"occid"}), @ORM\Index(name="FK_photographeruid", columns={"photographeruid"}), @ORM\Index(name="Index_tid", columns={"tid"}), @ORM\Index(name="Index_images_datelastmod", columns={"InitialTimeStamp"})})
+ * @ORM\Table(name="media", indexes={@ORM\Index(name="FK_media_occid_idx", columns={"occid"}), @ORM\Index(name="FK_media_creatorUid_idx", columns={"creatorUid"}), @ORM\Index(name="FK_media_tid_idx", columns={"tid"}), @ORM\Index(name="IX_media_dateLastModified", columns={"InitialTimeStamp"})})
  * @ORM\Entity
  */
 class Images
@@ -15,7 +15,7 @@ class Images
     /**
      * @var int
      *
-     * @ORM\Column(name="imgid", type="integer", nullable=false, options={"unsigned"=true})
+     * @ORM\Column(name="mediaID", type="integer", nullable=false, options={"unsigned"=true})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
@@ -52,14 +52,14 @@ class Images
     /**
      * @var string|null
      *
-     * @ORM\Column(name="photographer", type="string", length=100, nullable=true)
+     * @ORM\Column(name="creator", type="string", length=100, nullable=true)
      */
     private $photographer;
 
     /**
      * @var string|null
      *
-     * @ORM\Column(name="imagetype", type="string", length=50, nullable=true)
+     * @ORM\Column(name="mediaType", type="string", length=50, nullable=true)
      */
     private $imagetype;
 

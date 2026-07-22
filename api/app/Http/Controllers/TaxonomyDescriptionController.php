@@ -17,7 +17,7 @@ class TaxonomyDescriptionController extends Controller{
 	 * @OA\Get(
 	 *	 path="/api/v2/taxonomy/{identifier}/description",
 	 *	 operationId="/api/v2/taxonomy/identifier/description",
-	 *	 tags={""},
+	 *	 tags={"Taxonomy"},
 	 *	 @OA\Parameter(
 	 *		 name="identifier",
 	 *		 in="path",
@@ -35,7 +35,7 @@ class TaxonomyDescriptionController extends Controller{
 	 *	 @OA\Parameter(
 	 *		 name="offset",
 	 *		 in="query",
-	 *		 description="Determines the offset for the search results. A limit of 200 and offset of 100, will get the third page of 100 results.",
+	 *		 description="Determines the starting point for the search results. A limit of 100 and offset of 200, will display 100 records starting the 200th record.",
 	 *		 required=false,
 	 *		 @OA\Schema(type="integer", default=0)
 	 *	 ),
@@ -77,7 +77,7 @@ class TaxonomyDescriptionController extends Controller{
 	 * @OA\Get(
 	 *	 path="/api/v2/taxonomy/{identifier}/description/{identifier}",
 	 *	 operationId="/api/v2/taxonomy/identifier/description/identifier",
-	 *	 tags={""},
+	 *	 tags={"Taxonomy"},
 	 *	 @OA\Parameter(
 	 *		 name="identifier",
 	 *		 in="path",

@@ -1,7 +1,9 @@
 <?php
 include_once($SERVER_ROOT.'/config/dbconnection.php');
-include_once($SERVER_ROOT.'/content/lang/collections/harvestparams.'.$LANG_TAG.'.php');
 include_once($SERVER_ROOT.'/classes/OccurrenceTaxaManager.php');
+include_once($SERVER_ROOT . '/classes/utilities/Language.php');
+
+Language::load('collections/harvestparams');
 
 class TaxonSearchSupport{
 
@@ -53,7 +55,7 @@ class TaxonSearchSupport{
 			if($this->taxonType == TaxaSearchType::ANY_NAME){
 			    global $LANG;
 			    $sql =
-			    "SELECT DISTINCT v.tid, CONCAT('".$LANG['SELECT_1-5'].": ',v.vernacularname) AS sciname ".
+			    "SELECT DISTINCT v.tid, CONCAT('".$LANG['SELECT_1-5'].": ',v.vernacularname) AS label, v.vernacularname AS sciname ".
 			    "FROM taxavernaculars v ".
 			    // Restrict to taxa contained in the State of Oregon vascular plant checklist (clid=1)
 			    ($this->oregonTaxa ? 'LEFT JOIN `fmchklsttaxalink` as cl ON v.tid = cl.tid ' : '').
@@ -61,7 +63,7 @@ class TaxonSearchSupport{
 
 			    "UNION ".
 
-			    "SELECT DISTINCT t.tid, CONCAT('".$LANG['SELECT_1-2'].": ', t.sciname) AS sciname ".
+			    "SELECT DISTINCT t.tid, CONCAT('".$LANG['SELECT_1-2'].": ', t.sciname) AS label, sciname AS value ".
 			    "FROM taxa t ".
 			    // Restrict to taxa contained in the State of Oregon vascular plant checklist (clid=1)
 			    ($this->oregonTaxa ? 'LEFT JOIN `fmchklsttaxalink` as cl ON t.tid = cl.tid ' : '').
@@ -70,7 +72,7 @@ class TaxonSearchSupport{
 
 			    "UNION ".
 
-			    "SELECT DISTINCT t.tid, CONCAT('".$LANG['SELECT_1-3'].": ', t.sciname) AS sciname ".
+			    "SELECT DISTINCT t.tid, CONCAT('".$LANG['SELECT_1-3'].": ', t.sciname) label, sciname AS value ".
 			    "FROM taxa t ".
 			    // Restrict to taxa contained in the State of Oregon vascular plant checklist (clid=1)
 			    ($this->oregonTaxa ? 'LEFT JOIN `fmchklsttaxalink` as cl ON t.tid = cl.tid ' : '').
@@ -79,7 +81,7 @@ class TaxonSearchSupport{
 
 			    "UNION ".
 
-			    "SELECT t.tid, CONCAT('".$LANG['SELECT_1-4'].": ',t.sciname) AS sciname ".
+			    "SELECT t.tid, CONCAT('".$LANG['SELECT_1-4'].": ',t.sciname) AS label, sciname AS value ".
 			    "FROM taxa t ".
 			    // Restrict to taxa contained in the State of Oregon vascular plant checklist (clid=1)
 			    ($this->oregonTaxa ? 'LEFT JOIN `fmchklsttaxalink` as cl ON t.tid = cl.tid ' : '').
@@ -137,7 +139,10 @@ class TaxonSearchSupport{
 			
 			$rs = $this->conn->query($sql);
 			while ($r = $rs->fetch_object()) {
-				$retArr[] = array('id' => $r->tid, 'value' => $r->sciname);
+				$keys = ['id' => $r->tid, 'value' => $r->sciname];
+				if (!empty($r->label))
+					$keys['label'] = $r->label;
+				$retArr[] = $keys;
 			}
 			$rs->free();
 		}

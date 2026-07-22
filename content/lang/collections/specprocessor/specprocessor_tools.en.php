@@ -52,7 +52,7 @@ $LANG['MUST_MAP_CATNUM'] = 'Catalog Number or Other Catalog Numbers must be mapp
 $LANG['LARGE_URL_MAPPED'] = 'Large Image URL must both be mapped to an import field';
 $LANG['IMG_PROCESSOR_EXPLAIN'] = 'These tools are designed to aid collection managers in batch processing specimen images. Contact portal manager for help in setting up a new workflow.
 				 Once a profile is established, the collection manager can use this form to manually trigger image processing. For more information, see the Symbiota documentation for
-				 <b><a href="https://biokic.github.io/symbiota-docs/coll_manager/images/batch/" target="_blank">recommended practices</a></b> for integrating images.';
+				 <b><a href="https://docs.symbiota.org/Collection_Manager_Guide/Images/batch_adding" target="_blank">recommended practices</a></b> for integrating images.';
 $LANG['IMG_FILE_UPLOAD_MAP'] = 'Image File Upload Map';
 $LANG['SOURCE_FIELD'] = 'Source Field';
 $LANG['TARGET_FIELD'] = 'Target Field';
@@ -70,6 +70,8 @@ $LANG['EDIT'] = 'Edit';
 $LANG['NEW'] = 'New';
 $LANG['PROFILE'] = 'Profile';
 $LANG['CLOSE_EDITOR'] = 'Close Editor';
+$LANG['IMG_PROC_CHANGE_EXPLAIN'] = '<b>Tools to upload image URL files have moved!</b> You can now upload files of media URLs through the Extended Data Importer 
+	(Administration Control Panel > Import/Update Specimen Records > Extended Data Import';
 $LANG['PROC_TYPE'] = 'Processing Type';
 $LANG['MAP_FROM_SERVER'] = 'Map Images from a Local or Remote Server';
 $LANG['URL_MAP_FILE'] = 'Image URL Mapping File';
@@ -90,12 +92,12 @@ $LANG['IMG_SOURCE_PATH'] = 'Image source path';
 $LANG['IMG_TARGET_PATH'] = 'Image target path';
 $LANG['TARGET_PATH_EXPLAIN'] = "Web server path to where the image derivatives will be depositied.
 							The web server (e.g. apache user) must have read/write access to this directory.
-							If this field is left blank, the portal's default image target (\$IMAGE_ROOT_PATH) will be used.";
+							If this field is left blank, the portal's default image target (\$MEDIA_ROOT_PATH) will be used.";
 $LANG['IMG_URL_BASE'] = 'Image URL base';
 $LANG['IMG_URL_EXPLAIN'] = "Image URL prefix that will access the target folder from the browser.
 							This will be used to create the image URLs that will be stored in the database.
 							If absolute URL is supplied without the domain name, the portal domain will be assumed.
-							If this field is left blank, the portal's default image url will be used (\$IMAGE_ROOT_URL).";
+							If this field is left blank, the portal's default image url will be used (\$MEDIA_ROOT_URL).";
 $LANG['WEB_IMG_WIDTH'] = 'Web-sized image width';
 $LANG['WEB_IMG_EXPLAIN'] = 'Width of the standard web image in pixels. If the source image is smaller than this width, the file will simply be copied over without resizing.';
 $LANG['TN_IMG_WIDTH'] = 'Thumbnail image width';
@@ -118,6 +120,7 @@ $LANG['MAP_TN_AT_SOURCE'] = 'Map to thumbnail at source location (source name wi
 $LANG['EXCLUDE_TN'] = 'Exclude thumbnail';
 $LANG['LG_IMG'] = 'Large Image';
 $LANG['IMPORT_LG_SOURCE'] = 'Import source image as large version';
+$LANG['WARNING_LG_IMG_RESIZE'] = 'Warning: Resizes down to large image width';
 $LANG['MAP_TO_LG_SOURCE'] = 'Map to source image as large version';
 $LANG['IMPORT_LG_FROM_SOURCE'] = 'Import large version from source location (source name with _lg.jpg suffix)';
 $LANG['MAP_LG_AT_SOURCE'] = 'Map to existing large version (source name with _lg.jpg suffix)';
@@ -169,6 +172,7 @@ $LANG['NO_UNPROCESSED'] = 'There are no unprocessed records to';
 $LANG['UNIDENTIFIED_ERROR'] = 'Unidentified Error';
 
 // ocrprocessor.php
+$LANG['OP_CHARACTER_RECOGNITION'] = 'Optical Character Recognition';
 $LANG['PLS_SEL_PROC_STATUS'] = 'Please select a processing status';
 $LANG['ENTER_PATT_MATCH'] = 'Please enter a pattern matching string for extracting the catalog number';
 $LANG['SEL_OCR_INPUT'] = 'Please select/enter an OCR input source file';
@@ -218,5 +222,17 @@ $LANG['OCR_SOURCE'] = 'OCR Source';
 $LANG['OCR_SOURCE_EXPLAIN'] = 'Short string describing OCR Source (e.g. ABBYY, Tesseract, etc). This value is placed in source field with current date appended.';
 $LANG['LOAD_OCR_FILES'] = 'Load OCR Files';
 
+
+//processor.php
+$LANG['SPEC_PROCESSOR_CONTROL_PANEL'] = 'Specimen Processor Control Panel';
+$LANG['HOME'] = 'Home';
+$LANG['COL_CONTROL_PANEL'] = 'Collection Control Panel';
+$LANG['SPEC_PROCESSOR'] = 'Specimen Processor';
+$LANG['PROC_HANDLER'] = 'Processing Handler';
+$LANG['RETURN_SPEC_PROCESSOR'] = 'Return to Specimen Processor';
+
+//wordcloudhandler.php
+$LANG['WORD_CLOUD_HANDLER'] = 'Word Cloud Handler';
+$LANG['NO_COLLID'] = 'No collid target submitted';
 
 ?>

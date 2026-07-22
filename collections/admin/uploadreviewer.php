@@ -1,7 +1,10 @@
 <?php
 include_once('../../config/symbini.php');
 include_once($SERVER_ROOT.'/classes/SpecUpload.php');
-include_once($SERVER_ROOT.'/content/lang/collections/admin/uploadreviewer.'.$LANG_TAG.'.php');
+include_once($SERVER_ROOT . '/classes/utilities/Language.php');
+
+Language::load('collections/admin/uploadreviewer');
+
 header("Content-Type: text/html; charset=".$CHARSET);
 
 $collid = array_key_exists('collid',$_REQUEST)?$_REQUEST['collid']:0;
@@ -69,7 +72,7 @@ if($SYMB_UID){
 	?>
 </head>
 <body style="margin-left: 0px; margin-right: 0px;background-color:white;">
-	<h1 class="page-heading">Data Upload Reviewer</h1>
+	<h1 class="page-heading"><?php echo $LANG['DATA_UPLOAD_REVIEWER']; ?></h1>
 	<!-- inner text -->
 	<div id="">
 		<?php
@@ -80,17 +83,32 @@ if($SYMB_UID){
 			//Setup header map
 			$recArr = $uploadManager->getPendingImportData(($recLimit*$pageIndex),$recLimit,$searchVar);
 			if($recArr){
+				$excludeKeys = ['paleo_eon', 'paleo_era', 'paleo_period', 'paleo_epoch', 'paleo_stage'];
 				//Check to see which headers have values
 				$headerArr = array();
+				$matSampleHeaderArr = array();
 				foreach($recArr as $occurArr){
 					foreach($occurArr as $k => $v){
-						if($v && trim($v) && !array_key_exists($k,$headerArr)){
-							$headerArr[$k] = $k;
+						if($v && trim($v) && !array_key_exists($k,$headerArr) && !in_array($k, $excludeKeys)){
+							if($k == 'materialsamplejson'){
+								if($matSampleObj = json_decode($v)){
+									foreach($matSampleObj as $matKey => $matValue){
+										$matSampleHeaderArr[$matKey] = $matKey;
+									}
+								}
+							}
+							elseif (strpos($k, 'paleo_') === 0)
+								$headerArr[$k] = substr($k, 6);
+							else $headerArr[$k] = $k;
 						}
 					}
 				}
+				foreach($matSampleHeaderArr as $matFieldName){
+					//Material Sample records exists, thus add to header array
+					$headerArr[$matFieldName] = $matFieldName;
+				}
 				$translationMap = array('catalognumber' => 'catalogNumber','occurrenceid' => 'occurrenceID','othercatalognumbers' => 'otherCatalogNumbers',
-					'identificationqualifier' => 'identificationQualifier','sciname' => 'scientificName','scientificnameauthorship'=>'scientificNameAuthorship',
+					'identificationqualifier' => 'identificationQualifier','scientificname' => 'scientificName-input','sciname' => 'scientificName','scientificnameauthorship'=>'scientificNameAuthorship',
 					'recordedby' => 'recordedBy (collector)','recordnumber' => 'Number','associatedcollectors' => 'associatedCollectors','eventdate' => 'eventDate',
 					'verbatimeventdate' => 'verbatimEventDate','identificationremarks' => 'identificationRemarks','taxonremarks' => 'taxonRemarks','identifiedby' => 'identifiedBy',
 					'dateidentified' => 'dateIdentified','identificationreferences' => 'identificationReferences','stateprovince' => 'stateProvince',
@@ -101,7 +119,7 @@ if($SYMB_UID){
 					'minimumdepthinmeters' => 'minimumDepthInMeters','maximumdepthinmeters' => 'maximumDepthInMeters','verbatimdepth' => 'verbatimDepth',
 					'occurrenceremarks' => 'occurrenceRemarks','associatedsequences' => 'associatedSequences','associatedtaxa' => 'associatedTaxa','verbatimattributes' => 'verbatimAttributes',
 					'lifestage' => 'lifeStage', 'individualcount' => 'individualCount','samplingprotocol' => 'samplingProtocol', 'reproductivecondition' => 'reproductiveCondition',
-					'typestatus' => 'typeStatus','cultivationstatus' => 'cultivationStatus','establishmentmeans' => 'establishmentMeans','duplicatequantity' => 'duplicatequantity',
+					'typestatus' => 'typeStatus','cultivationstatus' => 'cultivationStatus','cultivarepithet' => 'cultivarEpithet', 'tradename' => 'tradeName', 'establishmentmeans' => 'establishmentMeans','duplicatequantity' => 'duplicatequantity',
 					'datelastmodified' => 'dateLastModified','processingstatus' => 'processingStatus','recordenteredby' => 'recordEnteredBy',
 					'basisofrecord' => 'basisOfRecord','occid' => 'occid (Primary Key)','dbpk'=>'dbpk (Source Identifier)');
 				?>
@@ -120,8 +138,14 @@ if($SYMB_UID){
 					foreach($recArr as $id => $occArr){
 						if($occArr['sciname']) $occArr['sciname'] = '<i>'.$occArr['sciname'].'</i> ';
 						echo "<tr ".($cnt%2?'class="alt"':'').">\n";
+						$matSampleArr = array();
+						if(!empty($occArr['materialsamplejson'])){
+							$matSampleArr = json_decode($occArr['materialsamplejson'], true);
+						}
 						foreach($headerArr as $k => $v){
-							$displayStr = $occArr[$k];
+							$displayStr = '';
+							if(!empty($occArr[$k])) $displayStr = $occArr[$k];
+							if(!empty($matSampleArr[$k])) $displayStr = $matSampleArr[$k];
 							if($displayStr || $displayStr == 0){
 								if(strlen($displayStr) > 60){
 									$displayStr = substr($displayStr,0,60).'...';

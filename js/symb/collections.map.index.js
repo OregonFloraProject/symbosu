@@ -59,33 +59,6 @@ function setHeight() {
   if(loadingOverlay) loadingOverlay.style.height = winHeight + "px";
 }
 
-function checkRecordLimit(f) {
-  var recordLimit = document.getElementById("recordlimit").value;
-  if (!isNaN(recordLimit) && recordLimit > 0) {
-    if (recordLimit > 50000) {
-      alert("Record limit cannot exceed 50000.");
-      document.getElementById("recordlimit").value = 5000;
-      return;
-    }
-    if (recordLimit <= 50000) {
-      if (recordLimit > 5000) {
-        if (
-          confirm(
-            "Increasing the record limit can cause delays in loading the map, or for your browser to crash."
-          )
-        ) {
-          return true;
-        } else {
-          document.getElementById("recordlimit").value = 5000;
-        }
-      }
-    }
-  } else {
-    document.getElementById("recordlimit").value = 5000;
-    alert("Record Limit must be set to a whole number greater than zero.");
-  }
-}
-
 //Generate Random Color with luminance greater than 40 for good contrast on black text
 function generateRandColor() {
 	// How Bright we want the color
@@ -192,6 +165,7 @@ function selectAllCat(cb, target) {
   var boxesChecked = true;
   if (!cb.checked) {
     boxesChecked = false;
+    uncheckAll();
   }
   var inputObjs = document.getElementsByTagName("input");
   for (i = 0; i < inputObjs.length; i++) {
@@ -253,17 +227,22 @@ function verifyCollForm(f) {
     }
   }
   //make sure they have filled out at least one field.
+  const paleoFields = ['lithogroup', 'formation', 'bed', 'member', 'earlyInterval', 'lateInterval'];
+  let paleoValues = paleoFields
+    .filter(field => f[field])
+    .map(field => f[field].value.trim());
   if (
     f.taxa.value == "" &&
     f.county.value == "" &&
     f.locality.value == "" &&
     f.upperlat.value == "" &&
     f.pointlat.value == "" &&
-    f.polycoords.value == "" &&
+    f.footprintGeoJson.value == "" &&
     f.collector.value == "" &&
     f.collnum.value == "" &&
     f.eventdate1.value == "" &&
     f.catnum.value == "" &&
+    paleoValues.every(v => v === "") &&
     !f.clid?.value
   ) {
     const message = (f.country.value == "" && f.state.value == "")
@@ -353,6 +332,23 @@ function verifyCollForm(f) {
       return false;
     }
   }
+
+  // Geo Context
+  const searchFormPaleo = document.getElementById("searchFormPaleo") || null;
+  if (searchFormPaleo) {
+    let early = f.earlyInterval.value;
+    let late = f.lateInterval.value;
+    if ((early !== "" && late === "") || (early === "" && late !== "")) {
+      alert(translations.INTERVAL_MISSING);
+      return false;
+    }
+
+    if (early in paleoTimes && late in paleoTimes && paleoTimes[early].myaStart <= paleoTimes[late].myaEnd) {
+      alert(translations.INTERVALS_WRONG_ORDER);
+      return false;
+    }
+  }
+
   return true;
 }
 

@@ -43,6 +43,7 @@ function getOccIdsFromSOLR($solrqString, $recLimit) {
 	foreach ($recArr as $k) {
 			$occIds[] = $k['occid'];
 	}
+	sort($occIds);
 	return $occIds;
 }
 

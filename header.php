@@ -52,14 +52,6 @@ $collectionSearchPage = $SHOULD_USE_HARVESTPARAMS ? '/collections/index.php' : '
 </div>
 */
 ?>
-<!-- Global site tag (gtag.js) - Google Analytics 4-->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-98WFW6HYV2"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-98WFW6HYV2');
-</script>
+<?php include_once("includes/googleanalytics.php"); ?>
 
 <div id="site-content">

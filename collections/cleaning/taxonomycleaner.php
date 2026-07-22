@@ -1,8 +1,10 @@
 <?php
 include_once('../../config/symbini.php');
 include_once($SERVER_ROOT.'/classes/TaxonomyCleaner.php');
-if($LANG_TAG != 'en' && file_exists($SERVER_ROOT.'/content/lang/collections/cleaning/taxonomycleaner.'.$LANG_TAG.'.php')) include_once($SERVER_ROOT.'/content/lang/collections/cleaning/taxonomycleaner.'.$LANG_TAG.'.php');
-else include_once($SERVER_ROOT.'/content/lang/collections/cleaning/taxonomycleaner.en.php');
+include_once($SERVER_ROOT . '/classes/utilities/Language.php');
+
+Language::load('collections/cleaning/taxonomycleaner');
+
 header("Content-Type: text/html; charset=".$CHARSET);
 if(!$SYMB_UID) header('Location: ../../profile/index.php?refurl=../collections/cleaning/taxonomycleaner.php?'.htmlspecialchars($_SERVER['QUERY_STRING'], ENT_QUOTES));
 
@@ -183,7 +185,7 @@ elseif($activeCollArr){
 					<div style="float:left;font-weight: bold; font-size: 130%; margin-bottom: 10px">
 						<?php
 						if(is_numeric($collid)){
-							echo '<h1 class="page-heading">Taxonomy Cleaning Tool: ' . $collMap[$collid]['collectionname'].' ('.$collMap[$collid]['code'].')</h1>';
+							echo '<h1 class="page-heading">' . $LANG['TAX_CLEANING_TOOL'] . ': ' . $collMap[$collid]['collectionname'].' ('.$collMap[$collid]['code'].')</h1>';
 						}
 						else{
 							echo '<h1 class="page-heading">' . $LANG['MULT_CLEAN_TOOL'].' '.'(<a href="#" onclick="$(\'#collDiv\').show()" style="color:blue;text-decoration:underline">' . htmlspecialchars(count($activeCollArr), ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE) . ' ' . htmlspecialchars($LANG['COLS'], ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE) . '</a>)</h1>';
