@@ -68,7 +68,7 @@ $imgManager = new ImageLibraryBrowser();
 				echo '<div style="margin-left:15px;margin-bottom:20px">';
 				foreach($specList as $k => $cArr){
 					echo '<div>';
-					$phLink = 'search.php?taxontype=2&imagecount=all&imagetype=all&submitaction=search&db[]='.$k;
+					$phLink = 'search.php?taxontype=2&imagecount=all&imagetype=1&submitaction=search&db[]='.$k;
 					echo '<a href="' . htmlspecialchars($phLink, ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE) . '">' . htmlspecialchars($cArr['name'], ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE) . '</a> (' . htmlspecialchars($cArr['imgcnt'], ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE) . ')</div>';
 				}
 				echo '</div>';
@@ -80,7 +80,7 @@ $imgManager = new ImageLibraryBrowser();
 				echo '<div style="margin-left:15px">';
 				foreach($obsList as $k => $cArr){
 					echo '<div>';
-					$phLink = 'search.php?taxontype=2&imagecount=all&imagetype=all&submitaction=search&db[]='.$k;
+					$phLink = 'search.php?taxontype=2&imagecount=all&imagetype=1&submitaction=search&db[]='.$k;
 					echo '<a href="' . htmlspecialchars($phLink, ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE) . '">' . htmlspecialchars($cArr['name'], ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE) . '</a> (' . htmlspecialchars($cArr['imgcnt'], ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE) . ')</div>';
 				}
 				echo '</div>';

@@ -54,7 +54,6 @@ This stylesheet is defined last and will override all previously loaded sheets. 
 }
 
 .navpath{
-  font-size: 11px;
   padding-top: 30px;
 }
 
@@ -78,6 +77,34 @@ button {
   }
 }
 
+/* Collection Profile Page (Collection Admin) */
+
+img[alt="Bionomia dataset badge"] {
+  margin-top: -16px;
+}
+
+/* Collection Profiles (collections/misc/collprofiles.php) page styles */
+.collprofiles {
+  --max-innertext-width: 1024px;
+
+  h3 {
+    font-size: 1.17em;
+  }
+}
+
+/* Adjustments to the quicksearch box for the collections admin page to work with OregonFlora header */
+@media (min-width: 1425px) {
+  #quicksearch-box {
+    top: 2rem;
+  }
+}
+
+@media (min-width: 1880px) {
+  #quicksearch-box {
+    width: 20vw !important;
+  }
+}
+
 /* Queryform */
 
 /* Standardize queryform font size */
@@ -88,15 +115,6 @@ button {
 /* Larger record entered by field */
 #querydiv #q_recordenteredby {
   max-width: 100px;
-}
-
-/* Occurrence editor buttons */
-
-#edittable .button:not(:disabled), #edittable button:not(:disabled){
-  background-color: var(--oregonflora-green);
-  border: none;
-  font-size: 14px;
-  margin: 0px;
 }
 
 /* Queryform buttons */
@@ -126,12 +144,23 @@ button {
 /* Queryform download button */
 
 #querydiv form .icon-button svg {
-  height: 1.7em !important;
+  height: 1.6em !important;
 }
 
 /* Queryform CU button */
 #querydiv button[onclick="enteredByCurrentUser()"] {
   font-size: 90% !important;
+}
+
+/* Occurrence Editor */
+
+/* Occurrence editor buttons */
+
+#edittable .button:not(:disabled), #edittable button:not(:disabled){
+  background-color: var(--oregonflora-green);
+  border: none;
+  font-size: 14px;
+  margin: 0px;
 }
 
 /* Queryform and occurrence editor button hover */
@@ -161,6 +190,24 @@ button {
 
 .inner-search button#reset-btn:hover {
   background-color: var(--oregonflora-green) !important;
+}
+
+/* Herbarium search results (Table) buttons */
+
+/* Parent div of #sort-div (includes both main buttons & sort results button ) */
+div:has(> #sort-div) button{
+  border: none;
+}
+
+/* Sort results button */
+#sort-div button {
+  font-size: 14px;
+  padding: 4px 10px;
+}
+
+#queryrecords #sort-div button {
+  margin-top: 28px;
+  margin-bottom: 0px;
 }
 
 /* Map page styles */
@@ -211,14 +258,6 @@ button {
   opacity: 0.9;
 }
 
-/* Collection Profiles (collections/misc/collprofiles.php) page styles */
-.collprofiles {
-  --max-innertext-width: 1024px;
-
-  h3 {
-    font-size: 1.17em;
-  }
-}
 
 /* Customizations for the occurrence table display page in collection tools */
 #record-viewer-innertext{
@@ -237,19 +276,6 @@ relevant style is from css/searchStylesInner.css:
 */
 .criteria-panel {
   align-self: start
-}
-
-/* Adjustments to the quicksearch box for the collections admin page to work with OregonFlora header */
-@media (min-width: 1425px) {
-  #quicksearch-box {
-    top: 2rem;
-  }
-}
-
-@media (min-width: 1880px) {
-  #quicksearch-box {
-    width: 20vw !important;
-  }
 }
 
 /* End OregonFlora Symbiota Components */

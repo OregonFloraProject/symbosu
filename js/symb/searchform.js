@@ -533,6 +533,44 @@ function validateForm() {
       errorMsg: "Please select at least one collection.",
     });
   }
+
+  // OregonFlora-specific: only allow searches with at least one of the following required fields
+
+  // Required fields
+  const requiredParams = [
+    "taxa",
+    "county",
+    "local",
+    "elevlow",
+    "elevhigh",
+    "upperlat",
+    "footprintGeoJson",
+    "pointlat",
+    "eventdate1",
+    "eventdate2",
+    "collector",
+    "collnum",
+    "catnum",
+    "clid"
+  ];
+
+  // Check to see if required fields are filled
+  const f = document.getElementById("params-form");
+  const filledParams = requiredParams.some(param => {
+    const input = f.elements[param];
+
+    // Ensure the element exists and its value (trimmed of whitespace) is not empty
+    return input && input.value.trim() !== "";
+  });
+
+  // If not, throw an error
+  if(!filledParams) {
+    errors.push({
+        elId: 'taxa', // show the error in the topmost field we know must be empty
+        errorMsg: 'The parameters you have entered are too broad. Please refine your search.',
+    });
+  }
+
   // HTML5 built-in validation
   const invalidInputs = document.querySelectorAll("input:invalid");
   if (invalidInputs.length > 0) {
@@ -984,6 +1022,10 @@ function setSearchForm(frm) {
     const currentVal = sessionStorage.getItem(key);
     return key.startsWith("querystr" + getCurrentPage()) && key !== ("querystr" + getCurrentPage() + "/" + "accordionIds") && currentVal !== "null"
   });
+
+  // Check all collections by default for OregonFlora
+  checkEverythingInCollections();
+
   if(!hasSessionInfo){
     uncheckEverythingInCollections();
     checkTheCollectionsThatShouldBeCheckedBasedOnConfig();

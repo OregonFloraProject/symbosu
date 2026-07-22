@@ -12,7 +12,6 @@ if ($solrqString) {
 	$solrqString = str_replace('&amp;', '&', $solrqString);
   $occIds = getOccIdsFromSOLR($solrqString, $recLimit);
 }
-
-$mapManager = new OccurrenceMapManager();
-$mapManager->writeKMLFile($recLimit,$kmlFields,$occIds);
+$mapManager = new OccurrenceMapManager($occIds);
+$mapManager->writeKMLFile($recLimit,$kmlFields);
 ?>

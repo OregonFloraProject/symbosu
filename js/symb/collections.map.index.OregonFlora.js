@@ -697,7 +697,7 @@ function convertSOLRResponse(res, host) {
       occid: properties.occid,
       tid: `${properties.tidinterpreted}`,
       type: SOLR_TYPE_TO_SYMBIOTA_TYPE[properties.CollType],
-      catnum: properties.catalogNumber,
+      catalogNumber: properties.catalogNumber,
       eventdate: properties.eventDate?.substring(
         0,
         properties.eventDate.indexOf('T')

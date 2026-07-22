@@ -99,7 +99,7 @@ function openIndPU(occId,clid){
 }
 
 function openMapPU(searchParams = "") {
-	const map_params = 'gridSizeSetting=30&minClusterSetting=10&clusterSwitch=y&menuClosed';
+	const map_params = 'gridSizeSetting=30&minClusterSetting=10&menuClosed';
 	if(!searchParams && window.location.search) {
 		if(window.location.search) {
 			searchParams = window.location.search + '&' + map_params;

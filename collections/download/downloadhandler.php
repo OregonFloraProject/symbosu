@@ -180,7 +180,6 @@ if ($schema == 'backup') {
 			$dwcaHandler->setDelimiter($format);
 			$dwcaHandler->setRedactLocalities($redactLocalities);
 			if ($rareReaderArr) $dwcaHandler->setRareReaderArr($rareReaderArr);
-
 			if(isset($_POST['source']) && $_POST['source'] == 'collection_exporter'){
 				//Request is coming from exporter.php, thus we need to do some custom adjustments
 				$dwcaHandler->setCollArr($_POST['targetcollid']);
@@ -202,14 +201,13 @@ if ($schema == 'backup') {
 					$dwcaHandler->addCondition('catalognumber', 'NOT_NULL');
 				}
 			}
-			if ($isPublicSearch) {
-				if ($solrqString && isset($MAP_SOLR_SEARCH_FLAG) && $MAP_SOLR_SEARCH_FLAG === 1) {
-					// for polygon searches, get a list of occIds from SOLR and just select those directly
-					// this is way faster than using MySQL's ST_WITHIN
-					$dwcaHandler->setCustomWhereSql(getOccIdWhereStringFromSOLR($solrqString));
-				} else {
-					$dwcaHandler->setCustomWhereSql($occurManager->getSqlWhere());
-				}
+
+			if ($solrqString && isset($MAP_SOLR_SEARCH_FLAG) && $MAP_SOLR_SEARCH_FLAG === 1) {
+				// for polygon searches, get a list of occIds from SOLR and just select those directly
+				// this is way faster than using MySQL's ST_WITHIN
+				$dwcaHandler->setCustomWhereSql(getOccIdWhereStringFromSOLR($solrqString));
+			} else {
+				$dwcaHandler->setCustomWhereSql($occurManager->getSqlWhere());
 			}
 
 			// Added for Occurrence Table Display Editor Download Functionality

@@ -710,151 +710,6 @@ $serverHost = GeneralUtil::getDomain();
 			// OregonFlora customizations
 			addOregonFlora(map);
 
-			// Deprecated: Switch to our custom LeafletSingleClusterMapGroup
-			// class LeafletMapGroup {
-			// 	markers = {};
-			// 	layer_groups = {};
-			// 	group_name;
-			// 	group_map;
-
-			// 	constructor(group_name, group_map) {
-			// 		this.group_name = group_name;
-			// 		this.group_map = group_map;
-			// 	}
-
-			// 	addMarker(id, marker) {
-			// 		if(!this.markers[id]) {
-			// 			this.markers[id] = [marker]
-			// 		} else {
-			// 			this.markers[id].push(marker);
-			// 		}
-			// 	}
-
-			// 	genLayer(id, cluster) {
-			// 		this.group_map[id].cluster = cluster;
-			// 		this.layer_groups[id] = L.layerGroup(this.markers[id]);
-			// 		this.group_map[id].cluster.addLayer(this.layer_groups[id]);
-			// 	}
-
-			// 	drawGroup() {
-			// 		for (let id of Object.keys(this.group_map)) {
-			// 			if(clusteroff) {
-			// 				this.layer_groups[id].addTo(map.mapLayer);
-			// 			} else if(!map.mapLayer.hasLayer(this.group_map[id].cluster)) {
-			// 				this.group_map[id].cluster.addTo(map.mapLayer)
-			// 			}
-			// 		}
-			// 	}
-
-			// 	removeGroup() {
-			// 		for (let id of Object.keys(this.group_map)) {
-			// 			if(clusteroff) {
-			// 				map.mapLayer.removeLayer(this.layer_groups[id])
-			// 			} else {
-			// 				map.mapLayer.removeLayer(this.group_map[id].cluster)
-			// 			}
-			// 		}
-			// 	}
-
-			// 	resetGroup() {
-			// 		for (let id of Object.keys(this.group_map)) {
-			// 			this.group_map[id].cluster.clearLayers();
-			// 			this.layer_groups[id].clearLayers();
-			// 			this.markers[id] = [];
-			// 		}
-			// 	}
-
-			// 	removeLayer(id) {
-			// 		this.group_map[id].cluster.clearLayers();
-			// 		map.mapLayer.removeLayer(this.group_map[id].cluster);
-			// 	}
-
-			// 	addLayer(id) {
-			// 		//First Add layer for both regular layer group and for clustering
-			// 		this.layer_groups[id] = L.layerGroup(this.markers[id]);
-			// 		this.group_map[id].cluster.addLayer(this.layer_groups[id])
-
-			// 		//Then Decide which is visible
-			// 		if(!heatmap) {
-			// 			if(clusteroff) {
-			// 				map.mapLayer.addLayer(this.layer_groups[id]);
-			// 			} else if(!map.mapLayer.hasLayer(this.group_map[id].cluster)) {
-			// 				this.group_map[id].cluster.addTo(map.mapLayer);
-			// 			}
-			// 		}
-			// 	}
-
-			// 	toggleClustering() {
-			// 		for(let id of Object.keys(this.group_map)) {
-			// 			if(clusteroff) {
-			// 				if(map.mapLayer.hasLayer(this.group_map[id].cluster)) {
-			// 					map.mapLayer.removeLayer(this.group_map[id].cluster);
-			// 				}
-			// 				map.mapLayer.addLayer(this.layer_groups[id]);
-			// 			} else {
-			// 				map.mapLayer.removeLayer(this.layer_groups[id]);
-			// 				if(!map.mapLayer.hasLayer(this.group_map[id].cluster)) {
-			// 					this.group_map[id].cluster.addTo(map.mapLayer);
-			// 				}
-			// 			}
-			// 		}
-			// 	}
-
-			// 	genClusters() {
-			// 		for(let id in this.group_map) {
-			// 			const cluster_rendered = this.group_map[id].cluster && map.mapLayer.hasLayer(this.group_map[id].cluster);
-			// 			if(cluster_rendered) {
-			// 				map.mapLayer.removeLayer(this.group_map[id].cluster);
-			// 			}
-			// 			const value = this.group_map[id];
-			// 			const colorCluster = (cluster) => {
-			// 				let childCount = cluster.getChildCount();
-			// 				cluster.bindTooltip(`<div style="font-size:1rem"><?= $LANG['CLICK_TO_EXPAND'] ?></div>`);
-			// 				cluster.on("click", e => e.target.spiderfy() )
-			// 				return new L.DivIcon.CustomColor({
-			// 					html: `<div class="symbiota-cluster" style="background-color: #${value.color};"><span>` + childCount + '</span></div>',
-			// 					className: `symbiota-cluster-div`,
-			// 					iconSize: new L.Point(20, 20),
-			// 					color: `#${value.color}77`,
-			// 					mainColor: `#${value.color}`,
-			// 				});
-			// 			}
-
-			// 			let cluster = L.markerClusterGroup({
-			// 				iconCreateFunction: colorCluster,
-			// 				//cluster_radius is a global
-			// 				maxClusterRadius: cluster_radius,
-			// 				zoomToBoundsOnClick: false,
-			// 				chunkedLoading: true
-			// 			});
-
-			// 			if(!this.layer_groups[id]) {
-			// 				this.genLayer(id, cluster);
-			// 			} else {
-			// 				this.group_map[id].cluster = cluster;
-			// 				this.group_map[id].cluster.addLayer(this.layer_groups[id]);
-			// 			}
-
-			// 			//Only Redraws if cluster of id was on map before regen
-			// 			if(!clusteroff && cluster_rendered) {
-			// 				this.group_map[id].cluster.addTo(map.mapLayer);
-			// 			}
-			// 		}
-			// 	}
-
-			// 	updateColor(id, color) {
-			// 		this.group_map[id].color = color;
-
-			// 		for (let marker of this.markers[id]) {
-			// 			if(marker.options.icon && marker.options.icon.options.observation) {
-			// 				marker.setIcon(getObservationSvg({color: `#${color}`, size: 28 }))
-			// 			} else {
-			// 				marker.setIcon(getSpecimenSvg({color: `#${color}`, size: 7 }))
-			// 			}
-			// 		}
-			// 	}
-			// }
-
 			function genMapGroups(records, tMap, cMap, origin) {
 				/**
 				 * 2025-03-18(eric): switch to our custom LeafletSingleClusterMapGroup, which puts all
@@ -886,7 +741,6 @@ $serverHost = GeneralUtil::getDomain();
 								size: 30
 							})
 						}))
-					.on('click', function() { openRecord(record) })
 					.bindTooltip(`<div style="font-size:1rem">${record.id}</div>`)
 
 					marker.record = record;
@@ -991,11 +845,14 @@ $serverHost = GeneralUtil::getDomain();
 			// Oregonflora-specific: Allows for submitting form as soon as page loads
 			// See notes above $SEARCH_ON_PAGE_LOAD
 			const submitForm = async formElement => {
-				//if(!verifyCollForm(formElement)) return false;
-				if(!validateCollections()) return false;
+
+				// OregonFlora: Use the older map-specific version that has additional tests built in for OregonFlora features
+				// (e.g., KML search)
+				if(!verifyCollForm(formElement)) return false;
+				//if(!validateCollections()) return false;
 
 				showWorking();
-				storeFormDataInSessionStorage(formElement.target);
+				storeFormDataInSessionStorage(formElement);
 
 				let formData = new FormData(formElement);
 
@@ -1009,14 +866,6 @@ $serverHost = GeneralUtil::getDomain();
 				oms.clearMarkers();
 
 				if(heatmapLayer) map.mapLayer.removeLayer(heatmapLayer);
-<?php if (!$USE_SOLR_SEARCH) { ?>
-				// TODO JGM: This is old code
-				// This used to call occurrencelist.php asynchronously, but it's been replaced
-				// by buildRecordsPanel() below
-				//getOccurenceRecords(formData).then(res => {
-				//	if (res) loadOccurenceRecords(res);
-				//});
-<?php } ?>
 
 				let searches = [
 					searchCollections(formData).then(res => {
@@ -1054,14 +903,6 @@ $serverHost = GeneralUtil::getDomain();
 						const group = genMapGroups(search.recordArr, search.taxaArr, search.collArr, search.label)
 						group.origin = search.origin;
 						mapGroups.push(group);
-<?php if ($USE_SOLR_SEARCH) { ?>
-						// TODO JGM: This is old code
-						// This used to call occurrencelist.php asynchronously, but it's been replaced
-						// by buildRecordsPanel() below
-						//getOccurenceRecords(formData, search).then(res => {
-						//	if (res) loadOccurenceRecords(res, search);
-						//});
-<?php } ?>
 					}
 					count++;
 				}
@@ -1284,14 +1125,16 @@ $serverHost = GeneralUtil::getDomain();
 
 					drawPoints();
 					fitMap();
+
+					// once map is initialized, programmatically submit form if query params are provided
+					if (<?php echo $SEARCH_ON_PAGE_LOAD ? 'true' : 'false'; ?>) {
+						submitForm(document.getElementById("params-form"));
+					}
 				})
 			}
 			fitMap();
 
-			// once map is initialized, programmatically submit form if query params are provided
-			if (<?php echo $SEARCH_ON_PAGE_LOAD ? 'true' : 'false'; ?>) {
-				submitForm(document.getElementById("mapsearchform"));
-			}
+
 		}
 
 		// Google Maps (not in use)
@@ -1893,6 +1736,9 @@ $serverHost = GeneralUtil::getDomain();
 					return;
 				}
 
+				// Give fullquerykmlform SOLR query
+				document.getElementById('solrqstring').value = response.query;
+
 				// if our query includes a polygon, save solrqString so we can pass it to downloadhandler
 				// since SOLR search is way faster than MySQL with polygons
 				if (body.has('polycoords') || body.has('upperlat')) {
@@ -2293,6 +2139,7 @@ $serverHost = GeneralUtil::getDomain();
 		<script src="../../js/symb/api.taxonomy.taxasuggest.js?ver=4" type="text/javascript"></script>
 	</head>
 	<body class="collapsed-header" style='width:100%;overflow:hidden' <?php echo (!$activateGeolocation?'onload="initialize();"':''); ?>>
+		<div style="z-index:999;" id="error-msgs" class="errors"></div>
 		<?php
 		if($shouldUseMinimalMapHeader) include_once($SERVER_ROOT . '/includes/minimalheader.php');
 		include($SERVER_ROOT . '/includes/header.php');
@@ -2306,7 +2153,7 @@ $serverHost = GeneralUtil::getDomain();
 			data-coll-map="<?=htmlspecialchars(json_encode($collArr))?>"
 			data-records="<?=htmlspecialchars(json_encode($recordArr))?>"
 			data-record-limit="<?= OccurrenceMapManager::MAP_RECORD_LIMIT ?>"
-			data-cluster-off="<?= $mapManager->getSearchTerm('clusterSwitch') ?>"
+			data-cluster-off="<?= htmlspecialchars($clusterOff) ?>"
 			data-external-portal-hosts="<?=htmlspecialchars(json_encode($EXTERNAL_PORTAL_HOSTS))?>"
 			class="service-container"
 		>
@@ -2331,7 +2178,7 @@ $serverHost = GeneralUtil::getDomain();
 								</svg>
 							</a>
 						</h3>
-						<form name="params-form" id="params-form" data-ajax="false">
+						<form name="params-form" id="params-form" data-ajax="false" style="padding:0px;height:100%">
 							<div id="tabs1" class="content" style="padding:0px;height:100%">
 								<ul>
 									<li><a href="#search-form-colls"><span><?php echo htmlspecialchars($LANG['COLLECTIONS'], ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE); ?></span></a></li>
@@ -2534,10 +2381,12 @@ $serverHost = GeneralUtil::getDomain();
 										<input data-role="none" type='checkbox' name='hasimages' value='1' <?php if($mapManager->getSearchTerm('hasimages')) echo "CHECKED"; ?> >
 										<?= $LANG['LIMIT_IMAGES'] ?>
 									</div>
-									<div style="margin-top:5px;">
+									<!-- Disable this section because OregonFlora
+									 doesn't have any audio-type media -->
+									<!-- <div style="margin-top:5px;">
 										<input data-role="none" type='checkbox' name='hasaudio' value='1' <?php if($mapManager->getSearchTerm('hasaudio')) echo "CHECKED"; ?> >
 										<?= $LANG['LIMIT_AUDIO'] ?>
-									</div>
+									</div> -->
 									<div style="margin-top:5px;">
 										<input data-role="none" type='checkbox' name='hasgenetic' value='1' <?php if($mapManager->getSearchTerm('hasgenetic')) echo "CHECKED"; ?> >
 										<?= $LANG['LIMIT_GENETIC'] ?>
@@ -2616,7 +2465,7 @@ $serverHost = GeneralUtil::getDomain();
 									<fieldset>
 										<legend><?= $LANG['CLUSTERING'] ?></legend>
 										<label><?= $LANG['TURN_OFF_CLUSTERING'] ?>:</label>
-										<input data-role="none" type="checkbox" id="clusteroff" name="clusteroff" value='1' <?= ($mapManager->getSearchTerm('clusterSwitch') == "y"? 'checked':'') ?>/>
+										<input data-role="none" type="checkbox" id="clusteroff" name="clusteroff" value='1' <?= ($clusterOff == "y"? 'checked':'') ?>/>
 	
 										<span style="display: flex; align-items:center">
 											<label for="cluster-radius"><?= $LANG['CLUSTER_RADIUS'] ?>: 1 </label>
@@ -2757,6 +2606,7 @@ $serverHost = GeneralUtil::getDomain();
 										<input name="searchvar" type="hidden" value="<?= $searchVar ?> " />
 										<input name="reclimit" type="hidden" value="<?= $mapManager->getSearchTerm('reclimit') ?>" />
 										<input name="sourcepage" type="hidden" value="map" />
+										<input id='solrqstring' name="solrqstring" type="hidden" />
 										<input name="dltype" type="hidden" value="specimen" />
 									</form>
 
@@ -2765,7 +2615,9 @@ $serverHost = GeneralUtil::getDomain();
 											<svg style="width:1.3em" alt="<?= $LANG['IMG_DWNL_DATA'] ?>" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/></svg>
 											<span style="color: var(--light-color);">KML</span>
 										</button>
+										<input name="reclimit" type="hidden" value="<?php echo $recLimit; ?>" />
 										<input name="searchvar" type="hidden" value="<?= $searchVar ?> " />
+										<input id='solrqstring' name="solrqstring" type="hidden" />
 									</form>
 
 									<button style="width: auto;" class="icon-button" onclick="copyUrl('<?= $comingFrom ?>')" title="<?= $LANG['COPY_TO_CLIPBOARD'] ?>">

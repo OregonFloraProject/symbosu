@@ -7,14 +7,17 @@ class OccurrenceMapManager extends OccurrenceManager {
 
 	private $recordCount;
 	private $collArrIndex = 0;
+	// This property is for SOLR to insert Occurrence Ids in 
+	private $occIds;
 
 	public const DEFAULT_GRID_SIZE=60;
 	public const MIN_CLUSTER_SETTING=10;
 	public const MAP_RECORD_LIMIT=30000;
 	public const DEFAULT_CLUSTER_SWITCH='y';
 
-	public function __construct(){
+	public function __construct($occIds = null){
 		parent::__construct();
+		$this->occIds = $occIds;
 		$this->readGeoRequestVariables();
 		$this->setGeoSqlWhere();
 	}
@@ -74,6 +77,8 @@ class OccurrenceMapManager extends OccurrenceManager {
 
 		$this->sqlWhere .= 'AND (ts.taxauthid = 1 OR ts.taxauthid IS NULL) ';
 		$sql .= $this->getTableJoins($this->sqlWhere);
+		// Check for iNaturalist Observations
+		$sql .= "LEFT JOIN omoccurassociations a ON o.occid = a.occid AND a.relationship = 'iNaturalistObservation' ";
 		$sql .= $this->sqlWhere;
 
 		if(is_numeric($start) && $limit){
@@ -288,6 +293,9 @@ class OccurrenceMapManager extends OccurrenceManager {
 			$sqlWhere .=  ' AND ((o.decimallatitude BETWEEN -90 AND 90) AND (o.decimallongitude BETWEEN -180 AND 180)) ';
 			$this->sqlWhere = $sqlWhere;
 		}
+		else if($this->occIds){
+			$this->sqlWhere = 'WHERE o.occid IN(' . implode(',', $this->occIds) . ') ';
+		}
 		else{
 			//Don't allow someone to query all occurrences if there are no conditions
 			$this->sqlWhere = 'WHERE o.occid IS NULL ';
@@ -296,7 +304,7 @@ class OccurrenceMapManager extends OccurrenceManager {
 
 	//Shape functions
 
-	public function writeKMLFile($recLimit, $extraFieldArr = null, $occIds = null){
+	public function writeKMLFile($recLimit, $extraFieldArr = null){
 		//Output data
 		$fileName = $GLOBALS['DEFAULT_TITLE'];
 		if($fileName){

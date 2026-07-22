@@ -133,7 +133,7 @@ class SpecUploadINat extends SpecUploadBase{
 						$imgMap['dbpk'] = $recMap['dbpk'];
 
 						// Load the image data into uploadimagetemp
-						$this->loadImageRecord($imgMap);
+						$this->loadMediaRecord($imgMap);
 						unset($imgMap);
 					}
 				}
