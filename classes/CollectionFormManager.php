@@ -59,8 +59,8 @@ class CollectionFormManager extends Manager {
         if (array_key_exists('institutioncode', $collectionArr)) {
             $codeStr .= $collectionArr['institutioncode'];
         }
-        if (array_key_exists('collcode', $collectionArr)) {
-            $codeStr .= '-' . $collectionArr['collcode'];
+        if (array_key_exists('collectioncode', $collectionArr)) {
+            $codeStr .= '-' . $collectionArr['collectioncode'];
         }
         $codeStr .= ')';
         return $codeStr;

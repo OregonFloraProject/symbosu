@@ -214,33 +214,33 @@ elseif(file_exists('../editor/includes/config/occurVarDefault.php')){
 						<div style="margin:3px;">
 							<div title="<?= $LANG['DEF_SPEC_REC'] ?>">
 								<label for="taxa"> <?= (defined('SCIENTIFICNAMELABEL')?SCIENTIFICNAMELABEL: (isset($LANG['SCI_NAME']) ? $LANG['SCI_NAME'] : 'Scientific Name: ')) ?></label>
-								<input type="text" name="taxa" id="taxa" size="60" value="<?= !empty($_REQUEST['taxa']) ? Sanitize::inString($_REQUEST['taxa']) : '' ?>" />
+								<input type="text" name="taxa" id="taxa" size="60" value="<?= !empty($_REQUEST['taxa']) ? Sanitize::outString($_REQUEST['taxa']) : '' ?>" />
 							</div>
 						</div>
 						<div style="margin:3px;clear:both;">
 							<div style="float:left;" title="<?= $LANG['FULL_NAME'] ?>">
 								<label for="recordedby"><?= (defined('RECORDEDBYLABEL')?RECORDEDBYLABEL: (isset($LANG['COLLECTOR']) ? $LANG['COLLECTOR'] : 'Collector:')) ?></label>
-								<input type="text" name="recordedby" id="recordedby" style="width:150px;" value="<?= !empty($_REQUEST['recordedby']) ? Sanitize::inString($_REQUEST['recordedby']) : '' ?>" />
+								<input type="text" name="recordedby" id="recordedby" style="width:150px;" value="<?= !empty($_REQUEST['recordedby']) ? Sanitize::outString($_REQUEST['recordedby']) : '' ?>" />
 							</div>
 							<div style="float:left;margin-left:10px;" title="<?= $LANG['SEPARATE_TERMS'] ?>">
 								<label for="recordnumber"><?= (defined('RECORDNUMBERLABEL')?RECORDNUMBERLABEL: (isset($LANG['REC_NUM']) ? $LANG['REC_NUM'] : 'Record Number(s):')) ?></label>
-								<input type="text" name="recordnumber" id="recordnumber" style="width:150px;" value="<?= !empty($_REQUEST['recordnumber']) ? Sanitize::inString($_REQUEST['recordnumber']) : '' ?>" />
+								<input type="text" name="recordnumber" id="recordnumber" style="width:150px;" value="<?= !empty($_REQUEST['recordnumber']) ? Sanitize::outString($_REQUEST['recordnumber']) : '' ?>" />
 							</div>
 							<div style="float:left;margin-left:10px;" title="<?= $LANG['SEPARATE_TERMS'] ?>">
 								<label for="identifier"><?= (defined('CATALOGNUMBERLABEL')?CATALOGNUMBERLABEL: (isset($LANG['CAT_NUM']) ? $LANG['CAT_NUM'] : 'Catalog Number(s):')) ?></label>
-								<input type="text" name="identifier" id="identifier" style="width:150px;" value="<?= !empty($_REQUEST['identifier']) ? Sanitize::inString($_REQUEST['identifier']) : '' ?>" />
+								<input type="text" name="identifier" id="identifier" style="width:150px;" value="<?= !empty($_REQUEST['identifier']) ? Sanitize::outString($_REQUEST['identifier']) : '' ?>" />
 							</div>
 						</div>
 						<div style="margin:3px;clear:both;">
 							<div style="float:left;">
 								<label for="recordenteredby"> <?= $LANG['ENTER_BY'] ?> </label>
-								<input type="text" name="recordenteredby" id="recordenteredby" value="<?= !empty($_REQUEST['recordenteredby']) ? Sanitize::inString($_REQUEST['recordenteredby']) : '' ?>" style="width:100px;" title="<?= $LANG['LOG_NAME'] ?> " aria-label="<?= $LANG['ENTER_BY'] ?>" />
+								<input type="text" name="recordenteredby" id="recordenteredby" value="<?= !empty($_REQUEST['recordenteredby']) ? Sanitize::outString($_REQUEST['recordenteredby']) : '' ?>" style="width:100px;" title="<?= $LANG['LOG_NAME'] ?> " aria-label="<?= $LANG['ENTER_BY'] ?>" />
 							</div>
 							<div style="margin-left:20px;float:left;">
 								<label for="date1"><?= $LANG['DATE_RANGE'] ?></label>
-								<input type="text" name="date1" id="date1" style="width:100px;" value="<?= !empty($_REQUEST['date1']) ? Sanitize::inString($_REQUEST['date1']) : '' ?>" onchange="validateDateFields(this.form)" />
+								<input type="text" name="date1" id="date1" style="width:100px;" value="<?= !empty($_REQUEST['date1']) ? Sanitize::outString($_REQUEST['date1']) : '' ?>" onchange="validateDateFields(this.form)" />
 								<label for="date2"> <?= $LANG['TO'] ?> </label>
-								<input type="text" name="date2" id="date2" style="width:100px;" value="<?= !empty($_REQUEST['date2']) ? Sanitize::inString($_REQUEST['date2']) : '' ?>" onchange="validateDateFields(this.form)" />
+								<input type="text" name="date2" id="date2" style="width:100px;" value="<?= !empty($_REQUEST['date2']) ? Sanitize::outString($_REQUEST['date2']) : '' ?>" onchange="validateDateFields(this.form)" />
 								<label for="datetarget" style="margin-left:10px"><?= $LANG['TYPE_OF_DATE'] ?>:</label>
 								<select name="datetarget" id="datetarget">
 									<option value="dateentered"><?= $LANG['DATE_ENTERED'] ?></option>

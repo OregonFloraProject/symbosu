@@ -22,6 +22,14 @@ function getOccIdWhereStringFromSOLR($solrqString) {
 	return 'WHERE o.occid IN(' . implode(',', $occIds) . ')';
 }
 
+if(empty($OVERRIDE_DOWNLOAD_LOGIN_REQUIREMENT) && !$SYMB_UID){
+	//Portal is configured to require
+	http_response_code(401);
+	header('Content-Type: application/json');
+	echo json_encode(['error' => 'Unauthorized access']);
+	exit;
+}
+
 $token = $_POST['downloadToken'] ?? null;
 if ($token) {
 	setcookie('downloadToken', $token, [
@@ -43,9 +51,9 @@ if ($schema == 'backup') {
 			$dwcaHandler->setIncludeDets(1);
 			$dwcaHandler->setIncludeImgs(1);
 			$dwcaHandler->setIncludeAttributes(1);
-			if ($dwcaHandler->hasMaterialSamples($collid)) $dwcaHandler->setIncludeMaterialSample(1);
-			if ($dwcaHandler->hasIdentifiers($collid)) $dwcaHandler->setIncludeIdentifiers(1);
-			if ($dwcaHandler->hasAssociations($collid)) $dwcaHandler->setIncludeAssociations(1);
+			$dwcaHandler->setIncludeMaterialSample(1);
+			$dwcaHandler->setIncludeIdentifiers(1);
+			$dwcaHandler->setIncludeAssociations(1);
 			$dwcaHandler->setRedactLocalities(0);
 			$dwcaHandler->setCollArr($collid);
 
