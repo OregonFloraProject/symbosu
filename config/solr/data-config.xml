@@ -15,9 +15,9 @@
                     CONCAT_WS(' to ',IFNULL(DATE_FORMAT(o.eventDate,'%d %M %Y'),''),DATE_FORMAT(MAKEDATE(o.year,o.endDayOfYear),'%d %M %Y')) AS displayDate,
                     o.`year`, o.`month`, o.`day`, o.habitat, o.associatedTaxa,
                     o.cultivationStatus, o.`country`, o.stateProvince, o.`county`, o.municipality, o.locality,
-                    o.localitySecurity, o.localitySecurityReason, o.decimalLatitude, o.decimalLongitude,
+                    o.recordSecurity AS localitySecurity, o.securityReason AS localitySecurityReason, o.decimalLatitude, o.decimalLongitude,
                     CONCAT('POINT(',o.decimalLongitude,' ',o.decimalLatitude,')') as pointLocation, o.minimumElevationInMeters,
-                    o.maximumElevationInMeters, o.observeruid, o.lifeStage, o.sex, o.individualCount,
+                    o.maximumElevationInMeters, o.observeruid,
                     c.InstitutionCode, c.CollectionCode, c.CollectionName, c.icon, c.CollType, c.SortSeq
                     FROM omoccurrences AS o LEFT JOIN omcollections AS c ON o.collid = c.collid"
                 deltaImportQuery="SELECT o.occid, o.collid, o.catalogNumber, o.otherCatalogNumbers, o.family, o.sciname, o.tidinterpreted,
@@ -27,13 +27,13 @@
                     CONCAT_WS(' to ',IFNULL(DATE_FORMAT(o.eventDate,'%d %M %Y'),''),DATE_FORMAT(MAKEDATE(o.year,o.endDayOfYear),'%d %M %Y')) AS displayDate,
                     o.`year`, o.`month`, o.`day`, o.habitat, o.associatedTaxa,
                     o.cultivationStatus, o.`country`, o.stateProvince, o.`county`, o.municipality, o.locality,
-                    o.localitySecurity, o.localitySecurityReason, o.decimalLatitude, o.decimalLongitude,
+                    o.recordSecurity  AS localitySecurity, o.securityReason AS localitySecurityReason, o.decimalLatitude, o.decimalLongitude,
                     CONCAT('POINT(',o.decimalLongitude,' ',o.decimalLatitude,')') as pointLocation, o.minimumElevationInMeters,
-                    o.maximumElevationInMeters, o.observeruid, o.lifeStage, o.sex, o.individualCount,
+                    o.maximumElevationInMeters, o.observeruid,
                     c.InstitutionCode, c.CollectionCode, c.CollectionName, c.icon, c.CollType, c.SortSeq
                     FROM omoccurrences AS o LEFT JOIN omcollections AS c ON o.collid = c.collid
                     WHERE o.occid = '${dih.delta.occid}'"
-                deltaQuery="SELECT occid FROM images i WHERE (i.InitialTimeStamp > CONVERT_TZ('${dih.last_index_time}','+00:00','-06:00'))
+                deltaQuery="SELECT occid FROM media i WHERE (i.InitialTimeStamp > CONVERT_TZ('${dih.last_index_time}','+00:00','-06:00'))
                     UNION SELECT o.occid FROM omoccurrences AS o WHERE (o.dateLastModified > CONVERT_TZ('${dih.last_index_time}','+00:00','-06:00'))">
                 <field column="occid" name="id"/>
                 <field column="occid" name="occid"/>
@@ -71,9 +71,6 @@
                 <field column="minimumElevationInMeters" name="minimumElevationInMeters"/>
                 <field column="maximumElevationInMeters" name="maximumElevationInMeters"/>
                 <field column="observeruid" name="observeruid"/>
-                <field column="lifeStage" name="lifeStage"/>
-                <field column="sex" name="sex"/>
-                <field column="individualCount" name="individualCount"/>
                 <field column="InstitutionCode" name="InstitutionCode"/>
                 <field column="CollectionCode" name="CollectionCode"/>
                 <field column="CollectionName" name="CollectionName"/>
@@ -81,20 +78,17 @@
                 <field column="CollType" name="CollType"/>
                 <field column="SortSeq" name="SortSeq"/>
                 <entity name="images_inner"
-                  query="SELECT imgid, thumbnailurl FROM images WHERE occid ='${omoccurrences.occid}' ORDER BY sortsequence">
+                  query="SELECT mediaID AS imgid, thumbnailurl FROM media WHERE occid ='${omoccurrences.occid}'">
                   <field column="imgid" name="imgid"/>
                   <field column="thumbnailurl" name="thumbnailurl"/>
                 </entity>
                 <entity name="genetic_inner"
-                  query="SELECT identifier, resourcename, locus FROM omoccurgenetic WHERE occid ='${omoccurrences.occid}'">
-                  <field column="identifier" name="genidentifier"/>
+                  query="SELECT resourcename FROM omoccurgenetic WHERE occid ='${omoccurrences.occid}'">
                   <field column="resourcename" name="resourcename"/>
-                  <field column="locus" name="locus"/>
                 </entity>
-                <entity name="associations_inner"
-                  query="SELECT relationship, verbatimsciname FROM omoccurassociations WHERE occid ='${omoccurrences.occid}'">
-                  <field column="relationship" name="assocrelationship"/>
-                  <field column="verbatimsciname" name="assocverbatimsciname"/>
+                <entity name="relationship_inner"
+                  query="SELECT relationship FROM omoccurassociations WHERE occid ='${omoccurrences.occid}' AND relationship = 'iNaturalistObservation'">
+                  <field column="relationship" name="relationship"/>
                 </entity>
                 <entity name="clid_inner"
                   query="SELECT CLID FROM fmvouchers WHERE occid ='${omoccurrences.occid}'">
