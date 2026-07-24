@@ -309,6 +309,9 @@ $serverHost = GeneralUtil::getDomain();
 		<?php } ?>
 		</style>
 		<script type="text/javascript">
+			// Push clientRoot in for js/symb/api.taxonomy.taxasuggest.js
+			const clientRoot = '<?php echo $CLIENT_ROOT; ?>';
+
 			const MAP_KML_IMPORT_FLAG = <?php echo (isset($MAP_KML_IMPORT_FLAG) && $MAP_KML_IMPORT_FLAG === 1) ? 'true' : 'false'; ?>;
 			const MOBILE_BREAKPOINT = 576;
 		//Clid
