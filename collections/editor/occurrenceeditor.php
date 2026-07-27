@@ -1591,10 +1591,18 @@ else{
 												<div style="float:left;" title="<?php echo $LANG['PRIMARY_KEY']; ?>">
 													<?php if($occId) echo 'Key: '.$occManager->getOccId(); ?>
 												</div>
-												<div style="float:left;margin-left:50px;">
-													<?php if(array_key_exists('datelastmodified',$occArr)) echo $LANG['MODIFIED'].': '.$occArr['datelastmodified']; ?>
+												<div style="float:left;margin-left:30px;">
+													<?php 
+													if(array_key_exists('recordmodifiedby',$occArr)){
+														echo $LANG['MODIFIED_BY'] . ': ' . ($occArr['recordmodifiedby'] ? $occArr['recordmodifiedby'] : $LANG['NOT_RECORDED']);
+													} else {
+														echo $LANG['MODIFIED']. ':';
+													}
+
+													if(array_key_exists('datelastmodified',$occArr)) echo ' [' . $occArr['datelastmodified'] . ']'; 
+													?>
 												</div>
-												<div style="float:left;margin-left:50px;">
+												<div style="float:left;margin-left:30px;">
 													<?php
 													if(array_key_exists('recordenteredby',$occArr)){
 														echo $LANG['ENTERED_BY'].': '.($occArr['recordenteredby']?$occArr['recordenteredby']:$LANG['NOT_RECORDED']);

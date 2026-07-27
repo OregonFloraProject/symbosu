@@ -105,6 +105,7 @@ $LANG['NO_SET_STATUS'] = 'No Set Status';
 $LANG['AKA_GENERAL'] = 'aka data generalizations';
 $LANG['PRIMARY_KEY'] = 'Internal occurrence record Primary Key (occid)';
 $LANG['MODIFIED'] = 'Modified';
+$LANG['MODIFIED_BY'] = 'Modified by';
 $LANG['ENTERED_BY'] = 'Entered by';
 $LANG['NOT_RECORDED'] = 'not recorded';
 $LANG['CHECKLIST_VOUCHER'] = 'Checklist Voucher';
