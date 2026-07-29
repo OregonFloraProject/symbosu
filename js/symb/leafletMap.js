@@ -700,7 +700,7 @@ class LeafletMap {
       this.mapLayer.addLayer(drawnItems);
 
       // Disable this flag, because it causes the "polygon movable outside of edit mode" bug
-	//   L.Draw.Polygon.prototype.options.shapeOptions.draggable = true;
+	   // L.Draw.Polygon.prototype.options.shapeOptions.draggable = true;
 
       //Jank workaround for leaflet-draw api
       const setDrawColor = (drawOption) => {
