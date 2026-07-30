@@ -87,6 +87,12 @@ function get_data($params) {
 		$identManager->setSearchName($params['name']);
 	}
 
+	// If we export word or csv for Grow Native vendor checklist, we need to see notes of each taxon
+	if (array_key_exists("pid", $_GET) || is_numeric($_GET["pid"])) {
+		$pid = (int)$_GET["pid"];
+		if ($pid === Fmchecklists::$PID_VENDOR_ALL) $identManager->setIncludeChecklistNotes(true);
+	}
+
 	$identManager->setThumbnails(true);
 	$identManager->setTaxa();
 	$results['taxa'] = $identManager->getTaxa();

@@ -14,6 +14,8 @@ function exportChecklistToCSV($checklist) {
 		"CommonName",
 		#"TaxonId"
 	);
+
+	$includeNoteHeader = false;
 	foreach ($checklist['taxa'] as $taxon) {
 		$tmp = array(
 			$taxon['family'],
@@ -22,6 +24,16 @@ function exportChecklistToCSV($checklist) {
 			sizeof($taxon['vernacular']['names']) ? $taxon['vernacular']['names'][0] : $taxon['vernacular']['basename'],
 			#$taxa['tid'],
 		);
+
+		// Add "Notes" for Grow Native vendor checklist export
+		if (isset($taxon['checklistNotes']) && $taxon['checklistNotes']) {
+			// Insert "Note" header to CSV once then move on
+			if (!$includeNoteHeader) {
+				$header[] = "Notes";
+				$includeNoteHeader = true;
+			}
+			 $tmp[] = $taxon['checklistNotes'];
+		}
 		$taxa[] = $tmp;
 	}
 	sort($taxa);
@@ -276,6 +288,12 @@ function exportChecklistToWord($checklist) {
 			#}
 			$textrun = $section->addTextRun('scinamePara');
 			$textrun->addLink('http://'.$_SERVER['HTTP_HOST'].$CLIENT_ROOT.'/taxa/index.php?taxauthid=1&taxon='.$sppArr['tid'].'&cl='.$checklist['clid'],htmlspecialchars($sppArr['sciname']),'scientificnameFont');
+
+			// Add "Notes" for Grow Native vendor checklist export
+			if (isset($sppArr['checklistNotes']) && $sppArr['checklistNotes']) {
+				$textrun = $section->addTextRun('scinamePara');
+				$textrun->addText($sppArr['checklistNotes'],'textFont');
+			}
 			/*if(array_key_exists("author",$sppArr)){ 
 				$sciAuthor = str_replace('&quot;','"',$sppArr["author"]);
 				$sciAuthor = str_replace('&apos;',"'",$sciAuthor);
