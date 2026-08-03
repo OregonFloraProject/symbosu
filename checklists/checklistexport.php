@@ -5,7 +5,6 @@ error_reporting(E_ALL);
 #include_once('../config/symbini.php');
 
 function exportChecklistToCSV($checklist) {
-	
 	$taxa = array();
 	$header = array(
 		"Family",
@@ -36,10 +35,10 @@ function exportChecklistToCSV($checklist) {
 		}
 		$taxa[] = $tmp;
 	}
+
+	# Don't be alarmed by the result of csv. sort() prioritizes elements with less fields first.
 	sort($taxa);
 	array_unshift($taxa,$header);
-	#return $return;
-	
 	
 	$title = str_replace(" ","_",$checklist['title']) . "_" . date("Ymd");
 	header('Content-Description: File Transfer');
@@ -53,7 +52,6 @@ function exportChecklistToCSV($checklist) {
 
 }
 function exportChecklistToVendorCSV($checklist) {
-//var_dump($checklist);
 	$taxa = array();
 	$header = array(
 		//"Family",
@@ -81,9 +79,6 @@ function exportChecklistToVendorCSV($checklist) {
 	}
 	sort($taxa);
 	array_unshift($taxa,$header);
-	#return $return;
-	#var_dump($taxa);
-	#exit;
 	
 	$title = str_replace(" ","_",$checklist['title']) . "_" . date("Ymd");
 	header('Content-Description: File Transfer');
@@ -94,7 +89,6 @@ function exportChecklistToVendorCSV($checklist) {
 		fputcsv($out, $taxon, ",","\"");
 	}
 	fclose($out);
-
 }
 
 
@@ -106,11 +100,8 @@ function exportChecklistToWord($checklist) {
 	this required a path fix to /vendor/phpoffice/phpword/bootstrap.php
 	*/
 	$bootstrap = $SERVER_ROOT.'/vendor/phpoffice/phpword/bootstrap.php';
-	#var_dump($bootstrap);exit;
 	require_once $bootstrap;
 
-	#$exportEngine = '';
-	#$exportExtension = '';
 	$exportEngine = 'Word2007';
 	$exportExtension = 'docx';
 	
@@ -136,32 +127,41 @@ function exportChecklistToWord($checklist) {
 	
 	$properties = $phpWord->getDocInfo();
 	$properties->setTitle($title);
-	
 	$phpWord->setDefaultFontSize(12);
 	$phpWord->setDefaultFontName('Arial');
+
+	# Declare paragraph styles
 	$phpWord->addParagraphStyle('defaultPara', array('align'=>'left','lineHeight'=>1.0,'spaceBefore'=>0,'spaceAfter'=>50,'keepNext'=>true));
+	$phpWord->addParagraphStyle('linePara', array('align'=>'left','lineHeight'=>1.0,'spaceBefore'=>0,'spaceAfter'=>75,'keepNext'=>true));
+	$phpWord->addParagraphStyle('familyPara', array('align'=>'left','lineHeight'=>1.0,'spaceBefore'=>225,'spaceAfter'=>75,'keepNext'=>true));
+	$phpWord->addParagraphStyle('scinamePara', array('align'=>'left','lineHeight'=>1.0,'indent'=>0.3125,'spaceBefore'=>0,'spaceAfter'=>45,'keepNext'=>true));
+	$phpWord->addParagraphStyle('notesvouchersPara', array('align'=>'left','lineHeight'=>1.0,'indent'=>0.78125,'spaceBefore'=>0,'spaceAfter'=>45));
+	$phpWord->addParagraphStyle('imagePara', array('align'=>'center','lineHeight'=>1.0,'spaceBefore'=>0,'spaceAfter'=>0));
+
+	# Declare font styles
 	$phpWord->addFontStyle('titleFont', array('bold'=>true,'size'=>20,'name'=>'Arial'));
 	$phpWord->addFontStyle('topicFont', array('bold'=>true,'size'=>12,'name'=>'Arial'));
 	$phpWord->addFontStyle('textFont', array('size'=>12,'name'=>'Arial'));
-	$phpWord->addParagraphStyle('linePara', array('align'=>'left','lineHeight'=>1.0,'spaceBefore'=>0,'spaceAfter'=>75,'keepNext'=>true));
-	$phpWord->addParagraphStyle('familyPara', array('align'=>'left','lineHeight'=>1.0,'spaceBefore'=>225,'spaceAfter'=>75,'keepNext'=>true));
 	$phpWord->addFontStyle('familyFont', array('bold'=>true,'size'=>16,'name'=>'Arial'));
-	$phpWord->addParagraphStyle('scinamePara', array('align'=>'left','lineHeight'=>1.0,'indent'=>0.3125,'spaceBefore'=>0,'spaceAfter'=>45,'keepNext'=>true));
 	$phpWord->addFontStyle('scientificnameFont', array('bold'=>true,'italic'=>true,'size'=>12,'name'=>'Arial'));
-	$phpWord->addParagraphStyle('notesvouchersPara', array('align'=>'left','lineHeight'=>1.0,'indent'=>0.78125,'spaceBefore'=>0,'spaceAfter'=>45));
-	$phpWord->addParagraphStyle('imagePara', array('align'=>'center','lineHeight'=>1.0,'spaceBefore'=>0,'spaceAfter'=>0));
-	$tableStyle = array('width'=>100);
-	$colRowStyle = array('cantSplit'=>true,'exactHeight'=>3750);
-	$phpWord->addTableStyle('imageTable',$tableStyle,$colRowStyle);
-	$imageCellStyle = array('valign'=>'center','width'=>2475,'borderSize'=>15,'borderColor'=>'808080');
-	$blankCellStyle = array('valign'=>'center','width'=>2475,'borderSize'=>15,'borderColor'=>'000000');
+
+	# Declare a table style
+	// $tableStyle = array('width'=>100);
+	// $colRowStyle = array('cantSplit'=>true,'exactHeight'=>3750);
+	// $phpWord->addTableStyle('imageTable',$tableStyle,$colRowStyle);
+
+	// $imageCellStyle = array('valign'=>'center','width'=>2475,'borderSize'=>15,'borderColor'=>'808080');
+	// $blankCellStyle = array('valign'=>'center','width'=>2475,'borderSize'=>15,'borderColor'=>'000000');
 
 	$section = $phpWord->addSection(array('pageSizeW'=>12240,'pageSizeH'=>15840,'marginLeft'=>1080,'marginRight'=>1080,'marginTop'=>1080,'marginBottom'=>1080,'headerHeight'=>0,'footerHeight'=>0));
 
+	# Add checklist metadata 1
+	# Add title
 	$textrun = $section->addTextRun('defaultPara');
 	$textrun->addLink('http://'.$_SERVER['HTTP_HOST'].$CLIENT_ROOT.'/checklists/checklist.php?cl='.$checklist['clid']."&proj=".$checklist['pid']."&dynclid=".$checklist['dynclid'],htmlspecialchars($title));#,'titleFont'	
 	#$textrun->addTextBreak(1);
 	if($checklist['clid']){
+		# Add rare type declaration
 		if(isset($checklist['type']) && $checklist['type'] == 'rarespp'){
 			$locality = str_replace('&quot;','"',$checklist["locality"]);
 			$locality = str_replace('&apos;',"'",$locality);
@@ -170,6 +170,7 @@ function exportChecklistToWord($checklist) {
 			$textrun->addText(htmlspecialchars($locality),'textFont');
 			#$textrun->addTextBreak(1);
 		}
+		# Add authors
 		if (isset($checklist['authors']) && !empty($checklist['authors'])) {
 			$authors = str_replace('&quot;','"',$checklist["authors"]);
 			$authors = str_replace('&apos;',"'",$authors);
@@ -187,16 +188,20 @@ function exportChecklistToWord($checklist) {
 			$textrun->addTextBreak(1);
 		}*/
 	}
+
+	# Add checklist metadata 2
 	if((isset($checklist["locality"]) || ($checklist['clid'] && (isset($checklist["lat"]) || isset($checklist["abstract"]))) || isset($checklist["notes"]))){
 		$locStr = str_replace('&quot;','"',$checklist["locality"]);
 		$locStr = str_replace('&apos;',"'",$locStr);
 		if($checklist['clid']  && $checklist["lat"]) $locStr .= " (".$checklist["lat"].", ".$checklist["lng"].")";
+		# Add Locality
 		if($locStr){
 			$textrun = $section->addTextRun('linePara');
 			$textrun->addText(htmlspecialchars('Locality: '),'topicFont');
 			$textrun->addText(htmlspecialchars($locStr),'textFont');
 			#$textrun->addTextBreak(1);
 		}
+		# Add Abstract
 		if($checklist['clid'] && isset($checklist["abstract"]) && !empty($checklist['abstract'])){
 			$abstract = str_replace('&quot;','"',preg_replace('/\s+/',' ',strip_tags($checklist["abstract"])));
 			$abstract = str_replace('&apos;',"'",$abstract);
@@ -205,6 +210,7 @@ function exportChecklistToWord($checklist) {
 			$textrun->addText(htmlspecialchars($abstract),'textFont');
 			#$textrun->addTextBreak(1);
 		}
+		# Add Notes
 		if($checklist['clid'] && isset($checklist["notes"]) && !empty($checklist['notes'])){
 			$notes = str_replace('&quot;','"',preg_replace('/\s+/',' ',$checklist["notes"]));
 			$notes = str_replace('&apos;',"'",$notes);
@@ -215,9 +221,12 @@ function exportChecklistToWord($checklist) {
 		}
 	}
 
+	# Add separator line
 	$textrun = $section->addTextRun('linePara');
 	$textrun->addLine(array('weight'=>1,'width'=>670,'height'=>0));
 	$textrun = $section->addTextRun('linePara');
+
+	# Add number of families, genera, species, taxa
 	$textrun->addText(htmlspecialchars('Families: '),'topicFont');
 	$textrun->addText(htmlspecialchars($checklist['totals']['families']),'textFont');
 	#$textrun->addTextBreak();
@@ -231,7 +240,10 @@ function exportChecklistToWord($checklist) {
 	$textrun->addText(htmlspecialchars('Total Taxa: '),'topicFont');
 	$textrun->addText(htmlspecialchars($checklist['totals']['taxa'].' (including subsp. and var.)'),'textFont');
 	#$textrun->addTextBreak();
+
+	# Tracking variable to append new species to the same family
 	$prevfam = '';
+
 	/* unused so far - ap
 	if($showImages){
 		$imageCnt = 0;
@@ -276,35 +288,39 @@ function exportChecklistToWord($checklist) {
 		}
 	}
 	else{*/
-	
+		# Iterating through each taxon and print metadata
 		foreach($checklist['taxa'] as $sppArr){
 			#if(!$showAlphaTaxa){
 				$family = strtoupper($sppArr['family']);
+				# Append the taxon to the same family if its family matches the previous family
 				if($family != $prevfam){
 					$textrun = $section->addTextRun('familyPara');
 					$textrun->addLink('http://'.$_SERVER['HTTP_HOST'].$CLIENT_ROOT.'/taxa/index.php?taxauthid=1&taxon='.$family.'&cl='.$checklist['clid'],htmlspecialchars($family),'familyFont');
 					$prevfam = $family;
 				}
 			#}
+
+			# Add Sciname
 			$textrun = $section->addTextRun('scinamePara');
 			$textrun->addLink('http://'.$_SERVER['HTTP_HOST'].$CLIENT_ROOT.'/taxa/index.php?taxauthid=1&taxon='.$sppArr['tid'].'&cl='.$checklist['clid'],htmlspecialchars($sppArr['sciname']),'scientificnameFont');
-
-			// Add "Notes" for Grow Native vendor checklist export
-			if (isset($sppArr['checklistNotes']) && $sppArr['checklistNotes']) {
-				$textrun = $section->addTextRun('scinamePara');
-				$textrun->addText($sppArr['checklistNotes'],'textFont');
-			}
 			/*if(array_key_exists("author",$sppArr)){ 
 				$sciAuthor = str_replace('&quot;','"',$sppArr["author"]);
 				$sciAuthor = str_replace('&apos;',"'",$sciAuthor);
 				$textrun->addText(htmlspecialchars(' '.$sciAuthor),'textFont');
 			}*/
+			# Add vernacular name
 			if ($showCommon) {
 				if(array_key_exists('vernacular',$sppArr)){
 					$vernacular = str_replace('&quot;','"',$sppArr["vernacular"]['names'][0]);
 					$vernacular = str_replace('&apos;',"'",$vernacular);
 					$textrun->addText(htmlspecialchars(' - '.$vernacular),'topicFont');
 				}
+			}
+
+			// Add "Notes" for Grow Native vendor checklist export
+			if (isset($sppArr['checklistNotes']) && $sppArr['checklistNotes']) {
+				$textrun = $section->addTextRun('scinamePara');
+				$textrun->addText($sppArr['checklistNotes'],'textFont');
 			}
 			/* unused so far - ap
 			if($showVouchers){
@@ -337,11 +353,8 @@ function exportChecklistToWord($checklist) {
 	$fileName = str_replace(':','',$fileName);
 	$targetFile = $TEMP_DIR_ROOT.'/report/'.$fileName.'.'.$exportExtension;
 
-	#var_dump($targetFile);
-	#$phpWord->save($targetFile,$exportEngine);
 	$objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
 	$objWriter->save($targetFile);
-	#echo "done";
 
 	header('Content-Description: File Transfer');
 	header('Content-type: application/force-download');
@@ -350,6 +363,5 @@ function exportChecklistToWord($checklist) {
 	header('Content-Length: '.filesize($targetFile));
 	readfile($targetFile);
 	unlink($targetFile);
-	
 }
 ?>
