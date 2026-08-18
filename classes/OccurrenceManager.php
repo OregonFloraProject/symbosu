@@ -132,7 +132,7 @@ class OccurrenceManager extends OccurrenceTaxaManager {
 			$pattern1 = '/[^\d,]/';
 			$pattern2 = '/^all(spec|obs)$/';
 			if (preg_match($pattern1, $this->searchTermArr['db'])==0 || preg_match($pattern2, $this->searchTermArr['db'])==1) {
-				$sqlWhereConditional .= OccurrenceSearchSupport::getDbWhereFrag($this->cleanInStr($this->searchTermArr['db']));
+				$sqlWhere .= OccurrenceSearchSupport::getDbWhereFrag($this->cleanInStr($this->searchTermArr['db']));
 			}
 		}
 		if(array_key_exists('datasetid',$this->searchTermArr)){
@@ -645,6 +645,7 @@ class OccurrenceManager extends OccurrenceTaxaManager {
 
 		// only add conditional params if there are other params
 		// we don't want to allow queries that are too broad (e.g. only dbs or a country set)
+		// 2026-08-18 (Brian): dbs is put back to sqlWhere so DwCA file from a collection profile page can be downloaded
 		if ($sqlWhere && $sqlWhereConditional) $sqlWhere .= $sqlWhereConditional;
 
 		if($sqlWhere){
