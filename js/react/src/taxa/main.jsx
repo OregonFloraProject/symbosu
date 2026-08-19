@@ -161,6 +161,8 @@ class TaxaApp extends React.Component {
               }
             });
           }
+          const Status = [res.characteristics.noxious_weed, {type: 'conservation_status', ...res.characteristics.conservation_status}];
+
           this.setState({
             tid: this.getTid(),
             sciName: res.sciname,
@@ -177,7 +179,7 @@ class TaxaApp extends React.Component {
               'Common Names': res.vernacular.names,
               Synonyms: res.synonyms,
               Origin: res.origin,
-              Status: res.characteristics.noxious_weed,
+              Status,
               'More info': moreInfo,
             },
             taxalinks: {

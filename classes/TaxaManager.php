@@ -1026,7 +1026,14 @@ class TaxaManager {
         TaxaManager::$CID_ECOREGION,
       ];
     }
-    return [ TaxaManager::$CID_NOXIOUS_WEED ];
+    return [ 
+      TaxaManager::$CID_NOXIOUS_WEED,
+
+      # Conservation status
+      TaxaManager::$CID_CONSERVATION_FED,
+      TaxaManager::$CID_CONSERVATION_STATE,
+      TaxaManager::$CID_CONSERVATION_HERITAGE
+    ];
   }
 
 	public static function getEmptyTaxon() {
