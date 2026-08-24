@@ -8,6 +8,7 @@ import { addGlossaryTooltips } from '../../common/glossary';
 import { KEY_NAMES, SUB_KEY_LIST_ORDERS } from '../constants';
 
 function BorderedItem(props) {
+  const defaultValue = 'not listed';
   let value = props.value;
 
   if (Array.isArray(value)) {
@@ -27,7 +28,7 @@ function BorderedItem(props) {
                 />
                 <span
                   dangerouslySetInnerHTML={{
-                    __html: addGlossaryTooltips(v[key], props.glossary),
+                    __html: addGlossaryTooltips(v[key] || defaultValue, props.glossary),
                   }}
                 />
               </li>

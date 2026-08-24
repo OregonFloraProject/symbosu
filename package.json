@@ -4,7 +4,10 @@
   "description": "",
   "private": true,
   "scripts": {
-    "frontend-install": "npm -C js/react i",
+    "install": "npm run composer-install && npm run less-setup && npm run frontend-install",
+    "composer-install": "echo '[>] Installing PHP dependencies...' && composer install --ignore-platform-reqs && ./vendor/bin/doctrine orm:generate-proxies temp/proxies/",
+    "less-setup": "echo '[>] Setup config.less...' && cp js/react/src/less/config_template.less js/react/src/less/config.less && sed -i \"s|@subdir: '/'|@subdir: ''|\" js/react/src/less/config.less", 
+    "frontend-install": "echo '[>] Installing frontend dependencies...' && npm -C js/react i",
     "build": "npm -C js/react run build",
     "dev": "npm -C js/react run dev"
   },

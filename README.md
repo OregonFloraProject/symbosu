@@ -90,22 +90,19 @@ OregonFlora development differs in the following ways:
    - These changes have made some of the original Symbiota code unneeded, but it has been left in wherever possible
    for compatibility, as most code is not React/Doctrine based (yet).
 
-### To build the back end:
+### To install:
 1. Follow the [Symbiota installation instructions](docs/INSTALL.md) 
 for Apache, PHP@7, and MariaDB/MySQL
-2. Install Composer for PHP
-3. Run the following in the repository root to install the PHP dependencies: `composer install`
-4. Run the following in the repository root to generate Doctine's proxy classes `./vendor/bin/doctrine orm:generate-proxies temp/proxies/`. In a
-development environment, you can set IS_DEV to true in [symbini.php](./config/symbini_template.php) to do this automatically
+2. Install NodeJS
+3. Run the following in the project root directory: `npm install` or `npm i`. It will:
+- Install the PHP, frontend dependencies
+- Generate Doctine's proxy classes
+- Set up config.less to point at the current root directory. You can adjust the value in `js/react/src/less/config.less`
+4. In a development environment, you can set IS_DEV to true in `config/symbini.php` to generate Doctine's proxy classes automatically
 every time you make changes to the Doctrine-based PHP code.
 
 ### To build the front end:
-Install NodeJS 22 and run the following from [js/react](./js/react)
-1. Install the NodeJS dependences: `npm install`
-2. In `src/less`: `cp config_template.less config.less` and fill in the correct value
-3. Build the React- and Less-based pages: `npm run build`
+Build the React- and Less-based pages from the project root directory: `npm run build`
 
-
-For a development server that watches for changes in .js/.jsx/.less files and automatically rebuilds them: `npm run devstart`
-from the [js/react](./js/react) directory.
+For a development server that watches for changes in .js/.jsx/.less files and automatically rebuilds them: `npm run dev` from the project root directory.
 
