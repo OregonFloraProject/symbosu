@@ -656,13 +656,11 @@ async function loadPointsFromSOLR(solrqString, recordCount, host) {
   return convertSOLRResponse(data, host);
 }
 
-// Deprecated: moved to spatial/rpc/solrSearch.php
 const SOLR_TYPE_TO_SYMBIOTA_TYPE = {
   ['Observations']: 'observation',
   ['Preserved Specimens']: 'specimen',
 };
 
-// Deprecated: moved to spatial/rpc/solrSearch.php
 function convertSOLRResponse(res, host) {
   const { features } = res;
   const taxaArr = {};

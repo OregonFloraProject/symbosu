@@ -10,7 +10,6 @@ As of commit `ea3c24f29` (2026-04-29, "Move SOLR execution to backend; deprecate
 `js/symb/collections.map.index.OregonFlora.js` tags each old query-builder function with a `// Deprecated: moved to spatial/rpc/solrSearch.php` comment line, but the function bodies themselves are live, uncommented code — not commented out as a prior version of this memory claimed. Verified by call-site search:
 
 - **Actually dead** (no callers anywhere in the repo): `getCollectionParams`, `prepareTaxaDataAsync`, `isFamilyName`, `prepareTaxaParamsAsync`, `getTextParams`, `getGeographyParams`, `buildSOLRQString`, `getRecordCountFromSOLR`, `loadPointsFromSOLR`.
-- **Mislabeled — still called**: `convertSOLRResponse(res, host)` and the `SOLR_TYPE_TO_SYMBIOTA_TYPE` map it uses are tagged "Deprecated" but are called directly from `collections/map/index.php` (`searchCollections()`) to reshape `solrSearch.php`'s GeoJSON response into `{taxaArr, collArr, recordArr}` for the frontend. Do not remove these as dead code.
 - `renderOccurrenceRows` (same file) is unrelated to SOLR and still runs client-side to paint the occurrence list table.
 
 ## Query assembly (`spatial/rpc/solrSearch.php`)
