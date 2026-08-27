@@ -107,9 +107,6 @@ class TaxaApp extends React.Component {
           if (res.specialChecklists && res.specialChecklists.includes(CLID_RARE_ALL)) {
             const rareProfileUrl = getRareTaxaPage(this.props.clientRoot, this.props.tid);
             moreInfo.push({ title: 'Rare Plant Profile', url: rareProfileUrl });
-            if (res.characteristics.conservation_status) {
-              Status.push({type: 'conservation_status', ...res.characteristics.conservation_status});
-            }
           } else if (res.rarePlantFactSheet.length) {
             moreInfo.push({ title: 'Rare Plant Fact Sheet', url: res.rarePlantFactSheet });
           }
@@ -169,8 +166,12 @@ class TaxaApp extends React.Component {
           }
           
           // Add noxious weed Status
+          // Only shows Conservation Status when there's no noxious weed Status
           if (res.characteristics.noxious_weed) {
             Status.push(res.characteristics.noxious_weed);
+          }
+          else if (res.characteristics.conservation_status) {
+            Status.push({type: 'conservation_status', ...res.characteristics.conservation_status});
           }
 
           this.setState({
