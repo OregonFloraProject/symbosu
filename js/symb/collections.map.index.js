@@ -257,7 +257,7 @@ function verifyCollForm(f) {
   } else if (
     // if the user has added a KML file, but hasn't selected a polygon or shape, confirm this
     userAddedKML &&
-    !document.getElementById("polycoords").value &&
+    !document.getElementById("footprintGeoJson").value &&
     !document.getElementById("pointlat").value &&
     !document.getElementById("upperlat").value &&
     !window.confirm("It looks like you've uploaded a KML file, but haven't selected any polygons to search. Would you like to search anyway?")

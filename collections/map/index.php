@@ -2575,7 +2575,7 @@ $serverHost = GeneralUtil::getDomain();
 										onchange="onFileInputChange(this);"
 										style="display:none;"
 									/>
-									<button onclick="document.getElementById('kmlfileinput').click()">Select File</button>
+									<button type="button" onclick="document.getElementById('kmlfileinput').click()">Select File</button>
 								</div>
 								<?php } ?>
 							</form>
