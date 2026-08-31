@@ -10,7 +10,9 @@
                 "-S",
                 "localhost:8000",
                 "-t",
-                "."
+                ".",
+                "-c",
+                "${workspaceRoot}/.vscode/php.ini"
             ],
             "cwd": "${workspaceRoot}/.",
             "serverReadyAction": {

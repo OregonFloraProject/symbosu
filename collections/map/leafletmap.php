@@ -1,9 +1,12 @@
 <?php
 include_once('../../config/symbini.php');
 include_once($SERVER_ROOT.'/classes/OccurrenceMapManager.php');
-include_once($SERVER_ROOT.'/content/lang/collections/map/simplemap.'.$LANG_TAG.'.php');
-if($LANG_TAG != 'en' && file_exists($SERVER_ROOT.'/content/lang/collections/map/leafletmap.' . $LANG_TAG . '.php')) include_once($SERVER_ROOT.'/content/lang/collections/map/leafletmap.' . $LANG_TAG . '.php');
-else include_once($SERVER_ROOT . '/content/lang/collections/map/leafletmap.en.php');
+include_once($SERVER_ROOT . '/classes/utilities/Language.php');
+
+Language::load([
+	'collections/map/index',
+	'collections/map/leafletmap',
+]);
 
 
 header("Content-Type: text/html; charset=".$CHARSET);
@@ -142,7 +145,7 @@ if(isset($MAPPING_BOUNDARIES)){
 			max-width: 100%;
 			position: absolute;
 			z-index: 20;
-			top: 0;
+			top: 60px;
 			left: 0;
 			padding: 0.5rem;
 			background-color: #ffffff;
@@ -203,11 +206,17 @@ if(isset($MAPPING_BOUNDARIES)){
 
          let bounds = new L.featureGroup();
 
-         map = new LeafletMap('map_canvas');
-				 map.mapLayer.zoomControl.setPosition('topright');
+         map = new LeafletMap('map_canvas', {
+				lang: "<?= $LANG_TAG ?>",
+				default_bounds: [],
+			}, 
+				JSON.parse(`<?= json_encode($GEO_JSON_LAYERS ?? []) ?>`)
+			);
 
-				// Add all the OregonFlora leaflet customizations
-				addOregonFlora(map);
+			map.mapLayer.zoomControl.setPosition('topright');
+
+			// Add all the OregonFlora leaflet customizations
+			addOregonFlora(map);
 
          const checkLatLng = (latlng) => {
             return (
@@ -281,7 +290,7 @@ if(isset($MAPPING_BOUNDARIES)){
 						// All the SVGs can be found at either js/symb/(leafletMap.js || leaflet.OregonFlora.js)
 						// OSU herbarium specimen: diamond
 						let marker = {};
-						if(occur.instcode == 'OSC' && occur.colltype == 'spec') {
+						if((occur.instcode == 'OSC' || occur.instcode == 'OSU') && occur.colltype == 'spec') {
 							marker = L.marker(latlng, {
 								icon: getOregonFloraSvg({
 									color: `#${colorGroup.c}`,
@@ -475,8 +484,8 @@ if(isset($MAPPING_BOUNDARIES)){
    <div id="service-container"
       data-occur-coords="<?= htmlspecialchars(json_encode($coordArr, 4)) ?>"
       data-clid="<?= htmlspecialchars($clid) ?>"
-      data-legend="<?= htmlspecialchars(json_encode($legendArr)) ?>"
-   />
+      data-legend="<?= htmlspecialchars(json_encode($legendArr)) ?>">
+    </div>
 	 <div>
 			<button class="legend-button no-symbiota-placement" onclick="document.getElementById('panel').style.left='0';">
 				<span style="font-size:1.3rem;line-height:1rem;margin-top:-0.2rem">

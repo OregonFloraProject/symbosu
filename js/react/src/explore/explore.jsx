@@ -576,6 +576,7 @@ class ExploreApp extends React.Component {
                     clientRoot={this.props.clientRoot}
                     isSearching={this.state.isSearching}
                     currentTids={this.state.currentTids}
+                    showNotes={this.getPid() === 4}
                   />
                 </div>
               </div>

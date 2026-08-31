@@ -4,19 +4,42 @@ import { Link } from 'react-scroll';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { SynonymItem } from './SynonymItem.jsx';
 import { RANK_FAMILY } from '../constants/index.js';
+import { addGlossaryTooltips } from '../../common/glossary';
+import { KEY_NAMES, SUB_KEY_LIST_ORDERS } from '../constants';
 
 function BorderedItem(props) {
+  const defaultValue = 'not listed';
   let value = props.value;
-  const isArray = Array.isArray(value);
 
-  if (isArray) {
+  if (Array.isArray(value)) {
     value = (
       <ul className="border-item list-unstyled p-0 m-0">
-        {props.value.map((v) => (
-          <li key={v}>{v}</li>
-        ))}
+        {props.value.map((v, index) => {
+          if (typeof v === 'object' && v.type === 'conservation_status') {
+            /**
+             * BorderedItem used for rows that have labeled sub-items (e.g. conservation
+             * status). Uses SUB_KEY_LIST_ORDERS to determine ordering of sub-items.
+             */
+            return SUB_KEY_LIST_ORDERS['status'].map((key) => (
+              <li key={key}>
+                <span
+                  className="subheading-key"
+                  dangerouslySetInnerHTML={{ __html: addGlossaryTooltips(KEY_NAMES[key], props.glossary) }}
+                />
+                <span
+                  dangerouslySetInnerHTML={{
+                    __html: addGlossaryTooltips(v[key] || defaultValue, props.glossary),
+                  }}
+                />
+              </li>
+            ));
+          }
+          return <li key={index} dangerouslySetInnerHTML={{ __html: addGlossaryTooltips(v, props.glossary) }} />;
+        })}
       </ul>
     );
+  } else {
+    value = <span dangerouslySetInnerHTML={{ __html: addGlossaryTooltips(value, props.glossary) }} />;
   }
 
   return (
@@ -138,7 +161,7 @@ function SideBarSection(props) {
         } else if (key == 'Synonyms') {
           return <SynonymItem key={val} value={val} glossary={props.glossary} />;
         } else if (val) {
-          return <BorderedItem key={key} keyName={key} value={val} />;
+          return <BorderedItem key={key} keyName={key} value={val} glossary={props.glossary} />;
         }
       })}
       <span className="row dashed-border" />

@@ -1,7 +1,8 @@
 <?php
 include_once('Manager.php');
-include_once('OccurrenceUtilities.php');
-include_once('UuidFactory.php');
+include_once('AssociationManager.php');
+include_once('utilities/OccurrenceUtil.php');
+include_once('utilities/UuidFactory.php');
 
 class OmAssociations extends Manager{
 
@@ -17,7 +18,7 @@ class OmAssociations extends Manager{
 		parent::__construct(null, 'write', $conn);
 		$this->schemaMap = array('associationType' => 's', 'occidAssociate' => 'i', 'relationship' => 's', 'relationshipID' => 's', 'subType' => 's', 'objectID' => 's',
 			'basisOfRecord' => 's', 'resourceUrl' => 's', 'verbatimSciname' => 's', 'tid' => 'i', 'locationOnHost' => 's', 'conditionOfAssociate' => 's', 'establishedDate' => 's',
-			'imageMapJSON' => 's', 'dynamicProperties' => 's', 'notes' => 's', 'accordingTo' => 's', 'instanceID' => 's', 'recordID' => 's');
+			'imageMapJSON' => 's', 'dynamicProperties' => 's', 'notes' => 's', 'accordingTo' => 's', 'instanceID' => 's', 'recordID' => 's', 'createdUid' => 's');
 	}
 
 	public function __destruct(){
@@ -37,6 +38,7 @@ class OmAssociations extends Manager{
 				$sql .= 'AND '.$field.' = "'.$this->cleanInStr($cond).'" ';
 			}
 		}
+		// echo 'sql is: ' . $sql;
 		if($rs = $this->conn->query($sql)){
 			while($r = $rs->fetch_assoc()){
 				$retArr[$r['assocID']] = $r;
@@ -139,6 +141,7 @@ class OmAssociations extends Manager{
 			}
 			else $this->errorMessage = 'ERROR preparing statement for omoccurassociations insert: '.$this->conn->error;
 		}
+
 		return $status;
 	}
 
@@ -187,9 +190,9 @@ class OmAssociations extends Manager{
 			if($postField){
 				$value = trim($inputArr[$postField]);
 				if($value){
-					if(strtolower($postField) == 'establisheddate') $value = OccurrenceUtilities::formatDate($value);
-					if(strtolower($postField) == 'modifieduid') $value = OccurrenceUtilities::verifyUser($value, $this->conn);
-					if(strtolower($postField) == 'createduid') $value = OccurrenceUtilities::verifyUser($value, $this->conn);
+					if(strtolower($postField) == 'establisheddate') $value = OccurrenceUtil::formatDate($value);
+					if(strtolower($postField) == 'modifieduid') $value = OccurrenceUtil::verifyUser($value, $this->conn);
+					if(strtolower($postField) == 'createduid') $value = OccurrenceUtil::verifyUser($value, $this->conn);
 				}
 				else $value = null;
 				$this->parameterArr[$field] = $value;

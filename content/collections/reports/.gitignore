@@ -3,5 +3,6 @@
 #*
 # Except this file and labeljson_template.php
 !.gitignore
-!labeljson.php
-!labeljson_template.php
+#!labeljson.php
+#!labeldefault.json
+#!labeljson_template.php

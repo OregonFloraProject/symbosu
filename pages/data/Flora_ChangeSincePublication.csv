@@ -1,60 +1,112 @@
-"FloraStatus","Was","Now","Group","Family","Acronym","scientific_name","FloraOfOregonPage"
-"Fully described","Accepted","misapplied to Acorus americanus","Monocotyledons","Acoraceae","ACOCAL","Acorus calamus","Volume 1, Page 129"
-"Fully described","Accepted","Synonym of Eriocoma lemmonii ssp. lemmonii","Monocotyledons","Poaceae","ACHLEMLEM","Achnatherum lemmonii ssp. lemmonii","Volume 1, Page 343"
-"Fully described","Accepted","Synonym of Eriocoma occidentalis ssp. californica","Monocotyledons","Poaceae","ACHOCCCAL","Achnatherum occidentale ssp. californicum","Volume 1, Page 345"
-"Fully described","Accepted","Synonym of Eriocoma occidentalis ssp. pubescens","Monocotyledons","Poaceae","ACHOCCPUB","Achnatherum occidentale ssp. pubescens","Volume 1, Page 345"
-"Fully described","Accepted","Synonym of Rhaponticum repens","Dicotyledons","Asteraceae","ACRREP","Acroptilon repens","Volume 2, Page 164"
-"Fully described","Accepted","Accepted","Pteridophytes","Pteridaceae","ADIALE","Adiantum aleuticum","Volume 1, Page 97"
-"Fully described","Accepted","Synonym of Thinopyrum obtusiflorum","Monocotyledons","Poaceae","THIPON","Thinopyrum ponticum","Volume 1, Page 485"
-"Fully described","Accepted","Synonym of Bromus sitchensis var. marginatus","Monocotyledons","Poaceae","BROCARMAR2","Bromus carinatus var. marginatus","Volume 1, Page 369"
-"Fully described","Accepted","Synonym of Calamagrostis arenaria ssp. arenaria","Monocotyledons","Poaceae","AMMAREARE","Ammophila arenaria ssp. arenaria","Volume 1, Page 358"
-"Fully described","Accepted","Synonym of Doellingeria tomentella","Dicotyledons","Asteraceae","EUCTOM","Eucephalus tomentellus","Volume 2, Page 267"
-"Fully described","Accepted","Synonym of Doellingeria gormanii","Dicotyledons","Asteraceae","EUCGOR","Eucephalus gormanii","Volume 2, Page 266"
-"Fully described","Accepted","Synonym of Doellingeria ledophylla var. ledophylla","Dicotyledons","Asteraceae","EUCLEDLED","Eucephalus ledophyllus var. ledophyllus","Volume 2, Page 267"
-"Fully described","Accepted","Synonym of Doellingeria elegans","Dicotyledons","Asteraceae","EUCELE","Eucephalus elegans","Volume 2, Page 265"
-"Fully described","Accepted","Synonym of Doellingeria vialis","Dicotyledons","Asteraceae","EUCVIA","Eucephalus vialis","Volume 2, Page 267"
-"Fully described","Accepted","Synonym of Struthiopteris spicant","Pteridophytes","Blechnaceae","BLESPI","Blechnum spicant","Volume 1, Page 70"
-"Fully described","Accepted","misapplied to Botrychium neolunaria","Pteridophytes","Ophioglossaceae","BOTLUN","Botrychium lunaria","Volume 1, Page 90"
-"Fully described","Accepted","Synonym of Bromus sitchensis var. carinatus","Monocotyledons","Poaceae","BROCARCAR","Bromus carinatus var. carinatus","Volume 1, Page 368"
-"Fully described","Accepted","Synonym of Bromus sitchensis var. maritimus","Monocotyledons","Poaceae","BROMAR2","Bromus maritimus","Volume 1, Page 372"
-"Fully described","Accepted","Accepted","Monocotyledons","Poaceae","BROSIT","Bromus sitchensis","Volume 1, Page 373"
-"Fully described","Accepted","illegitimate name; replaced with Carex zikae","Monocotyledons","Cyperaceae","CARBRE","Carex brevicaulis","Volume 1, Page 192"
-"Fully described","Accepted","Synonym of Carex inops","Monocotyledons","Cyperaceae","CARINOINO","Carex inops ssp. inops","Volume 1, Page 206"
-"Fully described","Accepted","Synonym of Centaurea stoebe","Dicotyledons","Asteraceae","CENSTOMIC","Centaurea stoebe ssp. micranthos","Volume 2, Page 216"
-"Fully described","Accepted","Synonym of Myriopteris gracilis","Pteridophytes","Pteridaceae","CHEFEE","Cheilanthes feei","Volume 1, Page 99"
-"Fully described","Accepted","Synonym of Myriopteris gracillima","Pteridophytes","Pteridaceae","CHEGRA","Cheilanthes gracillima","Volume 1, Page 99"
-"Fully described","Accepted","Synonym of Myriopteris intertexta","Pteridophytes","Pteridaceae","CHEINT","Cheilanthes intertexta","Volume 1, Page 99"
-"Fully described","Accepted","Synonym of Dipterostemon capitatus ssp. capitatus","Monocotyledons","Asparagaceae","DICCAPCAP","Dichelostemma capitatum ssp. capitatum","Volume 1, Page 159"
-"Fully described","Accepted","orthographic variant; correctly spelled Lupinus sabineanus","Dicotyledons","Fabaceae","LUPSAB2","Lupinus sabinianus","Volume 2, Page 706"
-"Fully described","Accepted","Synonym of Eriocoma hendersonii","Monocotyledons","Poaceae","ACHHEN","Achnatherum hendersonii","Volume 1, Page 343"
-"Fully described","Accepted","Synonym of Eriocoma hymenoides","Monocotyledons","Poaceae","ACHHYM","Achnatherum hymenoides","Volume 1, Page 343"
-"Fully described","Accepted","Synonym of Deschampsia bolanderi","Monocotyledons","Poaceae","SCRBOL","Scribneria bolanderi","Volume 1, Page 476"
-"Fully described","Accepted","Synonym of Eriocoma nelsonii ssp. nelsonii","Monocotyledons","Poaceae","ACHNELNEL","Achnatherum nelsonii ssp. nelsonii","Volume 1, Page 344"
-"Fully described","Accepted","Synonym of Eriocoma pinetorum","Monocotyledons","Poaceae","ACHPIN","Achnatherum pinetorum","Volume 1, Page 345"
-"Fully described","Accepted","Synonym of Eriocoma thurberiana","Monocotyledons","Poaceae","ACHTHU","Achnatherum thurberianum","Volume 1, Page 346"
-"Fully described","Accepted","Synonym of Eriocoma webberi","Monocotyledons","Poaceae","ACHWEB","Achnatherum webberi","Volume 1, Page 347"
-"Fully described","Accepted","Synonym of Graphephorum canescens","Monocotyledons","Poaceae","TRICAN","Trisetum canescens","Volume 1, Page 487"
-"Fully described","Accepted","Synonym of Graphephorum cernuum","Monocotyledons","Poaceae","TRICER","Trisetum cernuum","Volume 1, Page 487"
-"Fully described","Accepted","Accepted or misapplied to T. chloropetalum (esp. in Willamette Valley)","Monocotyledons","Melanthiaceae","TRIKUR7","Trillium kurabayashii","Volume 1, Page 315"
-"Fully described","Accepted","Synonym of Graphephorum wolfii","Monocotyledons","Poaceae","TRIWOL","Trisetum wolfii","Volume 1, Page 488"
-"Fully described","Accepted","illegitimate name; replaced with Silene greenei ssp. greenei","Dicotyledons","Caryophyllaceae","SILCAMGLA","Silene campanulata ssp. glandulosa","Volume 2, Page 569"
-"Fully described","Accepted","Synonym of Eriocoma wallowaensis","Monocotyledons","Poaceae","ACHWAL2","Achnatherum wallowaense","Volume 1, Page 347"
-"Fully described","Accepted","Synonym of Calamagrostis breviligulata ssp. breviligulata","Monocotyledons","Poaceae","AMMBREBRE","Ammophila breviligulata ssp. breviligulata","Volume 1, Page 358"
-"Fully described","Accepted","Synonym of Doellingeria breweri","Dicotyledons","Asteraceae","EUCBRE","Eucephalus breweri","Volume 2, Page 265"
-"Fully described","Accepted","Synonym of Eriocoma nelsonii ssp. dorei","Monocotyledons","Poaceae","ACHNELDOR","Achnatherum nelsonii ssp. dorei","Volume 1, Page 344"
-"Fully described","Accepted","Synonym of Eriocoma nevadensis","Monocotyledons","Poaceae","ACHNEV","Achnatherum nevadense","Volume 1, Page 344"
-"Fully described","Accepted","Accepted or misapplied to C. utsutsuensis","Monocotyledons","Poaceae","CALTAC7","Calamagrostis tacomensis","Volume 1, Page 378"
-"Fully described","Accepted","Synonym of Eriocoma nelsonii","Monocotyledons","Poaceae","ACHNEL","Achnatherum nelsonii","Volume 1, Page 344"
-"Fully described","Accepted","Synonym of Eriocoma occidentalis","Monocotyledons","Poaceae","ACHOCC","Achnatherum occidentale","Volume 1, Page 345"
-"Fully described","Accepted","Synonym of Schoenoplectiella mucronata","Monocotyledons","Cyperaceae","SCHMUC","Schoenoplectus mucronatus","Volume 1, Page 251"
-"Fully described","Accepted","Synonym of Eriocoma richardsonii","Monocotyledons","Poaceae","ACHRIC","Achnatherum richardsonii","Volume 1, Page 346"
-"Fully described","Accepted","Excluded (does not occur in Oregon)","Monocotyledons","Amaryllidaceae","ALLOBTOBT","Allium obtusum var. obtusum","Volume 1, Page 141"
-"Fully described","Accepted","Synonym of Greeneochloa tweedyi","Monocotyledons","Poaceae","CALTWE","Calamagrostis tweedyi","Volume 1, Page 379"
-"Fully described","Accepted","Synonym of Doellingeria glabrata","Dicotyledons","Asteraceae","EUCGLA","Eucephalus glabratus","Volume 2, Page 266"
-"Fully described","Accepted","misapplied to Poa wallowensis","Monocotyledons","Poaceae","POALAX2","Poa laxa","Volume 1, Page 458"
-"Fully described","Accepted","Synonym of Lonicera caerulea","Dicotyledons","Caprifoliaceae","LONCAU2","Lonicera cauriana","Volume 2, Page 537"
-"Fully described","Accepted","Ambiguous","Dicotyledons","Boraginaceae","CRYINTHEN7","Cryptantha intermedia var. hendersonii","Volume 2, Page 398"
-"Fully described","Accepted","Accepted","Dicotyledons","Asteraceae","PACSTR","Packera streptanthifolia","Volume 2, Page 324"
-"Fully described","Accepted","Synonym of Doellingeria ledophylla","Dicotyledons","Asteraceae","EUCLED","Eucephalus ledophyllus","Volume 2, Page 266"
-"Fully described","Accepted","Synonym of Doellingeria ledophylla var. covillei","Dicotyledons","Asteraceae","EUCLEDCOV","Eucephalus ledophyllus var. covillei","Volume 2, Page 267"
-"Genus Note","Accepted","illegitimate name; replaced with Sagina alexandrae","Dicotyledons","Caryophyllaceae","SAGSUB","Sagina subulata","Volume 2, Page 563"
+"FloraStatus","Was","Now","Group","Family","Acronym","scientific_name","FloraOfOregonPage","WebConcept"
+"Fully described","Accepted","split into E. philadelphicus vars. philadelphicus and glaber","Dicotyledons","Asteraceae","ERIPHI","Erigeron philadelphicus","Volume 2, Page 260",14963
+"Fully described","Accepted (Terminal species)","Accepted (Bare species), existing other taxa subsumed as B. sitchensis varieties","Monocotyledons","Poaceae","BROSIT","Bromus sitchensis","Volume 1, Page 373",14674
+"Fully described","Accepted (Bare species)","Accepted (Terminal species), most F. rubra subtaxa subsumed","Monocotyledons","Poaceae","FESRUB","Festuca rubra","Volume 1, Page 412",1809
+"Fully described","Accepted (Bare species)","Accepted (Terminal species)","Monocotyledons","Poaceae","SETPUM","Setaria pumila","Volume 1, Page 478",4940
+"Fully described","Accepted (Terminal species)","Accepted (Bare species), var. aleuticum in Oregon","Pteridophytes","Pteridaceae","ADIALE","Adiantum aleuticum","Volume 1, Page 97",14712
+"Fully described","Accepted","Synonym, in part, of Cryptantha intermedia var. intermedia, Cryptantha intermedia var. hendersonii","Dicotyledons","Boraginaceae","CRYINTHEN7","Cryptantha intermedia var. hendersonii","Volume 2, Page 398",99999
+"Fully described","Accepted","True Trillium kurabayashii or misapplied to Trillium chloropetalum","Monocotyledons","Melanthiaceae","TRIKUR7","Trillium kurabayashii","Volume 1, Page 315",99999
+"Fully described","Accepted","True Calamagrostis tacomensis, or newly published Calamagrostis utsutsuensis","Monocotyledons","Poaceae","CALTAC7","Calamagrostis tacomensis","Volume 1, Page 378",99999
+"Fully described","Accepted","Excluded","Dicotyledons","Asteraceae","ERIAUR","Erigeron aureus","Volume 2, Page 252",14616
+"Fully described","Accepted","Excluded","Monocotyledons","Amaryllidaceae","ALLOBTOBT","Allium obtusum var. obtusum","Volume 1, Page 141",12867
+"Fully described","Accepted","Excluded","Monocotyledons","Juncaceae","JUNRAN","Juncus ranarius","Volume 1, Page 283",14067
+"Fully described","Accepted","Synonym of Lomatium farinosum","Dicotyledons","Apiaceae","LOMFARHAM","Lomatium farinosum var. hambleniae","Volume 2, Page 115",2437
+"Fully described","Accepted","Synonym of Rhaponticum repens","Dicotyledons","Asteraceae","ACRREP","Acroptilon repens","Volume 2, Page 164",35
+"Fully described","Accepted","Synonym of Centaurea stoebe","Dicotyledons","Asteraceae","CENSTOMIC","Centaurea stoebe ssp. micranthos","Volume 2, Page 216",9779
+"Fully described","Accepted","Synonym of Doellingeria breweri","Dicotyledons","Asteraceae","EUCBRE","Eucephalus breweri","Volume 2, Page 265",4672
+"Fully described","Accepted","Synonym of Doellingeria elegans","Dicotyledons","Asteraceae","EUCELE","Eucephalus elegans","Volume 2, Page 265",497
+"Fully described","Accepted","Synonym of Doellingeria glabrata","Dicotyledons","Asteraceae","EUCGLA","Eucephalus glabratus","Volume 2, Page 266",13707
+"Fully described","Accepted","Synonym of Doellingeria gormanii","Dicotyledons","Asteraceae","EUCGOR","Eucephalus gormanii","Volume 2, Page 266",457
+"Fully described","Accepted","Synonym of Doellingeria ledophylla","Dicotyledons","Asteraceae","EUCLED","Eucephalus ledophyllus","Volume 2, Page 266",14683
+"Fully described","Accepted","Synonym of Doellingeria ledophylla var. covillei","Dicotyledons","Asteraceae","EUCLEDCOV","Eucephalus ledophyllus var. covillei","Volume 2, Page 267",14684
+"Fully described","Accepted","Synonym of Doellingeria ledophylla var. ledophylla","Dicotyledons","Asteraceae","EUCLEDLED","Eucephalus ledophyllus var. ledophyllus","Volume 2, Page 267",475
+"Fully described","Accepted","Synonym of Doellingeria tomentella","Dicotyledons","Asteraceae","EUCTOM","Eucephalus tomentellus","Volume 2, Page 267",416
+"Fully described","Accepted","Synonym of Doellingeria vialis","Dicotyledons","Asteraceae","EUCVIA","Eucephalus vialis","Volume 2, Page 267",537
+"Fully described","Accepted","Misapplied to Xanthium orientale","Dicotyledons","Asteraceae","XANSTR","Xanthium strumarium","Volume 2, Page 370",4360
+"Fully described","Accepted","Synonym of Lonicera caerulea","Dicotyledons","Caprifoliaceae","LONCAU2","Lonicera cauriana","Volume 2, Page 537",14470
+"Fully described","Accepted","illegitimate name replaced with Silene greenei ssp. greenei","Dicotyledons","Caryophyllaceae","SILCAMGLA","Silene campanulata ssp. glandulosa","Volume 2, Page 569",4405
+"Fully described","Accepted","Synonym of Silene serpentinicola","Dicotyledons","Caryophyllaceae","SILHOOSER","Silene hookeri ssp. serpentinicola","Volume 2, Page 572",14057
+"Fully described","Accepted","Synonym of Astragalus tegetarioides","Dicotyledons","Fabaceae","ASTTEGTEG","Astragalus tegetarioides var. tegetarioides","Volume 2, Page 674",14689
+"Fully described","Accepted","corrected spelling to Lupinus sabineanus","Dicotyledons","Fabaceae","LUPSAB2","Lupinus sabinianus","Volume 2, Page 706",2548
+"Fully described","Accepted","Misapplied to Acorus americanus","Monocotyledons","Acoraceae","ACOCAL","Acorus calamus","Volume 1, Page 129",15
+"Fully described","Accepted","Synonym of Dipterostemon capitatus ssp. capitatus","Monocotyledons","Asparagaceae","DICCAPCAP","Dichelostemma capitatum ssp. capitatum","Volume 1, Page 159",1425
+"Fully described","Accepted","illegitimate name replaced with Carex zikae","Monocotyledons","Cyperaceae","CARBRE","Carex brevicaulis","Volume 1, Page 192",729
+"Fully described","Accepted","Synonym of Carex inops","Monocotyledons","Cyperaceae","CARINOINO","Carex inops ssp. inops","Volume 1, Page 206",829
+"Fully described","Accepted","Synonym of Schoenoplectiella mucronata","Monocotyledons","Cyperaceae","SCHMUC","Schoenoplectus mucronatus","Volume 1, Page 251",12201
+"Fully described","Accepted","Synonym of Eriocoma hendersonii","Monocotyledons","Poaceae","ACHHEN","Achnatherum hendersonii","Volume 1, Page 343",2863
+"Fully described","Accepted","Synonym of Eriocoma hymenoides","Monocotyledons","Poaceae","ACHHYM","Achnatherum hymenoides","Volume 1, Page 343",2865
+"Fully described","Accepted","Synonym of Eriocoma lemmonii ssp. lemmonii","Monocotyledons","Poaceae","ACHLEMLEM","Achnatherum lemmonii ssp. lemmonii","Volume 1, Page 343",27
+"Fully described","Accepted","Synonym of Eriocoma nelsonii","Monocotyledons","Poaceae","ACHNEL","Achnatherum nelsonii","Volume 1, Page 344",9448
+"Fully described","Accepted","Synonym of Eriocoma nelsonii ssp. dorei","Monocotyledons","Poaceae","ACHNELDOR","Achnatherum nelsonii ssp. dorei","Volume 1, Page 344",4740
+"Fully described","Accepted","Synonym of Eriocoma nelsonii ssp. nelsonii","Monocotyledons","Poaceae","ACHNELNEL","Achnatherum nelsonii ssp. nelsonii","Volume 1, Page 344",3969
+"Fully described","Accepted","Synonym of Eriocoma nevadensis","Monocotyledons","Poaceae","ACHNEV","Achnatherum nevadense","Volume 1, Page 344",4751
+"Fully described","Accepted","Synonym of Eriocoma occidentalis","Monocotyledons","Poaceae","ACHOCC","Achnatherum occidentale","Volume 1, Page 345",9449
+"Fully described","Accepted","Synonym of Eriocoma occidentalis ssp. californica","Monocotyledons","Poaceae","ACHOCCCAL","Achnatherum occidentale ssp. californicum","Volume 1, Page 345",33
+"Fully described","Accepted","Synonym of Eriocoma occidentalis ssp. pubescens","Monocotyledons","Poaceae","ACHOCCPUB","Achnatherum occidentale ssp. pubescens","Volume 1, Page 345",34
+"Fully described","Accepted","Synonym of Eriocoma pinetorum","Monocotyledons","Poaceae","ACHPIN","Achnatherum pinetorum","Volume 1, Page 345",3997
+"Fully described","Accepted","Synonym of Eriocoma richardsonii","Monocotyledons","Poaceae","ACHRIC","Achnatherum richardsonii","Volume 1, Page 346",12711
+"Fully described","Accepted","Synonym of Eriocoma thurberiana","Monocotyledons","Poaceae","ACHTHU","Achnatherum thurberianum","Volume 1, Page 346",4005
+"Fully described","Accepted","Synonym of Eriocoma wallowaensis","Monocotyledons","Poaceae","ACHWAL2","Achnatherum wallowaense","Volume 1, Page 347",4465
+"Fully described","Accepted","Synonym of Eriocoma webberi","Monocotyledons","Poaceae","ACHWEB","Achnatherum webberi","Volume 1, Page 347",4010
+"Fully described","Accepted","Synonym of Polypogon exaratus","Monocotyledons","Poaceae","AGREXA","Agrostis exarata","Volume 1, Page 351",58
+"Fully described","Accepted","Synonym of Calamagrostis arenaria ssp. arenaria","Monocotyledons","Poaceae","AMMAREARE","Ammophila arenaria ssp. arenaria","Volume 1, Page 358",167
+"Fully described","Accepted","Synonym of Calamagrostis breviligulata ssp. breviligulata","Monocotyledons","Poaceae","AMMBREBRE","Ammophila breviligulata ssp. breviligulata","Volume 1, Page 358",4624
+"Fully described","Accepted","Synonym of Bromus sitchensis var. carinatus","Monocotyledons","Poaceae","BROCARCAR","Bromus carinatus var. carinatus","Volume 1, Page 368",647
+"Fully described","Accepted","Synonym of Bromus sitchensis var. marginatus","Monocotyledons","Poaceae","BROCARMAR2","Bromus carinatus var. marginatus","Volume 1, Page 369",90
+"Fully described","Accepted","Synonym of Bromus sitchensis var. maritimus","Monocotyledons","Poaceae","BROMAR2","Bromus maritimus","Volume 1, Page 372",649
+"Fully described","Accepted","Synonym of Greeneochloa tweedyi","Monocotyledons","Poaceae","CALTWE","Calamagrostis tweedyi","Volume 1, Page 379",13643
+"Fully described","Accepted","Synonym of Sporobolus alopecuroides","Monocotyledons","Poaceae","CRYALO","Crypsis alopecuroides","Volume 1, Page 383",1259
+"Fully described","Accepted","Synonym of Sporobolus schoenoides","Monocotyledons","Poaceae","CRYSCH","Crypsis schoenoides","Volume 1, Page 383",1308
+"Fully described","Accepted","Synonym of Catapodium rigidum","Monocotyledons","Poaceae","DESRIG","Desmazeria rigida","Volume 1, Page 389",1415
+"Fully described","Accepted","Synonym of Dichanthelium lanuginosum","Monocotyledons","Poaceae","DICACUFAS2","Dichanthelium acuminatum ssp. fasciculatum","Volume 1, Page 390",2909
+"Fully described","Accepted","Synonym of Dichanthelium scribnerianum","Monocotyledons","Poaceae","DICOLISCR2","Dichanthelium oligosanthes ssp. scribnerianum","Volume 1, Page 390",1438
+"Fully described","Accepted","Synonym of Eragrostis virescens","Monocotyledons","Poaceae","ERAMEXVIR","Eragrostis mexicana ssp. virescens","Volume 1, Page 405",1711
+"Fully described","Accepted","Synonym of Eragrostis pectinacea","Monocotyledons","Poaceae","ERAPECPEC","Eragrostis pectinacea var. pectinacea","Volume 1, Page 406",1718
+"Fully described","Accepted","Synonym of Eragrostis pilosa","Monocotyledons","Poaceae","ERAPILPIL","Eragrostis pilosa var. pilosa","Volume 1, Page 406",4974
+"Fully described","Accepted","Synonym of Hesperochloa campestris","Monocotyledons","Poaceae","FESCAM","Festuca campestris","Volume 1, Page 409",1810
+"Fully described","Accepted","Synonym of Hesperochloa elmeri","Monocotyledons","Poaceae","FESELM","Festuca elmeri","Volume 1, Page 409",1798
+"Fully described","Accepted","Synonym of Festuca nigrescens","Monocotyledons","Poaceae","FESRUBCOM","Festuca rubra ssp. commutata","Volume 1, Page 413",1807
+"Fully described","Accepted","Synonym of Festuca rubra","Monocotyledons","Poaceae","FESRUBFAL","Festuca rubra ssp. fallax","Volume 1, Page 413",1809
+"Fully described","Accepted","Synonym of Festuca rubra","Monocotyledons","Poaceae","FESRUBJUN","Festuca rubra ssp. juncea","Volume 1, Page 413",1809
+"Fully described","Accepted","Synonym of Festuca rubra","Monocotyledons","Poaceae","FESRUBMED2","Festuca rubra ssp. mediana","Volume 1, Page 413",1809
+"Fully described","Accepted","Synonym of Festuca rubra","Monocotyledons","Poaceae","FESRUBRUB","Festuca rubra ssp. rubra","Volume 1, Page 414",1809
+"Fully described","Accepted","Synonym of Festuca rubra","Monocotyledons","Poaceae","FESRUBSEC","Festuca rubra ssp. secunda","Volume 1, Page 414",1809
+"Fully described","Accepted","Synonym of Festuca saximontana var. purpusiana","Monocotyledons","Poaceae","FESSAXPUR","Festuca saximontana ssp. purpusiana","Volume 1, Page 414",4423
+"Fully described","Accepted","Synonym of Hesperochloa subulata","Monocotyledons","Poaceae","FESSUB","Festuca subulata","Volume 1, Page 414",1811
+"Fully described","Accepted","Synonym of Glyceria canadensis","Monocotyledons","Poaceae","GLYCANCAN","Glyceria canadensis var. canadensis","Volume 1, Page 417",4753
+"Fully described","Accepted","Synonym of Glyceria grandis","Monocotyledons","Poaceae","GLYGRAGRA","Glyceria grandis var. grandis","Volume 1, Page 419",1941
+"Fully described","Accepted","Synonym of Anthoxanthum occidentale","Monocotyledons","Poaceae","HIEOCC","Hierochloë occidentalis","Volume 1, Page 421",2069
+"Fully described","Accepted","Synonym of Anthoxanthum nitens","Monocotyledons","Poaceae","HIEODO","Hierochloë odorata","Volume 1, Page 421",2070
+"Fully described","Accepted","Synonym of Hordeum jubatum","Monocotyledons","Poaceae","HORJUBJUB","Hordeum jubatum ssp. jubatum","Volume 1, Page 423",2092
+"Fully described","Accepted","Synonym of Hesperochloa kingii","Monocotyledons","Poaceae","LEUKIN","Leucopoa kingii","Volume 1, Page 426",1801
+"Fully described","Accepted","Synonym of Leymus mollis","Monocotyledons","Poaceae","LEYMOLMOL","Leymus mollis ssp. mollis","Volume 1, Page 428",1537
+"Fully described","Accepted","Synonym of Lolium perenne ssp. multiflorum","Monocotyledons","Poaceae","LOLMUL","Lolium multiflorum","Volume 1, Page 429",2460
+"Fully described","Accepted","Synonym of Coleataenia rigidula","Monocotyledons","Poaceae","PANRIGRIG2","Panicum rigidulum ssp. rigidulum","Volume 1, Page 441",2916
+"Fully described","Accepted","Misapplied to Poa wallowensis","Monocotyledons","Poaceae","POALAX2","Poa laxa","Volume 1, Page 458",14628
+"Fully described","Accepted","Synonym of Poa alpigena","Monocotyledons","Poaceae","POAPRAALP","Poa pratensis ssp. alpigena","Volume 1, Page 463",14389
+"Fully described","Accepted","Synonym of Lolium arundinaceum","Monocotyledons","Poaceae","SCHARU","Schedonorus arundinaceus","Volume 1, Page 475",1796
+"Fully described","Accepted","Synonym of Lolium pratense","Monocotyledons","Poaceae","SCHPRA","Schedonorus pratensis","Volume 1, Page 475",1806
+"Fully described","Accepted","Synonym of Deschampsia bolanderi","Monocotyledons","Poaceae","SCRBOL","Scribneria bolanderi","Volume 1, Page 476",3712
+"Fully described","Accepted","Synonym of Setaria pumila","Monocotyledons","Poaceae","SETPUMPAL","Setaria pumila ssp. pallidefusca","Volume 1, Page 478",4940
+"Fully described","Accepted","Synonym of Setaria pumila","Monocotyledons","Poaceae","SETPUMPUM","Setaria pumila ssp. pumila","Volume 1, Page 478",4940
+"Fully described","Accepted","Synonym of Setaria viridis","Monocotyledons","Poaceae","SETVIRVIR","Setaria viridis var. viridis","Volume 1, Page 478",3796
+"Fully described","Accepted","Synonym of Sporobolus alterniflorus","Monocotyledons","Poaceae","SPAALT","Spartina alterniflora","Volume 1, Page 480",12666
+"Fully described","Accepted","Synonym of Sporobolus pumilus","Monocotyledons","Poaceae","SPAPAT","Spartina patens","Volume 1, Page 481",3943
+"Fully described","Accepted","Synonym of Sporobolus michauxianus","Monocotyledons","Poaceae","SPAPEC","Spartina pectinata","Volume 1, Page 481",3944
+"Fully described","Accepted","Synonym of Thinopyrum obtusiflorum","Monocotyledons","Poaceae","THIPON","Thinopyrum ponticum","Volume 1, Page 485",56
+"Fully described","Accepted","Synonym of Graphephorum canescens","Monocotyledons","Poaceae","TRICAN","Trisetum canescens","Volume 1, Page 487",4122
+"Fully described","Accepted","Synonym of Graphephorum cernuum","Monocotyledons","Poaceae","TRICER","Trisetum cernuum","Volume 1, Page 487",4124
+"Fully described","Accepted","Synonym of Koeleria spicata","Monocotyledons","Poaceae","TRISPI","Trisetum spicatum","Volume 1, Page 488",4199
+"Fully described","Accepted","Synonym of Graphephorum wolfii","Monocotyledons","Poaceae","TRIWOL","Trisetum wolfii","Volume 1, Page 488",4210
+"Fully described","Accepted","Synonym of Festuca bromoides","Monocotyledons","Poaceae","VULBRO","Vulpia bromoides","Volume 1, Page 490",4339
+"Fully described","Accepted","Synonym of Festuca microstachys","Monocotyledons","Poaceae","VULMIC","Vulpia microstachys","Volume 1, Page 491",4340
+"Fully described","Accepted","Synonym of Festuca myuros","Monocotyledons","Poaceae","VULMYU","Vulpia myuros","Volume 1, Page 491",4342
+"Fully described","Accepted","Synonym of Festuca myuros","Monocotyledons","Poaceae","VULOCT","Vulpia octoflora","Volume 1, Page 491",4342
+"Fully described","Accepted","Synonym of Struthiopteris spicant","Pteridophytes","Blechnaceae","BLESPI","Blechnum spicant","Volume 1, Page 70",613
+"Fully described","Accepted","Misapplied to Isoetes echinospora ssp. muricata","Pteridophytes","Isoetaceae","ISOTEN","Isoetes tenella","Volume 1, Page 81",2149
+"Fully described","Accepted","Misapplied to Botrychium neolunaria","Pteridophytes","Ophioglossaceae","BOTLUN","Botrychium lunaria","Volume 1, Page 90",625
+"Fully described","Accepted","Synonym of Myriopteris gracilis","Pteridophytes","Pteridaceae","CHEFEE","Cheilanthes feei","Volume 1, Page 99",1065
+"Fully described","Accepted","Synonym of Myriopteris gracillima","Pteridophytes","Pteridaceae","CHEGRA","Cheilanthes gracillima","Volume 1, Page 99",1072
+"Fully described","Accepted","Synonym of Myriopteris intertexta","Pteridophytes","Pteridaceae","CHEINT","Cheilanthes intertexta","Volume 1, Page 99",1076
+"Genus Note","Accepted","illegitimate name replaced with Sagina alexandrae","Dicotyledons","Caryophyllaceae","SAGSUB","Sagina subulata","Volume 2, Page 563",4769
+"Fully described","Accepted (Terminal species)","Accepted (Bare species), ssp. perenne and ssp.  multiflorum in Oregon","Monocotyledons","Poaceae","LOLPER","Lolium perenne","Volume 1, Page 429",2468

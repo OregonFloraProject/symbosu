@@ -3,8 +3,9 @@ error_reporting(E_ALL);
 ini_set('display_errors', '1');
 include_once('../../config/symbini.php');
 include_once($SERVER_ROOT.'/classes/ImageCleaner.php');
-if($LANG_TAG != 'en' && file_exists($SERVER_ROOT.'/content/lang/collections/cleaning/imagerecycler.' . $LANG_TAG . '.php')) include_once($SERVER_ROOT.'/content/lang/collections/cleaning/imagerecycler.' . $LANG_TAG . '.php');
-else include_once($SERVER_ROOT . '/content/lang/collections/cleaning/imagerecycler.en.php');
+include_once($SERVER_ROOT . '/classes/utilities/Language.php');
+
+Language::load('collections/cleaning/imagerecycler');
 
 header("Content-Type: text/html; charset=".$CHARSET);
 
@@ -58,7 +59,7 @@ if($isEditor){
 	if($collid){
 		?>
 		<div role="main" id="innertext">
-			<h1 class="page-heading">Image Recycler</h1>
+			<h1 class="page-heading"><?php echo $LANG['IMAGE_RECYCLER'] ?></h1>
 			<form name="imgdelform" action="imagerecycler.php" method="post" enctype="multipart/form-data" onsubmit="return verifyRecycleForm(this)">
 				<fieldset style="width:90%;">
 					<legend style="font-weight:bold;font-size:120%;"><?php echo $LANG['BATCH_IMAGE_REMOVER'] ?></legend>

@@ -17,7 +17,7 @@ class InventoryController extends Controller{
 	 * @OA\Get(
 	 *	 path="/api/v2/inventory",
 	 *	 operationId="/api/v2/inventory",
-	 *	 tags={""},
+	 *	 tags={"Inventory"},
 	 *	 @OA\Parameter(
 	 *		 name="limit",
 	 *		 in="query",
@@ -28,7 +28,7 @@ class InventoryController extends Controller{
 	 *	 @OA\Parameter(
 	 *		 name="offset",
 	 *		 in="query",
-	 *		 description="Determines the offset for the search results. A limit of 200 and offset of 100, will get the third page of 100 results.",
+	 *		 description="Determines the starting point for the search results. A limit of 100 and offset of 200, will display 100 records starting the 200th record.",
 	 *		 required=false,
 	 *		 @OA\Schema(type="integer", default=0)
 	 *	 ),
@@ -70,7 +70,7 @@ class InventoryController extends Controller{
 	 * @OA\Get(
 	 *	 path="/api/v2/inventory/{identifier}",
 	 *	 operationId="/api/v2/inventory/identifier",
-	 *	 tags={""},
+	 *	 tags={"Inventory"},
 	 *	 @OA\Parameter(
 	 *		 name="identifier",
 	 *		 in="path",
@@ -100,7 +100,7 @@ class InventoryController extends Controller{
 	 * @OA\Get(
 	 *	 path="/api/v2/inventory/{identifier}/taxa",
 	 *	 operationId="/api/v2/inventory/identifier/taxa",
-	 *	 tags={""},
+	 *	 tags={"Inventory"},
 	 *	 @OA\Parameter(
 	 *		 name="limit",
 	 *		 in="query",
@@ -111,7 +111,7 @@ class InventoryController extends Controller{
 	 *	 @OA\Parameter(
 	 *		 name="offset",
 	 *		 in="query",
-	 *		 description="Determines the offset for the search results. A limit of 200 and offset of 100, will get the third page of 100 results.",
+	 *		 description="Determines the starting point for the search results. A limit of 100 and offset of 200, will display 100 records starting the 200th record.",
 	 *		 required=false,
 	 *		 @OA\Schema(type="integer", default=0)
 	 *	 ),

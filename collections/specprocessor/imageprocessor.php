@@ -2,8 +2,9 @@
 include_once('../../config/symbini.php');
 include_once($SERVER_ROOT.'/classes/SpecProcessorManager.php');
 include_once($SERVER_ROOT.'/classes/ImageProcessor.php');
-if($LANG_TAG != 'en' && file_exists($SERVER_ROOT.'/content/lang/collections/specprocessor/specprocessor_tools.'.$LANG_TAG.'.php')) include_once($SERVER_ROOT.'/content/lang/collections/specprocessor/specprocessor_tools.'.$LANG_TAG.'.php');
-else include_once($SERVER_ROOT.'/content/lang/collections/specprocessor/specprocessor_tools.en.php');
+include_once($SERVER_ROOT . '/classes/utilities/Language.php');
+
+Language::load('collections/specprocessor/specprocessor_tools');
 
 if(!$SYMB_UID) header('Location: ../../profile/index.php?refurl='.$CLIENT_ROOT.'/collections/specprocessor/index.php?'.htmlspecialchars($_SERVER['QUERY_STRING'], ENT_QUOTES));
 
@@ -312,12 +313,16 @@ if($spprid) $specManager->setProjVariables($spprid);
 									else{
 										?>
 										<div>
+											<div>
+												<?= $LANG['IMG_PROC_CHANGE_EXPLAIN'] ?>
+											</div>
+											<br>
 											<label><?php echo $LANG['PROC_TYPE']; ?>:</label>
 											<div style="float:left;">
 												<select name="projecttype" id="projecttype" onchange="uploadTypeChanged(this.form)" <?php echo ($spprid?'DISABLED':'');?>>
 													<option value="">----------------------</option>
 													<option value="local"><?php echo $LANG['MAP_FROM_SERVER']; ?></option>
-													<option value="file"><?php echo $LANG['URL_MAP_FILE']; ?></option>
+													<!--<option value="file"><?php echo $LANG['URL_MAP_FILE']; ?></option>-->
 													<!-- <option value="iplant">iPlant Image Harvest</option> -->
 												</select>
 											</div>
@@ -399,7 +404,7 @@ if($spprid) $specManager->setProjVariables($spprid);
 									<div id="targetPathDiv" class="profileDiv" style="display:<?php echo ($projectType=='local'?'block':'none'); ?>">
 										<label><?php echo $LANG['IMG_TARGET_PATH']; ?>:</label>
 										<div style="float:left;">
-											<input name="targetpath" type="text" style="width:600px;" value="<?php echo ($specManager->getTargetPath()?$specManager->getTargetPath():$IMAGE_ROOT_PATH); ?>" />
+											<input name="targetpath" type="text" style="width:600px;" value="<?php echo ($specManager->getTargetPath()?$specManager->getTargetPath():$MEDIA_ROOT_PATH); ?>" />
 											<a id="targetpathinfo" href="#" onclick="return false" title="<?php echo $LANG['MORE_INFO']; ?>">
 												<img src="../../images/info.png" style="width:1.2em;" />
 											</a>
@@ -411,7 +416,7 @@ if($spprid) $specManager->setProjVariables($spprid);
 									<div id="urlBaseDiv" class="profileDiv" style="display:<?php echo ($projectType=='local'?'block':'none'); ?>">
 										<label><?php echo $LANG['IMG_URL_BASE']; ?>:</label>
 										<div style="float:left;">
-											<input name="imgurl" type="text" style="width:600px;" value="<?php echo ($specManager->getImgUrlBase()?$specManager->getImgUrlBase():$IMAGE_ROOT_URL); ?>" />
+											<input name="imgurl" type="text" style="width:600px;" value="<?php echo ($specManager->getImgUrlBase()?$specManager->getImgUrlBase():$MEDIA_ROOT_URL); ?>" />
 											<a id="imgurlinfo" href="#" onclick="return false" title="<?php echo $LANG['MORE_INFO']; ?>">
 												<img src="../../images/info.png" style="width:1.2em;" />
 
@@ -483,9 +488,15 @@ if($spprid) $specManager->setProjVariables($spprid);
 									</div>
 									<div id="largeImageDiv" class="profileDiv" style="display:<?php echo ($projectType=='local'?'block':'none'); ?>">
 										<div>
-											<b><?php echo $LANG['LG_IMG']; ?>:</b>
+											<b><?php echo $LANG['LG_IMG']; ?>: </b>
 											<div style="margin:5px 15px;">
-												<input name="createlgimg" type="radio" value="1" <?php echo ($specManager->getCreateLgImg()==1?'CHECKED':''); ?> /> <?php echo $LANG['IMPORT_LG_SOURCE']; ?><br/>
+												<input name="createlgimg" type="radio" value="1" <?php echo ($specManager->getCreateLgImg()==1?'CHECKED':''); ?> />
+												<?php echo $LANG['IMPORT_LG_SOURCE']; ?>
+												<b style="color:var(--danger-color)">
+													(<?= $LANG['WARNING_LG_IMG_RESIZE'] ?? '(Warning: Resizes down to large image width)' ?>)
+												</b>
+												<br/>
+
 												<input name="createlgimg" type="radio" value="2" <?php echo ($specManager->getCreateLgImg()==2?'CHECKED':''); ?> /> <?php echo $LANG['MAP_TO_LG_SOURCE']; ?><br/>
 												<input name="createlgimg" type="radio" value="3" <?php echo ($specManager->getCreateLgImg()==3?'CHECKED':''); ?> /> <?php echo $LANG['IMPORT_LG_FROM_SOURCE']; ?><br/>
 												<input name="createlgimg" type="radio" value="4" <?php echo ($specManager->getCreateLgImg()==4?'CHECKED':''); ?> /> <?php echo $LANG['MAP_LG_AT_SOURCE']; ?><br/>
@@ -607,13 +618,13 @@ if($spprid) $specManager->setProjVariables($spprid);
 											<div style="clear:both;">
 												<label><?php echo $LANG['TARGET_FOLDER']; ?>:</label>
 												<div style="float:left;">
-													<?php echo ($specManager->getTargetPath()?$specManager->getTargetPath():$IMAGE_ROOT_PATH); ?>
+													<?php echo ($specManager->getTargetPath()?$specManager->getTargetPath():$MEDIA_ROOT_PATH); ?>
 												</div>
 											</div>
 											<div style="clear:both;">
 												<label><?php echo $LANG['URL_PREFIX']; ?>:</label>
 												<div style="float:left;">
-													<?php echo ($specManager->getImgUrlBase()?$specManager->getImgUrlBase():$IMAGE_ROOT_URL); ?>
+													<?php echo ($specManager->getImgUrlBase()?$specManager->getImgUrlBase():$MEDIA_ROOT_URL); ?>
 												</div>
 											</div>
 											<div style="clear:both;">
@@ -665,7 +676,12 @@ if($spprid) $specManager->setProjVariables($spprid);
 												<div>
 													<b><?php echo $LANG['LG_IMG']; ?>:</b>
 													<div style="margin:5px 15px">
-														<input name="createlgimg" type="radio" value="1" <?php echo ($specManager->getCreateLgImg() == 1?'CHECKED':'') ?> /> <?php echo $LANG['IMPORT_LG_SOURCE']; ?><br/>
+														<input name="createlgimg" type="radio" value="1" <?php echo ($specManager->getCreateLgImg() == 1?'CHECKED':'') ?> />
+														<?php echo $LANG['IMPORT_LG_SOURCE']; ?>
+														<b style="color:var(--danger-color)">
+															(<?= $LANG['WARNING_LG_IMG_RESIZE'] ?? '(Warning: Resizes down to large image width)' ?>)
+														</b>
+														<br/>
 														<input name="createlgimg" type="radio" value="2" <?php echo ($specManager->getCreateLgImg() == 2?'CHECKED':'') ?> /> <?php echo $LANG['MAP_TO_LG_SOURCE']; ?><br/>
 														<input name="createlgimg" type="radio" value="3" <?php echo ($specManager->getCreateLgImg() == 3?'CHECKED':'') ?> /> <?php echo $LANG['IMPORT_LG_FROM_SOURCE']; ?><br/>
 														<input name="createlgimg" type="radio" value="4" <?php echo ($specManager->getCreateLgImg() == 4?'CHECKED':'') ?> /> <?php echo $LANG['MAP_LG_AT_SOURCE']; ?><br/>

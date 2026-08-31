@@ -10,9 +10,7 @@ header( "Content-Type: text/html; charset=" . $charset );
 		<link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/css/base.css?<?php echo filemtime($SERVER_ROOT . '/css/base.css'); ?>">    
 		<link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/css/main.css?<?php echo filemtime($SERVER_ROOT . '/css/main.css'); ?>">   
     <meta name='keywords' content=''/>
-    <script type="text/javascript">
-        <?php include_once( $serverRoot . '/config/googleanalytics.php' ); ?>
-    </script>
+    <?php include_once($SERVER_ROOT.'/includes/googleanalytics.php'); ?>
     <?php /* <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> 
     <script src="https://kit.fontawesome.com/a01aa82192.js" crossorigin="anonymous"></script>*/ ?>
 </head>
@@ -39,7 +37,7 @@ header( "Content-Type: text/html; charset=" . $charset );
 									<p>
 									The Flora of Oregon is a three-volume reference that will be the state’s only flora published in the past half century and the first illustrated floristic work that exclusively addresses Oregon. 
 									Volumes 1 and 2 were published in 2015 and 2020, respectively, and can be purchased directly from the publisher, the <a href="https://shopbritpress.org/collections/all" target="_blank">Botanical Research Institute of Texas Press</a>, or from other vendors. 
-									Volume 3 has a projected publication date of 2025. Upon completion, we estimate detailed descriptions of 4,380 native and naturalized taxa will be published in the three volumes.
+									Volume 3 has a projected publication date of 2027. Upon completion, we estimate detailed descriptions of 4,380 native and naturalized taxa will be published in the three volumes.
 									</p>
 									<div class="inset updates">
 										<h3>Stay informed and keep your Flora up-to-date</h3>

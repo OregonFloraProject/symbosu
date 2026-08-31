@@ -1,5 +1,9 @@
 <?php
 include_once('../../config/symbini.php');
+include_once($SERVER_ROOT . '/classes/utilities/Language.php');
+
+Language::load('checklists/tools/index');
+
 header('Content-Type: text/html; charset=' . $CHARSET);
 header('Location: '.$CLIENT_ROOT.'/index.php');
 ?>
@@ -18,8 +22,8 @@ header('Location: '.$CLIENT_ROOT.'/index.php');
 		?>
 		<!-- This is inner text! -->
 		<div role="main" id="innertext">
-			<h1 class="page-heading">Checklist Tools</h1>
-			<h1 class="page-heading">Forbidden</h1>
+			<h1 class="page-heading"><?php echo $LANG['CHECKLIST_TOOLS']; ?></h1>
+			<h1 class="page-heading"><?php echo $LANG['FORBIDDEN']; ?></h1>
 			<div style="font-weight:bold;">
 				You don't have permission to access this page.
 			</div>

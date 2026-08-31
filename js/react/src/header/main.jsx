@@ -24,7 +24,7 @@ const DROPDOWNS = {
       { title: 'Mapping', href: '/collections/map/index.php' },
       { title: 'Identify Plants', href: '/checklists/dynamicmap.php?interface=key' },
       { title: 'Inventories', href: '/projects/index.php' },
-      { title: 'OSU Herbarium', href: '/collections/search/index.php?db[]=5,8,238,239,240' },
+      { title: 'OSU Herbarium', href: '/collections/search/index.php' },
       { title: 'Grow Natives', href: '/garden/index.php' },
       { title: 'Rare Plants', href: '/pages/rare-plant-guide.php' },
       { title: 'Taxonomic Tree', href: '/taxa/taxonomy/taxonomydisplay.php' },

@@ -53,6 +53,9 @@ class TaxaManager {
   private static $CID_CONSERVATION_STATE = 243;
   private static $CID_CONSERVATION_HERITAGE = 244;
 
+  # Designated noxious weed status
+  private static $CID_NOXIOUS_WEED = 240;
+
 	# from TaxonProfileManager
 	private $langArr = array();
 	
@@ -845,6 +848,8 @@ class TaxaManager {
         case TaxaManager::$CID_CONSERVATION_HERITAGE:
           $attr_array["conservation_status"]["heritage"] = $attr_val;
           break;
+        case TaxaManager::$CID_NOXIOUS_WEED:
+          $attr_array['noxious_weed'] = $attr_val;
         default:
           break;
       }
@@ -1020,7 +1025,14 @@ class TaxaManager {
         TaxaManager::$CID_ECOREGION,
       ];
     }
-    return [];
+    return [ 
+      TaxaManager::$CID_NOXIOUS_WEED,
+
+      # Conservation status
+      TaxaManager::$CID_CONSERVATION_FED,
+      TaxaManager::$CID_CONSERVATION_STATE,
+      TaxaManager::$CID_CONSERVATION_HERITAGE
+    ];
   }
 
 	public static function getEmptyTaxon() {

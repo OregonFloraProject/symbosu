@@ -1,4 +1,13 @@
 /* Custom CSS for the Occurrence Editor on OregonFlora */
+/* Override collection heading in the occurrence editor/query form */
+#titleDiv{
+  font-size: 16px;
+}
+
+#occedittabs{
+  font-size: 14px;
+}
+
 #editortd {
 	min-width: 820px;
 }
@@ -18,6 +27,10 @@
 
 h1 {
     font-size: 1.5em !important;
+}
+
+button.icon-button {
+  padding: 3px 6px;
 }
 
 .navpath {
@@ -49,40 +62,75 @@ h1 {
 	margin-left: 10px;
 }
 
- #otherCatalogNumbersDiv {
+#otherCatalogNumbersDiv {
  	margin-left: 10px;
 	margin-bottom: 10px;
+}
+
+#identifierDiv img {
+    width: 14px;
 }
 
 #dupesDiv {
 	margin-left: 20px;
 }
 
+#municipalityDiv input {
+    width: 135px;
+}
+
 #locationIdDiv input {
 	width: 80px;
 }
 
+#geodeticDatumDiv input {
+    width: 70px;
+}
+
 #verbatimCoordinatesDiv input {
-	width: 270px;
+	width: 240px;
+}
+
+#associatedTaxaDiv a img {
+	position: relative;
+	top: -10px;
+	left: 5px;
+}
+
+#behaviorDiv input {
+    width: 120px;
+}
+
+#vitalityDiv input {
+    width: 120px;
 }
 
 #occurrenceIdDiv input {
-	width: 210px;
+	width: 300px;
+}
+
+#labelProjectDiv input {
+	width: 250px;
 }
 
 #ownerInstitutionCodeDiv input {
 	width: 135px;
 }
+
+#storageLocationDiv input {
+    width: 250px;
+}
+
 #basisOfRecordDiv select {
-	width: 132px;
+	width: 160px;
 }
 
 #processingStatusDiv select {
-	width: 130px;
+	width: 200px;
 }
 
 #dataGeneralizationsDiv input{
-	width: 730px;
+	width: 715px;
 }
 
 div:has(> fieldset.ocr-box) {
