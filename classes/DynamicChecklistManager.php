@@ -111,6 +111,42 @@ class DynamicChecklistManager extends Manager {
 		return $dynPK;
 	}
 
+	public function createDynamicChecklistFromTids(array $tidList): int {
+		$validTids = [];
+		foreach ($tidList as $tid) {
+			if (is_numeric($tid) && intval($tid) > 0) {
+				$validTids[] = intval($tid);
+			}
+		}
+		$validTids = array_unique($validTids);
+
+		if (empty($validTids)) {
+			return 0;
+		}
+
+		$name = "Map Taxon Report";
+		$details = "Taxa from map search";
+		$expiration = date('Y-m-d', mktime(0, 0, 0, date('m'), date('d') + 7, date('Y')));
+		$uid = ($GLOBALS['SYMB_UID'] ? $GLOBALS['SYMB_UID'] : 'NULL');
+
+		$sql = 'INSERT INTO fmdynamicchecklists(name,details,expiration,uid) '.
+			'VALUES ("'.$name.'","'.$details.'","'.$expiration.'",'.$uid.')';
+
+		if ($this->conn->query($sql)) {
+			$dynPk = $this->conn->insert_id;
+			$values = [];
+			foreach ($validTids as $tid) {
+				$values[] = '(' . $dynPk . ', ' . $tid . ')';
+			}
+			$sqlLinks = 'INSERT IGNORE INTO fmdyncltaxalink (dynclid, tid) VALUES ' . implode(',', $values);
+			$this->conn->query($sqlLinks);
+			return $dynPk;
+		} else {
+			$this->errorMessage = 'ERROR building checklist: ' . $this->conn->error;
+			return 0;
+		}
+	}
+
 	public function getTid($sciname){
 		$tid = 0;
 		$sql = 'SELECT tid FROM taxa WHERE sciname = "'.$this->cleanInStr($sciname).'"';
