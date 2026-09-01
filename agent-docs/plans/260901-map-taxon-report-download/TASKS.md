@@ -1,6 +1,6 @@
 # Tasks: Map Taxon Report Download
 
-Status: in progress
+Status: complete
 Plan: PLAN.md
 
 ## Wave 1
