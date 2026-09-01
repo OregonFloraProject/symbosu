@@ -18,6 +18,10 @@ share `IdentManager::setTaxa()` for taxon retrieval. They diverge in:
   `classes/IdentManager.php:237-283`).
 - Whether `checklistNotes` (Grow Native vendor, `pid=4`) are pulled for the CSV.
 
+## Shared module (`ident/shared/checklistApi.php`) and thin RPC wrapper
+
+Checklist data assembly is now shared in `ident/shared/checklistApi.php` (`get_data($params)`, `handleChecklistExport($result)`, `getEmpty()`). `ident/rpc/api.php` is a thin wrapper that includes the shared module, validates `clid`/`dynclid`, calls `get_data($_GET)`, runs `array_walk_recursive(...,'cleanWindowsRecursive')`, then delegates to `handleChecklistExport` / JSON. `spatial/rpc/solrSearch.php` reuses the same shared module for its map taxon-report download: after building `dynclid` via `fetchDistinctTidInterpreted` + `createDynamicChecklistFromTids`, it calls `get_data(['dynclid' => $dynclid])` and streams `exportChecklistToCSV` (for `download=csv`) or `exportChecklistToWord` (for `download=docx`, where `docx` maps to the `word` export).
+
 ## Request entry: `ident/rpc/api.php`
 
 ```php
@@ -36,11 +40,15 @@ if (
 ```
 
 The dispatch accepts `clid` (optionally with `pid`) **or** `dynclid`. For the CSV path the
-caller also passes `export=csv` or `export=vendorcsv`, which is checked after `get_data()`.
+caller also passes `export=csv` or `export=vendorcsv`, which is checked after `get_data()` via `handleChecklistExport()` in the shared module.
+
+## Map taxon-report reuse
+
+The map download flow does not call `ident/rpc/api.php`. `spatial/rpc/solrSearch.php:102-113` includes `ident/shared/checklistApi.php` directly and calls `get_data(['dynclid' => $dynclid])` with the dynamically created checklist. From there the path is identical to the `dynclid=2` CSV path described below (taxa via `Fmdyncltaxalink`, totals, characteristics, slider `numval`, `cleanWindowsRecursive`), then `exportChecklistToCSV` for `csv` or `exportChecklistToWord` for `docx`. In this flow `docx` is the wire value; internally it maps to the `word` export (`exportChecklistToWord` in `checklists/checklistexport.php:95`, invoked via `spatial/rpc/solrSearch.php:110-113` or via `handleChecklistExport` with `export=word`). No `clid`/`pid` metadata is involved.
 
 ## `get_data($params)` — shared controller
 
-`get_data()` (`ident/rpc/api.php:36`) does two jobs:
+`get_data()` (`ident/shared/checklistApi.php:35`, formerly `ident/rpc/api.php:36`) does two jobs:
 
 1. Hydrate checklist-level metadata (title, authors, abstract, locality, lat/lng, type, iconUrl)
    from the appropriate Doctrine entity.
@@ -267,7 +275,11 @@ It does not run for `dynclid=2` because `pid` is not part of the dynamic-checkli
 
 ## Key files
 
-- `ident/rpc/api.php:1-164` — controller and dispatch.
+- `ident/shared/checklistApi.php:35` — `get_data()` and `handleChecklistExport()` (shared controller).
+- `ident/rpc/api.php:1-28` — thin wrapper that includes the shared module and delegates to `get_data`/`handleChecklistExport`.
+- `spatial/rpc/solrSearch.php:80-114` — map taxon-report download reuse of the shared module (`download=csv` → CSV, `download=docx` → Word).
+- `spatial/shared/solrSearchHelpers.php:481` — `fetchDistinctTidInterpreted()` (distinct `tidinterpreted` for the download).
+- `classes/DynamicChecklistManager.php:114` — `createDynamicChecklistFromTids()` (ephemeral `fmdynamicchecklists`/`fmdyncltaxalink`).
 - `classes/IdentManager.php:122` — `setTaxa()` (Doctrine query builder).
 - `classes/IdentManager.php:392` — `getCharacteristics()`.
 - `classes/ExploreManager.php:28` — `fromModel` wrapper around the checklist entity.
@@ -275,6 +287,7 @@ It does not run for `dynclid=2` because `pid` is not part of the dynamic-checkli
 - `classes/TaxaManager.php:1065` — `getTaxaCounts`.
 - `checklists/checklistexport.php:7` — `exportChecklistToCSV`.
 - `checklists/checklistexport.php:54` — `exportChecklistToVendorCSV`.
+- `checklists/checklistexport.php:95` — `exportChecklistToWord` (wire `download=docx` maps to `export=word`).
 - `models/Fmchecklists.php:20` — `PID_VENDOR_ALL = 4`.
 - `models/Fmdynamicchecklists.php` — dynamic checklist entity.
 - `models/Fmdyncltaxalink.php` — dynamic checklist taxalink entity.
