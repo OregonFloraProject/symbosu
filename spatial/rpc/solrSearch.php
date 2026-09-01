@@ -2,8 +2,7 @@
 include_once('../../config/symbini.php');
 include_once($SERVER_ROOT.'/spatial/shared/solrSearchHelpers.php');
 include_once('../../config/dbconnection.php');
-
-header("Content-Type: application/json; charset=utf-8");
+include_once($SERVER_ROOT.'/classes/DynamicChecklistManager.php');
 
 // Declare error flag and message to transmit to frontend
 $errorBody = array(
@@ -44,6 +43,8 @@ $leftlong = isset($_POST['leftlong']) ? trim($_POST['leftlong']) : '';
 $footprintGeoJson = isset($_POST['footprintGeoJson']) ? $_POST['footprintGeoJson'] : '';
 $geoJson = json_decode($footprintGeoJson);
 
+$download = $_POST['download'] ?? $_GET['download'] ?? null;
+
 try {
 	$searchParams = array(
 		'db' => $db,
@@ -76,12 +77,52 @@ try {
 		'geoJson' => $geoJson
 	);
 
-	$geojson = executeSolrSearch($searchParams);
-	echo json_encode($geojson);
+	if ($download) {
+		if (!in_array($download, ['csv', 'docx'])) {
+			header("Content-Type: application/json; charset=utf-8");
+			echo json_encode(['error' => true, 'message' => 'Invalid download format. Please use csv or docx.']);
+			exit;
+		}
+
+		$tids = fetchDistinctTidInterpreted($searchParams);
+		if (empty($tids)) {
+			header("Content-Type: application/json; charset=utf-8");
+			echo json_encode(['error' => true, 'message' => 'No taxa found for current search']);
+			exit;
+		}
+
+		$dclManager = new DynamicChecklistManager();
+		$dynclid = $dclManager->createDynamicChecklistFromTids($tids);
+		if ($dynclid === 0) {
+			header("Content-Type: application/json; charset=utf-8");
+			echo json_encode(['error' => true, 'message' => 'Failed to create dynamic checklist']);
+			exit;
+		}
+
+		include_once($SERVER_ROOT.'/ident/shared/checklistApi.php');
+		$result = get_data(['dynclid' => $dynclid]);
+		array_walk_recursive($result,'cleanWindowsRecursive');
+
+		if ($download === 'csv') {
+			include_once($SERVER_ROOT.'/checklists/checklistexport.php');
+			exportChecklistToCSV($result);
+			exit;
+		} elseif ($download === 'docx') {
+			include_once($SERVER_ROOT.'/checklists/checklistexport.php');
+			exportChecklistToWord($result);
+			exit;
+		}
+	} else {
+		header("Content-Type: application/json; charset=utf-8");
+		$geojson = executeSolrSearch($searchParams);
+		echo json_encode($geojson);
+	}
 } catch (\Throwable $th) {
+	header("Content-Type: application/json; charset=utf-8");
 	$errorBody['error'] = true;
 	$errorBody['message'] = $th->getMessage();
 	echo json_encode($errorBody);
 }
 
 ?>
+
