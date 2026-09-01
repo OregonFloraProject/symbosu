@@ -2622,6 +2622,16 @@ $serverHost = GeneralUtil::getDomain();
 										<input name="searchvar" type="hidden" value="<?= $searchVar ?> " />
 										<input id='solrqstring' name="solrqstring" type="hidden" />
 									</form>
+									<div style="display: flex; gap: 0.5rem; align-items: center;">
+										<select id="taxonReportFormat" style="font-size: 0.8rem; padding: 2px;">
+											<option value="csv" selected>CSV</option>
+											<option value="docx">DOCX</option>
+										</select>
+										<button id="taxonReportBtn" class="icon-button" title="Download taxon report" onclick="downloadTaxonReport()">
+											<svg style="width:1.3em" alt="<?= $LANG['IMG_DWNL_DATA'] ?>" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/></svg>
+											<span style="color: var(--light-color);">Taxon Report</span>
+										</button>
+									</div>
 
 									<button style="width: auto;" class="icon-button" onclick="copyUrl('<?= $comingFrom ?>')" title="<?= $LANG['COPY_TO_CLIPBOARD'] ?>">
 										<svg alt="Copy as a link." style="width:1.2em;" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M440-280H280q-83 0-141.5-58.5T80-480q0-83 58.5-141.5T280-680h160v80H280q-50 0-85 35t-35 85q0 50 35 85t85 35h160v80ZM320-440v-80h320v80H320Zm200 160v-80h160q50 0 85-35t35-85q0-50-35-85t-85-35H520v-80h160q83 0 141.5 58.5T880-480q0 83-58.5 141.5T680-280H520Z"/></svg>
@@ -2778,6 +2788,44 @@ $serverHost = GeneralUtil::getDomain();
 	</div>
 	</body>
 	<script type="text/javascript">
+		function downloadTaxonReport() {
+			const format = document.getElementById("taxonReportFormat").value || 'csv';
+			if (format !== 'csv' && format !== 'docx') {
+				alert("Invalid format selected.");
+				return;
+			}
+
+			const paramsForm = document.getElementById("params-form");
+			if (!paramsForm) {
+				alert("Search parameters form not found.");
+				return;
+			}
+
+			const formData = new FormData(paramsForm);
+			const tempForm = document.createElement("form");
+			tempForm.method = "POST";
+			tempForm.action = "../../spatial/rpc/solrSearch.php";
+			tempForm.target = "_blank";
+
+			for (const [key, value] of formData.entries()) {
+				const input = document.createElement("input");
+				input.type = "hidden";
+				input.name = key;
+				input.value = value;
+				tempForm.appendChild(input);
+			}
+
+			const dlInput = document.createElement("input");
+			dlInput.type = "hidden";
+			dlInput.name = "download";
+			dlInput.value = format;
+			tempForm.appendChild(dlInput);
+
+			document.body.appendChild(tempForm);
+			tempForm.submit();
+			document.body.removeChild(tempForm);
+		}
+
 		$(document).ready(function() {
 			setSessionQueryStr();
 			setSearchForm(document.getElementById("params-form"));
