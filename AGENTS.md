@@ -27,7 +27,7 @@ Naming: `<domain>-<topic>.md`, kebab-case, `name:` frontmatter always equals the
 - [Key Filter Flow](docs/agent-docs/ident-key-filter-flow.md) — `ident/key.php?clid=` → `identify.js`
 - [Key Editing](docs/agent-docs/ident-key-editing.md) — kmcs character-state edits: chardetails.php vs editor.php/matrixeditor.php
 - [setTaxa Flow](docs/agent-docs/ident-settaxa-flow.md) — How the key's taxa query is built
-- [CSV Export Flow](docs/agent-docs/ident-rpc-csv-export-flow.md) — How clid/dynclid flow through ident/rpc/api.php to CSV export
+- [CSV Export Flow](docs/agent-docs/ident-rpc-csv-export-flow.md) — How clid/dynclid flow through `ident/shared/checklistApi.php` (thin wrapper `ident/rpc/api.php`) to CSV export; reused by map `download=csv|docx` flow (`docx` maps to `word`)
 
 ## Taxonomy
 - [Acceptance Status](docs/agent-docs/taxo-acceptance-status.md) — Derived from taxstatus rows, not a stored flag
@@ -35,7 +35,7 @@ Naming: `<domain>-<topic>.md`, kebab-case, `name:` frontmatter always equals the
 
 ## Mapping
 - [Map Module](docs/agent-docs/map-module.md) — Hub: entry point, architecture, security roles
-- [SOLR Pipeline](docs/agent-docs/map-solr-pipeline.md) — Server-side since `ea3c24f29`; `MAX_RECORD_COUNT = 20000`
+- [SOLR Pipeline](docs/agent-docs/map-solr-pipeline.md) — Server-side since `ea3c24f29`; `MAX_RECORD_COUNT = 20000`; taxon-report download (`download=csv|docx`) via `fetchDistinctTidInterpreted` + dynamic checklist
 - [Click & KML Flow](docs/agent-docs/map-click-kml-flow.md) — Marker popup; KML export, incl. the unsecured-query export bug
 
 ## React Frontend

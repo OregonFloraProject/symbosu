@@ -61,6 +61,7 @@ Real shape, confirmed in `models/Fmdynamicchecklists.php` and `classes/DynamicCh
   `type`, `notes`, `expiration` (a datetime - these rows expire and get purged, see
   `DynamicChecklistManager.php` line 131: `DELETE FROM fmdynamicchecklists WHERE expiration < NOW()`),
   `initialtimestamp`. **No `clid`, no `taxonstatusfilter`, no lat/long columns.**
+- Created either by geographic builders `createChecklist()`/`createDynamicChecklist()` (radius+bbox against `omoccurgeoindex`) or by the map taxon-report flow `createDynamicChecklistFromTids(array $tidList)` (`classes/DynamicChecklistManager.php:114`): validates numeric tids, inserts `name="Map Taxon Report"`, `details="Taxa from map search"`, 7-day `expiration`, and `INSERT IGNORE INTO fmdyncltaxalink (dynclid, tid)` for the distinct tids (called from `spatial/rpc/solrSearch.php:95` after `fetchDistinctTidInterpreted`).
 - **Fmdyncltaxalink** (table `fmdyncltaxalink`, model `models/Fmdyncltaxalink.php`): simple join table,
   composite PK `(dynclid, tid)`, plus `initialtimestamp`.
 

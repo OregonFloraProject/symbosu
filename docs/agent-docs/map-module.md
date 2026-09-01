@@ -24,7 +24,11 @@ For SOLR query building/response detail, see [[map-solr-pipeline]]. For the mark
 
 - `collections/map/rpc/searchCollections.php` — MySQL-path AJAX endpoint, calls `getCoordinateMap()`.
 - `collections/map/rpc/getCoordinates.php`, `getTaxa.php`, `postMap.php`, `changemaprecordpage.php` — supporting endpoints.
-- `spatial/rpc/solrSearch.php` — SOLR-path endpoint; see [[map-solr-pipeline]].
+- `spatial/rpc/solrSearch.php` — SOLR-path endpoint; see [[map-solr-pipeline]]. Also handles `download=csv|docx` taxon-report export (builds distinct tids then delegates to the shared checklist API).
+
+## Map toolbar taxon-report control (`collections/map/index.php`)
+
+In the `occurrencelist` toolbar (`collections/map/index.php:2625-2635`) a `<select id="taxonReportFormat">` (options `csv` selected, `docx`) and `<button id="taxonReportBtn">` call `downloadTaxonReport()` (inline script at `collections/map/index.php:2791`). The function validates the format, clones the current `#params-form` into a `FormData` object, builds a temporary hidden POST form targeting `../../spatial/rpc/solrSearch.php` (`target="_blank"`), appends every search field plus `download=<format>`, submits, and removes the form. The download therefore reuses the exact same filter set as the map search and flows through `spatial/rpc/solrSearch.php` → `spatial/shared/solrSearchHelpers.php:fetchDistinctTidInterpreted` → `classes/DynamicChecklistManager.php:createDynamicChecklistFromTids` → `ident/shared/checklistApi.php:get_data`; see [[map-solr-pipeline]] and [[ident-rpc-csv-export-flow]].
 
 ## Frontend JS (verified present)
 
