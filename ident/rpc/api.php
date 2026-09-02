@@ -18,8 +18,6 @@ if (
 	#todo: generate error or redirect
 }
 
-array_walk_recursive($result,'cleanWindowsRecursive');#replace Windows characters
-
 if (!handleChecklistExport($result)) {
 	header("Content-Type: application/json; charset=utf-8");
 	echo json_encode($result, JSON_NUMERIC_CHECK | JSON_INVALID_UTF8_SUBSTITUTE);
