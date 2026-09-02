@@ -74,47 +74,41 @@ try {
 		'rightlong' => $rightlong,
 		'bottomlat' => $bottomlat,
 		'leftlong' => $leftlong,
-		'geoJson' => $geoJson
+		'geoJson' => $geoJson,
+		'download' => $download
 	);
+
+	$geojson = executeSolrSearch($searchParams);
 
 	if ($download) {
 		if (!in_array($download, ['csv', 'docx'])) {
-			header("Content-Type: application/json; charset=utf-8");
-			echo json_encode(['error' => true, 'message' => 'Invalid download format. Please use csv or docx.']);
-			exit;
+			throw new Exception("Invalid download format. Please use csv or docx.");
 		}
 
-		$tids = fetchDistinctTidInterpreted($searchParams);
+		$tids = fetchDistinctTidInterpreted($geojson);
 		if (empty($tids)) {
-			header("Content-Type: application/json; charset=utf-8");
-			echo json_encode(['error' => true, 'message' => 'No taxa found for current search']);
-			exit;
+			throw new Exception('No taxa found for current search');
 		}
 
 		$dclManager = new DynamicChecklistManager();
 		$dynclid = $dclManager->createDynamicChecklistFromTids($tids);
 		if ($dynclid === 0) {
-			header("Content-Type: application/json; charset=utf-8");
-			echo json_encode(['error' => true, 'message' => 'Failed to create dynamic checklist']);
-			exit;
+			throw new Exception('Failed to create dynamic checklist');
 		}
 
 		include_once($SERVER_ROOT.'/ident/shared/checklistApi.php');
 		$result = get_data(['dynclid' => $dynclid]);
-		array_walk_recursive($result,'cleanWindowsRecursive');
 
+		include_once($SERVER_ROOT . "/checklists/checklistexport.php");
 		if ($download === 'csv') {
-			include_once($SERVER_ROOT.'/checklists/checklistexport.php');
 			exportChecklistToCSV($result);
 			exit;
 		} elseif ($download === 'docx') {
-			include_once($SERVER_ROOT.'/checklists/checklistexport.php');
 			exportChecklistToWord($result);
 			exit;
 		}
 	} else {
 		header("Content-Type: application/json; charset=utf-8");
-		$geojson = executeSolrSearch($searchParams);
 		echo json_encode($geojson);
 	}
 } catch (\Throwable $th) {
