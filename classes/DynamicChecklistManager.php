@@ -118,11 +118,10 @@ class DynamicChecklistManager extends Manager {
 				$validTids[] = intval($tid);
 			}
 		}
-		$validTids = array_unique($validTids);
-
 		if (empty($validTids)) {
 			return 0;
 		}
+		$validTids = array_unique($validTids);	
 
 		$name = "Map Taxon Report";
 		$details = "Taxa from map search";

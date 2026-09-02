@@ -384,6 +384,7 @@ function executeSolrSearch($searchParams): array {
 	$bottomlat = $searchParams['bottomlat'] ?? '';
 	$leftlong = $searchParams['leftlong'] ?? '';
 	$geoJson = $searchParams['geoJson'] ?? null;
+	$download = $searchParams['download'] ?? null;
 
 	$solrQArr = array();
 	$solrGeoQArr = array();
@@ -458,7 +459,9 @@ function executeSolrSearch($searchParams): array {
 	}
 
 	$MAX_RECORD_COUNT = 20000;
-	$SOLR_FIELDS = 'occid,collid,catalogNumber,family,sciname,tidinterpreted,recordedBy,recordNumber,eventDate,geo,CollectionName,CollType';
+	$SOLR_FIELDS = 'tidinterpreted';
+
+	if (!$download) $SOLR_FIELDS .= ',occid,collid,catalogNumber,family,sciname,tidinterpreted,recordedBy,recordNumber,eventDate,geo,CollectionName,CollType';
 
 	$pArr = array(
 		'q' => $solrQSecure,
@@ -478,112 +481,14 @@ function executeSolrSearch($searchParams): array {
 	return $geojson;
 }
 
-function fetchDistinctTidInterpreted(array $searchParams): array {
-	global $solrManager, $canReadRareSpp;
-
-	$db = $searchParams['db'] ?? array();
-	$taxa = $searchParams['taxa'] ?? '';
-	$taxontype = $searchParams['taxontype'] ?? '';
-	$usethes = $searchParams['usethes'] ?? false;
-	$country = $searchParams['country'] ?? '';
-	$state = $searchParams['state'] ?? '';
-	$county = $searchParams['county'] ?? '';
-	$local = $searchParams['local'] ?? '';
-	$collector = $searchParams['collector'] ?? '';
-	$collnum = $searchParams['collnum'] ?? '';
-	$eventdate1 = $searchParams['eventdate1'] ?? '';
-	$eventdate2 = $searchParams['eventdate2'] ?? '';
-	$catnum = $searchParams['catnum'] ?? '';
-	$includeothercatnum = $searchParams['includeothercatnum'] ?? false;
-	$typestatus = $searchParams['typestatus'] ?? false;
-	$hasimages = $searchParams['hasimages'] ?? false;
-	$hasgenetic = $searchParams['hasgenetic'] ?? false;
-	$includecult = $searchParams['includecult'] ?? false;
-	$excludeinat = $searchParams['excludeinat'] ?? false;
-	$pointlat = $searchParams['pointlat'] ?? '';
-	$pointlong = $searchParams['pointlong'] ?? '';
-	$radius = $searchParams['radius'] ?? '';
-	$pointunits = $searchParams['pointunits'] ?? '';
-	$upperlat = $searchParams['upperlat'] ?? '';
-	$rightlong = $searchParams['rightlong'] ?? '';
-	$bottomlat = $searchParams['bottomlat'] ?? '';
-	$leftlong = $searchParams['leftlong'] ?? '';
-	$geoJson = $searchParams['geoJson'] ?? null;
-
-	$solrQArr = array();
-	$solrGeoQArr = array();
-
-	if(is_array($db) && !empty($db)){
-		$all = false;
-		foreach($db as $d){
-			if($d === 'all'){
-				$all = true;
-				break;
-			}
-		}
-		if(!$all){
-			$collid = implode(' ', $db);
-			if(!empty($collid)){
-				$solrQArr[] = '(collid:(' . $collid . '))';
-			} else {
-				throw new InvalidArgumentException('Please choose at least one collection');
-			}
-		}
-	}
-
-	buildTaxaParams($taxa, $taxontype, $usethes, $solrQArr);
-	buildTextParams($country, $state, $county, $local, $collector, $collnum, $eventdate1, $eventdate2,
-		$catnum, $includeothercatnum, $typestatus, $hasimages, $hasgenetic, $includecult, $excludeinat,
-		$solrQArr);
-	buildGeographyParams($geoJson, $pointlat, $pointlong, $radius, $pointunits,
-		$upperlat, $rightlong, $bottomlat, $leftlong, $solrGeoQArr);
-
-	$solrQ = '';
-	if(!empty($solrQArr)){
-		$solrQ = implode(' AND ', $solrQArr);
-		$solrQ .= ' AND (decimalLatitude:[* TO *] AND decimalLongitude:[* TO *] AND sciname:[* TO *])';
-	} else {
-		$solrQ = '(sciname:[* TO *])';
-	}
-
-	$solrGeoQ = '';
-	if(!empty($solrGeoQArr)){
-		$solrGeoQ = 'geo:' . implode(' OR geo:', $solrGeoQArr);
-	}
-
-	$solrQSecure = $solrManager->checkQuerySecurity($solrQ);
-
-	$pArrCount = array(
-		'q' => $solrQSecure,
-		'rows' => 0,
-		'start' => 0,
-		'wt' => 'json',
-		'action' => 'getsolrreccnt'
-	);
-	if(!empty($solrGeoQ)) $pArrCount['fq'] = $solrGeoQ;
-	$full = $solrManager->callingSOLR($pArrCount);
-	$recordCount = is_numeric($full['response']['numFound'] ?? null) ? (int)$full['response']['numFound'] : 0;
-
-	if ($recordCount === 0) return [];
-
-	$MAX_RECORD_COUNT = 20000;
-	$pArr = array(
-		'q' => $solrQSecure,
-		'rows' => min($recordCount, $MAX_RECORD_COUNT),
-		'start' => 0,
-		'fl' => 'tidinterpreted',
-		'wt' => 'json',
-		'omitHeader' => 'true',
-		'action' => 'lazyload'
-	);
-	if(!empty($solrGeoQ)) $pArr['fq'] = $solrGeoQ;
-	
-	$response = $solrManager->callingSOLR($pArr);
+function fetchDistinctTidInterpreted($geojson) {
 	$tids = [];
-	if (isset($response['response']['docs'])) {
-		foreach ($response['response']['docs'] as $doc) {
-			if (isset($doc['tidinterpreted']) && is_numeric($doc['tidinterpreted']) && $doc['tidinterpreted'] > 0) {
-				$tids[] = (int)$doc['tidinterpreted'];
+	if (isset($geojson['features']) && is_array($geojson['features'])) {
+		foreach ($geojson['features'] as $feature) {
+			$props = $feature['properties'] ?? null;
+			$tid = $props['tidinterpreted'] ?? $feature['tidinterpreted'] ?? null;
+			if ($tid !== null && is_numeric($tid) && (int)$tid > 0) {
+				$tids[] = (int)$tid;
 			}
 		}
 	}

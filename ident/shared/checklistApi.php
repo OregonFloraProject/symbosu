@@ -113,6 +113,7 @@ function get_data($params) {
 		$results['characteristics'] = [];
 	}
 
+	array_walk_recursive($results, 'cleanWindowsRecursive'); #replace Windows characters
 	return $results;
 }
 
