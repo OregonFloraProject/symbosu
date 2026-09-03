@@ -16,6 +16,7 @@ class Fmdynamicchecklists
      *
      *
      * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      * @ORM\Column(name="dynclid", type="integer", nullable=false)
      */
     private $dynclid;
@@ -46,7 +47,7 @@ class Fmdynamicchecklists
      *
      * @ORM\Column(name="type", type="string", length=45, nullable=false)
      */
-    private $type;
+    private $type = 'DynamicList';
     
     /**
      * @var string|null
@@ -67,7 +68,7 @@ class Fmdynamicchecklists
      *
      * @ORM\Column(name="initialTimeStamp", type="datetime", nullable=false, options={"default"="CURRENT_TIMESTAMP"})
      */
-    private $initialtimestamp = 'CURRENT_TIMESTAMP';
+    private $initialtimestamp;
     
   /**
      * Get clid.
@@ -127,5 +128,100 @@ class Fmdynamicchecklists
         return $this->details;
     }
 
+    /**
+     * Set uid.
+     *
+     * @param string|null $uid
+     *
+     * @return Fmdynamicchecklists
+     */
+    public function setUid($uid = null)
+    {
+        $this->uid = $uid;
+
+        return $this;
+    }
+
+    /**
+     * Get uid.
+     *
+     * @return string|null
+     */
+    public function getUid()
+    {
+        return $this->uid;
+    }
+
+    /**
+     * Set type.
+     *
+     * @param string $type
+     *
+     * @return Fmdynamicchecklists
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * Get type.
+     *
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * Set expiration.
+     *
+     * @param \DateTime|null $expiration
+     *
+     * @return Fmdynamicchecklists
+     */
+    public function setExpiration(\DateTime|null $expiration = null)
+    {
+        $this->expiration = $expiration;
+
+        return $this;
+    }
+
+    /**
+     * Get expiration.
+     *
+     * @return \DateTime|null
+     */
+    public function getExpiration()
+    {
+        return $this->expiration;
+    }
+
+    /**
+     * Set initialtimestamp.
+     *
+     * @param \DateTime $initialtimestamp
+     *
+     * @return Fmdynamicchecklists
+     */
+    public function setInitialtimestamp(\DateTime $initialtimestamp)
+    {
+        $this->initialtimestamp = $initialtimestamp;
+
+        return $this;
+    }
+
+    /**
+     * Get initialtimestamp.
+     *
+     * @return \DateTime|null
+     */
+    public function getInitialtimestamp()
+    {
+        return $this->initialtimestamp;
+    }
 
 }
