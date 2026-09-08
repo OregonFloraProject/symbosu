@@ -1,6 +1,5 @@
 import React from 'react';
 import ImageCarousel from '../../common/imageCarousel.jsx';
-import ImageModal from '../../common/modal.jsx';
 import Loading from '../../common/loading.jsx';
 import { getUrlQueryParams } from '../../common/queryParams.js';
 import DescriptionTabs from './DescriptionTabs.jsx';
@@ -8,7 +7,6 @@ import MapItem from './MapItem.jsx';
 import SideBarSection from './SideBarSectionForMain.jsx';
 import { checkNullThumbnailUrl } from '../utils.js';
 import SharedLightbox from '../../common/SharedLightbox.jsx';
-import { getTaxaPage } from '../../common/taxaUtils';
 
 const queryParams = getUrlQueryParams(window.location.search);
 
@@ -158,7 +156,6 @@ export class TaxaDetail extends React.Component {
   render() {
     const images = this.state.currImageBasis || [];
     const photoIndex = this.state.currImage || 0;
-    const currentImg = images[photoIndex];
     const res = this.props.res;
     const pageTitle = this.props.defaultTitle + ' ' + res.sciName;
     const titleElement = document.getElementsByTagName('title')[0];
