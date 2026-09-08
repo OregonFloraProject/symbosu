@@ -83,8 +83,6 @@ include_once($serverRoot.'/classes/ImageExplorer.php');
 								if(substr($fullLgUrl,0,1) == '/') $fullLgUrl = $IMAGE_DOMAIN . $fullLgUrl;
 							}
 							
-							$mediaViewerArgs = '{url: "'.htmlspecialchars($fullUrl, ENT_QUOTES).'", lgurl: "'.htmlspecialchars($fullLgUrl, ENT_QUOTES).'", caption: "'.htmlspecialchars($imgArr['caption']??'', ENT_QUOTES).'", photographer: "'.htmlspecialchars($photoAuthor??'', ENT_QUOTES).'", copyright: "'.htmlspecialchars($imgArr['copyright']??'', ENT_QUOTES).'", sourceurl: "'.htmlspecialchars($imgArr['sourceurl']??'', ENT_QUOTES).'", title: "'.htmlspecialchars($imgArr['sciname']??'', ENT_QUOTES).'", imgid: "'.htmlspecialchars($imgId??'', ENT_QUOTES).'", occid: "'.htmlspecialchars($imgArr['occid']??'', ENT_QUOTES).'"}';
-							
 							$fallbackOnclick = '';
 							if($imgArr['occid']){
 								$fallbackOnclick = 'openIndPU(' . $imgArr['occid'] . ')';
@@ -93,8 +91,9 @@ include_once($serverRoot.'/classes/ImageExplorer.php');
 								$fallbackOnclick = 'openImagePopup(' . $imgId . ')';
 							}
 							
-							$onclickStr = 'if(window.symbMediaViewer){ window.symbMediaViewer.open(' . $mediaViewerArgs . '); return false; } else { ' . $fallbackOnclick . '; return false; }';
-							$anchorLink = '<a href="#" onclick=\'' . $onclickStr . '\'>';
+							$onclickStr = 'if(window.symbMediaViewer){ window.symbMediaViewer.open({}, {triggerElement: this}); return false; } else { ' . $fallbackOnclick . '; return false; }';
+							$mediaDataAttrs = ' data-symb-media data-url="'.htmlspecialchars($fullUrl, ENT_QUOTES).'" data-lgurl="'.htmlspecialchars($fullLgUrl, ENT_QUOTES).'" data-caption="'.htmlspecialchars($imgArr['caption']??'', ENT_QUOTES).'" data-photographer="'.htmlspecialchars($photoAuthor??'', ENT_QUOTES).'" data-copyright="'.htmlspecialchars($imgArr['copyright']??'', ENT_QUOTES).'" data-sourceurl="'.htmlspecialchars($imgArr['sourceurl']??'', ENT_QUOTES).'" data-title="'.htmlspecialchars($imgArr['sciname']??'', ENT_QUOTES).'" data-imgid="'.htmlspecialchars($imgId??'', ENT_QUOTES).'" data-occid="'.htmlspecialchars($imgArr['occid']??'', ENT_QUOTES).'"';
+							$anchorLink = '<a href="#"'.$mediaDataAttrs.' onclick=\'' . $onclickStr . '\'>';
 
 							echo $anchorLink;
 							echo '<img src="'.$imgUrl.'" />';

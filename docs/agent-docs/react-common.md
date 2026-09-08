@@ -26,9 +26,8 @@ description: "js/react/src/common — shared utilities, UI components, search wi
 | `crumbBuilder.jsx` | `CrumbBuilder` (function) | taxa, inventory |
 | `iconButton.jsx` | `IconButton`, `CancelButton` | multiple |
 | `filterModal.jsx` | `FilterModal` (class) | identify, checklist-special (mobile filter drawer) |
-| `modal.jsx` | `ImageModal` (class) | taxa |
 | `imageCarousel.jsx` | `ImageCarousel` (function) | taxa |
-| `imageModalCarousel.jsx` | `ImageModalCarousel` | taxa (dual-slider, nav1/nav2) |
+| `SharedLightbox.jsx` | `SharedLightbox` | Adapter between React taxa galleries and the site-wide media viewer |
 | `formFields.jsx` | `TextField` (class) | explore-vendor |
 | `textarea.jsx` | `TextareaField` | extends `TextField`, explore-vendor |
 | `helpButton.jsx` | `HelpButton` (class) | deprecated (see gotcha below) |
