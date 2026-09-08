@@ -20,6 +20,7 @@ $collectionSearchPage = $SHOULD_USE_HARVESTPARAMS ? '/collections/index.php' : '
 
 <link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/css/compiled/theme.css?<?php echo filemtime($SERVER_ROOT . '/css/compiled/theme.css'); ?>"> 
 <link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/css/compiled/header.css?<?php echo filemtime($SERVER_ROOT . '/css/compiled/header.css'); ?>"> 
+<link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/css/media-viewer.css?<?php echo filemtime($SERVER_ROOT . '/css/media-viewer.css'); ?>">
 
  <!--   
 <script
@@ -32,6 +33,7 @@ $collectionSearchPage = $SHOULD_USE_HARVESTPARAMS ? '/collections/index.php' : '
 
 <!-- Use Symbiota's version of jQuery, and only load it if it is not already loaded in <head> by the page, checking first. -->
 <script> window.jQuery || document.write('<script src="<?php echo $CLIENT_ROOT; ?>/js/jquery-3.7.1.min.js" type="text/javascript">\x3C/script>')</script>
+<script src="<?php echo $CLIENT_ROOT; ?>/js/media-viewer.js?<?php echo filemtime($SERVER_ROOT . '/js/media-viewer.js'); ?>" data-client-root="<?php echo htmlspecialchars($CLIENT_ROOT, ENT_QUOTES); ?>" type="text/javascript"></script>
 
 <!-- Render header -->
 <div
@@ -52,14 +54,6 @@ $collectionSearchPage = $SHOULD_USE_HARVESTPARAMS ? '/collections/index.php' : '
 </div>
 */
 ?>
-<!-- Global site tag (gtag.js) - Google Analytics 4-->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-98WFW6HYV2"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-98WFW6HYV2');
-</script>
+<?php include_once("includes/googleanalytics.php"); ?>
 
 <div id="site-content">

@@ -100,10 +100,16 @@ class TaxaApp extends React.Component {
 
           const relatedArr = [res.sciname, parentUrl, childUrl];
 
+          // Show buttons in More Info in Context bar
           let moreInfo = [];
+          // Show status in Context bar
+          const Status = [];
           if (res.specialChecklists && res.specialChecklists.includes(CLID_RARE_ALL)) {
             const rareProfileUrl = getRareTaxaPage(this.props.clientRoot, this.props.tid);
             moreInfo.push({ title: 'Rare Plant Profile', url: rareProfileUrl });
+            if (res.characteristics.conservation_status) {
+              Status.push({type: 'conservation_status', ...res.characteristics.conservation_status});
+            }
           } else if (res.rarePlantFactSheet.length) {
             moreInfo.push({ title: 'Rare Plant Fact Sheet', url: res.rarePlantFactSheet });
           }
@@ -161,6 +167,12 @@ class TaxaApp extends React.Component {
               }
             });
           }
+          
+          // Add noxious weed Status
+          if (res.characteristics.noxious_weed) {
+            Status.push(res.characteristics.noxious_weed);
+          }
+
           this.setState({
             tid: this.getTid(),
             sciName: res.sciname,
@@ -177,6 +189,7 @@ class TaxaApp extends React.Component {
               'Common Names': res.vernacular.names,
               Synonyms: res.synonyms,
               Origin: res.origin,
+              Status,
               'More info': moreInfo,
             },
             taxalinks: {

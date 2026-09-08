@@ -1,7 +1,10 @@
 <?php
 include_once('../../../config/symbini.php');
 include_once($SERVER_ROOT.'/classes/OccurrenceLoans.php');
-require_once $SERVER_ROOT.'/vendor/phpoffice/phpword/bootstrap.php';
+require_once $SERVER_ROOT.'/vendor/autoload.php';
+include_once($SERVER_ROOT . '/classes/utilities/Language.php');
+
+Language::load('collections/loans/reports/defaultenvelope');
 
 $collId = $_REQUEST['collid'];
 $outputMode = $_POST['outputmode'];
@@ -54,7 +57,7 @@ if($outputMode == 'doc'){
 	$textrun->addTextBreak(1);
 	$textrun->addText(htmlspecialchars($invoiceArr['country']),'toAddressFont');
 
-	$targetFile = $TEMP_DIR_ROOT.'/report/'.$PARAMS_ARR['un'].'_addressed_envelope.docx';
+	$targetFile = $TEMP_DIR_ROOT . '/' . $PARAMS_ARR['un'] . '_addressed_envelope.docx';
 	$phpWord->save($targetFile, 'Word2007');
 
 	ob_start();
@@ -85,7 +88,7 @@ else{
 			</style>
 		</head>
 		<body style="background-color:#ffffff;">
-			<h1 class="page-heading screen-reader-only">Addressed Envelope</h1>
+			<h1 class="page-heading screen-reader-only"><?php echo $LANG['ADDRESSED_ENVELOPE']; ?></h1>
 			<div>
 				<table>
 					<tr style="height:1in;">

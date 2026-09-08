@@ -1,8 +1,9 @@
 <?php
 include_once('../config/symbini.php');
 include_once($SERVER_ROOT.'/classes/ChecklistVoucherReport.php');
-if($LANG_TAG != 'en' && file_exists($SERVER_ROOT.'/content/lang/checklists/voucheradmin.' . $LANG_TAG . '.php')) include_once($SERVER_ROOT . '/content/lang/checklists/voucheradmin.' . $LANG_TAG . '.php');
-else include_once($SERVER_ROOT.'/content/lang/checklists/voucheradmin.en.php');
+include_once($SERVER_ROOT . '/classes/utilities/Language.php');
+
+Language::load('checklists/voucheradmin');
 
 $clid = array_key_exists('clid', $_REQUEST) ? filter_var($_REQUEST['clid'], FILTER_SANITIZE_NUMBER_INT) : 0;
 $pid = array_key_exists('pid', $_REQUEST) ? filter_var($_REQUEST['pid'], FILTER_SANITIZE_NUMBER_INT) : '';
@@ -81,7 +82,7 @@ if($isEditor){
 										foreach($occArr as $occid => $oArr){
 											echo '<tr>';
 											echo '<td><input name="occids[]" type="checkbox" value="'.$occid.'-'.$clTaxaID.'" /></td>';
-											echo '<td><a href="../taxa/index.php?taxon=' . $clManager->cleanOutStr($oArr['tid']) . '" target="_blank">' . $clManager->cleanOutStr($oArr['sciname']) . '</a></td>';
+											echo '<td><a href="../taxa/index.php?taxon=' . $oArr['tid'] . '" target="_blank">' . $oArr['sciname'] . '</a></td>';
 											echo '<td>';
 											echo $oArr['recordedby'].' '.$oArr['recordnumber'].'<br/>';
 											if($oArr['eventdate']) echo $oArr['eventdate'].'<br/>';

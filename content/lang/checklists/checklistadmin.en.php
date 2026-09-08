@@ -7,6 +7,7 @@ Language: English
 
 include_once('checklist.en.php');
 
+$LANG['MANAGE_CHECKLIST'] = 'Manage Checklist';
 $LANG['NO_PERMISSIONS'] = 'You do not have permission to create a Checklist. Please contact an administrator.';
 $LANG['ERR_DELETING_CHECKLIST'] = 'ERROR deleting checklist';
 $LANG['ERR_ADDING_CHILD'] = 'ERROR adding child checklist link';
@@ -16,7 +17,6 @@ $LANG['TARGET_CHECKLIST'] = 'Target checklist';
 $LANG['PARENT_CHECKLIST'] = 'Parent checklist';
 $LANG['SELECTPROJECT'] = 'Select a project';
 $LANG['RETURNCHECK'] = 'Return to Checklist';
-$LANG['ERROR'] = 'ERROR';
 $LANG['ADMIN'] = 'Admin';
 $LANG['DESCRIPTION'] = 'Description';
 $LANG['RELATEDCHECK'] = 'Related Checklists';
@@ -54,9 +54,8 @@ $LANG['SPECIES'] = 'Species:';
 $LANG['LATCENT'] = 'Latitude';
 $LANG['LONGCENT'] = 'Longitude';
 $LANG['POINTRAD'] = 'Point Radius (meters)';
-$LANG['POLYFOOT'] = 'Polygon Footprint';
-$LANG['POLYGON_DEFINED'] = 'Polygon footprint defined<br/>Click globe to view/edit';
-$LANG['POLYGON_NOT_DEFINED'] = 'Polygon footprint not defined<br/>Click globe to create polygon';
+$LANG['GEOJSON_FOOTPRINT'] = 'Polygon Footprint (GeoJSON format)';
+$LANG['ERROR_INVALID_JSON'] = 'ERROR: Polygon is not valid JSON format';
 $LANG['CREATE_EDIT_POLYGON'] = 'Create/Edit Polygon';
 $LANG['POLYGON_READY'] = 'Polygon changed/removed<br/>and ready to be saved';
 $LANG['DEFAULTDISPLAY'] = 'Default Display Settings';

@@ -1,6 +1,6 @@
 <?php 
 include_once($SERVER_ROOT.'/config/dbconnection.php');
-include_once($SERVER_ROOT.'/classes/OccurrenceUtilities.php');
+include_once($SERVER_ROOT.'/classes/utilities/OccurrenceUtil.php');
 
 class ImageLibraryManager{
 
@@ -694,7 +694,8 @@ class ImageLibraryManager{
 			$this->setRecordCnt();
 		}
 		$sql = 'SELECT DISTINCT i.imgid, o.tidinterpreted, t.tid, t.sciname, i.url, i.thumbnailurl, i.originalurl, '.
-			'u.uid, u.lastname, u.firstname, i.caption, '.
+			'u.uid, u.lastname, u.firstname, i.photographer AS imgphotographer, i.caption, '.
+			'i.copyright, i.sourceurl, '.
 			'o.occid, o.stateprovince, o.catalognumber, CONCAT_WS("-",c.institutioncode, c.collectioncode) as instcode ';
 		$sql .= $this->getSqlBase();
 		$sql .= $this->sqlWhere;
@@ -729,7 +730,10 @@ class ImageLibraryManager{
 			$retArr[$imgId]['uid'] = $r->uid;
 			$retArr[$imgId]['lastname'] = $r->lastname;
 			$retArr[$imgId]['firstname'] = $r->firstname;
+			$retArr[$imgId]['imgphotographer'] = $r->imgphotographer;
 			$retArr[$imgId]['caption'] = $r->caption;
+			$retArr[$imgId]['copyright'] = $r->copyright;
+			$retArr[$imgId]['sourceurl'] = $r->sourceurl;
 			$retArr[$imgId]['occid'] = $r->occid;
 			$retArr[$imgId]['stateprovince'] = $r->stateprovince;
 			$retArr[$imgId]['catalognumber'] = $r->catalognumber;

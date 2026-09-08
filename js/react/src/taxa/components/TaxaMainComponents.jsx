@@ -1,12 +1,12 @@
 import React from 'react';
 import ImageCarousel from '../../common/imageCarousel.jsx';
-import ImageModal from '../../common/modal.jsx';
 import Loading from '../../common/loading.jsx';
 import { getUrlQueryParams } from '../../common/queryParams.js';
 import DescriptionTabs from './DescriptionTabs.jsx';
 import MapItem from './MapItem.jsx';
 import SideBarSection from './SideBarSectionForMain.jsx';
 import { checkNullThumbnailUrl } from '../utils.js';
+import SharedLightbox from '../../common/SharedLightbox.jsx';
 
 const queryParams = getUrlQueryParams(window.location.search);
 
@@ -154,6 +154,8 @@ export class TaxaDetail extends React.Component {
     });
   };
   render() {
+    const images = this.state.currImageBasis || [];
+    const photoIndex = this.state.currImage || 0;
     const res = this.props.res;
     const pageTitle = this.props.defaultTitle + ' ' + res.sciName;
     const titleElement = document.getElementsByTagName('title')[0];
@@ -308,18 +310,15 @@ export class TaxaDetail extends React.Component {
             />
           </div>
         </div>
-        <ImageModal
-          show={this.state.isOpen}
-          currImage={this.state.currImage}
-          images={this.state.currImageBasis}
-          altname={res.sciName}
-          onClose={this.toggleImageModal}
+        <SharedLightbox
+          isOpen={this.state.isOpen}
+          photoIndex={photoIndex}
+          images={images}
+          sciName={res.sciName}
+          onClose={() => this.setState({ isOpen: false })}
+          onNavigate={(index) => this.setState({ currImage: index })}
           clientRoot={this.props.clientRoot}
-        >
-          <h3>
-            <span>{res.vernacularNames[0]}</span> images
-          </h3>
-        </ImageModal>
+        />
       </div>
     );
   }

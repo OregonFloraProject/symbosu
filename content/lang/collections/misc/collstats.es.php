@@ -64,16 +64,17 @@ $LANG['COUNTRY'] = 'País';
 $LANG['SPEC_W_COUNTRY'] = 'Total de Especímenes con País';
 $LANG['SPEC_WO_COUNTRY'] = 'Especímenes sin País o Georreferenciación';
 $LANG['SELECT_DESELECT'] = 'Seleccionar/Deseleccionar';
-$LANG['VIEW_STATS'] = 'Ver Estadísticas';
+$LANG['VIEW_STATS'] = 'Ver Estadísticas por Colección';
 $LANG['UPDATE_OBSERVATION_STATS'] = 'Actualizar Estadísticas de Observación';
 $LANG['OBSERVATION_COLLECTIONS'] = 'Colecciones de Observación';
 $LANG['SPECIMEN_COLLECTIONS'] = 'Colecciones de Especímenes';
 $LANG['EXPAND'] = 'Expandir';
 $LANG['CONDENSE'] = 'Condensar';
-$LANG['OBSERVATION'] = 'Observación';
-$LANG['SPECIMEN'] = 'Muestra';
+$LANG['OBSERVATION'] = 'Observaciones';
+$LANG['SPECIMEN'] = 'Muestras';
 $LANG['SAVE_CSV'] = 'Guardar CSV';
 $LANG['GENERAL_STATISTICS'] = 'Estadísticas Generales';
 $LANG['STATS_PER_COL'] = 'Estadísticas por colección';
+$LANG['PERSONAL_OBSERVATION_COLLECTIONS'] = 'Colecciones de Gestión de Observaciones Personales';
 
 ?>

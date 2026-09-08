@@ -102,7 +102,14 @@ class FooterApp extends React.Component {
                   <strong>Symbiota</strong>
                 </a>
                 , a collaborative, open source content management system for curating specimen- and observation-based
-                biodiversity data.
+                biodiversity data. For more information about Symbiota,{' '}
+                <a href={'https://docs.symbiota.org/about/'} target="_blank" rel="noopener noreferrer">
+                  <strong>read the docs</strong>{' '}
+                </a>
+                or contact the{' '}
+                <a href={'https://symbiota.org/contact-the-support-hub/'} target="_blank" rel="noopener noreferrer">
+                  <strong>Symbiota Support Hub</strong>
+                </a>.
               </p>
             </div>
           </div>

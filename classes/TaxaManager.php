@@ -53,6 +53,9 @@ class TaxaManager {
   private static $CID_CONSERVATION_STATE = 243;
   private static $CID_CONSERVATION_HERITAGE = 244;
 
+  # Designated noxious weed status
+  private static $CID_NOXIOUS_WEED = 240;
+
 	# from TaxonProfileManager
 	private $langArr = array();
 	
@@ -606,8 +609,7 @@ class TaxaManager {
     foreach ($acceptedSynonyms as &$acceptedSynonym) {
       $acceptedSynonym["tid"] = $acceptedSynonym["tidaccepted"];
       unset($acceptedSynonym["tidaccepted"]);
-
-      $taxaModel = $taxaRepo->find(id: $acceptedSynonym["tid"]);
+      $taxaModel = $taxaRepo->find($acceptedSynonym["tid"]);
       $taxa = self::fromModel($taxaModel);
       $acceptedSynonym['vernacular'] = [
         "basename" => $taxa->getBasename(),
@@ -846,6 +848,8 @@ class TaxaManager {
         case TaxaManager::$CID_CONSERVATION_HERITAGE:
           $attr_array["conservation_status"]["heritage"] = $attr_val;
           break;
+        case TaxaManager::$CID_NOXIOUS_WEED:
+          $attr_array['noxious_weed'] = $attr_val;
         default:
           break;
       }
@@ -881,7 +885,7 @@ class TaxaManager {
     $tids = $this->getImageTids();
     $em = SymbosuEntityManager::getEntityManager();
     $images = $em->createQueryBuilder()
-      ->select(["i.imgid, i.thumbnailurl", "i.url", "i.photographer", "i.owner", "i.copyright", "i.notes","o.occid","o.year", "o.month", "o.day","o.country","o.stateprovince","o.county","o.locality","o.recordedby","o.basisofrecord","c.collectionname"])#
+      ->select(["i.imgid, i.thumbnailurl", "i.url", "i.photographer", "i.copyright", "i.rights AS media_rights", "c.rights AS collection_rights", "c.rightsholder", "i.notes","o.occid","o.year", "o.month", "o.day","o.country","o.stateprovince","o.county","o.locality","o.recordedby","o.basisofrecord","c.collectionname"])#
       ->from("Images", "i")
       ->innerJoin("omoccurrences","o","WITH","i.occid = o.occid")
       ->innerJoin("omcollections","c","WITH","c.collid = o.collid")
@@ -916,7 +920,7 @@ class TaxaManager {
     $tids = $this->getImageTids();
     $em = SymbosuEntityManager::getEntityManager();
     $images = $em->createQueryBuilder()
-      ->select(["i.imgid, i.thumbnailurl", "i.url", "i.photographer", "i.owner", "i.copyright", "i.notes","o.occid","o.year", "o.month", "o.day","o.country","o.stateprovince","o.county","o.locality","o.recordedby","o.basisofrecord","c.collectionname"])
+      ->select(["i.imgid, i.thumbnailurl", "i.url", "i.photographer", "i.copyright", "i.rights AS media_rights", "c.rights AS collection_rights", "c.rightsholder", "i.notes","o.occid","o.year", "o.month", "o.day","o.country","o.stateprovince","o.county","o.locality","o.recordedby","o.basisofrecord","c.collectionname"])
       ->from("Images", "i")
       ->innerJoin("omoccurrences","o","WITH","i.occid = o.occid")
       ->innerJoin("omcollections","c","WITH","c.collid = o.collid")
@@ -932,8 +936,53 @@ class TaxaManager {
   public function setSingleImage() {
     $this->images = $this->populateSingleImage($this->getTid());
   }
+
+  private static function isLicenseValue($value) {
+    if (!$value) return false;
+    return preg_match('/creativecommons\.org\/(licenses|publicdomain)\//i', $value)
+      || preg_match('/^(CC0|CC[ -]BY|Creative Commons|Public Domain)\b/i', trim($value));
+  }
+
+  private static function getLicenseLabel($license) {
+    $license = trim((string)$license);
+    if (!$license) return '';
+    if (preg_match('#creativecommons\.org/publicdomain/zero/([0-9.]+)#i', $license, $matches)) return 'CC0 '.$matches[1];
+    if (preg_match('#creativecommons\.org/licenses/([^/]+)/([0-9.]+)#i', $license, $matches)) return 'CC '.strtoupper($matches[1]).' '.$matches[2];
+    return $license;
+  }
+
+  private static function normalizeImageAttribution($img) {
+    $copyright = trim((string)($img['copyright'] ?? ''));
+    $mediaRights = trim((string)($img['media_rights'] ?? ''));
+    $collectionRights = trim((string)($img['collection_rights'] ?? ''));
+    $rightsholder = trim((string)($img['rightsholder'] ?? ''));
+    $photographer = trim((string)($img['photographer'] ?? ''));
+
+    $license = '';
+    if (self::isLicenseValue($mediaRights)) $license = $mediaRights;
+    elseif (self::isLicenseValue($collectionRights)) $license = $collectionRights;
+    elseif (self::isLicenseValue($copyright)) $license = $copyright;
+
+    $copyrightHolder = self::isLicenseValue($copyright) ? '' : $copyright;
+    if (!$copyrightHolder) $copyrightHolder = $rightsholder;
+    if (!$copyrightHolder && $mediaRights && !self::isLicenseValue($mediaRights)) {
+      $copyrightHolder = trim(preg_replace('/^\s*©\s*/u', '', $mediaRights));
+    }
+    if (!$copyrightHolder) $copyrightHolder = $photographer;
+
+    $publicDomain = (bool)preg_match('#creativecommons\.org/publicdomain/(zero|mark)/#i', $license)
+      || preg_match('/^(CC0|Public Domain)\b/i', $license);
+    $img['publicDomain'] = $publicDomain;
+    $img['copyrightHolder'] = $publicDomain ? '' : $copyrightHolder;
+    $img['licenseUrl'] = preg_match('/^https?:\/\//i', $license) ? $license : '';
+    $img['licenseLabel'] = self::getLicenseLabel($license);
+    // Preserve the established API key for clients that have not adopted the explicit fields yet.
+    $img['rights'] = $img['licenseUrl'] ?: $img['licenseLabel'];
+    return $img;
+  }
   
   private static function processImageData($img) {
+		$img = self::normalizeImageAttribution($img);
   		foreach ($img as $field => $value) {
   			if ($field == 'thumbnailurl' || $field == 'url') {
   				$img[$field] = resolve_img_path($value);
@@ -1021,7 +1070,14 @@ class TaxaManager {
         TaxaManager::$CID_ECOREGION,
       ];
     }
-    return [];
+    return [ 
+      TaxaManager::$CID_NOXIOUS_WEED,
+
+      # Conservation status
+      TaxaManager::$CID_CONSERVATION_FED,
+      TaxaManager::$CID_CONSERVATION_STATE,
+      TaxaManager::$CID_CONSERVATION_HERITAGE
+    ];
   }
 
 	public static function getEmptyTaxon() {

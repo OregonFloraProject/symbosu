@@ -6,7 +6,7 @@ Language: English
 */
 
 $LANG['COL_PERMISSIONS'] = 'Collection Permissions';
-$LANG['PLS_SEL_USER'] = 'Please select a user from list';
+$LANG['PLS_SEL_USER'] = 'Please select a user (begin typing last name to see dropdown list)';
 $LANG['SEL_PERMISSIONS'] = 'Please select the permissions you wish to assign this user';
 $LANG['SEL_OBS'] = 'Please select a Personal Observation Management project';
 $LANG['COL_PROFS'] = 'Collection Profiles';
@@ -45,7 +45,7 @@ $LANG['CHECKLIST_SPONSOR_EXPLAIN'] = 'Collection administrators listed above can
 $LANG['SURE_DELETE'] = 'Are you sure you want to delete these permissions?';
 $LANG['NONE_SPONSORED'] = 'No users have yet been sponsored';
 $LANG['NEW_SPONSOR'] = 'New Sponsorship';
-$LANG['SEL_USER'] = 'Select User';
+$LANG['ENTER_USER_NAME'] = 'Enter User Name (Last, First)';
 $LANG['SEL_PERS_OBS'] = 'Select Personal Observation Project';
 $LANG['SPONSOR_USER'] = 'Sponsor User';
 $LANG['ID_EDITS'] = 'Identification Editors';
@@ -66,5 +66,6 @@ $LANG['NO_ID_PERMS'] = 'There are no Identification Editor permissions';
 $LANG['NOT_AUTH'] = 'Unauthorized to view this page. You must have administrative right for this collection.';
 
 $LANG['DROP_ICON'] = 'Drop Icon';
+$LANG['SEL_USER'] = 'Select User';
 
 ?>

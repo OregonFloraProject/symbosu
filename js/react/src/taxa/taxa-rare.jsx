@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import ImageCarousel from '../common/imageCarousel.jsx';
 import Loading from '../common/loading.jsx';
-import ImageModal from '../common/modal.jsx';
+import SharedLightbox from '../common/SharedLightbox.jsx';
 import httpGet from '../common/httpGet.js';
 import { getUrlQueryParams } from '../common/queryParams.js';
 import { getTaxaPage } from '../common/taxaUtils';
@@ -79,7 +79,7 @@ function TaxaRareApp(props) {
           // }
 
           // use profile 8 for RPG summary, and the first other profile for taxon description
-          const taxonDescriptions = res.descriptions.filter((desc) => desc.profile !== 8 && desc.profile !== 9);
+	        const taxonDescriptions = res.descriptions.filter((desc) => desc.profile !== 8 && desc.profile !== 9);
           const descriptions = [
             {
               source: null,
@@ -91,7 +91,7 @@ function TaxaRareApp(props) {
               ...taxonDescriptions[0],
               caption: 'Taxon description',
             },
-          ];
+          ].filter((d) => d.desc && d.desc.length > 0);
 
           checkNullThumbnailUrl(res.imagesBasis.HumanObservation, '../images/icons/no-thumbnail.jpg');
           checkNullThumbnailUrl(res.imagesBasis.PreservedSpecimen, '../images/icons/no-thumbnail.jpg');
@@ -215,9 +215,11 @@ function TaxaRareApp(props) {
             </figure>
           )}
 
-          <div className="taxa-prose">
-            <DescriptionTabs descriptions={data.descriptions} glossary={glossary} />
-          </div>
+          {data.descriptions.length > 0 &&
+            <div className="taxa-prose">
+              <DescriptionTabs descriptions={data.descriptions} glossary={glossary} />
+            </div>
+          }
 
           {data.images.length > 0 && (
             <ImageCarousel
@@ -240,18 +242,15 @@ function TaxaRareApp(props) {
             />
           )}
         </div>
-        <ImageModal
-          show={isImageModalOpen}
-          currImage={currImage}
+        <SharedLightbox
+          isOpen={isImageModalOpen}
+          photoIndex={currImage}
           images={currImageBasis === 'PreservedSpecimen' ? data.herbariumImages : data.images}
-          altname={data.sciName}
-          onClose={toggleImageModal}
+          sciName={data.vernacularNames[0]}
+          onClose={() => setIsImageModalOpen(false)}
+          onNavigate={(index) => setCurrImage(index)}
           clientRoot={props.clientRoot}
-        >
-          <h3>
-            <span>{data.vernacularNames[0]}</span> images
-          </h3>
-        </ImageModal>
+        />
         <div className="col-md-4 sidebar-section">
           <SideBarSection
             title="Context"

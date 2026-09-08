@@ -1,7 +1,10 @@
 <?php
 include_once('../../../config/symbini.php');
 include_once($SERVER_ROOT.'/classes/OccurrenceLoans.php');
-require_once $SERVER_ROOT.'/vendor/phpoffice/phpword/bootstrap.php';
+require_once $SERVER_ROOT.'/vendor/autoload.php';
+include_once($SERVER_ROOT . '/classes/utilities/Language.php');
+
+Language::load('collections/loans/reports/defaultspecimenlist');
 
 $collId = $_REQUEST['collid'];
 $outputMode = $_POST['outputmode'];
@@ -63,7 +66,7 @@ if($outputMode == 'doc'){
 		$table->addCell(6000,$cellStyle)->addText(htmlspecialchars($specArr['sciname']),'colFont','colSpace');
 	}
 
-	$targetFile = $TEMP_DIR_ROOT.'/report/'.$loanId.'_specimen_list.docx';
+	$targetFile = $TEMP_DIR_ROOT . '/' . $loanId . '_specimen_list.docx';
 	$phpWord->save($targetFile, 'Word2007');
 
 	ob_start();
@@ -82,7 +85,7 @@ else{
 	<!DOCTYPE html>
 	<html lang="<?php echo $LANG_TAG ?>">
 		<head>
-			<title><?php echo $sourceCode.' '.$invoiceArr['loanidentifierown']; ?> Specimen List</title>
+			<title><?php echo $sourceCode.' '.$invoiceArr['loanidentifierown']; ?> <?php echo $LANG['SPECIMEN_LIST']; ?></title>
 			<?php
 
 			include_once($SERVER_ROOT.'/includes/head.php');
@@ -96,7 +99,7 @@ else{
 			</style>
 		</head>
 		<body style="background-color:#ffffff;">
-			<h1 class="page-heading screen-reader-only"><?php echo $sourceCode.' '.$invoiceArr['loanidentifierown']; ?> Specimen List</h1>
+			<h1 class="page-heading screen-reader-only"><?php echo $sourceCode.' '.$invoiceArr['loanidentifierown']; ?> <?php echo $LANG['SPECIMEN_LIST']; ?></h1>
 			<div>
 				<div class="header">
 					List of specimens loaned to: <?php echo $targetCode; ?>

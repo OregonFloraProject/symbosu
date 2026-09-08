@@ -10,9 +10,7 @@ header( "Content-Type: text/html; charset=" . $charset );
 		<link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/css/base.css?<?php echo filemtime($SERVER_ROOT . '/css/base.css'); ?>">    
 		<link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/css/main.css?<?php echo filemtime($SERVER_ROOT . '/css/main.css'); ?>">   
     <meta name='keywords' content=''/>
-    <script type="text/javascript">
-        <?php include_once( $serverRoot . '/config/googleanalytics.php' ); ?>
-    </script>
+    <?php include_once($SERVER_ROOT.'/includes/googleanalytics.php'); ?>
     <?php /* <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> 
     <script src="https://kit.fontawesome.com/a01aa82192.js" crossorigin="anonymous"></script>*/ ?>
 </head>
@@ -41,7 +39,7 @@ header( "Content-Type: text/html; charset=" . $charset );
 							<div class="inset access">
 								<h3>Access the information of the Oregon Vascular Plant Checklist in these ways:</h3>
 								<ul>
-									<li><a href="<?php echo $CLIENT_ROOT?>/pages/data/Checklist_ForWeb.csv" download>Download</a> the current checklist (Version 2.3)</li>
+									<li><a href="<?php echo $CLIENT_ROOT?>/pages/data/Checklist_ForWeb.csv" download>Download</a> the current checklist (Version 2.4)</li>
 									
 
 									<li><a href="<?php echo $CLIENT_ROOT?>/pages/data/Natives_OregonFlora.csv" download>Download</a> the checklist including only plants native to Oregon.</li>
@@ -68,11 +66,11 @@ header( "Content-Type: text/html; charset=" . $charset );
 								<div>All Oregon taxa from the Checklist that are native or naturalized</div>
 							</figcaption>
 							</figure>
-							<p>The <em>Flora of Oregon</em> recognizes 4,799 taxa (distinct vascular plants) that grow in our state in the wild and without cultivation. 
+							<p>The <em>Flora of Oregon</em> recognizes 4,790 taxa (distinct vascular plants) that grow in our state in the wild and without cultivation. 
 							We estimate 4,380 taxa will have detailed descriptions once <em>Flora of Oregon</em> is completed.
 							</p>
 							<p>
-							The Oregon Vascular Plant Checklist presents 10,706 scientific names that are reflected throughout our website tools. 
+							The Oregon Vascular Plant Checklist presents 10,736 scientific names that are reflected throughout our website tools. 
 							These include accepted native and naturalized taxa and their synonyms, as well as non-naturalized (exotic), and sporadic taxa having a confirmed voucher that documents its occurrence in our state.
 							</p>
 							<h2>What are confirmed vouchers?</h2>

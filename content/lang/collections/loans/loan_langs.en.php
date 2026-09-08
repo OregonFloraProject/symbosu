@@ -171,9 +171,6 @@ $LANG['ENVELOPE'] = 'Envelope';
 
 //from specimentab.php
 $LANG['TAXON_NOT_FOUND'] = 'WARNING: Taxon not found. It may be misspelled or needs to be added to taxonomic thesaurus by a taxonomic editor.';
-$LANG['SCINAME_NEEDS_VALUE'] = 'Scientific Name field must have a value';
-$LANG['DET_NEEDS_VALUE'] = "Determiner field must have a value (enter 'unknown' if not defined)";
-$LANG['DET_DATE_NEEDS_VALUE'] = "Determination Date field must have a value (enter 's.d.' if not defined)";
 $LANG['PLS_SEL_SPECIMENS'] = 'Please select specimens to which you wish to apply the action';
 $LANG['PLS_ENTER_CATNO'] = 'Please enter a catalog number!';
 $LANG['ERROR_NO_SPECS'] = 'ERROR: No specimens found with that catalog number';
@@ -219,9 +216,10 @@ $LANG['NO_SPECS_REGISTERED'] = 'There are no specimens registered for this loan.
 
 // from specnoteseditor.php
 $LANG['LOAN_NOTES_EDITOR'] = 'Loan Specimen Notes Editor';
+$LANG['SPECIMEN_CHECKIN'] = 'Specimen Check-in Editor';
 $LANG['LOAN_SPEC_EDIT'] = 'Loan Specimen Editor';
 $LANG['SPEC_NOTES'] = 'Specimen Notes';
 $LANG['SAVE_EDITS'] = 'Save Edits';
-
+$LANG['RESET_CHECKIN'] = 'Reset Check-in';
 
 ?>

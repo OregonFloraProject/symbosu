@@ -1,9 +1,9 @@
 <?php
 include_once('../../../config/symbini.php');
 include_once($SERVER_ROOT.'/classes/OccurrenceDuplicate.php');
-if($LANG_TAG != 'en' && file_exists($SERVER_ROOT.'/content/lang/collections/editor/rpc/dupelist.' . $LANG_TAG . '.php')) include_once($SERVER_ROOT.'/content/lang/collections/editor/rpc/dupelist.' . $LANG_TAG . '.php');
-else include_once($SERVER_ROOT . '/content/lang/collections/editor/rpc/dupelist.en.php');
+include_once($SERVER_ROOT . '/classes/utilities/Language.php');
 
+Language::load('collections/editor/rpc/editor_rpc');
 
 $recordedBy = array_key_exists('recordedby',$_REQUEST)?trim(urldecode($_REQUEST['recordedby'])):'';
 $recordNumber = array_key_exists('recordnumber',$_REQUEST)?trim($_REQUEST['recordnumber']):'';
@@ -86,21 +86,22 @@ $dupArr = $dupeManager->getDupeList($recordedBy, $recordNumber, $eventDate, $cat
 					?>
 					<div style="margin:30px 10px">
 						<div>
-							<?php 
-							echo $occArr['collname'];
-							?>
+							<b><?php echo $occArr['sciname'];?></b>
+						</div>
+						<div>
+							<?php echo $occArr['collname'];?>
 						</div>
 						<div>
 							<?php 
-							echo $occArr['recordedby'].' '.$occArr['recordnumber'].' <span style="margin-left:15px">'.$occArr['eventdate'];
-							if($occArr['verbatimeventdate']) echo ' ('.$occArr['verbatimeventdate'].')';
+							echo $occArr['recordedby'] . ' ' . $occArr['recordnumber'] . ' <span style="margin-left:15px">' . $occArr['eventdate'];
+							if($occArr['verbatimeventdate']) echo ' (' . $occArr['verbatimeventdate'] . ')';
 							echo '</span>';
-							echo '<span style="margin-left:50px">'.$occArr['catalognumber'].'</span>';
+							echo '<span style="margin-left:50px">' . $occArr['catalognumber'] . '</span>';
 							?>
 						</div>
 						<div>
 							<?php 
-							echo trim($occArr['country'].', '.$occArr['stateprovince'].', '.$occArr['county'].', '.$occArr['locality'],' ,');
+							echo trim($occArr['country'] . ', ' . $occArr['stateprovince'] . ', ' . $occArr['county'] . ', ' . $occArr['locality'],' ,');
 							?>
 						</div>
 						<div>
@@ -110,7 +111,7 @@ $dupArr = $dupeManager->getDupeList($recordedBy, $recordNumber, $eventDate, $cat
 							<form action="dupelist.php" method="post">
 								<input name="curoccid" type="hidden" value="<?php echo $currentOccid; ?>" />
 								<input name="dupeoccid" type="hidden" value="<?php echo $dupOccid; ?>" />
-								<input name="dupetitle" type="hidden" value="<?php echo $occArr['recordedby'].' '.$occArr['recordnumber'].' '.$occArr['eventdate']; ?>"  />
+								<input name="dupetitle" type="hidden" value="<?php echo $occArr['recordedby'] . ' ' . $occArr['recordnumber'] . ' ' . $occArr['eventdate']; ?>"  />
 								<button name="submitaction" type="submit" value="Link as Duplicate"><?php echo $LANG['LINK_AS_DUPLICATE'] ?></button>
 							</form>
 						</div>

@@ -1,6 +1,10 @@
 <?php
 include_once('../config/symbini.php');
 include_once($SERVER_ROOT.'/classes/ReferenceManager.php');
+include_once($SERVER_ROOT . '/classes/utilities/Language.php');
+
+Language::load('references/authoreditor');
+
 header("Content-Type: text/html; charset=".$CHARSET);
 if(!$SYMB_UID) header('Location: ../profile/index.php?refurl=../references/index.php?'.htmlspecialchars($_SERVER['QUERY_STRING'], ENT_QUOTES));
 
@@ -51,7 +55,7 @@ if(!$addAuth){
 <html lang="<?php echo $LANG_TAG ?>">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=<?php echo $CHARSET;?>">
-	<title><?php echo $DEFAULT_TITLE; ?> Author Management</title>
+	<title><?php echo $DEFAULT_TITLE; ?> <?php echo $LANG['AUTHOR_MANAGEMENT']; ?></title>
 	<link href="<?php echo $CSS_BASE_PATH; ?>/jquery-ui.css" type="text/css" rel="stylesheet">
 	<?php
 	include_once($SERVER_ROOT.'/includes/head.php');

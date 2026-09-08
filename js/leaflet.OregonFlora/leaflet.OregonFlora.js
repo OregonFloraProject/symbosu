@@ -4,6 +4,7 @@
 
 // Entrypoint function to add all OregonFlora customizations to the map
 function addOregonFlora(map, fitBounds = true){
+
 	// Set the map zoom/center unless told not to
 	if (fitBounds) {
 		// Zoom/center to default place
@@ -40,7 +41,6 @@ function addOregonFlora(map, fitBounds = true){
 		setUpUserFiles(map);
 	}
 }
-
 
 // Add/rename/reorder basemap layers
 function addBasemaps(map) {
@@ -113,19 +113,19 @@ function addBasemaps(map) {
 	map.mapLayer.layerControl.addBaseLayer(USGS_Imagery, "USGS Satellite");
 
 	// Rename existing layers
-	map.mapLayer.layerControl._layers[0].name = "Google Terrain";
-	map.mapLayer.layerControl._layers[1].name = "OpenStreetMap";
-	map.mapLayer.layerControl._layers[2].name = "OpenTopoMap";
-	map.mapLayer.layerControl._layers[3].name = "ESRI Satellite";
+	getLayerByName(map, "Terrain").name = "Google Terrain";
+	getLayerByName(map, "Basic").name = "OpenStreetMap";
+	getLayerByName(map, "Topo").name = "OpenTopoMap";
+	getLayerByName(map, "Satellite").name = "ESRI Satellite";
 
 	// Fix Google Terrain attribution
-	map.mapLayer.layerControl._layers[0].layer.options.attribution = "Google";
+	getLayerByName(map, "Google Terrain").layer.options.attribution = "Google";
 
 	// Add sort order to the existing layers
-	map.mapLayer.layerControl._layers[0].layer.options.sort = 2;
-	map.mapLayer.layerControl._layers[1].layer.options.sort = 8;
-	map.mapLayer.layerControl._layers[2].layer.options.sort = 9;
-	map.mapLayer.layerControl._layers[3].layer.options.sort = 5;
+	getLayerByName(map, "Google Terrain").layer.options.sort = 2;
+	getLayerByName(map, "OpenStreetMap").layer.options.sort = 8;
+	getLayerByName(map, "OpenTopoMap").layer.options.sort = 9;
+	getLayerByName(map, "ESRI Satellite").layer.options.sort = 5;
 
 	// Set layercontrol options
 	map.mapLayer.layerControl.options = {
@@ -158,8 +158,8 @@ function addBasemaps(map) {
 		timeout = setTimeout(() => map.mapLayer.layerControl.collapse(), 300);
 	});
 
-	// Bring macrostrat layer to the front so it's not behind the new basemaps
-	map.mapLayer.macro_strat.setZIndex(11);
+	// Bring macrostrat layer to the front so it's not behind the basemaps
+	getLayerByName(map, "Geology").layer.setZIndex(10);
 
 	// Change the default layer: first remove the old default, then re-add a layer.
 	map.mapLayer.layerControl._layers[0].layer.remove();
@@ -392,6 +392,18 @@ function addOverlays(map) {
 		onEachFeature: function(feature, layer) {
 			// Add county names as tooltips
 			layer.bindTooltip(feature.properties.Name, {permanent: true, direction: "center", className: "county-labels"});
+
+			// Double-click a county to search that county's polygon
+			// Should work similar to Ecoregion Search
+			layer.on('dblclick', function (event) {debugger;
+				// GeoJSON polygons/multipolygons nest their rings; grab the outer ring
+				const rings = layer.getLatLngs();
+				const outer = Array.isArray(rings[0][0]) ? rings[0][0] : rings[0];
+
+				map.clearMap();
+				map.drawShape({ type: 'polygon', latlngs: outer });
+				setQueryShape(getShapeCoords('polygon', L.polygon(outer)));
+			});
 		}
 	};
 
@@ -417,7 +429,7 @@ function addOverlays(map) {
 
 	// Add to map first (so it appears checked), then to layer control
 	countiesGroup.addTo(map.mapLayer);
-	map.mapLayer.layerControl.addOverlay(countiesGroup, "Counties");
+	map.mapLayer.layerControl.addOverlay(countiesGroup, "OR Counties");
 
 	// Load counties data immediately for the default-on state
 	fetch(clientRoot + 'js/leaflet.OregonFlora/layers/oregon.counties.json')
@@ -427,52 +439,25 @@ function addOverlays(map) {
 			L.geoJson(countiesData, countiesLayerOptions).addTo(countiesGroup);
 		});
 	
-	/* 2026-04-28 (Brian): Keeping for old reference. Haven't worked on dbclick
-	 * event in the lazy-load version
-	 */ 
-	// Add ecoregions from KML using the KML plugin if not on the dynamicMap page:
-	// fetch(clientRoot + 'js/leaflet.OregonFlora/layers/ecoregions.kml')
-	// 	.then(res => res.text())
-	// 	.then(kmltext => addKMLLayer(kmltext, 'Ecoregions', map, false));
-	
 	// Add ecoregions layer from KML using the KML plugin if not on the dynamicMap page.
 	// Lazy loaded on first toggle-on
 	let ecoregionsGroup = L.layerGroup();
 	let ecoregionsText = null;  // cached KML text after first fetch
 
 	map.mapLayer.on('overlayadd', function(e) {
-		function importKML(ecoregionsText) {
-			const kml = new DOMParser().parseFromString(ecoregionsText, 'text/xml');
-			let layer = new L.KML(kml);
-			// Check all the layers in the KML and remove non-polygon layers.
-			// If there are no polygons in the KML, abort and alert the user
-			if (!processLayersAndPopups(layer, false)) {
-				alert('No polygons were present in the KML file. To search using a KML file, make sure it contains at least one polygon');
-				return;
-			}
-			// if (typeof MAP_KML_IMPORT_FLAG !== 'undefined' && MAP_KML_IMPORT_FLAG) {
-			// 	layer.on('dblclick', (event) => {
-			// 		if (event.layer instanceof L.Polygon) {
-			// 			map.clearMap();
-			// 			map.drawShape({ type: 'polygon', latlngs: event.layer.getLatLngs()[0] });
-			// 			setQueryShape(getShapeCoords('polygon', event.layer));
-			// 		}
-			// 	});
-			// }
+		const importLayerFromText = (text) => {
+			const layer = importKMLAsLayer(text, map);
 			layer.addTo(ecoregionsGroup);
 		}
 
 		if (e.layer !== ecoregionsGroup) return;
 		if (ecoregionsText) {
-			importKML(ecoregionsText);
+			importLayerFromText(ecoregionsText);
 			return;
 		}
 		fetch(clientRoot + 'js/leaflet.OregonFlora/layers/ecoregions.kml')
 			.then(res => res.text())
-			.then(kmltext => {
-				ecoregionsText = kmltext;
-				importKML(ecoregionsText);
-			});
+			.then(importLayerFromText);
 	});
 
 	map.mapLayer.on('overlayremove', function(e) {
@@ -487,22 +472,18 @@ function addOverlays(map) {
 
 let _userAddedKMLLayers = [];
 
-function addKMLLayer(text, name, map, userAdded = true) {
-	const parser = new DOMParser();
-	const kml = parser.parseFromString(text, 'text/xml');
+function importKMLAsLayer(kmlText, map) {
+	const kml = new DOMParser().parseFromString(kmlText, 'text/xml');
 	let layer = new L.KML(kml);
 
 	// Check all the layers in the KML and remove non-polygon layers.
 	// If there are no polygons in the KML, abort and alert the user
-	if (!processLayersAndPopups(layer, userAdded)) {
+	if (!processLayersAndPopups(layer, false)) {
 		alert('No polygons were present in the KML file. To search using a KML file, make sure it contains at least one polygon');
-		return false;
+		return;
 	}
-
 	if (typeof MAP_KML_IMPORT_FLAG !== 'undefined' && MAP_KML_IMPORT_FLAG) {
-		// select on click for user-added polygons, on double-click for ours (since they have a popup)
-		const selectEvent = userAdded ? 'click' : 'dblclick';
-		layer.on(selectEvent, (event) => {
+		layer.on('dblclick', (event) => {
 			if (event.layer instanceof L.Polygon) {
 				map.clearMap();
 				map.drawShape({ type: 'polygon', latlngs: event.layer.getLatLngs()[0] });
@@ -510,6 +491,12 @@ function addKMLLayer(text, name, map, userAdded = true) {
 			}
 		});
 	}
+	return layer;
+}
+
+function addKMLLayer(text, name, map, userAdded = true) {
+	// The previous logic here has been split to its own function to be used for lazy loading Ecoregions
+	const layer = importKMLAsLayer(text, map);
 
 	// Add to layer controls
 	map.mapLayer.layerControl.addOverlay(layer, name);
@@ -566,11 +553,7 @@ function processLayersAndPopups(layers, userAdded) {
 				const popupContent = layer?.getPopup()?.getContent();
 				if (popupContent) {
 					const title = popupContent.substring(0, popupContent.indexOf('</h2>') + 5);
-					/* 2026-04-28 (Brian): Keeping for old reference. Haven't worked on dbclick
-					 * event in the lazy-load version. Reactivate the commented code when you
-					 * did
-					 */ 
-					// layer.setPopupContent(`${title}Double-click to search this polygon`);
+					layer.setPopupContent(`${title}Double-click to search this polygon`);
 					layer.setPopupContent(`${title}`);
 				}
 			}
@@ -665,6 +648,11 @@ function onZoom(e, zoomLevel) {
 	}
 }
 
+// Helper function to return a layerControl and layer by name
+function getLayerByName(map, name){
+	const found = map.mapLayer.layerControl._layers.find(obj => obj.name === name);
+	return found ? found : null;
+}
 
 // Function to create custom SVG icons for points on the map (e.g., square, diamond)
 // Copied in part from what Symbiota does for the observations icon

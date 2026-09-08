@@ -38,7 +38,7 @@ const iNat = new iNatJS();
 
 // Global variables
 var iNatData = [];
-var records = {};
+var records = [];
 var page = 1;
 var pages = 0;
 var ready = true;
@@ -339,215 +339,369 @@ function buildTable(data) {
 // Parse the selected iNaturalist records into a JSON format to pass along to Symbiota
 function parseSelected(){
 
-	// Get array of observation checkboxes that are checked
-	const checked = $("input[name='id[]']").map(function(){
-		if($(this).is(":checked")) return $(this).val();
-	}).get();
+	// Flag to track if any error occurs during processing (especially in async callbacks)
+	let errorOccurred = false;
 
-	// Filter the array returned by iNaturalist to only include the selected records
-	const selected = iNatData.filter(function(record){
-		return checked.indexOf(String(record.id)) > -1;
-	});
+	// Helper function to safely handle errors, alert the user, and block import
+	function showError(error, contextMessage, url) {
 
-	// Parse the selected records
-	records = selected.map(function(record) {
-
-		// Map the fields from the API to dwC/Symbiota terminology in a 1D array
-		// These are the easy ones, we'll add more as we go
-		let recordArray = {
-
-			// Use the user's name if set. This will be empty for iNat users who haven't set a name and only have a login
-			"collector": record.user.name,
-
-			// DarwinCore
-			"eventDate": record.observed_on,
-			"description" : record.description,
-
-			// Location data, rounding to 6 decimal places 
-			"latitude": record.latitude, 
-			"longitude": record.longitude, 
-			"coordinateUncertaintyInMeters": record.positional_accuracy, 
-
-			// Presumed to be WGS84 for iNaturalist, though some hand coordinates may not be
-			"geodeticDatum": "WGS84",
-
-			// Symbiota fields
-			// Change from true/false to 1 and 0
-			"cultivationStatus": (record.captive ? 1 : 0),
-
-			// iNaturalist data
-			"iNatID": record.id,
-			"iNatURL": record.uri, 
-			"dbpk": record.uuid,
-			"uuid": record.uuid,
-			"thumbnailURL": record.photos[0].url, 
-			"iNatUsername": record.user.login,
-		};
-
-		// Add associated occurrences links as JSON
-		const associatedOccurrences = [
-			{
-				"type": "symbiotaAssociations",
-				"version": "1.1",
-				"associations": [{
-					"associationType": "externalOccurrence",
-					"relationship": "iNaturalistObservation",
-					"basisOfRecord": 'HumanObservation',
-					"resourceUrl": 'https://www.inaturalist.org/observations/' + record.uuid,
-					"objectID": identifierUUID ? record.uuid : record.id // Choice of using uuid or numeric id
-				}]
-			},
-			{
-				"type": "verbatimText",
-				"verbatimText": ""
-			}
-		];
-		recordArray['associatedOccurrences'] = JSON.stringify(associatedOccurrences);
-
-		// Add what we can from the name returned by the taxon
-		$.extend(recordArray, iNat.formatName(record.taxon, infraAbbrev));
-
-		// Add family and order fields from iNaturalist, if specified (extra API calls)
-		if(addTaxonomy) {
-			iNat.getTaxonomy(record.taxon.id, function(success, taxonomy){
-				if(success) $.extend(recordArray, taxonomy[0]);
-			}, 
-			["class", "order", "family"]);
-		}
+		errorOccurred = true;
 		
-		// Add locality admin levels (country, state/province/county) from either Google or iNaturalist
-		if(geocodeAPI == "google" && google) {
+		// Stop any UI spinners
+		$('#waiting').removeClass('spin');
 
-			// Add locality admin levels using Google's reverse geocode and the lat/long coords if Google API JS is loaded
-			activeAPICalls++;
-			getGeocode(record.latitude, record.longitude, function(success, adminLevels){
-				activeAPICalls--;
-				if(success) $.extend(recordArray, adminLevels);
-			})
-		} else if (geocodeAPI == "inat"){
-
-			// Add locality admin levels from iNaturalist list of place IDs
-			iNat.getAdminLevels(record.place_ids, function(success, adminLevels) {
-				if(success) $.extend(recordArray, adminLevels);
-			});
+		// Set up error messages
+		if(url){
+			let msg = 'Error: ' + error.message + '<br/>Current iNat Record: <a href="' + url +
+				'" target="_blank">' + url + '</a><br/><br/>Import has been canceled.';
+			console.error("Import Error [" + contextMessage + "]:", "\n iNat URL:", url, "\n",
+				error, "Records:", records, "\nCurrent Record:", record);
+		} else {
+			let msg = 'Error: ' + error.message + '<br/><br/>Import has been canceled.';
+			console.error("Import Error [" + contextMessage + "]:", "\n",
+				error, "Records:", records, "\nCurrent Record:", record);
 		}
 
-		// Add elevation from API if enabled in the import options
-		if($('#addelev').is(":checked")) {
+		// Notify the user using a jquery-ui Dialog
+		$('#dialogmsg').html(msg);
+		$("#dialog").show();
+		$("#dialog").dialog({
+			width: 'auto',
+			title: "Import Error [" + contextMessage + "]:",
+			position: {
+				my: 'left top',
+				at: 'left top+35',
+				of: $('button[name="action"]')
+			},
+			buttons: [{
+				text: "Ok",
+				click: function() {
 
-			// Add elevation from Google API if specified and Google API JS is loaded
-			if(elevAPI == "google" && google) {
-				activeAPICalls++;
-				getElevationGoogle(recordArray.latitude, recordArray.longitude, function(success, elev){
-					if(success) recordArray.minimumElevationInMeters = Math.round(elev);
-					activeAPICalls--;
-				});
+					// Close the dialog
+					$(this).dialog( "close" );
+				}
+			}]
+		});
+	}
 
-			// Otherwise, use Open-Elevation
-			} else {
-				activeAPICalls++;
-				getOpenElevationRateLimited(recordArray.latitude, recordArray.longitude, function(success, elev){
-					if(success) recordArray.minimumElevationInMeters = Math.round(elev);;
-					activeAPICalls--;
-				});
-			}
-		}
+	// General error handling
+	try {
 
-		// Get any annotations: phenology, life stage, sex, etc. 
-		getAnnotations(record.annotations, function(annotations){
-			 $.extend(recordArray, annotations);
+		// Get array of observation checkboxes that are checked
+		const checked = $("input[name='id[]']").map(function(){
+			if($(this).is(":checked")) return $(this).val();
+		}).get();
+
+		// Filter the array returned by iNaturalist to only include the selected records
+		const selected = iNatData.filter(function(record){
+			return checked.indexOf(String(record.id)) > -1;
 		});
 
-		// Add iNaturalist observation fields, if enabled
-		if($('#obsfields').is(":checked")) {
+		// Parse the selected records
+		//records = selected.map(function(record) {
+		for (const record of selected) {
 
-			// Append any and all custom fields to recordArray as key:value pairs
-			// Note: this can overwrite existing fields
-			record.ofvs.map(function(fld){
-				recordArray[fld.name] = fld.value;
-			});
-		}
+			// Stop processing records if an error was logged previously
+			if(errorOccurred) break;
 
-		// Add associated taxa from iNaturalist using a radius search if enabled, and the field is not already present
-		if($('#assoctaxa').is(":checked") && !recordArray.hasOwnProperty('associatedTaxa')) {
-			getAssociatedTaxa(record.user.id, record.observed_on, record.uuid, recordArray['latitude'], recordArray['longitude'], function(success, assocTaxa){
-				if(success) recordArray['associatedTaxa'] = assocTaxa;
-			});
-		}
+			// Per-record error-handling
+			try {
 
-		// Add common site data, if specified. 
-		// Note, this overwrites anything that came from observation fields. 
-		if ($('#locality').val()) recordArray['locality'] = $('#locality').val();
-		if ($('#habitat').val()) recordArray['Habitat'] = $('#habitat').val();
-		if ($('#associatedtaxa').val()) recordArray['associatedTaxa'] = $('#associatedtaxa').val();
-		if ($('#associatedcollectors').val()) recordArray['associatedCollectors'] = $('#associatedcollectors').val();
+				// Map the fields from the API to dwC/Symbiota terminology in a 1D array
+				// These are the easy ones, we'll add more as we go
+				let recordArray = {
 
-		// Get list of images
-		recordArray['images'] = record.photos.map(function(photo) {
+					// Use the user's name if set. This will be empty for iNat users who haven't set a name and only have a login
+					"collector": record.user.name,
 
-			// Check license, don't allow importing unless the authorized user is the observer, or the work has an allowed license
-			if(iNat.iNatAuthorized == record.user.login || importLicenses.includes(photo.license_code)) {
-		
-				// Get the base URL for the image and the extension (can vary)
-				const baseurl = photo.url.replace(/(.+)(square\.(jpe?g|png|gif))/, '$1');
-				const ext = photo.url.replace(/(.+)(square\.(jpe?g|png|gif))/, '$3');
+					// DarwinCore
+					"eventDate": record.observed_on,
+					"description" : record.description,
 
-				const photoObj = {
-					"associatedSpecimenReference": 'https://www.inaturalist.org/observations/' + recordArray['uuid'],
-					"providerManagedID": photo.id, 
-					"goodQualityAccessURI" : baseurl + 'large.' + ext,
-					"thumbnailAccessURI" : baseurl + 'small.' + ext,
-					"accessURI" : baseurl + 'original.' + ext, 
-					"creator" : recordArray['collector'], // recordArray.user.login
-					// Construct custom term string instead of using iNat's: photo.attribution
-					"usageTerms" : '(c) ' + (recordArray.collector ? recordArray.collector : recordArray.iNatUsername) + ' (' + photo.license_code.toUpperCase() + ')',
-					"rights" : licenses[photo.license_code],
-					// Other potential fields. See: https://ac.tdwg.org/termlist/
-					//"referenceUrl" : "https://www.inaturalist.org/photos/" + photo.photo.id,
-					//"initialTimeStamp" : record.observed_on_string // 2021-06-11 18:41:53
-					// imagetype
-					// format
-					// owner
-					// sourceUrl
-					// accessRights
-					// webStatement
+					// Location data, rounding to 6 decimal places
+					"latitude": record.latitude,
+					"longitude": record.longitude,
+					"coordinateUncertaintyInMeters": record.positional_accuracy,
+
+					// Presumed to be WGS84 for iNaturalist, though some hand coordinates may not be
+					"geodeticDatum": "WGS84",
+
+					// Symbiota fields
+					// Change from true/false to 1 and 0
+					"cultivationStatus": (record.captive ? 1 : 0),
+
+					// iNaturalist data
+					"iNatID": record.id,
+					"iNatURL": record.uri,
+					"dbpk": record.uuid,
+					"uuid": record.uuid,
+					"thumbnailURL": record.photos[0].url,
+					"iNatUsername": record.user.login,
+				};
+
+				// Add associated occurrences links as JSON
+				const associatedOccurrences = [
+					{
+						"type": "symbiotaAssociations",
+						"version": "1.1",
+						"associations": [{
+							"associationType": "externalOccurrence",
+							"relationship": "iNaturalistObservation",
+							"basisOfRecord": 'HumanObservation',
+							"resourceUrl": 'https://www.inaturalist.org/observations/' + record.uuid,
+							"objectID": identifierUUID ? record.uuid : record.id // Choice of using uuid or numeric id
+						}]
+					},
+					{
+						"type": "verbatimText",
+						"verbatimText": ""
+					}
+				];
+				recordArray['associatedOccurrences'] = JSON.stringify(associatedOccurrences);
+
+				// Add what we can from the name returned by the taxon
+				if (record.taxon) {
+					$.extend(recordArray, iNat.formatName(record.taxon, infraAbbrev));
 				}
 
-				// Return the photo object
-				return(photoObj);
-			}
-		});
+				// Add family and order fields from iNaturalist, if specified (extra API calls)
+				if(addTaxonomy) {
+					iNat.getTaxonomy(record.taxon.id, function(success, taxonomy){
 
-		// Return the constructed record object
-		return recordArray;
-	});
+						// Abort callback if error already thrown elsewhere
+						if (errorOccurred) return;
 
-	// Checks whether the iNat API queue is active. If so, waits 100 ms and re-checks
-	// This will submit the form when all API calls complete
-	iNat.checkiNatQueue(100, function(status) {
-		if (status) {
+						// Taxonomy API error handling
+						try {
+							if (success && taxonomy && taxonomy[0]) {
+								$.extend(recordArray, taxonomy[0]);
+							}
+						} catch (err) {
+							showError(err, "Higher Taxonomy API", record.uri);
+						}
+					},
+					["class", "order", "family"]);
+				}
 
-			// Enable progress spinner
-			$('#waiting').addClass('spin');
-			
-		} else {
+				// Add locality admin levels (country, state/province/county) from either Google or iNaturalist
+				if(geocodeAPI == "google" && google) {
 
-			// Check for other API calls (non-iNat):
-			(function() {
-				function checkActiveAPICalls(){
-					if(activeAPICalls <= 0) {
-						
-						// All the API calls have run, so the form can be submitted
-						$('#inatimportform').submit();
+					// Add locality admin levels using Google's reverse geocode and the lat/long coords if Google API JS is loaded
+					activeAPICalls++;
+					getGeocode(record.latitude, record.longitude, function(success, adminLevels){
+						activeAPICalls--;
+
+						// Abort callback if error already thrown elsewhere
+						if (errorOccurred) return;
+
+						// Google Geocoding API error handling
+						try {
+							if (success) $.extend(recordArray, adminLevels);
+						} catch (err) {
+							showError(err, "Google Geocoding API", record.uri);
+						}
+					})
+				} else if (geocodeAPI == "inat"){
+
+					// Add locality admin levels from iNaturalist list of place IDs
+					iNat.getAdminLevels(record.place_ids, function(success, adminLevels) {
+
+						// Abort callback if error already thrown elsewhere
+						if (errorOccurred) return;
+
+						// iNat Geocoding API error handling
+						try {
+							if (success) $.extend(recordArray, adminLevels);
+						} catch (err) {
+							showError(err, "iNat Geocoding API", record.uri);
+						}
+						if(success) $.extend(recordArray, adminLevels);
+					});
+				}
+
+				// Add elevation from API if enabled in the import options
+				if($('#addelev').is(":checked")) {
+
+					// Add elevation from Google API if specified and Google API JS is loaded
+					if(elevAPI == "google" && google) {
+						activeAPICalls++;
+						getElevationGoogle(recordArray.latitude, recordArray.longitude, function(success, elev){
+
+							// Abort callback if error already thrown elsewhere
+							if (errorOccurred) return;
+
+							// Google Elevation API error handling
+							try {
+								if (success) recordArray.minimumElevationInMeters = Math.round(elev);
+							} catch (err) {
+								showError(err, "Google Elevation API", record.uri);
+							}
+							activeAPICalls--;
+						});
+
+					// Otherwise, use Open-Elevation
 					} else {
-						// check again in 100 ms
-						setTimeout(checkActiveAPICalls, 100);
+						activeAPICalls++;
+						getOpenElevationRateLimited(recordArray.latitude, recordArray.longitude, function(success, elev){
+
+							// Abort callback if error already thrown elsewhere
+							if (errorOccurred) return;
+
+							// Open-Elevation API error handling
+							try {
+								if (success) recordArray.minimumElevationInMeters = Math.round(elev);
+							} catch (err) {
+								showError(err, "Open-Elevation API", record.uri);
+							}
+							activeAPICalls--;
+						});
 					}
 				}
-				checkActiveAPICalls();
-			})();
+
+				// iNat Annotations error handling
+				try {
+					// Get any annotations: phenology, life stage, sex, etc.
+					getAnnotations(record.annotations, function(annotations){
+						$.extend(recordArray, annotations);
+					});
+				} catch (err) {
+					showError(err, "iNat Annotations", record.uri);
+				}
+
+				// iNat Observation Field error handling
+				try {
+
+					// Add iNaturalist observation fields, if enabled
+					if($('#obsfields').is(":checked")) {
+
+						// Append any and all custom fields to recordArray as key:value pairs
+						// Note: this can overwrite existing fields
+						record.ofvs.map(function(fld){
+							recordArray[fld.name] = fld.value;
+						});
+					}
+				} catch (err) {
+					showError(err, "iNat Observation Fields", record.uri);
+				}
+
+				// Add associated taxa from iNaturalist using a radius search if enabled, and the field is not already present
+				if($('#assoctaxa').is(":checked") && !recordArray.hasOwnProperty('associatedTaxa')) {
+					getAssociatedTaxa(record.user.id, record.observed_on, record.uuid, recordArray['latitude'], recordArray['longitude'], function(success, assocTaxa){
+
+						// Abort callback if error already thrown elsewhere
+						if (errorOccurred) return;
+
+						// iNat Associated Taxa error handling
+						try {
+							if (success) recordArray['associatedTaxa'] = assocTaxa;
+						} catch (err) {
+							showError(err, "iNat Associated Taxa", record.uri);
+						}
+					});
+				}
+
+				// Add common site data, if specified.
+				// Note, this overwrites anything that came from observation fields.
+				if ($('#locality').val()) recordArray['locality'] = $('#locality').val();
+				if ($('#habitat').val()) recordArray['Habitat'] = $('#habitat').val();
+				if ($('#associatedtaxa').val()) recordArray['associatedTaxa'] = $('#associatedtaxa').val();
+				if ($('#associatedcollectors').val()) recordArray['associatedCollectors'] = $('#associatedcollectors').val();
+
+				// iNat Photos error handling
+				try {
+					// Get list of images
+					if(record.photos) {
+						recordArray['images'] = record.photos.map(function(photo) {
+
+							// Check license, don't allow importing unless the authorized user is the observer, or the work has an allowed license
+							if(iNat.iNatAuthorized == record.user.login || importLicenses.includes(photo.license_code)) {
+
+								// Get the base URL for the image and the extension (can vary)
+								const baseurl = photo.url.replace(/(.+)(square\.(jpe?g|png|gif))/, '$1');
+								const ext = photo.url.replace(/(.+)(square\.(jpe?g|png|gif))/, '$3');
+
+								const photoObj = {
+									"associatedSpecimenReference": 'https://www.inaturalist.org/observations/' + recordArray['uuid'],
+									"providerManagedID": photo.id,
+									"goodQualityAccessURI" : baseurl + 'large.' + ext,
+									"thumbnailAccessURI" : baseurl + 'small.' + ext,
+									"accessURI" : baseurl + 'original.' + ext,
+									"creator" : recordArray['collector'], // recordArray.user.login
+									// Construct custom term string instead of using iNat's: photo.attribution
+									"usageTerms" : '(c) ' + (recordArray.collector ? recordArray.collector : recordArray.iNatUsername) + ' (' + photo.license_code.toUpperCase() + ')',
+									"rights" : licenses[photo.license_code],
+									// Other potential fields. See: https://ac.tdwg.org/termlist/
+									//"referenceUrl" : "https://www.inaturalist.org/photos/" + photo.photo.id,
+									//"initialTimeStamp" : record.observed_on_string // 2021-06-11 18:41:53
+									// imagetype
+									// format
+									// owner
+									// sourceUrl
+									// accessRights
+									// webStatement
+								}
+
+								// Return the photo object
+								return(photoObj);
+							}
+
+						// Remove empty image objects
+						}).filter(Boolean);
+
+						// Delete the images key if there are no images
+						if (recordArray.images.length === 0) delete recordArray.images;
+					}
+				} catch (err) {
+					showError(err, "iNat Photos", record.uri);
+				}
+
+				// Append the constructed record object
+				records.push(recordArray);
+
+			} catch (err) {
+				showError(err, "Parsing", record.uri);
+
+				// Stop processing records
+				break;
+			}
+
 		}
-	});
+
+		// Checks whether the iNat API queue is active. If so, waits 100 ms and re-checks
+		// This will submit the form when all API calls complete
+		iNat.checkiNatQueue(100, function(status) {
+			if (status) {
+
+				// Enable progress spinner
+				$('#waiting').addClass('spin');
+
+			} else {
+
+				// Check for other API calls (non-iNat):
+				(function() {
+					function checkActiveAPICalls(){
+						if(activeAPICalls <= 0) {
+
+							// Double check that an error didn't occur before submitting
+							if (errorOccurred) return;
+
+							// All the API calls have run, so the form can be submitted
+							$('#inatimportform').submit();
+						} else {
+							// check again in 100 ms
+							setTimeout(checkActiveAPICalls, 100);
+						}
+					}
+					checkActiveAPICalls();
+				})();
+			}
+		});
+
+	} catch (err) {
+
+		// Catches issues that are not record-specific
+		showError(err, "General", null);
+	}
 }
 
 
@@ -757,12 +911,17 @@ function getGeocode(lat, lng, callback){
 		if (status == 'OK') {
 
 			let adminLevels = {};
+			let components = {};
 
-			// Get the address components
-			let components = results[0].address_components;
-
-			// If there's only level in the first address component, then it won't have admin areas, so use the next one (less fine resolution)
-			if(components.length == 1) components = results[1].address_components;
+			// Find the right result. We don't want an address or postal code, as the nearest one could be far from the point
+			// List of levels that are acceptable to use
+			const targetLevels = ["administrative_area_level_2", "administrative_area_level_3"];
+			for(const result of results) {
+				if (targetLevels.some(level => result.types.includes(level))) {
+					components = result.address_components;
+					break;
+				}
+			}
 
 			// Check all the address components for the admin levels we want
 			for (const component of components) {
@@ -773,7 +932,7 @@ function getGeocode(lat, lng, callback){
 				} else  if(component.types.includes("administrative_area_level_2")) {
 				
 					// Remove County, Parish, Region, Census Area, District, Borough, Municipality, City and Borough, Regional Municipality, Regional Municipality of
-					adminLevels.county = component.long_name.replace(/(^(Regional Municipality of)\s)?(\w*)(\s(County|Parish|Census Area|District|Borough|Municipality|Region|City and Borough|Regional Municipality)$)?/, "$3");
+					adminLevels.county = component.long_name.replace(/(^(Regional Municipality of)\s)?(.+?)(\s(County|Parish|Census Area|District|Borough|Municipality|Region|City and Borough|Regional Municipality))?$/, "$3");
 				}
 				// Lower levels not implemented
 				//else  if(component.types.includes("administrative_area_level_3")) {
@@ -1069,7 +1228,7 @@ $(function(){
 			 .attr("value", JSON.stringify(records))
 			 .appendTo("#inatimportform");
 
-		// For debugging, uncomment these lines to prevent the form from submitting
+		// For debugging, uncomment the line below to prevent the form from submitting
 		//event.preventDefault();
 		console.log(records);
 		return true;

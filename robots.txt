@@ -33,6 +33,11 @@ Disallow: */rare/
 
 # Taxonomic Tree
 Disallow: */taxa/taxonomy/
+Disallow: */taxa/resourcetab.php*
+
+# Image Library
+Disallow: */imagelib/contributors.php*
+Disallow: */imagelib/search.php*
 
 # Taxon Profile Pages: main, garden, and rare
 # Allow crawling, for now

@@ -315,7 +315,7 @@ class ExploreSearchResult extends React.Component {
                     </div>
                   </div>
                 )}
-                {this.props.isEditable == true && this.state.editNotes != true && (
+                {(this.props.isEditable == true || this.props.showNotes) && this.state.editNotes != true && (
                   <div className="vouchers notes spp">{this.props.checklistNotes}</div>
                 )}
               </div>
@@ -356,6 +356,7 @@ function ExploreSearchContainer(props) {
                 isEditable={props.isEditable}
                 storeChange={props.storeChange}
                 checklistNotes={result.checklistNotes ? result.checklistNotes : ''}
+                showNotes={props.showNotes}
               />
             );
           })}
@@ -394,6 +395,7 @@ function ExploreSearchContainer(props) {
                           isEditable={props.isEditable}
                           storeChange={props.storeChange}
                           checklistNotes={result.checklistNotes ? result.checklistNotes : ''}
+                          showNotes={props.showNotes}
                         />
                       );
                     })}
