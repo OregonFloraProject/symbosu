@@ -29,6 +29,7 @@ class IdentManager extends Manager {
   protected $includeChecklistNotes = false;
   protected $IDsOnly = false;
   protected $showThumbnails = false;
+  protected $isGetNonVernaculars = false;
   /*
   protected $basename;
   protected $images;
@@ -119,6 +120,10 @@ class IdentManager extends Manager {
   public function getIDsOnly() {
   	return $this->IDsOnly;
   }
+  public function setIsGetNonVernaculars($bool = false) {
+	$this->isGetNonVernaculars = $bool;
+  }
+
   public function setTaxa() {
   	$leftJoins = array();
   	$innerJoins = array();
@@ -136,14 +141,22 @@ class IdentManager extends Manager {
 				$selects = array_merge($selects,["ts.family","t.sciname","ts.parenttid","v.vernacularname","v.language","t.author"]);
 			}
 			$leftJoins[] = array("Taxavernaculars","v","WITH","t.tid = v.tid");
-			$innerJoins[] = array("Taxstatus","ts","WITH","t.tid = ts.tid");
-			$wheres[] = $qb->expr()->orX(
-											$qb->expr()->eq('v.language',"'English'"),
-											$qb->expr()->eq('v.language',"'Basename'")
-										);
+
+			// Check whether to get non vernacular taxa
+			$langCond = $qb->expr()->orX($qb->expr()->eq('v.language',"'English'"),
+										$qb->expr()->eq('v.language',"'Basename'"));
+			
+			if ($this->isGetNonVernaculars) {
+				 $langCond->add($qb->expr()->isNull('v.language'));
+				 $leftJoins[] = array("Taxstatus","ts","WITH","t.tid = ts.tid");
+			} else {
+				$innerJoins[] = array("Taxstatus","ts","WITH","t.tid = ts.tid");
+				$wheres[] = "ts.taxauthid = 1";
+			}
+
+			$wheres[] = $langCond;
 			
 			#$wheres[] = "v.sortsequence = 1";#causes basename to disappear
-			$wheres[] = "ts.taxauthid = 1";
 			$groupBy = [
 				"v.vernacularname",
 			];
