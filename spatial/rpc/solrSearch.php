@@ -97,7 +97,10 @@ try {
 		}
 
 		include_once($SERVER_ROOT.'/ident/shared/checklistApi.php');
-		$result = get_data(['dynclid' => $dynclid]);
+		$result = get_data([
+			'dynclid' => $dynclid,
+			'isGetNonVernaculars' => true
+		]);
 
 		include_once($SERVER_ROOT . "/checklists/checklistexport.php");
 		if ($download === 'csv') {

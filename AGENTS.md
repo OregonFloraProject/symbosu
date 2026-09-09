@@ -54,3 +54,5 @@ Naming: `<domain>-<topic>.md`, kebab-case, `name:` frontmatter always equals the
 
 ## Meta
 - [Memory Provenance](docs/agent-docs/meta-memory-provenance.md) — Which vintages of this corpus are trustworthy, and why
+
+<!-- docs-baseline: 9349bcb62c4d50233f456c6b3f4a18fbd8b88867 -->
