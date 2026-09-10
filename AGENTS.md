@@ -22,6 +22,7 @@ Naming: `<domain>-<topic>.md`, kebab-case, `name:` frontmatter always equals the
 - [Flow: Taxon Lookup](docs/agent-docs/php-flow-taxon-lookup.md) — `taxa/rpc/api.php?taxon=<tid>`
 - [Flow: Search](docs/agent-docs/php-flow-search.md) — 2-stage exact-then-LIKE; synonym resolution
 - [Flow: Checklist Taxa](docs/agent-docs/php-flow-checklist-taxa.md) — Delegates to `IdentManager::setTaxa()`
+- [Flow: Taxon Autosuggest Restriction](docs/agent-docs/php-flow-taxasuggest-oregon.md) — `oregonvascplant` checkbox restricts the taxa autosuggest to checklist `clid=1` via `TaxonSearchSupport`
 
 ## Identification Key
 - [Key Filter Flow](docs/agent-docs/ident-key-filter-flow.md) — `ident/key.php?clid=` → `identify.js`
