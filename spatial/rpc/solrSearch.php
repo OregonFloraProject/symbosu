@@ -82,19 +82,20 @@ try {
 
 	if ($download) {
 		if (!in_array($download, ['csv', 'docx'])) {
-			throw new Exception("Invalid download format. Please use csv or docx.");
+			throw new InvalidArgumentException("Invalid download format. Please use csv or docx.", 999);
 		}
 
 		$tids = fetchDistinctTidInterpreted($geojson);
 		if (empty($tids)) {
-			throw new Exception('No taxa found for current search');
+			throw new LengthException('No taxa found for current search', 999);
 		}
 
 		$dclManager = new DynamicChecklistManager();
 		$dynclid = $dclManager->createDynamicChecklistFromTids($tids);
 		if ($dynclid === 0) {
-			throw new Exception('Failed to create dynamic checklist');
+			throw new Exception('Failed to create dynamic checklist', 999);
 		}
+		$dclManager->removeOldChecklists();
 
 		include_once($SERVER_ROOT.'/ident/shared/checklistApi.php');
 		$result = get_data([
@@ -117,7 +118,7 @@ try {
 } catch (\Throwable $th) {
 	header("Content-Type: application/json; charset=utf-8");
 	$errorBody['error'] = true;
-	$errorBody['message'] = $th->getMessage();
+	$errorBody['message'] = $th->getCode() === 999 ? $th->getMessage() : "Something is wrong with the Mapping Module Search function";
 	echo json_encode($errorBody);
 }
 
