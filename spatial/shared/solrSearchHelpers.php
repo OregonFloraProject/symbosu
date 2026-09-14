@@ -73,18 +73,18 @@ function formatCheckDate($dateStr){
 
 	$dateArr = parseDate($dateStr);
 	if($dateArr['y'] == 0){
-		throw new InvalidArgumentException('Please use the following date formats: yyyy-mm-dd, mm/dd/yyyy, or dd mmm yyyy');
+		throw new InvalidArgumentException('Please use the following date formats: yyyy-mm-dd, mm/dd/yyyy, or dd mmm yyyy', 999);
 	}
 
 	if($dateArr['m'] > 12){
-        throw new InvalidArgumentException('Month cannot be greater than 12. Note that the format should be YYYY-MM-DD');
+        throw new InvalidArgumentException('Month cannot be greater than 12. Note that the format should be YYYY-MM-DD', 999);
 	}
 
 	if($dateArr['d'] > 28){
 		if($dateArr['d'] > 31 ||
 		   ($dateArr['d'] == 30 && $dateArr['m'] == 2) ||
 		   ($dateArr['d'] == 31 && in_array($dateArr['m'], array(4, 6, 9, 11)))){
-			throw new InvalidArgumentException('The Day (' + $dateArr['d'] + ') is invalid for that month');
+			throw new InvalidArgumentException('The Day (' + $dateArr['d'] + ') is invalid for that month', 999);
 		}
 	}
 
@@ -402,7 +402,7 @@ function executeSolrSearch($searchParams): array {
 			if(!empty($collid)){
 				$solrQArr[] = '(collid:(' . $collid . '))';
 			} else {
-				throw new InvalidArgumentException('Please choose at least one collection');
+				throw new InvalidArgumentException('Please choose at least one collection', 999);
 			}
 		}
 	}
