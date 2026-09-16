@@ -1,5 +1,5 @@
 import React from 'react';
-import ImageCarousel from '../../common/imageCarousel.jsx';
+import ImageGallery from '../../common/imageGallery.jsx';
 import ImageModal from '../../common/modal.jsx';
 import Loading from '../../common/loading.jsx';
 import { getUrlQueryParams } from '../../common/queryParams.js';
@@ -237,10 +237,10 @@ export class TaxaDetail extends React.Component {
             )}
 
             {/*
-				
+
                 Description includes HTML tags & URL-encoded characters in the db.
                 It's dangerous to pull/render arbitrary HTML w/ react, so just render the
-                plain text & remove any HTML in it.		
+                plain text & remove any HTML in it.
                 <p className="mt-4">
                 </p>
             */}
@@ -259,7 +259,7 @@ export class TaxaDetail extends React.Component {
             )}
 
             {!ambiguousTaxon && res.images.HumanObservation.length > 0 && (
-              <ImageCarousel
+              <ImageGallery
                 title={`Photo images`}
                 images={res.images.HumanObservation}
                 imageCount={res.images.HumanObservation.length}
@@ -270,7 +270,7 @@ export class TaxaDetail extends React.Component {
             )}
 
             {!ambiguousTaxon && res.images.PreservedSpecimen.length > 0 && (
-              <ImageCarousel
+              <ImageGallery
                 title={`Herbarium specimens`}
                 images={res.images.PreservedSpecimen}
                 imageCount={res.images.PreservedSpecimen.length}
@@ -281,7 +281,7 @@ export class TaxaDetail extends React.Component {
             )}
           </div>
           <div className="col-md-4 sidebar sidebar-section">
-            {!ambiguousTaxon && 
+            {!ambiguousTaxon &&
               (<>
               <SideBarSection
                 title="Context"
