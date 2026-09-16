@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import ImageCarousel from '../common/imageCarousel.jsx';
+import ImageGallery from '../common/imageGallery.jsx';
 import Loading from '../common/loading.jsx';
 import ImageModal from '../common/modal.jsx';
 import httpGet from '../common/httpGet.js';
@@ -95,7 +95,7 @@ function TaxaRareApp(props) {
 
           checkNullThumbnailUrl(res.imagesBasis.HumanObservation, '../images/icons/no-thumbnail.jpg');
           checkNullThumbnailUrl(res.imagesBasis.PreservedSpecimen, '../images/icons/no-thumbnail.jpg');
-          
+
           setData({
             sciName: res.sciname,
             vernacularNames: res.vernacular.names,
@@ -222,7 +222,7 @@ function TaxaRareApp(props) {
           }
 
           {data.images.length > 0 && (
-            <ImageCarousel
+            <ImageGallery
               title={<span><i>{data.sciName}</i> images</span>}
               images={data.images}
               imageCount={data.images.length}
@@ -232,7 +232,7 @@ function TaxaRareApp(props) {
             />
           )}
           {data.herbariumImages.length > 0 && (
-            <ImageCarousel
+            <ImageGallery
               title={`Herbarium specimens`}
               images={data.herbariumImages}
               imageCount={data.herbariumImages.length}
