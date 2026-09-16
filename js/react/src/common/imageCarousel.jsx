@@ -24,7 +24,7 @@ function ImageCarousel(props) {
   // Collapsed shows one preview row, expanded shows the full page
   // React re-renders ImageCarousel and visibleCount is recomputed from the new "collapsed" value. No need for useEffect
   const visibleCount = collapsed ? rowLimit : countLimit;
-  
+
   const handlePageChange = (page) => {
     setPage(page);
     setIndex((page - 1) * countLimit);
@@ -100,7 +100,12 @@ function ImageCarousel(props) {
               onPageChange={handlePageChange}
             />
           </div>
-          <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
+          <div style={{
+            flex: 1,
+            display: 'flex',
+            justifyContent: 'flex-end',
+            marginBottom: '0.7rem'
+          }}>
             <select id="pageSize" value={countLimit}
               onChange={handleChangePageSize}
             >
