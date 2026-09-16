@@ -1,3 +1,8 @@
+# Ignore playwright-cli exports
+.playwright-cli/**
+
+# Ignore codegraph
+.codegraph/**
 
 /config/dbconnection.php
 /config/symbini.php
