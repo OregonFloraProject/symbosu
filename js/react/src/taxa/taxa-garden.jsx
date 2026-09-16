@@ -3,7 +3,7 @@ import React from 'react';
 import { addGlossaryTooltips } from '../common/glossary.js';
 import httpGet from '../common/httpGet.js';
 import { getUrlQueryParams } from '../common/queryParams.js';
-import ImageCarousel from '../common/imageCarousel.jsx';
+import ImageGallery from '../common/imageGallery.jsx';
 import ImageModal from '../common/modal.jsx';
 import ExplorePreviewModal from '../explore/previewModal.jsx';
 import { getTaxaPage } from '../common/taxaUtils';
@@ -236,7 +236,7 @@ class TaxaApp extends React.Component {
               className="mt-4"
               dangerouslySetInnerHTML={{ __html: addGlossaryTooltips(this.state.description, this.state.glossary) }}
             />
-            <ImageCarousel
+            <ImageGallery
               title={`${this.state.vernacularNames[0]} images`}
               images={this.state.images}
               altname={"Photo of " + this.state.vernacularNames[0]}
