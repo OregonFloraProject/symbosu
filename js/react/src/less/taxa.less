@@ -21,7 +21,8 @@
   //taxa slideshows on main and garden pages
   .taxa-slideshows {
     .slick-next,
-    .slick-prev {
+    .slick-prev,
+    .slick-down {
       color: @med-green !important;
       font-size: 28px;
       top: 53%;
@@ -38,6 +39,27 @@
     }
     .slick-slider {
       max-width: 90%;
+    }
+    .pagination {
+      .page-item:not(.disabled) .page-link {
+        color: @med-green;
+      }
+      .page-item.active .page-link {
+        background-color: @med-green;
+        border-color: @med-green;
+        color: #fff;
+      }
+    }
+    #pageSize {
+      background-color: #fff;
+      border: 1px solid #dee2e6;
+      border-radius: 0.25rem;
+      padding: 0.5rem;
+      line-height: 1.25;
+      cursor: pointer;
+      &:hover {
+        border-color: @med-green;
+      }
     }
   }
 
