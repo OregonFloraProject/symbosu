@@ -1,0 +1,14 @@
+[
+  {
+    "label": "PHP: Listen to Xdebug",
+    "adapter": "Xdebug",
+    "request": "launch",
+    "port": 9003,
+    "hostname": "127.0.0.1",
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "log": true,
+    "build": {
+      "command": "xdg-open http://localhost:8000"
+    }
+  }
+]
