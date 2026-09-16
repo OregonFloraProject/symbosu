@@ -8,7 +8,7 @@ library.add(faChevronRight, faChevronLeft, faChevronDown, faChevronUp);
 const PHONE_ROW_LIMIT = 3;
 const PC_ROW_LIMIT = 5;
 
-function ImageCarousel(props) {
+function ImageGallery(props) {
   const totalCount = props.images.length;
   // Generate id from this carousel
   const carouselId = `carousel-${Math.random().toString(36).substring(2)}`;
@@ -22,7 +22,7 @@ function ImageCarousel(props) {
   const [index, setIndex] = useState(0);
 
   // Collapsed shows one preview row, expanded shows the full page
-  // React re-renders ImageCarousel and visibleCount is recomputed from the new "collapsed" value. No need for useEffect
+  // React re-renders ImageGallery and visibleCount is recomputed from the new "collapsed" value. No need for useEffect
   const visibleCount = collapsed ? rowLimit : countLimit;
 
   const handlePageChange = (page) => {
@@ -61,10 +61,10 @@ function ImageCarousel(props) {
     window.addEventListener('resize', adjustRowLimitByDevice);
   }, []);
 
-  // Page count follows the expanded page size, not the collapsed preview
+  // Page count follows the expanded page size
   useEffect(() => {
     setTotalPages(Math.ceil(totalCount / countLimit));
-  }, [countLimit])
+  }, [countLimit, collapsed])
 
   return (
     <div id={carouselId} className="mt-4 dashed-border taxa-slideshows">
@@ -123,4 +123,4 @@ function ImageCarousel(props) {
   );
 }
 
-export default ImageCarousel;
+export default ImageGallery;
