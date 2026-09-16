@@ -202,7 +202,7 @@ export class TaxaDetail extends React.Component {
               {res.synonym && (
                 <span className="synonym">
                   {' '}
-                  (synonym: <span className="font-italic">{res.synonym}</span>)
+                  (also known as: <span className="font-italic">{res.synonym}</span>)
                 </span>
               )}
             </h2>
