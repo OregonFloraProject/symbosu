@@ -168,6 +168,7 @@ $DONATE_LINK = '';
 
 // OregonFlora feature flags -- can be turned on per user by checking $SYMB_UID after the symbbase.php include below
 $RPG_FLAG = 1; // Enables Rare Plant Guide
+$TAXA_UNIFIED_FLAG = 0; // Serves the unified taxa profile page on /taxa/index.php, garden.php, rare.php
 $MAP_KML_IMPORT_FLAG = 1; // Enables KML Import in the Mapping module
 $MAP_SOLR_SEARCH_FLAG = 1; // Uses SOLR search for the Mapping module (much faster with geo queries)
 $ENABLE_INAT_SEARCH=1; // Enables excluding iNat observations in maps and herbarium search
