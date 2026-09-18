@@ -11,14 +11,15 @@ correction is noted.
 
 ## Webpack Bundles
 
-`js/react/webpack.config.js` defines **15 React entry bundles** (not 11 as previously recorded),
+`js/react/webpack.config.js` defines **16 React entry bundles** (not 11 as previously recorded),
 all `dependOn: 'header'` except `header` itself:
 
 `header`, `footer`, `home`, `newsletters`, `whatsnew`, `checklist-special`, `inventory`,
-`identify`, `taxa`, `taxa-search`, `taxa-garden`, `taxa-rare`, `explore`, `explore-vendor`,
+`identify`, `taxa`, `taxa-search`, `taxa-garden`, `taxa-rare`, `taxa-unified`, `explore`, `explore-vendor`,
 `rare-policy`.
 
-Output goes to `js/react/dist/`. A separate `lessConfig` in the same webpack config compiles 7
+Output goes to `js/react/dist/`. The `taxa-unified` entry uses `dependOn: 'header'` and builds
+`dist/taxa-unified.js`. A separate `lessConfig` in the same webpack config compiles 7
 LESS entries (`theme`, `header`, `footer`, `garden`, `rare`, `taxa`, `inventory`) to
 `/css/compiled/`; see [[react-less]] for the LESS side.
 
@@ -33,8 +34,11 @@ LESS entries (`theme`, `header`, `footer`, `garden`, `rare`, `taxa`, `inventory`
 | Newsletters archive | `/newsletters/index.php` | - | `newsletters` | `js/react/src/home/newsletters.jsx` | - |
 | News/events | `/pages/news-events.php` | - | `whatsnew` | `js/react/src/home/whatsnew.jsx` | - |
 | Taxon profile (main) | `/taxa/index.php` | `react-taxa-app` | `taxa` | `js/react/src/taxa/main.jsx` | `taxa/rpc/api.php` |
+| Taxon profile (main, unified when flagged) | `/taxa/index.php` | `react-taxa-app` | `taxa-unified` when `$TAXA_UNIFIED_FLAG` is 1, else `taxa` | `js/react/src/taxa/main-unified.jsx` | `taxa/rpc/api.php` |
 | Taxon profile (garden variant) | `/taxa/garden.php` | - | `taxa-garden` | `js/react/src/taxa/taxa-garden.jsx` | `taxa/rpc/api.php?type=garden` |
+| Taxon profile (garden variant, unified when flagged) | `/taxa/garden.php` | - | `taxa-unified` when `$TAXA_UNIFIED_FLAG` is 1, else `taxa-garden` | `js/react/src/taxa/main-unified.jsx` | `taxa/rpc/api.php?type=garden` |
 | Taxon profile (rare variant) | `/taxa/rare.php` | - | `taxa-rare` | `js/react/src/taxa/taxa-rare.jsx` | `taxa/rpc/api.php?type=rare` (gated by `RPG_FLAG`) |
+| Taxon profile (rare variant, unified when flagged) | `/taxa/rare.php` | - | `taxa-unified` when `$TAXA_UNIFIED_FLAG` is 1 (checked inside the existing `$RPG_FLAG` gate), else `taxa-rare` | `js/react/src/taxa/main-unified.jsx` | `taxa/rpc/api.php?type=rare` (gated by `RPG_FLAG`) |
 | Taxon search results | `/taxa/search.php` | `react-taxa-search-app` | `taxa-search` | `js/react/src/taxa/search.jsx` | `taxa/rpc/api.php?search=...` |
 | Grow Natives (garden) main | `/garden/index.php` | - | `checklist-special` | `js/react/src/checklist-special/main.jsx` | `garden/rpc/api.php` |
 | Rare Plant Guide main | `/rare/index.php` | - | `checklist-special` | `js/react/src/checklist-special/main.jsx` | `rare/rpc/api.php` |
@@ -46,7 +50,7 @@ LESS entries (`theme`, `header`, `footer`, `garden`, `rare`, `taxa`, `inventory`
 | Occurrence/collection map | `/collections/map/index.php` | (none - not React) | none | - | Legacy jQuery/JS: `js/symb/collections.map.index.js` + `js/symb/collections.map.index.OregonFlora.js`. See [[map-module]] |
 
 ### Corrections from the prior (unverified) version of this memory
-- There are **15** Webpack bundles, not 11.
+- There are **16** Webpack bundles, not 11.
 - The interactive plant key is served from `/ident/key.php`, not `/checklists/dynamicmap.php`.
   Its RPC endpoint is `/ident/rpc/api.php`, not `/checklists/rpc/api.php`. `checklists/dynamicmap.php`
   exists in the repo but does not load the `identify` bundle.
@@ -66,7 +70,7 @@ LESS entries (`theme`, `header`, `footer`, `garden`, `rare`, `taxa`, `inventory`
 
 | Endpoint | Dispatches on | Notes |
 |---|---|---|
-| `taxa/rpc/api.php` | `search`, `taxon` (+ optional `type=rare\|garden`), `family`, `genus`, `synonym` | `type=rare` also requires `$RPG_FLAG === 1` |
+| `taxa/rpc/api.php` | `search`, `taxon` (+ optional `type=rare\|garden`), `family`, `genus`, `synonym` | `type=rare` also requires `$RPG_FLAG === 1`. `$TAXA_UNIFIED_FLAG` (defined in `config/symbini.php` and `config/symbini_template.php` in the OregonFlora feature flags section, next to `$RPG_FLAG`) selects the `taxa-unified` bundle on the three taxa pages but does not change RPC dispatch |
 | `checklists/rpc/api.php` | `clid`, `dynclid` | Used by both the read-only explore bundle and (per its file comment) the vendor bundle |
 | `ident/rpc/api.php` | `clid`, `dynclid` | Backs the `identify` bundle |
 | `projects/rpc/api.php` | `search`, `pid` | |
