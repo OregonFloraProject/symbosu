@@ -1,7 +1,10 @@
 # OregonFlora Codebase Memory Index
 
 Naming: `<domain>-<topic>.md`, kebab-case, `name:` frontmatter always equals the filename
-(wikilinks resolve against `name:`). Domains: `arch-`, `db-`, `php-`, `react-`, `map-`, `ident-`, `taxo-`.
+(wikilinks resolve against `name:`). Domains: `arch-`, `db-`, `php-`, `react-`, `map-`, `ident-`, `taxo-`, `prd-`.
+
+## Product
+- [PRD Overview](docs/agent-docs/prd-overview.md) — Non-technical PRD: what OregonFlora is, audiences, features, journeys, success measures
 
 ## Architecture & Routing
 - [Architecture Overview](docs/agent-docs/arch-overview.md) — Hybrid PHP/React on a Symbiota base, Doctrine ORM, request lifecycle
