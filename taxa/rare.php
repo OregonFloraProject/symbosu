@@ -35,11 +35,19 @@ if(!$RPG_FLAG && !$SYMB_UID) header('Location: ../profile/index.php?refurl=../ta
       <div id="react-taxa-rare-app"></div>
         <?php
           if (isset($RPG_FLAG) && $RPG_FLAG === 1) {
+            if (isset($TAXA_UNIFIED_FLAG) && $TAXA_UNIFIED_FLAG === 1) {
+              $js_filemtime = filemtime($SERVER_ROOT . '/js/react/dist/taxa-unified.js');
+              echo "<script
+                src=\"{$CLIENT_ROOT}/js/react/dist/taxa-unified.js?{$js_filemtime}\"
+                type=\"text/javascript\"
+                ></script>";
+            } else {
             $js_filemtime = filemtime($SERVER_ROOT . '/js/react/dist/taxa-rare.js');
             echo "<script
               src=\"{$CLIENT_ROOT}/js/react/dist/taxa-rare.js?{$js_filemtime}\"
               type=\"text/javascript\"
               ></script>";
+            }
           }
         ?>
     </div>
