@@ -1,6 +1,6 @@
 ---
 name: react-taxa
-description: "js/react/src/taxa — taxon profile pages for species/genus (main), rare, garden, and search results"
+description: "js/react/src/taxa — taxon profile pages for species/genus (main), rare, garden, search results, and the flag-gated unified page"
 ---
 
 ## Files (verified against js/react/src/taxa)
@@ -22,6 +22,18 @@ description: "js/react/src/taxa — taxon profile pages for species/genus (main)
 | `components/SideBarSectionSpeciesList.jsx` | Associated species list |
 | `components/SynonymItem.jsx` | Expandable synonyms + misapplied names, max 3 shown |
 | `components/utils.js` | Component-local helpers (separate from `taxa/utils.js`) |
+| `main-unified.jsx` | Unified entry; dispatches to core/garden/rare variant by `window.location.pathname` |
+| `unified/UnifiedTaxaCore.jsx` | Unified species/genus profile variant |
+| `unified/UnifiedTaxaGarden.jsx` | Unified garden profile variant |
+| `unified/UnifiedTaxaRare.jsx` | Unified rare profile variant |
+| `shared/TaxaPageShell.jsx` | Shared page shell used by all unified variants |
+| `shared/ProfileHeroImage.jsx` | Shared hero image block for unified variants |
+| `shared/TaxaImageGallery.jsx` | Shared image gallery for unified variants |
+| `shared/RelatedBorderedItem.jsx` | Shared bordered related-item row for unified variants |
+| `shared/SidebarSection.jsx` | Shared sidebar with `rare` and `main` variants |
+| `shared/useTaxonApi.js` | Shared taxon fetch hook for unified variants |
+| `shared/useGlossary.js` | Shared glossary fetch hook for unified variants |
+| `shared/useSlideshowCount.js` | Shared slideshow count hook for unified variants |
 
 ## API Calls
 | File | Endpoint | Returns |
@@ -46,6 +58,21 @@ description: "js/react/src/taxa — taxon profile pages for species/genus (main)
 ## Gotchas
 - `taxa-rare.jsx` filters descriptions by profile ID: profile 8 is used for the RPG summary, and both profile 8 and profile 9 are excluded from the general `taxonDescriptions` list (verified at `taxa-rare.jsx:81-87`)
 - Garden profile has two modal types: an image modal and a preview modal for native groups
+
+## Unified Page (flag-gated)
+
+`main-unified.jsx` is a separate entry from `main.jsx`, `taxa-garden.jsx`, and `taxa-rare.jsx`.
+The old entries and everything they import are unchanged. Variant dispatch lives in
+`main-unified.jsx` via `window.location.pathname`: paths containing `garden.php` load
+`UnifiedTaxaGarden`, paths containing `rare.php` load `UnifiedTaxaRare`, all other paths load
+`UnifiedTaxaCore`. Shared UI and hooks live in `shared/` (`TaxaPageShell`, `ProfileHeroImage`,
+`TaxaImageGallery`, `RelatedBorderedItem`, `SidebarSection` with `rare|main` variants,
+`useTaxonApi`, `useGlossary`, `useSlideshowCount`). `/taxa/index.php`, `/taxa/garden.php`, and
+`/taxa/rare.php` load `dist/taxa-unified.js` instead of their legacy bundle when
+`$TAXA_UNIFIED_FLAG` is 1 (`config/symbini.php` and `config/symbini_template.php`; `rare.php` checks it inside the existing
+`$RPG_FLAG` gate). The unified bundle is `taxa-unified` (`dependOn: 'header'`, builds
+`dist/taxa-unified.js`). Deliberate behavior delta on the unified page only: the dead
+`imageCount` prop is omitted (`common/imageGallery.jsx` never reads it).
 
 ## Related
 [[react-frontend]], [[react-common]], [[react-explore]] (garden/vendor overlap), [[arch-page-entry-points]]
