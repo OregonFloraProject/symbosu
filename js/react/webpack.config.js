@@ -71,6 +71,10 @@ const reactConfig = {
       import: path.join(SRC_DIR, 'taxa', 'taxa-rare.jsx'),
       dependOn: 'header',
     },
+    'taxa-unified': {
+      import: path.join(SRC_DIR, 'taxa', 'main-unified.jsx'),
+      dependOn: 'header',
+    },
     explore: {
       import: path.join(SRC_DIR, 'explore', 'explore.jsx'),
       dependOn: 'header',
