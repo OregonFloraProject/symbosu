@@ -19,6 +19,13 @@ description: js/react/src/identify — interactive plant identification tool wit
 - `MOBILE_BREAKPOINT = 576` (verified at `identify.jsx:22`)
 - `cl`/`clid` both supported for legacy compatibility; redirects to `/projects/` if neither is present
 
+## Result Pagination
+- State: `page: 1`, `countLimit: 20` (`identify.jsx:52-53`); `handlePageChange(page)` sets `page`, `handleCountLimitChange(nextSize)` sets `countLimit` and resets `page` to 1 (`identify.jsx:583-588`)
+- `getVisibleTaxa()` flattens `searchResults.familySort` in `Object.entries` order (`identify.jsx:589-595`); `getPagedResults()` slices that flat list and rebuilds `{ familySort, taxonSort }` grouped by `result.family` (`identify.jsx:596-608`)
+- Page resets to 1 in `onSearchResults` (`identify.jsx:429`) and `onSortByChanged` (`identify.jsx:563`)
+- Renders `ResultPagination` below `IdentifySearchContainer` inside the `searchResults.taxonSort.length > 0` branch; `totalPages` is `Math.ceil(getVisibleTaxa().length / countLimit)` (`identify.jsx:770-785`)
+- `common/searchResults.jsx` is unchanged
+
 ## Differences from checklist-special
 - Uses a `sliders` filter key (not `ranges`) — see [[react-checklist-special]]
 - Uses `sliderOld.jsx` (not the newer `slider.jsx`) — see [[react-common]]
