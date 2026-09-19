@@ -22,6 +22,7 @@ description: "js/react/src/common — shared utilities, UI components, search wi
 | `viewOpts.jsx` | `ViewOpts` (class); statics `DEFAULT_SEARCH_TEXT=''`, `DEFAULT_CLID=-1` | explore, identify |
 | `loading.jsx` | `Loading` (function) | most pages |
 | `searching.jsx` | `Searching` (function) | explore, identify, checklist-special |
+| `resultPagination.jsx` | `ResultPagination` (function) | identify, explore (shared pager + page-size control) |
 | `pageHeader.jsx` | `PageHeader` (function) | most pages |
 | `crumbBuilder.jsx` | `CrumbBuilder` (function) | taxa, inventory |
 | `iconButton.jsx` | `IconButton`, `CancelButton` | multiple |
@@ -46,6 +47,8 @@ description: "js/react/src/common — shared utilities, UI components, search wi
 ## Key Patterns
 - No Context API anywhere — all state passed via prop drilling
 - `SearchWidget` throttles via `lodash.throttle` at 500ms (verified `search.jsx:2,51`); closes suggestions on `onBlur` using `e.relatedTarget`
+- `ResultPagination` takes `page`, `totalPages`, `countLimit`, `onPageChange(page)`, `onCountLimitChange(nextSize)`, and an optional `pageSizes` (default `[20, 50, 100]`); it returns `null` when `totalPages < 1` and otherwise renders `react-responsive-pagination`'s `Pagination` plus a page-size `<select>` (`resultPagination.jsx:4-45`)
+- The `ResultPagination` control was extracted from the pager/page-size markup in `imageGallery.jsx:98-117`; the collapse/expand chevron behavior in that component was not ported
 - `dangerouslySetInnerHTML` used throughout for charstate name/subheading HTML
 - Feature selector element IDs generated via `.replace(/[^a-z]/g, '')` (strips all non-alpha characters)
 
