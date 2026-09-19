@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import Pagination from 'react-responsive-pagination';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import ResultPagination from './resultPagination.jsx';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faChevronRight, faChevronLeft, faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 library.add(faChevronRight, faChevronLeft, faChevronDown, faChevronUp);
@@ -30,10 +30,7 @@ function ImageGallery(props) {
     setIndex((page - 1) * countLimit);
   }
 
-  const pageSize = [20, 50, 100];
-
-  const handleChangePageSize = (e) => {
-    const nextSize = Number(e.target.value);
+  const handleChangePageSize = (nextSize) => {
     setCountLimit(nextSize);
     // New size starts from first page so index stays in range
     setPage(1);
@@ -73,7 +70,7 @@ function ImageGallery(props) {
         <div className={collapsed ? "slider-wrapper" : ""} style={{ display: 'flex', flexDirection: 'row', flexWrap: collapsed ? 'nowrap' : 'wrap' }}>
           {/* Slice from current page start, show preview row when collapsed */}
           {props.images.slice(index, index + visibleCount)
-            .map((image, index) => {
+            .map((image, i) => {
               return (
                 <div key={image.url} style={collapsed ? { flex: '1 1 0', minWidth: 0 } : { flex: `0 0 ${100 / rowLimit}%`, maxWidth: `${100 / rowLimit}%`, minWidth: 0 }}>
                   <div className="card" style={{ padding: '0.6em' }}>
@@ -82,8 +79,8 @@ function ImageGallery(props) {
                         className="d-block"
                         style={{ width: '100%', height: '100%', objectFit: 'cover', cursor: 'pointer' }}
                         src={image.thumbnailurl}
-                        alt={props.altname + ` ${index + 1}`}
-                        onClick={() => props.onClick(index)}
+                        alt={props.altname + ` ${index + i + 1}`}
+                        onClick={() => props.onClick(index + i)}
                       />
                     </div>
                   </div>
@@ -91,31 +88,15 @@ function ImageGallery(props) {
               );
             })}
         </div>
-        {collapsed ? <></> : (
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <div style={{ flex: 1 }} />
-            <div style={{ flex: 1 }}>
-              <Pagination
-                total={totalPages}
-                current={page}
-                onPageChange={handlePageChange}
-              />
-            </div>
-            <div style={{
-              flex: 1,
-              display: 'flex',
-              justifyContent: 'flex-end',
-              marginBottom: '0.7rem'
-            }}>
-              <select id="pageSize" value={countLimit}
-                onChange={handleChangePageSize}
-              >
-                {pageSize.map((size, i) => {
-                  return <option key={i} value={size}>{size}</option>
-                })}
-              </select>
-            </div>
-          </div>
+        {!collapsed && (
+          <ResultPagination
+            page={page}
+            totalPages={totalPages}
+            countLimit={countLimit}
+            onPageChange={handlePageChange}
+            onCountLimitChange={handleChangePageSize}
+            style={props.style}
+          />
         )}
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <FontAwesomeIcon className="slick-down" style={{ cursor: 'pointer' }} icon={collapsed ? "chevron-down" : "chevron-up"} onClick={handleCollapseToggle} />
