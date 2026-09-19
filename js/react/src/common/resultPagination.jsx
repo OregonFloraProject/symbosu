@@ -9,6 +9,7 @@ function ResultPagination(props) {
     onPageChange,
     onCountLimitChange,
     pageSizes = [20, 50, 100],
+    style
   } = props;
 
   if (totalPages < 1) {
@@ -16,7 +17,7 @@ function ResultPagination(props) {
   }
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center' }}>
+    <div style={{ display: 'flex', alignItems: 'center', ...style }}>
       <div style={{ flex: 1 }} />
       <div style={{ flex: 1 }}>
         <Pagination
@@ -28,10 +29,10 @@ function ResultPagination(props) {
       <div style={{
         flex: 1,
         display: 'flex',
-        justifyContent: 'flex-end',
-        marginBottom: '0.7rem'
+        justifyContent: 'flex-end'
       }}>
         <select
+          className="pageSizeSelector"
           value={countLimit}
           onChange={(e) => onCountLimitChange(Number(e.target.value))}
         >

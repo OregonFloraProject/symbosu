@@ -92,7 +92,7 @@ function ImageGallery(props) {
             })}
         </div>
         {collapsed ? <></> : (
-          <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', ...props.style }}>
             <div style={{ flex: 1 }} />
             <div style={{ flex: 1 }}>
               <Pagination
@@ -104,10 +104,9 @@ function ImageGallery(props) {
             <div style={{
               flex: 1,
               display: 'flex',
-              justifyContent: 'flex-end',
-              marginBottom: '0.7rem'
+              justifyContent: 'flex-end'
             }}>
-              <select id="pageSize" value={countLimit}
+              <select className="pageSizeSelector" value={countLimit}
                 onChange={handleChangePageSize}
               >
                 {pageSize.map((size, i) => {
