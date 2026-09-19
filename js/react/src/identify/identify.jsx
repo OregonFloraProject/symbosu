@@ -134,7 +134,7 @@ class IdentifyApp extends React.Component {
       identParams.append('search', this.state.filters.searchText);
       identParams.append('name', this.state.sortBy === 'vernacularName' ? 'commonname' : 'sciname');
     }
-    
+
     /* compare slider values vs characteristics and add to attr list;
 				adding each state as its own attr[] value makes the URL unacceptably long,
 				so we create a new range[] param for purposes of building the URL;
@@ -782,6 +782,7 @@ class IdentifyApp extends React.Component {
                         countLimit={this.state.countLimit}
                         onPageChange={this.handlePageChange}
                         onCountLimitChange={this.handleCountLimitChange}
+                        style={{marginBottom: '1rem'}}
                       />
                     </>
                   ) : (
