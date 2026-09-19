@@ -260,7 +260,7 @@ class ExploreApp extends React.Component {
       exportUrlWord: url,
     });
   }
-  
+
   clearTextSearch() {
     this.onFilterRemoved('searchText');
   }
@@ -465,7 +465,7 @@ class ExploreApp extends React.Component {
     this.setState({ showTaxaDetail: taxaDetail }, function () {
       this.updateExportUrls();
     });
-    /* 	
+    /*
   	let newVal;
   	if (taxaDetail === 'on') {
   		newVal = taxaDetail;
@@ -631,6 +631,7 @@ class ExploreApp extends React.Component {
                     countLimit={this.state.countLimit}
                     onPageChange={this.handlePageChange}
                     onCountLimitChange={this.handleCountLimitChange}
+                    style={{marginBottom: '1rem'}}
                   />
                 </div>
               </div>
