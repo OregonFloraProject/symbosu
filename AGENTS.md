@@ -52,7 +52,7 @@ Naming: `<domain>-<topic>.md`, kebab-case, `name:` frontmatter always equals the
 - [identify](docs/agent-docs/react-identify.md) — Interactive plant key UI
 - [checklist-special](docs/agent-docs/react-checklist-special.md) — Grow Natives + Rare Plant Guide
 - [inventory](docs/agent-docs/react-inventory.md) — Project browser; `pid !== 4` gates the identify link (`table.jsx`)
-- [common](docs/agent-docs/react-common.md) — Shared utils, SearchWidget, FilterSidebar, sidebar filter components
+- [common](docs/agent-docs/react-common.md) — Shared utils, SearchWidget, FilterSidebar, result pagination, sidebar filter components
 - [less](docs/agent-docs/react-less.md) — LESS sources, 7 style entries, filemtime cache-busting
 
 ## Meta
