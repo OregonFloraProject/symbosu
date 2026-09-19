@@ -69,56 +69,58 @@ function ImageGallery(props) {
   return (
     <div id={carouselId} className="mt-4 dashed-border taxa-slideshows">
       <h3 className="text-light-green font-weight-bold mt-2">{props.title}</h3>
-      <div className={collapsed ? "slider-wrapper" : ""} style={{ display: 'flex', flexDirection: 'row', flexWrap: collapsed ? 'nowrap' : 'wrap' }}>
+      {totalCount > 0 ? <>
+        <div className={collapsed ? "slider-wrapper" : ""} style={{ display: 'flex', flexDirection: 'row', flexWrap: collapsed ? 'nowrap' : 'wrap' }}>
           {/* Slice from current page start, show preview row when collapsed */}
           {props.images.slice(index, index + visibleCount)
             .map((image, index) => {
-            return (
-              <div key={image.url} style={collapsed ? { flex: '1 1 0', minWidth: 0 } : { flex: `0 0 ${100 / rowLimit}%`, maxWidth: `${100 / rowLimit}%`, minWidth: 0 }}>
-                <div className="card" style={{ padding: '0.6em' }}>
-                  <div style={{ position: 'relative', width: '100%', height: '7em', borderRadius: '0.25em' }}>
-                    <img
-                      className="d-block"
-                      style={{ width: '100%', height: '100%', objectFit: 'cover', cursor: 'pointer' }}
-                      src={image.thumbnailurl}
-                      alt={props.altname + ` ${index + 1}`}
-                      onClick={() => props.onClick(index)}
-                    />
+              return (
+                <div key={image.url} style={collapsed ? { flex: '1 1 0', minWidth: 0 } : { flex: `0 0 ${100 / rowLimit}%`, maxWidth: `${100 / rowLimit}%`, minWidth: 0 }}>
+                  <div className="card" style={{ padding: '0.6em' }}>
+                    <div style={{ position: 'relative', width: '100%', height: '7em', borderRadius: '0.25em' }}>
+                      <img
+                        className="d-block"
+                        style={{ width: '100%', height: '100%', objectFit: 'cover', cursor: 'pointer' }}
+                        src={image.thumbnailurl}
+                        alt={props.altname + ` ${index + 1}`}
+                        onClick={() => props.onClick(index)}
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
-      </div>
-      {collapsed ? <></> : (
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <div style={{ flex: 1 }} />
-          <div style={{ flex: 1 }}>
-            <Pagination
-              total={totalPages}
-              current={page}
-              onPageChange={handlePageChange}
-            />
-          </div>
-          <div style={{
-            flex: 1,
-            display: 'flex',
-            justifyContent: 'flex-end',
-            marginBottom: '0.7rem'
-          }}>
-            <select id="pageSize" value={countLimit}
-              onChange={handleChangePageSize}
-            >
-              {pageSize.map((size, i) => {
-                return <option key={i} value={size}>{size}</option>
-              })}
-            </select>
-          </div>
+              );
+            })}
         </div>
-      )}
-      <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <FontAwesomeIcon className="slick-down" style={{cursor: 'pointer'}} icon={collapsed ? "chevron-down" : "chevron-up"} onClick={handleCollapseToggle}/>
-      </div>
+        {collapsed ? <></> : (
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={{ flex: 1 }} />
+            <div style={{ flex: 1 }}>
+              <Pagination
+                total={totalPages}
+                current={page}
+                onPageChange={handlePageChange}
+              />
+            </div>
+            <div style={{
+              flex: 1,
+              display: 'flex',
+              justifyContent: 'flex-end',
+              marginBottom: '0.7rem'
+            }}>
+              <select id="pageSize" value={countLimit}
+                onChange={handleChangePageSize}
+              >
+                {pageSize.map((size, i) => {
+                  return <option key={i} value={size}>{size}</option>
+                })}
+              </select>
+            </div>
+          </div>
+        )}
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <FontAwesomeIcon className="slick-down" style={{ cursor: 'pointer' }} icon={collapsed ? "chevron-down" : "chevron-up"} onClick={handleCollapseToggle} />
+        </div>
+      </> : null }
     </div>
   );
 }
