@@ -45,6 +45,14 @@ description: js/react/src/explore — checklist explore view (read-only) and ven
 - `currentTids` drives display; the full taxon list loads once, filtering only updates `currentTids`
 - `fixedTotals` vs `totals`: fixed = original counts; totals = post-filter counts — same pattern used in [[react-identify]] and [[react-checklist-special]]
 
+## Result Pagination (explore.jsx)
+- State: `page: 1`, `countLimit: 20` (`explore.jsx:30-31`); `handlePageChange(page)` sets `page`, `handleCountLimitChange(nextSize)` sets `countLimit` and resets `page` to 1 (`explore.jsx:342-348`)
+- `getVisibleTaxa()` returns `[]` when `currentTids` is empty; when `sortBy === 'taxon'` it filters `searchResults.taxonSort` by `currentTids`, otherwise it flattens `familySort` and keeps only results whose `tid` is in `currentTids` (`explore.jsx:350-367`). Filtering happens before slicing, so pagination only ever sees the current TID set.
+- `getPagedResults()` slices the filtered list and rebuilds `{ familySort, taxonSort }` grouped by `result.family` (`explore.jsx:369-382`)
+- Page resets to 1 in `onSearchResults` (`explore.jsx:339`) and `onSortByChanged` (`explore.jsx:411`)
+- Renders `ResultPagination` below `ExploreSearchContainer`; `totalPages` is `Math.ceil(getVisibleTaxa().length / countLimit)` (`explore.jsx:618-634`). When `currentTids` is empty, `getVisibleTaxa()` is empty so `totalPages` is 0 and `ResultPagination` returns `null`, hiding the pager.
+- `explore-vendor.jsx` does not render `ResultPagination`; the vendor variant is unchanged
+
 ## Editing Access Control (explore-vendor.jsx / checklistvendor.php)
 Editing is gated by the same condition checked independently in two places, both verified:
 `$IS_ADMIN || (array_key_exists("ClAdmin", $USER_RIGHTS) && in_array($clid, $USER_RIGHTS["ClAdmin"]))`
