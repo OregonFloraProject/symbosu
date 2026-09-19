@@ -13,6 +13,7 @@ import { getCommonNameStr, getTaxaPage, getIdentifyPage, getChecklistPage } from
 import PageHeader from '../common/pageHeader.jsx';
 import Loading from '../common/loading.jsx';
 import FilterModal from '../common/filterModal.jsx';
+import ResultPagination from '../common/resultPagination.jsx';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -48,6 +49,8 @@ class IdentifyApp extends React.Component {
       },
       searchText: ("search" in queryParams ? queryParams["search"] : ViewOpts.DEFAULT_SEARCH_TEXT),
       searchResults: { familySort: {}, taxonSort: [] },
+      page: 1,
+      countLimit: 20,
       characteristics: [],
       sortBy: 'sortBy' in queryParams ? queryParams['sortBy'] : 'sciName',
       viewType: 'viewType' in queryParams ? queryParams['viewType'] : 'list',
@@ -93,6 +96,8 @@ class IdentifyApp extends React.Component {
     this.getFilterCount = this.getFilterCount.bind(this);
     this.setFilterModal = this.setFilterModal.bind(this);
     this.doConfirm = this.doConfirm.bind(this);
+    this.handlePageChange = this.handlePageChange.bind(this);
+    this.handleCountLimitChange = this.handleCountLimitChange.bind(this);
   }
 
   getClid() {
@@ -421,7 +426,7 @@ class IdentifyApp extends React.Component {
   onSearchResults(results) {
     let newResults;
     newResults = this.sortResults(results);
-    this.setState({ searchResults: newResults }, function () {
+    this.setState({ searchResults: newResults, page: 1 }, function () {
       this.updateExportUrls();
     });
   }
@@ -555,7 +560,7 @@ class IdentifyApp extends React.Component {
     );
   }
   onSortByChanged(type) {
-    this.setState({ sortBy: type }, function () {
+    this.setState({ sortBy: type, page: 1 }, function () {
       this.setState({ searchResults: this.sortByName(this.state.searchResults) }, function () {
         // this.updateExportUrls();
       });
@@ -574,6 +579,32 @@ class IdentifyApp extends React.Component {
     this.setState({ filters: filters }, function () {
       this.catchQuery();
     });
+  }
+  handlePageChange(page) {
+    this.setState({ page });
+  }
+  handleCountLimitChange(nextSize) {
+    this.setState({ countLimit: nextSize, page: 1 });
+  }
+  getVisibleTaxa() {
+    const flat = [];
+    Object.entries(this.state.searchResults.familySort).forEach(([, results]) => {
+      flat.push(...results);
+    });
+    return flat;
+  }
+  getPagedResults() {
+    const visible = this.getVisibleTaxa();
+    const start = (this.state.page - 1) * this.state.countLimit;
+    const slice = visible.slice(start, start + this.state.countLimit);
+    const familySort = {};
+    slice.forEach((result) => {
+      if (!familySort[result.family]) {
+        familySort[result.family] = [];
+      }
+      familySort[result.family].push(result);
+    });
+    return { familySort, taxonSort: slice };
   }
   render() {
     let shortAbstract = '';
@@ -737,13 +768,22 @@ class IdentifyApp extends React.Component {
                       </p>
                     )}
                   {this.state.searchResults.taxonSort.length > 0 ? (
-                    <IdentifySearchContainer
-                      searchResults={this.state.searchResults}
-                      viewType={this.state.viewType}
-                      sortBy={this.state.sortBy}
-                      clientRoot={this.props.clientRoot}
-                      isSearching={this.state.isSearching}
-                    />
+                    <>
+                      <IdentifySearchContainer
+                        searchResults={this.getPagedResults()}
+                        viewType={this.state.viewType}
+                        sortBy={this.state.sortBy}
+                        clientRoot={this.props.clientRoot}
+                        isSearching={this.state.isSearching}
+                      />
+                      <ResultPagination
+                        page={this.state.page}
+                        totalPages={Math.ceil(this.getVisibleTaxa().length / this.state.countLimit)}
+                        countLimit={this.state.countLimit}
+                        onPageChange={this.handlePageChange}
+                        onCountLimitChange={this.handleCountLimitChange}
+                      />
+                    </>
                   ) : (
                     <p className="no-results">
                       Your search term(s) didn’t produce any results.{' '}
