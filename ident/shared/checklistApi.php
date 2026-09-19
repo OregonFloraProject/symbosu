@@ -92,6 +92,10 @@ function get_data($params) {
 		if ($pid === Fmchecklists::$PID_VENDOR_ALL) $identManager->setIncludeChecklistNotes(true);
 	}
 
+	if (isset($params['isGetNonVernaculars'])) {
+		$identManager->setIsGetNonVernaculars($params['isGetNonVernaculars']);
+	}
+
 	$identManager->setThumbnails(true);
 	$identManager->setTaxa();
 	$results['taxa'] = $identManager->getTaxa();
@@ -118,6 +122,7 @@ function get_data($params) {
 }
 
 function handleChecklistExport($result) {
+	global $SERVER_ROOT;
 	if (array_key_exists("export", $_GET) && in_array($_GET["export"], array('word','csv','vendorcsv'))) {
 		include_once($SERVER_ROOT . "/checklists/checklistexport.php");
 		switch($_GET['export']) {
