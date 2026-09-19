@@ -10,6 +10,7 @@ import { addUrlQueryParam, getUrlQueryParams } from '../common/queryParams.js';
 import { getCommonNameStr, getTaxaPage, getIdentifyPage } from '../common/taxaUtils';
 import PageHeader from '../common/pageHeader.jsx';
 import Loading from '../common/loading.jsx';
+import ResultPagination from '../common/resultPagination.jsx';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -26,6 +27,8 @@ class ExploreApp extends React.Component {
       isLoading: true,
       isSearching: false,
       currentTids: [],
+      page: 1,
+      countLimit: 20,
       clid: -1,
       pid: -1,
       dynclid: -1,
@@ -79,6 +82,8 @@ class ExploreApp extends React.Component {
     this.onFilterRemoved = this.onFilterRemoved.bind(this);
     this.sortResults = this.sortResults.bind(this);
     this.clearTextSearch = this.clearTextSearch.bind(this);
+    this.handlePageChange = this.handlePageChange.bind(this);
+    this.handleCountLimitChange = this.handleCountLimitChange.bind(this);
   }
 
   getClid() {
@@ -331,7 +336,49 @@ class ExploreApp extends React.Component {
   }
   // On search end
   onSearchResults(tids) {
-    this.setState({ currentTids: tids });
+    this.setState({ currentTids: tids, page: 1 });
+  }
+
+  handlePageChange(page) {
+    this.setState({ page });
+  }
+
+  handleCountLimitChange(nextSize) {
+    this.setState({ countLimit: nextSize, page: 1 });
+  }
+
+  getVisibleTaxa() {
+    if (this.state.currentTids.length === 0) {
+      return [];
+    }
+    const currentTids = new Set(this.state.currentTids);
+    if (this.state.sortBy === 'taxon') {
+      return this.state.searchResults.taxonSort.filter((result) => currentTids.has(result.tid));
+    }
+    const visible = [];
+    Object.entries(this.state.searchResults.familySort).forEach(([, results]) => {
+      results.forEach((result) => {
+        if (currentTids.has(result.tid)) {
+          visible.push(result);
+        }
+      });
+    });
+    return visible;
+  }
+
+  getPagedResults() {
+    const slice = this.getVisibleTaxa().slice(
+      (this.state.page - 1) * this.state.countLimit,
+      this.state.page * this.state.countLimit,
+    );
+    const familySort = {};
+    slice.forEach((result) => {
+      if (!familySort[result.family]) {
+        familySort[result.family] = [];
+      }
+      familySort[result.family].push(result);
+    });
+    return { familySort, taxonSort: slice };
   }
 
   sortResults(results) {
@@ -361,7 +408,7 @@ class ExploreApp extends React.Component {
   }
 
   onSortByChanged(sortBy) {
-    this.setState({ sortBy: sortBy }, function () {
+    this.setState({ sortBy: sortBy, page: 1 }, function () {
       // this.updateExportUrls();
     });
   }
@@ -569,7 +616,7 @@ class ExploreApp extends React.Component {
                     )}
                   </div>
                   <ExploreSearchContainer
-                    searchResults={this.state.searchResults}
+                    searchResults={this.getPagedResults()}
                     viewType={this.state.viewType}
                     sortBy={this.state.sortBy}
                     showTaxaDetail={this.state.showTaxaDetail}
@@ -577,6 +624,13 @@ class ExploreApp extends React.Component {
                     isSearching={this.state.isSearching}
                     currentTids={this.state.currentTids}
                     showNotes={this.getPid() === 4}
+                  />
+                  <ResultPagination
+                    page={this.state.page}
+                    totalPages={Math.ceil(this.getVisibleTaxa().length / this.state.countLimit)}
+                    countLimit={this.state.countLimit}
+                    onPageChange={this.handlePageChange}
+                    onCountLimitChange={this.handleCountLimitChange}
                   />
                 </div>
               </div>
