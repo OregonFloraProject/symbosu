@@ -1,5 +1,6 @@
 <?php
 include_once($SERVER_ROOT.'/config/dbconnection.php');
+include_once($SERVER_ROOT.'/config/SymbosuEntityManager.php');
 include_once($SERVER_ROOT.'/classes/Manager.php');
 
 class DynamicChecklistManager extends Manager {
@@ -109,6 +110,58 @@ class DynamicChecklistManager extends Manager {
 			echo $this->errorMessage;
 		}
 		return $dynPK;
+	}
+
+	public function createDynamicChecklistFromTids(array $tidList): int {
+		$validTids = [];
+		foreach ($tidList as $tid) {
+			if (is_numeric($tid) && intval($tid) > 0) {
+				$validTids[] = intval($tid);
+			}
+		}
+		if (empty($validTids)) {
+			return 0;
+		}
+		$validTids = array_unique($validTids);
+
+		$em = SymbosuEntityManager::getEntityManager();
+		$conn = $em->getConnection();
+		$conn->beginTransaction();
+		try {
+			$checklist = new Fmdynamicchecklists();
+			$checklist->setName('Map Taxon Report');
+			$checklist->setDetails('Taxa from map search');
+			$checklist->setExpiration(new \DateTime(date('Y-m-d', mktime(0, 0, 0, date('m'), date('d') + 7, date('Y')))));
+			$checklist->setUid((!empty($GLOBALS['SYMB_UID']) && is_numeric($GLOBALS['SYMB_UID'])) ? (string)intval($GLOBALS['SYMB_UID']) : null);
+			$checklist->setType('DynamicList');
+			$checklist->setInitialtimestamp(new \DateTime());
+			$em->persist($checklist);
+			$em->flush();
+			$dynPk = (int)$checklist->getDynclid();
+			if ($dynPk <= 0) {
+				throw new Exception('Failed to generate dynamic checklist');
+			}
+			$count = 0;
+			foreach ($validTids as $tid) {
+				$link = new Fmdyncltaxalink();
+				$link->setDynclid($dynPk);
+				$link->setTid($tid);
+				$link->setInitialtimestamp(new \DateTime());
+				$em->persist($link);
+				$count++;
+				if (($count % 500) === 0) {
+					$em->flush();
+					$em->clear();
+				}
+			}
+			$em->flush();
+			$em->clear();
+			$conn->commit();
+			return $dynPk;
+		} catch (\Exception $e) {
+			$conn->rollBack();
+			throw new Exception('ERROR building checklist: ' . $e->getMessage());
+		}
 	}
 
 	public function getTid($sciname){

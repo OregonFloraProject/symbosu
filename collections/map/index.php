@@ -2622,7 +2622,6 @@ $serverHost = GeneralUtil::getDomain();
 										<input name="searchvar" type="hidden" value="<?= $searchVar ?> " />
 										<input id='solrqstring' name="solrqstring" type="hidden" />
 									</form>
-
 									<button style="width: auto;" class="icon-button" onclick="copyUrl('<?= $comingFrom ?>')" title="<?= $LANG['COPY_TO_CLIPBOARD'] ?>">
 										<svg alt="Copy as a link." style="width:1.2em;" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M440-280H280q-83 0-141.5-58.5T80-480q0-83 58.5-141.5T280-680h160v80H280q-50 0-85 35t-35 85q0 50 35 85t85 35h160v80ZM320-440v-80h320v80H320Zm200 160v-80h160q50 0 85-35t35-85q0-50-35-85t-85-35H520v-80h160q83 0 141.5 58.5T880-480q0 83-58.5 141.5T680-280H520Z"/></svg>
 									</button>
@@ -2759,6 +2758,13 @@ $serverHost = GeneralUtil::getDomain();
 										<div style="margin-top:5px;">
 											<button data-role="none" id="randomColorTaxa" name="randomColorTaxa" onclick='autoColorTaxa();' ><?= $LANG['AUTO_COLOR'] ?></button>
 										</div>
+										<div style="margin-top:5px; position:relative; display:inline-flex;">
+											<button data-role="none" id="taxonReportBtn" name="taxonReportBtn" title="Download taxon report" onclick='toggleTaxonReportMenu(event);'>Taxon Report</button>
+											<div id="taxonReportMenu" style="display:none; position:absolute; right:0; top:100%; margin-top:0.25rem; background:#fff; border:1px solid #ccc; box-shadow:0 2px 6px rgba(0,0,0,0.15); z-index:30; min-width:6rem;">
+												<button type="button" onclick="downloadTaxonReport('csv');">CSV</button>
+												<button type="button" onclick="downloadTaxonReport('docx');">DOCX</button>
+											</div>
+										</div>
 									</div>
 								</div>
 								<div style="margin:5 0 5 0;clear:both;"><hr /></div>
@@ -2778,6 +2784,62 @@ $serverHost = GeneralUtil::getDomain();
 	</div>
 	</body>
 	<script type="text/javascript">
+		function toggleTaxonReportMenu(event) {
+			event.stopPropagation();
+			document.addEventListener('click', closeTaxonReportMenu);
+			const menu = document.getElementById("taxonReportMenu");
+			if (menu.style.display === "none") {
+				menu.style.display = "initial";
+			} else {
+				closeTaxonReportMenu();
+			}
+		}
+
+		function closeTaxonReportMenu() {
+			const menu = document.getElementById("taxonReportMenu");
+			menu.style.display = "none";
+			document.removeEventListener('click', closeTaxonReportMenu);
+		}
+
+		function downloadTaxonReport(format) {
+			format = format || 'csv';
+			if (format !== 'csv' && format !== 'docx') {
+				alert("Invalid format selected.");
+				return;
+			}
+			closeTaxonReportMenu();
+
+			const paramsForm = document.getElementById("params-form");
+			if (!paramsForm) {
+				alert("Search parameters form not found.");
+				return;
+			}
+
+			const formData = new FormData(paramsForm);
+			const tempForm = document.createElement("form");
+			tempForm.method = "POST";
+			tempForm.action = "../../spatial/rpc/solrSearch.php";
+			tempForm.target = "_blank";
+
+			for (const [key, value] of formData.entries()) {
+				const input = document.createElement("input");
+				input.type = "hidden";
+				input.name = key;
+				input.value = value;
+				tempForm.appendChild(input);
+			}
+
+			const dlInput = document.createElement("input");
+			dlInput.type = "hidden";
+			dlInput.name = "download";
+			dlInput.value = format;
+			tempForm.appendChild(dlInput);
+
+			document.body.appendChild(tempForm);
+			tempForm.submit();
+			document.body.removeChild(tempForm);
+		}
+
 		$(document).ready(function() {
 			setSessionQueryStr();
 			setSearchForm(document.getElementById("params-form"));
