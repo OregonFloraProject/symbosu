@@ -594,17 +594,9 @@ class IdentifyApp extends React.Component {
     return flat;
   }
   getPagedResults() {
-    const visible = this.getVisibleTaxa();
     const start = (this.state.page - 1) * this.state.countLimit;
-    const slice = visible.slice(start, start + this.state.countLimit);
-    const familySort = {};
-    slice.forEach((result) => {
-      if (!familySort[result.family]) {
-        familySort[result.family] = [];
-      }
-      familySort[result.family].push(result);
-    });
-    return { familySort, taxonSort: slice };
+    const slice = this.state.searchResults.taxonSort.slice(start, start + this.state.countLimit);
+    return this.sortResults(slice);
   }
   render() {
     let shortAbstract = '';
