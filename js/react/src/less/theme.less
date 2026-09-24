@@ -3107,6 +3107,30 @@ body.spatial {
   }
 }
 
+.result-pagination {
+  display: flex;
+  align-items: center;
+
+  .result-pagination__spacer {
+    flex: 1;
+  }
+
+  .result-pagination__pager {
+    flex: 1 1 auto;
+
+    .pagination {
+      flex-wrap: wrap;
+      row-gap: 0.5rem;
+    }
+  }
+
+  .result-pagination__page-size {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+  }
+}
+
 .pageSizeSelector {
   background-color: #fff;
   border: 1px solid #dee2e6;
