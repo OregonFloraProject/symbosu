@@ -367,18 +367,9 @@ class ExploreApp extends React.Component {
   }
 
   getPagedResults() {
-    const slice = this.getVisibleTaxa().slice(
-      (this.state.page - 1) * this.state.countLimit,
-      this.state.page * this.state.countLimit,
-    );
-    const familySort = {};
-    slice.forEach((result) => {
-      if (!familySort[result.family]) {
-        familySort[result.family] = [];
-      }
-      familySort[result.family].push(result);
-    });
-    return { familySort, taxonSort: slice };
+    const start = (this.state.page - 1) * this.state.countLimit;
+    const slice = this.getVisibleTaxa().slice(start, start + this.state.countLimit);
+    return this.sortResults(slice);
   }
 
   sortResults(results) {
