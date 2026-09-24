@@ -1,6 +1,10 @@
 import React from 'react';
 import Pagination from 'react-responsive-pagination';
 
+// Bounds the number of page buttons the library renders so they can wrap onto
+// multiple rows instead of the library shrinking the set to fit one row.
+const MAX_PAGINATION_WIDTH = 200;
+
 function ResultPagination(props) {
   const {
     page,
@@ -17,21 +21,17 @@ function ResultPagination(props) {
   }
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', ...style }}>
-      <div style={{ flex: 1 }} />
-      <div style={{ flex: 1 }}>
+    <div className="result-pagination" style={{ ...style }}>
+      <div className="result-pagination__spacer" />
+      <div className="result-pagination__pager">
         <Pagination
           total={totalPages}
           current={page}
+          maxWidth={MAX_PAGINATION_WIDTH}
           onPageChange={(e) => onPageChange(Number(e))}
         />
       </div>
-      <div style={{
-        flex: 1,
-        display: 'flex',
-        justifyContent: 'flex-end',
-        marginBottom: '0.7rem'
-      }}>
+      <div className="result-pagination__page-size">
         <select
           className="pageSizeSelector"
           value={countLimit}
