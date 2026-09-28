@@ -2,6 +2,7 @@
 include_once('../../config/symbini.php');
 include_once($SERVER_ROOT.'/classes/SpecUploadBase.php');
 include_once($SERVER_ROOT . '/classes/utilities/Language.php');
+include_once($SERVER_ROOT . '/classes/utilities/Sanitize.php');
 
 Language::load('collections/admin/specupload');
 
@@ -9,9 +10,9 @@ header('Content-Type: text/html; charset='.$CHARSET);
 ini_set('max_execution_time', 3600);
 if(!$SYMB_UID) header('Location: ../../profile/index.php?refurl=../collections/admin/specupload.php?'.htmlspecialchars($_SERVER['QUERY_STRING'], ENT_QUOTES));
 
-$collid = filter_var($_REQUEST['collid'], FILTER_SANITIZE_NUMBER_INT);
-$uploadType = array_key_exists('uploadtype', $_REQUEST) ? filter_var($_REQUEST['uploadtype'], FILTER_SANITIZE_NUMBER_INT) : 0;
-$uspid = array_key_exists('uspid', $_REQUEST) ? filter_var($_REQUEST['uspid'], FILTER_SANITIZE_NUMBER_INT) : 0;
+$collid = Sanitize::int($_REQUEST['collid']);
+$uploadType = array_key_exists('uploadtype', $_REQUEST) ? Sanitize::int($_REQUEST['uploadtype']) : 0;
+$uspid = array_key_exists('uspid', $_REQUEST) ? Sanitize::int($_REQUEST['uspid']) : 0;
 
 $DIRECTUPLOAD = 1; $SKELETAL = 7; $IPTUPLOAD = 8; $NFNUPLOAD = 9; $STOREDPROCEDURE = 4; $SCRIPTUPLOAD = 5; $SYMBIOTA = 13; $INATURALIST = 14;
 
@@ -36,16 +37,16 @@ elseif($uploadType == $DIRECTUPLOAD || $uploadType == $STOREDPROCEDURE || $uploa
 }
 ?>
 <!DOCTYPE html>
-<html lang="<?php echo $LANG_TAG ?>">
+<html lang="<?= $LANG_TAG ?>">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=<?php echo $CHARSET; ?>">
-	<title><?php echo $DEFAULT_TITLE . ' ' . $LANG['SPEC_UPLOAD']; ?></title>
-	<link href="<?php echo $CSS_BASE_PATH; ?>/jquery-ui.css" type="text/css" rel="stylesheet">
+	<meta http-equiv="Content-Type" content="text/html; charset=<?= $CHARSET; ?>">
+	<title><?= $DEFAULT_TITLE . ' ' . $LANG['SPEC_UPLOAD']; ?></title>
+	<link href="<?= $CSS_BASE_PATH; ?>/jquery-ui.css" type="text/css" rel="stylesheet">
 	<?php
 	include_once($SERVER_ROOT.'/includes/head.php');
 	?>
-	<script src="<?php echo $CLIENT_ROOT; ?>/js/jquery-3.7.1.min.js" type="text/javascript"></script>
-	<script src="<?php echo $CLIENT_ROOT; ?>/js/jquery-ui.min.js" type="text/javascript"></script>
+	<script src="<?= $CLIENT_ROOT; ?>/js/jquery-3.7.1.min.js" type="text/javascript"></script>
+	<script src="<?= $CLIENT_ROOT; ?>/js/jquery-ui.min.js" type="text/javascript"></script>
 	<script src="../../js/symb/shared.js" type="text/javascript"></script>
 	<script src="https://cdn.jsdelivr.net/gh/mickley/iNatJS@main/inatjs.js" type="text/javascript"></script>
 	<script src="../../js/symb/collections.inat.js" type="text/javascript"></script>
@@ -59,16 +60,13 @@ elseif($uploadType == $DIRECTUPLOAD || $uploadType == $STOREDPROCEDURE || $uploa
 	<link href="<?php echo $CSS_BASE_PATH; ?>/symbiota/collections/inatupload.css" type="text/css" rel="stylesheet">
 	<script>
 		function verifyFileUploadForm(f){
-			var fileName = "";
-			if(f.uploadfile || f.ulfnoverride){
+			if(f.uploadfile){
+				let fileName = "";
 				if(f.uploadfile && f.uploadfile.value){
 					 fileName = f.uploadfile.value;
 				}
-				else{
-					fileName = f.ulfnoverride.value;
-				}
 				if(fileName == ""){
-					alert("<?php echo $LANG['PATH_EMPTY']; ?>");
+					alert("<?= $LANG['PATH_EMPTY']; ?>");
 					return false;
 				}
 				else{
@@ -79,7 +77,7 @@ elseif($uploadType == $DIRECTUPLOAD || $uploadType == $STOREDPROCEDURE || $uploa
 					else if(ext == 'tab' || ext == 'tab') return true;
 					else if(fileName.substring(0,4) == 'http') return true;
 					else{
-						alert("<?php echo $LANG['MUST_CSV']; ?>");
+						alert("<?= $LANG['MUST_CSV']; ?>");
 						return false;
 					}
 				}
@@ -88,7 +86,6 @@ elseif($uploadType == $DIRECTUPLOAD || $uploadType == $STOREDPROCEDURE || $uploa
 		}
 
 		function verifyFileSize(inputObj){
-			inputObj.form.ulfnoverride.value = ''
 			if (!window.FileReader) {
 				//alert("The file API isn't supported on this browser yet.");
 				return;
@@ -102,8 +99,8 @@ elseif($uploadType == $DIRECTUPLOAD || $uploadType == $STOREDPROCEDURE || $uploa
 			?>
 			var file = inputObj.files[0];
 			if(file.size > maxUpload){
-				var msg = "<?php echo $LANG['IMPORT_FILE']; ?>"+file.name+" ("+Math.round(file.size/100000)/10+"<?php echo $LANG['IS_BIGGER'] . ' '; ?>"+(maxUpload/1000000)+"MB).";
-				if(file.name.slice(-3) != "zip") msg = msg + "<?php echo $LANG['MAYBE_ZIP']; ?>";
+				var msg = "<?= $LANG['IMPORT_FILE']; ?>"+file.name+" ("+Math.round(file.size/100000)/10+"<?= $LANG['IS_BIGGER'] . ' '; ?>"+(maxUpload/1000000)+"MB).";
+				if(file.name.slice(-3) != "zip") msg = msg + "<?= $LANG['MAYBE_ZIP']; ?>";
 				alert(msg);
 			}
 		}
@@ -165,7 +162,7 @@ include($SERVER_ROOT.'/includes/header.php');
 		?>
 		<form name="fileuploadform" action="specuploadmap.php" method="post" enctype="multipart/form-data" onsubmit="return verifyFileUploadForm(this)">
 			<fieldset style="width:95%;">
-				<legend style="font-weight:bold;font-size:120%;<?php if($uploadType == $SKELETAL) echo 'background-color:lightgreen'; ?>"><?php echo $duManager->getTitle() . ': ' . $LANG['ID_SOURCE']; ?></legend>
+				<legend style="font-weight:bold;font-size:120%;<?php if($uploadType == $SKELETAL) echo 'background-color:lightgreen'; ?>"><?= $duManager->getTitle() . ': ' . $LANG['ID_SOURCE']; ?></legend>
 				<div>
 					<div style="margin:10px">
 						<?php
@@ -174,23 +171,7 @@ include($SERVER_ROOT.'/includes/header.php');
 							$pathLabel = $LANG['RESOURCE_URL'];
 							?>
 							<div>
-								<input name="uploadfile" type="file" onchange="verifyFileSize(this)" aria-label="<?php echo $LANG['UPLOAD'] ?>" />
-							</div>
-							<?php
-						}
-						?>
-						<div class="ulfnoptions" style="display:<?php echo ($uploadType!=$IPTUPLOAD?'none':''); ?>;margin:15px 0px">
-							<b><?php echo $pathLabel; ?>:</b>
-							<input name="ulfnoverride" type="text" size="70" /><br/>
-							<?php
-							if($uploadType != $IPTUPLOAD) echo '* ' . $LANG['WORKAROUND'];
-							?>
-						</div>
-						<?php
-						if($uploadType != $IPTUPLOAD){
-							?>
-							<div class="ulfnoptions">
-								<a href="#" onclick="toggle('ulfnoptions');return false;"><?php echo htmlspecialchars($LANG['DISPLAY_OPS'], ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE); ?></a>
+								<input name="uploadfile" type="file" onchange="verifyFileSize(this)" aria-label="<?= $LANG['UPLOAD'] ?>" />
 							</div>
 							<?php
 						}
@@ -203,10 +184,10 @@ include($SERVER_ROOT.'/includes/header.php');
 						?>
 					</div>
 					<div style="margin:10px;">
-						<button name="action" type="submit" value="Analyze File"><?php echo $LANG['ANALYZE_FILE']; ?></button>
-						<input name="uspid" type="hidden" value="<?php echo $uspid; ?>" />
-						<input name="collid" type="hidden" value="<?php echo $collid; ?>" />
-						<input name="uploadtype" type="hidden" value="<?php echo $uploadType; ?>" />
+						<button name="action" type="submit" value="Analyze File"><?= $LANG['ANALYZE_FILE']; ?></button>
+						<input name="uspid" type="hidden" value="<?= $uspid; ?>" />
+						<input name="collid" type="hidden" value="<?= $collid; ?>" />
+						<input name="uploadtype" type="hidden" value="<?= $uploadType; ?>" />
 						<input name="MAX_FILE_SIZE" type="hidden" value="100000000" />
 					</div>
 				</div>
