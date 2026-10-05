@@ -39,7 +39,7 @@ class ImageLibrarySearch extends OccurrenceTaxaManager{
 		$retArr = Array();
 		$this->setSqlWhere();
 		$this->setRecordCnt();
-		$sql = 'SELECT m.mediaID, m.tid, t.sciname, m.url, m.thumbnailurl, m.originalurl, m.creatorUid, m.caption, m.occid, m.mediaType ';
+		$sql = 'SELECT m.mediaID, m.tid, t.sciname, m.url, m.thumbnailurl, m.originalurl, m.sourceurl, m.creatorUid, m.creator, m.caption, m.occid, m.mediaType, m.copyright, m.rights, m.accessRights ';
 		$sqlWhere = $this->sqlWhere;
 		if($this->imageCount == 1) $sqlWhere .= 'GROUP BY m.tid ';
 		elseif($this->imageCount == 2) $sqlWhere .= 'GROUP BY m.occid ';
@@ -62,9 +62,14 @@ class ImageLibrarySearch extends OccurrenceTaxaManager{
 					$retArr[$imgId]['thumbnailurl'] = $r->thumbnailurl;
 					$retArr[$imgId]['originalurl'] = $r->originalurl;
 					$retArr[$imgId]['uid'] = $r->creatorUid;
+					$retArr[$imgId]['creator'] = $r->creator;
 					$retArr[$imgId]['caption'] = $r->caption;
 					$retArr[$imgId]['occid'] = $r->occid;
 					$retArr[$imgId]['mediaType'] = $r->mediaType;
+					$retArr[$imgId]['sourceurl'] = $r->sourceurl;
+					$retArr[$imgId]['copyright'] = $r->copyright;
+					$retArr[$imgId]['rights'] = $r->rights;
+					$retArr[$imgId]['accessrights'] = $r->accessRights;
 					if($r->occid) $occArr[$r->occid] = $r->occid;
 				}
 				$result->free();
@@ -76,14 +81,20 @@ class ImageLibrarySearch extends OccurrenceTaxaManager{
 		if($occArr){
 			//Get occurrence data
 			$collArr = array();
-			$sql2 = 'SELECT occid, catalognumber, recordedby, stateprovince, collid FROM omoccurrences WHERE occid IN('.implode(',',$occArr).')';
+			$sql2 = 'SELECT o.occid, o.catalognumber, o.recordedby, o.country, o.stateprovince, o.county, o.collid, c.collectionname, c.rights, c.accessrights ' .
+				'FROM omoccurrences o LEFT JOIN omcollections c ON o.collid = c.collid WHERE o.occid IN('.implode(',',$occArr).')';
 			try{
 				if($rs2 = $this->conn->query($sql2)){
 					while($r2 = $rs2->fetch_object()){
 						$retArr['occ'][$r2->occid]['catnum'] = $r2->catalognumber;
 						$retArr['occ'][$r2->occid]['recordedby'] = $r2->recordedby;
+						$retArr['occ'][$r2->occid]['country'] = $r2->country;
 						$retArr['occ'][$r2->occid]['stateprovince'] = $r2->stateprovince;
+						$retArr['occ'][$r2->occid]['county'] = $r2->county;
 						$retArr['occ'][$r2->occid]['collid'] = $r2->collid;
+						$retArr['occ'][$r2->occid]['collectionname'] = $r2->collectionname;
+						$retArr['occ'][$r2->occid]['rights'] = $r2->rights;
+						$retArr['occ'][$r2->occid]['accessrights'] = $r2->accessrights;
 						$collArr[$r2->collid] = $r2->collid;
 					}
 					$rs2->free();
@@ -99,6 +110,17 @@ class ImageLibrarySearch extends OccurrenceTaxaManager{
 				$retArr['coll'][$r3->collid] = $r3->instcode;
 			}
 			$rs3->free();
+			foreach($retArr as $mediaId => &$mediaArr){
+				if(!is_numeric($mediaId) || empty($mediaArr['occid']) || empty($retArr['occ'][$mediaArr['occid']])) continue;
+				$occurrence = $retArr['occ'][$mediaArr['occid']];
+				$mediaArr['collectionname'] = $occurrence['collectionname'];
+				$mediaArr['country'] = $occurrence['country'];
+				$mediaArr['stateprovince'] = $occurrence['stateprovince'];
+				$mediaArr['county'] = $occurrence['county'];
+				if(empty($mediaArr['rights'])) $mediaArr['rights'] = $occurrence['rights'];
+				if(empty($mediaArr['accessrights'])) $mediaArr['accessrights'] = $occurrence['accessrights'];
+			}
+			unset($mediaArr);
 		}
 		return $retArr;
 	}
