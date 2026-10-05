@@ -1039,7 +1039,7 @@ $traitArr = $indManager->getTraitArr();
 								<legend><?php echo $LANG['SPECIMEN_IMAGES']; ?></legend>
 								<?php
 								$imgCount = 0;
-								foreach($iArr as $imgArr){
+								foreach($iArr as $mediaId => $imgArr){
 									$imgCount += 1;
 									$thumbUrl = $imgArr['tnurl'];
 									if(!$thumbUrl || substr($thumbUrl, 0, 7) == 'process'){
@@ -1054,7 +1054,13 @@ $traitArr = $indManager->getTraitArr();
 										}
 									}
 									echo '<div id="thumbnail-div" class="thumbnail-div">';
-									echo Media::render_media_item($imgArr);
+									if($imgArr['mediaType'] == MediaType::Image){
+										$mediaDataAttrs = ' data-symb-media data-hide-footer="true" data-hide-counter="true" data-url="'.htmlspecialchars($imgArr['url'] ?? '', ENT_QUOTES).'" data-lgurl="'.htmlspecialchars($imgArr['lgurl'] ?? '', ENT_QUOTES).'" data-caption="'.htmlspecialchars($imgArr['caption'] ?? '', ENT_QUOTES).'" data-photographer="'.htmlspecialchars($imgArr['creator'] ?? '', ENT_QUOTES).'" data-copyright="'.htmlspecialchars($imgArr['copyright'] ?? '', ENT_QUOTES).'" data-sourceurl="'.htmlspecialchars($imgArr['sourceurl'] ?? '', ENT_QUOTES).'" data-title="'.htmlspecialchars($occArr['sciname'] ?? '', ENT_QUOTES).'" data-mediaid="'.htmlspecialchars($mediaId, ENT_QUOTES).'" data-occid="'.htmlspecialchars($occArr['occid'] ?? '', ENT_QUOTES).'"';
+										echo '<a href="'.htmlspecialchars($imgArr['url'] ?? '', ENT_QUOTES).'"'.$mediaDataAttrs.' onclick=\'if(window.symbMediaViewer){ window.symbMediaViewer.open({}, {triggerElement: this}); return false; }\'>';
+										echo '<img style="max-width: 200px; margin-bottom: 0.5rem" border="1" src="'.htmlspecialchars($thumbUrl, ENT_QUOTES).'" title="'.htmlspecialchars($imgArr['caption'] ?? '', ENT_QUOTES).'" alt="Thumbnail image of '.htmlspecialchars($occArr['sciname'].' '.$imgCount, ENT_QUOTES).'" />';
+										echo '</a>';
+									}
+									else echo Media::render_media_item($imgArr);
 									if($imgArr['caption']) echo '<div><i>'.$imgArr['caption'].'</i></div>';
 									if($imgArr['creator']) echo '<div>'.(isset($LANG['AUTHOR'])?$LANG['AUTHOR']:'Author').': '.$imgArr['creator'].'</div>';
 									if($imgArr['url'] && substr($thumbUrl,0,7)!='process' && $imgArr['url'] != $imgArr['lgurl']) echo '<div><a href="' . $imgArr['url'] . '" target="_blank">' . $LANG['OPEN_MEDIUM'] . '</a></div>';
