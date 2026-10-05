@@ -78,35 +78,12 @@ if($view == 'thumb'){
 			}
 			$recordListHtml .= '<div class="tndiv" style="margin-bottom:15px;margin-top:15px;">';
 			$recordListHtml .= '<div class="tnimg">';
-			
-			$photoAuthor = '';
-			if($imgArr['lastname']){
-				$pName = $imgArr['firstname'].' '.$imgArr['lastname'];
-				if(strlen($pName) < 20) $photoAuthor = $pName;
-				else $photoAuthor = $imgArr['lastname'];
-			}
-			if(!$photoAuthor && $imgArr['imgphotographer']) $photoAuthor = $imgArr['imgphotographer'];
-
-			$fullUrl = $imgArr['url'] ?? '';
-			$fullLgUrl = $imgArr['originalurl'] ?? '';
-			if(isset($imageDomain) && $imageDomain){
-				if(substr($fullUrl,0,1) == '/') $fullUrl = $imageDomain . $fullUrl;
-				if(substr($fullLgUrl,0,1) == '/') $fullLgUrl = $imageDomain . $fullLgUrl;
-			}
-			
-			$fallbackOnclick = '';
 			if($imgArr['occid']){
-				$fallbackOnclick = 'openIndPU(' . $imgArr['occid'] . ')';
+				$recordListHtml .= '<a href="#" onclick="openIndPU('.$imgArr['occid'].');return false;">';
 			}
 			else{
-				$fallbackOnclick = 'openImagePopup(' . $imgId . ')';
+				$recordListHtml .= '<a href="#" onclick="openImagePopup('.$imgId.');return false;">';
 			}
-
-			$onclickStr = 'if(window.symbMediaViewer){ window.symbMediaViewer.open({}, {triggerElement: this}); return false; } else { ' . $fallbackOnclick . '; return false; }';
-			$mediaDataAttrs = ' data-symb-media data-url="'.htmlspecialchars($fullUrl, ENT_QUOTES).'" data-lgurl="'.htmlspecialchars($fullLgUrl, ENT_QUOTES).'" data-caption="'.htmlspecialchars($imgArr['caption']??'', ENT_QUOTES).'" data-photographer="'.htmlspecialchars($photoAuthor??'', ENT_QUOTES).'" data-copyright="'.htmlspecialchars($imgArr['copyright']??'', ENT_QUOTES).'" data-sourceurl="'.htmlspecialchars($imgArr['sourceurl']??'', ENT_QUOTES).'" data-title="'.htmlspecialchars($imgArr['sciname']??'', ENT_QUOTES).'" data-imgid="'.htmlspecialchars($imgId??'', ENT_QUOTES).'" data-occid="'.htmlspecialchars($imgArr['occid']??'', ENT_QUOTES).'"';
-			$anchorLink = '<a href="#"'.$mediaDataAttrs.' onclick=\'' . $onclickStr . '\'>';
-
-			$recordListHtml .= $anchorLink;
 			$recordListHtml .= '<img src="'.$imgUrl.'" />';
 			$recordListHtml .= '</a>';
 			$recordListHtml .= '</div>';
