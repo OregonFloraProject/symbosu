@@ -203,6 +203,7 @@ if ($imgArr) {
 			<?php
 		}
 		if ($imgArr) {
+			$creator = $imgArr['creator'] ?? '';
 			if ($isEditor && !$imgArr['occid']) {
 			?>
 				<div id="imageedit" style="display:<?php echo ($eMode ? 'block' : 'none'); ?>;">
@@ -225,9 +226,9 @@ if ($imgArr) {
 									<img src="../images/editplus.png" style="border:0px;width:1.5em;" />
 								</a>
 							</div>
-							<div id="iepor" style="margin-top:2px;display:<?php echo ($imgArr["creator"] ? 'block' : 'none'); ?>;">
+							<div id="iepor" style="margin-top:2px;display:<?php echo ($creator ? 'block' : 'none'); ?>;">
 								<b><?php echo $LANG['CREATOR_OVERRIDE'] ?>:</b>
-								<input name="creator" type="text" value="<?php echo $imgArr["creator"]; ?>" style="width:250px;" />
+								<input name="creator" type="text" value="<?php echo htmlspecialchars($creator, ENT_QUOTES); ?>" style="width:250px;" />
 								* <?php echo $LANG['OVERRIDE_SELECTION'] ?>
 							</div>
 							<div style="margin-top:2px;">
@@ -377,12 +378,12 @@ if ($imgArr) {
 					if ($imgArr['caption']) echo '<div><b>' . $LANG['CAPTION'] . ':</b> ' . $imgArr['caption'] . '</div>';
 					if ($imgArr['creatorDisplay']) {
 						echo '<div><b>' . $LANG['CREATOR'] . ':</b> ';
-						if (!$imgArr['creator']) {
+						if (!$creator) {
 							$phLink = 'search.php?imagetype=all&phuid=' . $imgArr['creatorUid'] . '&submitaction=search';
 							echo '<a href="' . htmlspecialchars($phLink, ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE) . '">';
 						}
 						echo $imgArr['creatorDisplay'];
-						if (!$imgArr['creator']) echo '</a>';
+						if (!$creator) echo '</a>';
 						echo '</div>';
 					}
 					if ($imgArr['owner']) echo '<div><b>' . $LANG['MANAGER'] . ':</b> ' . $imgArr['owner'] . '</div>';

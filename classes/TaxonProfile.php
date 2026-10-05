@@ -176,7 +176,21 @@ class TaxonProfile extends Manager {
 			}
 			if($imgObj['occid']) $imgAnchor = '../collections/individual/index.php?occid='.$imgObj['occid'];
 			if($useThumbnail) if($imgObj['thumbnailurl']) $imgUrl = $displayUrl;
-			echo '<div class="tptnimg"><a href="#" onclick="openPopup(\'' . htmlspecialchars($imgAnchor, ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE) . '\');return false;">';
+			$fallbackOnclick = 'openPopup(' . json_encode($imgAnchor, JSON_UNESCAPED_SLASHES) . '); return false;';
+			$mediaDataAttrs = '';
+			$onclickStr = $fallbackOnclick;
+			if(empty($imgObj['mediaType']) || $imgObj['mediaType'] === 'image'){
+				//Only images open in the media viewer; audio/video keep the legacy popup
+				$fullUrl = $imgObj['url'] ?? '';
+				$fullLgUrl = $imgObj['lgurl'] ?? '';
+				if(array_key_exists('MEDIA_DOMAIN',$GLOBALS)){
+					if(substr($fullUrl,0,1)=="/") $fullUrl = $GLOBALS['MEDIA_DOMAIN'].$fullUrl;
+					if(substr($fullLgUrl,0,1)=="/") $fullLgUrl = $GLOBALS['MEDIA_DOMAIN'].$fullLgUrl;
+				}
+				$mediaDataAttrs = ' data-symb-media data-url="'.htmlspecialchars($fullUrl, ENT_QUOTES).'" data-lgurl="'.htmlspecialchars($fullLgUrl, ENT_QUOTES).'" data-caption="'.htmlspecialchars($imgObj['caption'] ?? '', ENT_QUOTES).'" data-photographer="'.htmlspecialchars($imgObj['creator'] ?? '', ENT_QUOTES).'" data-copyright="'.htmlspecialchars($imgObj['copyright'] ?? '', ENT_QUOTES).'" data-rights="'.htmlspecialchars($imgObj['rights'] ?? '', ENT_QUOTES).'" data-collectionname="'.htmlspecialchars($imgObj['collectionname'] ?? '', ENT_QUOTES).'" data-country="'.htmlspecialchars($imgObj['country'] ?? '', ENT_QUOTES).'" data-stateprovince="'.htmlspecialchars($imgObj['stateprovince'] ?? '', ENT_QUOTES).'" data-county="'.htmlspecialchars($imgObj['county'] ?? '', ENT_QUOTES).'" data-sourceurl="'.htmlspecialchars($imgObj['sourceurl'] ?? '', ENT_QUOTES).'" data-title="'.htmlspecialchars($imgObj['sciname'] ?? '', ENT_QUOTES).'" data-mediaid="'.htmlspecialchars($imgId ?? '', ENT_QUOTES).'" data-occid="'.htmlspecialchars($imgObj['occid'] ?? '', ENT_QUOTES).'"';
+				$onclickStr = 'if(window.symbMediaViewer){ window.symbMediaViewer.open({}, {triggerElement: this}); return false; } ' . $fallbackOnclick;
+			}
+			echo '<div class="tptnimg"><a href="#"'.$mediaDataAttrs.' onclick="'.htmlspecialchars($onclickStr, ENT_QUOTES).'">';
 			$titleStr = $imgObj['caption'];
 			if($imgObj['sciname'] != $this->sciName) $titleStr .= ' (linked from '.$imgObj['sciname'].')';
 			echo '<img src="'.$imgUrl.'" title="'.$titleStr.'" alt="'.$this->sciName.' image" />';
@@ -210,11 +224,12 @@ class TaxonProfile extends Manager {
 			$tidStr = implode(",",$tidArr);
 			$sortSequnceLimit = 500;
 			if($this->rankId < 220 && count($tidArr) > 50) $sortSequnceLimit = 20;
-			$sql = 'SELECT t.sciname, m.mediaID, m.mediaType, m.format, m.url, m.thumbnailurl, m.originalurl, m.caption, m.occid, m.creator, CONCAT_WS(" ",u.firstname,u.lastname) AS creatorLinked
+			$sql = 'SELECT t.sciname, m.mediaID, m.mediaType, m.format, m.url, m.thumbnailurl, m.originalurl, m.caption, m.occid, m.creator, m.copyright, m.owner, COALESCE(m.rights,c.rights) AS rights, m.accessRights, m.sourceurl, o.country, o.stateprovince, o.county, c.collectionname, CONCAT_WS(" ",u.firstname,u.lastname) AS creatorLinked
 				FROM media m LEFT JOIN users u ON m.creatorUid = u.uid
 				INNER JOIN taxstatus ts ON m.tid = ts.tid
 				INNER JOIN taxa t ON m.tid = t.tid
 				LEFT JOIN omoccurrences o ON m.occid = o.occid
+				LEFT JOIN omcollections c ON o.collid = c.collid
 				WHERE (ts.taxauthid = 1) AND ts.tidaccepted IN ('.$tidStr.') AND m.SortSequence < ' . $sortSequnceLimit . ' AND (m.mediaType != "image" || m.thumbnailurl IS NOT NULL)
 				AND (o.recordSecurity != 5 OR o.occid IS NULL) ';
 			if(!$this->displayLocality) $sql .= 'AND m.occid IS NULL ';
@@ -233,6 +248,16 @@ class TaxonProfile extends Manager {
 				if(!$imgUrl) continue;
 				$this->imageArr[$row->mediaID]['url'] = $imgUrl;
 				$this->imageArr[$row->mediaID]['thumbnailurl'] = $row->thumbnailurl;
+				$this->imageArr[$row->mediaID]['lgurl'] = $row->originalurl;
+				$this->imageArr[$row->mediaID]['copyright'] = $row->copyright;
+				$this->imageArr[$row->mediaID]['owner'] = $row->owner;
+				$this->imageArr[$row->mediaID]['rights'] = $row->rights;
+				$this->imageArr[$row->mediaID]['accessRights'] = $row->accessRights;
+				$this->imageArr[$row->mediaID]['collectionname'] = $row->collectionname;
+				$this->imageArr[$row->mediaID]['country'] = $row->country;
+				$this->imageArr[$row->mediaID]['stateprovince'] = $row->stateprovince;
+				$this->imageArr[$row->mediaID]['county'] = $row->county;
+				$this->imageArr[$row->mediaID]['sourceurl'] = $row->sourceurl;
 				if($row->creatorLinked) $this->imageArr[$row->mediaID]['creator'] = $row->creatorLinked;
 				else $this->imageArr[$row->mediaID]['creator'] = $row->creator;
 				$this->imageArr[$row->mediaID]['caption'] = $row->caption;
