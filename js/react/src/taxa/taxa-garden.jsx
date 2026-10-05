@@ -4,7 +4,7 @@ import { addGlossaryTooltips } from '../common/glossary.js';
 import httpGet from '../common/httpGet.js';
 import { getUrlQueryParams } from '../common/queryParams.js';
 import ImageCarousel from '../common/imageCarousel.jsx';
-import SharedLightbox from '../common/SharedLightbox.jsx';
+import ImageModal from '../common/modal.jsx';
 import ExplorePreviewModal from '../explore/previewModal.jsx';
 import { getTaxaPage } from '../common/taxaUtils';
 import Loading from '../common/loading.jsx';
@@ -245,15 +245,18 @@ class TaxaApp extends React.Component {
               onClick={this.toggleImageModal}
             />
           </div>
-          <SharedLightbox
-            isOpen={this.state.isOpen}
-            photoIndex={this.state.currImage}
+          <ImageModal
+            show={this.state.isOpen}
+            currImage={this.state.currImage}
             images={this.state.images}
-            sciName={this.state.vernacularNames[0]}
-            onClose={() => this.setState({ isOpen: false })}
-            onNavigate={(index) => this.setState({ currImage: index })}
+            altname={this.state.vernacularNames[0]}
+            onClose={this.toggleImageModal}
             clientRoot={this.props.clientRoot}
-          />
+          >
+            <h3>
+              <span>{this.state.vernacularNames[0]}</span> images
+            </h3>
+          </ImageModal>
           <div className="col-md-4 sidebar-section">
             <SideBarSection title="Highlights" items={this.state.highlights} />
             {this.state.nativeGroups.length > 0 && (
