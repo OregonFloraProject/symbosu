@@ -141,10 +141,14 @@ class MediaViewer {
         this.imageContainer.setPointerCapture(event.pointerId);
         this.pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
         if (this.pointers.size === 1) {
-            this.dragStart = { x: event.clientX, y: event.clientY, translateX: this.translateX, translateY: this.translateY, time: Date.now() };
+            // Record whether the gesture began on the image itself: after setPointerCapture,
+            // pointerup is retargeted to the container, so event.target can't be used there.
+            this.dragStart = { x: event.clientX, y: event.clientY, translateX: this.translateX, translateY: this.translateY, time: Date.now(), onImage: event.target === this.image };
+            this.wasMultiTouch = false;
         } else if (this.pointers.size === 2) {
             const points = Array.from(this.pointers.values());
             this.pinchStart = { distance: this.distance(points[0], points[1]), zoom: this.zoomLevel };
+            this.wasMultiTouch = true;
         }
     }
 
@@ -169,6 +173,16 @@ class MediaViewer {
             const deltaX = point.x - this.dragStart.x;
             const deltaY = point.y - this.dragStart.y;
             if (Math.abs(deltaX) > 60 && Math.abs(deltaX) > Math.abs(deltaY)) this.navigate(deltaX < 0 ? 1 : -1);
+        }
+        // Click/tap toggles zoom: zooms in on the unzoomed image (honouring the zoom-in cursor),
+        // and resets to fit when already zoomed. Only a short, near-stationary, single-pointer tap
+        // counts, so swipes, pans (which move further than the threshold) and pinches are unaffected.
+        if (point && this.dragStart && this.dragStart.onImage && !this.wasMultiTouch && this.pointers.size === 0) {
+            const moved = Math.hypot(point.x - this.dragStart.x, point.y - this.dragStart.y);
+            if (moved < 6 && Date.now() - this.dragStart.time < 400) {
+                if (this.zoomLevel === 1) this.setZoom(2.5, event.clientX, event.clientY);
+                else this.setZoom(1);
+            }
         }
         if (this.pointers.size === 0) this.dragStart = null;
     }
