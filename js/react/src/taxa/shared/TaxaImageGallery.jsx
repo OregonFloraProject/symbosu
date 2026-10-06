@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import ImageGallery from '../../common/imageGallery.jsx';
-import ImageModal from '../../common/modal.jsx';
+import SharedLightbox from '../../common/SharedLightbox.jsx';
 
 function TaxaImageGallery(props) {
   const {
@@ -59,18 +59,15 @@ function TaxaImageGallery(props) {
           onClick={(index) => toggleImageModal(index, 'PreservedSpecimen')}
         />
       )}
-      <ImageModal
-        show={isOpen}
-        currImage={currImage}
+      <SharedLightbox
+        isOpen={isOpen}
+        photoIndex={currImage}
         images={modalImages}
-        altname={modalAltname}
-        onClose={toggleImageModal}
+        sciName={modalAltname}
+        onClose={() => setIsOpen(false)}
+        onNavigate={(index) => setCurrImage(index)}
         clientRoot={props.clientRoot}
-      >
-        <h3>
-          <span>{modalTitle}</span> images
-        </h3>
-      </ImageModal>
+      />
     </>
   );
 }
