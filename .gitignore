@@ -1,5 +1,6 @@
 # Ignore playwright-cli exports
 .playwright-cli
+.playwright-mcp
 
 # Ignore codegraph
 .codegraph
