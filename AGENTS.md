@@ -1,11 +1,14 @@
 # OregonFlora Codebase Memory Index
 
 Naming: `<domain>-<topic>.md`, kebab-case, `name:` frontmatter always equals the filename
-(wikilinks resolve against `name:`). Domains: `arch-`, `db-`, `php-`, `react-`, `map-`, `ident-`, `taxo-`.
+(wikilinks resolve against `name:`). Domains: `arch-`, `db-`, `php-`, `react-`, `map-`, `ident-`, `taxo-`, `prd-`.
+
+## Product
+- [PRD Overview](docs/agent-docs/prd-overview.md) — Non-technical PRD: what OregonFlora is, audiences, features, journeys, success measures
 
 ## Architecture & Routing
 - [Architecture Overview](docs/agent-docs/arch-overview.md) — Hybrid PHP/React on a Symbiota base, Doctrine ORM, request lifecycle
-- [Page Entry Points](docs/agent-docs/arch-page-entry-points.md) — Single owner of the page → template → bundle → RPC table; 15 Webpack bundles
+- [Page Entry Points](docs/agent-docs/arch-page-entry-points.md) — Single owner of the page → template → bundle → RPC table; 16 Webpack bundles
 - [Build & Deploy](docs/agent-docs/arch-build-deploy.md) — Doctrine proxy generation to `temp/proxies`, LESS/Webpack build steps
 - [Security & Permissions](docs/agent-docs/arch-security-permissions.md) — `$USER_RIGHTS` structure, real right keys, `$IS_ADMIN`
 - [Legacy Patterns](docs/agent-docs/arch-legacy-patterns.md) — MySQLi vs Doctrine coexistence, `MySQLiConnectionFactory` read/write split, `resolve_img_path()`
@@ -40,11 +43,11 @@ Naming: `<domain>-<topic>.md`, kebab-case, `name:` frontmatter always equals the
 - [Click & KML Flow](docs/agent-docs/map-click-kml-flow.md) — Marker popup; KML export, incl. the unsecured-query export bug
 
 ## React Frontend
-- [React Frontend](docs/agent-docs/react-frontend.md) — Hub: stack, build, 15 bundles all `dependOn: 'header'`
+- [React Frontend](docs/agent-docs/react-frontend.md) — Hub: stack, build, 16 bundles all `dependOn: 'header'`
 - [header](docs/agent-docs/react-header.md) — Sitewide nav: scroll animation, dropdowns, mobile menu, search
 - [footer](docs/agent-docs/react-footer.md) — Stateless footer, dynamic copyright year
 - [home](docs/agent-docs/react-home.md) — Carousel/search, news/events, newsletters
-- [taxa](docs/agent-docs/react-taxa.md) — species/genus, rare, garden, search results
+- [taxa](docs/agent-docs/react-taxa.md) — species/genus, rare, garden, search results, flag-gated unified page
 - [explore](docs/agent-docs/react-explore.md) — Checklist browse + vendor management; `showNotes` lives on an unmerged branch
 - [identify](docs/agent-docs/react-identify.md) — Interactive plant key UI
 - [checklist-special](docs/agent-docs/react-checklist-special.md) — Grow Natives + Rare Plant Guide
@@ -55,4 +58,8 @@ Naming: `<domain>-<topic>.md`, kebab-case, `name:` frontmatter always equals the
 ## Meta
 - [Memory Provenance](docs/agent-docs/meta-memory-provenance.md) — Which vintages of this corpus are trustworthy, and why
 
-<!-- docs-baseline: 9349bcb62c4d50233f456c6b3f4a18fbd8b88867 -->
+## Specs and Plans
+- Feature specs (sdd workflow): `docs/agent-docs/specs/<YYMMDD>-<slug>/`
+- Implementation plans (pdd workflow): `docs/agent-docs/plans/<YYMMDD>-<slug>/`
+
+<!-- docs-baseline: 9bb94ef6d6a4e5e8caa2a486920f7ae41388b873 -->
