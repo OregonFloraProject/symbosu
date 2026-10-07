@@ -29,7 +29,6 @@ description: "js/react/src/taxa — taxon profile pages for species/genus (main)
 | `shared/TaxaPageShell.jsx` | Shared page shell used by all unified variants |
 | `shared/ProfileHeroImage.jsx` | Shared hero image block for unified variants |
 | `shared/TaxaImageGallery.jsx` | Shared image gallery for unified variants |
-| `shared/RelatedBorderedItem.jsx` | Shared bordered related-item row for unified variants |
 | `shared/SidebarSection.jsx` | Shared sidebar with `rare` and `main` variants |
 | `shared/useTaxonApi.js` | Shared taxon fetch hook for unified variants |
 | `shared/useGlossary.js` | Shared glossary fetch hook for unified variants |

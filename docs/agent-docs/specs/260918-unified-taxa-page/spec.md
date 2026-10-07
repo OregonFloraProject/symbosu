@@ -1,7 +1,11 @@
 # Spec: Unified Taxa Profile Page
 
 Status: verified
-Request: "I want to refactor taxa, taxa-garden, taxa-rare to be one taxa page, with shared components. taxa, taxa-garden, taxa-rare have many duplicated components that can be simplified into singular components. The new, unified taxa page: Should display with different layout depending on route /index.php, /garden.php, /rare.php. Its components are now made up from shared components. Should have absolutely no change in function, layout compared to the old separated pages. Should be a new page, main-unified.jsx, separated from taxa, taxa-garden, taxa-rare. This is to make sure we can revert back to the old taxa pages as the unified page goes through user testing. Slot the unified one to js/react/webpack.config.js configs. Spec-driven development specific: The React frontend of this project does not have lint. Test development work through build, then draft a playwright testing plan, so I can test it later."
+Request: "I want to refactor taxa, taxa-garden, taxa-rare to be one taxa page, with shared components. taxa, taxa-garden, taxa-rare have many duplicated components that can be simplified into singular components. The new, unified taxa page: 
+- Should display with different layout depending on route /index.php, /garden.php, /rare.php. Its components are now made up from shared components. 
+- Should have absolutely no change in function, layout compared to the old separated pages. 
+- Should be a new page, main-unified.jsx, separated from taxa, taxa-garden, taxa-rare. This is to make sure we can revert back to the old taxa pages as the unified page goes through user testing. Slot the unified one to js/react/webpack.config.js configs. 
+- Spec-driven development specific: The React frontend of this project does not have lint. Test development work through build, then draft a playwright testing plan, so I can test it later."
 
 ## Overview
 
