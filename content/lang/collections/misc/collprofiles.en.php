@@ -63,6 +63,7 @@ $LANG['RESTORE_BACKUP'] = 'Restore Backup File';
 $LANG['GUID_MANAGEMENT'] = 'IGSN GUID Management';
 $LANG['THUMBNAIL_MAINTENANCE'] = 'Thumbnail Maintenance';
 $LANG['UPDATE_STATS'] = 'Update Statistics';
+$LANG['BATCH_UPDATE_STATS'] = 'Batch Update Statistics';
 $LANG['COLLECTION_TYPE'] = 'Collection Type';
 $LANG['MANAGEMENT'] = 'Management';
 $LANG['LIVE_DATA'] = 'Live Data managed directly within data portal';
