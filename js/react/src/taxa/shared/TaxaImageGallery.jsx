@@ -11,7 +11,6 @@ function TaxaImageGallery(props) {
     altname,
     herbariumTitle = 'Herbarium specimens',
     herbariumAltname,
-    modalTitle,
     modalAltname,
   } = props;
 
