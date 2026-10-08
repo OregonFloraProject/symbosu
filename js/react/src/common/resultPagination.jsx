@@ -13,8 +13,11 @@ function ResultPagination(props) {
     onPageChange,
     onCountLimitChange,
     pageSizes = [20, 50, 100],
+    enableOptionAll = false,
     style
   } = props;
+
+  const sizes = enableOptionAll ? [...pageSizes, -1] : pageSizes;
 
   if (totalPages < 1) {
     return null;
@@ -37,8 +40,8 @@ function ResultPagination(props) {
           value={countLimit}
           onChange={(e) => onCountLimitChange(Number(e.target.value))}
         >
-          {pageSizes.map((size, i) => {
-            return <option key={i} value={size}>{size}</option>;
+          {sizes.map((size, i) => {
+            return <option key={i} value={size}>{size !== -1 ? size : "All"}</option>;
           })}
         </select>
       </div>

@@ -366,10 +366,18 @@ class ExploreApp extends React.Component {
     return visible;
   }
 
+  calculatePageNumber() {
+    const length = this.getVisibleTaxa().length;
+    return Math.ceil(length / (this.state.countLimit < 1 ? length : this.state.countLimit));
+  }
+
   getPagedResults() {
-    const start = (this.state.page - 1) * this.state.countLimit;
-    const slice = this.getVisibleTaxa().slice(start, start + this.state.countLimit);
-    return this.sortResults(slice);
+    let visible = this.getVisibleTaxa();
+    if (this.state.countLimit !== -1) {
+      const start = (this.state.page - 1) * this.state.countLimit;
+      visible = visible.slice(start, start + this.state.countLimit);
+    }
+    return this.sortResults(visible);
   }
 
   sortResults(results) {
@@ -618,10 +626,11 @@ class ExploreApp extends React.Component {
                   />
                   <ResultPagination
                     page={this.state.page}
-                    totalPages={Math.ceil(this.getVisibleTaxa().length / this.state.countLimit)}
+                    totalPages={this.calculatePageNumber()}
                     countLimit={this.state.countLimit}
                     onPageChange={this.handlePageChange}
                     onCountLimitChange={this.handleCountLimitChange}
+                    enableOptionAll={true}
                     style={{marginBottom: '1rem'}}
                   />
                 </div>
