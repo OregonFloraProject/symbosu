@@ -1,0 +1,12 @@
+[
+  { "family": "Asteraceae", "genera": ["Achillea", "Artemisia", "Balsamorhiza", "Cirsium", "Erigeron", "Solidago", "Symphyotrichum"] },
+  { "family": "Rosaceae", "genera": ["Amelanchier", "Geum", "Prunus", "Rosa", "Rubus", "Spiraea"] },
+  { "family": "Fabaceae", "genera": ["Astragalus", "Lathyrus", "Lotus", "Lupinus", "Trifolium", "Vicia"] },
+  { "family": "Brassicaceae", "genera": ["Arabidopsis", "Cardamine", "Descurainia", "Draba", "Erysimum"] },
+  { "family": "Poaceae", "genera": ["Agrostis", "Bromus", "Calamagrostis", "Elymus", "Festuca", "Poa"] },
+  { "family": "Cyperaceae", "genera": ["Carex", "Eleocharis", "Eriophorum", "Schoenoplectus", "Scirpus"] },
+  { "family": "Pinaceae", "genera": ["Abies", "Larix", "Picea", "Pinus", "Pseudotsuga", "Tsuga"] },
+  { "family": "Ericaceae", "genera": ["Arctostaphylos", "Chimaphila", "Gaultheria", "Rhododendron", "Vaccinium"] },
+  { "family": "Apiaceae", "genera": ["Angelica", "Heracleum", "Lomatium", "Osmorhiza", "Sanicula"] },
+  { "family": "Ranunculaceae", "genera": ["Anemone", "Aquilegia", "Delphinium", "Ranunculus", "Thalictrum"] }
+]

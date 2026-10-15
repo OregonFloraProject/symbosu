@@ -9,6 +9,65 @@ header( "Content-Type: text/html; charset=" . $charset );
     <meta charset="UTF-8">
 		<link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/css/base.css?<?php echo filemtime($SERVER_ROOT . '/css/base.css'); ?>">    
 		<link rel="stylesheet" type="text/css" href="<?php echo $CLIENT_ROOT?>/css/main.css?<?php echo filemtime($SERVER_ROOT . '/css/main.css'); ?>">   
+		<style>
+			/* Prototype-only styling for the family/genus report search widget. */
+			.taxonomic-checklist .sidebox.search .fg-mode-toggle {
+				display: flex;
+				flex-flow: row nowrap;
+				gap: 1.2rem;
+				margin-bottom: 0.5rem;
+			}
+			.taxonomic-checklist .sidebox.search .fg-mode-option {
+				display: inline-flex;
+				align-items: center;
+				gap: 0.35rem;
+				margin-bottom: 0;
+				font-size: 14px;
+				color: #1e352f;
+				cursor: pointer;
+			}
+			.taxonomic-checklist .sidebox.search .fg-mode-option.is-inactive {
+				opacity: 0.5;
+				color: #999;
+				cursor: not-allowed;
+			}
+			.taxonomic-checklist .sidebox.search .fg-mode-option.is-inactive input {
+				pointer-events: none;
+			}
+			.taxonomic-checklist .sidebox.search .search-widget {
+				display: flex;
+				flex-flow: row nowrap;
+				align-items: flex-start;
+			}
+			.taxonomic-checklist .sidebox.search .search-widget input[type='text'] {
+				flex: 1 1 auto;
+				min-width: 0;
+				margin-bottom: 0.5rem;
+			}
+			.taxonomic-checklist .sidebox.search .search-widget .btn-search {
+				flex: 0 0 auto;
+				margin-left: -6px;
+			}
+			.taxonomic-checklist .sidebox.search .search-widget .dropdown-menu {
+				position: absolute;
+				top: 100%;
+				left: 0;
+				right: 0;
+				width: 100%;
+				max-height: 220px;
+				overflow-y: auto;
+				z-index: 1000;
+			}
+			.taxonomic-checklist .sidebox.search .search-widget .dropdown-menu .dropdown-item {
+				display: block;
+				cursor: pointer;
+			}
+			.taxonomic-checklist .sidebox.search .fg-confirmation {
+				margin: 0.25rem 0 0;
+				font-size: 14px;
+				color: #3c641e;
+			}
+		</style>
     <meta name='keywords' content=''/>
     <?php include_once($SERVER_ROOT.'/includes/googleanalytics.php'); ?>
     <?php /* <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> 
@@ -86,8 +145,21 @@ header( "Content-Type: text/html; charset=" . $charset );
 
 							<div class="sidebox inset search">
 								<h3>Search for plant families</h3>
-								<div class="search-wrapper">
-									<input type="text" placeholder="Family Reports Coming Soon!" disabled><button class="btn-search" disabled></button>
+								<div class="search-wrapper" id="fg-search-wrapper">
+									<div class="fg-mode-toggle">
+										<label class="fg-mode-option" for="fg-mode-family">
+											<input type="checkbox" id="fg-mode-family" checked> Family
+										</label>
+										<label class="fg-mode-option is-inactive" for="fg-mode-genus">
+											<input type="checkbox" id="fg-mode-genus" disabled> Genus
+										</label>
+									</div>
+									<div class="search-widget">
+										<input type="text" class="form-control" id="fg-search-input" placeholder="Search families" autocomplete="off">
+										<button class="btn-search" id="fg-search-btn" type="button" aria-label="Search"></button>
+										<div class="dropdown-menu" id="fg-suggestions" style="display: none;"></div>
+									</div>
+									<p class="fg-confirmation" id="fg-confirmation"></p>
 								</div>
 								<p>The family reports list each Oregon taxon, evidence supporting its occurrence in Oregon, and the following information:</p>
 								<ul>
@@ -113,6 +185,146 @@ header( "Content-Type: text/html; charset=" . $charset );
 <?php
 include( $serverRoot . "/footer.php" );
 ?>
+
+<script>
+(function () {
+	'use strict';
+
+	var DATA_URL = '<?php echo $CLIENT_ROOT?>/pages/data/family-genera-prototype.json';
+
+	document.addEventListener('DOMContentLoaded', function () {
+		var wrapper = document.getElementById('fg-search-wrapper');
+		if (!wrapper) return;
+
+		var familyBox = document.getElementById('fg-mode-family');
+		var genusBox = document.getElementById('fg-mode-genus');
+		var familyLabel = familyBox.closest('.fg-mode-option');
+		var genusLabel = genusBox.closest('.fg-mode-option');
+		var input = document.getElementById('fg-search-input');
+		var button = document.getElementById('fg-search-btn');
+		var suggestions = document.getElementById('fg-suggestions');
+		var confirmation = document.getElementById('fg-confirmation');
+
+		var data = [];
+		var mode = 'family';
+
+		function setMode(nextMode) {
+			mode = nextMode;
+			var isFamily = mode === 'family';
+			familyBox.checked = isFamily;
+			genusBox.checked = !isFamily;
+			familyBox.disabled = !isFamily;
+			genusBox.disabled = isFamily;
+			familyLabel.classList.toggle('is-inactive', !isFamily);
+			genusLabel.classList.toggle('is-inactive', isFamily);
+			input.placeholder = isFamily ? 'Search families' : 'Search genera';
+			hideSuggestions();
+		}
+
+		function getMatches(query) {
+			var needle = query.toLowerCase();
+			var matches = [];
+			data.forEach(function (entry) {
+				if (mode === 'family') {
+					if (entry.family.toLowerCase().indexOf(needle) !== -1) {
+						matches.push({ label: entry.family, name: entry.family });
+					}
+				} else {
+					entry.genera.forEach(function (genus) {
+						if (genus.toLowerCase().indexOf(needle) !== -1) {
+							matches.push({ label: genus + ' - ' + entry.family, name: genus });
+						}
+					});
+				}
+			});
+			return matches;
+		}
+
+		function renderSuggestions(query) {
+			suggestions.textContent = '';
+			if (query.length < 1) {
+				hideSuggestions();
+				return;
+			}
+			var matches = getMatches(query);
+			if (!matches.length) {
+				hideSuggestions();
+				return;
+			}
+			matches.forEach(function (match) {
+				var link = document.createElement('a');
+				link.className = 'dropdown-item';
+				link.setAttribute('href', 'javascript:void(0)');
+				link.setAttribute('data-name', match.name);
+				link.textContent = match.label;
+				suggestions.appendChild(link);
+			});
+			suggestions.style.display = 'block';
+		}
+
+		function hideSuggestions() {
+			suggestions.style.display = 'none';
+		}
+
+		function selectName(name) {
+			input.value = name;
+			hideSuggestions();
+			confirmation.textContent = 'Selected: ' + name + ' (prototype)';
+		}
+
+		function requestMode(targetMode, event) {
+			event.preventDefault();
+			if (mode !== targetMode) setMode(targetMode);
+		}
+
+		familyLabel.addEventListener('mousedown', function (event) {
+			requestMode('family', event);
+		});
+		genusLabel.addEventListener('mousedown', function (event) {
+			requestMode('genus', event);
+		});
+
+		familyBox.addEventListener('change', function () {
+			if (familyBox.checked !== (mode === 'family')) setMode(mode);
+		});
+		genusBox.addEventListener('change', function () {
+			if (genusBox.checked !== (mode === 'genus')) setMode(mode);
+		});
+
+		input.addEventListener('input', function () {
+			confirmation.textContent = '';
+			renderSuggestions(input.value.trim());
+		});
+		input.addEventListener('focus', function () {
+			renderSuggestions(input.value.trim());
+		});
+		input.addEventListener('blur', function () {
+			setTimeout(hideSuggestions, 150);
+		});
+
+		button.addEventListener('click', function () {
+			renderSuggestions(input.value.trim());
+			input.focus();
+		});
+
+		suggestions.addEventListener('mousedown', function (event) {
+			event.preventDefault();
+		});
+		suggestions.addEventListener('click', function (event) {
+			var item = event.target.closest('.dropdown-item');
+			if (!item) return;
+			selectName(item.getAttribute('data-name'));
+		});
+
+		fetch(DATA_URL)
+			.then(function (response) { return response.json(); })
+			.then(function (json) { data = json; })
+			.catch(function () { confirmation.textContent = 'Prototype data unavailable.'; });
+
+		setMode('family');
+	});
+})();
+</script>
 
 </body>
 </html>
