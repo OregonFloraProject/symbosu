@@ -73,6 +73,7 @@ class IdentifyApp extends React.Component {
       googleMapUrl: '',
       glossary: [],
     };
+    this.paginationRef = React.createRef();
 
     this.getPid = this.getPid.bind(this);
     this.getClid = this.getClid.bind(this);
@@ -581,7 +582,11 @@ class IdentifyApp extends React.Component {
     });
   }
   handlePageChange(page) {
-    this.setState({ page });
+    this.setState({ page }, () => {
+      if (page === this.calculatePageNumber()) {
+        this.paginationRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+      }
+    });
   }
   handleCountLimitChange(nextSize) {
     this.setState({ countLimit: nextSize, page: 1 });
@@ -775,15 +780,17 @@ class IdentifyApp extends React.Component {
                         clientRoot={this.props.clientRoot}
                         isSearching={this.state.isSearching}
                       />
-                      <ResultPagination
-                        page={this.state.page}
-                        totalPages={this.calculatePageNumber()}
-                        countLimit={this.state.countLimit}
-                        onPageChange={this.handlePageChange}
-                        onCountLimitChange={this.handleCountLimitChange}
-                        enableOptionAll={true}
-                        style={{marginBottom: '1rem'}}
-                      />
+                      <div ref={this.paginationRef}>
+                        <ResultPagination
+                          page={this.state.page}
+                          totalPages={this.calculatePageNumber()}
+                          countLimit={this.state.countLimit}
+                          onPageChange={this.handlePageChange}
+                          onCountLimitChange={this.handleCountLimitChange}
+                          enableOptionAll={true}
+                          style={{marginBottom: '1rem'}}
+                        />
+                      </div>
                     </>
                   ) : (
                     <p className="no-results">
