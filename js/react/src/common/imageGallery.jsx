@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ResultPagination from './resultPagination.jsx';
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -10,8 +10,6 @@ const PC_ROW_LIMIT = 5;
 
 function ImageGallery(props) {
   const totalCount = props.images.length;
-  // Generate id from this carousel
-  const carouselId = `carousel-${Math.random().toString(36).substring(2)}`;
   const [collapsed, setCollapsed] = useState(true);
   // Persistent page size for expanded view, kept across collapse/expand
   const [countLimit, setCountLimit] = useState(20);
@@ -20,12 +18,16 @@ function ImageGallery(props) {
   const [totalPages, setTotalPages] = useState(Math.ceil(totalCount / 20));
   const [page, setPage] = useState(1);
   const [index, setIndex] = useState(0);
+  const galleryRef = useRef(null);
+  const paginationRef = useRef(null);
+  const shouldScrollToPagination = useRef(false);
 
   // Collapsed shows one preview row, expanded shows the full page
   // React re-renders ImageGallery and visibleCount is recomputed from the new "collapsed" value. No need for useEffect
   const visibleCount = collapsed ? rowLimit : countLimit;
 
   const handlePageChange = (page) => {
+    shouldScrollToPagination.current = page === totalPages;
     setPage(page);
     setIndex((page - 1) * countLimit);
   }
@@ -43,7 +45,7 @@ function ImageGallery(props) {
 
   const handleCollapseToggle = () => {
     if (!collapsed) {
-      document.getElementById(carouselId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      galleryRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
     setCollapsed(!collapsed);
   };
@@ -67,8 +69,15 @@ function ImageGallery(props) {
     setTotalPages(Math.ceil(totalCount / countLimit));
   }, [countLimit, collapsed])
 
+  useEffect(() => {
+    if (shouldScrollToPagination.current) {
+      paginationRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+      shouldScrollToPagination.current = false;
+    }
+  }, [page]);
+
   return (
-    <div id={carouselId} className="mt-4 dashed-border taxa-slideshows">
+    <div ref={galleryRef} className="mt-4 dashed-border taxa-slideshows">
       <h3 className="text-light-green font-weight-bold mt-2">{props.title}</h3>
       {totalCount > 0 ? <>
         <div className={collapsed ? "slider-wrapper" : ""} style={{ display: 'flex', flexDirection: 'row', flexWrap: collapsed ? 'nowrap' : 'wrap' }}>
@@ -93,16 +102,18 @@ function ImageGallery(props) {
             })}
         </div>
         {!collapsed && (
-          <ResultPagination
-            page={page}
-            totalPages={totalPages}
-            countLimit={countLimit}
-            onPageChange={handlePageChange}
-            onCountLimitChange={handleChangePageSize}
-            style={props.style}
-            enableOptionAll={true}
-            totalCount={totalCount}
-          />
+          <div ref={paginationRef}>
+            <ResultPagination
+              page={page}
+              totalPages={totalPages}
+              countLimit={countLimit}
+              onPageChange={handlePageChange}
+              onCountLimitChange={handleChangePageSize}
+              style={props.style}
+              enableOptionAll={true}
+              totalCount={totalCount}
+            />
+          </div>
         )}
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <FontAwesomeIcon className="slick-down" style={{ cursor: 'pointer' }} icon={collapsed ? "chevron-down" : "chevron-up"} onClick={handleCollapseToggle} />
