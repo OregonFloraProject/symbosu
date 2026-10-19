@@ -67,6 +67,7 @@ class ExploreApp extends React.Component {
         taxa: 0,
       },
     };
+    this.paginationRef = React.createRef();
     this.getPid = this.getPid.bind(this);
     this.getClid = this.getClid.bind(this);
     this.getDynclid = this.getDynclid.bind(this);
@@ -340,7 +341,11 @@ class ExploreApp extends React.Component {
   }
 
   handlePageChange(page) {
-    this.setState({ page });
+    this.setState({ page }, () => {
+      if (page === this.calculatePageNumber()) {
+        this.paginationRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+      }
+    });
   }
 
   handleCountLimitChange(nextSize) {
@@ -624,15 +629,17 @@ class ExploreApp extends React.Component {
                     currentTids={this.state.currentTids}
                     showNotes={this.getPid() === 4}
                   />
-                  <ResultPagination
-                    page={this.state.page}
-                    totalPages={this.calculatePageNumber()}
-                    countLimit={this.state.countLimit}
-                    onPageChange={this.handlePageChange}
-                    onCountLimitChange={this.handleCountLimitChange}
-                    enableOptionAll={true}
-                    style={{marginBottom: '1rem'}}
-                  />
+                  <div ref={this.paginationRef}>
+                    <ResultPagination
+                      page={this.state.page}
+                      totalPages={this.calculatePageNumber()}
+                      countLimit={this.state.countLimit}
+                      onPageChange={this.handlePageChange}
+                      onCountLimitChange={this.handleCountLimitChange}
+                      enableOptionAll={true}
+                      style={{marginBottom: '1rem'}}
+                    />
+                  </div>
                 </div>
               </div>
             </div>

@@ -33,11 +33,7 @@ function ImageGallery(props) {
   }
 
   const handleChangePageSize = (nextSize) => {
-    if (nextSize === -1) {
-      setCountLimit(totalCount);
-    } else {
-      setCountLimit(nextSize);
-    }
+    setCountLimit(nextSize);
     // New size starts from first page so index stays in range
     setPage(1);
     setIndex(0);
@@ -66,7 +62,7 @@ function ImageGallery(props) {
 
   // Page count follows the expanded page size
   useEffect(() => {
-    setTotalPages(Math.ceil(totalCount / countLimit));
+    setTotalPages(Math.ceil(totalCount / (countLimit > 0 ? countLimit : totalCount)));
   }, [countLimit, collapsed])
 
   useEffect(() => {
