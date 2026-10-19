@@ -31,7 +31,11 @@ function ImageGallery(props) {
   }
 
   const handleChangePageSize = (nextSize) => {
-    setCountLimit(nextSize);
+    if (nextSize === -1) {
+      setCountLimit(totalCount);
+    } else {
+      setCountLimit(nextSize);
+    }
     // New size starts from first page so index stays in range
     setPage(1);
     setIndex(0);
@@ -96,6 +100,8 @@ function ImageGallery(props) {
             onPageChange={handlePageChange}
             onCountLimitChange={handleChangePageSize}
             style={props.style}
+            enableOptionAll={true}
+            totalCount={totalCount}
           />
         )}
         <div style={{ display: 'flex', justifyContent: 'center' }}>
