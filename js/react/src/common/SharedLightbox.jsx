@@ -1,52 +1,54 @@
-import React from 'react';
+import { useEffect, useRef } from 'react';
 
 /**
  * React adapter for the site-wide image viewer loaded by header.php.
  * Legacy PHP and React pages therefore share the same viewer behavior.
  */
-export default class SharedLightbox extends React.Component {
-  componentDidMount() {
-    this.syncViewer();
-  }
+export default function SharedLightbox(props) {
+  const retries = useRef(0);
+  const timeout = useRef(null);
+  const latestProps = useRef(props);
+  latestProps.current = props;
 
-  componentDidUpdate(previousProps) {
-    if (
-      this.props.isOpen !== previousProps.isOpen ||
-      this.props.images !== previousProps.images ||
-      this.props.sciName !== previousProps.sciName
-    ) {
-      this.syncViewer();
-    }
-  }
+  useEffect(() => {
+    const syncViewer = () => {
+      const currentProps = latestProps.current;
 
-  componentWillUnmount() {
+      if (!currentProps.isOpen) {
+        if (window.symbMediaViewer && window.symbMediaViewer.isOpen) window.symbMediaViewer.close();
+        return;
+      }
+
+      if (!window.symbMediaViewer) {
+        // media-viewer.js is loaded by header.php; give it a moment, but don't spin forever if it never arrives.
+        retries.current += 1;
+        if (retries.current <= 100) timeout.current = window.setTimeout(syncViewer, 50);
+        return;
+      }
+      retries.current = 0;
+
+      window.symbMediaViewer.open(currentProps.images || [], {
+        index: currentProps.photoIndex || 0,
+        sciName: currentProps.sciName,
+        clientRoot: currentProps.clientRoot,
+        onNavigate: (index) => latestProps.current.onNavigate(index),
+        onClose: () => latestProps.current.onClose(),
+      });
+    };
+
+    syncViewer();
+
+    return () => {
+      if (timeout.current !== null) {
+        window.clearTimeout(timeout.current);
+        timeout.current = null;
+      }
+    };
+  }, [props.isOpen, props.images, props.sciName]);
+
+  useEffect(() => () => {
     if (window.symbMediaViewer && window.symbMediaViewer.isOpen) window.symbMediaViewer.close();
-  }
+  }, []);
 
-  syncViewer() {
-    if (!this.props.isOpen) {
-      if (window.symbMediaViewer && window.symbMediaViewer.isOpen) window.symbMediaViewer.close();
-      return;
-    }
-
-    if (!window.symbMediaViewer) {
-      // media-viewer.js is loaded by header.php; give it a moment, but don't spin forever if it never arrives.
-      this.retries = (this.retries || 0) + 1;
-      if (this.retries <= 100) window.setTimeout(() => this.syncViewer(), 50);
-      return;
-    }
-    this.retries = 0;
-
-    window.symbMediaViewer.open(this.props.images || [], {
-      index: this.props.photoIndex || 0,
-      sciName: this.props.sciName,
-      clientRoot: this.props.clientRoot,
-      onNavigate: (index) => this.props.onNavigate(index),
-      onClose: () => this.props.onClose(),
-    });
-  }
-
-  render() {
-    return null;
-  }
+  return null;
 }

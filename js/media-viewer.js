@@ -73,6 +73,10 @@ class MediaViewer {
         this.counter = document.createElement('div');
         this.counter.className = 'symb-mv-counter';
         this.counter.setAttribute('aria-live', 'polite');
+        this.counter.addEventListener('click', (event) => {
+            // Click on either current or total page input to change image index
+            if (event.target.closest('.symb-mv-current, .symb-mv-total')) this.editCurrentPage();
+        });
         topControls.appendChild(this.counter);
         this.fullscreenBtn = this.button('symb-mv-fullscreen', 'Enter fullscreen', this.svg('<path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>'));
         this.closeBtn = this.button('symb-mv-close', 'Close image viewer', this.svg('<path d="M18 6 6 18M6 6l12 12"></path>'));
@@ -137,7 +141,7 @@ class MediaViewer {
     }
 
     pointerDown(event) {
-        if (event.target.closest('button, a, summary')) return;
+        if (event.target.closest('button, a, summary, .symb-mv-counter')) return;
         this.imageContainer.setPointerCapture(event.pointerId);
         this.pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
         if (this.pointers.size === 1) {
@@ -293,11 +297,75 @@ class MediaViewer {
         this.fallbackAttempted = false;
         this.image.src = item.imageUrl;
         this.image.alt = item.alt || item.caption || item.title || 'Viewed image';
-        this.setText(this.counter, `${this.index + 1}/${this.items.length}`);
+        this.renderCounter();
         this.previousBtn.hidden = this.items.length < 2;
         this.nextBtn.hidden = this.items.length < 2;
         this.renderPanel(item);
         if (this.onNavigate) this.onNavigate(this.index);
+    }
+
+    renderCounter() {
+        this.counter.replaceChildren();
+        const createPageTrigger = (className, text, ariaLabel) => {
+            const trigger = document.createElement('span');
+            trigger.className = className;
+            trigger.textContent = text;
+            trigger.tabIndex = 0;
+            trigger.setAttribute('role', 'button');
+            trigger.setAttribute('aria-label', ariaLabel);
+            trigger.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                this.editCurrentPage();
+            }
+            });
+            return trigger;
+        };
+        const currentPage = createPageTrigger('symb-mv-current', String(this.index + 1), `Go to image ${this.index + 1} of ${this.items.length}`);
+        const totalPages = createPageTrigger('symb-mv-total', String(this.items.length), `Enter an image number from 1 to ${this.items.length}`);
+        this.counter.append(currentPage, document.createTextNode('/'), totalPages);
+    }
+
+    editCurrentPage() {
+        // Create a current page input box, replacing span tag
+        if (this.counter.querySelector('input')) return;
+        const input = document.createElement('input');
+        input.type = 'number';
+        input.min = '1';
+        input.max = String(this.items.length);
+        input.step = '1';
+        input.value = String(this.index + 1);
+        input.setAttribute('aria-label', `Image number, from 1 to ${this.items.length}`);
+        this.counter.replaceChildren(input, document.createTextNode(`/${this.items.length}`));
+
+        let completed = false;
+        const finish = (commit) => {
+            if (completed) return;
+            completed = true;
+            const page = Number(input.value);
+            if (commit && Number.isInteger(page) && page >= 1 && page <= this.items.length) {
+                this.index = page - 1;
+                this.renderItem();
+            } else {
+                this.renderCounter();
+            }
+        };
+
+        // Insert event for the current page input. Enter / clicking mouse / tap
+        // outside the text box for committing the value
+        input.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                finish(true);
+            } else if (event.key === 'Escape') {
+                event.preventDefault();
+                finish(false);
+            }
+        });
+        // Clicking mouse / tap outside the text box
+        input.addEventListener('blur', () => finish(true));
+        input.focus();
+        input.select();
     }
 
     appendText(parent, className, text) {

@@ -98,22 +98,21 @@ function ImageGallery(props) {
             })}
         </div>
         {!collapsed && (
-          <div ref={paginationRef}>
-            <ResultPagination
-              page={page}
-              totalPages={totalPages}
-              countLimit={countLimit}
-              onPageChange={handlePageChange}
-              onCountLimitChange={handleChangePageSize}
-              style={props.style}
-              enableOptionAll={true}
-              totalCount={totalCount}
-            />
-          </div>
+          <ResultPagination
+            page={page}
+            totalPages={totalPages}
+            countLimit={countLimit}
+            onPageChange={handlePageChange}
+            onCountLimitChange={handleChangePageSize}
+            style={props.style}
+            enableOptionAll={true}
+            totalCount={totalCount}
+          />
         )}
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <FontAwesomeIcon className="slick-down" style={{ cursor: 'pointer' }} icon={collapsed ? "chevron-down" : "chevron-up"} onClick={handleCollapseToggle} />
         </div>
+        <div ref={paginationRef}></div>
       </> : null }
     </div>
   );
