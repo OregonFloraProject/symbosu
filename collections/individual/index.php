@@ -200,6 +200,16 @@ $traitArr = $indManager->getTraitArr();
 				},
 				active: tabIndex
 			});
+			// Jump to map for taxa profile image viewer
+			// Wait for all dependencies to load first, to prevent error on the map
+			if (tabIndex === 1) {
+				$(window).on('load', function() {
+					if (!mapInit) {
+						mapInit = true;
+						initializeMap();
+					}
+				});
+			}
 		});
 
 		function refreshRecord(occid){
