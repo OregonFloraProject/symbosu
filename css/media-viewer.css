@@ -91,6 +91,17 @@
   text-align: center;
 }
 
+.symb-mv-current,
+.symb-mv-total {
+  cursor: pointer;
+}
+
+.symb-mv-current:focus-visible,
+.symb-mv-total:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
 .symb-mv-icon-btn {
   display: inline-flex;
   width: 2.25rem !important;
