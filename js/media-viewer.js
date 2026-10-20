@@ -427,10 +427,14 @@ class MediaViewer {
                     if (item.country) params.set('country', item.country);
                     if (item.stateprovince) params.set('state', item.stateprovince);
                     if (item.county) params.set('county', item.county);
-                    placeElement.href = `${item.clientRoot}/collections/list.php?${params.toString()}`;
-                    placeElement.target = '_blank';
-                    placeElement.rel = 'noopener noreferrer';
-                    placeElement.title = 'View occurrence records from this area';
+                    // placeElement.href = `${item.clientRoot}/collections/list.php?${params.toString()}`;
+                    // For now, we change the geography href to show location on occurrence map
+                    if (item.recordUrl) {
+                        placeElement.href = `${item.recordUrl}&tabindex=1`;
+                        placeElement.target = '_blank';
+                        placeElement.rel = 'noopener noreferrer';
+                        placeElement.title = 'View occurrence records from this area';
+                    }
                 }
                 locality.appendChild(placeElement);
             }
