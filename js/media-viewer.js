@@ -9,6 +9,8 @@ class MediaViewer {
         this.translateY = 0;
         this.pointers = new Map();
         this.isOpen = false;
+        this.nonFullScreenSvg = '<path d="M8 3v5H3M21 8h-5V3M8 21v-5H3M21 16h-5v5"></path>';
+        this.fullScreenSvg = '<path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>';
         this.buildDOM();
         this.bindEvents();
     }
@@ -78,7 +80,7 @@ class MediaViewer {
             if (event.target.closest('.symb-mv-current, .symb-mv-total')) this.editCurrentPage();
         });
         topControls.appendChild(this.counter);
-        this.fullscreenBtn = this.button('symb-mv-fullscreen', 'Enter fullscreen', this.svg('<path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>'));
+        this.fullscreenBtn = this.button('symb-mv-fullscreen', 'Enter fullscreen', this.svg(this.fullScreenSvg));
         this.closeBtn = this.button('symb-mv-close', 'Close image viewer', this.svg('<path d="M18 6 6 18M6 6l12 12"></path>'));
         topControls.appendChild(this.fullscreenBtn);
         topControls.appendChild(this.closeBtn);
@@ -480,8 +482,12 @@ class MediaViewer {
     updateFullscreenButton() {
         const fullscreen = document.fullscreenElement === this.container;
         const label = fullscreen ? 'Exit fullscreen' : 'Enter fullscreen';
+        const icon = fullscreen
+            ? this.nonFullScreenSvg
+            : this.fullScreenSvg;
         this.fullscreenBtn.setAttribute('aria-label', label);
         this.fullscreenBtn.title = label;
+        this.fullscreenBtn.innerHTML = this.svg(icon);
     }
 
     close() {
