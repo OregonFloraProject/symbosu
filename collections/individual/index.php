@@ -25,6 +25,7 @@ $collid = array_key_exists('collid', $_REQUEST) ? $indManager->sanitizeInt($_REQ
 $pk = array_key_exists('pk', $_REQUEST) ? $_REQUEST['pk'] : '';
 $guid = array_key_exists('guid', $_REQUEST) ? $_REQUEST['guid'] : '';
 $tabIndex = array_key_exists('tabindex', $_REQUEST) ? $indManager->sanitizeInt($_REQUEST['tabindex']) : 0;
+$fromTaxa = !empty($_REQUEST['fromtaxa']);
 $clid = array_key_exists('clid', $_REQUEST) ? $indManager->sanitizeInt($_REQUEST['clid']) : 0;
 $format = isset($_GET['format']) ? $_REQUEST['format'] : '';
 
@@ -185,7 +186,8 @@ $traitArr = $indManager->getTraitArr();
 	<script src="<?= $CLIENT_ROOT; ?>/js/jquery-ui.min.js" type="text/javascript"></script>
 	<script src="<?= $CLIENT_ROOT; ?>/js/symb/domManipulationUtils.js" type="text/javascript"></script>
 	<script type="text/javascript">
-		var tabIndex = <?= $tabIndex; ?>;
+		var tabIndex = <?= $fromTaxa ? '1' : $tabIndex; ?>;
+		var fromTaxa = <?= $fromTaxa ? 'true' : 'false'; ?>;
 		var map;
 		var mapInit = false;
 
@@ -202,7 +204,7 @@ $traitArr = $indManager->getTraitArr();
 			});
 			// Jump to map for taxa profile image viewer
 			// Wait for all dependencies to load first, to prevent error on the map
-			if (tabIndex === 1) {
+			if (fromTaxa) {
 				$(window).on('load', function() {
 					if (!mapInit) {
 						mapInit = true;

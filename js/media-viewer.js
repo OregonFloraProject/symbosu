@@ -432,7 +432,7 @@ class MediaViewer {
                     // placeElement.href = `${item.clientRoot}/collections/list.php?${params.toString()}`;
                     // For now, we change the geography href to show location on occurrence map
                     if (item.recordUrl) {
-                        placeElement.href = `${item.recordUrl}&tabindex=1`;
+                        placeElement.href = `${item.recordUrl}&fromtaxa=1`;
                         placeElement.target = '_blank';
                         placeElement.rel = 'noopener noreferrer';
                         placeElement.title = 'View occurrence records from this area';
