@@ -186,8 +186,8 @@ $traitArr = $indManager->getTraitArr();
 	<script src="<?= $CLIENT_ROOT; ?>/js/jquery-ui.min.js" type="text/javascript"></script>
 	<script src="<?= $CLIENT_ROOT; ?>/js/symb/domManipulationUtils.js" type="text/javascript"></script>
 	<script type="text/javascript">
-		var tabIndex = <?= $fromTaxa ? '1' : $tabIndex; ?>;
-		var fromTaxa = <?= $fromTaxa ? 'true' : 'false'; ?>;
+		var fromTaxa = <?= $fromTaxa && $displayMap ? 'true' : 'false'; ?>;
+		var tabIndex = <?= $fromTaxa && $displayMap ? '1' : $tabIndex; ?>;
 		var map;
 		var mapInit = false;
 

@@ -219,8 +219,9 @@ class MediaViewer {
         this.imageContainer.classList.toggle('is-zoomed', this.zoomLevel > 1);
         this.zoomOutBtn.disabled = this.zoomLevel <= 1;
         this.zoomInBtn.disabled = this.zoomLevel >= 10;
-        this.previousBtn.disabled = this.zoomLevel > 1;
-        this.nextBtn.disabled = this.zoomLevel > 1;
+        // Remove the lock on zoomLevel to allow pressing the next button
+        // this.previousBtn.disabled = this.zoomLevel > 1;
+        // this.nextBtn.disabled = this.zoomLevel > 1;
     }
 
     normalizeItem(item, options) {
@@ -469,7 +470,9 @@ class MediaViewer {
     }
 
     navigate(offset) {
-        if (this.items.length < 2 || this.zoomLevel > 1) return;
+        // Remove the lock on zoomLevel to allow pressing the next button
+        // if (this.items.length < 2 || this.zoomLevel > 1) return;
+        if (this.items.length < 2) return;
         this.index = (this.index + offset + this.items.length) % this.items.length;
         this.renderItem();
     }
