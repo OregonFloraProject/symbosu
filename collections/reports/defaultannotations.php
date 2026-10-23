@@ -84,7 +84,7 @@ if($SYMB_UID){
 								}
 								?>
 								<div class="scientificnamediv" style="display: flex;">
-									<div class="sciname-group" style="display: flex; gap: 0.5rem; align-items: center;">
+									<div class="sciname-group">
 										<?php
 										if($occArr['identificationqualifier']) echo '<span class="identificationqualifier">'.$occArr['identificationqualifier'].'</span> ';
 										$scinameStr = $occArr['sciname'];
