@@ -535,12 +535,12 @@ else{
 		<?php
 		if(defined('CSSARR')){
 			foreach(CSSARR as $cssVal){
-				echo '<link href="includes/config/' . $cssVal . '?ver=170601" type="text/css" rel="stylesheet" />';
+				echo '<link href="includes/config/' . $cssVal . '?ver=170612" type="text/css" rel="stylesheet" />';
 			}
 		}
 		if(defined('JSARR')){
 			foreach(JSARR as $jsVal){
-				echo '<script src="includes/config/'.$jsVal.'?ver=170602" type="text/javascript"></script>';
+				echo '<script src="includes/config/'.$jsVal.'?ver=170619 type="text/javascript"></script>';
 			}
 		}
 	}

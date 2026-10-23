@@ -71,6 +71,10 @@ button.icon-button {
     width: 14px;
 }
 
+#scientificNameAuthorshipDiv {
+    margin-top: 3px;
+}
+
 #dupesDiv {
 	margin-left: 20px;
 }

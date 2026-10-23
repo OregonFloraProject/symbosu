@@ -1,12 +1,37 @@
-#catalogNumberDiv input{
-	pointer-events:none;
 
-	background-color: #EEE;
+
+#catalogNumberDiv {
+    margin-top: 0px;
 }
 
-#verbatimEventDateDiv input{
-	pointer-events:none;
-	border: 1px solid gray;
-	height:  21px;
-	background-color: #EEE;
+#colorKey input {
+	height: 18px;
+    font-size: 0.9em;
+    margin: 0px;
+    border: 1px solid #999;
+}
+
+/* Override browser default checkbox so that background can be styled when unchecked */
+input[name="cultivationstatus"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 1px solid gray;
+    outline: none;
+    border-radius: 3px;
+    vertical-align: middle;
+    cursor: pointer;
+    position: relative; /* Required so the checkmark stays inside */
+}
+
+/* Add the checkmark back when it is checked */
+input[name="cultivationstatus"]:checked::after {
+    content: "✓";
+    position: absolute;
+    top: -2px;
+    left: 3px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #000;
 }
