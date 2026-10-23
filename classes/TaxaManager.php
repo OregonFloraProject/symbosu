@@ -663,15 +663,16 @@ class TaxaManager {
   	if ($tid) {
 			$em = SymbosuEntityManager::getEntityManager();
 			$status = $em->createQueryBuilder()
-				->select(["ts.family"])
+				->select(["ts.family", "t.tid"])
 				->from("Taxstatus", "ts")
+        ->leftJoin("taxa", "t", "WITH", "ts.family = t.sciname")
 				->where("ts.tidaccepted = :tid")
 				->setParameter("tid", $tid)
       	->getQuery()
       	->getArrayResult();
       	#var_dump($status);
       if (sizeof($status)) {
-				$return = $status[0]['family'];
+				$return = $status[0];
 			}
 		}
 		return $return;
