@@ -248,6 +248,20 @@ function SidebarSection(props) {
             />
           );
         }
+        if (key.toLowerCase() === 'family' && val && typeof val === 'object') {
+          const familyName = val.family;
+          const familyValue = val.tid ? (
+            <a href={`${props.clientRoot}/taxa/index.php?taxon=${val.tid}`}>{familyName}</a>
+          ) : (
+            familyName
+          );
+          return (
+            <div key={key} className="row dashed-border py-2">
+              <div className="col font-weight-bold char-label">Family</div>
+              <div className="col char-value">{familyValue}</div>
+            </div>
+          );
+        }
         if (key === 'webLinks') {
           return <SingleBorderedItem key={val} keyName={val} value={val} />;
         }
