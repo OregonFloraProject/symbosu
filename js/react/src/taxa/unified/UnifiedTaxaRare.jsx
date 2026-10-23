@@ -157,6 +157,7 @@ function UnifiedTaxaRare({ tid, defaultTitle, clientRoot, synonym }) {
             items={mappedData.context}
             variant="rare"
             rankId={mappedData.rankId}
+            clientRoot={clientRoot}
             glossary={glossary}
             isTaxaRare
           />
