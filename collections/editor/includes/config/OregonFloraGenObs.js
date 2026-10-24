@@ -41,33 +41,67 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		}
 	});
 
-	// Data entry fields that are especially important and required
-	let required = ['recordedby', 'recordnumber',  'eventdate','sciname', 'scientificnameauthorship',
-		'country', 'stateprovince', 'county', 'locality', 'decimallatitude', 'decimallongitude',];
-
-	// Other common data entry fields
-	let common = ['associatedcollectors', 'family', 'identifiedby', 'dateidentified',
-		'geodeticdatum',  'coordinateuncertaintyinmeters','minimumelevationinmeters',
-		'habitat', 'associatedtaxa', 'verbatimattributes', 'occurrenceremarks', 'labelproject',
-		'duplicatequantity', 'processingstatus'];
-
-
 	// Color the fields according to importance
-	$(':input').each(function() {
+	function colorFields(target) {
 
-		// Required fields in red
-		if (required.includes($(this).attr('name'))) {
-			$(this).css({"background-color": "#FFC5AD", "border": "1px solid gray"});
+		// Data entry fields that are especially important and required
+		let required = ['recordedby', 'recordnumber',  'eventdate','sciname', 'country',
+			'stateprovince', 'county', 'locality', 'decimallatitude', 'decimallongitude',];
 
-		// Non-empty data entry fields in yellow
-		} else if (common.includes($(this).attr('name'))) {
-			$(this).css({"background-color": "#FFFFA0", "border": "1px solid gray"});
-		} else if ($(this).attr('name') === 'cultivationstatus') {
-			$(this).css({"background-color": "#FFFFA0", "box-shadow": "0 0 2px 1px gray"});
+		// Other common data entry fields
+		let common = ['associatedcollectors', 'identifiedby', 'dateidentified', 'geodeticdatum',
+			'coordinateuncertaintyinmeters','minimumelevationinmeters','habitat', 'associatedtaxa',
+			'verbatimattributes', 'occurrenceremarks', 'cultivationstatus', 'labelproject',
+			'duplicatequantity', 'processingstatus'];
+
+		// Add the required class to required fields
+		if (required.includes(target.attr('name'))) {
+			target.addClass("required");
+
+		// Add the common class to commonly used but not required fields
+		} else if (common.includes(target.attr('name'))) {
+			target.addClass("common");
 		}
+	}
+
+	// Cycle through each field and apply the colors
+	$(':input').each(function() {
+		colorFields($(this));
 	});
 
-	// Add a key for colorcoding
-	let keyHTML = '<div id="colorKey" style="margin-bottom: 5px;">Color Key: <input type="text" placeholder="Required" disabled style="background-color: #FFC5AD; width: 60px;"/> <input type="text" placeholder="Common" disabled style="background-color: #FFFFA0; width: 60px;"/></div>';
-	$('#catalogNumberDiv').prepend(keyHTML);
+	// Add a key for color coding, replacing the barcode/catalog number field
+	let keyHTML = '<div id="colorKey" style="font-weight: bold">Color Key: <input type="text" class="required" placeholder="Required" disabled/> <input type="text" class="common" placeholder="Common" disabled/></div>';
+	$('#catalogNumberDiv').html(keyHTML);
+
+	// Remove color coding as fields are filled out, and toggle it back on if they are emptied
+	document.addEventListener('change', function (event) {
+	    const target = $(event.target);
+
+	    // Text inputs
+	    if (target.is('input[type="text"], textarea')) {
+	        if (target.val() !== '') {
+	            target.removeClass("required common");
+	            return;
+	        }
+	    }
+
+	    // Cultivation status checkbox
+	    if (target.is('input[type="checkbox"][name="cultivationstatus"]')) {
+	        if (target.prop('checked')) {
+	            target.removeClass("required common");
+	            return;
+	        }
+	    }
+
+	    // Processing status select. Turn on for Pending Review and No Set Status
+	    if (target.is('select[name="processingstatus"]')) {
+	        if (target.val() !== 'pending review' && target.val() !== '') {
+	            target.removeClass("required common");
+	            return;
+	        }
+	    }
+
+	    // Re-color fields if it didn't match above.
+	    colorFields(target);
+	});
 });

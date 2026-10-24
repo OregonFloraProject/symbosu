@@ -1,7 +1,9 @@
+#localityDiv textarea {
+	height: 25px;
+}
 
-
-#catalogNumberDiv {
-    margin-top: 0px;
+#associatedTaxaDiv textarea {
+	height: 25px;
 }
 
 #colorKey input {
@@ -9,6 +11,8 @@
     font-size: 0.9em;
     margin: 0px;
     border: 1px solid #999;
+    text-align: center;
+    width: 60px;
 }
 
 /* Override browser default checkbox so that background can be styled when unchecked */
@@ -35,3 +39,20 @@ input[name="cultivationstatus"]:checked::after {
     font-weight: bold;
     color: #000;
 }
+input[type="text"].required, input[type="text"].common {
+	height: 1.75em;
+}
+
+/* Classes for color coding the editor into required and common label fields */
+.required {
+	background-color: #FFFFA0;
+	border: 1px solid gray;
+	border-radius: 2px;
+}
+
+.common {
+	background-color: #CFFFCF;
+	border: 1px solid gray;
+	border-radius: 2px;
+}
+
