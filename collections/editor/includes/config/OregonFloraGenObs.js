@@ -54,12 +54,12 @@ document.addEventListener("DOMContentLoaded", function(event) {
 			'verbatimattributes', 'occurrenceremarks', 'cultivationstatus', 'labelproject',
 			'duplicatequantity', 'processingstatus'];
 
-		// Add the required class to required fields
-		if (required.includes(target.attr('name'))) {
+		// Add the required class to required fields if they are not empty or a checkbox
+		if (required.includes(target.attr('name')) && (target.val() == '' || (target.is(':checkbox') && !target.prop('checked')))) {
 			target.addClass("required");
 
-		// Add the common class to commonly used but not required fields
-		} else if (common.includes(target.attr('name'))) {
+		// Add the common class to commonly used but not required fields if they are not empty or a checkbox
+		} else if (common.includes(target.attr('name')) && (target.val() == '' || (target.is(':checkbox') && !target.prop('checked')))) {
 			target.addClass("common");
 		}
 	}

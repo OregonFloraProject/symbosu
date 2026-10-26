@@ -535,7 +535,7 @@ else{
 		<?php
 		if(defined('CSSARR')){
 			foreach(CSSARR as $cssVal){
-				echo '<link href="includes/config/' . $cssVal . '?ver=170621" type="text/css" rel="stylesheet" />';
+				echo '<link href="includes/config/' . $cssVal . '?ver=170623" type="text/css" rel="stylesheet" />';
 			}
 		}
 		if(defined('JSARR')){
