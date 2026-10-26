@@ -2,7 +2,7 @@
 // OSC Label Collections
 
 //Enter one to many custom cascading style sheet files 
-const CSSARR = array('occurVarDefault.css');
+const CSSARR = array('occurVarDefault.css', 'OregonFloraGenObs.css');
 
 //Enter one to many custom java script files 
 //const JSARR = array('example1.js','example2.js'); 

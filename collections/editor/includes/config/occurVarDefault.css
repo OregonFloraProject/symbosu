@@ -71,8 +71,13 @@ button.icon-button {
     width: 14px;
 }
 
-#dupesDiv {
-	margin-left: 20px;
+#scientificNameAuthorshipDiv {
+    margin-top: 3px;
+}
+
+#dupesDiv button {
+	margin-top: -10px !important;
+	margin-bottom: 5px !important;
 }
 
 #municipalityDiv input {

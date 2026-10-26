@@ -535,12 +535,12 @@ else{
 		<?php
 		if(defined('CSSARR')){
 			foreach(CSSARR as $cssVal){
-				echo '<link href="includes/config/' . $cssVal . '?ver=170601" type="text/css" rel="stylesheet" />';
+				echo '<link href="includes/config/' . $cssVal . '?ver=170623" type="text/css" rel="stylesheet" />';
 			}
 		}
 		if(defined('JSARR')){
 			foreach(JSARR as $jsVal){
-				echo '<script src="includes/config/'.$jsVal.'?ver=170602" type="text/javascript"></script>';
+				echo '<script src="includes/config/'.$jsVal.'?ver=170649 type="text/javascript"></script>';
 			}
 		}
 	}
@@ -664,7 +664,7 @@ else{
 								else{
 									if($isGenObs){
 										?>
-										<a href="../../profile/viewprofile.php?tabindex=1" onclick="return verifyLeaveForm()"><?= (isset($LANG['PERS_MANAGEMENT'])?$LANG['PERS_MANAGEMENT']:'Personal Management') ?></a> &gt;&gt;
+										<a href="../../profile/viewprofile.php" onclick="return verifyLeaveForm()"><?= (isset($LANG['PERS_MANAGEMENT'])?$LANG['PERS_MANAGEMENT']:'Personal Management') ?></a> &gt;&gt;
 										<?php
 									}
 									else{
