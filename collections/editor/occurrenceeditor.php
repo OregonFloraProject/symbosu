@@ -540,7 +540,7 @@ else{
 		}
 		if(defined('JSARR')){
 			foreach(JSARR as $jsVal){
-				echo '<script src="includes/config/'.$jsVal.'?ver=170644 type="text/javascript"></script>';
+				echo '<script src="includes/config/'.$jsVal.'?ver=170649 type="text/javascript"></script>';
 			}
 		}
 	}
@@ -664,7 +664,7 @@ else{
 								else{
 									if($isGenObs){
 										?>
-										<a href="../../profile/viewprofile.php?tabindex=1" onclick="return verifyLeaveForm()"><?= (isset($LANG['PERS_MANAGEMENT'])?$LANG['PERS_MANAGEMENT']:'Personal Management') ?></a> &gt;&gt;
+										<a href="../../profile/viewprofile.php" onclick="return verifyLeaveForm()"><?= (isset($LANG['PERS_MANAGEMENT'])?$LANG['PERS_MANAGEMENT']:'Personal Management') ?></a> &gt;&gt;
 										<?php
 									}
 									else{
