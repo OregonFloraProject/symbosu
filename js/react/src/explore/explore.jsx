@@ -10,6 +10,7 @@ import { addUrlQueryParam, getUrlQueryParams } from '../common/queryParams.js';
 import { getCommonNameStr, getTaxaPage, getIdentifyPage } from '../common/taxaUtils';
 import PageHeader from '../common/pageHeader.jsx';
 import Loading from '../common/loading.jsx';
+import ResultPagination from '../common/resultPagination.jsx';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -26,6 +27,8 @@ class ExploreApp extends React.Component {
       isLoading: true,
       isSearching: false,
       currentTids: [],
+      page: 1,
+      countLimit: 20,
       clid: -1,
       pid: -1,
       dynclid: -1,
@@ -64,6 +67,7 @@ class ExploreApp extends React.Component {
         taxa: 0,
       },
     };
+    this.paginationRef = React.createRef();
     this.getPid = this.getPid.bind(this);
     this.getClid = this.getClid.bind(this);
     this.getDynclid = this.getDynclid.bind(this);
@@ -79,6 +83,8 @@ class ExploreApp extends React.Component {
     this.onFilterRemoved = this.onFilterRemoved.bind(this);
     this.sortResults = this.sortResults.bind(this);
     this.clearTextSearch = this.clearTextSearch.bind(this);
+    this.handlePageChange = this.handlePageChange.bind(this);
+    this.handleCountLimitChange = this.handleCountLimitChange.bind(this);
   }
 
   getClid() {
@@ -255,7 +261,7 @@ class ExploreApp extends React.Component {
       exportUrlWord: url,
     });
   }
-  
+
   clearTextSearch() {
     this.onFilterRemoved('searchText');
   }
@@ -331,7 +337,52 @@ class ExploreApp extends React.Component {
   }
   // On search end
   onSearchResults(tids) {
-    this.setState({ currentTids: tids });
+    this.setState({ currentTids: tids, page: 1 });
+  }
+
+  handlePageChange(page) {
+    this.setState({ page }, () => {
+      if (page === this.calculatePageNumber()) {
+        this.paginationRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+      }
+    });
+  }
+
+  handleCountLimitChange(nextSize) {
+    this.setState({ countLimit: nextSize, page: 1 });
+  }
+
+  getVisibleTaxa() {
+    if (this.state.currentTids.length === 0) {
+      return [];
+    }
+    const currentTids = new Set(this.state.currentTids);
+    if (this.state.sortBy === 'taxon') {
+      return this.state.searchResults.taxonSort.filter((result) => currentTids.has(result.tid));
+    }
+    const visible = [];
+    Object.entries(this.state.searchResults.familySort).forEach(([, results]) => {
+      results.forEach((result) => {
+        if (currentTids.has(result.tid)) {
+          visible.push(result);
+        }
+      });
+    });
+    return visible;
+  }
+
+  calculatePageNumber() {
+    const length = this.getVisibleTaxa().length;
+    return Math.ceil(length / (this.state.countLimit < 1 ? length : this.state.countLimit));
+  }
+
+  getPagedResults() {
+    let visible = this.getVisibleTaxa();
+    if (this.state.countLimit !== -1) {
+      const start = (this.state.page - 1) * this.state.countLimit;
+      visible = visible.slice(start, start + this.state.countLimit);
+    }
+    return this.sortResults(visible);
   }
 
   sortResults(results) {
@@ -361,7 +412,7 @@ class ExploreApp extends React.Component {
   }
 
   onSortByChanged(sortBy) {
-    this.setState({ sortBy: sortBy }, function () {
+    this.setState({ sortBy: sortBy, page: 1 }, function () {
       // this.updateExportUrls();
     });
   }
@@ -418,7 +469,7 @@ class ExploreApp extends React.Component {
     this.setState({ showTaxaDetail: taxaDetail }, function () {
       this.updateExportUrls();
     });
-    /* 	
+    /*
   	let newVal;
   	if (taxaDetail === 'on') {
   		newVal = taxaDetail;
@@ -569,7 +620,7 @@ class ExploreApp extends React.Component {
                     )}
                   </div>
                   <ExploreSearchContainer
-                    searchResults={this.state.searchResults}
+                    searchResults={this.getPagedResults()}
                     viewType={this.state.viewType}
                     sortBy={this.state.sortBy}
                     showTaxaDetail={this.state.showTaxaDetail}
@@ -578,6 +629,17 @@ class ExploreApp extends React.Component {
                     currentTids={this.state.currentTids}
                     showNotes={this.getPid() === 4}
                   />
+                  <div ref={this.paginationRef}>
+                    <ResultPagination
+                      page={this.state.page}
+                      totalPages={this.calculatePageNumber()}
+                      countLimit={this.state.countLimit}
+                      onPageChange={this.handlePageChange}
+                      onCountLimitChange={this.handleCountLimitChange}
+                      enableOptionAll={true}
+                      style={{marginBottom: '1rem'}}
+                    />
+                  </div>
                 </div>
               </div>
             </div>

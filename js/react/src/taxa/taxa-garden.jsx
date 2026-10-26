@@ -3,8 +3,8 @@ import React from 'react';
 import { addGlossaryTooltips } from '../common/glossary.js';
 import httpGet from '../common/httpGet.js';
 import { getUrlQueryParams } from '../common/queryParams.js';
-import ImageCarousel from '../common/imageCarousel.jsx';
-import ImageModal from '../common/modal.jsx';
+import ImageGallery from '../common/imageGallery.jsx';
+import SharedLightbox from '../common/SharedLightbox.jsx';
 import ExplorePreviewModal from '../explore/previewModal.jsx';
 import { getTaxaPage } from '../common/taxaUtils';
 import Loading from '../common/loading.jsx';
@@ -236,7 +236,7 @@ class TaxaApp extends React.Component {
               className="mt-4"
               dangerouslySetInnerHTML={{ __html: addGlossaryTooltips(this.state.description, this.state.glossary) }}
             />
-            <ImageCarousel
+            <ImageGallery
               title={`${this.state.vernacularNames[0]} images`}
               images={this.state.images}
               altname={"Photo of " + this.state.vernacularNames[0]}
@@ -245,18 +245,15 @@ class TaxaApp extends React.Component {
               onClick={this.toggleImageModal}
             />
           </div>
-          <ImageModal
-            show={this.state.isOpen}
-            currImage={this.state.currImage}
+          <SharedLightbox
+            isOpen={this.state.isOpen}
+            photoIndex={this.state.currImage}
             images={this.state.images}
-            altname={this.state.vernacularNames[0]}
-            onClose={this.toggleImageModal}
+            sciName={this.state.vernacularNames[0]}
+            onClose={() => this.setState({ isOpen: false })}
+            onNavigate={(index) => this.setState({ currImage: index })}
             clientRoot={this.props.clientRoot}
-          >
-            <h3>
-              <span>{this.state.vernacularNames[0]}</span> images
-            </h3>
-          </ImageModal>
+          />
           <div className="col-md-4 sidebar-section">
             <SideBarSection title="Highlights" items={this.state.highlights} />
             {this.state.nativeGroups.length > 0 && (

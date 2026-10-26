@@ -1,6 +1,7 @@
 @import './mixins.less';
 @import './search-results.less';
 @import '../../node_modules/react-modal-video/css/modal-video.min.css';
+@import '../../node_modules/react-responsive-pagination/themes/classic.css';
 
 * {
   font-family: @font;
@@ -2059,7 +2060,7 @@ img {
               }
 
                 /*Fix the 'See full record' button/link clipping */
-                    .image-link, 
+                    .image-link,
               .image-details a {
                   display: block ; /* Forces it to its own line */
                   width: 100% ;
@@ -3103,5 +3104,41 @@ body.spatial {
     margin-top: 2rem;
     margin-bottom: 2rem;
     color: black;
+  }
+}
+
+.result-pagination {
+  display: flex;
+  align-items: center;
+
+  .result-pagination__spacer {
+    flex: 1;
+  }
+
+  .result-pagination__pager {
+    flex: 1 1 auto;
+
+    .pagination {
+      flex-wrap: wrap;
+      row-gap: 0.5rem;
+    }
+  }
+
+  .result-pagination__page-size {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+  }
+}
+
+.pageSizeSelector {
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 0.25rem;
+  padding: 0.5rem;
+  line-height: 1.25;
+  cursor: pointer;
+  &:hover {
+    border-color: @med-green;
   }
 }

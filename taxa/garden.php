@@ -32,10 +32,17 @@ include_once("../config/symbini.php");
     <!-- This is inner text! -->
     <div id="innertext">
       <div id="react-taxa-garden-app"></div>
+				<?php if (isset($TAXA_UNIFIED_FLAG) && $TAXA_UNIFIED_FLAG === 1) { ?>
+				<script 
+					src="<?php echo $CLIENT_ROOT?>/js/react/dist/taxa-unified.js?<?php echo filemtime($SERVER_ROOT . '/js/react/dist/taxa-unified.js'); ?>"
+					type="text/javascript">
+				</script>
+				<?php } else { ?>
 				<script 
 					src="<?php echo $CLIENT_ROOT?>/js/react/dist/taxa-garden.js?<?php echo filemtime($SERVER_ROOT . '/js/react/dist/taxa-garden.js'); ?>"
 					type="text/javascript">
 				</script>
+				<?php } ?>
     </div>
 
     <?php

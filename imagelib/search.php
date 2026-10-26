@@ -448,13 +448,33 @@ $creators = Media::getCreatorArray();
 								<div class="tndiv" style="margin-bottom:15px;margin-top:15px;">
 									<div class="tnimg">
 										<?php
-										$anchorLink = '';
-										if($imgArr['occid']){
-											$anchorLink = '<a href="#" onclick="openIndPU(' . $imgArr['occid'] . ');return false;">';
+										$photoAuthor = '';
+										$creatorUid = $imgArr['uid'] ?? null;
+										$creatorName = $imgArr['imgphotographer'] ?? ($imgArr['creator'] ?? '');
+										if($creatorUid && isset($creators[$creatorUid])) $photoAuthor = $creators[$creatorUid];
+										if(!$photoAuthor && $creatorName) $photoAuthor = $creatorName;
+										$fullUrl = $imgArr['url'] ?? '';
+										$fullLgUrl = $imgArr['originalurl'] ?? '';
+										if($MEDIA_DOMAIN){
+											if(substr($fullUrl, 0, 1) == '/') $fullUrl = $MEDIA_DOMAIN.$fullUrl;
+											if(substr($fullLgUrl, 0, 1) == '/') $fullLgUrl = $MEDIA_DOMAIN.$fullLgUrl;
+										}
+										$occid = $imgArr['occid'] ?? null;
+										if($occid){
+											$fallbackOnclick = 'openIndPU(' . $occid . ')';
 										}
 										else{
-											$anchorLink = '<a href="#" onclick="openImagePopup(' . $mediaId . ');return false;">';
+											$fallbackOnclick = 'openImagePopup(' . $mediaId . ')';
 										}
+										$onclickStr = $fallbackOnclick.'; return false;';
+										$mediaDataAttrs = '';
+										if(($imgArr['mediaType'] ?? MediaType::Image) == MediaType::Image){
+											//Only images open in the media viewer; audio/video keep the legacy popup
+											$onclickStr = 'if(window.symbMediaViewer){ window.symbMediaViewer.open({}, {triggerElement: this}); return false; } else { '.$fallbackOnclick.'; return false; }';
+											$collectionName = $imgArr['collectionname'] ?? ($imgArr['instcode'] ?? '');
+											$mediaDataAttrs = ' data-symb-media data-url="'.htmlspecialchars($fullUrl, ENT_QUOTES).'" data-lgurl="'.htmlspecialchars($fullLgUrl, ENT_QUOTES).'" data-caption="'.htmlspecialchars($imgArr['caption'] ?? '', ENT_QUOTES).'" data-photographer="'.htmlspecialchars($photoAuthor, ENT_QUOTES).'" data-copyright="'.htmlspecialchars($imgArr['copyright'] ?? '', ENT_QUOTES).'" data-rights="'.htmlspecialchars($imgArr['rights'] ?? '', ENT_QUOTES).'" data-access-rights="'.htmlspecialchars($imgArr['accessrights'] ?? '', ENT_QUOTES).'" data-collectionname="'.htmlspecialchars($collectionName, ENT_QUOTES).'" data-country="'.htmlspecialchars($imgArr['country'] ?? '', ENT_QUOTES).'" data-stateprovince="'.htmlspecialchars($imgArr['stateprovince'] ?? '', ENT_QUOTES).'" data-county="'.htmlspecialchars($imgArr['county'] ?? '', ENT_QUOTES).'" data-sourceurl="'.htmlspecialchars($imgArr['sourceurl'] ?? '', ENT_QUOTES).'" data-title="'.htmlspecialchars($imgArr['sciname'] ?? '', ENT_QUOTES).'" data-mediaid="'.htmlspecialchars($mediaId, ENT_QUOTES).'" data-occid="'.htmlspecialchars($occid ?? '', ENT_QUOTES).'"';
+										}
+										$anchorLink = '<a href="#"'.$mediaDataAttrs.' onclick=\''.$onclickStr.'\'>';
 										echo $anchorLink . '<img src="' . $imgUrl . '" /></a>';
 										?>
 									</div>

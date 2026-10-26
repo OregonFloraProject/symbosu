@@ -25,6 +25,7 @@ $collid = array_key_exists('collid', $_REQUEST) ? $indManager->sanitizeInt($_REQ
 $pk = array_key_exists('pk', $_REQUEST) ? $_REQUEST['pk'] : '';
 $guid = array_key_exists('guid', $_REQUEST) ? $_REQUEST['guid'] : '';
 $tabIndex = array_key_exists('tabindex', $_REQUEST) ? $indManager->sanitizeInt($_REQUEST['tabindex']) : 0;
+$fromTaxa = !empty($_REQUEST['fromtaxa']);
 $clid = array_key_exists('clid', $_REQUEST) ? $indManager->sanitizeInt($_REQUEST['clid']) : 0;
 $format = isset($_GET['format']) ? $_REQUEST['format'] : '';
 
@@ -185,7 +186,8 @@ $traitArr = $indManager->getTraitArr();
 	<script src="<?= $CLIENT_ROOT; ?>/js/jquery-ui.min.js" type="text/javascript"></script>
 	<script src="<?= $CLIENT_ROOT; ?>/js/symb/domManipulationUtils.js" type="text/javascript"></script>
 	<script type="text/javascript">
-		var tabIndex = <?= $tabIndex; ?>;
+		var fromTaxa = <?= $fromTaxa && $displayMap ? 'true' : 'false'; ?>;
+		var tabIndex = <?= $fromTaxa && $displayMap ? '1' : $tabIndex; ?>;
 		var map;
 		var mapInit = false;
 
@@ -200,6 +202,16 @@ $traitArr = $indManager->getTraitArr();
 				},
 				active: tabIndex
 			});
+			// Jump to map for taxa profile image viewer
+			// Wait for all dependencies to load first, to prevent error on the map
+			if (fromTaxa) {
+				$(window).on('load', function() {
+					if (!mapInit) {
+						mapInit = true;
+						initializeMap();
+					}
+				});
+			}
 		});
 
 		function refreshRecord(occid){
@@ -1039,7 +1051,7 @@ $traitArr = $indManager->getTraitArr();
 								<legend><?php echo $LANG['SPECIMEN_IMAGES']; ?></legend>
 								<?php
 								$imgCount = 0;
-								foreach($iArr as $imgArr){
+								foreach($iArr as $mediaId => $imgArr){
 									$imgCount += 1;
 									$thumbUrl = $imgArr['tnurl'];
 									if(!$thumbUrl || substr($thumbUrl, 0, 7) == 'process'){
@@ -1054,7 +1066,13 @@ $traitArr = $indManager->getTraitArr();
 										}
 									}
 									echo '<div id="thumbnail-div" class="thumbnail-div">';
-									echo Media::render_media_item($imgArr);
+									if($imgArr['mediaType'] == MediaType::Image){
+										$mediaDataAttrs = ' data-symb-media data-hide-footer="true" data-hide-counter="true" data-url="'.htmlspecialchars($imgArr['url'] ?? '', ENT_QUOTES).'" data-lgurl="'.htmlspecialchars($imgArr['lgurl'] ?? '', ENT_QUOTES).'" data-caption="'.htmlspecialchars($imgArr['caption'] ?? '', ENT_QUOTES).'" data-photographer="'.htmlspecialchars($imgArr['creator'] ?? '', ENT_QUOTES).'" data-copyright="'.htmlspecialchars($imgArr['copyright'] ?? '', ENT_QUOTES).'" data-sourceurl="'.htmlspecialchars($imgArr['sourceurl'] ?? '', ENT_QUOTES).'" data-title="'.htmlspecialchars($occArr['sciname'] ?? '', ENT_QUOTES).'" data-mediaid="'.htmlspecialchars($mediaId, ENT_QUOTES).'" data-occid="'.htmlspecialchars($occArr['occid'] ?? '', ENT_QUOTES).'"';
+										echo '<a href="'.htmlspecialchars($imgArr['url'] ?? '', ENT_QUOTES).'"'.$mediaDataAttrs.' onclick=\'if(window.symbMediaViewer){ window.symbMediaViewer.open({}, {triggerElement: this}); return false; }\'>';
+										echo '<img style="max-width: 200px; margin-bottom: 0.5rem" border="1" src="'.htmlspecialchars($thumbUrl, ENT_QUOTES).'" title="'.htmlspecialchars($imgArr['caption'] ?? '', ENT_QUOTES).'" alt="Thumbnail image of '.htmlspecialchars($occArr['sciname'].' '.$imgCount, ENT_QUOTES).'" />';
+										echo '</a>';
+									}
+									else echo Media::render_media_item($imgArr);
 									if($imgArr['caption']) echo '<div><i>'.$imgArr['caption'].'</i></div>';
 									if($imgArr['creator']) echo '<div>'.(isset($LANG['AUTHOR'])?$LANG['AUTHOR']:'Author').': '.$imgArr['creator'].'</div>';
 									if($imgArr['url'] && substr($thumbUrl,0,7)!='process' && $imgArr['url'] != $imgArr['lgurl']) echo '<div><a href="' . $imgArr['url'] . '" target="_blank">' . $LANG['OPEN_MEDIUM'] . '</a></div>';

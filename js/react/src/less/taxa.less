@@ -21,7 +21,8 @@
   //taxa slideshows on main and garden pages
   .taxa-slideshows {
     .slick-next,
-    .slick-prev {
+    .slick-prev,
+    .slick-down {
       color: @med-green !important;
       font-size: 28px;
       top: 53%;
@@ -38,6 +39,19 @@
     }
     .slick-slider {
       max-width: 90%;
+    }
+    .pagination {
+      .page-item:not(.disabled) .page-link {
+        color: @med-green;
+      }
+      .page-item.active .page-link {
+        background-color: @med-green;
+        border-color: @med-green;
+        color: #fff;
+      }
+    }
+    .pageSizeSelector {
+        margin-bottom: 0.7rem;
     }
   }
 
@@ -131,13 +145,7 @@
         box-shadow: 0 0.1em 0.5em 0.1em rgba(100, 100, 100, 0.3);
       }
 
-      .card:hover {
-        //background: #DFEFD3 !important;
-      }
 
-      .card a:hover {
-        //text-decoration: none;
-      }
 
       .card-text {
         font-weight: bold;
@@ -508,8 +516,6 @@
 
     .spp-wrapper {
       padding-top: 1em;
-      .card {
-      }
     }
   }
 }

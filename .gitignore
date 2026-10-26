@@ -1,5 +1,6 @@
 # Ignore playwright-cli exports
 .playwright-cli
+.playwright-mcp
 
 # Ignore codegraph
 .codegraph
@@ -43,3 +44,5 @@ temp/*
 **/.DS_Store
 /webservices/dwc/rss.xml
 /js/react/src/less/config.less
+/node_modules/
+/test-results/
