@@ -378,7 +378,13 @@ function addOverlays(map) {
    
 	// Add counties layer, on by default; DOM cleared when unchecked, data kept in memory
 	let countiesGroup = L.layerGroup();
+	let occupiedCounties = L.layerGroup();
 	let countiesData = null;  // cached after first fetch, kept across toggles
+
+	// Highlight counties with points if the page is leafletmap.php (which we are using for taxon profile maps)
+	// We could also do this with a parameter passed to the page if the page name changes
+	// (Symbiota has abandoned the separate leafletmap.php in favor of simpler index.php)
+	const highlightCounties = window.location.pathname.split("/").pop() === "leafletmap.php";
 	
 	const countiesLayerOptions = {
 		// Style the polygon and borders
@@ -424,12 +430,18 @@ function addOverlays(map) {
 
 	map.mapLayer.on('overlayremove', function(e) {
 		if (e.layer !== countiesGroup) return;
-		countiesGroup.clearLayers();  // free DOM; countiesData stays in memory
+		countiesGroup.clearLayers(); // free DOM; countiesData stays in memory
 	});
 
 	// Add to map first (so it appears checked), then to layer control
 	countiesGroup.addTo(map.mapLayer);
 	map.mapLayer.layerControl.addOverlay(countiesGroup, "OR Counties");
+
+	// Add an overlay for occupied counties
+	if(highlightCounties) {
+		occupiedCounties.addTo(map.mapLayer);
+		map.mapLayer.layerControl.addOverlay(occupiedCounties, "Occupied Counties");
+	}
 
 	// Load counties data immediately for the default-on state
 	fetch(clientRoot + 'js/leaflet.OregonFlora/layers/oregon.counties.json')
@@ -437,6 +449,12 @@ function addOverlays(map) {
 		.then(data => {
 			countiesData = data;
 			L.geoJson(countiesData, countiesLayerOptions).addTo(countiesGroup);
+
+			// Calculate occupied counties and add them as an overlay if required
+			if(highlightCounties) {
+				L.geoJson(countiesData, countiesLayerOptions).addTo(occupiedCounties);
+				highlightCountiesWithPoints(getLayerByName(map, "Occupied Counties").layer, map.markerGroups);
+			}
 		});
 	
 	// Add ecoregions layer from KML using the KML plugin if not on the dynamicMap page.
@@ -887,9 +905,70 @@ class LeafletSingleClusterMapGroup {
 		}
 	}
 }
-     
-// TODO:
-// - Highlight counties with points
-//   - This could be just a polygon styled like the counties but higher opacity
-//   - either based on county name data (shaky), or on the points themselves (what about inaccurate points?)
-// - Select KML region to search
+
+// Highlights counties that contain at least one occurrence point using Turf.js
+function highlightCountiesWithPoints(countiesContainer, markerGroups, highlightStyle = {fillOpacity: 0.3}) {
+
+	// Check that the counties and marker groups objects are set
+	if (!countiesContainer || !markerGroups) {
+		console.warn('highlightCountiesWithPoints: Missing counties or marker groups layers');
+		return;
+	}
+
+	// Check for turf.js and exit if not present
+	if (typeof turf === 'undefined') {
+		console.warn('highlightCountiesWithPoints: Missing Turf.js library.');
+		return;
+	}
+
+	// Array to hold extracted points
+	const points = [];
+
+	// Get all the points from the marker groups and put them in the points array
+	for (const [type, group] of Object.entries(markerGroups)) {
+		for (const [taxon, values] of Object.entries(group)) {
+			for (const point of values) {
+				if (point.getLatLng) points.push(point.getLatLng());
+			}
+		}
+	}
+
+	// Convert points to Turf.js FeatureCollection (Turf expects [lng, lat])
+	const turfPoints = turf.featureCollection(
+		points.map(pt => turf.point([pt.lng, pt.lat]))
+	);
+
+	// Get the layer with the counites
+	countiesContainer.eachLayer(countiesLayer => {
+
+		// Check if this counties layer is the L.GeoJSON layer holding polygons
+		if (countiesLayer instanceof L.GeoJSON || typeof countiesLayer.toGeoJSON === 'function') {
+
+			// Iterate over each county, checking if points are in it
+			countiesLayer.eachLayer(countyLayer => {
+
+				const countyGeoJSON = countyLayer.toGeoJSON();
+				let hasOccurrence = false;
+
+				// Efficiently check if any point falls inside the county polygon
+				for (let i = 0; i < turfPoints.features.length; i++) {
+					if (turf.booleanPointInPolygon(turfPoints.features[i], countyGeoJSON)) {
+						hasOccurrence = true;
+						break; // Stop checking further points for this county
+					}
+				}
+
+				// Save data on whether the county has occurrences
+				countyLayer.options.hasOccurrences = hasOccurrence;
+
+				// Much slower, don't use
+				//hasOccurrence = turf.pointsWithinPolygon(turfPoints, countyGeoJSON).features.length > 0;
+
+				// If there are occurrences in the county, highlight the county
+				if (hasOccurrence) {
+					countyLayer.setStyle(highlightStyle);
+				}
+			});
+		}
+	});
+}

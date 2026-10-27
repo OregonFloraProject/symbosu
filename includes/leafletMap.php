@@ -82,3 +82,6 @@
 
 <!-- Leaflet KML Plugin -->
 <script src="<?php echo $CLIENT_ROOT?>/js/leaflet.OregonFlora/plugins/leaflet.KML.js"></script>
+
+<!-- Turf Geospatial Toolkit (Used to check for points in polygon to highlight occupied counties) -->
+<script src="<?php echo $CLIENT_ROOT?>/js/leaflet.OregonFlora/turf.min.js"></script>
