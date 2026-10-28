@@ -390,15 +390,21 @@ else{
 				/* US-letter size */
 
 				.letter {
+					align-self: start;
+					display: flex;
+					flex-direction: column;
 					width: 8.5in;
-					height: 11in;
-					margin-top: 0;
+					min-height: 11in;
+					margin: 0 auto 30px;
+					padding: 0.75in 1in; /* same margins as @page */
+					box-sizing: border-box;
+					box-shadow: 0 0 8px rgba(0, 0, 0, 0.25);
 				}
 
 				.controls {
-					width: 800px;
-					margin: 0px auto;
-					padding-bottom: 30px;
+					width: 8.5in;
+					margin: 0 auto;
+					padding-bottom: 10px;
 				}
 
 				#addressheader {
@@ -468,33 +474,45 @@ else{
 					margin-bottom: 10px;
 				}
 
+				#description div:not(.description){
+					margin-bottom: 1em;
+				}
+
 				#signaturefooter {
-					position: fixed;
-					bottom: 50px;
+					position: static;
+					margin-top: auto;
 					line-height: 220%;
 				}
 
 				/* Print formatting */
 
+				/* Let the page handle margins instead of .body or .letter */
+				@page {
+				  size: letter;
+				  margin: 0.75in 1in;
+				}
+
 				@media print {
+
 				 	.controls {
 				    	display: none;
 					}
 
-					.body {
-					    width: auto;
-					    margin-left: 0.75in;
-					    margin-right: 0.75in;
-					    margin-top: 0.5in;
-					    margin-bottom: 0.5in;
+					.body, .letter {
+						width: auto;
+						/* 11in minus 1.5in of @page margins, with a small buffer */
+						min-height: 9.4in;
+						margin: 0;
+						padding: 0;
+						box-shadow: none
 					}
-				  	
-				  	div {
-					    page-break-before: auto;
-					    break-before: auto;
-					    page-break-inside: avoid;
-					    break-inside: avoid;
-				  	}
+
+					/* Don't allow a page break inside the following small divs */
+					#outgoinginfo, #shippingcontents, #exchangebalance,
+					#regulations, #signaturefooter {
+						page-break-inside: avoid; /* for older browsers */
+						break-inside: avoid;
+					}
 				}
 			</style>
 			<script language="javascript">
@@ -660,7 +678,7 @@ else{
 					?>
 				</div>
 				<div id="regulations">
-					Please advise us if specimens are not received in good order. Borrowers will please observe the <em>Recommendations on Desirable Procedures in Herbarium Practice and Ethics</em> (Brittonia 10: 93-95. 1958).
+					Please advise us if specimens are not received in good order. Borrowers will please annotate all specimens, request permission for destructive sampling, and observe the recommendations in <em>Herbarium Practices and Ethics, III</em> (Systematic Botany 44:7-13. 2019).
 				</div>
 				<hr class="double">
 				<div id="description">
@@ -703,7 +721,7 @@ else{
 					?>
 				</div>
 				<div id="signaturefooter">
-					<div style="display: flex; justify-content: flex-end;">Director: Aaron Liston</div>
+					<div style="display: flex; justify-content: flex-end;">Director: Patrick McKenzie</div>
 					<div style="font-size: 11pt;">Upon arrival of the specimens, please verify their receipt by returning one copy of this shipping notice.</div>
 					<div style="font-size:  11pt;">
 						<div style="display: inline; float: left;">Signature: <div class="blank" style="width: 300px"></div></div>
