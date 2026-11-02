@@ -94,6 +94,7 @@ Language::load('collections/editor/includes/imgprocessor');
 					}
 					?>
 					<div style="width:100%;clear:both;">
+						<?php if(!empty($TESSERACT_PATH)){?>
 						<fieldset class="ocr-box">
 							<legend>Tesseract OCR</legend>
 							<div title="<?php echo (defined('OCRWHOLEIMAGETIP') ? OCRWHOLEIMAGETIP : ''); ?>">
@@ -107,7 +108,7 @@ Language::load('collections/editor/includes/imgprocessor');
 								<img id="workingcircle-tess-<?php echo $imgCnt; ?>" src="../../images/workingcircle.gif" style="display:none;" />
 							</div>
 						</fieldset>
-						<?php
+						<?php }
 						if(!empty($DIGILEAP_OCR_ACTIVATED)){
 							?>
 							<fieldset class="ocr-box">

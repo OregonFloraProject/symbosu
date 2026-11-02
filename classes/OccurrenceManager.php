@@ -286,7 +286,8 @@ class OccurrenceManager extends OccurrenceTaxaManager {
 			$this->displaySearchArr[] = $pointArr[0] . ' ' . $pointArr[1] . ' +- ' . $pointArr[2] . $pointArr[3];
 		}
 		elseif(!empty($this->searchTermArr['footprintGeoJson'])){
-			$sqlWhere .= "AND (ST_Within(p.lngLatPoint,ST_GeomFromGeoJSON('".$this->searchTermArr['footprintGeoJson']."'))) ";
+			$sqlWhere .= "AND (MBRCONTAINS(ST_GeomFromGeoJSON('" . $this->searchTermArr['footprintGeoJson'] . "'), p.lngLatPoint))
+				AND (ST_Within(p.lngLatPoint,ST_GeomFromGeoJSON('" . $this->searchTermArr['footprintGeoJson'] . "'))) ";
 			$this->displaySearchArr[] = $this->LANG['POLYGON_SEARCH'];
 		}
 		if(array_key_exists('collector',$this->searchTermArr)){
@@ -658,15 +659,6 @@ class OccurrenceManager extends OccurrenceTaxaManager {
 		}
 	}
 
-	protected function getGeoJsonBoundingBoxWhere() {
-		if(!empty($this->searchTermArr['footprintGeoJson'])) {
-			$geoJson = $this->searchTermArr['footprintGeoJson'];
-			return " AND (MBRCONTAINS(ST_GeomFromGeoJSON('" . $geoJson . "'), p.lngLatPoint)) ";
-		}
-
-		return '';
-	}
-
 	protected function setPaleoSqlWith() {
 		$paleoSqlWith = '';
 		if (array_key_exists("earlyInterval",$this->searchTermArr) || array_key_exists("lateInterval",$this->searchTermArr)) {
@@ -734,7 +726,7 @@ class OccurrenceManager extends OccurrenceTaxaManager {
 		return $retDate;
 	}
 
-	protected function getTableJoins($sqlWhere){
+	protected function getTableJoins($sqlWhere, $forceSpatialIndex = false){
 		$sqlJoin = '';
 		if($sqlWhere){
 			if(array_key_exists('clid',$this->searchTermArr) && $this->searchTermArr['clid']){
@@ -759,7 +751,13 @@ class OccurrenceManager extends OccurrenceTaxaManager {
 				$sqlJoin .= 'LEFT JOIN omoccurassociations a ON o.occid = a.occid AND a.relationship = "iNaturalistObservation" ';
 			}
 			if(array_key_exists('footprintGeoJson',$this->searchTermArr) || strpos($sqlWhere,'p.lngLatPoint') || array_key_exists('polygons',$this->searchTermArr)){
-				$sqlJoin .= 'INNER JOIN omoccurpoints p ON o.occid = p.occid ';
+				if($forceSpatialIndex > 50){
+					//Pagination with a high page number significantly beneftis from forcing polygon spatial index
+					$sqlJoin .= 'INNER JOIN omoccurpoints p FORCE INDEX (IX_omoccurpoints_latLngPoint) ON o.occid = p.occid ';
+				}
+				else{
+					$sqlJoin .= 'INNER JOIN omoccurpoints p ON o.occid = p.occid ';
+				}
 			}
 			if(array_key_exists('polygons',$this->searchTermArr)){
 				$polygonIDs = $this->searchTermArr['polygons'];
@@ -878,17 +876,23 @@ class OccurrenceManager extends OccurrenceTaxaManager {
 		$this->searchTermArr[$this->cleanInputStr($termKey)] = $this->cleanInputStr($termValue);
 	}
 
-	public function getSearchTerm($k, $currentPage = null){
-		if($k && isset($this->searchTermArr[$k])){
-			if(is_array($this->searchTermArr[$k])) {
-				return $this->cleanOutArray($this->searchTermArr[$k]);
-			} else {
-				return $this->cleanOutStr(trim($this->searchTermArr[$k],' ;'));
+	public function getSearchTerm($k){
+		if($k){
+			if(isset($this->searchTermArr[$k])){
+				if(is_array($this->searchTermArr[$k])) {
+					return $this->cleanOutArray($this->searchTermArr[$k]);
+				} else {
+					return $this->cleanOutStr(trim($this->searchTermArr[$k],' ;'));
+				}
 			}
-		}
-		if($k === 'db'){
-			$sessionKey = 'query' . $currentPage . '/db';
-			return $_SESSION[$sessionKey] ?? 'all';
+			else{
+				if($k === 'db'){
+					$queryTerm = 'all';
+					$sessionKey = 'query' . $_SERVER['REQUEST_URI'] . '/db';
+					if(!empty($_SESSION[$sessionKey])) $queryTerm = $_SESSION[$sessionKey];
+					return $this->cleanOutStr($queryTerm);
+				}
+			}
 		}
 		return '';
 	}

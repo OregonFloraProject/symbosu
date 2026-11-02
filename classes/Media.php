@@ -11,36 +11,6 @@ include_once($SERVER_ROOT . '/classes/utilities/Language.php');
 
 Language::load('classes/Media');
 
-function get_occurrence_upload_path($institutioncode, $collectioncode, $catalognumber = null) {
-	$root = $institutioncode . ($collectioncode? '_'. $collectioncode: '') . '/';
-
-	if($catalognumber) {
-		//Clean out Symbols that would interfere with
-		$derived_cat_num = str_replace(array('/','\\',' '), '', $catalognumber);
-
-		//Grab any characters in the range of 0-8 then any amount digits
-		if(preg_match('/^(\D{0,8}\d{4,})/', $derived_cat_num, $matches)){
-			//Truncate cat number to keep directories from getting out of hand
-			$derived_cat_num = substr($matches[1], 0, -3);
-
-			//If derived catalog number is a number less then five pad front with 0's
-			if(is_numeric($derived_cat_num) && strlen($derived_cat_num) < 5) {
-				$derived_cat_num = str_pad($derived_cat_num, 5, "0", STR_PAD_LEFT);
-			}
-
-			$root .= $derived_cat_num . '/';
-			//backup catalogNumber
-		} else {
-			$root .= '00000/';
-		}
-		//Use date as a backup so that main directory doesn't get filled up but can debug
-	} else {
-		$root .= date('Ym') . '/';
-	}
-
-	return str_replace(' ', '_', $root);
-}
-
 class Media {
 	private static $mediaRootPath;
 	private static $mediaRootUrl;
@@ -111,29 +81,43 @@ class Media {
 	}
 
 	/**
-	 * Pulls file name out of directory path or url
-	 *
-	 * Note: The url parsing expects the filename to not be in the query or hash
-	 *
-	 * @param string $filepath Can be a file or url path
-	 * return array<string,mixed>
-	 * @return array<string,mixed>
+	 * 
+	 * @param mixed $institutioncode
+	 * @param mixed $collectioncode
+	 * @param mixed $catalognumber Optional; defaults to null.
+	 * @return string
 	 */
-	public static function parseFileName(string $filepath): array {
-		$file_name = $filepath;
+	public static function get_occurrence_upload_path($institutioncode, $collectioncode, $catalognumber = null) {
+		$root = $institutioncode . ($collectioncode? '_'. $collectioncode: '') . '/';
 
-		//Filepath maybe a url so clear out url query if it exists
-		$query_pos = strpos($file_name,'?');
-		if($query_pos) $file_name = substr($file_name, 0, $query_pos);
+		if($catalognumber) {
+			//Clean out Symbols that would interfere with
+			$derived_cat_num = str_replace(array('/','\\',' '), '', $catalognumber);
 
-		$file_parts = pathinfo($file_name);
+			//Grab any characters in the range of 0-8 then any amount digits
+			if(preg_match('/^(\D{0,8}\d{4,})/', $derived_cat_num, $matches)){
+				//Truncate cat number to keep directories from getting out of hand
+				$derived_cat_num = substr($matches[1], 0, -3);
 
-		return [
-			'name' => $file_parts['filename'],
-			'tmp_name' => $filepath,
-			'extension' => (!empty($file_parts['extension'])) ? strtolower($file_parts['extension']) : ''
-		];
+				//If derived catalog number is a number less then five pad front with 0's
+				if(is_numeric($derived_cat_num) && strlen($derived_cat_num) < 5) {
+					$derived_cat_num = str_pad($derived_cat_num, 5, "0", STR_PAD_LEFT);
+				}
+
+				$root .= $derived_cat_num . '/';
+				//backup catalogNumber
+			} else {
+				$root .= '00000/';
+			}
+			//Use date as a backup so that main directory doesn't get filled up but can debug
+		} else {
+			$root .= date('Ym') . '/';
+		}
+
+		return str_replace(' ', '_', $root);
 	}
+
+
 	/**
 	 * @return string
 	 * @param array<int,mixed> $media_arr
@@ -315,32 +299,6 @@ class Media {
 		}
 	}
 
-	/**
-	 * Strips out undesired characters from from a pure file name string
-	 *
-	 * @param string $file_name A file name without the extension
-	 * return string
-	 */
-	public static function cleanFileName(string $file_name):string {
-		$file_name = str_replace(".","", $file_name);
-		$file_name = str_replace(array("%20","%23"," ","__"),"_",$file_name);
-		$file_name = str_replace("__","_",$file_name);
-		$file_name = str_replace(array(chr(231),chr(232),chr(233),chr(234),chr(260)),"a",$file_name);
-		$file_name = str_replace(array(chr(230),chr(236),chr(237),chr(238)),"e",$file_name);
-		$file_name = str_replace(array(chr(239),chr(240),chr(241),chr(261)),"i",$file_name);
-		$file_name = str_replace(array(chr(247),chr(248),chr(249),chr(262)),"o",$file_name);
-		$file_name = str_replace(array(chr(250),chr(251),chr(263)),"u", $file_name);
-		$file_name = str_replace(array(chr(264),chr(265)),"n",$file_name);
-		$file_name = preg_replace("/[^a-zA-Z0-9\-_]/", "", $file_name);
-		$file_name = trim($file_name,' _-');
-
-		if(strlen($file_name) > 30) {
-			$file_name = substr($file_name, 0, 30);
-		}
-
-		return $file_name;
-	}
-
 	private static function isValidFile($file): bool {
 		return $file && !empty($file) && isset($file['error']) && $file['error'] === 0;
 	}
@@ -360,8 +318,8 @@ class Media {
 			$media_upload_type = MediaType::tryFrom($media_upload_type);
 		}
 
-		$parsed_file = self::parseFileName($url);
-		$parsed_file['name'] = self::cleanFileName($parsed_file['name']);
+		$parsed_file = UploadUtil::parseFileName($url);
+		$parsed_file['name'] = UploadUtil::cleanFileName($parsed_file['name']);
 
 		if(!$parsed_file['extension'] && $file_type_mime) {
 			$parsed_file['extension'] = UploadUtil::mime2ext($file_type_mime);
@@ -523,7 +481,7 @@ class Media {
 		try {
 			if(self::isValidFile($file)) {
 				$pathInfo =	pathinfo($file['name']);
-				$pathInfo['filename'] = self::cleanFileName($pathInfo['filename']);
+				$pathInfo['filename'] = UploadUtil::cleanFileName($pathInfo['filename']);
 				$file['name'] = $pathInfo['filename'] . '.' . ($pathInfo['extension'] ?? '');
 				$file['full_path'] = $file['name'];
 			} else if($post_arr['copytoserver'] ?? false) {
@@ -588,11 +546,7 @@ class Media {
 					$width = $size[0];
 					$height = $size[1];
 
-
-					$storage->upload($file);
-					$createdFilepaths['originalUrl'] = $storage->getDirPath($file);
-
-					$urls = [
+					$urls = [ 
 						'thumbnailUrl' => [
 							'name' => self::addToFilename($file['name'], '_tn'),
 							'width' => $GLOBALS['IMG_TN_WIDTH']?? 200,
@@ -605,38 +559,48 @@ class Media {
 						]
 					];
 
+					self::insertMediaMetadata($media_metadata['mediaID'], 'originalUrl', $file['size'], md5_file($file['tmp_name']));
+
 					foreach($urls as $url => $data) {
 						if(!($media_metadata[$url] ?? false)) {
+							$tmp = tmpfile();
+							$temp_path = stream_get_meta_data($tmp)['uri'];
+
 							self::create_image(
-								$file['name'],
-								$data['name'],
-								$storage,
+								$file['tmp_name'],
+								$temp_path,
 								$data['width'],
 								$data['height']
 							);
+
+							//If file doesn't according to the upload strategy then upload it to the correct place. This will only run if the media storage is remote to the server
+							if(!$storage->file_exists($data['name'])) {
+								$storage->upload([
+									'name' => $data['name'],
+									'tmp_name' => $temp_path,
+									'type' => $file['type'],
+								]);
+							}
 
 							if($storage->file_exists($data['name'])) {
 								$metadata[$url] = $storage->getUrlPath($data['name']);
 								$createdFilepaths[$url] = $storage->getDirPath($data['name']);
 							}
 
+							self::insertMediaMetadata($media_metadata['mediaID'], $url, filesize($temp_path), md5_file($temp_path));
+
+							unlink($temp_path);
 						}
 					}
 
+					$createdFilepaths['originalUrl'] = $storage->getDirPath($file);
 					self::update_metadata($metadata, $media_metadata['mediaID'], $conn);
-				} elseif($media_type === MediaType::Audio) {
-					$storage->upload($file);
-					$createdFilepaths['originalUrl'] = $storage->getDirPath($file);
-				} elseif($media_type === MediaType::Misc) {
-					$storage->upload($file);
-					$createdFilepaths['originalUrl'] = $storage->getDirPath($file);
 				}
-			}
 
-			foreach($createdFilepaths as $field => $filepath) {
-				if(file_exists($filepath)) {
-					self::insertMediaMetadata($media_metadata['mediaID'], $field, filesize($filepath), md5_file($filepath));
-				}
+				// Upload and Cleanup temporary file
+				$storage->upload($file);
+				$createdFilepaths['originalUrl'] = $storage->getDirPath($file);
+				unlink($file['tmp_name']);
 			}
 
 			mysqli_commit($conn);
@@ -644,9 +608,7 @@ class Media {
 			mysqli_rollback($conn);
 
 			foreach($createdFilepaths as $field => $filepath) {
-				if(file_exists($filepath)) {
-					unlink($filepath);
-				}
+				$storage->remove($filepath);
 			}
 
 			array_push(self::$errors, $th->getMessage());
@@ -692,7 +654,7 @@ class Media {
 		$move_files = [];
 
 		if($media_arr['url']) {
-			$file = self::parseFileName($media_arr['url']);
+			$file = UploadUtil::parseFileName($media_arr['url']);
 			$filename = $file['name'] . $file['extension'];
 
 			//Check if stored in our system if so move to path
@@ -705,7 +667,7 @@ class Media {
 		$remap_urls = ['url', 'originalUrl', 'thumbnailUrl'];
 		foreach($remap_urls as $url) {
 			if($media_arr[$url]) {
-				$file = self::parseFileName($media_arr[$url]);
+				$file = UploadUtil::parseFileName($media_arr[$url]);
 				$filename = $file['name'] . '.' . $file['extension'];
 
 				//Check if stored in our system if so move to path
@@ -782,8 +744,8 @@ class Media {
 
 	private static function check_file_rename(string $old_filepath, string $new_filepath) {
 		if($old_filepath && $new_filepath) {
-			$old_file = self::parseFileName($old_filepath);
-			$new_file = self::parseFileName($new_filepath);
+			$old_file = UploadUtil::parseFileName($old_filepath);
+			$new_file = UploadUtil::parseFileName($new_filepath);
 
 			if($old_file['extension'] != $new_file['extension']) {
 				throw new MediaException(MediaException::IllegalRenameChangedFileType);
@@ -897,23 +859,15 @@ class Media {
 	 * @param int $new_width Maximum width for the new image if zero will box to height
 	 * @param int $new_height Maximum height for the new image if zero will box to width
 	 */
-	public static function create_image($src_file, $new_file, StorageStrategy $storage, $new_width, $new_height): void {
+	public static function create_image($src_path, $new_path, $new_width, $new_height): void {
 		global $USE_IMAGE_MAGICK;
 
 		if($USE_IMAGE_MAGICK) {
-			self::create_image_imagick($src_file, $new_file, $storage, $new_width, $new_height);
+			self::create_image_imagick($src_path, $new_path, $new_width, $new_height);
 		} elseif(extension_loaded('gd') && function_exists('gd_info')) {
-			self::create_image_gd($src_file, $new_file, $storage, $new_width, $new_height);
+			self::create_image_gd($src_path, $new_path, $new_width, $new_height);
 		} else {
 			throw new Exception('No image handler for image conversions');
-		}
-
-		//If file doesn't according to the upload strategy then upload it to the correct place. This will only run if the media storage is remote to the server
-		if(!$storage->file_exists($new_file)) {
-			$storage->upload([
-				'name' => $new_file,
-				'tmp_name' => $storage->getDirPath($new_file),
-			]);
 		}
 	}
 
@@ -924,19 +878,15 @@ class Media {
 	 * Most portals using imagick have ImageMagick installed on server and make system calls in order to use it.
 	 * At the time of making this function no know portals have the imagick pecl package installed but and implemenation was made as we are potentially heading in that direction.
 	 *
-	 * @param string $src_file Filename to image base
-	 * @param string $new_file Filename for newly resized image
-	 * @param StorageStrategy $storage Class that instructs where how how an image should be stored
+	 * @param string $src_file Filepath to image base
+	 * @param string $new_file Filepath for newly resized image
 	 * @param int $new_width Maximum width for the new image if zero will box to height
 	 * @param int $new_height Maximum height for the new image if zero will box to width
 	 */
 	private static function create_image_imagick(
-		string $src_file, string $new_file,
-		StorageStrategy $storage,
+		string $src_path, string $new_path,
 		int $new_width, int $new_height
 	): void {
-		$src_path = $storage->getDirPath($src_file);
-		$new_path = $storage->getDirPath($new_file);
 
 		if($new_height === 0 && $new_width === 0) {
 			throw new Exception('Must have width or height as non zero values');
@@ -975,18 +925,13 @@ class Media {
 	 *
 	 * @param string $src_file Filename to image base
 	 * @param string $new_file Filename for newly resized image
-	 * @param StorageStrategy $storage Class that instructs where how how an image should be stored
 	 * @param int $new_width Maximum width for the new image if zero will box to height
 	 * @param int $new_height Maximum height for the new image if zero will box to width
 	 */
 	private static function create_image_gd(
-		string $src_file, string $new_file,
-		StorageStrategy $storage,
+		string $src_path, string $new_path,
 		int $new_width, int $new_height
 	): void {
-
-		$src_path = $storage->getDirPath($src_file);
-		$new_path = $storage->getDirPath($new_file);
 
 		if($new_width === 0 && $new_height === 0) {
 			throw new Exception('Must have width or height as non zero values');
@@ -999,7 +944,7 @@ class Media {
 		$mime_type = $size['mime'];
 
 		if(!self::enough_memory_gd($size[0], $size[1])) {
-			throw new MediaException(MediaException::NotEnoughMemoryImage, ': ' . $new_file);
+			throw new MediaException(MediaException::NotEnoughMemoryImage, ': ' . $new_path);
 		}
 
 		$orig_width = $width;
@@ -1177,22 +1122,12 @@ class Media {
 
 			//Unlink all files
 			if($remove_files) {
-				$root_url = self::getMediaRootUrl();
-				$root_path = self::getMediaRootPath();
+				$storage = StorageFactory::make();
+
 				foreach($media_urls as $url) {
-					if($url && $root_url) {
-						if(strpos($url, $root_url) === 0){		//Only images residing on local server can be deleted
-							//Convert url to a local path
-							$path = $root_path . substr($url, strlen($root_url));
-							if(file_exists($path)){
-								if(is_writable($path)) {
-									if(!unlink($path)) {
-										error_log("WARNING: File (path: " . $path . ") failed to delete from server");
-									}
-								} else{
-									throw new MediaException(MediaException::FilepathNotWritable, $path);
-								}
-							}
+					if($url && $storage->file_exists($url)) {
+						if(!$storage->remove($url)) {
+							error_log("WARNING: File (path: " . $url . ") failed to delete from server");
 						}
 					}
 				}
@@ -1368,7 +1303,7 @@ class Media {
 		SQL;
 
 		if($with_media) {
-			$sql .= ' WHERE u.uid in (select DISTINCT creatorUid from media)';
+			$sql .= ' LEFT JOIN media m on u.uid = m.creatorUid WHERE m.creatorUid IS NOT NULL';
 		}
 
 		$sql .= ' ORDER BY u.lastname, u.firstname';

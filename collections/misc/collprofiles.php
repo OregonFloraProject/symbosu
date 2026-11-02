@@ -5,9 +5,10 @@ include_once($SERVER_ROOT . '/classes/SOLRManager.php');
 include_once($SERVER_ROOT . '/classes/OccurrenceCollectionProfile.php');
 include_once($SERVER_ROOT . '/classes/OccurrenceEditorManager.php');
 include_once($SERVER_ROOT . '/classes/utilities/GeneralUtil.php');
+include_once($SERVER_ROOT . '/classes/utilities/Sanitize.php');
 include_once($SERVER_ROOT . '/classes/utilities/Language.php');
 
-Language::load(['collections/misc/collprofiles', 'sitemap']);
+Language::load(['collections/misc/collprofiles', 'profile/adminmenu']);
 
 header('Content-Type: text/html; charset=' . $CHARSET);
 unset($_SESSION['editorquery']);
@@ -340,9 +341,7 @@ elseif(file_exists('../editor/includes/config/occurVarDefault.php')){
 		<b><?= $LANG['COLL_PROFILE'] ?></b>
 	</div>
 	<div role="main" id="innertext" style="padding-top:0">
-		<div id="all_collections_parent_container" data-config='<?= json_encode([
-		'CURRENT_URL' => $_SERVER['REQUEST_URI'],
-		]) ?>'></div>
+		<div id="all_collections_parent_container" data-config='<?= json_encode(['CURRENT_URL' => Sanitize::outString($_SERVER['REQUEST_URI'])]) ?>'></div>
 		<?php
 		if ($collid && !$collid == 0){
 			?>
@@ -697,7 +696,7 @@ elseif(file_exists('../editor/includes/config/occurVarDefault.php')){
 								}
 								?>
 								<li style="margin-left:10px;">
-									<a href="#" onclick="newWindow = window.open('collbackup.php?collid=<?= $collid ?>','bucollid','scrollbars=1,toolbar=0,resizable=1,width=600,height=250,left=20,top=20');">
+									<a href="#" onclick="newWindow = window.open('collbackup.php?collid=<?= $collid ?>','bucollid','scrollbars=1,toolbar=0,resizable=1,width=700,height=450,left=20,top=20');">
 										<?= $LANG['BACKUP_DATA_FILE'] ?>
 									</a>
 								</li>
@@ -810,7 +809,7 @@ elseif(file_exists('../editor/includes/config/occurVarDefault.php')){
 				}
 			}
 			if ($collData['publishtogbif'] && $datasetKey) {
-				$dataUrl = 'http://www.gbif.org/dataset/' . $datasetKey;
+				$dataUrl = 'https://www.gbif.org/dataset/' . $datasetKey;
 				?>
 				<div style="margin-top:5px;">
 					<div><b><?= $LANG['GBIF_DATASET'] ?>:</b> <a href="<?= $dataUrl ?>" target="_blank" rel="noopener noreferrer"><?= $dataUrl ?></a></div>
@@ -833,7 +832,7 @@ elseif(file_exists('../editor/includes/config/occurVarDefault.php')){
 				echo '<div class="field-div"><span class="label">Cite this collection:</span><blockquote>';
 				// If GBIF dataset key is available, fetch GBIF format from API
 				if ($collData['publishtogbif'] && $datasetKey && file_exists($SERVER_ROOT . '/includes/citationgbif.php')) {
-					$gbifUrl = 'http://api.gbif.org/v1/dataset/' . $datasetKey;
+					$gbifUrl = 'https://api.gbif.org/v1/dataset/' . $datasetKey;
 					$context = stream_context_create(['http' => ['timeout' => 2]]);
 					$response = file_get_contents($gbifUrl, false, $context);
 					$responseData = $response !== false ? json_decode($response) : null;

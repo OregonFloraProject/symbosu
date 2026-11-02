@@ -5,7 +5,7 @@ include_once($SERVER_ROOT . '/classes/utilities/Language.php');
 Language::load('collections/editor/occurrenceeditor');
 
 //file upload handle
-include_once $SERVER_ROOT . "/classes/Media.php";
+include_once $SERVER_ROOT . '/classes/Media.php';
 if (isset($_SERVER['CONTENT_LENGTH']) && $_SERVER['CONTENT_LENGTH'] > UploadUtil::getMaximumPostSize() && empty($_POST) && empty($_FILES)) {
 	$max_size = UploadUtil::formatBytes(UploadUtil::getMaximumFileUploadSize());
 	$ex = new MediaException(MediaException::ExceedMaxSize, $max_size);
@@ -14,7 +14,7 @@ if (isset($_SERVER['CONTENT_LENGTH']) && $_SERVER['CONTENT_LENGTH'] > UploadUtil
 	if($_SESSION['occurrenceEditorFallbackUrl']) {
 		header('Location: ' . $_SESSION['occurrenceEditorFallbackUrl']);
 	} else {
-		header('Location: ' . $_SERVER['HTTP_REFERER']);
+		header('Location: ' . $SERVER_ROOT . '/index.php');
 	}
     exit;
 }
@@ -251,7 +251,7 @@ if($SYMB_UID){
 				}
 			}
 			elseif($action == 'Submit Image Edits'){
-				Media::update($_POST['imgid'], $_POST, new LocalStorage());
+				Media::update($_POST['imgid'], $_POST, StorageFactory::make());
 
 				if($errors = Media::getErrors()) {
 					$statusStr = 'ERROR: ' . array_pop($errors);
@@ -268,7 +268,7 @@ if($SYMB_UID){
 
 				try {
 					$occur_map = $occManager->getOccurMap()[$occId];
-					$path = get_occurrence_upload_path(
+					$path = Media::get_occurrence_upload_path(
 						$occur_map['institutioncode'],
 						$occur_map['collectioncode'],
 						$occur_map['catalognumber']
@@ -277,7 +277,7 @@ if($SYMB_UID){
 					Media::uploadAndInsert(
 						$_POST,
 						$_FILES['imgfile'],
-						new LocalStorage($path)
+						StorageFactory::make($path)
 					);
 
 					if($errors = Media::getErrors()) {
@@ -315,14 +315,14 @@ if($SYMB_UID){
 					$target_occur_manager = new OccurrenceEditorManager();
 					$target_occur_manager->setOccId($target_occid);
 					$target_occur_map = $target_occur_manager->getOccurMap()[$target_occid];
-					$remap_path	= get_occurrence_upload_path(
+					$remap_path	= Media::get_occurrence_upload_path(
 						$target_occur_map['institutioncode'],
 						$target_occur_map['collectioncode'],
 						$target_occur_map['catalognumber']
 					);
 
 					$occur_map = $occManager->getOccurMap()[$occId];
-					$current_path = get_occurrence_upload_path(
+					$current_path = Media::get_occurrence_upload_path(
 						$occur_map['institutioncode'],
 						$occur_map['collectioncode'],
 						$occur_map['catalognumber']
@@ -330,8 +330,8 @@ if($SYMB_UID){
 					Media::remap(
 						intval($_POST['imgid']),
 						$target_occid,
-						new LocalStorage($current_path),
-						new LocalStorage($remap_path)
+						StorageFactory::make($current_path),
+						StorageFactory::make($remap_path)
 					);
 
 					$statusStr = $LANG['IMAGE_REMAP_SUCCESS'] .' <a href="occurrenceeditor.php?occid=' . htmlspecialchars($target_occid, ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE) . '" target="_blank">' . htmlspecialchars($target_occid, ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE) . '</a>';
@@ -491,7 +491,7 @@ if($SYMB_UID){
 		$imgCnt = 1;
 		foreach($specImgArr as $imgId => $i2){
 			$iUrl = $i2['url'];
-			if($iUrl == 'empty' && $i2['origurl']) $iUrl = $i2['origurl'];
+			if(empty($iUrl) && $i2['origurl']) $iUrl = $i2['origurl'];
 			if($imgUrlPrefix && substr($iUrl,0,4) != 'http') $iUrl = $imgUrlPrefix.$iUrl;
 			$imgArr[$imgCnt]['mediaid'] = $imgId;
 			$imgArr[$imgCnt]['web'] = $iUrl;
@@ -1078,9 +1078,9 @@ else{
 													<br/>
 													<input type="text" id="ffcountry" name="country" value="<?php echo array_key_exists('country',$occArr)?$occArr['country']:''; ?>" onchange="fieldChanged('country');" autocomplete="off" />
 												</div>
-												<div id="stateProvinceDiv" class="field-div" title="<?php echo (defined('STATEPROVINCETIP') ? STATEPROVINCETIP : ''); ?>">
-													<?php echo (defined('STATEPROVINCELABEL')?STATEPROVINCELABEL:$LANG['STATEPROVINCE']); ?>
-													<a href="#" onclick="return dwcDoc('stateProvince')" tabindex="-1"><img class="docimg" src="../../images/qmark.png" /></a>
+												<div id="stateProvinceDiv" class="field-div">
+													<?php echo $LANG['STATEPROVINCE']; ?>
+													<a href="#" onclick="return dwcDoc('stateprovince')" tabindex="-1"><img class="docimg" src="../../images/qmark.png" /></a>
 													<br/>
 													<input type="text" id="ffstate" name="stateprovince" value="<?php echo array_key_exists('stateprovince',$occArr)?$occArr['stateprovince']:''; ?>" onchange="stateProvinceChanged(this.value)" autocomplete="off" />
 												</div>

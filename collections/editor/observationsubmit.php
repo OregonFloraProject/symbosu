@@ -45,7 +45,7 @@ if($collMap){
 		$occurManager->addOccurrence($_POST);
 		$occid = $occurManager->getOccId();
 
-		$path = get_occurrence_upload_path(
+		$path = Media::get_occurrence_upload_path(
 			$collMap['institutioncode'],
 			$collMap['collectioncode'],
 		);
@@ -60,7 +60,7 @@ if($collMap){
 						'occid' => $occid
 					],
 					$file, 
-					new LocalStorage($path)
+					StorageFactory::make($path)
 				);
 
 				if($errors = Media::getErrors()) {
