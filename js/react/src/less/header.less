@@ -212,10 +212,6 @@
           position: absolute;
           top: 11px;
           display: inline-block;
-          background-image: url('@{subdir}/images/icons/search-icon-2x.png') !important;
-          background-size: contain !important;
-          background-position: center !important;
-          opacity: 1;
         }
       }
     }
@@ -312,7 +308,6 @@
           padding: 0 0 1em 0;
           min-width: 300px;
           width: 33vw;
-          height: calc(100vh - 61px);
           border-right: 1px solid @dark-green;
           border-bottom-right-radius: 10px;
           .mobile-inner-container {
@@ -405,9 +400,7 @@
             opacity: 0.8;
             margin-right: 10px;
           }
-          img,
-          svg {
-            flex: 0 0 40px;
+          img {
             height: 40px;
             width: 40px;
           }
@@ -422,7 +415,6 @@
           top: 3.8em;
           position: absolute;
           background-color: @dark-green;
-          // height: calc(100vh - 61px);
           padding-bottom: 0.8rem;
           border-bottom-left-radius: 10px;
           width: auto;
@@ -458,7 +450,7 @@
         ul#site-header-dropdowns {
           overflow: hidden;
           border-bottom-right-radius: 0px;
-          width: 100vw;
+          width: calc(100vw - 15px);
           padding: 15px;
           border-right: none;
           li {

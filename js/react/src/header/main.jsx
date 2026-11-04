@@ -5,8 +5,8 @@ import httpGet from '../common/httpGet.js';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faBars, faChevronUp } from '@fortawesome/free-solid-svg-icons';
-library.add(faBars, faChevronUp);
+import { faBars } from '@fortawesome/free-solid-svg-icons';
+library.add(faBars);
 
 /*
 const DROPDOWNS = [
@@ -312,10 +312,7 @@ class HeaderApp extends React.Component {
               aria-expanded={this.state.showMobileMenu}
               aria-label="Toggle navigation"
               onClick={() => {
-                this.setState((state) => ({
-                  showMobileMenu: !state.showMobileMenu,
-                  showMobileSearch: false,
-                }));
+                this.setState({ showMobileMenu: !this.state.showMobileMenu });
               }}
             >
               <span className="menu-toggle">
@@ -369,23 +366,16 @@ class HeaderApp extends React.Component {
             {this.getLoginButtons()}
             <button
               id="site-search-toggler"
-              className={`no-symbiota-placement${this.state.showMobileSearch ? ' search-open' : ''}`}
+              className="no-symbiota-placement"
               type="button"
-              aria-expanded={this.state.showMobileSearch}
+              aria-expanded="false"
               aria-controls="search-widget-wrapper"
               onClick={() => {
-                this.setState((state) => ({
-                  showMobileSearch: !state.showMobileSearch,
-                  showMobileMenu: false,
-                }));
+                this.setState({ showMobileSearch: !this.state.showMobileSearch });
               }}
             >
               <span>Plant search</span>
-              {this.state.showMobileSearch ? (
-                <FontAwesomeIcon icon="chevron-up" aria-hidden="true" />
-              ) : (
-                <img src={`${this.props.clientRoot}/images/icons/search-icon-2x.png`} alt="" />
-              )}
+              <img src={`${this.props.clientRoot}/images/icons/search-icon-2x.png`} />
             </button>
             <div
               className={`row widget-wrapper mobile-collapsed${this.state.showMobileSearch ? ' mobile-show' : ''}`}
