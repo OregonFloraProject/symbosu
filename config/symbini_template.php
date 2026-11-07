@@ -54,6 +54,7 @@ $NLP_SALIX_ACTIVATED = 0;
 // Vouchervision OCR/Transcription
 $VOUCHERVISION_API_KEY = ''; // API key to use to access Vouchervision API. See https://leafmachine.org/vouchervisiongo/
 $VOUCHERVISION_API_URL = 'https://vouchervision-go-xxxxxxxxxxxx.us-central1.run.app/process-url'; // URL to the Vouchervision API server
+$VOUCHERVISION_VERTEX_PROJECT = ''; // Google Cloud platform project id
 
 //Module activations
 $OCCURRENCE_MOD_IS_ACTIVE = 1;

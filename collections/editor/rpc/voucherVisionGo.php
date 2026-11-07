@@ -7,6 +7,16 @@ include_once('../../../config/symbini.php');
 // Get the JSON data passed to this page, we'll just pass it on
 $jsonData = file_get_contents('php://input');
 
+// Decode the JSON string into an array
+$dataArray = json_decode($jsonData, true);
+
+// Append the vertex project and region parameters
+$dataArray['vertex_project'] = $VOUCHERVISION_VERTEX_PROJECT;
+$dataArray['vertex_region']  = 'global';
+
+// Re-encode the updated array back into a JSON string
+$jsonData = json_encode($dataArray);
+
 // Set up the API request
 $curl_req = curl_init($VOUCHERVISION_API_URL);
 curl_setopt($curl_req, CURLOPT_POST, true);

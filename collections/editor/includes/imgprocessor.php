@@ -127,16 +127,18 @@ Language::load('collections/editor/includes/imgprocessor');
 
 							<input type="checkbox" id="ocrOnly" value="1" /> <?php echo $LANG['VV_OCR_ONLY']; ?><br/>
 							<div style="font-weight: bold; position: relative; left: -6px; margin-bottom: 4px;"> <?php echo $LANG['VV_OCR_ENGINES']; ?></div>
-							<select id="engines" size=2 multiple>
-								<option value="gemini-3.1-flash-lite-preview" selected>Gemini 3.1 Flash Lite</option>
-								<option value="gemini-3-flash-preview">Gemini 3.0 Flash</option>
-								<option value="gemini-3.1-pro-preview">Gemini 3.1 Pro</option>
+							<select id="engines" size=2 multiple style="height: 40px;">
+								<option value="gemini-3.1-flash-lite" selected>Gemini 3.1 Flash Lite</option>
+								<option value="gemini-3.5-flash-lite">Gemini 3.5 Flash Lite</option>
+								<option value="gemini-3.8-flash">Gemini 3.8 Flash</option>
+								<option value="gemini-3.1-pro">Gemini 3.1 Pro</option>
 							</select>
 							<div style="font-weight: bold; position: relative; left: -6px; margin-bottom: 4px;"> <?php echo $LANG['VV_TRANSCRIPTION_MODEL']; ?></div>
 							<select id="llm-model">
-								<option value="gemini-3.1-flash-lite-preview">Gemini 3.1 Flash Lite</option>
-								<option value="gemini-3-flash-preview">Gemini 3.0 Flash</option>
-								<option value="gemini-3.1-pro-preview">Gemini 3.1 Pro</option>
+								<option value="gemini-3.1-flash-lite">Gemini 3.1 Flash Lite</option>
+								<option value="gemini-3.5-flash-lite">Gemini 3.5 Flash Lite</option>
+								<option value="gemini-3.8-flash">Gemini 3.8 Flash</option>
+								<option value="gemini-3.1-pro">Gemini 3.1 Pro</option>
 							</select><br/>
 							<div style="font-weight: bold; position: relative; left: -6px; margin-bottom: 4px;"> <?php echo $LANG['VV_TRANSCRIPTION_PROMPT']; ?></div>
 							<select id="prompt">
