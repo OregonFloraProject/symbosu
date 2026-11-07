@@ -446,7 +446,8 @@ async function ocrVV(ocrButton, imgCnt){
 		},
 		error: function(xhr, status, error) {
 			// Failed to get data back from the Vouchervision-Go API
-			console.log("Failed to get an OCR response from Vouchervision-Go", xhr, status, error);
+			console.log("Failed to get an OCR response from Vouchervision-Go", status, error);
+			console.log("Response Text:", xhr.ResponseText, xhr);
 			alert("Failed to get an OCR response from Vouchervision-Go");
 
 			// Stop busy indicator, and re-enable OCR button
