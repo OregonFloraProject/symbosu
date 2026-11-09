@@ -1131,7 +1131,7 @@ else{
 										<?php
 										if($LOCALITY_AUTO_LOOKUP){
 											?>
-											<div id="localAutoDeactivatedDiv" title="<?php= (defined('LOCALITYAUTOLOOKUPTIP') ? LOCALITYAUTOLOOKUPTIP : ''); ?>">
+											<div id="localAutoDeactivatedDiv" title="<?php (defined('LOCALITYAUTOLOOKUPTIP') ? LOCALITYAUTOLOOKUPTIP : ''); ?>">
 												<input name="localautodeactivated" type="checkbox" value="1" onchange="localAutoChanged(this)" <?= ($LOCALITY_AUTO_LOOKUP == 2 ? 'checked' : '')  ?> tabindex="-1" >
 												<?= $LANG['DEACTIVATE_LOOKUP'] ?>
 											</div>
