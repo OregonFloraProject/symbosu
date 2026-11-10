@@ -50,10 +50,10 @@ header( "Content-Type: text/html; charset=" . $charset );
 			}
 			.taxonomic-checklist .sidebox.search .search-widget .dropdown-menu {
 				position: absolute;
-				top: 100%;
+				top: calc(100% - 1.5rem);
 				left: 0;
 				right: 0;
-				width: 100%;
+				width: calc(100% - 32px);
 				max-height: 220px;
 				overflow-y: auto;
 				z-index: 1000;

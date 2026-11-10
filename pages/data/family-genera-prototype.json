@@ -1,12 +1,1969 @@
 [
-  { "family": "Asteraceae", "genera": ["Achillea", "Artemisia", "Balsamorhiza", "Cirsium", "Erigeron", "Solidago", "Symphyotrichum"] },
-  { "family": "Rosaceae", "genera": ["Amelanchier", "Geum", "Prunus", "Rosa", "Rubus", "Spiraea"] },
-  { "family": "Fabaceae", "genera": ["Astragalus", "Lathyrus", "Lotus", "Lupinus", "Trifolium", "Vicia"] },
-  { "family": "Brassicaceae", "genera": ["Arabidopsis", "Cardamine", "Descurainia", "Draba", "Erysimum"] },
-  { "family": "Poaceae", "genera": ["Agrostis", "Bromus", "Calamagrostis", "Elymus", "Festuca", "Poa"] },
-  { "family": "Cyperaceae", "genera": ["Carex", "Eleocharis", "Eriophorum", "Schoenoplectus", "Scirpus"] },
-  { "family": "Pinaceae", "genera": ["Abies", "Larix", "Picea", "Pinus", "Pseudotsuga", "Tsuga"] },
-  { "family": "Ericaceae", "genera": ["Arctostaphylos", "Chimaphila", "Gaultheria", "Rhododendron", "Vaccinium"] },
-  { "family": "Apiaceae", "genera": ["Angelica", "Heracleum", "Lomatium", "Osmorhiza", "Sanicula"] },
-  { "family": "Ranunculaceae", "genera": ["Anemone", "Aquilegia", "Delphinium", "Ranunculus", "Thalictrum"] }
+  {
+    "family": "Acoraceae",
+    "genera": [
+      "Acorus"
+    ]
+  },
+  {
+    "family": "Aizoaceae",
+    "genera": [
+      "Carpobrotus",
+      "Delosperma",
+      "Sesuvium",
+      "Tetragonia"
+    ]
+  },
+  {
+    "family": "Alismataceae",
+    "genera": [
+      "Alisma",
+      "Damasonium",
+      "Sagittaria"
+    ]
+  },
+  {
+    "family": "Amaranthaceae",
+    "genera": [
+      "Allenrolfea",
+      "Amaranthus",
+      "Atriplex",
+      "Bassia",
+      "Beta",
+      "Blitum",
+      "Chenopodium",
+      "Corispermum",
+      "Dysphania",
+      "Grayia",
+      "Halogeton",
+      "Krascheninnikovia",
+      "Micromonolepis",
+      "Neokochia",
+      "Nitrophila",
+      "Salicornia",
+      "Salsola",
+      "Sarcocornia",
+      "Suaeda"
+    ]
+  },
+  {
+    "family": "Amaryllidaceae",
+    "genera": [
+      "Allium",
+      "Amaryllis",
+      "Galanthus",
+      "Leucojum",
+      "Narcissus"
+    ]
+  },
+  {
+    "family": "Anacardiaceae",
+    "genera": [
+      "Cotinus",
+      "Rhus",
+      "Toxicodendron"
+    ]
+  },
+  {
+    "family": "Apiaceae",
+    "genera": [
+      "Aegopodium",
+      "Anethum",
+      "Angelica",
+      "Anthriscus",
+      "Apium",
+      "Berula",
+      "Bupleurum",
+      "Carum",
+      "Chaerophyllum",
+      "Cicuta",
+      "Cnidium",
+      "Conioselinum",
+      "Conium",
+      "Coriandrum",
+      "Cyclospermum",
+      "Cymopterus",
+      "Daucus",
+      "Eryngium",
+      "Foeniculum",
+      "Glehnia",
+      "Heracleum",
+      "Ligusticum",
+      "Lilaeopsis",
+      "Lomatium",
+      "Myrrhis",
+      "Oenanthe",
+      "Orogenia",
+      "Osmorhiza",
+      "Oxypolis",
+      "Pastinaca",
+      "Perideridia",
+      "Petroselinum",
+      "Pimpinella",
+      "Sanicula",
+      "Scandix",
+      "Sium",
+      "Sphenosciadium",
+      "Tauschia",
+      "Torilis",
+      "Yabea",
+      "Zizia"
+    ]
+  },
+  {
+    "family": "Apocynaceae",
+    "genera": [
+      "Apocynum",
+      "Asclepias",
+      "Cycladenia",
+      "Vinca"
+    ]
+  },
+  {
+    "family": "Aponogetonaceae",
+    "genera": [
+      "Aponogeton"
+    ]
+  },
+  {
+    "family": "Aquifoliaceae",
+    "genera": [
+      "Ilex"
+    ]
+  },
+  {
+    "family": "Araceae",
+    "genera": [
+      "Arum",
+      "Dracunculus",
+      "Landoltia",
+      "Lemna",
+      "Lysichiton",
+      "Peltandra",
+      "Pistia",
+      "Spirodela",
+      "Wolffia",
+      "Zantedeschia"
+    ]
+  },
+  {
+    "family": "Araliaceae",
+    "genera": [
+      "Aralia",
+      "Hedera",
+      "Hydrocotyle",
+      "Oplopanax"
+    ]
+  },
+  {
+    "family": "Aristolochiaceae",
+    "genera": [
+      "Aristolochia",
+      "Asarum"
+    ]
+  },
+  {
+    "family": "Asparagaceae",
+    "genera": [
+      "Asparagus",
+      "Brodiaea",
+      "Camassia",
+      "Chlorogalum",
+      "Dichelostemma",
+      "Dipterostemon",
+      "Hastingsia",
+      "Hyacinthoides",
+      "Leucocrinum",
+      "Maianthemum",
+      "Muilla",
+      "Muscari",
+      "Ornithogalum",
+      "Triteleia"
+    ]
+  },
+  {
+    "family": "Aspleniaceae",
+    "genera": [
+      "Asplenium"
+    ]
+  },
+  {
+    "family": "Asteraceae",
+    "genera": [
+      "Acanthospermum",
+      "Achillea",
+      "Achyrachaena",
+      "Adenocaulon",
+      "Ageratina",
+      "Agoseris",
+      "Ambrosia",
+      "Anaphalis",
+      "Ancistrocarphus",
+      "Anisocarpus",
+      "Antennaria",
+      "Anthemis",
+      "Arctium",
+      "Arctotheca",
+      "Arnica",
+      "Artemisia",
+      "Askellia",
+      "Baccharis",
+      "Balsamorhiza",
+      "Bellis",
+      "Bidens",
+      "Blepharipappus",
+      "Boltonia",
+      "Brickellia",
+      "Cacaliopsis",
+      "Calendula",
+      "Calycadenia",
+      "Canadanthus",
+      "Carduus",
+      "Carthamus",
+      "Centaurea",
+      "Centromadia",
+      "Chaenactis",
+      "Chaetadelpha",
+      "Chamaemelum",
+      "Chondrilla",
+      "Chrysothamnus",
+      "Cichorium",
+      "Cirsium",
+      "Columbiadoria",
+      "Conyza",
+      "Coreopsis",
+      "Corethrogyne",
+      "Cosmos",
+      "Cota",
+      "Cotula",
+      "Crepis",
+      "Crocidium",
+      "Crupina",
+      "Cyclachaena",
+      "Delairea",
+      "Dieteria",
+      "Dimeresia",
+      "Doellingeria",
+      "Doronicum",
+      "Eatonella",
+      "Erechtites",
+      "Ericameria",
+      "Erigeron",
+      "Eriophyllum",
+      "Euchiton",
+      "Eurybia",
+      "Euthamia",
+      "Filago",
+      "Gaillardia",
+      "Galinsoga",
+      "Gamochaeta",
+      "Glebionis",
+      "Glyptopleura",
+      "Gnaphalium",
+      "Grindelia",
+      "Gutierrezia",
+      "Hazardia",
+      "Helenium",
+      "Helianthella",
+      "Helianthus",
+      "Helminthotheca",
+      "Hemizonella",
+      "Hemizonia",
+      "Hesperevax",
+      "Heterotheca",
+      "Hieracium",
+      "Hulsea",
+      "Hymenopappus",
+      "Hymenoxys",
+      "Hypochaeris",
+      "Inula",
+      "Ionactis",
+      "Iva",
+      "Jaumea",
+      "Kyhosia",
+      "Lactuca",
+      "Lagophylla",
+      "Lapsana",
+      "Lapsanastrum",
+      "Lasthenia",
+      "Layia",
+      "Leontodon",
+      "Leucanthemum",
+      "Logfia",
+      "Luina",
+      "Lygodesmia",
+      "Madia",
+      "Malacothrix",
+      "Matricaria",
+      "Micropus",
+      "Microseris",
+      "Mulgedium",
+      "Mycelis",
+      "Nabalus",
+      "Nestotus",
+      "Nothocalais",
+      "Oncosiphon",
+      "Onopordum",
+      "Oreostemma",
+      "Packera",
+      "Petasites",
+      "Pleiacanthus",
+      "Prenanthella",
+      "Pseudognaphalium",
+      "Psilocarphus",
+      "Pyrrocoma",
+      "Rafinesquia",
+      "Raillardella",
+      "Rainiera",
+      "Rhaponticum",
+      "Rigiopappus",
+      "Rudbeckia",
+      "Saussurea",
+      "Senecio",
+      "Sericocarpus",
+      "Silybum",
+      "Solidago",
+      "Soliva",
+      "Sonchus",
+      "Sphaeromeria",
+      "Stenotus",
+      "Stephanomeria",
+      "Stylocline",
+      "Symphyotrichum",
+      "Tagetes",
+      "Tanacetum",
+      "Taraxacum",
+      "Tetradymia",
+      "Thelesperma",
+      "Tonestus",
+      "Townsendia",
+      "Tragopogon",
+      "Tripleurospermum",
+      "Uropappus",
+      "Verbesina",
+      "Wyethia",
+      "Xanthium",
+      "Zinnia"
+    ]
+  },
+  {
+    "family": "Athyriaceae",
+    "genera": [
+      "Athyrium"
+    ]
+  },
+  {
+    "family": "Balsaminaceae",
+    "genera": [
+      "Impatiens"
+    ]
+  },
+  {
+    "family": "Berberidaceae",
+    "genera": [
+      "Achlys",
+      "Berberis",
+      "Vancouveria"
+    ]
+  },
+  {
+    "family": "Betulaceae",
+    "genera": [
+      "Alnus",
+      "Betula",
+      "Corylus"
+    ]
+  },
+  {
+    "family": "Bignoniaceae",
+    "genera": [
+      "Catalpa"
+    ]
+  },
+  {
+    "family": "Blechnaceae",
+    "genera": [
+      "Struthiopteris",
+      "Woodwardia"
+    ]
+  },
+  {
+    "family": "Boraginaceae",
+    "genera": [
+      "Adelinia",
+      "Amsinckia",
+      "Amsinckiopsis",
+      "Anchusa",
+      "Andersonglossum",
+      "Asperugo",
+      "Borago",
+      "Buglossoides",
+      "Cryptantha",
+      "Cynoglossum",
+      "Echium",
+      "Eremocarya",
+      "Eritrichium",
+      "Greeneocharis",
+      "Gruvelia",
+      "Hackelia",
+      "Lappula",
+      "Lithodora",
+      "Lithospermum",
+      "Lycopsis",
+      "Mertensia",
+      "Myosotis",
+      "Oreocarya",
+      "Pectocarya",
+      "Pentaglottis",
+      "Plagiobothrys",
+      "Sonnea",
+      "Symphytum"
+    ]
+  },
+  {
+    "family": "Brassicaceae",
+    "genera": [
+      "Abdra",
+      "Alliaria",
+      "Alyssum",
+      "Arabidopsis",
+      "Arabis",
+      "Armoracia",
+      "Athysanus",
+      "Barbarea",
+      "Berteroa",
+      "Boechera",
+      "Brassica",
+      "Cakile",
+      "Camelina",
+      "Capsella",
+      "Cardamine",
+      "Caulanthus",
+      "Chlorocrambe",
+      "Chorispora",
+      "Cochlearia",
+      "Conringia",
+      "Crambe",
+      "Cusickiella",
+      "Descurainia",
+      "Diplotaxis",
+      "Draba",
+      "Eruca",
+      "Erysimum",
+      "Euclidium",
+      "Guillenia",
+      "Hesperis",
+      "Hirschfeldia",
+      "Hornungia",
+      "Idahoa",
+      "Isatis",
+      "Lepidium",
+      "Lobularia",
+      "Lunaria",
+      "Matthiola",
+      "Nasturtium",
+      "Neslia",
+      "Noccaea",
+      "Odontarrhena",
+      "Phoenicaulis",
+      "Physaria",
+      "Planodes",
+      "Polyctenium",
+      "Raphanus",
+      "Rapistrum",
+      "Rorippa",
+      "Sinapis",
+      "Sisymbrium",
+      "Smelowskia",
+      "Stanleya",
+      "Streptanthella",
+      "Streptanthus",
+      "Strigosella",
+      "Subularia",
+      "Teesdalia",
+      "Thelypodium",
+      "Thlaspi",
+      "Thysanocarpus",
+      "Tomostima",
+      "Turritis"
+    ]
+  },
+  {
+    "family": "Butomaceae",
+    "genera": [
+      "Butomus"
+    ]
+  },
+  {
+    "family": "Cabombaceae",
+    "genera": [
+      "Brasenia",
+      "Cabomba"
+    ]
+  },
+  {
+    "family": "Cactaceae",
+    "genera": [
+      "Opuntia",
+      "Pediocactus"
+    ]
+  },
+  {
+    "family": "Calycanthaceae",
+    "genera": [
+      "Calycanthus"
+    ]
+  },
+  {
+    "family": "Campanulaceae",
+    "genera": [
+      "Campanula",
+      "Downingia",
+      "Githopsis",
+      "Heterocodon",
+      "Howellia",
+      "Lobelia",
+      "Nemacladus",
+      "Porterella",
+      "Triodanis"
+    ]
+  },
+  {
+    "family": "Cannabaceae",
+    "genera": [
+      "Cannabis",
+      "Celtis",
+      "Humulus"
+    ]
+  },
+  {
+    "family": "Caprifoliaceae",
+    "genera": [
+      "Lonicera",
+      "Symphoricarpos"
+    ]
+  },
+  {
+    "family": "Caryophyllaceae",
+    "genera": [
+      "Agrostemma",
+      "Arenaria",
+      "Atocion",
+      "Cardionema",
+      "Cerastium",
+      "Cherleria",
+      "Corrigiola",
+      "Dianthus",
+      "Dichodon",
+      "Eremogone",
+      "Gypsophila",
+      "Herniaria",
+      "Holosteum",
+      "Honckenya",
+      "Loeflingia",
+      "Lychnis",
+      "Moehringia",
+      "Moenchia",
+      "Myosoton",
+      "Paronychia",
+      "Petrorhagia",
+      "Polycarpon",
+      "Pseudostellaria",
+      "Sabulina",
+      "Sagina",
+      "Saponaria",
+      "Scleranthus",
+      "Silene",
+      "Spergula",
+      "Spergularia",
+      "Stellaria",
+      "Vaccaria"
+    ]
+  },
+  {
+    "family": "Celastraceae",
+    "genera": [
+      "Celastrus",
+      "Euonymus",
+      "Paxistima"
+    ]
+  },
+  {
+    "family": "Ceratophyllaceae",
+    "genera": [
+      "Ceratophyllum"
+    ]
+  },
+  {
+    "family": "Cleomaceae",
+    "genera": [
+      "Cleomella",
+      "Peritoma",
+      "Polanisia"
+    ]
+  },
+  {
+    "family": "Comandraceae",
+    "genera": [
+      "Comandra"
+    ]
+  },
+  {
+    "family": "Commelinaceae",
+    "genera": [
+      "Murdannia",
+      "Tradescantia"
+    ]
+  },
+  {
+    "family": "Convolvulaceae",
+    "genera": [
+      "Calystegia",
+      "Convolvulus",
+      "Cressa",
+      "Cuscuta",
+      "Dichondra"
+    ]
+  },
+  {
+    "family": "Cornaceae",
+    "genera": [
+      "Cornus"
+    ]
+  },
+  {
+    "family": "Crassulaceae",
+    "genera": [
+      "Crassula",
+      "Dudleya",
+      "Phedimus",
+      "Rhodiola",
+      "Sedella",
+      "Sedum"
+    ]
+  },
+  {
+    "family": "Crossosomataceae",
+    "genera": [
+      "Glossopetalon"
+    ]
+  },
+  {
+    "family": "Cucurbitaceae",
+    "genera": [
+      "Cucumis",
+      "Echinocystis",
+      "Marah"
+    ]
+  },
+  {
+    "family": "Cupressaceae",
+    "genera": [
+      "Callitropsis",
+      "Calocedrus",
+      "Chamaecyparis",
+      "Hesperocyparis",
+      "Juniperus",
+      "Sequoia",
+      "Taxodium",
+      "Thuja"
+    ]
+  },
+  {
+    "family": "Cyatheaceae",
+    "genera": [
+      "Sphaeropteris"
+    ]
+  },
+  {
+    "family": "Cyperaceae",
+    "genera": [
+      "Amphiscirpus",
+      "Bolboschoenus",
+      "Bulbostylis",
+      "Calliscirpus",
+      "Carex",
+      "Cyperus",
+      "Dulichium",
+      "Eleocharis",
+      "Eriophorum",
+      "Isolepis",
+      "Kobresia",
+      "Lipocarpha",
+      "Rhynchospora",
+      "Schoenoplectiella",
+      "Schoenoplectus",
+      "Scirpus",
+      "Trichophorum"
+    ]
+  },
+  {
+    "family": "Cystopteridaceae",
+    "genera": [
+      "Cystopteris",
+      "Gymnocarpium"
+    ]
+  },
+  {
+    "family": "Dennstaedtiaceae",
+    "genera": [
+      "Pteridium"
+    ]
+  },
+  {
+    "family": "Dipsacaceae",
+    "genera": [
+      "Dipsacus",
+      "Knautia"
+    ]
+  },
+  {
+    "family": "Droseraceae",
+    "genera": [
+      "Drosera"
+    ]
+  },
+  {
+    "family": "Dryopteridaceae",
+    "genera": [
+      "Dryopteris",
+      "Polystichum"
+    ]
+  },
+  {
+    "family": "Ehretiaceae",
+    "genera": [
+      "Tiquilia"
+    ]
+  },
+  {
+    "family": "Elaeagnaceae",
+    "genera": [
+      "Elaeagnus",
+      "Shepherdia"
+    ]
+  },
+  {
+    "family": "Elatinaceae",
+    "genera": [
+      "Bergia",
+      "Elatine"
+    ]
+  },
+  {
+    "family": "Ephedraceae",
+    "genera": [
+      "Ephedra"
+    ]
+  },
+  {
+    "family": "Equisetaceae",
+    "genera": [
+      "Equisetum"
+    ]
+  },
+  {
+    "family": "Ericaceae",
+    "genera": [
+      "Allotropa",
+      "Arbutus",
+      "Arctostaphylos",
+      "Calluna",
+      "Cassiope",
+      "Chimaphila",
+      "Cladothamnus",
+      "Empetrum",
+      "Erica",
+      "Gaultheria",
+      "Hemitomes",
+      "Kalmia",
+      "Kalmiopsis",
+      "Leucothoë",
+      "Menziesia",
+      "Moneses",
+      "Monotropa",
+      "Orthilia",
+      "Phyllodoce",
+      "Pityopus",
+      "Pleuricospora",
+      "Pterospora",
+      "Pyrola",
+      "Rhododendron",
+      "Sarcodes",
+      "Vaccinium"
+    ]
+  },
+  {
+    "family": "Escalloniaceae",
+    "genera": [
+      "Escallonia"
+    ]
+  },
+  {
+    "family": "Euphorbiaceae",
+    "genera": [
+      "Chamaesyce",
+      "Croton",
+      "Euphorbia",
+      "Mercurialis"
+    ]
+  },
+  {
+    "family": "Fabaceae",
+    "genera": [
+      "Acacia",
+      "Acmispon",
+      "Amorpha",
+      "Anthyllis",
+      "Astragalus",
+      "Cercis",
+      "Cicer",
+      "Cytisus",
+      "Dalea",
+      "Galega",
+      "Genista",
+      "Gleditsia",
+      "Glycyrrhiza",
+      "Hedysarum",
+      "Hoita",
+      "Hosackia",
+      "Laburnum",
+      "Ladeania",
+      "Lathyrus",
+      "Lotus",
+      "Lupinus",
+      "Medicago",
+      "Melilotus",
+      "Onobrychis",
+      "Ononis",
+      "Ornithopus",
+      "Oxytropis",
+      "Pisum",
+      "Psorothamnus",
+      "Robinia",
+      "Rupertia",
+      "Securigera",
+      "Sophora",
+      "Spartium",
+      "Sphaerophysa",
+      "Thermopsis",
+      "Trifolium",
+      "Ulex",
+      "Vicia"
+    ]
+  },
+  {
+    "family": "Fagaceae",
+    "genera": [
+      "Chrysolepis",
+      "Notholithocarpus",
+      "Quercus"
+    ]
+  },
+  {
+    "family": "Frankeniaceae",
+    "genera": [
+      "Frankenia"
+    ]
+  },
+  {
+    "family": "Garryaceae",
+    "genera": [
+      "Garrya"
+    ]
+  },
+  {
+    "family": "Gentianaceae",
+    "genera": [
+      "Centaurium",
+      "Cicendia",
+      "Comastoma",
+      "Erythraea",
+      "Frasera",
+      "Gentiana",
+      "Gentianella",
+      "Gentianopsis",
+      "Swertia",
+      "Zeltnera"
+    ]
+  },
+  {
+    "family": "Geraniaceae",
+    "genera": [
+      "California",
+      "Erodium",
+      "Geranium"
+    ]
+  },
+  {
+    "family": "Grossulariaceae",
+    "genera": [
+      "Ribes"
+    ]
+  },
+  {
+    "family": "Gunneraceae",
+    "genera": [
+      "Gunnera"
+    ]
+  },
+  {
+    "family": "Haloragaceae",
+    "genera": [
+      "Myriophyllum"
+    ]
+  },
+  {
+    "family": "Heliotropiaceae",
+    "genera": [
+      "Heliotropium",
+      "Tournefortia"
+    ]
+  },
+  {
+    "family": "Hydrangeaceae",
+    "genera": [
+      "Hydrangea",
+      "Philadelphus",
+      "Whipplea"
+    ]
+  },
+  {
+    "family": "Hydrocharitaceae",
+    "genera": [
+      "Egeria",
+      "Elodea",
+      "Najas",
+      "Vallisneria"
+    ]
+  },
+  {
+    "family": "Hydrophyllaceae",
+    "genera": [
+      "Emmenanthe",
+      "Hesperochiron",
+      "Hydrophyllum",
+      "Nemophila",
+      "Phacelia",
+      "Pholistoma",
+      "Romanzoffia"
+    ]
+  },
+  {
+    "family": "Hypericaceae",
+    "genera": [
+      "Hypericum",
+      "Triadenum"
+    ]
+  },
+  {
+    "family": "Iridaceae",
+    "genera": [
+      "Crocosmia",
+      "Crocus",
+      "Gladiolus",
+      "Iris",
+      "Olsynium",
+      "Romulea",
+      "Sisyrinchium"
+    ]
+  },
+  {
+    "family": "Isoetaceae",
+    "genera": [
+      "Isoetes"
+    ]
+  },
+  {
+    "family": "Juglandaceae",
+    "genera": [
+      "Juglans"
+    ]
+  },
+  {
+    "family": "Juncaceae",
+    "genera": [
+      "Juncus",
+      "Luzula"
+    ]
+  },
+  {
+    "family": "Juncaginaceae",
+    "genera": [
+      "Triglochin"
+    ]
+  },
+  {
+    "family": "Lamiaceae",
+    "genera": [
+      "Agastache",
+      "Ajuga",
+      "Ballota",
+      "Clinopodium",
+      "Dracocephalum",
+      "Galeopsis",
+      "Glechoma",
+      "Hedeoma",
+      "Lallemantia",
+      "Lamiastrum",
+      "Lamium",
+      "Lavandula",
+      "Leonurus",
+      "Lycopus",
+      "Marrubium",
+      "Melissa",
+      "Mentha",
+      "Moluccella",
+      "Monardella",
+      "Nepeta",
+      "Origanum",
+      "Physostegia",
+      "Pogogyne",
+      "Prunella",
+      "Pycnanthemum",
+      "Rosmarinus",
+      "Salvia",
+      "Scutellaria",
+      "Stachys",
+      "Thymus",
+      "Trichostema"
+    ]
+  },
+  {
+    "family": "Lauraceae",
+    "genera": [
+      "Umbellularia"
+    ]
+  },
+  {
+    "family": "Lentibulariaceae",
+    "genera": [
+      "Pinguicula",
+      "Utricularia"
+    ]
+  },
+  {
+    "family": "Liliaceae",
+    "genera": [
+      "Calochortus",
+      "Clintonia",
+      "Erythronium",
+      "Fritillaria",
+      "Gagea",
+      "Lilium",
+      "Prosartes",
+      "Scoliopus",
+      "Streptopus",
+      "Tulipa"
+    ]
+  },
+  {
+    "family": "Limnanthaceae",
+    "genera": [
+      "Floerkea",
+      "Limnanthes"
+    ]
+  },
+  {
+    "family": "Linaceae",
+    "genera": [
+      "Hesperolinon",
+      "Linum",
+      "Sclerolinon"
+    ]
+  },
+  {
+    "family": "Linderniaceae",
+    "genera": [
+      "Lindernia"
+    ]
+  },
+  {
+    "family": "Linnaeaceae",
+    "genera": [
+      "Linnaea"
+    ]
+  },
+  {
+    "family": "Loasaceae",
+    "genera": [
+      "Mentzelia"
+    ]
+  },
+  {
+    "family": "Lycopodiaceae",
+    "genera": [
+      "Diphasiastrum",
+      "Huperzia",
+      "Lycopodiella",
+      "Lycopodium"
+    ]
+  },
+  {
+    "family": "Lythraceae",
+    "genera": [
+      "Ammannia",
+      "Lythrum",
+      "Rotala"
+    ]
+  },
+  {
+    "family": "Malvaceae",
+    "genera": [
+      "Abutilon",
+      "Alcea",
+      "Callirhoe",
+      "Fremontodendron",
+      "Hibiscus",
+      "Iliamna",
+      "Malva",
+      "Malvella",
+      "Sidalcea",
+      "Sphaeralcea"
+    ]
+  },
+  {
+    "family": "Marsileaceae",
+    "genera": [
+      "Marsilea",
+      "Pilularia"
+    ]
+  },
+  {
+    "family": "Martyniaceae",
+    "genera": [
+      "Proboscidea"
+    ]
+  },
+  {
+    "family": "Mazaceae",
+    "genera": [
+      "Mazus"
+    ]
+  },
+  {
+    "family": "Melanthiaceae",
+    "genera": [
+      "Anticlea",
+      "Toxicoscordion",
+      "Trillium",
+      "Veratrum",
+      "Xerophyllum"
+    ]
+  },
+  {
+    "family": "Menyanthaceae",
+    "genera": [
+      "Menyanthes",
+      "Nephrophyllidium",
+      "Nymphoides"
+    ]
+  },
+  {
+    "family": "Molluginaceae",
+    "genera": [
+      "Mollugo"
+    ]
+  },
+  {
+    "family": "Montiaceae",
+    "genera": [
+      "Calandrinia",
+      "Calyptridium",
+      "Claytonia",
+      "Lewisia",
+      "Montia",
+      "Phemeranthus"
+    ]
+  },
+  {
+    "family": "Moraceae",
+    "genera": [
+      "Fatoua",
+      "Maclura",
+      "Morus"
+    ]
+  },
+  {
+    "family": "Myricaceae",
+    "genera": [
+      "Morella",
+      "Myrica"
+    ]
+  },
+  {
+    "family": "Namaceae",
+    "genera": [
+      "Eriodictyon",
+      "Nama"
+    ]
+  },
+  {
+    "family": "Nartheciaceae",
+    "genera": [
+      "Narthecium"
+    ]
+  },
+  {
+    "family": "Nitrariaceae",
+    "genera": [
+      "Peganum"
+    ]
+  },
+  {
+    "family": "Nyctaginaceae",
+    "genera": [
+      "Abronia",
+      "Mirabilis"
+    ]
+  },
+  {
+    "family": "Nymphaeaceae",
+    "genera": [
+      "Nuphar",
+      "Nymphaea"
+    ]
+  },
+  {
+    "family": "Oleaceae",
+    "genera": [
+      "Fraxinus",
+      "Ligustrum",
+      "Syringa"
+    ]
+  },
+  {
+    "family": "Onagraceae",
+    "genera": [
+      "Camissonia",
+      "Camissoniopsis",
+      "Chamaenerion",
+      "Chylismia",
+      "Chylismiella",
+      "Circaea",
+      "Clarkia",
+      "Epilobium",
+      "Eremothera",
+      "Fuchsia",
+      "Gayophytum",
+      "Ludwigia",
+      "Neoholmgrenia",
+      "Oenothera",
+      "Taraxia",
+      "Tetrapteron"
+    ]
+  },
+  {
+    "family": "Ophioglossaceae",
+    "genera": [
+      "Botrychium",
+      "Botrypus",
+      "Ophioglossum",
+      "Sceptridium"
+    ]
+  },
+  {
+    "family": "Orchidaceae",
+    "genera": [
+      "Calypso",
+      "Cephalanthera",
+      "Corallorhiza",
+      "Cypripedium",
+      "Epipactis",
+      "Goodyera",
+      "Neottia",
+      "Platanthera",
+      "Spiranthes"
+    ]
+  },
+  {
+    "family": "Orobanchaceae",
+    "genera": [
+      "Aphyllon",
+      "Bellardia",
+      "Castilleja",
+      "Chloropyron",
+      "Cordylanthus",
+      "Euphrasia",
+      "Kopsiopsis",
+      "Orobanche",
+      "Orthocarpus",
+      "Pedicularis",
+      "Rhinanthus",
+      "Triphysaria"
+    ]
+  },
+  {
+    "family": "Oxalidaceae",
+    "genera": [
+      "Oxalis"
+    ]
+  },
+  {
+    "family": "Paeoniaceae",
+    "genera": [
+      "Paeonia"
+    ]
+  },
+  {
+    "family": "Papaveraceae",
+    "genera": [
+      "Argemone",
+      "Canbya",
+      "Chelidonium",
+      "Corydalis",
+      "Dendromecon",
+      "Dicentra",
+      "Eschscholzia",
+      "Fumaria",
+      "Meconella",
+      "Papaver",
+      "Platystemon"
+    ]
+  },
+  {
+    "family": "Parnassiaceae",
+    "genera": [
+      "Parnassia"
+    ]
+  },
+  {
+    "family": "Penthoraceae",
+    "genera": [
+      "Penthorum"
+    ]
+  },
+  {
+    "family": "Phrymaceae",
+    "genera": [
+      "Diplacus",
+      "Erythranthe",
+      "Mimetanthe",
+      "Mimulus"
+    ]
+  },
+  {
+    "family": "Phytolaccaceae",
+    "genera": [
+      "Phytolacca"
+    ]
+  },
+  {
+    "family": "Pinaceae",
+    "genera": [
+      "Abies",
+      "Larix",
+      "Picea",
+      "Pinus",
+      "Pseudotsuga",
+      "Tsuga"
+    ]
+  },
+  {
+    "family": "Plantaginaceae",
+    "genera": [
+      "Antirrhinum",
+      "Callitriche",
+      "Chaenorhinum",
+      "Collinsia",
+      "Cymbalaria",
+      "Digitalis",
+      "Gratiola",
+      "Hebe",
+      "Hippuris",
+      "Keckiella",
+      "Kickxia",
+      "Linaria",
+      "Misopates",
+      "Nothochelone",
+      "Nuttallanthus",
+      "Penstemon",
+      "Plantago",
+      "Sairocarpus",
+      "Synthyris",
+      "Tonella",
+      "Veronica"
+    ]
+  },
+  {
+    "family": "Platanaceae",
+    "genera": [
+      "Platanus"
+    ]
+  },
+  {
+    "family": "Plumbaginaceae",
+    "genera": [
+      "Armeria",
+      "Limonium"
+    ]
+  },
+  {
+    "family": "Poaceae",
+    "genera": [
+      "Aegilops",
+      "Agropyron",
+      "Agrostis",
+      "Aira",
+      "Alopecurus",
+      "Amelichloa",
+      "Anthoxanthum",
+      "Apera",
+      "Aristida",
+      "Arrhenatherum",
+      "Arthraxon",
+      "Arundo",
+      "Avena",
+      "Bashania",
+      "Beckmannia",
+      "Bouteloua",
+      "Brachypodium",
+      "Briza",
+      "Bromus",
+      "Calamagrostis",
+      "Campeiostachys",
+      "Catabrosa",
+      "Catapodium",
+      "Cenchrus",
+      "Chloris",
+      "Cinna",
+      "Cladoraphis",
+      "Coleanthus",
+      "Coleataenia",
+      "Cortaderia",
+      "Cynodon",
+      "Cynosurus",
+      "Dactylis",
+      "Danthonia",
+      "Deschampsia",
+      "Dichanthelium",
+      "Digitaria",
+      "Diplachne",
+      "Distichlis",
+      "Echinochloa",
+      "Eleusine",
+      "Elymus",
+      "Eragrostis",
+      "Eremopyrum",
+      "Eriocoma",
+      "Festuca",
+      "Gastridium",
+      "Glyceria",
+      "Graphephorum",
+      "Greeneochloa",
+      "Hainardia",
+      "Hesperochloa",
+      "Hesperostipa",
+      "Holcus",
+      "Hordeum",
+      "Koeleria",
+      "Lagurus",
+      "Leersia",
+      "Leymus",
+      "Lolium",
+      "Melica",
+      "Miscanthus",
+      "Molinia",
+      "Muhlenbergia",
+      "Munroa",
+      "Nardus",
+      "Nassella",
+      "Panicum",
+      "Pappostipa",
+      "Parapholis",
+      "Pascopyrum",
+      "Paspalum",
+      "Phalaris",
+      "Phleum",
+      "Phragmites",
+      "Phyllostachys",
+      "Piptatheropsis",
+      "Pleioblastus",
+      "Pleuropogon",
+      "Poa",
+      "Podagrostis",
+      "Polypogon",
+      "Pseudoroegneria",
+      "Pseudosasa",
+      "Puccinellia",
+      "Rytidosperma",
+      "Sasa",
+      "Sclerochloa",
+      "Scolochloa",
+      "Secale",
+      "Semiarundinaria",
+      "Setaria",
+      "Sorghum",
+      "Spartina",
+      "Sphenopholis",
+      "Sporobolus",
+      "Taeniatherum",
+      "Thinopyrum",
+      "Torreyochloa",
+      "Tripidium",
+      "Triplasis",
+      "Triticum",
+      "Urochloa",
+      "Vahlodea",
+      "Ventenata",
+      "Zea",
+      "Zizania"
+    ]
+  },
+  {
+    "family": "Polemoniaceae",
+    "genera": [
+      "Aliciella",
+      "Allophyllum",
+      "Collomia",
+      "Eriastrum",
+      "Gilia",
+      "Gymnosteris",
+      "Ipomopsis",
+      "Langloisia",
+      "Lathrocasis",
+      "Leptosiphon",
+      "Linanthus",
+      "Microgilia",
+      "Microsteris",
+      "Navarretia",
+      "Phlox",
+      "Polemonium"
+    ]
+  },
+  {
+    "family": "Polygalaceae",
+    "genera": [
+      "Polygala",
+      "Rhinotropis"
+    ]
+  },
+  {
+    "family": "Polygonaceae",
+    "genera": [
+      "Bistorta",
+      "Chorizanthe",
+      "Eriogonum",
+      "Fagopyrum",
+      "Fallopia",
+      "Koenigia",
+      "Oxyria",
+      "Oxytheca",
+      "Persicaria",
+      "Polygonum",
+      "Rumex"
+    ]
+  },
+  {
+    "family": "Polypodiaceae",
+    "genera": [
+      "Polypodium"
+    ]
+  },
+  {
+    "family": "Pontederiaceae",
+    "genera": [
+      "Eichhornia",
+      "Heteranthera",
+      "Pontederia"
+    ]
+  },
+  {
+    "family": "Portulacaceae",
+    "genera": [
+      "Portulaca"
+    ]
+  },
+  {
+    "family": "Potamogetonaceae",
+    "genera": [
+      "Potamogeton",
+      "Stuckenia"
+    ]
+  },
+  {
+    "family": "Primulaceae",
+    "genera": [
+      "Androsace",
+      "Cyclamen",
+      "Lysimachia",
+      "Primula",
+      "Samolus"
+    ]
+  },
+  {
+    "family": "Pteridaceae",
+    "genera": [
+      "Adiantum",
+      "Aspidotis",
+      "Cryptogramma",
+      "Myriopteris",
+      "Pellaea",
+      "Pentagramma"
+    ]
+  },
+  {
+    "family": "Ranunculaceae",
+    "genera": [
+      "Aconitum",
+      "Actaea",
+      "Adonis",
+      "Anemone",
+      "Aquilegia",
+      "Beckwithia",
+      "Caltha",
+      "Ceratocephala",
+      "Clematis",
+      "Coptis",
+      "Delphinium",
+      "Eranthis",
+      "Ficaria",
+      "Halerpestes",
+      "Isopyrum",
+      "Myosurus",
+      "Nigella",
+      "Ranunculus",
+      "Thalictrum",
+      "Trautvetteria",
+      "Trollius"
+    ]
+  },
+  {
+    "family": "Resedaceae",
+    "genera": [
+      "Reseda"
+    ]
+  },
+  {
+    "family": "Rhamnaceae",
+    "genera": [
+      "Ceanothus",
+      "Rhamnus"
+    ]
+  },
+  {
+    "family": "Rosaceae",
+    "genera": [
+      "Acaena",
+      "Adenostoma",
+      "Agrimonia",
+      "Amelanchier",
+      "Aphanes",
+      "Argentina",
+      "Aruncus",
+      "Cercocarpus",
+      "Chaenomeles",
+      "Chamaebatiaria",
+      "Comarum",
+      "Cotoneaster",
+      "Crataegus",
+      "Dasiphora",
+      "Dryas",
+      "Drymocallis",
+      "Filipendula",
+      "Fragaria",
+      "Geum",
+      "Heteromeles",
+      "Holodiscus",
+      "Luetkea",
+      "Malus",
+      "Oemleria",
+      "Peraphyllum",
+      "Photinia",
+      "Physocarpus",
+      "Potentilla",
+      "Poteridium",
+      "Poterium",
+      "Prunus",
+      "Purshia",
+      "Pyracantha",
+      "Pyrus",
+      "Rosa",
+      "Rubus",
+      "Sanguisorba",
+      "Sibbaldia",
+      "Sorbus",
+      "Spiraea"
+    ]
+  },
+  {
+    "family": "Rubiaceae",
+    "genera": [
+      "Asperula",
+      "Crucianella",
+      "Galium",
+      "Kelloggia",
+      "Rubia",
+      "Sherardia"
+    ]
+  },
+  {
+    "family": "Ruppiaceae",
+    "genera": [
+      "Ruppia"
+    ]
+  },
+  {
+    "family": "Rutaceae",
+    "genera": [
+      "Ptelea"
+    ]
+  },
+  {
+    "family": "Salicaceae",
+    "genera": [
+      "Populus",
+      "Salix"
+    ]
+  },
+  {
+    "family": "Salviniaceae",
+    "genera": [
+      "Azolla"
+    ]
+  },
+  {
+    "family": "Sapindaceae",
+    "genera": [
+      "Acer",
+      "Aesculus"
+    ]
+  },
+  {
+    "family": "Sarcobataceae",
+    "genera": [
+      "Sarcobatus"
+    ]
+  },
+  {
+    "family": "Sarraceniaceae",
+    "genera": [
+      "Darlingtonia"
+    ]
+  },
+  {
+    "family": "Saururaceae",
+    "genera": [
+      "Anemopsis",
+      "Houttuynia"
+    ]
+  },
+  {
+    "family": "Saxifragaceae",
+    "genera": [
+      "Bensoniella",
+      "Bolandra",
+      "Boykinia",
+      "Cascadia",
+      "Chrysosplenium",
+      "Darmera",
+      "Elmera",
+      "Hemieva",
+      "Heuchera",
+      "Leptarrhena",
+      "Lithophragma",
+      "Micranthes",
+      "Mitellastra",
+      "Ozomelis",
+      "Pectiantia",
+      "Saxifraga",
+      "Saxifragopsis",
+      "Suksdorfia",
+      "Sullivantia",
+      "Tellima",
+      "Tiarella",
+      "Tolmiea"
+    ]
+  },
+  {
+    "family": "Scheuchzeriaceae",
+    "genera": [
+      "Scheuchzeria"
+    ]
+  },
+  {
+    "family": "Scrophulariaceae",
+    "genera": [
+      "Buddleja",
+      "Limosella",
+      "Scrophularia",
+      "Verbascum"
+    ]
+  },
+  {
+    "family": "Selaginellaceae",
+    "genera": [
+      "Selaginella"
+    ]
+  },
+  {
+    "family": "Simaroubaceae",
+    "genera": [
+      "Ailanthus"
+    ]
+  },
+  {
+    "family": "Smilacaceae",
+    "genera": [
+      "Smilax"
+    ]
+  },
+  {
+    "family": "Solanaceae",
+    "genera": [
+      "Calibrachoa",
+      "Datura",
+      "Hyoscyamus",
+      "Leucophysalis",
+      "Lycium",
+      "Nicotiana",
+      "Petunia",
+      "Physalis",
+      "Solanum"
+    ]
+  },
+  {
+    "family": "Styracaceae",
+    "genera": [
+      "Styrax"
+    ]
+  },
+  {
+    "family": "Tamaricaceae",
+    "genera": [
+      "Tamarix"
+    ]
+  },
+  {
+    "family": "Taxaceae",
+    "genera": [
+      "Taxus"
+    ]
+  },
+  {
+    "family": "Tecophilaeaceae",
+    "genera": [
+      "Odontostomum"
+    ]
+  },
+  {
+    "family": "Thelypteridaceae",
+    "genera": [
+      "Thelypteris"
+    ]
+  },
+  {
+    "family": "Thymelaeaceae",
+    "genera": [
+      "Daphne"
+    ]
+  },
+  {
+    "family": "Tofieldiaceae",
+    "genera": [
+      "Triantha"
+    ]
+  },
+  {
+    "family": "Tropaeolaceae",
+    "genera": [
+      "Tropaeolum"
+    ]
+  },
+  {
+    "family": "Typhaceae",
+    "genera": [
+      "Sparganium",
+      "Typha"
+    ]
+  },
+  {
+    "family": "Ulmaceae",
+    "genera": [
+      "Ulmus"
+    ]
+  },
+  {
+    "family": "Urticaceae",
+    "genera": [
+      "Parietaria",
+      "Urtica"
+    ]
+  },
+  {
+    "family": "Valerianaceae",
+    "genera": [
+      "Centranthus",
+      "Plectritis",
+      "Valeriana",
+      "Valerianella"
+    ]
+  },
+  {
+    "family": "Verbenaceae",
+    "genera": [
+      "Phyla",
+      "Verbena"
+    ]
+  },
+  {
+    "family": "Viburnaceae",
+    "genera": [
+      "Sambucus",
+      "Viburnum"
+    ]
+  },
+  {
+    "family": "Violaceae",
+    "genera": [
+      "Viola"
+    ]
+  },
+  {
+    "family": "Viscaceae",
+    "genera": [
+      "Arceuthobium",
+      "Phoradendron"
+    ]
+  },
+  {
+    "family": "Vitaceae",
+    "genera": [
+      "Parthenocissus",
+      "Vitis"
+    ]
+  },
+  {
+    "family": "Woodsiaceae",
+    "genera": [
+      "Woodsia"
+    ]
+  },
+  {
+    "family": "Xanthorrhoeaceae",
+    "genera": [
+      "Hemerocallis",
+      "Kniphofia",
+      "Phormium"
+    ]
+  },
+  {
+    "family": "Zannichelliaceae",
+    "genera": [
+      "Zannichellia"
+    ]
+  },
+  {
+    "family": "Zosteraceae",
+    "genera": [
+      "Phyllospadix",
+      "Zostera"
+    ]
+  },
+  {
+    "family": "Zygophyllaceae",
+    "genera": [
+      "Tribulus"
+    ]
+  }
 ]
