@@ -98,8 +98,7 @@ for Apache, PHP@7, and MariaDB/MySQL
 - Install the PHP, frontend dependencies
 - Generate Doctine's proxy classes
 - Set up config.less to point at the current root directory. You can adjust the value in `js/react/src/less/config.less`
-4. In a development environment, you can set IS_DEV to true in `config/symbini.php` to generate Doctine's proxy classes automatically
-every time you make changes to the Doctrine-based PHP code.
+4. In a development environment, you can set IS_DEV to true in `config/symbini.php` to generate Doctine's proxy classes automatically every time you make changes to the Doctrine-based PHP code.
 
 ### To build the front end:
 Build the React- and Less-based pages from the project root directory: `npm run build`
