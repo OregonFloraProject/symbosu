@@ -40,6 +40,7 @@ LESS entries (`theme`, `header`, `footer`, `garden`, `rare`, `taxa`, `inventory`
 | Taxon profile (rare variant) | `/taxa/rare.php` | - | `taxa-rare` | `js/react/src/taxa/taxa-rare.jsx` | `taxa/rpc/api.php?type=rare` (gated by `RPG_FLAG`) |
 | Taxon profile (rare variant, unified when flagged) | `/taxa/rare.php` | - | `taxa-unified` when `$TAXA_UNIFIED_FLAG` is 1 (checked inside the existing `$RPG_FLAG` gate), else `taxa-rare` | `js/react/src/taxa/main-unified.jsx` | `taxa/rpc/api.php?type=rare` (gated by `RPG_FLAG`) |
 | Taxon search results | `/taxa/search.php` | `react-taxa-search-app` | `taxa-search` | `js/react/src/taxa/search.jsx` | `taxa/rpc/api.php?search=...` |
+| Taxonomic Checklist | `/pages/taxonomic-checklist.php` | - | none | - | `pages/rpc/taxonomic-checklist.php?mode=family\|genus&query=...` |
 | Grow Natives (garden) main | `/garden/index.php` | - | `checklist-special` | `js/react/src/checklist-special/main.jsx` | `garden/rpc/api.php` |
 | Rare Plant Guide main | `/rare/index.php` | - | `checklist-special` | `js/react/src/checklist-special/main.jsx` | `rare/rpc/api.php` |
 | Rare policy page | `/rare/policy.php` | - | `rare-policy` | `js/react/src/checklist-special/rare-policy.jsx` | - |
@@ -79,6 +80,7 @@ LESS entries (`theme`, `header`, `footer`, `garden`, `rare`, `taxa`, `inventory`
 | `rare/rpc/autofillsearch.php` | autocomplete | File confirmed to exist |
 | `webservices/autofillsearch.php`, `webservices/autofillsciname.php`, `webservices/autofillvernacular.php` | autocomplete | All three confirmed to exist (prior memory listed only one generic "global autocomplete" endpoint) |
 | `home/rpc/api.php` | none - always returns `{news, events}` | No query-parameter dispatch at all |
+| `pages/rpc/taxonomic-checklist.php` | `mode` (`family` or `genus`) and `query` | Returns up to 200 family/genus suggestions from taxa linked to Oregon vascular checklist `clid=1` |
 
 ## Gotcha: RPC response format is not standardized
 
