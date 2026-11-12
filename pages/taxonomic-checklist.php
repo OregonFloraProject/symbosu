@@ -61,6 +61,8 @@ header( "Content-Type: text/html; charset=" . $charset );
 			.taxonomic-checklist .sidebox.search .search-widget .dropdown-menu .dropdown-item {
 				display: block;
 				cursor: pointer;
+				overflow-wrap: anywhere;
+				white-space: normal
 			}
 			.taxonomic-checklist .sidebox.search .fg-confirmation {
 				margin: 0.25rem 0 0;
@@ -227,12 +229,14 @@ include( $serverRoot . "/footer.php" );
 			data.forEach(function (entry) {
 				if (mode === 'family') {
 					if (entry.family.toLowerCase().indexOf(needle) !== -1) {
-						matches.push({ label: entry.family, name: entry.family });
+						entry.genera.forEach(function (genus) {
+							matches.push({ label: entry.family + ' - ' + genus, name: entry.family });
+						});
 					}
 				} else {
 					entry.genera.forEach(function (genus) {
 						if (genus.toLowerCase().indexOf(needle) !== -1) {
-							matches.push({ label: genus + ' - ' + entry.family, name: genus });
+							matches.push({ label: entry.family + ' - ' + genus, name: genus });
 						}
 					});
 				}
@@ -269,7 +273,7 @@ include( $serverRoot . "/footer.php" );
 		function selectName(name) {
 			input.value = name;
 			hideSuggestions();
-			confirmation.textContent = 'Selected: ' + name + ' (prototype)';
+			confirmation.textContent = 'Selected: ' + name;
 		}
 
 		function requestMode(targetMode, event) {
