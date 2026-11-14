@@ -42,7 +42,7 @@ function TaxonomicChecklist({ clientRoot }) {
       return;
     }
     const params = new URLSearchParams({ mode: searchMode, query: searchQuery });
-    fetch(`${clientRoot}/pages/rpc/taxonomic-checklist-search.php?${params.toString()}`)
+    fetch(`${clientRoot}/pages/rpc/taxonomic-checklist.php?${params.toString()}`)
       .then((response) => {
         if (!response.ok) throw new Error('Search request failed.');
         return response.json();
@@ -290,14 +290,14 @@ function TaxonomicChecklist({ clientRoot }) {
                           onMouseDown={(event) => event.preventDefault()}
                         >
                           {matches.map((match) => (
-                            <button
+                            <a
                               className="dropdown-item"
                               type="button"
-                              key={`${match.name}-${match.family}`}
+                              key={`${match.label}`}
                               onClick={() => handleSelect(match)}
                             >
                               {match.label}
-                            </button>
+                            </a>
                           ))}
                         </div>
                       )}

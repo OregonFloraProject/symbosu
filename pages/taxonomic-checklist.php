@@ -15,13 +15,13 @@ include_once("../config/symbini.php");
     <?php include("$SERVER_ROOT/header.php"); ?>
     <style>
       /* Family/genus report search widget. */
-      .taxonomic-checklist .sidebox.search .fg-mode-toggle {
+      #react-taxonomic-checklist-app .fg-mode-toggle {
         display: flex;
         flex-flow: row nowrap;
         gap: 1.2rem;
         margin-bottom: 0.5rem;
       }
-      .taxonomic-checklist .sidebox.search .fg-mode-option {
+      #react-taxonomic-checklist-app .fg-mode-option {
         display: inline-flex;
         align-items: center;
         gap: 0.35rem;
@@ -30,27 +30,28 @@ include_once("../config/symbini.php");
         color: #1e352f;
         cursor: pointer;
       }
-      .taxonomic-checklist .sidebox.search .fg-mode-option.is-inactive {
+      #react-taxonomic-checklist-app .fg-mode-option.is-inactive {
         opacity: 0.5;
         color: #999;
         cursor: pointer;
       }
-      .taxonomic-checklist .sidebox.search .search-widget {
+      #react-taxonomic-checklist-app .search-widget {
         display: flex;
         flex-flow: row nowrap;
         align-items: flex-start;
         position: relative;
       }
-      .taxonomic-checklist .sidebox.search .search-widget input[type='text'] {
+      #react-taxonomic-checklist-app .search-widget input[type='text'] {
         flex: 1 1 auto;
         min-width: 0;
         margin-bottom: 0.5rem;
       }
-      .taxonomic-checklist .sidebox.search .search-widget .btn-search {
+      #react-taxonomic-checklist-app .search-widget .btn-search {
         flex: 0 0 auto;
         margin-left: -6px;
       }
-      .taxonomic-checklist .sidebox.search .search-widget .dropdown-menu {
+      #react-taxonomic-checklist-app .search-widget .dropdown-menu {
+        display: block;
         position: absolute;
         top: calc(100% - 1.5rem);
         left: 0;
@@ -60,13 +61,13 @@ include_once("../config/symbini.php");
         overflow-y: auto;
         z-index: 1000;
       }
-      .taxonomic-checklist .sidebox.search .search-widget .dropdown-menu .dropdown-item {
+      #react-taxonomic-checklist-app .search-widget .dropdown-menu .dropdown-item {
         display: block;
         cursor: pointer;
         overflow-wrap: anywhere;
         white-space: normal;
       }
-      .taxonomic-checklist .sidebox.search .fg-confirmation {
+      #react-taxonomic-checklist-app .fg-confirmation {
         margin: 0.25rem 0 0;
         font-size: 14px;
         color: #3c641e;
