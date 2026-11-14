@@ -18,11 +18,12 @@ if ($query === "" || strlen($query) > 100) {
 	exit;
 }
 
-$genusExpression = "CASE WHEN g.rankid = 180 THEN g.sciname ELSE g.unitname1 END";
+// Main filter: by family or genus (genus rankid is 180)
+$genusExpression = "CASE WHEN g.rankid = :genusRank THEN g.sciname ELSE g.unitname1 END";
 $searchCondition = $mode === "family"
 	? "ts.family LIKE :search"
 	: "(g.rankid = :genusRank AND g.sciname LIKE :search) OR (g.rankid > :genusRank AND g.unitname1 LIKE :search)";
-$validGenusCondition = "(g.rankid = :genusRank AND g.sciname <> :emptyGenus) OR (g.rankid > :genusRank AND g.unitname1 <> :emptyGenus)";
+$validGenusCondition = $genusExpression ." <> :emptyGenus";
 $em = SymbosuEntityManager::getEntityManager();
 $queryBuilder = $em->createQueryBuilder();
 $rows = $queryBuilder
@@ -39,22 +40,38 @@ $rows = $queryBuilder
 	->andWhere($validGenusCondition)
 	->andWhere($searchCondition)
 	->setParameter("taxauthid", 1)
+	// Rank genus is 180
 	->setParameter("genusRank", 180)
+	// Checklist 1 belongs to OregonFlora Vascular Plants
 	->setParameter("checklistId", 1)
 	->setParameter("emptyFamily", "")
 	->setParameter("emptyGenus", "")
 	->setParameter("search", $query . "%")
 	->orderBy("ts.family", "ASC")
 	->addOrderBy("genus", "ASC")
-	->setMaxResults(30)
+	->setMaxResults(20)
 	->getQuery()
 	->getArrayResult();
 
-$matches = array();
+// Filter family name for the query result through existing pdfs
+$familyListJson = file_get_contents($SERVER_ROOT . "/pages/data/family-genera-prototype.json");
+$familyList = $familyListJson === false ? null : json_decode($familyListJson, true);
 
+if (!is_array($familyList)) {
+	http_response_code(500);
+	echo json_encode(array("error" => "Unable to load the family list."));
+	exit;
+}
+
+$matches = array();
 foreach ($rows as $row) {
+	if (!in_array($row["family"], $familyList, true)) {
+		continue;
+	}
+
 	$matches[] = array(
 		"label" => $row["family"] . " - " . $row["genus"],
+		"family" => $row["family"],
 		"name" => $mode === "family" ? $row["family"] : $row["genus"]
 	);
 }

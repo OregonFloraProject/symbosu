@@ -190,6 +190,7 @@ include( $serverRoot . "/footer.php" );
 	'use strict';
 
 	var SEARCH_URL = '<?php echo $CLIENT_ROOT?>/pages/rpc/taxonomic-checklist.php';
+	var FAMILY_PDF_URL = '<?php echo $CLIENT_ROOT?>/pages/pdfs/family/';
 
 	document.addEventListener('DOMContentLoaded', function () {
 		var wrapper = document.getElementById('fg-search-wrapper');
@@ -205,9 +206,15 @@ include( $serverRoot . "/footer.php" );
 		var confirmation = document.getElementById('fg-confirmation');
 
 		var mode = 'family';
+		// Incremented whenever the search changes so responses from older searches can be ignored.
 		var requestNumber = 0;
+		var debounceTimer = null;
 
 		function setMode(nextMode) {
+			if (debounceTimer !== null) {
+				clearTimeout(debounceTimer);
+				debounceTimer = null;
+			}
 			requestNumber++;
 			mode = nextMode;
 			var isFamily = mode === 'family';
@@ -226,7 +233,9 @@ include( $serverRoot . "/footer.php" );
 				hideSuggestions();
 				return;
 			}
-			var currentRequest = ++requestNumber;
+			// Capture this search's ID; only its response should update the suggestions.
+			var requestNumber += 1;
+			var currentRequest = requestNumber;
 			var params = new URLSearchParams({ mode: mode, query: query });
 			fetch(SEARCH_URL + '?' + params.toString())
 				.then(function (response) {
@@ -234,6 +243,7 @@ include( $serverRoot . "/footer.php" );
 					return response.json();
 				})
 				.then(function (matches) {
+					// A newer search or mode change invalidated this response.
 					if (currentRequest !== requestNumber) return;
 					confirmation.textContent = '';
 					suggestions.textContent = '';
@@ -246,6 +256,7 @@ include( $serverRoot . "/footer.php" );
 						link.className = 'dropdown-item';
 						link.setAttribute('href', 'javascript:void(0)');
 						link.setAttribute('data-name', match.name);
+						link.setAttribute('data-family', match.family);
 						link.textContent = match.label;
 						suggestions.appendChild(link);
 					});
@@ -263,10 +274,23 @@ include( $serverRoot . "/footer.php" );
 			suggestions.style.display = 'none';
 		}
 
-		function selectName(name) {
+		function searchImmediately() {
+			if (debounceTimer !== null) {
+				clearTimeout(debounceTimer);
+				debounceTimer = null;
+			}
+			renderSuggestions(input.value.trim());
+		}
+
+		function selectName(name, family) {
 			input.value = name;
 			hideSuggestions();
-			confirmation.textContent = 'Selected: ' + name;
+			var pdfLink = document.createElement('a');
+			pdfLink.href = FAMILY_PDF_URL + encodeURIComponent(family) + '.pdf';
+			pdfLink.target = '_blank';
+			pdfLink.rel = 'noopener';
+			pdfLink.textContent = 'View ' + family + ' PDF';
+			confirmation.appendChild(pdfLink);
 		}
 
 		familyBox.addEventListener('change', function () {
@@ -278,10 +302,15 @@ include( $serverRoot . "/footer.php" );
 
 		input.addEventListener('input', function () {
 			confirmation.textContent = '';
-			renderSuggestions(input.value.trim());
+			requestNumber++;
+			if (debounceTimer !== null) clearTimeout(debounceTimer);
+			debounceTimer = setTimeout(function () {
+				debounceTimer = null;
+				renderSuggestions(input.value.trim());
+			}, 500);
 		});
 		input.addEventListener('focus', function () {
-			renderSuggestions(input.value.trim());
+			searchImmediately();
 		});
 		input.addEventListener('blur', function () {
 			setTimeout(hideSuggestions, 150);
@@ -291,7 +320,7 @@ include( $serverRoot . "/footer.php" );
 			event.preventDefault();
 		});
 		button.addEventListener('click', function () {
-			renderSuggestions(input.value.trim());
+			searchImmediately();
 		});
 
 		suggestions.addEventListener('mousedown', function (event) {
@@ -300,7 +329,7 @@ include( $serverRoot . "/footer.php" );
 		suggestions.addEventListener('click', function (event) {
 			var item = event.target.closest('.dropdown-item');
 			if (!item) return;
-			selectName(item.getAttribute('data-name'));
+			selectName(item.getAttribute('data-name'), item.getAttribute('data-family'));
 		});
 
 		setMode('family');
