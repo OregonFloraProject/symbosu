@@ -13,13 +13,14 @@ description: js/react/src/less — LESS stylesheets; mixins.less is the central 
 | `header.less` | Sticky nav header | `mixins.less` |
 | `footer.less` | Footer navbar | `mixins.less` |
 | `taxa.less` | Standard taxon profiles | `mixins.less`, `node_modules/react-tabs/style/react-tabs.less` |
+| `taxonomic-checklist.less` | Family/genus report search widget | — |
 | `garden.less` | Garden taxon profiles | `mixins.less` |
 | `rare.less` | Rare plant profiles + policy page | `mixins.less` |
 | `inventory.less` | Inventory browser, tables, vendor upload (~21K) | `mixins.less` |
 | `search-results.less` | Search grid/list layouts | — (imported by `theme.less`) |
 
 ## Webpack LESS entries (verified against js/react/webpack.config.js `lessConfig`)
-Only **7 of the 11 files above are Webpack entries**: `theme`, `header`, `footer`, `garden`, `rare`, `taxa`, `inventory`. `search-results.less`, `mixins.less`, `config.less`, `config_template.less` are not entries — they're imported by the 7 real entries and never compiled standalone.
+Only **8 of the 12 files above are Webpack entries**: `theme`, `header`, `footer`, `garden`, `rare`, `taxa`, `inventory`, `taxonomic-checklist`. `search-results.less`, `mixins.less`, `config.less`, `config_template.less` are not entries — they're imported by real entries and never compiled standalone.
 
 ## Variables (mixins.less)
 ```less
@@ -44,6 +45,7 @@ Mixins: `.text-capitalize()`, `.text-italic()`, `.text-uppercase()`, `.text-bold
 | `taxa/index.php`, `taxa/garden.php`, `taxa/rare.php`, `taxa/search.php` | + `taxa.css` only |
 | `garden/index.php`, `rare/index.php`, `rare/policy.php` | + `garden.css` or `rare.css` (checklist-special pages) |
 | `ident/key.php`, `projects/index.php`, `checklists/checklistvendor.php`, `checklists/checklist.php` | + `inventory.css` |
+| `pages/taxonomic-checklist.php` | + `taxonomic-checklist.css` loaded by its React entry |
 
 This corrects an earlier version of this memory, which claimed `taxa/garden.php` and `taxa/rare.php` also load `garden.css`/`rare.css`. Verified they load only `taxa.css` — the garden/rare LESS files are used exclusively by the [[react-checklist-special]] pages (`garden/index.php`, `rare/index.php`, `rare/policy.php`), which is a separate PHP page family from `taxa/garden.php` and `taxa/rare.php` (which render the [[react-taxa]] `taxa-garden`/`taxa-rare` bundles).
 

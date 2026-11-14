@@ -6,7 +6,6 @@ function TaxonomicChecklist({ clientRoot }) {
   const [query, setQuery] = useState('');
   const [matches, setMatches] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [confirmation, setConfirmation] = useState(null);
   const [error, setError] = useState('');
   const requestNumber = useRef(0);
   const debounceTimer = useRef(null);
@@ -51,7 +50,6 @@ function TaxonomicChecklist({ clientRoot }) {
         if (currentRequest !== requestNumber.current) return;
         setMatches(results);
         setShowSuggestions(results.length > 0);
-        setConfirmation(null);
         setError('');
       })
       .catch(() => {
@@ -70,7 +68,6 @@ function TaxonomicChecklist({ clientRoot }) {
     clearDebounce();
     requestNumber.current++;
     setMode(event.target.value);
-    setConfirmation(null);
     hideSuggestions();
   };
 
@@ -79,7 +76,6 @@ function TaxonomicChecklist({ clientRoot }) {
     clearDebounce();
     requestNumber.current++;
     setQuery(nextQuery);
-    setConfirmation(null);
     setError('');
     clearErrorTimer();
     hideSuggestions();
@@ -109,19 +105,6 @@ function TaxonomicChecklist({ clientRoot }) {
       hideSuggestions();
       blurTimer.current = null;
     }, 150);
-  };
-
-  const handleSelect = (match) => {
-    clearDebounce();
-    requestNumber.current++;
-    setQuery(match.name);
-    setMatches([]);
-    setShowSuggestions(false);
-    setError('');
-    setConfirmation({
-      family: match.family,
-      url: `${clientRoot}/pages/pdfs/family/${encodeURIComponent(match.family)}.pdf`,
-    });
   };
 
   useEffect(
@@ -293,8 +276,10 @@ function TaxonomicChecklist({ clientRoot }) {
                             <a
                               className="dropdown-item"
                               type="button"
+                              target="_blank"
+                              rel="noreferrer"
                               key={`${match.label}`}
-                              onClick={() => handleSelect(match)}
+                              href={`${clientRoot}/pages/pdfs/family/${encodeURIComponent(match.family)}.pdf`}
                             >
                               {match.label}
                             </a>
@@ -304,15 +289,6 @@ function TaxonomicChecklist({ clientRoot }) {
                     </div>
                     <p className="fg-confirmation" aria-live="polite">
                       {error}
-                      {confirmation && (
-                        <a
-                          href={confirmation.url}
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          View {confirmation.family} PDF
-                        </a>
-                      )}
                     </p>
                   </div>
                   <p>
@@ -352,5 +328,9 @@ function TaxonomicChecklist({ clientRoot }) {
 
 const headerContainer = document.getElementById('react-header');
 const dataProps = JSON.parse(headerContainer.getAttribute('data-props'));
+const stylesheet = document.createElement('link');
+stylesheet.rel = 'stylesheet';
+stylesheet.href = `${dataProps['clientRoot']}/css/compiled/taxonomic-checklist.css`;
+document.head.appendChild(stylesheet);
 const domContainer = document.getElementById('react-taxonomic-checklist-app');
 ReactDOM.render(<TaxonomicChecklist clientRoot={dataProps['clientRoot']} />, domContainer);
