@@ -75,6 +75,10 @@ const reactConfig = {
       import: path.join(SRC_DIR, 'taxa', 'main-unified.jsx'),
       dependOn: 'header',
     },
+    'taxonomic-checklist': {
+      import: path.join(SRC_DIR, 'taxonomic-checklist', 'main.jsx'),
+      dependOn: 'header',
+    },
     explore: {
       import: path.join(SRC_DIR, 'explore', 'explore.jsx'),
       dependOn: 'header',
