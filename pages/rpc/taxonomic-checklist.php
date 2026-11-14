@@ -20,6 +20,11 @@ if ($query === "" || strlen($query) > 100) {
 
 // Main filter: by family or genus (genus rankid is 180)
 $genusExpression = "CASE WHEN g.rankid = :genusRank THEN g.sciname ELSE g.unitname1 END";
+/* 
+ * Doctrine ORM 2.7.3 does not support "CASE WHEN ... LIKE", 
+ * only comparison operators (=, <, <=, <>, >, >=, !=)
+ * so genus search is written in longer format
+ */
 $searchCondition = $mode === "family"
 	? "ts.family LIKE :search"
 	: "(g.rankid = :genusRank AND g.sciname LIKE :search) OR (g.rankid > :genusRank AND g.unitname1 LIKE :search)";

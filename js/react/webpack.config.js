@@ -121,7 +121,7 @@ const lessConfig = {
     rare: path.join(SRC_DIR, 'less', 'rare.less'),
     taxa: path.join(SRC_DIR, 'less', 'taxa.less'),
     inventory: path.join(SRC_DIR, 'less', 'inventory.less'),
-    taxonomicChecklist: path.join(SRC_DIR, 'less', 'taxonomic-checklist.less'),
+    'taxonomic-checklist': path.join(SRC_DIR, 'less', 'taxonomic-checklist.less'),
   },
   output: {
     path: CSS_OUT_DIR,
