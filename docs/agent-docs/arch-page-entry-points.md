@@ -11,12 +11,12 @@ correction is noted.
 
 ## Webpack Bundles
 
-`js/react/webpack.config.js` defines **16 React entry bundles** (not 11 as previously recorded),
+`js/react/webpack.config.js` defines **17 React entry bundles** (not 11 as previously recorded),
 all `dependOn: 'header'` except `header` itself:
 
 `header`, `footer`, `home`, `newsletters`, `whatsnew`, `checklist-special`, `inventory`,
-`identify`, `taxa`, `taxa-search`, `taxa-garden`, `taxa-rare`, `taxa-unified`, `explore`, `explore-vendor`,
-`rare-policy`.
+`identify`, `taxa`, `taxa-search`, `taxa-garden`, `taxa-rare`, `taxa-unified`,
+`taxonomic-checklist`, `explore`, `explore-vendor`, `rare-policy`.
 
 Output goes to `js/react/dist/`. The `taxa-unified` entry uses `dependOn: 'header'` and builds
 `dist/taxa-unified.js`. A separate `lessConfig` in the same webpack config compiles 7
@@ -40,7 +40,7 @@ LESS entries (`theme`, `header`, `footer`, `garden`, `rare`, `taxa`, `inventory`
 | Taxon profile (rare variant) | `/taxa/rare.php` | - | `taxa-rare` | `js/react/src/taxa/taxa-rare.jsx` | `taxa/rpc/api.php?type=rare` (gated by `RPG_FLAG`) |
 | Taxon profile (rare variant, unified when flagged) | `/taxa/rare.php` | - | `taxa-unified` when `$TAXA_UNIFIED_FLAG` is 1 (checked inside the existing `$RPG_FLAG` gate), else `taxa-rare` | `js/react/src/taxa/main-unified.jsx` | `taxa/rpc/api.php?type=rare` (gated by `RPG_FLAG`) |
 | Taxon search results | `/taxa/search.php` | `react-taxa-search-app` | `taxa-search` | `js/react/src/taxa/search.jsx` | `taxa/rpc/api.php?search=...` |
-| Taxonomic Checklist | `/pages/taxonomic-checklist.php` | - | none | - | `pages/rpc/taxonomic-checklist.php?mode=family\|genus&query=...` |
+| Taxonomic Checklist | `/pages/taxonomic-checklist.php` | `react-taxonomic-checklist-app` | `taxonomic-checklist` | `js/react/src/taxonomic-checklist/main.jsx` | `pages/rpc/taxonomic-checklist-search.php?mode=family\|genus&query=...` |
 | Grow Natives (garden) main | `/garden/index.php` | - | `checklist-special` | `js/react/src/checklist-special/main.jsx` | `garden/rpc/api.php` |
 | Rare Plant Guide main | `/rare/index.php` | - | `checklist-special` | `js/react/src/checklist-special/main.jsx` | `rare/rpc/api.php` |
 | Rare policy page | `/rare/policy.php` | - | `rare-policy` | `js/react/src/checklist-special/rare-policy.jsx` | - |
@@ -51,7 +51,7 @@ LESS entries (`theme`, `header`, `footer`, `garden`, `rare`, `taxa`, `inventory`
 | Occurrence/collection map | `/collections/map/index.php` | (none - not React) | none | - | Legacy jQuery/JS: `js/symb/collections.map.index.js` + `js/symb/collections.map.index.OregonFlora.js`. See [[map-module]] |
 
 ### Corrections from the prior (unverified) version of this memory
-- There are **16** Webpack bundles, not 11.
+- There are **17** Webpack bundles, not 11.
 - The interactive plant key is served from `/ident/key.php`, not `/checklists/dynamicmap.php`.
   Its RPC endpoint is `/ident/rpc/api.php`, not `/checklists/rpc/api.php`. `checklists/dynamicmap.php`
   exists in the repo but does not load the `identify` bundle.
@@ -80,7 +80,8 @@ LESS entries (`theme`, `header`, `footer`, `garden`, `rare`, `taxa`, `inventory`
 | `rare/rpc/autofillsearch.php` | autocomplete | File confirmed to exist |
 | `webservices/autofillsearch.php`, `webservices/autofillsciname.php`, `webservices/autofillvernacular.php` | autocomplete | All three confirmed to exist (prior memory listed only one generic "global autocomplete" endpoint) |
 | `home/rpc/api.php` | none - always returns `{news, events}` | No query-parameter dispatch at all |
-| `pages/rpc/taxonomic-checklist.php` | `mode` (`family` or `genus`) and `query` | Returns up to 200 family/genus suggestions from taxa linked to Oregon vascular checklist `clid=1` |
+| `pages/rpc/taxonomic-checklist-search.php` | `mode` (`family` or `genus`) and `query` | Returns up to 20 family/genus suggestions from taxa linked to Oregon vascular checklist `clid=1`; the Taxonomic Checklist React entry calls this endpoint |
+| `pages/rpc/taxonomic-checklist.php` | Compatibility alias; requires `taxonomic-checklist-search.php` | Retains the previous endpoint path for existing callers |
 
 ## Gotcha: RPC response format is not standardized
 

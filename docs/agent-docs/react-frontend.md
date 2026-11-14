@@ -47,12 +47,12 @@ src/
 
 ## Webpack bundle count (verified against js/react/webpack.config.js)
 
-**15 JS entry points**, all but `header` itself declare `dependOn: 'header'`:
-`header`, `footer`, `home`, `newsletters`, `whatsnew`, `checklist-special`, `inventory`, `identify`, `taxa`, `taxa-search`, `taxa-garden`, `taxa-rare`, `explore`, `explore-vendor`, `rare-policy`.
+**17 JS entry points**, all but `header` itself declare `dependOn: 'header'`:
+`header`, `footer`, `home`, `newsletters`, `whatsnew`, `checklist-special`, `inventory`, `identify`, `taxa`, `taxa-search`, `taxa-garden`, `taxa-rare`, `taxa-unified`, `taxonomic-checklist`, `explore`, `explore-vendor`, `rare-policy`.
 
 **7 LESS entry points** (separate config, own entry map): `theme`, `header`, `footer`, `garden`, `rare`, `taxa`, `inventory`.
 
-Any memory elsewhere claiming "11 Webpack bundles" is wrong — correct as of this verification (2026-07-31) is 15 JS bundles + 7 LESS bundles (22 total Webpack entries across the two configs).
+Any memory elsewhere claiming "11 Webpack bundles" is wrong. The current configuration has 17 JS bundles + 7 LESS bundles (24 total Webpack entries across the two configs).
 
 ## PHP/React Integration Pattern
 
