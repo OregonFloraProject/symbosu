@@ -4,15 +4,19 @@ const MIN_QUERY_LENGTH = 3;
 const MAX_QUERY_LENGTH = 100;
 
 function TaxonomicChecklist({ clientRoot }) {
-  const [mode, setMode] = useState('family');
   const [query, setQuery] = useState('');
-  const [matches, setMatches] = useState([]);
+  const [matches, setMatches] = useState({ family: [], genus: [] });
+  const [groupState, setGroupState] = useState({
+    family: { expanded: true, showAll: false },
+    genus: { expanded: true, showAll: false },
+  });
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [error, setError] = useState('');
   const requestNumber = useRef(0);
   const debounceTimer = useRef(null);
   const blurTimer = useRef(null);
   const errorTimer = useRef(null);
+  const searchWidget = useRef(null);
 
   const clearDebounce = () => {
     if (debounceTimer.current !== null) {
@@ -29,23 +33,31 @@ function TaxonomicChecklist({ clientRoot }) {
   };
 
   const hideSuggestions = () => {
-    setMatches([]);
+    setMatches({ family: [], genus: [] });
     setShowSuggestions(false);
   };
 
-  const loadSuggestions = (searchQuery, searchMode = mode) => {
+  const resetGroups = () => {
+    setGroupState({
+      family: { expanded: true, showAll: false },
+      genus: { expanded: true, showAll: false },
+    });
+  };
+
+  const loadSuggestions = (searchQuery) => {
     const currentRequest = ++requestNumber.current;
     clearErrorTimer();
+    resetGroups();
     if (!searchQuery || 
       searchQuery.length > MAX_QUERY_LENGTH || 
       searchQuery.length < MIN_QUERY_LENGTH
     ) {
-      setMatches([]);
+      setMatches({ family: [], genus: [] });
       setShowSuggestions(false);
       setError('');
       return;
     }
-    const params = new URLSearchParams({ mode: searchMode, query: searchQuery });
+    const params = new URLSearchParams({ query: searchQuery });
     fetch(`${clientRoot}/pages/rpc/taxonomic-checklist.php?${params.toString()}`)
       .then((response) => {
         if (!response.ok) throw new Error('Search request failed.');
@@ -53,13 +65,17 @@ function TaxonomicChecklist({ clientRoot }) {
       })
       .then((results) => {
         if (currentRequest !== requestNumber.current) return;
-        setMatches(results);
-        setShowSuggestions(results.length > 0);
+        const groupedResults = {
+          family: Array.isArray(results.family) ? results.family : [],
+          genus: Array.isArray(results.genus) ? results.genus : [],
+        };
+        setMatches(groupedResults);
+        setShowSuggestions(groupedResults.family.length > 0 || groupedResults.genus.length > 0);
         setError('');
       })
       .catch(() => {
         if (currentRequest !== requestNumber.current) return;
-        setMatches([]);
+        setMatches({ family: [], genus: [] });
         setShowSuggestions(false);
         setError('Search is temporarily unavailable.');
         errorTimer.current = window.setTimeout(() => {
@@ -67,13 +83,6 @@ function TaxonomicChecklist({ clientRoot }) {
           errorTimer.current = null;
         }, 4000);
       });
-  };
-
-  const handleModeChange = (event) => {
-    clearDebounce();
-    requestNumber.current++;
-    setMode(event.target.value);
-    hideSuggestions();
   };
 
   const handleQueryChange = (event) => {
@@ -104,12 +113,81 @@ function TaxonomicChecklist({ clientRoot }) {
     handleSearch();
   };
 
-  const handleBlur = () => {
+  const handleBlur = (event) => {
+    if (searchWidget.current && searchWidget.current.contains(event.relatedTarget)) return;
     blurTimer.current = window.setTimeout(() => {
       requestNumber.current++;
       hideSuggestions();
       blurTimer.current = null;
     }, 150);
+  };
+
+  const handleWidgetFocus = () => {
+    if (blurTimer.current !== null) {
+      window.clearTimeout(blurTimer.current);
+      blurTimer.current = null;
+    }
+  };
+
+  const toggleGroup = (group) => {
+    setGroupState((current) => ({
+      ...current,
+      [group]: { ...current[group], expanded: !current[group].expanded },
+    }));
+  };
+
+  const showAllInGroup = (group) => {
+    setGroupState((current) => ({
+      ...current,
+      [group]: { ...current[group], showAll: true },
+    }));
+  };
+
+  const renderGroup = (group, label) => {
+    const groupMatches = matches[group];
+    const state = groupState[group];
+    const visibleMatches = state.showAll ? groupMatches : groupMatches.slice(0, 5);
+    const sectionId = `taxonomic-checklist-${group}-results`;
+    return (
+      <section className="fg-result-group" aria-label={`${label} results`} key={group}>
+        <h4>
+          <button
+            className="fg-group-toggle"
+            type="button"
+            aria-expanded={state.expanded}
+            aria-controls={sectionId}
+            onClick={() => toggleGroup(group)}
+          >
+            <span className={`fg-group-arrow${state.expanded ? ' is-expanded' : ''}`} aria-hidden="true" />
+            {label}
+          </button>
+        </h4>
+        <div id={sectionId} hidden={!state.expanded}>
+          {groupMatches.length === 0 ? (
+            <p className="fg-no-matches">No {label.toLowerCase()} matches.</p>
+          ) : (
+            <>
+              {visibleMatches.map((match) => (
+                <a
+                  className="dropdown-item"
+                  target="_blank"
+                  rel="noreferrer"
+                  key={`${group}-${match.label}`}
+                  href={`${clientRoot}/pages/pdfs/family/${encodeURIComponent(match.family)}.pdf`}
+                >
+                  {match.label}
+                </a>
+              ))}
+              {!state.showAll && groupMatches.length > 5 && (
+                <button className="fg-more" type="button" onClick={() => showAllInGroup(group)}>
+                  More
+                </button>
+              )}
+            </>
+          )}
+        </div>
+      </section>
+    );
   };
 
   useEffect(
@@ -122,7 +200,6 @@ function TaxonomicChecklist({ clientRoot }) {
     [],
   );
 
-  const isFamily = mode === 'family';
   return (
       <div className="info-page page2022 taxonomic-checklist">
         <section id="titlebackground" className="title-publications">
@@ -229,66 +306,29 @@ function TaxonomicChecklist({ clientRoot }) {
               <div id="column-right" className="col-lg-4">
                 <div className="sidebox inset search">
                   <h3>Search plant families and genera</h3>
-                  <div className="search-wrapper">
-                    <div className="fg-mode-toggle">
-                      <label className={`fg-mode-option${isFamily ? '' : ' is-inactive'}`} htmlFor="fg-mode-family">
-                        <input
-                          type="radio"
-                          name="fg-mode"
-                          id="fg-mode-family"
-                          value="family"
-                          checked={isFamily}
-                          onChange={handleModeChange}
-                        />{' '}
-                        Family
-                      </label>
-                      <label className={`fg-mode-option${isFamily ? ' is-inactive' : ''}`} htmlFor="fg-mode-genus">
-                        <input
-                          type="radio"
-                          name="fg-mode"
-                          id="fg-mode-genus"
-                          value="genus"
-                          checked={!isFamily}
-                          onChange={handleModeChange}
-                        />{' '}
-                        Genus
-                      </label>
-                    </div>
+                  <div className="search-wrapper" ref={searchWidget} onBlur={handleBlur} onFocusCapture={handleWidgetFocus}>
                     <div className="search-widget">
                       <input
                         type="text"
                         className="form-control"
-                        placeholder={isFamily ? 'Search families' : 'Search genera'}
+                        placeholder="Search families and genera"
                         autoComplete="off"
                         value={query}
                         onChange={handleQueryChange}
                         onFocus={handleFocus}
-                        onBlur={handleBlur}
                       />
                       <button
                         className="btn-search"
                         type="button"
                         aria-label="Search"
-                        onMouseDown={(event) => event.preventDefault()}
-                        onClick={handleSearch}
+                          onClick={handleSearch}
                       />
                       {showSuggestions && (
                         <div
                           className="dropdown-menu"
-                          onMouseDown={(event) => event.preventDefault()}
                         >
-                          {matches.map((match) => (
-                            <a
-                              className="dropdown-item"
-                              type="button"
-                              target="_blank"
-                              rel="noreferrer"
-                              key={`${match.label}`}
-                              href={`${clientRoot}/pages/pdfs/family/${encodeURIComponent(match.family)}.pdf`}
-                            >
-                              {match.label}
-                            </a>
-                          ))}
+                          {renderGroup('family', 'Family')}
+                          {renderGroup('genus', 'Genus')}
                         </div>
                       )}
                     </div>

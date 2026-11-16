@@ -1,28 +1,5 @@
 /* Family/genus report search widget. */
 #react-taxonomic-checklist-app {
-  .fg-mode-toggle {
-    display: flex;
-    flex-flow: row nowrap;
-    gap: 1.2rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .fg-mode-option {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    margin-bottom: 0;
-    font-size: 14px;
-    color: #1e352f;
-    cursor: pointer;
-
-    &.is-inactive {
-      opacity: 0.5;
-      color: #999;
-      cursor: pointer;
-    }
-  }
-
   .search-widget {
     display: flex;
     flex-flow: row nowrap;
@@ -56,6 +33,67 @@
         cursor: pointer;
         overflow-wrap: anywhere;
         white-space: normal;
+      }
+
+      .fg-result-group {
+        h4 {
+          margin: 0;
+        }
+
+        & + .fg-result-group {
+          border-top: 1px solid #d9dfdc;
+        }
+      }
+
+      .fg-group-toggle,
+      .fg-more {
+        width: 100%;
+        border: 0;
+        background: transparent;
+        color: #1e352f;
+        font: inherit;
+        text-align: left;
+        cursor: pointer;
+        touch-action: manipulation;
+
+        &:focus-visible {
+          outline: 2px solid #3c641e;
+          outline-offset: -2px;
+        }
+      }
+
+      .fg-group-toggle {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.55rem 0.75rem;
+        font-weight: 600;
+      }
+
+      .fg-group-arrow {
+        width: 0;
+        height: 0;
+        border-top: 0.3rem solid transparent;
+        border-bottom: 0.3rem solid transparent;
+        border-left: 0.4rem solid currentColor;
+        transition: transform 120ms ease;
+
+        &.is-expanded {
+          transform: rotate(90deg);
+        }
+      }
+
+      .fg-more {
+        padding: 0.5rem 0.75rem;
+        color: #3c641e;
+        font-weight: 600;
+      }
+
+      .fg-no-matches {
+        margin: 0;
+        padding: 0.4rem 0.75rem 0.65rem;
+        color: #555;
+        font-size: 0.9em;
       }
     }
   }
