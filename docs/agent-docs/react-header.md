@@ -20,6 +20,7 @@ description: "js/react/src/header — sitewide navigation header with search, dr
 - `componentDidMount()` tags dropdown entries with `currentPage`/`currentAncestor` flags by comparing against the current URL, and registers scroll/resize listeners.
 
 ## Gotchas
+- Firefox's scroll-linked positioning warning can originate from `handleScroll()` updating the inline navigation height during scrolling (`main.jsx:233-246,303`). Checklist pages load this shared header through `header.php`. The warning alone does not establish the cause of an input-focus scroll jump.
 - Dropdown close uses `onBlur` + `e.relatedTarget` check
 - Synonym resolution is a 2-step flow: check uniqueness via API, then navigate with params
 - Commented-out old array-based dropdown structure and an old HTML search form are preserved in the file rather than deleted

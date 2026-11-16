@@ -2,6 +2,9 @@
 include_once("../../config/symbini.php");
 include_once("$SERVER_ROOT/config/SymbosuEntityManager.php");
 
+const MIN_QUERY_LENGTH = 3;
+const MAX_QUERY_LENGTH = 100;
+
 header("Content-Type: application/json; charset=utf-8");
 
 $mode = isset($_GET["mode"]) ? $_GET["mode"] : "";
@@ -13,7 +16,10 @@ if (!in_array($mode, array("family", "genus"), true)) {
 	exit;
 }
 
-if ($query === "" || strlen($query) > 100) {
+if ($query === "" || 
+	strlen($query) > MAX_QUERY_LENGTH || 
+	strlen($query) < MIN_QUERY_LENGTH
+) {
 	echo json_encode(array());
 	exit;
 }
@@ -25,14 +31,15 @@ $genusExpression = "CASE WHEN g.rankid = :genusRank THEN g.sciname ELSE g.unitna
  * only comparison operators (=, <, <=, <>, >, >=, !=)
  * so genus search is written in longer format
  */
-$searchCondition = $mode === "family"
+$isModeFamily = $mode === "family";
+$searchCondition = $isModeFamily
 	? "ts.family LIKE :search"
 	: "(g.rankid = :genusRank AND g.sciname LIKE :search) OR (g.rankid > :genusRank AND g.unitname1 LIKE :search)";
 $validGenusCondition = $genusExpression ." <> :emptyGenus";
 $em = SymbosuEntityManager::getEntityManager();
 $queryBuilder = $em->createQueryBuilder();
 $rows = $queryBuilder
-	->select("DISTINCT ts.family AS family", "$genusExpression AS genus")
+	->select("DISTINCT ts.family AS family", ($isModeFamily ? "1" : $genusExpression) . " AS genus")
 	->from("Taxstatus", "ts")
 	->innerJoin("Taxa", "g", "WITH", "g.tid = ts.tidaccepted")
 	->innerJoin("fmchklsttaxalink", "tl", "WITH", "tl.tid = g.tid")
@@ -59,7 +66,7 @@ $rows = $queryBuilder
 	->getArrayResult();
 
 // Filter family name for the query result through existing pdfs
-$familyListJson = file_get_contents($SERVER_ROOT . "/pages/data/family-genera-prototype.json");
+$familyListJson = file_get_contents($SERVER_ROOT . "/pages/data/family-pdf-list.json");
 $familyList = $familyListJson === false ? null : json_decode($familyListJson, true);
 
 if (!is_array($familyList)) {
@@ -75,9 +82,9 @@ foreach ($rows as $row) {
 	}
 
 	$matches[] = array(
-		"label" => $row["family"] . " - " . $row["genus"],
-		"family" => $row["family"],
-		"name" => $mode === "family" ? $row["family"] : $row["genus"]
+		"label" => (!$isModeFamily ? $row["genus"] . " - " : "") .  $row["family"] . 
+			(!$isModeFamily ? " (family)" : ""),
+		"family" => $row["family"]
 	);
 }
 

@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
+const MIN_QUERY_LENGTH = 3;
+const MAX_QUERY_LENGTH = 100;
 
 function TaxonomicChecklist({ clientRoot }) {
   const [mode, setMode] = useState('family');
@@ -34,7 +36,10 @@ function TaxonomicChecklist({ clientRoot }) {
   const loadSuggestions = (searchQuery, searchMode = mode) => {
     const currentRequest = ++requestNumber.current;
     clearErrorTimer();
-    if (!searchQuery) {
+    if (!searchQuery || 
+      searchQuery.length > MAX_QUERY_LENGTH || 
+      searchQuery.length < MIN_QUERY_LENGTH
+    ) {
       setMatches([]);
       setShowSuggestions(false);
       setError('');
