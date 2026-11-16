@@ -8,7 +8,7 @@ Naming: `<domain>-<topic>.md`, kebab-case, `name:` frontmatter always equals the
 
 ## Architecture & Routing
 - [Architecture Overview](docs/agent-docs/arch-overview.md) — Hybrid PHP/React on a Symbiota base, Doctrine ORM, request lifecycle
-- [Page Entry Points](docs/agent-docs/arch-page-entry-points.md) — Single owner of the page → template → bundle → RPC table; 16 Webpack bundles
+- [Page Entry Points](docs/agent-docs/arch-page-entry-points.md) - Page → template → bundle → RPC table; grouped Taxonomic Checklist API contract
 - [Build & Deploy](docs/agent-docs/arch-build-deploy.md) — Doctrine proxy generation to `temp/proxies`, LESS/Webpack build steps
 - [Security & Permissions](docs/agent-docs/arch-security-permissions.md) — `$USER_RIGHTS` structure, real right keys, `$IS_ADMIN`
 - [Legacy Patterns](docs/agent-docs/arch-legacy-patterns.md) — MySQLi vs Doctrine coexistence, `MySQLiConnectionFactory` read/write split, `resolve_img_path()`
@@ -43,7 +43,8 @@ Naming: `<domain>-<topic>.md`, kebab-case, `name:` frontmatter always equals the
 - [Click & KML Flow](docs/agent-docs/map-click-kml-flow.md) — Marker popup; KML export, incl. the unsecured-query export bug
 
 ## React Frontend
-- [React Frontend](docs/agent-docs/react-frontend.md) — Hub: stack, build, 16 bundles all `dependOn: 'header'`
+- [React Frontend](docs/agent-docs/react-frontend.md) - Hub: stack, build, 17 JS entries, grouped Taxonomic Checklist behavior and regression tests
+- [Taxonomic Checklist search](docs/agent-docs/react-frontend.md#taxonomic-checklist-grouped-search) - Independent Family/Genus sections, More, focus/reset and stale-response handling
 - [header](docs/agent-docs/react-header.md) — Sitewide nav: scroll animation, dropdowns, mobile menu, search
 - [footer](docs/agent-docs/react-footer.md) — Stateless footer, dynamic copyright year
 - [home](docs/agent-docs/react-home.md) — Carousel/search, news/events, newsletters
@@ -53,7 +54,7 @@ Naming: `<domain>-<topic>.md`, kebab-case, `name:` frontmatter always equals the
 - [checklist-special](docs/agent-docs/react-checklist-special.md) — Grow Natives + Rare Plant Guide
 - [inventory](docs/agent-docs/react-inventory.md) — Project browser; `pid !== 4` gates the identify link (`table.jsx`)
 - [common](docs/agent-docs/react-common.md) — Shared utils, SearchWidget, FilterSidebar, result pagination, sidebar filter components
-- [less](docs/agent-docs/react-less.md) — LESS sources, 7 style entries, filemtime cache-busting
+- [less](docs/agent-docs/react-less.md) - LESS sources, 8 style entries, grouped checklist controls, filemtime cache-busting
 
 ## Meta
 - [Memory Provenance](docs/agent-docs/meta-memory-provenance.md) — Which vintages of this corpus are trustworthy, and why
@@ -62,4 +63,4 @@ Naming: `<domain>-<topic>.md`, kebab-case, `name:` frontmatter always equals the
 - Feature specs (sdd workflow): `docs/agent-docs/specs/<YYMMDD>-<slug>/`
 - Implementation plans (pdd workflow): `docs/agent-docs/plans/<YYMMDD>-<slug>/`
 
-<!-- docs-baseline: 9bb94ef6d6a4e5e8caa2a486920f7ae41388b873 -->
+<!-- docs-baseline: e40664a4a7b954ad642e313d854ab3967c25e7e4 -->

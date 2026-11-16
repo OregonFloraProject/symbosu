@@ -35,6 +35,7 @@ src/
 ├── checklist-special/    — main.jsx (garden + rare), rare-policy.jsx
 │   └── components/
 ├── inventory/            — main.jsx, table.jsx
+├── taxonomic-checklist/   - main.jsx (grouped family/genus report search)
 ├── common/               — shared utilities and UI components — [[react-common]]
 │   └── sidebar/
 └── less/                 — LESS source for all pages — [[react-less]]
@@ -42,7 +43,7 @@ src/
 
 ## Build
 
-- `npm run build` (production, minified) / `npm run devstart` (watch mode), run from `js/react/`
+- `npm run build` (production, minified) / `npm run dev` (watch mode), run from `js/react/` (`js/react/package.json`)
 - `webpack.config.js` exports two config objects: `reactConfig` (JS) and `lessConfig` (LESS)
 
 ## Webpack bundle count (verified against js/react/webpack.config.js)
@@ -50,9 +51,9 @@ src/
 **17 JS entry points**, all but `header` itself declare `dependOn: 'header'`:
 `header`, `footer`, `home`, `newsletters`, `whatsnew`, `checklist-special`, `inventory`, `identify`, `taxa`, `taxa-search`, `taxa-garden`, `taxa-rare`, `taxa-unified`, `taxonomic-checklist`, `explore`, `explore-vendor`, `rare-policy`.
 
-**7 LESS entry points** (separate config, own entry map): `theme`, `header`, `footer`, `garden`, `rare`, `taxa`, `inventory`.
+**8 LESS entry points** (separate config, own entry map): `theme`, `header`, `footer`, `garden`, `rare`, `taxa`, `inventory`, `taxonomic-checklist`.
 
-Any memory elsewhere claiming "11 Webpack bundles" is wrong. The current configuration has 17 JS bundles + 7 LESS bundles (24 total Webpack entries across the two configs).
+Any memory elsewhere claiming "11 Webpack bundles" is wrong. The current configuration has 17 JS bundles + 8 LESS bundles (25 total Webpack entries across the two configs).
 
 ## PHP/React Integration Pattern
 
@@ -72,6 +73,62 @@ Props passed from PHP -> React via `data-props`-style JSON attributes on DOM mou
 - `PascalCase` for component files, `camelCase` for utilities and entry files
 - `defaultProps` on most class components
 - FontAwesome icons imported and registered at module top level per-file (not centralized)
+
+## Taxonomic Checklist grouped search
+
+`js/react/src/taxonomic-checklist/main.jsx` defines the hook-based `TaxonomicChecklist`
+component mounted by `pages/taxonomic-checklist.php` at `react-taxonomic-checklist-app`.
+It reads `clientRoot` from `react-header`'s `data-props` and appends the compiled
+`taxonomic-checklist.css` stylesheet. Existing editorial content and download links remain
+in this component.
+
+- One query-only fetch to `${clientRoot}/pages/rpc/taxonomic-checklist.php?query=...` returns
+  `{family:[{label,family}],genus:[{label,family}]}`. Each group has its own server-side
+  20-result limit. See [[arch-page-entry-points]] for validation and query restrictions.
+- The dropdown renders Family then Genus. Both sections start expanded with up to five
+  links each. More reveals all fetched matches in its own group, up to 20, without another
+  request. Collapsing a section preserves its More state until the next search.
+- Each heading contains an independent arrow button exposing `aria-expanded` and
+  `aria-controls`; its results container uses `hidden` when collapsed.
+- If one group is empty while the other has results, it displays `No family matches.` or
+  `No genus matches.`. If both are empty, the dropdown is hidden.
+- Links retain server-provided labels and open
+  `${clientRoot}/pages/pdfs/family/${encodeURIComponent(match.family)}.pdf` in a new tab
+  with `rel="noreferrer"`.
+- Input changes immediately hide previous results and invalidate outstanding responses.
+  Nonblank input triggers a 500ms debounce; the search button and input focus search
+  immediately. Searches trim input and accept lengths 3 through 100.
+- Each `loadSuggestions()` call resets both sections to expanded/five, including searches
+  triggered by input focus or the search button. Blank input changes hide results without
+  scheduling a fetch.
+- Focus moving between controls inside the search wrapper keeps suggestions open.
+  Focus leaving the wrapper schedules dismissal after 150ms; focus returning inside cancels
+  it. Dismissal invalidates outstanding responses.
+- A request counter rejects stale successes and failures. Failed requests hide results and
+  show `Search is temporarily unavailable.` in an `aria-live="polite"` paragraph for four
+  seconds. Unmount cleanup clears debounce, blur and error timers and invalidates requests.
+
+### Focused verification
+
+- From the repository root: `php tests/TaxonomicChecklistRepositoryTest.php`.
+  `tests/TaxonomicChecklistRepositoryTest.php` uses an isolated fake entity manager/query
+  builder to check response shape, label mapping, separate queries and limits, prefix and
+  accepted/checklist/authority constraints, PDF allowlist filtering and empty-list short
+  circuiting. It does not connect to the database.
+- From `js/react`: `node --test tests/taxonomic-checklist.test.cjs`.
+  `js/react/tests/taxonomic-checklist.test.cjs` contains six tests using installed Babel
+  tooling and a custom hook/render harness with controlled fetches and timers. Coverage
+  includes query-only requests, group order/PDF links, independent five-to-20 More and
+  collapse/reset behavior, effective visibility, empty groups, stale responses, errors,
+  focus boundaries and unmount cleanup.
+- The grouped-search verification record in
+  `docs/agent-docs/plans/261116-taxonomic-checklist-grouped-search/TASKS.md` records both
+  focused suites and targeted ESLint passing, plus desktop/mobile browser checks with live
+  searches and explicitly simulated 20-result groups.
+- The final post-commit `npm run build` succeeded after both implementation commits.
+  `/tmp/opencode/taxonomic-checklist-final-build.log` records successful JS and LESS builds
+  with an outdated `caniuse-lite` warning. The task verification record separates broader
+  pre-existing ESLint failures and the unavailable typecheck from the passing focused checks.
 
 ## Notable Gotchas
 

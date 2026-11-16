@@ -67,5 +67,23 @@ Because the version string is the file's own modification time, it only changes 
 - Grid layout: 5 columns -> 4 -> 3 (responsive)
 - Card styling, image thumbnails, hover effects
 
+## taxonomic-checklist.less
+
+`js/react/src/less/taxonomic-checklist.less` scopes the report-search widget to
+`#react-taxonomic-checklist-app`. Its separate Webpack entry emits
+`css/compiled/taxonomic-checklist.css`; `js/react/src/taxonomic-checklist/main.jsx` appends
+that stylesheet to the document head.
+
+- The dropdown stays within the search widget, with a 220px maximum height and vertical
+  scrolling. Result links wrap long labels.
+- `.fg-result-group` separates Family and Genus sections with a border between groups.
+- `.fg-group-toggle` and `.fg-more` are full-width buttons with visible keyboard-focus
+  outlines. The toggle is a flex row containing the arrow and section label.
+- `.fg-group-arrow` is a CSS triangle; `.is-expanded` rotates it 90 degrees.
+- `.fg-more` styles each section's independent More control. `.fg-no-matches` styles its
+  empty message, and `.fg-confirmation` styles the temporary search-error message.
+- Expanded/collapsed and five/all-results state belongs to the React component; its result
+  container uses the HTML `hidden` attribute when collapsed. See [[react-frontend]].
+
 ## Related
 [[react-frontend]], [[react-header]], [[react-footer]], [[react-taxa]], [[react-checklist-special]], [[react-explore]], [[react-identify]], [[react-inventory]]

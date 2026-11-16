@@ -9,6 +9,9 @@ All entries below were verified against `js/react/webpack.config.js` and the act
 2026-07-31 (repo state at that date). Where the previous version of this memory was wrong, the
 correction is noted.
 
+The Taxonomic Checklist page, caller, repository and LESS entry were rechecked on 2026-11-16
+for the grouped-search implementation.
+
 ## Webpack Bundles
 
 `js/react/webpack.config.js` defines **17 React entry bundles** (not 11 as previously recorded),
@@ -19,8 +22,8 @@ all `dependOn: 'header'` except `header` itself:
 `taxonomic-checklist`, `explore`, `explore-vendor`, `rare-policy`.
 
 Output goes to `js/react/dist/`. The `taxa-unified` entry uses `dependOn: 'header'` and builds
-`dist/taxa-unified.js`. A separate `lessConfig` in the same webpack config compiles 7
-LESS entries (`theme`, `header`, `footer`, `garden`, `rare`, `taxa`, `inventory`) to
+`dist/taxa-unified.js`. A separate `lessConfig` in the same webpack config compiles 8
+LESS entries (`theme`, `header`, `footer`, `garden`, `rare`, `taxa`, `inventory`, `taxonomic-checklist`) to
 `/css/compiled/`; see [[react-less]] for the LESS side.
 
 `header` has no `dependOn` and is implicitly the shared base; every other bundle declares
@@ -40,7 +43,7 @@ LESS entries (`theme`, `header`, `footer`, `garden`, `rare`, `taxa`, `inventory`
 | Taxon profile (rare variant) | `/taxa/rare.php` | - | `taxa-rare` | `js/react/src/taxa/taxa-rare.jsx` | `taxa/rpc/api.php?type=rare` (gated by `RPG_FLAG`) |
 | Taxon profile (rare variant, unified when flagged) | `/taxa/rare.php` | - | `taxa-unified` when `$TAXA_UNIFIED_FLAG` is 1 (checked inside the existing `$RPG_FLAG` gate), else `taxa-rare` | `js/react/src/taxa/main-unified.jsx` | `taxa/rpc/api.php?type=rare` (gated by `RPG_FLAG`) |
 | Taxon search results | `/taxa/search.php` | `react-taxa-search-app` | `taxa-search` | `js/react/src/taxa/search.jsx` | `taxa/rpc/api.php?search=...` |
-| Taxonomic Checklist | `/pages/taxonomic-checklist.php` | `react-taxonomic-checklist-app` | `taxonomic-checklist` | `js/react/src/taxonomic-checklist/main.jsx` | `pages/rpc/taxonomic-checklist-search.php?mode=family\|genus&query=...` |
+| Taxonomic Checklist | `/pages/taxonomic-checklist.php` | `react-taxonomic-checklist-app` | `taxonomic-checklist` | `js/react/src/taxonomic-checklist/main.jsx` | `pages/rpc/taxonomic-checklist.php?query=...` |
 | Grow Natives (garden) main | `/garden/index.php` | - | `checklist-special` | `js/react/src/checklist-special/main.jsx` | `garden/rpc/api.php` |
 | Rare Plant Guide main | `/rare/index.php` | - | `checklist-special` | `js/react/src/checklist-special/main.jsx` | `rare/rpc/api.php` |
 | Rare policy page | `/rare/policy.php` | - | `rare-policy` | `js/react/src/checklist-special/rare-policy.jsx` | - |
@@ -80,8 +83,35 @@ LESS entries (`theme`, `header`, `footer`, `garden`, `rare`, `taxa`, `inventory`
 | `rare/rpc/autofillsearch.php` | autocomplete | File confirmed to exist |
 | `webservices/autofillsearch.php`, `webservices/autofillsciname.php`, `webservices/autofillvernacular.php` | autocomplete | All three confirmed to exist (prior memory listed only one generic "global autocomplete" endpoint) |
 | `home/rpc/api.php` | none - always returns `{news, events}` | No query-parameter dispatch at all |
-| `pages/rpc/taxonomic-checklist-search.php` | `mode` (`family` or `genus`) and `query` | Returns up to 20 family/genus suggestions from taxa linked to Oregon vascular checklist `clid=1`; the Taxonomic Checklist React entry calls this endpoint |
-| `pages/rpc/taxonomic-checklist.php` | Compatibility alias; requires `taxonomic-checklist-search.php` | Retains the previous endpoint path for existing callers |
+| `pages/rpc/taxonomic-checklist.php` | `query` only | Implements grouped family/genus search through `TaxonomicChecklistRepository::getMatches()`; returns independently limited arrays |
+
+## Taxonomic Checklist grouped search
+
+`js/react/src/taxonomic-checklist/main.jsx` calls
+`GET /pages/rpc/taxonomic-checklist.php?query=<prefix>`. The controller implementation is
+`pages/rpc/taxonomic-checklist.php`; `pages/rpc/taxonomic-checklist-search.php` is absent from
+the current directory. The former mode selector and `mode` request parameter have been removed.
+
+- Success shape: `{"family":[{"label":"Asteraceae","family":"Asteraceae"}],"genus":[{"label":"Aster - Asteraceae (family)","family":"Asteraceae"}]}`.
+- The controller trims `query` and returns `{"family":[],"genus":[]}` for missing, empty,
+  shorter-than-3-byte or longer-than-100-byte queries, using PHP `strlen()`.
+- It reads `pages/data/family-pdf-list.json`. A failed read or a decoded value that is not
+  an array returns HTTP 500 with `{"error":"Unable to load the family list."}`.
+- `classes/TaxonomicChecklistRepository.php` owns both Doctrine queries. Both require
+  authority `taxauthid=1`, accepted rows (`ts.tid=ts.tidaccepted`), checklist `clid=1`,
+  `g.rankid>=180`, a non-null/nonempty family and a nonempty derived genus.
+- Both queries apply the PDF family allowlist in SQL/DQL before their independent
+  `setMaxResults(20)` limits. An empty allowlist returns both empty arrays without querying.
+- Family results are distinct family names matching `query%`, ordered by family ascending.
+  Genus results are distinct family/genus pairs matching `query%`, ordered by family then
+  genus ascending. Genus is `g.sciname` at rank 180 and `g.unitname1` at lower taxonomic ranks
+  (`rankid>180`).
+- The genus selection uses `CASE`; its prefix condition uses explicit rank branches because
+  the repository records Doctrine ORM 2.7.3's `CASE WHEN ... LIKE` limitation.
+- Labels retain the family name or `Genus - Family (family)` format. Both groups link to
+  `${clientRoot}/pages/pdfs/family/${encodeURIComponent(match.family)}.pdf` in a new tab.
+
+See [[react-frontend]] for grouped controls, focus handling and focused regression commands.
 
 ## Gotcha: RPC response format is not standardized
 
