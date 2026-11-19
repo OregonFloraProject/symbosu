@@ -1154,11 +1154,48 @@ img {
           margin-top: 0;
         }
       }
-      .access {
+      .access,
+      .reports,
+      .search {
         background-color: @light-green;
         border-radius: 8px;
         border: 5px solid transparent;
         padding: 1rem;
+        margin-bottom: 1rem;
+      }
+      .reports,
+      .search {
+        h3 {
+          font-size: 24px;
+          line-height: 28px;
+          margin-top: 0;
+        }
+        p,
+        ul li {
+          font-size: 20px;
+          line-height: 1.4em;
+        }
+      }
+      .search {
+        input[type='text'] {
+          border-radius: 0.5rem !important;
+          margin-right: 10px;
+          margin-bottom: 1rem;
+          height: 40px;
+          border: 2px solid @med-green;
+          color: @med-green;
+          padding: 0.375rem 0.75rem;
+          font-size: 1rem;
+          font-weight: 400;
+          line-height: 1.5em;
+        }
+        button.btn-search {
+          background-color: transparent;
+          margin-right: 0;
+          margin-top: 6px;
+          line-height: 2rem;
+          vertical-align: top;
+        }
       }
       img.vouchers {
         float: left;
@@ -1175,49 +1212,6 @@ img {
           flex-basis: 50%;
           padding: 0 7%;
           text-align: center;
-        }
-      }
-    }
-    #column-right {
-      .sidebox {
-        h3 {
-          font-size: 24px;
-          line-height: 28px;
-        }
-        &.inset {
-          padding-top: 0;
-        }
-        &.search {
-          background-color: @light-green;
-          border-radius: 8px;
-          border: 5px solid transparent;
-          p,
-          ul li {
-            font-size: 14px;
-            line-height: 20px;
-            letter-spacing: -0.08px;
-          }
-          input[type='text'] {
-            border-radius: 0.5rem !important;
-            margin-right: 10px;
-            margin-bottom: 1rem;
-            //max-width: 350px !important;
-            height: 40px;
-            border: 2px solid @med-green;
-            //display: inline;
-            color: @med-green;
-            padding: 0.375rem 0.75rem;
-            font-size: 1rem;
-            font-weight: 400;
-            line-height: 1.5em;
-          }
-          button.btn-search {
-            background-color: transparent;
-            margin-right: 0;
-            margin-top: 6px;
-            line-height: 2rem;
-            vertical-align: top;
-          }
         }
       }
     }

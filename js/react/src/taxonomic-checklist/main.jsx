@@ -96,7 +96,9 @@ function TaxonomicChecklist({ clientRoot }) {
       window.clearTimeout(blurTimer.current);
       blurTimer.current = null;
     }
-    setShowSuggestions(true);
+    if (query.trim().length >= MIN_QUERY_LENGTH) {
+      setShowSuggestions(true);
+    }
   };
 
   const handleBlur = () => {
@@ -202,7 +204,7 @@ function TaxonomicChecklist({ clientRoot }) {
               periodically updated to reflect the latest botanical research.
             </h2>
             <div className="row columns">
-              <div id="column-main" className="col-lg-8">
+              <div id="column-main" className="col-12">
                 <div className="inset access">
                   <h3>Access the information of the Oregon Vascular Plant Checklist in these ways:</h3>
                   <ul>
@@ -238,6 +240,54 @@ function TaxonomicChecklist({ clientRoot }) {
                       to view glossary of terms used.
                     </li>
                   </ul>
+                </div>
+                <div className="inset reports">
+                  <h3>Plant Family Reports</h3>
+                  <p>
+                    A family reports list each Oregon taxon in that family, evidence supporting its occurrence in
+                    Oregon, and other documentation. Search for reports by plant family name, or by genus name.
+                  </p>
+                  <p>Use these reports to find:</p>
+                  <ul>
+                    <li>
+                      All taxa within a plant family and their accepted scientific name, synonyms, common names, and
+                      origin
+                    </li>
+                    <li>The herbarium which houses a primary confirmed voucher specimen</li>
+                    <li>The year the taxon was most recently collected</li>
+                    <li>Citations in local floras for each taxon</li>
+                    <li>Excluded names and their synonyms</li>
+                  </ul>
+                </div>
+                <div className="inset search">
+                  <div className="search-wrapper" onBlur={handleBlur} onFocusCapture={handleWidgetFocus}>
+                    <div className="search-widget">
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Search family or genus name"
+                        autoComplete="off"
+                        value={query}
+                        onChange={handleQueryChange}
+                        onFocus={handleFocus}
+                      />
+                      <button
+                        className="btn-search"
+                        type="button"
+                        aria-label="Search"
+                        onClick={handleSearch}
+                      />
+                      {showSuggestions && (
+                        <div className="dropdown-menu">
+                          <GroupResult group='family' label='Family'></GroupResult>
+                          <GroupResult group='genus' label='Genus'></GroupResult>
+                        </div>
+                      )}
+                    </div>
+                    <p className="fg-confirmation" aria-live="polite">
+                      {error}
+                    </p>
+                  </div>
                 </div>
                 <h2>The birth of a flora starts with a checklist of names</h2>
                 <p>
@@ -289,67 +339,6 @@ function TaxonomicChecklist({ clientRoot }) {
                   repository for Oregon confirmed vouchers. Like most herbaria, the collections are accessible to the
                   public through arranged visits or online.
                 </p>
-              </div>
-              <div id="column-right" className="col-lg-4">
-                <div className="sidebox inset search">
-                  <h3>Search plant families and genera</h3>
-                  <div className="search-wrapper" onBlur={handleBlur} onFocusCapture={handleWidgetFocus}>
-                    <div className="search-widget">
-                      <input
-                        type="text"
-                        className="form-control"
-                        placeholder="Search families and genera"
-                        autoComplete="off"
-                        value={query}
-                        onChange={handleQueryChange}
-                        onFocus={handleFocus}
-                      />
-                      <button
-                        className="btn-search"
-                        type="button"
-                        aria-label="Search"
-                          onClick={handleSearch}
-                      />
-                      {showSuggestions && (
-                        <div
-                          className="dropdown-menu"
-                        >
-                          <GroupResult group='family' label='Family'></GroupResult>
-                          <GroupResult group='genus' label='Genus'></GroupResult>
-                        </div>
-                      )}
-                    </div>
-                    <p className="fg-confirmation" aria-live="polite">
-                      {error}
-                    </p>
-                  </div>
-                  <p>
-                    The family reports list each Oregon taxon, evidence supporting its occurrence in Oregon, and the
-                    following information:
-                  </p>
-                  <ul>
-                    <li>The scientific name chosen to represent each taxon in the Oregon Checklist</li>
-                    <li>A common name </li>
-                    <li>Its origin (native or exotic) </li>
-                    <li>The herbarium which houses a primary confirmed voucher specimen</li>
-                    <li>
-                      The year the taxon was most recently collected, using OSU Herbarium collections as the primary
-                      source
-                    </li>
-                    <li>Citations for each Oregon taxon in several local floras </li>
-                    <li>
-                      Synonyms for each Oregon taxon and their citations, mostly originating from accepted names in the
-                      same local floras mentioned above
-                    </li>
-                    <li>Excluded names and their synonyms </li>
-                    <li>
-                      Pertinent{' '}
-                      <a href={`${clientRoot}/pages/data/primary-regional-floras.pdf`} download>
-                        references
-                      </a>
-                    </li>
-                  </ul>
-                </div>
               </div>
             </div>
           </div>
