@@ -28,7 +28,9 @@ function getMatches($query, array $familyList) {
 			->andWhere($genusExpression . " <> :emptyGenus")
 			->andWhere($searchCondition)
 			->setParameter("taxauthid", 1)
+			// Rank genus is 180
 			->setParameter("genusRank", 180)
+			// Checklist 1 belongs to OregonFlora Vascular Plants
 			->setParameter("checklistId", 1)
 			->setParameter("emptyFamily", "")
 			->setParameter("emptyGenus", "")
@@ -37,6 +39,7 @@ function getMatches($query, array $familyList) {
 
 	$familyRows = $baseQuery("DISTINCT ts.family AS family", "ts.family LIKE :search")
 		->andWhere("ts.family IN (:familyList)")
+		// Filter family name for the query result through existing pdfs
 		->setParameter("familyList", $familyList)
 		->orderBy("ts.family", "ASC")
 		->setMaxResults(20)
@@ -53,6 +56,7 @@ function getMatches($query, array $familyList) {
 		$genusCondition
 	)
 		->andWhere("ts.family IN (:familyList)")
+		// Filter family name for the query result through existing pdfs
 		->setParameter("familyList", $familyList)
 		->orderBy("ts.family", "ASC")
 		->addOrderBy("genus", "ASC")

@@ -6,6 +6,8 @@ const MAX_QUERY_LENGTH = 100;
 function TaxonomicChecklist({ clientRoot }) {
   const [query, setQuery] = useState('');
   const [matches, setMatches] = useState({ family: [], genus: [] });
+  // State of each dropdown. `expanded` is for the arrow dropdown
+  // showAll is a flag for "more" option
   const [groupState, setGroupState] = useState({
     family: { expanded: true, showAll: false },
     genus: { expanded: true, showAll: false },
@@ -15,8 +17,6 @@ function TaxonomicChecklist({ clientRoot }) {
   const requestNumber = useRef(0);
   const debounceTimer = useRef(null);
   const blurTimer = useRef(null);
-  const errorTimer = useRef(null);
-  const searchWidget = useRef(null);
 
   const clearDebounce = () => {
     if (debounceTimer.current !== null) {
@@ -25,15 +25,7 @@ function TaxonomicChecklist({ clientRoot }) {
     }
   };
 
-  const clearErrorTimer = () => {
-    if (errorTimer.current !== null) {
-      window.clearTimeout(errorTimer.current);
-      errorTimer.current = null;
-    }
-  };
-
   const hideSuggestions = () => {
-    setMatches({ family: [], genus: [] });
     setShowSuggestions(false);
   };
 
@@ -46,7 +38,6 @@ function TaxonomicChecklist({ clientRoot }) {
 
   const loadSuggestions = (searchQuery) => {
     const currentRequest = ++requestNumber.current;
-    clearErrorTimer();
     resetGroups();
     if (!searchQuery || 
       searchQuery.length > MAX_QUERY_LENGTH || 
@@ -78,10 +69,6 @@ function TaxonomicChecklist({ clientRoot }) {
         setMatches({ family: [], genus: [] });
         setShowSuggestions(false);
         setError('Search is temporarily unavailable.');
-        errorTimer.current = window.setTimeout(() => {
-          setError('');
-          errorTimer.current = null;
-        }, 4000);
       });
   };
 
@@ -91,7 +78,6 @@ function TaxonomicChecklist({ clientRoot }) {
     requestNumber.current++;
     setQuery(nextQuery);
     setError('');
-    clearErrorTimer();
     hideSuggestions();
     if (!nextQuery.trim()) return;
     debounceTimer.current = window.setTimeout(() => {
@@ -110,11 +96,10 @@ function TaxonomicChecklist({ clientRoot }) {
       window.clearTimeout(blurTimer.current);
       blurTimer.current = null;
     }
-    handleSearch();
+    setShowSuggestions(true);
   };
 
-  const handleBlur = (event) => {
-    if (searchWidget.current && searchWidget.current.contains(event.relatedTarget)) return;
+  const handleBlur = () => {
     blurTimer.current = window.setTimeout(() => {
       requestNumber.current++;
       hideSuggestions();
@@ -143,10 +128,13 @@ function TaxonomicChecklist({ clientRoot }) {
     }));
   };
 
-  const renderGroup = (group, label) => {
+  function GroupResult({group, label}) {
+    // Get matches from either 'family' or 'group'
     const groupMatches = matches[group];
     const state = groupState[group];
+    // Get first 5 results
     const visibleMatches = state.showAll ? groupMatches : groupMatches.slice(0, 5);
+
     const sectionId = `taxonomic-checklist-${group}-results`;
     return (
       <section className="fg-result-group" aria-label={`${label} results`} key={group}>
@@ -193,7 +181,6 @@ function TaxonomicChecklist({ clientRoot }) {
   useEffect(
     () => () => {
       if (debounceTimer.current !== null) window.clearTimeout(debounceTimer.current);
-      if (errorTimer.current !== null) window.clearTimeout(errorTimer.current);
       if (blurTimer.current !== null) window.clearTimeout(blurTimer.current);
       requestNumber.current++;
     },
@@ -306,7 +293,7 @@ function TaxonomicChecklist({ clientRoot }) {
               <div id="column-right" className="col-lg-4">
                 <div className="sidebox inset search">
                   <h3>Search plant families and genera</h3>
-                  <div className="search-wrapper" ref={searchWidget} onBlur={handleBlur} onFocusCapture={handleWidgetFocus}>
+                  <div className="search-wrapper" onBlur={handleBlur} onFocusCapture={handleWidgetFocus}>
                     <div className="search-widget">
                       <input
                         type="text"
@@ -327,8 +314,8 @@ function TaxonomicChecklist({ clientRoot }) {
                         <div
                           className="dropdown-menu"
                         >
-                          {renderGroup('family', 'Family')}
-                          {renderGroup('genus', 'Genus')}
+                          <GroupResult group='family' label='Family'></GroupResult>
+                          <GroupResult group='genus' label='Genus'></GroupResult>
                         </div>
                       )}
                     </div>
