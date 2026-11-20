@@ -1,5 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faDownload } from '@fortawesome/free-solid-svg-icons';
+library.add(faDownload);
 const MIN_QUERY_LENGTH = 3;
 const MAX_QUERY_LENGTH = 100;
 
@@ -130,7 +134,7 @@ function TaxonomicChecklist({ clientRoot }) {
     }));
   };
 
-  function GroupResult({group, label}) {
+  function GroupResult({group}) {
     // Get matches from either 'family' or 'group'
     const groupMatches = matches[group];
     const state = groupState[group];
@@ -139,7 +143,7 @@ function TaxonomicChecklist({ clientRoot }) {
 
     const sectionId = `taxonomic-checklist-${group}-results`;
     return (
-      <section className="fg-result-group" aria-label={`${label} results`} key={group}>
+      <section className="fg-result-group" aria-label={`${group} results`} key={group}>
         <h4>
           <button
             className="fg-group-toggle"
@@ -149,25 +153,37 @@ function TaxonomicChecklist({ clientRoot }) {
             onClick={() => toggleGroup(group)}
           >
             <span className={`fg-group-arrow${state.expanded ? ' is-expanded' : ''}`} aria-hidden="true" />
-            {label}
+            {/* Captialize title */}
+            {group[0].toUpperCase() + group.slice(1)}
           </button>
         </h4>
         <div id={sectionId} hidden={!state.expanded}>
           {groupMatches.length === 0 ? (
-            <p className="fg-no-matches">No {label.toLowerCase()} matches.</p>
+            <p className="fg-no-matches">No {group.toLowerCase()} matches.</p>
           ) : (
             <>
-              {visibleMatches.map((match) => (
-                <a
-                  className="dropdown-item"
-                  target="_blank"
-                  rel="noreferrer"
-                  key={`${group}-${match.label}`}
-                  href={`${clientRoot}/pages/pdfs/family/${encodeURIComponent(match.family)}.pdf`}
-                >
-                  {match.label}
-                </a>
-              ))}
+              {visibleMatches.map((match) => {
+                const isGenus = group === 'genus';
+                return (
+                  <a
+                    className={`dropdown-item${isGenus ? ' fg-genus-item' : ''}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    key={`${group}-${match.label}`}
+                    href={`${clientRoot}/pages/pdfs/family/${encodeURIComponent(match.family)}.pdf`}
+                  >
+                    {isGenus ? (
+                      <>
+                        <span className="fg-genus-name">{match.genus}</span>
+                        <span className="fg-genus-family">{match.family}</span>
+                        <FontAwesomeIcon icon="download" className="fg-download-icon" aria-hidden="true" />
+                      </>
+                    ) : (
+                      match.family
+                    )}
+                  </a>
+                );
+              })}
               {!state.showAll && groupMatches.length > 5 && (
                 <button className="fg-more" type="button" onClick={() => showAllInGroup(group)}>
                   More
@@ -279,8 +295,8 @@ function TaxonomicChecklist({ clientRoot }) {
                       />
                       {showSuggestions && (
                         <div className="dropdown-menu">
-                          <GroupResult group='family' label='Family'></GroupResult>
-                          <GroupResult group='genus' label='Genus'></GroupResult>
+                          <GroupResult group='family'></GroupResult>
+                          <GroupResult group='genus'></GroupResult>
                         </div>
                       )}
                     </div>

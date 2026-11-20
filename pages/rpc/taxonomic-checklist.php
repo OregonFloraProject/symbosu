@@ -67,14 +67,16 @@ function getMatches($query, array $familyList) {
 	foreach ($familyRows as $row) {
 		$matches["family"][] = array(
 			"label" => $row["family"],
-			"family" => $row["family"]
+			"family" => $row["family"],
+			"genus" => null
 		);
 	}
 
 	foreach ($genusRows as $row) {
 		$matches["genus"][] = array(
 			"label" => $row["genus"] . " - " . $row["family"] . " (family)",
-			"family" => $row["family"]
+			"family" => $row["family"],
+			"genus" => $row["genus"]
 		);
 	}
 

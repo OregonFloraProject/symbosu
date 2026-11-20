@@ -35,6 +35,30 @@
         white-space: normal;
       }
 
+      .fg-genus-item {
+        display: grid;
+        // Split into grids of 3 column, with 2 text columns being flexible
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 0.5fr;
+        align-items: center;
+        gap: 0.5rem;
+
+        .fg-genus-name {
+          grid-column: 1;
+          min-width: 0;
+        }
+
+        .fg-genus-family {
+          grid-column: 2;
+          min-width: 0;
+          color: #000;
+        }
+
+        .fg-download-icon {
+          grid-column: 3;
+          justify-self: end;
+        }
+      }
+
       .fg-result-group {
         h4 {
           margin: 0;
