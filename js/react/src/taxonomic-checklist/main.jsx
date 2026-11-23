@@ -108,7 +108,7 @@ function TaxonomicChecklist({ clientRoot }) {
   const handleBlur = () => {
     blurTimer.current = window.setTimeout(() => {
       requestNumber.current++;
-      hideSuggestions();
+      // hideSuggestions();
       blurTimer.current = null;
     }, 150);
   };
@@ -166,7 +166,7 @@ function TaxonomicChecklist({ clientRoot }) {
                 const isGenus = group === 'genus';
                 return (
                   <a
-                    className={`dropdown-item${isGenus ? ' fg-genus-item' : ''}`}
+                    className={`dropdown-item fg-item`}
                     target="_blank"
                     rel="noreferrer"
                     key={`${group}-${match.label}`}
@@ -176,11 +176,11 @@ function TaxonomicChecklist({ clientRoot }) {
                       <>
                         <span className="fg-genus-name">{match.genus}</span>
                         <span className="fg-genus-family">{match.family}</span>
-                        <FontAwesomeIcon icon="download" className="fg-download-icon" aria-hidden="true" />
                       </>
                     ) : (
-                      match.family
+                      <span className="fg-family-name">{match.family}</span>
                     )}
+                    <FontAwesomeIcon icon="download" className="fg-download-icon" aria-hidden="true" />
                   </a>
                 );
               })}

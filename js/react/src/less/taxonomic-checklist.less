@@ -35,7 +35,7 @@
         white-space: normal;
       }
 
-      .fg-genus-item {
+      .fg-item {
         display: grid;
         // Split into grids of 3 column, with 2 text columns being flexible
         grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 0.5fr;
@@ -51,6 +51,12 @@
           grid-column: 2;
           min-width: 0;
           color: #000;
+        }
+
+        .fg-family-name {
+          grid-column-start: 1;
+          grid-column-end: 3;
+          min-width: 0;
         }
 
         .fg-download-icon {
