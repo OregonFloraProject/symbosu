@@ -1,3 +1,5 @@
+@import './mixins.less';
+
 /* Family/genus report search widget. */
 #react-taxonomic-checklist-app {
   .search-widget {
@@ -40,7 +42,6 @@
         // Split into grids of 3 column, with 2 text columns being flexible
         grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 0.5fr;
         align-items: center;
-        gap: 0.5rem;
 
         .fg-genus-name {
           grid-column: 1;
@@ -62,6 +63,30 @@
         .fg-download-icon {
           grid-column: 3;
           justify-self: end;
+        }
+
+        // On narrow screens, keep the download icon beside the genus
+        // and move the family to its own line below
+        @media (max-width: @small) {
+          &.fg-genus-item {
+            grid-template-columns: minmax(0, 1fr) auto;
+
+            .fg-genus-name {
+              grid-column: 1;
+              grid-row: 1;
+            }
+
+            .fg-genus-family {
+              grid-column-start: 1;
+              grid-column-end: -1;
+              grid-row: 2;
+            }
+
+            .fg-download-icon {
+              grid-column: 2;
+              grid-row: 1;
+            }
+          }
         }
       }
 

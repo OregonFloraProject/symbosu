@@ -108,7 +108,7 @@ function TaxonomicChecklist({ clientRoot }) {
   const handleBlur = () => {
     blurTimer.current = window.setTimeout(() => {
       requestNumber.current++;
-      // hideSuggestions();
+      hideSuggestions();
       blurTimer.current = null;
     }, 150);
   };
@@ -166,7 +166,7 @@ function TaxonomicChecklist({ clientRoot }) {
                 const isGenus = group === 'genus';
                 return (
                   <a
-                    className={`dropdown-item fg-item`}
+                    className={`dropdown-item fg-item${isGenus ? ' fg-genus-item' : ''}`}
                     target="_blank"
                     rel="noreferrer"
                     key={`${group}-${match.label}`}
