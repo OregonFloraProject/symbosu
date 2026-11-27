@@ -4,7 +4,7 @@ include_once($SERVER_ROOT . '/classes/SiteMapManager.php');
 include_once($SERVER_ROOT . '/classes/utilities/Language.php');
 
 Language::load('sitemap');
-// deleteMe Test2
+// deleteMe Test3
 
 header('Content-Type: text/html; charset=' . $CHARSET);
 
