@@ -123,7 +123,7 @@ class DwcArchiverOccurrence extends Manager{
 		$this->occurDefArr['fields']['occurrenceRemarks'] = 'x.occurrenceRemarks';
 		$this->occurDefArr['terms']['habitat'] = 'http://rs.tdwg.org/dwc/terms/habitat';
 		$this->occurDefArr['fields']['habitat'] = 'o.habitat';
-		$this->occurDefArr['terms']['substrate'] = 'https://symbiota.org/terms/substrate';
+		$this->occurDefArr['terms']['substrate'] = 'http://rs.tdwg.org/dwc/terms/substrate';
 		$this->occurDefArr['fields']['substrate'] = 'o.substrate';
 		$this->occurDefArr['terms']['verbatimAttributes'] = 'https://symbiota.org/terms/verbatimAttributes';
 		$this->occurDefArr['fields']['verbatimAttributes'] = 'o.verbatimAttributes';
@@ -327,7 +327,7 @@ class DwcArchiverOccurrence extends Manager{
 		//Trim out fields depending on schema settings
 		$trimArr = array();
 		if($this->schemaType == 'dwc' || $this->schemaType == 'pensoft'){
-			$trimArr = array('recordedByID','associatedCollectors','substrate','verbatimAttributes','cultivationStatus','securityReason','genericcolumn1','genericcolumn2',
+			$trimArr = array('recordedByID','associatedCollectors','verbatimAttributes','cultivationStatus','securityReason','genericcolumn1','genericcolumn2',
 				'observerUid','processingStatus','duplicateQuantity','labelProject','dateEntered','dateLastModified','sourcePrimaryKey-dbpk');
 			if($this->includePaleo){
 				$trimArr = array_merge($trimArr, array('absoluteAge','stage','localStage','biostratigraphy','taxonEnvironment','stratRemarks','element','slideProperties', 'lithology'));
@@ -367,7 +367,6 @@ class DwcArchiverOccurrence extends Manager{
 		if($this->schemaType == 'dwc' || $this->schemaType == 'pensoft'){
 			$this->occurDefArr['fields']['recordedBy'] = 'CONCAT_WS("; ",o.recordedBy,o.associatedCollectors) AS recordedBy';
 			$this->occurDefArr['fields']['occurrenceRemarks'] = 'CONCAT_WS("; ",x.occurrenceRemarks,o.verbatimAttributes) AS occurrenceRemarks';
-			$this->occurDefArr['fields']['habitat'] = 'CONCAT_WS("; ",o.habitat, o.substrate) AS habitat';
 		}
 		return $this->occurDefArr;
 	}
@@ -475,7 +474,7 @@ class DwcArchiverOccurrence extends Manager{
 				$sql = 'UPDATE omexportoccurrences x INNER JOIN taxaenumtree e ON x.taxonID = e.tid
 					INNER JOIN taxa t ON e.parentTid = t.tid
 					SET x.' . $fieldName . ' = t.sciname
-					WHERE x.omExportID = ? AND t.rankid = ?';
+					WHERE e.taxAuthID = 1 AND x.omExportID = ? AND t.rankid = ?';
 				if($stmt = $this->conn->prepare($sql)){
 					try{
 						$stmt->bind_param('ii', $this->exportID, $rankID);
@@ -558,7 +557,7 @@ class DwcArchiverOccurrence extends Manager{
 			$sql = 'UPDATE omexportoccurrences x INNER JOIN taxstatus ts ON x.taxonID = ts.tid
 				INNER JOIN taxa t ON ts.tidaccepted = t.tid
 				SET x.acceptedNameUsageID = t.tid, x.acceptedNameUsage = t.sciname, x.acceptedNameUsageAuthorship = t.author
-				WHERE x.omExportID = ?';
+				WHERE ts.taxAuthID = 1 AND x.omExportID = ?';
 			if($stmt = $this->conn->prepare($sql)){
 				try{
 					$stmt->bind_param('i', $this->exportID);
