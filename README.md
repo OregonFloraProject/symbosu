@@ -105,3 +105,5 @@ Build the React- and Less-based pages from the project root directory: `npm run 
 
 For a development server that watches for changes in .js/.jsx/.less files and automatically rebuilds them: `npm run dev` from the project root directory.
 
+### To debug with VS Code:
+Install "PHP Tools for Visual Studio Code" extension, and press F5. The "Launch built-in server and Debug" profile is included in the project.
